@@ -1,0 +1,22 @@
+flowchart LR
+    MCR["Megaport MCR\nd801e2cd\nASN 64512\nFrankfurt FR5"]
+
+    subgraph Peering["Equinix FR5 Peering Location"]
+        MSEE_PRI["MSEE Primary\n10.100.255.4\nASN 12076"]
+        MSEE_SEC["MSEE Secondary\n10.100.255.5\nASN 12076"]
+    end
+
+    ERGW["ER Gateway\nergw-erlab-spaincentral\nASN 12076\nLocal 10.100.255.13"]
+
+    MCR -- "VXC cbb7a449 / VLAN 100\n169.254.194.41 ↔ 169.254.194.42\neBGP" --> MSEE_PRI
+    MCR -- "VXC 60e77813 / VLAN 100\n169.254.194.45 ↔ 169.254.194.46\neBGP" --> MSEE_SEC
+    MSEE_PRI -- "iBGP 10.100.255.4 ↔ .13\n2 routes received" --> ERGW
+    MSEE_SEC -- "iBGP 10.100.255.5 ↔ .13\n2 routes received" --> ERGW
+
+    classDef megaport fill:#ffe6cc,stroke:#d6b656,color:#000
+    classDef msee fill:#00188D,color:#fff
+    classDef azure fill:#dae8fc,stroke:#6c8ebf,color:#000
+
+    class MCR megaport
+    class MSEE_PRI,MSEE_SEC msee
+    class ERGW azure

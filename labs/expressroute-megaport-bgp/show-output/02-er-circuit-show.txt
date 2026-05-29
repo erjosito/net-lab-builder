@@ -1,0 +1,63 @@
+# command: az network express-route show -g rg-erlab-spaincentral -n er-erlab-madrid -o json
+{
+  "allowClassicOperations": false,
+  "authorizationKey": "*****************",
+  "authorizations": [],
+  "circuitProvisioningState": "Enabled",
+  "etag": "W/\"ba91a9ed-326b-4d85-9ed5-c77cfc27fb0d\"",
+  "gatewayManagerEtag": "",
+  "globalReachEnabled": false,
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-erlab-spaincentral/providers/Microsoft.Network/expressRouteCircuits/er-erlab-madrid",
+  "location": "spaincentral",
+  "name": "er-erlab-madrid",
+  "peerings": [
+    {
+      "azureASN": 12076,
+      "connections": [],
+      "etag": "W/\"ba91a9ed-326b-4d85-9ed5-c77cfc27fb0d\"",
+      "gatewayManagerEtag": "",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-erlab-spaincentral/providers/Microsoft.Network/expressRouteCircuits/er-erlab-madrid/peerings/AzurePrivatePeering",
+      "lastModifiedBy": "Provider",
+      "name": "AzurePrivatePeering",
+      "peerASN": 64512,
+      "peeredConnections": [],
+      "peeringType": "AzurePrivatePeering",
+      "primaryAzurePort": "",
+      "primaryPeerAddressPrefix": "169.254.194.40/30",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-erlab-spaincentral",
+      "secondaryAzurePort": "",
+      "secondaryPeerAddressPrefix": "169.254.194.44/30",
+      "state": "Enabled",
+      "type": "Microsoft.Network/expressRouteCircuits/peerings",
+      "vlanId": 100
+    }
+  ],
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-erlab-spaincentral",
+  "serviceKey": "<ER_SERVICE_KEY>",
+  "serviceProviderProperties": {
+    "bandwidthInMbps": 50,
+    "peeringLocation": "Madrid",
+    "serviceProviderName": "Megaport"
+  },
+  "serviceProviderProvisioningState": "Provisioned",
+  "sku": {
+    "family": "MeteredData",
+    "name": "Standard_MeteredData",
+    "tier": "Standard"
+  },
+  "stag": 8,
+  "tags": {
+    "correlation_id": "b8c748bc",
+    "created_by": "copilot-lab",
+    "ephemeral": "true",
+    "lab": "true",
+    "lab_name": "expressroute-megaport-bgp",
+    "owner": "jose"
+  },
+  "type": "Microsoft.Network/expressRouteCircuits"
+}
+
+
+

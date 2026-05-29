@@ -1,0 +1,12 @@
+# command: Invoke-RestMethod -Method Get -Uri "https://api.megaport.com/v2/product/vxc/60e77813-c339-4773-b963-0368f5ba1255" -Headers @{ "Authorization" = "Bearer <MEGAPORT_TOKEN>" } | ConvertTo-Json -Depth 20
+
+{
+  "message": "Request method \u0027GET\u0027 is not supported",
+  "terms": "This data is subject to the Acceptable Use Policy https://www.megaport.com/legal/acceptable-use-policy",
+  "data": [
+    "Unsupported Http Methods: GET",
+    "Supported Http Methods: [PUT]"
+  ]
+}
+
+

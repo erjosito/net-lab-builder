@@ -1,0 +1,177 @@
+# command: Invoke-RestMethod -Method Get -Uri "https://api.megaport.com/v2/product/cbb7a449-9f0a-43dc-91d8-6d5551d81c6c" -Headers @{ "Authorization" = "Bearer <MEGAPORT_TOKEN>" } | ConvertTo-Json -Depth 20
+{
+  "message": "Found Product cbb7a449-9f0a-43dc-91d8-6d5551d81c6c",
+  "terms": "This data is subject to the Acceptable Use Policy https://www.megaport.com/legal/acceptable-use-policy",
+  "data": {
+    "productId": 291063,
+    "productUid": "cbb7a449-9f0a-43dc-91d8-6d5551d81c6c",
+    "productName": "vxc-erlab-azure-primary-b8c748bc",
+    "secondaryName": null,
+    "productType": "VXC",
+    "rateLimit": 50,
+    "maximumRate": 1000,
+    "distanceBand": "ZONE",
+    "provisioningStatus": "LIVE",
+    "usageAlgorithm": "POST_PAID_HOURLY_SPEED_LONG_HAUL_VXC",
+    "createdBy": "dbb1e1f8-0861-423b-b85c-e71256d4a486",
+    "liveDate": 1780036331082,
+    "createDate": 1780035878040,
+    "resources": {
+      "csp_connection": [
+        {
+          "connectType": "VROUTER",
+          "resource_name": "a_csp_connection",
+          "resource_type": "csp_connection",
+          "vlan": 948,
+          "bgp_peers": [
+            "169.254.194.42"
+          ],
+          "bgp_status": {
+            "169.254.194.42": 1
+          },
+          "interfaces": [
+            {
+              "bgpConnections": [
+                {
+                  "localAsn": 64512,
+                  "localIpAddress": "169.254.194.41",
+                  "peerAsn": 12076,
+                  "peerIpAddress": "169.254.194.42",
+                  "peerType": "PRIV_CLOUD",
+                  "shutdown": false
+                }
+              ],
+              "ipAddresses": [
+                "169.254.194.41/30"
+              ],
+              "vlan": 100,
+              "ipMtu": 1500
+            }
+          ],
+          "ip_addresses": [
+            "169.254.194.41/30"
+          ],
+          "virtualRouterName": ""
+        },
+        {
+          "bandwidth": 50,
+          "connectType": "AZURE",
+          "managed": true,
+          "megaports": [
+            {
+              "port": 85288,
+              "type": "primary",
+              "vxc": 291063
+            },
+            {
+              "port": 85289,
+              "type": "secondary",
+              "vxc": 291064
+            }
+          ],
+          "ports": [
+            {
+              "service_id": 190394,
+              "type": "primary",
+              "vxc_service_ids": [
+                868527
+              ],
+              "firstVxcServiceId": 868527
+            },
+            {
+              "service_id": 190395,
+              "type": "secondary",
+              "vxc_service_ids": [
+                868529
+              ],
+              "firstVxcServiceId": 868529
+            }
+          ],
+          "peers": [
+            {
+              "peer_asn": 64512,
+              "primary_subnet": "169.254.194.40/30",
+              "secondary_subnet": "169.254.194.44/30",
+              "type": "private",
+              "vlan": 100
+            }
+          ],
+          "resource_name": "b_csp_connection",
+          "resource_type": "csp_connection",
+          "service_key": "82c05a44-f4e5-4b56-b0ce-32dfed3bc4f9",
+          "vlan": 8
+        }
+      ],
+      "vll": {
+        "a_vlan": 948,
+        "b_vlan": 8,
+        "a_inner_vlan": 2509,
+        "rate_limit_mbps": 50,
+        "resource_name": "vll",
+        "resource_type": "vll",
+        "up": 1,
+        "shutdown": false,
+        "ainnerVlan": 2509
+      }
+    },
+    "vxcApproval": {
+      "status": null,
+      "message": null,
+      "uid": null,
+      "type": null,
+      "newSpeed": null
+    },
+    "contractStartDate": 1780036331085,
+    "contractEndDate": 1782655200000,
+    "contractTermMonths": 1,
+    "autoRenewTerm": false,
+    "companyUid": "<MEGAPORT_COMPANY_UID>",
+    "companyName": "<MEGAPORT_COMPANY_NAME>",
+    "locked": false,
+    "adminLocked": false,
+    "attributeTags": {},
+    "up": true,
+    "shutdown": false,
+    "canReterm": true,
+    "cancelable": true,
+    "aEnd": {
+      "ownerUid": "d594938d-b56f-42d8-b66e-f71ac55a46d5",
+      "productUid": "d801e2cd-be05-4889-82a7-b91e45be02de",
+      "productName": "mcr-erlab-frankfurt-b8c748bc",
+      "locationId": 131,
+      "location": "Equinix Frankfurt FR5",
+      "locationDetail": {
+        "name": "Equinix Frankfurt FR5",
+        "city": "Frankfurt",
+        "metro": "Frankfurt",
+        "country": "Germany"
+      },
+      "vlan": 948,
+      "innerVlan": 2509,
+      "secondaryName": null,
+      "connectType": "VROUTER",
+      "diversityZone": "blue",
+      "vNicIndex": 14
+    },
+    "bEnd": {
+      "ownerUid": "c40de5ed-4707-4471-a78c-69436de2c505",
+      "productUid": "a6155297-a803-4255-8278-b7a1bfcb3a03",
+      "productName": "Madrid Primary",
+      "locationId": 639,
+      "location": "Digital Realty Interxion MAD2",
+      "locationDetail": {
+        "name": "Digital Realty Interxion MAD2",
+        "city": "Madrid",
+        "metro": "Madrid",
+        "country": "Spain"
+      },
+      "vlan": 8,
+      "innerVlan": null,
+      "secondaryName": null,
+      "connectType": "AZURE",
+      "diversityZone": "red"
+    }
+  }
+}
+
+

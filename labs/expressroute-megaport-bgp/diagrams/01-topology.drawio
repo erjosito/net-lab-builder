@@ -1,0 +1,69 @@
+<mxGraphModel adaptiveColors="auto">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+    <mxCell id="zone-megaport" value="Megaport" style="swimlane;startSize=30;fillColor=#fff4cc;strokeColor=#d6b656;fontStyle=1;fontSize=13;html=1;" vertex="1" parent="1">
+      <mxGeometry x="0" y="0" width="220" height="480" as="geometry"/>
+    </mxCell>
+    <mxCell id="mcr" value="&lt;b&gt;Megaport MCR&lt;/b&gt;&lt;br&gt;d801e2cd&lt;br&gt;ASN 64512&lt;br&gt;Frankfurt FR5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="zone-megaport">
+      <mxGeometry x="20" y="160" width="180" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="mcr-adv" value="Advertises:&#xa;172.31.100.0/24&#xa;172.31.101.1/32" style="text;html=1;align=center;strokeColor=none;fillColor=none;fontSize=10;fontStyle=2;" vertex="1" parent="zone-megaport">
+      <mxGeometry x="20" y="270" width="180" height="55" as="geometry"/>
+    </mxCell>
+    <mxCell id="zone-peering" value="Equinix Frankfurt FR5 (Peering Location)" style="swimlane;startSize=30;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=12;html=1;" vertex="1" parent="1">
+      <mxGeometry x="220" y="0" width="260" height="480" as="geometry"/>
+    </mxCell>
+    <mxCell id="msee-pri" value="MSEE Primary&#xa;10.100.255.4&#xa;ASN 12076" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#00188D;shape=mxgraph.mscae.enterprise.router;fontSize=10;" vertex="1" parent="zone-peering">
+      <mxGeometry x="105" y="65" width="50" height="39" as="geometry"/>
+    </mxCell>
+    <mxCell id="er-circuit" value="er-erlab-madrid&#xa;Megaport | 50 Mbps&#xa;Standard | Metered" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;image=img/lib/azure2/networking/ExpressRoute_Circuits.svg;verticalLabelPosition=bottom;verticalAlign=top;" vertex="1" parent="zone-peering">
+      <mxGeometry x="95" y="193" width="70" height="64" as="geometry"/>
+    </mxCell>
+    <mxCell id="msee-sec" value="MSEE Secondary&#xa;10.100.255.5&#xa;ASN 12076" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#00188D;shape=mxgraph.mscae.enterprise.router;fontSize=10;" vertex="1" parent="zone-peering">
+      <mxGeometry x="105" y="330" width="50" height="39" as="geometry"/>
+    </mxCell>
+    <mxCell id="e-msee-pri-erc" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#666;strokeWidth=1;" edge="1" source="msee-pri" target="er-circuit" parent="zone-peering">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e-msee-sec-erc" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#666;strokeWidth=1;" edge="1" source="msee-sec" target="er-circuit" parent="zone-peering">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="zone-azure" value="Microsoft Azure — Spain Central" style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=13;html=1;" vertex="1" parent="1">
+      <mxGeometry x="480" y="0" width="740" height="480" as="geometry"/>
+    </mxCell>
+    <mxCell id="vnet" value="VNet 10.100.0.0/16 | rg-erlab-spaincentral" style="swimlane;startSize=40;fillColor=#e8f5e9;strokeColor=#2e7d32;fontStyle=1;fontSize=11;html=1;" vertex="1" parent="zone-azure">
+      <mxGeometry x="80" y="40" width="640" height="360" as="geometry"/>
+    </mxCell>
+    <mxCell id="er-gw" value="ergw-erlab-spaincentral&#xa;SKU Standard&#xa;ASN 12076&#xa;Local: 10.100.255.13" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;image=img/lib/azure2/networking/Virtual_Network_Gateways.svg;verticalLabelPosition=bottom;verticalAlign=top;" vertex="1" parent="vnet">
+      <mxGeometry x="30" y="90" width="52" height="69" as="geometry"/>
+    </mxCell>
+    <mxCell id="vm" value="vm-erlab-test&#xa;158.158.35.34&#xa;Ubuntu 22.04" style="image;sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=10;image=img/lib/mscae/VM_Linux_Non_Azure.svg;verticalLabelPosition=bottom;verticalAlign=top;" vertex="1" parent="vnet">
+      <mxGeometry x="440" y="100" width="50" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="vm-route-note" value="Effective routes include:&#xa;172.31.100.0/24 → VirtualNetworkGateway&#xa;172.31.101.1/32 → VirtualNetworkGateway" style="text;html=1;align=left;strokeColor=#2e7d32;fillColor=#f5f5f5;fontSize=10;rounded=1;" vertex="1" parent="vnet">
+      <mxGeometry x="220" y="100" width="210" height="55" as="geometry"/>
+    </mxCell>
+    <mxCell id="bgp-note" value="eBGP community: 12076:51013 (Spain Central)&#xa;Both BGP sessions Connected | 2 routes received each" style="text;html=1;align=left;strokeColor=#6c8ebf;fillColor=#f0f7ff;fontSize=10;rounded=1;" vertex="1" parent="zone-azure">
+      <mxGeometry x="80" y="415" width="360" height="45" as="geometry"/>
+    </mxCell>
+    <mxCell id="e-pri-vxc" value="Primary VXC (cbb7a449)&#xa;VLAN 100&#xa;169.254.194.41 ↔ 169.254.194.42" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#d6b656;strokeWidth=2;fontSize=9;" edge="1" source="mcr" target="msee-pri" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e-sec-vxc" value="Secondary VXC (60e77813)&#xa;VLAN 100&#xa;169.254.194.45 ↔ 169.254.194.46" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#d6b656;strokeWidth=2;fontSize=9;" edge="1" source="mcr" target="msee-sec" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e-erc-gw" value="Private Peering&#xa;ER Connection: erconn-erlab" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6c8ebf;strokeWidth=3;fontSize=9;" edge="1" source="er-circuit" target="er-gw" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e-gw-vm" value="Route: 172.31.100.0/24&#xa;installed by gateway" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2e7d32;strokeWidth=1;dashed=1;fontSize=9;" edge="1" source="er-gw" target="vm" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e-msee-pri-gw" value="BGP: 10.100.255.4 ↔ .13&#xa;2 routes received" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6c8ebf;strokeWidth=1;dashed=1;fontSize=9;" edge="1" source="msee-pri" target="er-gw" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e-msee-sec-gw" value="BGP: 10.100.255.5 ↔ .13&#xa;2 routes received" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6c8ebf;strokeWidth=1;dashed=1;fontSize=9;" edge="1" source="msee-sec" target="er-gw" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+  </root>
+</mxGraphModel>

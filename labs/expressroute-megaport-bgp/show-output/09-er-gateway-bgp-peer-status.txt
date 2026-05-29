@@ -1,0 +1,28 @@
+# command: az network vnet-gateway list-bgp-peer-status -g rg-erlab-spaincentral -n ergw-erlab-spaincentral -o json
+{
+  "value": [
+    {
+      "asn": 12076,
+      "connectedDuration": "00:19:22.1105221",
+      "localAddress": "10.100.255.13",
+      "messagesReceived": 123,
+      "messagesSent": 136,
+      "neighbor": "10.100.255.4",
+      "routesReceived": 2,
+      "state": "Connected"
+    },
+    {
+      "asn": 12076,
+      "connectedDuration": "00:19:20.6886395",
+      "localAddress": "10.100.255.13",
+      "messagesReceived": 122,
+      "messagesSent": 136,
+      "neighbor": "10.100.255.5",
+      "routesReceived": 2,
+      "state": "Connected"
+    }
+  ]
+}
+
+
+

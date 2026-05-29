@@ -1,0 +1,46 @@
+# command: az network vpn-connection show -g rg-erlab-spaincentral -n erconn-erlab -o json
+{
+  "authenticationType": "PSK",
+  "connectionMode": "Default",
+  "connectionType": "ExpressRoute",
+  "dpdTimeoutSeconds": 0,
+  "egressBytesTransferred": 0,
+  "enableBgp": false,
+  "enablePrivateLinkFastPath": false,
+  "etag": "W/\"202a1e10-9a55-4476-acac-012af4dd89f5\"",
+  "expressRouteGatewayBypass": false,
+  "gatewayCustomBgpIpAddresses": [],
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-erlab-spaincentral/providers/Microsoft.Network/connections/erconn-erlab",
+  "ingressBytesTransferred": 0,
+  "ipsecPolicies": [],
+  "location": "spaincentral",
+  "name": "erconn-erlab",
+  "peer": {
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-erlab-spaincentral/providers/Microsoft.Network/expressRouteCircuits/er-erlab-madrid",
+    "resourceGroup": "rg-erlab-spaincentral"
+  },
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-erlab-spaincentral",
+  "resourceGuid": "4fb37e44-eaa2-4884-bfb9-bf823698cd96",
+  "routingWeight": 0,
+  "tags": {
+    "correlation_id": "b8c748bc",
+    "created_by": "copilot-lab",
+    "ephemeral": "true",
+    "lab": "true",
+    "lab_name": "expressroute-megaport-bgp",
+    "owner": "jose"
+  },
+  "trafficSelectorPolicies": [],
+  "tunnelProperties": [],
+  "type": "Microsoft.Network/connections",
+  "useLocalAzureIpAddress": false,
+  "usePolicyBasedTrafficSelectors": false,
+  "virtualNetworkGateway1": {
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-erlab-spaincentral/providers/Microsoft.Network/virtualNetworkGateways/ergw-erlab-spaincentral",
+    "resourceGroup": "rg-erlab-spaincentral"
+  }
+}
+
+
+

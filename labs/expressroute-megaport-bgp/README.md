@@ -1,5 +1,7 @@
 # expressroute-megaport-bgp
 
+> 📝 **Blog post:** [The route table that didn't lie: diagnosing ExpressRoute BGP with the Azure CLI](https://github.com/erjosito/azure-networking-blog/tree/main/2026-05-expressroute-megaport-bgp) — published 2026-05-29 by Kid (📝). The narrative version of this lab, with command tables and the 6-session BGP matrix diagram.
+
 ExpressRoute + Megaport MCR validation lab for a Spain Central VNet connected through a provider-based ExpressRoute circuit and two Megaport VXCs.
 
 ## Deployed state validated

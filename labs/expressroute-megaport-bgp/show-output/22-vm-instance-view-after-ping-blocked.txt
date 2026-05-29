@@ -1,0 +1,14 @@
+# command: az vm get-instance-view -g rg-erlab-spaincentral -n vm-erlab-test --query "instanceView.statuses[].{code:code,displayStatus:displayStatus}" -o json
+[
+  {
+    "code": "ProvisioningState/succeeded",
+    "displayStatus": "Provisioning succeeded"
+  },
+  {
+    "code": "PowerState/deallocated",
+    "displayStatus": "VM deallocated"
+  }
+]
+
+
+

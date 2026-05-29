@@ -1,0 +1,91 @@
+# command: az network vnet show -g rg-erlab-spaincentral -n vnet-erlab-spaincentral -o json
+{
+  "addressSpace": {
+    "addressPrefixes": [
+      "10.100.0.0/16"
+    ]
+  },
+  "bgpCommunities": {
+    "regionalCommunity": "12076:50057",
+    "virtualNetworkCommunity": "12076:20031"
+  },
+  "dhcpOptions": {
+    "dnsServers": []
+  },
+  "enableDdosProtection": false,
+  "etag": "W/\"d44b6b94-44ad-4ffe-8ba7-7e1ea7df05a4\"",
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-erlab-spaincentral/providers/Microsoft.Network/virtualNetworks/vnet-erlab-spaincentral",
+  "location": "spaincentral",
+  "name": "vnet-erlab-spaincentral",
+  "privateEndpointVNetPolicies": "Disabled",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-erlab-spaincentral",
+  "resourceGuid": "431808e6-df1e-4695-afe2-8cadaa077f8a",
+  "subnets": [
+    {
+      "addressPrefix": "10.100.255.0/27",
+      "defaultOutboundAccess": false,
+      "delegations": [],
+      "etag": "W/\"d44b6b94-44ad-4ffe-8ba7-7e1ea7df05a4\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-erlab-spaincentral/providers/Microsoft.Network/virtualNetworks/vnet-erlab-spaincentral/subnets/GatewaySubnet",
+      "ipConfigurations": [
+        {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/ARMRG-6CF50055-422E-4FFC-88D4-3C47FD59EBC9/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/ERGW/VIRTUALMACHINES/0/NETWORKINTERFACES/CUSTNIC/ipConfigurations/IPCONFIG",
+          "resourceGroup": "ARMRG-6CF50055-422E-4FFC-88D4-3C47FD59EBC9"
+        },
+        {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/ARMRG-6CF50055-422E-4FFC-88D4-3C47FD59EBC9/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/ERGW/VIRTUALMACHINES/1/NETWORKINTERFACES/CUSTNIC/ipConfigurations/IPCONFIG",
+          "resourceGroup": "ARMRG-6CF50055-422E-4FFC-88D4-3C47FD59EBC9"
+        },
+        {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-ERLAB-SPAINCENTRAL/providers/Microsoft.Network/virtualNetworkGateways/ERGW-ERLAB-SPAINCENTRAL/ipConfigurations/ER-GATEWAY-IPCONFIG",
+          "resourceGroup": "RG-ERLAB-SPAINCENTRAL"
+        }
+      ],
+      "name": "GatewaySubnet",
+      "privateEndpointNetworkPolicies": "Disabled",
+      "privateLinkServiceNetworkPolicies": "Enabled",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-erlab-spaincentral",
+      "serviceEndpoints": [],
+      "type": "Microsoft.Network/virtualNetworks/subnets"
+    },
+    {
+      "addressPrefix": "10.100.1.0/24",
+      "defaultOutboundAccess": false,
+      "delegations": [],
+      "etag": "W/\"d44b6b94-44ad-4ffe-8ba7-7e1ea7df05a4\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-erlab-spaincentral/providers/Microsoft.Network/virtualNetworks/vnet-erlab-spaincentral/subnets/snet-erlab-workload",
+      "ipConfigurations": [
+        {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-ERLAB-SPAINCENTRAL/providers/Microsoft.Network/networkInterfaces/NIC-ERLAB-VM/ipConfigurations/IPCONFIG1",
+          "resourceGroup": "RG-ERLAB-SPAINCENTRAL"
+        }
+      ],
+      "name": "snet-erlab-workload",
+      "networkSecurityGroup": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-erlab-spaincentral/providers/Microsoft.Network/networkSecurityGroups/nsg-erlab-workload",
+        "resourceGroup": "rg-erlab-spaincentral"
+      },
+      "privateEndpointNetworkPolicies": "Disabled",
+      "privateLinkServiceNetworkPolicies": "Enabled",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-erlab-spaincentral",
+      "serviceEndpoints": [],
+      "type": "Microsoft.Network/virtualNetworks/subnets"
+    }
+  ],
+  "tags": {
+    "correlation_id": "b8c748bc",
+    "created_by": "copilot-lab",
+    "ephemeral": "true",
+    "lab": "true",
+    "lab_name": "expressroute-megaport-bgp",
+    "owner": "jose"
+  },
+  "type": "Microsoft.Network/virtualNetworks",
+  "virtualNetworkPeerings": []
+}
+
+
+

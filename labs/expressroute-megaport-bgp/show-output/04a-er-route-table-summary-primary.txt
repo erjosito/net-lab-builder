@@ -1,0 +1,30 @@
+# command: az network express-route list-route-tables-summary -g rg-erlab-spaincentral --name er-erlab-madrid --peering-name AzurePrivatePeering --path primary -o json
+WARNING: This command is in preview and under development. Reference and support levels: https://aka.ms/CLI_refstatus
+{
+  "value": [
+    {
+      "as": 65515,
+      "neighbor": "10.100.255.12",
+      "statePfxRcd": "1",
+      "upDown": "25:24",
+      "v": 4
+    },
+    {
+      "as": 65515,
+      "neighbor": "10.100.255.13",
+      "statePfxRcd": "1",
+      "upDown": "25:24",
+      "v": 4
+    },
+    {
+      "as": 64512,
+      "neighbor": "169.254.194.41",
+      "statePfxRcd": "3",
+      "upDown": "58:09",
+      "v": 4
+    }
+  ]
+}
+
+
+

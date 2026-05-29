@@ -1,0 +1,60 @@
+# command: az network vnet-gateway show -g rg-erlab-spaincentral -n ergw-erlab-spaincentral -o json
+{
+  "activeActive": false,
+  "adminState": "Enabled",
+  "allowRemoteVnetTraffic": false,
+  "allowVirtualWanTraffic": false,
+  "disableIPSecReplayProtection": false,
+  "enableBgp": false,
+  "enableBgpRouteTranslationForNat": false,
+  "enableHighBandwidthVpnGateway": false,
+  "enablePrivateIpAddress": false,
+  "etag": "W/\"e047496c-28b0-4094-9ff9-a671ceea55aa\"",
+  "gatewayType": "ExpressRoute",
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-erlab-spaincentral/providers/Microsoft.Network/virtualNetworkGateways/ergw-erlab-spaincentral",
+  "ipConfigurations": [
+    {
+      "etag": "W/\"e047496c-28b0-4094-9ff9-a671ceea55aa\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-erlab-spaincentral/providers/Microsoft.Network/virtualNetworkGateways/ergw-erlab-spaincentral/ipConfigurations/er-gateway-ipconfig",
+      "name": "er-gateway-ipconfig",
+      "privateIPAllocationMethod": "Dynamic",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-erlab-spaincentral",
+      "subnet": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-erlab-spaincentral/providers/Microsoft.Network/virtualNetworks/vnet-erlab-spaincentral/subnets/GatewaySubnet",
+        "resourceGroup": "rg-erlab-spaincentral"
+      }
+    }
+  ],
+  "location": "spaincentral",
+  "name": "ergw-erlab-spaincentral",
+  "natRules": [],
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-erlab-spaincentral",
+  "resourceGuid": "fa95740d-755b-4a71-8cb3-1e6d79112ee8",
+  "sku": {
+    "capacity": 2,
+    "name": "Standard",
+    "tier": "Standard"
+  },
+  "tags": {
+    "correlation_id": "b8c748bc",
+    "created_by": "copilot-lab",
+    "ephemeral": "true",
+    "lab": "true",
+    "lab_name": "expressroute-megaport-bgp",
+    "owner": "jose"
+  },
+  "type": "Microsoft.Network/virtualNetworkGateways",
+  "virtualNetworkGatewayMigrationStatus": {
+    "errorMessage": "",
+    "phase": "None",
+    "state": "None"
+  },
+  "virtualNetworkGatewayPolicyGroups": [],
+  "vpnGatewayGeneration": "None",
+  "vpnType": "RouteBased"
+}
+
+
+

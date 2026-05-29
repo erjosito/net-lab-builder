@@ -1,0 +1,23 @@
+flowchart TD
+    Start([Begin Teardown]) --> VXC1
+    VXC1["Delete Primary VXC\ncbb7a449"] --> VXC2
+    VXC2["Delete Secondary VXC\n60e77813"] --> MCR_del
+    MCR_del["Delete Megaport MCR\nd801e2cd"] --> ERConn
+    ERConn["Delete ER Connection\nerconn-erlab\naz network vpn-connection delete"] --> ERCircuit
+    ERCircuit["Delete ER Circuit\ner-erlab-madrid\naz network express-route delete"] --> ERGW
+    ERGW["Delete ER Gateway\nergw-erlab-spaincentral\naz network vnet-gateway delete\n(20-45 min)"] --> GWIP
+    GWIP["Delete Public IP for Gateway"] --> RG
+    RG["Delete Resource Group\nrg-erlab-spaincentral\naz group delete"] --> Done
+
+    Done([Lab fully torn down])
+
+    style Start fill:#e8f5e9,stroke:#2e7d32
+    style Done fill:#e8f5e9,stroke:#2e7d32
+    style VXC1 fill:#ffe6cc,stroke:#d6b656
+    style VXC2 fill:#ffe6cc,stroke:#d6b656
+    style MCR_del fill:#ffe6cc,stroke:#d6b656
+    style ERConn fill:#dae8fc,stroke:#6c8ebf
+    style ERCircuit fill:#dae8fc,stroke:#6c8ebf
+    style ERGW fill:#dae8fc,stroke:#6c8ebf
+    style GWIP fill:#dae8fc,stroke:#6c8ebf
+    style RG fill:#dae8fc,stroke:#6c8ebf

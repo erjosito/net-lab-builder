@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant MCR as Megaport MCR\nASN 64512
+    participant MSEE_P as MSEE Primary\n10.100.255.4
+    participant MSEE_S as MSEE Secondary\n10.100.255.5
+    participant ERGW as ER Gateway\n10.100.255.13
+
+    Note over MCR,ERGW: Outbound: MCR → Azure (MCR-originated prefixes)
+    MCR->>MSEE_P: eBGP UPDATE 172.31.100.0/24, 172.31.101.1/32\n(VXC cbb7a449 / 169.254.194.41→.42)
+    MCR->>MSEE_S: eBGP UPDATE 172.31.100.0/24, 172.31.101.1/32\n(VXC 60e77813 / 169.254.194.45→.46)
+    MSEE_P->>ERGW: BGP UPDATE → 172.31.100.0/24, 172.31.101.1/32\ncommunity 12076:51013 (Spain Central)
+    MSEE_S->>ERGW: BGP UPDATE → 172.31.100.0/24, 172.31.101.1/32\ncommunity 12076:51013 (Spain Central)
+    Note over ERGW: Installs routes in VNet effective route table\nvia VirtualNetworkGateway next-hop
+
+    Note over MCR,ERGW: Inbound: Azure → MCR (VNet prefix)
+    ERGW->>MSEE_P: BGP UPDATE → 10.100.0.0/16
+    ERGW->>MSEE_S: BGP UPDATE → 10.100.0.0/16
+    MSEE_P->>MCR: eBGP UPDATE → 10.100.0.0/16
+    MSEE_S->>MCR: eBGP UPDATE → 10.100.0.0/16
+    Note over MCR: 10.100.0.0/16 reachable from on-prem

@@ -1,0 +1,52 @@
+# command: az network vnet-gateway list-learned-routes -g rg-erlab-spaincentral -n ergw-erlab-spaincentral -o json
+{
+  "value": [
+    {
+      "asPath": "",
+      "localAddress": "10.100.255.13",
+      "network": "10.100.0.0/16",
+      "origin": "Network",
+      "sourcePeer": "10.100.255.13",
+      "weight": 32768
+    },
+    {
+      "asPath": "12076-64512",
+      "localAddress": "10.100.255.13",
+      "network": "169.254.194.44/30",
+      "nextHop": "10.100.255.4",
+      "origin": "EBgp",
+      "sourcePeer": "10.100.255.4",
+      "weight": 32769
+    },
+    {
+      "asPath": "12076-64512",
+      "localAddress": "10.100.255.13",
+      "network": "169.254.194.44/30",
+      "nextHop": "10.100.255.5",
+      "origin": "EBgp",
+      "sourcePeer": "10.100.255.5",
+      "weight": 32769
+    },
+    {
+      "asPath": "12076-64512",
+      "localAddress": "10.100.255.13",
+      "network": "169.254.194.40/30",
+      "nextHop": "10.100.255.4",
+      "origin": "EBgp",
+      "sourcePeer": "10.100.255.4",
+      "weight": 32769
+    },
+    {
+      "asPath": "12076-64512",
+      "localAddress": "10.100.255.13",
+      "network": "169.254.194.40/30",
+      "nextHop": "10.100.255.5",
+      "origin": "EBgp",
+      "sourcePeer": "10.100.255.5",
+      "weight": 32769
+    }
+  ]
+}
+
+
+

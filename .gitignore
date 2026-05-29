@@ -1,0 +1,24 @@
+# Squad: ignore runtime state (logs, inbox, sessions)
+.squad/orchestration-log/
+.squad/log/
+.squad/decisions/inbox/
+.squad/sessions/
+.squad/.scratch/
+.squad/.first-run
+# Squad: SubSquad activation file (local to this machine)
+.squad-workstream
+# Copilot CLI: local state (skills, MCP config, session) — never commit
+.copilot/
+# Terraform: exclude state, plans, vars (may contain credentials or live resource IDs)
+.terraform/
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json
+!example.tfvars
+.terraformrc
+terraform.rc
