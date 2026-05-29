@@ -65,3 +65,25 @@ Trinity confirmed **5 anomalies documented** and **zero forbidden GUID matches**
 **Phase 3.4 gate status:** UNBLOCKED on Trinity side (vault backfill complete, sanitization PASS). Awaiting Jose's gate approval on issues #12 and #2.
 
 ---
+
+## 📌 2026-05-29 — Phase 3.5 Governance Close: Kid, Blog Pipeline, Tank Cleanup, Squad v0.9.5
+
+**Trigger:** Accumulation of 13 inbox decisions from Phase 3 activities (blog pipeline, Kid cast, Tank lab #1 cleanup) required a governance sweep.
+
+**Changes swept:**
+
+- **Kid cast** as 8th permanent squad member (blog-writer 📝, claude-sonnet-4.6). Squad roster now complete at 8 agents.
+- **Blog pipeline established:** Pre-cleanup draft requirement, two-stage publish workflow, scenario veto authority extended to pre-lab selection, blog-link rule in every lab README, Pre-Gate Editorial Review ceremony (Rule #17), blog repo as sibling repo.
+- **Lab #1 blog published:** *"The route table that didn't lie: diagnosing ExpressRoute BGP with the Azure CLI"* — `github.com/erjosito/azure-networking-blog/tree/main/2026-05-expressroute-megaport-bgp`.
+- **Tank cleanup complete:** Lab #1 all 19/19 resources deleted. Windows env-rehydrate pattern discovered and codified in Tank's charter `§Pre-flight (Windows)`. Canonical Terraform `.gitignore` at repo root confirmed.
+- **Standing rules added:** Blog posts must show actual command output (not just command names). Routing Rule #17 (Pre-Gate Editorial Review).
+- **Squad version:** v0.9.5 (Kid added, pre-gate ceremony, blog-link convention, Tank Windows-env workaround).
+
+**Governance artefacts updated (this sweep):**
+
+- `decisions.md` — 13 new entries merged; inbox emptied
+- `agents/tank/charter.md` — 2 amendments applied (`§Pre-flight (Windows)` + `§Boundaries` root-`.gitignore` note)
+- `agents/{kid,niobe,morpheus,tank,scribe}/history.md` — team update appended to each
+- `log/2026-05-29-phase35-governance.md` — session log created
+
+---
