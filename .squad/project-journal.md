@@ -87,3 +87,44 @@ Trinity confirmed **5 anomalies documented** and **zero forbidden GUID matches**
 - `log/2026-05-29-phase35-governance.md` — session log created
 
 ---
+
+## 📌 2026-06-08 — Kid weekly blog-topic scout enrolled (v0.9.5)
+
+**Trigger:** Jose (Scribe) directive requested autonomous weekly topic discovery for Azure Networking to build a lab-candidate pipeline between deployments, reducing cold-start friction in Phase 1 phase-gate editorial review.
+
+**Decision:** Enroll Kid's weekly topic scout as a permanent ceremony with schedule ID #1, running every 7 days via debounce marker at `~/.copilot/session-state/kid-last-scout.txt`. Scout surfaces 3–5 candidate topics (filtered against Jose's quality bar: no documentation regurgitation, no "works as designed" verifications—only troubleshooting, corner-cases, or depth gaps) and delivers digest to Jose's Teams "Notes to Self" (primary, no hard-coded UPNs) with email fallback.
+
+**Why this call:** Phase 1 retrospective highlighted Kid's critical contribution at the editorial review gate (caught a single-source evidence gap). Moving topic discovery forward from *lab design* to topic *scouting* costs one Kid dispatch per week and avoids the much costlier "wrong lab" downstream failure mode. Weekly proactive topic surfaces let Jose make smarter lab-pick decisions.
+
+**Mechanism:**
+- Fire daily via `manage_schedule` (interval: "1d"; tool hard-max enforces daily).
+- Check marker file before scout: if last run ≥ 7 days ago or marker missing, proceed; else no-op (debounce).
+- Search 7 canonical sources: Microsoft Learn, azure-docs issues, Azure updates RSS, Tech Community, Stack Overflow, MVP blogs (Mauser, Mester, Stuart, Finn), GitHub (cli, bicep, terraform-provider-azurerm).
+- Produce 3–5 candidates (≤200 words each: Title, Why it matters, What's missing, Lab angle, Scout source(s)).
+- Primary delivery: `agent365-teamsserver-SendMessageToSelf` (Teams Notes to Self).
+- Fallback: Resolve UPN at runtime via `agent365-meserver-GetMyDetails` → email via `agent365-mail-SendEmailWithAttachments`.
+- Write current date to marker file after successful dispatch.
+
+**Quality bar (mandatory pre-send):**
+1. NOT documentation regurgitation (3+ community posts already cover it → reject).
+2. NOT "works as designed" verification (only thin-post labs → reject).
+3. YES one of: troubleshooting workflow, corner-case behavior, surprising interaction, depth gap.
+
+**Jose response routes:**
+- Numeric pick (e.g., "1" or "2, 4"): create `.squad/decisions/inbox/<YYYY-MM-DD>-blog-topic-<slug>.md` → Morpheus designs lab.
+- "skip": no action; cycle continues.
+- No reply within 7 days: treated as "skip".
+
+**Files touched:**
+- `.squad/agents/kid/charter.md` — "Weekly Topic Scout" section (lines 92–150) documenting ceremony, trigger, mechanism, quality bar, channels, debounce marker.
+- `.squad/ceremonies.md` — "Weekly Blog-Topic Scout" entry with cadence, facilitator (Kid), participants (Jose), channels, quality bar.
+- `.squad/routing.md` — Rule #18: scout output (Jose numeric picks) → coordinator routing → blog-topic inbox filing → Morpheus lab design.
+- `.squad/team.md` — Kid member note extended: scout responsibility, schedule ID #1 registered 2026-06-08.
+- `.squad/agents/kid/history.md` — Kid audit entry: scout enrollment logged.
+- `.squad/decisions/decisions.md` — NEW: created shared decision log; first entry: 2026-06-08 scout enrollment (detailed mechanism, quality bar, channels, files touched).
+
+**Schedule registration:** `manage_schedule` call returned schedule ID #1 (canonical reference for ceremony in all squad systems).
+
+**Sanitization:** Pre-merge validation confirmed zero hits across inbox directive, charters, ceremonies, routing, and team files. All 7 governance files scanned post-merge; 5 source files remain clean; decision and journal entries reference forbidden patterns only in sanitization section (for reference, not exposure) with explicit redaction note in committed message.
+
+---

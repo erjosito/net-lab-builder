@@ -27,6 +27,8 @@
 
 > **📝 Kid publishing target:** Publishes blog posts to public repos under `github.com/erjosito` only — same org as `net-lab-builder`. Default pattern: rolling repo `azure-networking-blog` (one folder per post). Alternate: per-lab standalone repo `azure-net-blog-<lab-slug>`. Kid has **standing authority** to request scenario changes (from Morpheus), additional screenshots (from Niobe), command outputs (from Tank/Trinity/Niobe), and additional or revised diagrams (from Oracle) to make a post publishable. A lab is considered "shipped externally" only after Kid publishes the post or explicitly waives it. See Kid's charter for the full back-request protocol.
 
+> **📝 Kid weekly topic scout (between-labs):** In addition to per-lab dispatch, Kid runs an autonomous scout pass every 7 days (registered 2026-06-08 via `manage_schedule` with `interval: "1d"` — the tool's hard maximum — and a 7-day debounce marker at `~/.copilot/session-state/kid-last-scout.txt` enforcing the actual weekly cadence). Scout produces 3–5 candidate Azure Networking topics filtered against Jose's quality bar (no doc regurgitation, no "works as designed" verifications — only troubleshooting / corner-case / depth-gap candidates) and delivers them as a digest to Jose's Teams "Notes to Self" (primary, no UPN hard-coded) or email (fallback). Jose's reply (numeric pick / "skip" / no reply) routes per rule #18. See Kid's charter → "Weekly Topic Scout (scheduled, between-labs mode)" and ceremonies.md → "Weekly Blog-Topic Scout" for the full spec.
+
 ## Project Context
 
 - **Owner:** Jose Moreno

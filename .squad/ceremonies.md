@@ -156,3 +156,42 @@ Cleanup destroys the live lab — if vault backfill hasn't happened, the lessons
 
 **Why this is a hard gate:**
 The lab is ephemeral; the blog post is what survives the cleanup and reaches readers who weren't in the room. Cleanup destroys the live resources — if Kid hasn't drafted (or explicitly waived) by then, requesting a refreshed screenshot or command output requires re-deployment, which is wasteful. Run this ceremony BEFORE Phase 3.4 cleanup approval. The local README back-fill (step 12) is a hard requirement — without it the squad's symmetric discoverability rule fails: Kid's post links back to the lab, but the lab doesn't link forward to the post.
+
+---
+
+## Weekly Blog-Topic Scout (scheduled, between-labs)
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | scheduled |
+| **When** | weekly target cadence (`manage_schedule` registered with `interval: "1d"` — the tool's hard max — with a 7-day debounce marker at `~/.copilot/session-state/kid-last-scout.txt` enforcing the actual weekly cadence) |
+| **Condition** | Always fires on the 7-day cadence — independent of whether a lab is live. Skipped silently if Kid is currently dispatched on a per-lab task (avoid mode collision). |
+| **Facilitator** | Kid |
+| **Participants** | Kid (sole driver); coordinator (dispatch + Jose-reply triage); Morpheus (downstream on pick, standard Phase 1–3 flow); Scribe (logs scout dispatches in `project-journal.md`) |
+| **Time budget** | focused (one ~10-minute scout pass; one digest send; one Jose reply ≤ 1 sentence) |
+| **Enabled** | ✅ yes |
+| **Channel** | Teams "Notes to Self" via `agent365-teamsserver-SendMessageToSelf` (primary); email-to-self via `agent365-meserver-GetMyDetails` + `agent365-mail-SendEmailWithAttachments` (fallback) |
+
+**Agenda:**
+1. **Schedule fires.** `manage_schedule` triggers the registered prompt. Coordinator receives it.
+2. **Coordinator dispatches Kid** into scout mode (per Kid charter → "Weekly Topic Scout (scheduled, between-labs mode)"). Single sync dispatch (`claude-sonnet-4.6`).
+3. **Kid scouts** the canonical source list (MS Learn, Azure docs GitHub issues, official Azure blogs, MS Tech Community, Stack Overflow, MVP blogs, Azure-related GitHub issues). Kid filters every candidate against the three-part quality bar: not doc regurgitation, not "works as designed," yes added value (troubleshooting / corner case / depth gap).
+4. **Kid produces a digest** of 3–5 numbered candidate topics, each carrying title, why-it-matters, what's-missing, proposed-lab-angle, scout-source-links. Digest is ≤2,000 chars (one Teams DM card).
+5. **Kid runs forbidden-GUID sanitization grep** on the digest before send (defense-in-depth — digest is not committed, but sanitization is unconditional).
+6. **Kid sends digest** via `agent365-teamsserver-SendMessageToSelf`. If Teams fails, Kid resolves Jose's UPN via `agent365-meserver-GetMyDetails` and falls back to email.
+7. **Kid returns envelope** to coordinator: `{ "scout_date": "...", "candidates": [...], "channel_used": "teams" | "email", "send_status": "delivered" | "failed", "next_scout_eta": "..." }`.
+8. **Scribe logs the dispatch** in `project-journal.md` (one-line milestone per scout). No log entry if scout was skipped due to mode collision (Kid already dispatched per-lab).
+9. **Coordinator waits for Jose's reply** (asynchronous — Jose may reply hours or days later, or not at all). Three reply shapes valid:
+   - **Numeric pick** ("1" or "2, 4") → coordinator files `.squad/decisions/inbox/<YYYY-MM-DD>-blog-topic-<slug>.md` capturing the picked candidate(s); coordinator confirms with Jose ("ready to dispatch Morpheus for lab #N+1?") before triggering Phase 1.
+   - **"skip"** → no inbox file; scout resumes next week.
+   - **No reply** → silently roll to next week; no batch-up of stale candidates.
+
+**Hard rules:**
+- **No UPN hard-coding.** The scout prompt, this ceremony spec, Kid's charter, and the inbox directive use *no* literal UPN / alias / email — channel resolution happens at runtime. Repo is public.
+- **No auto-dispatch on Jose's pick.** A numeric reply is a signal of interest, not a deployment approval. Coordinator captures the pick as a directive but waits for Jose's explicit "go" — Rule #12 (approval gates) is preserved.
+- **No scope creep beyond Azure Networking.** Kid's charter scope is Azure Networking. Compute, storage, app-platform — out of bounds for the scout.
+- **No stale-candidate memory.** Each scout is independent. If a topic remains under-documented, it'll naturally resurface.
+- **Mode-collision guard.** If Kid is mid-flight on a per-lab dispatch when the scheduled scout fires, coordinator skips the scout for that week — never run two Kid dispatches in parallel.
+
+**Why this ceremony exists:**
+Without a scheduled scout, the squad only thinks about new labs when Jose initiates one. Lab-#1's retrospective showed Kid's highest-leverage contribution is rigorous topic selection (Pre-Gate Editorial Review caught a single-source-evidence gap that almost shipped a thin post). Moving that judgment EARLIER — to topic selection itself, before any Tank / Niobe / Oracle time is spent — costs one Kid dispatch per week and avoids the costlier "wrong lab" failure mode. Jose's quality bar (no doc regurgitation, no "works as designed," yes troubleshooting / corner cases / depth gaps) is the hardest call to make late in the lifecycle and the cheapest to make at topic-selection time.

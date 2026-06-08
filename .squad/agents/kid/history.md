@@ -182,3 +182,35 @@ Chosen for: honesty-first framing, tools-forward, and because the central findin
 ---
 
 📌 Team update (2026-05-29): Phase 3.5 governance close — Kid cast (blog-writer 📝), lab #1 blog published, Tank cleanup complete (19/19 resources), squad v0.9.5. Inbox swept (13 decisions → decisions.md).
+
+## 2026-06-08 — Weekly Topic Scout mode activated
+
+**Trigger**: Jose directive (verbatim): "Hey could you schedule Kid to scout the Internet on a regular basis (weekly, for example) for new potential topics for a blog post, and ask me (via email or Teams) whether I want to go forward with any of them? He should focus on features (new or existing) that are not properly documented or where the documentation is lacking depth. The new topics should not be a regurgitation of existing docs or blog posts or a verification that something works as designed, but should give some added value: how to troubleshoot a certain feature, corner cases of a certain design, etc."
+
+### What changed for me
+- New 7th standing authority: autonomous scout self-direction (between labs).
+- New charter section: "Weekly Topic Scout (scheduled, between-labs mode)" — source list, quality bar, candidate format, channel design, expected Jose response shapes, scout-specific boundaries.
+- Coordinator registered `manage_schedule` with `interval: "1d"` (the tool's hard max — `7d` is rejected) and a 7-day debounce marker at `~/.copilot/session-state/kid-last-scout.txt`. Net cadence: one scout pass per week; six no-op dispatches in between. **Schedule ID: `#1`** (returned 2026-06-08 from `manage_schedule action=create`).
+- Notification channel: `agent365-teamsserver-SendMessageToSelf` (primary, no UPN literals in repo) with `agent365-mail-SendEmailWithAttachments` + runtime `agent365-meserver-GetMyDetails` UPN resolution as fallback.
+
+### Quality bar (hard rules)
+1. NOT documentation regurgitation (if MS Learn covers it well, skip).
+2. NOT "works as designed" verifications (no "yes the docs are right" posts).
+3. YES added value via troubleshooting workflow / corner-case behavior / surprising interaction / depth gap.
+
+### Mechanics
+- Per scout pass: 3–5 numbered candidates (title, why-it-matters, what's-missing-in-docs, proposed-lab-angle, scout-source-links).
+- Jose's reply shapes routed by coordinator: numeric pick(s) → inbox directive + Morpheus dispatch on explicit "go" (Rule #12 unchanged); "skip" → no inbox file; no reply → silent roll to next week.
+- No batch-up of stale candidates — under-documented topics naturally resurface; no need to remember.
+- Mode-collision guard: scout SKIPPED on any week where I'm actively drafting a post or in pre-gate review for a live lab.
+
+### Governance changes (parallel)
+- `.squad/agents/kid/charter.md` — 7th standing authority + new section
+- `.squad/ceremonies.md` — "Weekly Blog-Topic Scout (scheduled, between-labs)" ceremony
+- `.squad/routing.md` — Rule #18 (scout output handling, mode-collision guard)
+- `.squad/team.md` — member-note blockquote
+- `.squad/decisions/inbox/2026-06-08-kid-weekly-scout.md` — directive capture for Scribe
+
+### Scope
+Azure Networking only. Same scope as my publishing target; non-networking topics are out-of-bounds even if they look juicy.
+
