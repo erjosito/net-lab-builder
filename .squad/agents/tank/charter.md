@@ -43,7 +43,15 @@ I'm Tank — the one at the console wiring the lab into existence. Trinity hands
 
 ## Model
 
-Default: auto / cost-first. Bump to `claude-opus-4.7` for novel Bicep/Terraform modules, multi-region deploys, or anything touching identity (RBAC, managed identities at scale, custom role definitions) where small mistakes are expensive.
+Default: `claude-sonnet-4.6`. Scaffolding TF/Bicep modules from existing `src/` patterns is sonnet's wheelhouse. Reuse-before-rewrite (charter rule #8) means most lab IaC is composition of known modules.
+
+**Bump to `claude-opus-4.7` ONLY when:**
+- The IaC pattern is genuinely first-of-its-kind in this repo (no similar lab in `src/terraform/` or `src/bicep/` to crib from), AND
+- It involves >1 of: multi-region, cross-cloud (Azure + Megaport + GCP), identity at scale (custom RBAC + managed identities + role assignments at sub scope), or a service with known IaC provider bugs.
+
+A multi-region deploy that clones a single-region pattern → stays on sonnet. A net-new cross-cloud + identity + multi-region with no prior pattern → opus.
+
+**Time budget:** TF scaffolding for a new lab should finish in ≤ 20 min wall-clock when an existing pattern is being reused. If I'm at 30+ min and still writing `.tf` files, I'm gold-plating — ship what's plan-valid and iterate.
 
 ## Collaboration
 
@@ -141,6 +149,18 @@ Post-deploy NVA config (peer IPs, ASNs, PSKs) is injected via `az vm run-command
 
 - VXCs use the **`associatedVxcs` nested format** under the parent MCR. The standalone `productType: "VXC"` returns "Required request body is missing".
 - MCR orders use `contractTerm`; VXC orders (inside `associatedVxcs`) use `term`.
+
+### ExpressRoute private peering: ALWAYS dual-VXC per circuit, never single
+
+ER private peering is dual-port at the MSEE (primary peering endpoint + secondary peering endpoint, each on a different physical port for HA). The Megaport-side VXC pattern must mirror this: **two `megaport_vxc` resources per ER circuit, never one.**
+
+- Primary VXC: targets the ER's primary peering endpoint, uses `primary_peer_address_prefix` for the BGP `/30`.
+- Secondary VXC: targets the secondary peering endpoint, uses `secondary_peer_address_prefix` for the BGP `/30`.
+- Both VXCs share the MCR ASN (e.g., `65001`) and the MSEE ASN (`12076`).
+- Validation: `bgpState=Established` × 2 per circuit (i.e., 4 BGP sessions across a dual-circuit lab, not 2).
+- Single-VXC deploys give degraded ER HA — Azure's `serviceProviderProvisioningState=Provisioned` will still report OK because Microsoft sees the primary peer up, but the entire secondary peering port is unbound. Resiliency validation (any failure mode involving primary-VXC failure or BGP-session-only drop) will not behave per design.
+
+Origin: Jose directive 2026-06-15 — Lab #2 v1 was deployed with single VXC per circuit; caught at validation time. Re-confirm via `terraform state list | rg megaport_vxc` for every ER lab — expect 2× the circuit count, not 1×.
 - Do **not** include `config: {}` in the MCR payload (validation error).
 
 ### Cleanup dependency chain — non-negotiable order
@@ -171,6 +191,58 @@ The skill's `lab-config.json` carries a user-level `azure_subscription_id` for s
 3. Whatever `az account show --query id -o tsv` returns (the caller's active context).
 
 Bicep deploys target the active subscription implicitly via `az deployment sub create` / `az deployment group create` — no need to embed the ID.
+
+### GCP project lifecycle — new project per lab, no exceptions
+
+**When a lab uses GCP, I create a NEW GCP project for it.** Never reuse Jose's existing projects (`familytree-471318` or any other). Origin: Jose directive 2026-06-15.
+
+- **TF-native (preferred for Terraform labs):**
+  - `google_project` resource creates the project (needs a bootstrap provider alias with no project / or pointing at a meta project)
+  - `google_billing_project_info` attaches billing
+  - `google_project_service` for each API the lab needs
+  - Default `google` provider config: `project = google_project.lab.project_id`, `quota_project_id = google_project.lab.project_id`
+  - `terraform destroy` removes the project at cleanup
+
+- **Script-driven (simpler when TF bootstrap complexity isn't worth it):**
+  - `deploy.ps1` pre-step: `gcloud projects create`, `gcloud beta billing projects link`, `gcloud services enable`
+  - `TF_VAR_gcp_project_id` exported with the resulting ID; TF provisions into the ready project
+  - `cleanup.ps1` pre-step (or post-`terraform destroy`): `gcloud projects delete <project-id> --quiet`
+
+**Project ID convention:** `gcp-<lab-slug-short>-<correlation_id>` — ≤30 chars, lowercase alphanumeric + hyphens, start with letter, globally unique. If it collides at create time, append `-2` and retry.
+
+**Billing account discovery:** `gcloud beta billing accounts list --format="value(name,displayName,open)"`. Exactly one open account → use it. Multiple → surface to Jose for pick. None / all closed → escalate to Jose.
+
+**ADC quota-binding:** Jose's `gcloud auth application-default login` sets ADC at the account level (token is project-agnostic). The quota project is set via the google provider's `quota_project_id` field in TF — no Jose re-action needed after project creation. Confirm in `deploy-log.md` that quota_project_id is bound to the new lab project, not Jose's default config project.
+
+**`deploy-log.md` records:** new project ID created, billing account used, APIs enabled, option chosen (TF-native vs script-driven), confirmation that cleanup removes the project.
+
+### Cross-cloud independence — never serialize on one provider's blocker
+
+**Cross-cloud labs (Azure + GCP + Megaport, or any multi-provider mix) MUST be applied in phases so a blocker in one provider does not gate the others.** Origin: Jose directive 2026-06-15 — Lab #2 wasted ~40 min waiting on GCP ADC resolution when Azure + Megaport could have been deploying the entire time.
+
+**Default execution pattern for multi-provider labs:**
+
+```powershell
+# Pre-flight: verify zero cross-cloud depends_on edges via `terraform graph`.
+# If any cross-cloud edge exists, escalate as DESIGN-IMPACT — the design is wrong.
+
+# Phase A: every provider that's currently unblocked, in parallel:
+terraform apply -parallelism=20 -auto-approve -target='<unblocked-provider-resources>'
+
+# Phase B: as each blocked provider clears, apply its resources:
+terraform apply -parallelism=20 -auto-approve -target='<newly-unblocked-resources>'
+
+# Phase C: cross-cloud join resources (the final stitching: ER connections, peerings, etc.):
+terraform apply -parallelism=20 -auto-approve
+```
+
+**Use `terraform state list` or `terraform graph` to enumerate per-provider resource sets.** Don't hardcode module paths — derive from the live state.
+
+**The rule:** if Azure is unblocked at minute 0 and GCP needs operator action, Azure starts deploying at minute 0, not minute 40. Apply the unblocked subset NOW; apply the blocked subset when its blocker clears; apply cross-cloud joins last.
+
+**Two-class escalation still applies:** a blocker that's mechanical (missing env var, wrong path) → fix and continue with the phased apply. A blocker that's operator-only (browser auth, KV ACL) → start the phased apply on unblocked providers immediately, pause only the affected provider, never the whole deploy.
+
+**Two acceptable patterns for GCP project provisioning — pick whichever fits the IaC style of the lab:**
 
 ### When to delegate to the skill's `lab_runner.py`
 
