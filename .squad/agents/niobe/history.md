@@ -4,38 +4,22 @@
 - **Project:** net-lab-builder — build, document, and tear down ephemeral Azure Networking labs
 - **Stack:** Azure CLI (effective routes, flow logs, NSG metrics); Network Watcher; portal screenshots; Bash/PowerShell glue
 - **Created:** 2026-05-28
-- **Role:** Lab Validator & Diagnostics — own `labs/<lab>/{README.md, lessons-learned.md, show-output/, screenshots/, validation.md}`; action verb vocabulary; sanitization checklist
+- **Role:** Lab Validator & Diagnostics — own labs/<lab>/{README.md, lessons-learned.md, show-output/, screenshots/, validation.md}; action verb vocabulary; sanitization checklist
 
-## Learnings
+## Summary (2026-06-15)
 
-<!-- Append new learnings below. Each entry is something lasting about the project. -->
+Niobe completed four distinct missions across lab documentation, validation infrastructure, and CLI integrity:
 
-📌 2026-05-28 — Project initialized. Charter integrated with azure-lab skill validation reference. Output mapping: skill's `raw-output/` → `labs/<lab>/show-output/`; skill's `diagrams/` → `labs/<lab>/diagrams/`; skill's repo-root `README.md` → `labs/<lab>/README.md`. Always run sanitization sweep before commit: redact ER service keys, Megaport secrets, VM admin passwords, base64 access keys, subscription IDs → `<SUBSCRIPTION_ID>`, tenant IDs → `<TENANT_ID>`.
+1. **Lab back-fill & charter integration (2026-05-28 to 2026-05-29):** Established output mapping conventions (skill aw-output/ → labs/<lab>/show-output/), created sanitization sweep patterns for secrets (ER keys, Megaport credentials, VM passwords, base64 tokens → placeholder format), and back-filled Lab 1 README with Kid's published blog post link.
 
-📌 2026-05-29 — **Lab 1 README back-fill**: expressroute-megaport-bgp lab README line 3 placeholder replaced with Kid's published post link (title: "The route table that didn't lie: diagnosing ExpressRoute BGP with the Azure CLI", published 2026-05-29, GitHub URL: `https://github.com/erjosito/azure-networking-blog/tree/main/2026-05-expressroute-megaport-bgp`). Sanitization verified: no subscription GUIDs or tenant IDs in lab directory. Back-fill follows coordinator dispatch and charter §"Collaboration → Lab documentation back-fill". Scope: one-line README edit only.
+2. **Multi-hub ER symmetry validation skeleton (2026-06-15):** Designed seven-layer capture strategy (VM NICs, hub routes via REST, BGP connections, ER circuit tables, MCR looking-glass, GCP Cloud Routers, Azure Firewall logs) for Lab 2 pre-deploy baseline. Key learnings: Lab 1's get-effective-routes anomaly is persistent; route evidence must flow through ER circuit route-tables (MSEE view, not hub REST); routing-intent rollout requires 10–20 min wait before capture; asymmetric-injection testing (forcing stateful drops) is the strongest evidence of symmetry importance.
 
----
+3. **Lab 2 MCR SPOF analytical proof (2026-06-15):** Captured steady-state route evidence confirming single-path (ER1 carries all 10.50.1.0/24, ER1 secondary carries only MGP-reflected Azure prefixes; ER2 carries all 10.50.2.0/24). Documented tool gotchas: gcloud region lookup, PowerShell JSON escaping with z rest, 10-min z vm run-command latency, Megaport provisioning_status ≠ BGP state.
 
-📌 Team update (2026-05-29): Phase 3.5 governance close — Kid cast (blog-writer 📝), lab #1 blog published, Tank cleanup complete (19/19 resources), squad v0.9.5. Inbox swept (13 decisions → decisions.md).
+4. **WSL gcloud validation pass — CLI doc remediation (2026-06-15):** Discovered critical bug (hardcoded pc-onprem → real pc-vwan-symm-a-103167; returns 0 rows unfixed). Established <YOUR_...> placeholder convention. Validated 11 gcloud commands: 8 work as-is, 2 need standardization (peer-name/vpc tokens), 1 needs replacement (get-effective-firewalls deprecated). Ported validation pattern for reuse on cross-platform CLI docs; identified PowerShell bash-quoting conflicts and solutions (temp files, single-command forms).
 
----
-
-📌 2026-06-15 — **Lab #2 pre-deploy validation skeleton** (`vwan-dual-er-symmetric`).
-
-**Traffic-symmetry validation pattern (reuse for any multi-hub ER lab):**
-
-1. **Forward-AND-return assertion per firewall.** For every data-plane scenario, assert BOTH directions: (a) source-side FW logs an Allow; (b) destination-side FW logs an Allow; (c) the "wrong" firewall (the one not on the symmetric path) logs ZERO entries. This is the minimal proof of symmetry — one direction alone is not enough.
-
-2. **Asymmetric-injection as a teaching mechanism (S4 pattern).** The strongest evidence that symmetry *matters* is to briefly break it and capture the stateful-drop: SYN accepted by FW-A, return SYN-ACK hits FW-B (no state) → drop. Capture NSG flow logs (SYN visible, no return), Hub1 FW log (drop), Hub2 FW log (accept). Always run injection LAST and always include a revert + re-verify step in the same scenario.
-
-3. **vWAN hub inbound/outbound route REST pattern for ER connections.** The VPN functions in `vwan_2xshub.azcli` (lines 281–300) use `connectionType: VpnConnection`. For ER, substitute `connectionType: ExpressRouteConnection` and use the ER GW connection resource ID. Async pattern: POST → poll Location header until `value` array is non-empty. API version pin: `2025-07-01` (as per dispatch; azcli file uses the older `2022-07-01`).
-
-4. **Seven capture layers for dual-hub ER labs.** Layer A (4 VM NICs), B (6 hub route REST captures), C (4 BGP-connection advertised/learned), D (2 ER circuit route-table JSON), E (2 MCR looking-glass), F (2 GCP Cloud Router), G (2 AzFW KQL). Total ~20 steady-state files + ~10–15 scenario-specific files = ~30–35 total.
-
-5. **Lab #1 anomaly reuse guard.** Lab #1 saw `az network express-route list-route-tables` return `Gateway does not have any Bgp sessions` even on a working circuit (show-output/04, 05). Lab #2 skeleton notes this known anomaly and routes the authoritative route evidence to the vWAN hub effective/inbound/outbound REST calls instead — not to the ER circuit route-table command. The circuit route-table command is still captured (Layer D) but is not used as the primary pass/fail signal for route presence.
-
-6. **Routing-intent propagation delay.** Wait 10–20 min after `vhub` apply before starting route capture. Capturing before RI rollout produces empty or stale tables that look like failures (Trinity gotcha — verified in vwan_2xshub.azcli design notes).
+**Key outputs:** Lab 2 validation skeleton (§6 pre-deploy requirements), WSL test suite + placeholder mapping (§gcloud-wsl-validation-2026-06-15), Windows doc remediation ready (niobe-3 pass 2 pending Jose handoff). Detailed learnings and evidence archived in history-archive.md.
 
 ---
 
-📌 Team update (2026-06-15): Phase 1 manifest design fan-out complete on 2026-06-15; Jose gate pending.
+📌 Team update (2026-06-15): Windows troubleshooting doc cleanup complete. niobe-3 Pass 1 fixed §0 Conventions + duplicate heading (§6-§9 → §13-§16). Pass 2 synchronized 4 placeholder fixes from validated Linux doc (niobewsl's gcloud-wsl-validation). docs/troubleshooting-commands-windows.md now 29.4 KB, fully self-contained, ready for Jose's PowerShell validation. History file summarized; detailed entries archived. Awaiting Jose's Megaport portal signal (Phase 1B gating) and tank Phase 1B trigger (att_b_new destruction + cr_onprem_b creation).

@@ -241,6 +241,397 @@ The vault sits behind **network restrictions** (firewall ACLs). Jose also runs t
 **Source:** `decisions/inbox/morpheus-vwan-dual-er-symmetric-manifest.md`
 **Files:** `labs/vwan-dual-er-symmetric/manifest.md`, `.squad/skills/dual-er-symmetry/SKILL.md`
 
+---
+
+### 2026-06-15T20:14:00+02:00: User correction — vWAN ASN distinction (65515 vs 65520)
+
+**By:** Jose (via Copilot)
+
+**What:** The vWAN hub's BGP ASN (used by the ER GW / VPN GW for external peering, e.g., MSEE on ER private peering) is **65515**. ASN **65520** is the marker vWAN uses to **prepend** the AS-path of routes that are advertised *across* hubs (inter-hub propagation). Both are vWAN-reserved and non-configurable, but they serve different purposes — confusing them in design docs is a recurring diagramming mistake.
+
+**Why:** User input — *"65520 is not the virtual hub's ASN, but the ASNs that Virtual WAN uses to prepend routes that are advertised across hubs. The hub's ASN is 65515."*
+
+**Scope:** Repo-wide. Lab #2 had 65520 wrongly labeled as the hub's external BGP ASN in multiple locations.
+
+---
+
+### 2026-06-15T15:18:44+02:00: User directive — new GCP project per lab
+
+**By:** Jose (@erjosito) via Copilot coordinator
+
+**What:** "For Google Cloud a new project should be set for each lab, the existing projects should not be used."
+
+**Why:** User policy — each lab gets clean, isolated GCP project; eliminates resource contamination across labs; makes cleanup deterministic (project delete vs resource-by-resource); avoids quota/IAM/billing entanglement with Jose's personal projects.
+
+**Scope:** Repository-wide policy. Applies to ALL labs that use GCP (current lab #2 and all future).
+
+**Implications captured:**
+- Morpheus's lab manifest, when GCP is in scope, must specify `create new GCP project per lab` not `use existing project`.
+- Tank's IaC must include project creation (Terraform `google_project` resource OR `gcloud projects create` pre-step in `deploy.ps1`).
+- New project ID convention: `gcp-<lab-slug-short>-<correlation_id>`.
+- Cleanup deletes the project (`gcloud projects delete` OR `terraform destroy` of `google_project`).
+
+---
+
+### 2026-06-15T19:38:55+02:00: User directive — resiliency validation pattern
+
+**By:** Jose (via Copilot)
+
+**What:** For resiliency patches in this repo, the primary validation is **multi-path BGP evidence** (e.g., GCP Cloud Router learns each Azure spoke prefix from 2 MCRs), NOT an active outage / SPOF demonstration. Active fault injection is optional and additive.
+
+**Why:** User input — *"We don't need to run a SPOF test, just to verify that routing should cover for it. For example, that the Google router receives 2 routes for each spoke VNet, one from each MCR."* Deterministic route-table evidence is reproducible; outage tests are slow, risky, and don't add proof beyond what the route table already shows.
+
+**Scope:** Repo-wide. Updates Niobe charter "Resiliency captures" section + routing rule #29 framing.
+
+---
+
+### 2026-06-15T20:06:49+02:00: User directive — every design is valuable, document all of them
+
+**By:** Jose (via Copilot)
+
+**What:** Every network design studied in a lab is valuable — whether it is **recommended** (worth building this way) or **not recommended** (anti-pattern, teaching case, single point of failure, asymmetric, etc.). For every design, Niobe collects evidence, renders a verdict with reasoning grounded in the evidence, and documents it. A lab is never "done" with a single design.
+
+**Why:** User input — *"Every design is valuable. Either because it is a recommended design or because it isn't. For every design Niobe should collect proof of why the design is or is not desirable, document it, and move on."*
+
+**Scope:** Repo-wide. Lab `README.md` MUST have a top-level `## Designs studied` section listing every design candidate (recommended + not recommended) with name, status badge, verdict, evidence link, reasoning.
+
+---
+
+### 2026-06-15T22:46+02:00: User directive — collapse to Design C (single-CR on-prem simulation)
+
+**By:** Jose (@erjosito) (via Copilot)
+
+**What:** Redesign GCP side to use a SINGLE Cloud Router in ONE region, with both Interconnect attachments terminating on it. *"I would like to collapse both CRs into the same region, and even the same CR."*
+
+**Why:** Closer pedagogical match to real-world on-prem topology. Redundancy belongs at the carrier (Megaport) layer, not at the on-prem (GCP) layer.
+
+**Status:** Design C spec drafted by Trinity (blocked on Q1 — Megaport unlock status).
+
+---
+
+### 2026-06-15: Lab decision tiebreaker is pedagogical value (blog post)
+
+**By:** Jose (via Squad coordinator)
+
+**What:** When choosing between options in any lab, the primary tiebreaker is **pedagogical value for the eventual blog post Kid will write**. Speed, operational convenience, and implementation efficiency are secondary.
+
+**Why:** User input — *"As a guideline, always prioritize pedagogical value, or in other words, the value for the blog that Kid will generate (ultimate goal of the lab)."*
+
+**Scope:** Repo-wide. Affects: design selection, validation scope, capture order, phase splits.
+
+---
+
+### 2026-06-15: Kid editorial review — vwan-dual-er-symmetric
+
+**By:** The Kid
+
+**Date:** 2026-06-15
+
+**Verdict:** Publishable with extensions. S1–S3 establish symmetric baselines; S4 breaks symmetry and demonstrates stateful AzFW drop. Two evidence gaps and one mechanism misalignment must be resolved: manifest S4 uses `er_bow_tie=yes` while validation.md S4 uses MCR1 prefix injection — these are different levers. Morpheus must align before Tank deploys.
+
+**Evidence extensions proposed:**
+1. S4 pre-perturbation baseline snapshot (before/after comparison)
+2. S4 VM-level tcp-state capture showing SYN-SENT stall
+3. KQL table standardization (`AZFWNetworkRule` across all docs)
+
+---
+
+### 2026-06-15: Niobe — Asymmetric Routing Evidence (Design B Phase 1)
+
+**By:** Niobe (Lab Validator)
+
+**Verdict: 🔴 ASYMMETRIC ROUTING PROVED**
+
+**What:** With both GCP Cloud Routers advertising both subnets into both MCRs, without the Axis-2 prepend: Hub1 selects MCR1, VM-B returns ALL traffic via cr_onprem_b → MCR2. Result: asymmetric forward via AzFW1, return via AzFW2. AzFW2 drops the return SYN-ACK (no state for original SYN).
+
+**Evidence folder:** `labs/vwan-dual-er-symmetric/show-output/design-b-phase1-asymmetric-2026-06-15/`
+
+**Next step:** Apply Axis-2 prepend; dispatch Niobe post-prepend to validate.
+
+---
+
+### 2026-06-15: Rename troubleshooting-commands.md → troubleshooting-commands-linux.md
+
+**By:** Niobe
+
+**Reason:** Pedagogical symmetry with new Windows/PowerShell companion. All refs in docs/ updated.
+
+---
+
+### 2026-06-15: Niobe gcloud WSL validation — 11 commands tested
+
+**By:** Niobe (Lab Validator)
+
+**Status:** ✅ Complete. Jose's bug report confirmed and fixed.
+
+**What:** Validated hardcoded placeholder `vpc-onprem` in §9.3; it doesn't exist in live lab. Real VPC is `vpc-vwan-symm-a-103167`. Also deprecated gcloud subcommand (`get-effective-firewalls`) replaced with `firewall-rules list`.
+
+**Placeholder convention adopted:** `<YOUR_...>` (e.g., `<YOUR_VPC>`, `<YOUR_ATTACHMENT_NAME>`, `<YOUR_BGP_PEER_NAME>`)
+
+**Files:** `docs/troubleshooting-commands-linux.md` (22.7 KB)
+
+**Evidence:** `labs/vwan-dual-er-symmetric/show-output/gcloud-wsl-validation-2026-06-15/`
+
+---
+
+### 2026-06-15: Niobe → Decisions Inbox: Looking-glass re-test
+
+**From:** Niobe (Lab Validator)
+
+**Subject:** New failure mode on Megaport API auth — credentials may have expired
+
+**What:** Looking-glass test failed at authentication layer (HTTP 401 — "Invalid email or password"). Megaport API credentials in `platform-secrets-1138` were valid at deploy-time but now fail `POST /v2/login`.
+
+**Implication:** Credential rotation externally OR login flow changed. Action needed: verify current Megaport API key status in portal.
+
+**KV ACL Status:** Confirmed `Deny` at end of all passes. No vault left open.
+
+---
+
+### 2026-06-15: Niobe — Windows doc placeholder sync (§8-§9)
+
+**By:** Niobe-3
+
+**Date:** 2026-06-15 23:17 UTC+2
+
+**Scope:** Windows doc `docs/troubleshooting-commands-windows.md` §8-§9 only.
+
+**Changes applied:**
+- Added placeholder convention to §0 Conventions
+- Fixed 4 placeholder inconsistencies (§8 line 270, §9 lines 285/286/289)
+- Replaced deprecated gcloud command
+- No validation callouts added (commands ported from validated Linux doc)
+
+**File size:** 29.4 KB (budget ≤30 KB) ✅
+
+---
+
+### 2026-06-15: Windows doc is now self-contained
+
+**By:** Niobe-3
+
+**Status:** ✅ Complete
+
+**Summary:** `docs/troubleshooting-commands-windows.md` restructured to be entirely self-contained. Windows readers no longer need cross-references to the Linux doc.
+
+**Changes:**
+- All §1-§9 sections from Linux doc ported with PowerShell conversions
+- Section structure mirrors Linux 1:1
+- High-value content preserved (backslash callout, credential troubleshooting)
+
+**Metrics:**
+- **Final size:** 28.8 KB ✅
+- **Sections:** §0-§12 all present
+- **Cross-references:** 0
+
+---
+
+### 2026-06-15: MCR prefix filter lists are dead code in vwan-dual-er-symmetric
+
+**By:** Squad (Coordinator) — grep/jq audit
+
+**What:** `megaport_mcr_prefix_filter_list.mcr1_gcp_export` and `megaport_mcr_prefix_filter_list.mcr2_gcp_export` exist in `terraform.tfstate` as named lists, but are NOT REFERENCED from any VXC.
+
+**Why the lab is symmetric today (Design A) WITHOUT the lists doing work:** GCP Cloud Routers are in CUSTOM advertise mode (per-region, one subnet each). Each MCR only LEARNS its own region's prefix. The CRs do the segregation upstream; the filter lists are redundant.
+
+**Implication:** "Mechanism A: MCR prefix-filter lists" claim is incorrect for deployed state. Existing dead filter lists should be DELETED in Design B.
+
+---
+
+### 2026-06-15: Tank — Lab #2 IaC scaffolding decisions (vwan-dual-er-symmetric)
+
+**By:** Tank (IaC)
+
+**Phase:** 4 (Tank IaC + deploy scripts; pre-apply)
+
+**Status:** ✅ Scaffold complete; validated; awaiting Jose to run `deploy.ps1` interactively.
+
+**Decisions made:**
+1. VM SKU substitution — `Standard_B2s_v2` in northeurope (B2als_v2 unavailable)
+2. VM authentication — password instead of SSH key (using KV secret)
+3. GCP credentials — pre-authenticated gcloud ADC (no JSON secret in KV)
+4. S4 perturbation surface — both S4a (ER bow-tie) and S4b (MCR prefix injection) wired as TF variables
+5. KV access strategy — both Path A and Path B implemented in deploy.ps1
+6. Resource group naming — `rg-vwan-symm-<correlation_id>`
+7. No public IPs on spoke VMs (access via `az vm run-command` only)
+
+---
+
+### 2026-06-15: Design B Apply — Patterns and Surprises
+
+**By:** Tank (IaC)
+
+**Lab:** vwan-dual-er-symmetric
+
+**Decisions:**
+
+**D1** — Megaport PARTNER VXC pairing_key change is always ForceNew (destroy+create). Accept as part of lifecycle; update design template language.
+
+**D2** — Megaport DOMAIN_1 port exhaustion after rapid VXC ordering cycles. Mitigation: use DOMAIN_2 for alternate attachment. Standard pattern for dual-attachment GCP PARTNER labs.
+
+**D3** — Axis-2 MCR→Azure per-prefix prepend deferred to Megaport portal/API (TF provider limitation).
+
+**D4** — GCP subnet names must be unique per project+region (not just per VPC). Update naming convention: `subnet-<lab_name>-<vpc_id>-<purpose>`.
+
+**D5** — VM's VPC change (ForceNew operation): always use targeted destroy first to avoid dependency ordering issues.
+
+---
+
+### 2026-06-15T22:46+02:00: Tank — Design C Phase 1A complete
+
+**By:** Tank (Deploy/Infra)
+
+**Lab:** vwan-dual-er-symmetric
+
+**What:** GCP-side Phase 1A for Design C complete. One new resource added: `google_compute_interconnect_attachment.att_b_v2`.
+
+**Apply summary:**
+- Plan gate ✅ PASSED — 1 to add, 0 to change, 0 to destroy
+- Resource added: `google_compute_interconnect_attachment.att_b_v2`
+- att_b_v2 initial state: `PENDING_PARTNER`
+- Pairing key: `326ba0de-2aed-4eb2-aaf4-2df34108dc07/europe-west3/2`
+- Region: `europe-west3` (router_a, eu-w3)
+- Domain: `AVAILABILITY_DOMAIN_2`
+
+**Jose Portal Action Items:**
+- DELETE: `vxc-mcr2-gcp-b-103167` (old VXC on att_b_new in eu-w4)
+- CREATE: new VXC on MCR2 for eu-w3 region with new pairing key
+
+**Phase 1B Prerequisites:**
+1. Jose's portal work complete
+2. New VXC reaches "Configured" / "Up" state
+3. GCP: att_b_v2 transitions PENDING_PARTNER → ACTIVE
+4. BGP session on router_a for att_b_v2: ESTABLISHED
+5. Jose verbally confirms "BGP is up"
+
+**Status:** Awaiting Jose's portal work.
+
+---
+
+### 2026-06-15: Tank — secondary MCR ↔ ER VXCs patch
+
+**By:** Tank
+
+**Date:** 2026-06-15T18:55:36+02:00
+
+**Lab:** vwan-dual-er-symmetric
+
+**What was missing:** Initial deploy created only 1 VXC per ER circuit (primary port only). Design requires dual VXCs per circuit for dual BGP sessions.
+
+**What was added:**
+- `megaport_vxc.azure_circuit1_secondary` (secondary MSEE port → MCR1)
+- `megaport_vxc.azure_circuit2_secondary` (secondary MSEE port → MCR2)
+
+**BGP verification:** All 4 sessions Established.
+
+**Charter rule added:** "ER private peering is dual-port; always deploy 2 VXCs per circuit."
+
+---
+
+### 2026-06-15: Design C Spec + 4 Open Questions for Jose
+
+**By:** Trinity (Azure Network SME)
+
+**Date:** 2026-06-15T22:51:42+02:00
+
+**Lab:** vwan-dual-er-symmetric
+
+**Status:** Spec complete. Blocked on Q1 (Megaport unlock). Awaiting Jose gate on Q1–Q4.
+
+**What Design C is:** Single Cloud Router in a single GCP region with two PARTNER Interconnect attachments — one to MCR1, one to MCR2.
+
+**4 Open Questions:**
+| # | Question | Trinity recommendation |
+|---|---|---|
+| Q1 | Megaport portal/API unlock status | If >48 h, recommend Design D |
+| Q2 | Consolidated region for single CR | eu-w3 (less churn; att_a unchanged) |
+| Q3 | VM topology | Keep both VMs (more interesting BGP) |
+| Q4 | Fallback if Megaport locked | Design D (Linux NVA) |
+
+**Key technical facts for Tank:**
+- DESTROY: `att_b_new` (eu-w4), `cr_onprem_b` (eu-w4)
+- CREATE: `att_c_b` on `router_a` (eu-w3), AVAILABILITY_DOMAIN_2
+- Megaport: Update `gcp_b` VXC to new `att_c_b.pairing_key` (portal/API action required)
+
+**No commits until Scribe gates. Jose answers Q1–Q4 → Coordinator dispatches Tank.**
+
+---
+
+### 2026-06-15: Trinity — reserved spare /16 relocated
+
+**By:** Trinity (Azure Network SME)
+
+**Context:** Address plan refresh to match Morpheus manifest.
+
+**What changed:** Reserved spare block `10.50.0.0/16` was set aside for future "anomaly" spokes, but GCP VPC-A is `10.50.1.0/24` and GCP VPC-B is `10.50.2.0/24` — both fall inside the old spare block, creating a false non-overlap claim.
+
+**Resolution:** Reserved spare relocated to **`10.99.0.0/16`**, clear of all assigned Azure prefixes, GCP prefixes, and lab #1 legacy ranges.
+
+**Design implication:** No HCL or BGP logic coupled to old spare. Purely a table correction; Tank needs no IaC change.
+
+---
+
+### 2026-06-15: Trinity — Resiliency Analysis: vwan-dual-er-symmetric
+
+**By:** Trinity (Azure Network SME)
+
+**Date:** 2026-06-15T17:40:37+02:00
+
+**Triggered by:** Jose — *"Trinity should always consider resiliency, and what happens if for example one of the Megaport routers dies."*
+
+**Summary:** Mechanism A (per-region MCR prefix filter) provides NO AUTOMATIC FAILOVER. Analysis catalogued 13 failure modes and proposed 5 mitigations (M1–M5).
+
+**Failure modes (13 total):**
+- F1–F4: MCR/ER circuit failures → total loss for affected region
+- F5–F8: Hub/AzFW failures → total loss
+- F9–F10: VXC failures → NO impact (secondary takes over)
+- F11–F13: BGP/GCP CR failures → total loss
+
+**Mitigations:**
+| M# | Mitigation | Cost | ROI |
+|----|------------|------|-----|
+| M1 | Mechanism B (AS-PATH prepend) | $0 | Best — closes 5 gaps, zero cost |
+| M2 | Cross-region GCP BGP sessions | +~$1/day | Closes 5 gaps, automatic failover |
+| M3 | ER bow-tie | +~$1/day | Covers ER GW failures (F5/F6) |
+| M4 | Dual MCR per region | +~$13/day | Over-provisioned |
+| M5 | Redundant GCP CR per VPC | +~$1/day | Covers GCP CR failures |
+
+**Recommendation:** v1 baseline unchanged (Tank deploys Mechanism A as designed). Patch catalogue (P1/P2/P3) dormant until Jose authorizes.
+
+---
+
+### 2026-06-15: Design B Verdict + Tank Patch Handoff
+
+**By:** Trinity (Azure Network SME)
+
+**Date:** 2026-06-15T20:30:00+02:00
+
+**Lab:** vwan-dual-er-symmetric
+
+**Status:** Ready for Jose gate → Tank implementation
+
+**Verdict:** Design B (single GLOBAL-routing GCP VPC) achieves automatic bidirectional failover without adding cross-region Megaport circuits. Zero additional Megaport cost.
+
+**Critical findings for Tank:**
+1. `routing_mode` REGIONAL→GLOBAL likely in-place; plan confirms
+2. Interconnect attachment CANNOT transfer to different Cloud Router — must destroy+recreate
+3. `att_a` unchanged if routing_mode in-place
+4. Both Cloud Routers must advertise both GCP subnets
+5. New MCR→Azure prepend policy: MCR1 prepends 10.50.2.0/24 3×; MCR2 prepends 10.50.1.0/24 3×
+6. `correlation_id_override = "103167"` and `password_override` carried forward
+
+**DESTROY list:** vpc_b, router_b, att_b, vm_b, subnets, firewall
+
+**CREATE list:** vpc_onprem_subnet_b, cr_onprem_b, att_b_new, vm_b (lift-and-shift)
+
+**MODIFY list:** vpc_a routing_mode, router_a bgp advertised ranges, megaport_vxc.gcp_b pairing_key, ER circuit prepend policies
+
+**Niobe validation additions post-Tank apply:**
+- S2.7: Cross-region TCP assert (zero AzFW drops)
+- S2.8: Failover assert (BGP reconvergence ≤120 s)
+
+---
+
 ## Governance
 
 - All meaningful changes require team consensus
