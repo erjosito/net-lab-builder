@@ -705,3 +705,145 @@ Lab card produced for lab #3 (`msee-hairpin-hns-vwan-ipv6`) at `labs/msee-hairpi
 
 Jose must select A / B / C before Stage 2 fan-out. If A: also needs explicit cost approval (>$50/day rate). Stage 2 = full manifest + Trinity/Oracle/Niobe parallel fan-out.
 
+
+### 2026-06-15T23:52:53+02:00: ExpressRoute Direct port pricing — 45-day free bring-up window
+
+**By:** Jose Moreno (directive, captured by coordinator)
+
+**Scope:** Project-wide — Morpheus + Trinity knowledge base
+
+**Directive (verbatim):** *"ExpressRoute Direct is not charged after 45 days after provisioning. From that perspective, it is quite a safe deployment from a cost angle. Please add this to the knowledge base of the project (not sure if Trinity is the one that should remember this)."*
+
+**Interpretation:** Azure ER Direct ports include a 45-day free provisioning window (intended to cover the cross-connect installation lead-time). For any lab shorter than 45 days, the port itself is $0. Only the ER circuits (Local SKU MeteredData ≈ $0.10/GB), the ER gateways (ErGw1AZ ≈ $0.27/hr ≈ $0.50/day each), the vHub Standard (~$X/day flat), and lab VMs accrue charges.
+
+**Impact on lab #3 (msee-hairpin-hns-vwan-ipv6):**
+- Original Path A cost estimate: **~$70/day** (assumed port billing from day 0).
+- Corrected Path A cost estimate: **~$25-35/day** (port is $0 within the 45-day window).
+- Path A is no longer borderline against the $50/day cost-guardrail flag.
+
+**Who owns this knowledge:**
+- **Morpheus (primary):** Owns the cost guardrail (routing rule #7) and the Phase 4 cost gate. Must factor the 45-day free window into every ER Direct cost estimate going forward.
+- **Trinity (secondary):** Owns Azure networking SKU lore + vault stewardship. The Azure Networking Obsidian vault should carry this fact under an ER Direct cost note for future reference.
+
+**Status:** Merged by Scribe 2026-06-15.
+
+---
+
+### 2026-06-15T23:52:53+02:00: Morpheus — Lab #3 Full Manifest (Stage 2)
+
+**By:** Morpheus (Lead / Architect)
+
+**Status:** Awaiting Jose Phase 4 deploy gate
+
+**What:** Full manifest written for lab #3 (msee-hairpin-hns-vwan-ipv6) at labs/msee-hairpin-hns-vwan-ipv6/manifest.md. Stage 2 complete.
+
+**Key Decisions Made in Stage 2:**
+- **Public IP + NSG over Bastion.** Two Standard PIPs for VM SSH access (NSG-restricted port 22). Bastion adds ~$5/day and is unnecessary for a 6-hour lab.
+- **VLAN 100 / 200 assignment.** Circuit 1 (HnS) → VLAN 100; Circuit 2 (vWAN) → VLAN 200. Must be unique per ER Direct port.
+- **azapi fallback flagged.** Three hairpin-enabling toggles (llow_virtual_wan_traffic, llow_remote_vnet_traffic, llow_non_virtual_wan_traffic) must be set. If not exposed in current azurerm, use zapi_update_resource.
+- **IPv6 peering in single resource.** zurerm_express_route_circuit_peering handles both IPv4 and IPv6 via nested ipv6 block.
+- **ER GW dual-stack NIC.** rgw-hns requires dual-stack ip_configuration block — one IPv4 and one IPv6.
+- **S5 (IPsec VPN stretch) is optional.** Do not deploy unless Jose explicitly requests it post-S1-S4.
+
+**Phase 4 Gate Text (corrected for 45-day ER Direct free window):** *"Lab msee-hairpin-hns-vwan-ipv6 — Path A (ER Direct, Stockholm). Cost: ~$25-35/day / ~$6.25-8.75 for 6h. Reply **deploy** to proceed."*
+
+**Files:** labs/msee-hairpin-hns-vwan-ipv6/manifest.md (12.1 KB), labs/msee-hairpin-hns-vwan-ipv6/lab-card.md (4.9 KB).
+
+**Status:** Merged by Scribe 2026-06-15.
+
+---
+
+### 2026-06-15T23:52:53+02:00: Trinity — MSEE Hairpin Design Findings (Lab #3)
+
+**By:** Trinity (Network SME)
+
+**Status:** Inbox — merged by Scribe 2026-06-15
+
+**Finding 1: IPv6 ER peering sequencing constraint**
+- IPv6 BGP session does NOT establish automatically when ipv6PeeringConfig is added to an ER circuit peering.
+- The VNet and GatewaySubnet must have IPv6 address space assigned **before** the GW is created.
+- If the GW was created on an IPv4-only subnet, it may need to be recreated (not updated) to become dual-stack.
+- **Action:** Tank deploy scripts must enforce this sequencing. Add explicit check in azure-lab SKILL.md under "ExpressRoute gotchas".
+
+**Finding 2: Three hairpin-enabling toggles are silent-fail**
+- All three toggles (llowVirtualWanTraffic, llowRemoteVnetTraffic, llowNonVirtualWanTraffic) default to alse.
+- When missing, BGP sessions remain Up, circuits show Connected, but routes are simply absent.
+- **Action:** Add "hairpin toggle checklist" to lab-card template as a required section whenever HnS ↔ vWAN ER connectivity is in scope.
+
+**Observation 1: vWAN hub IPv6 address space — TF provider gap**
+- ipv6AddressSpace on Microsoft.Network/virtualHubs may not be exposed in current stable zurerm TF provider.
+- Workaround: z rest --method PATCH.
+- Tank should validate during manifest review phase; raise TF provider issue if confirmed.
+
+**Observation 2: Customer-side BGP on ER Direct — unconfirmed hypothesis**
+- Lab-card claim: No customer-side BGP needed on ER Direct port for MSEE hairpin.
+- Trinity assessment: High-confidence based on MSEE hairpin behavior documentation.
+- Flagged for Niobe to confirm post-deploy via list-learned-routes. If confirmed, document as vault entry under [[Services/ExpressRoute]] at Phase 3.4 backfill.
+
+**Status:** Merged by Scribe 2026-06-15.
+
+---
+
+### 2026-06-15T23:52:53+02:00: Oracle — MSEE Hairpin Diagram Pattern & IPv6 ULA Conventions
+
+**By:** Oracle (Documentation & Diagrams)
+
+**Status:** Merged by Scribe 2026-06-15
+
+**Decision: Locked diagram pattern for MSEE hairpinning labs**
+
+**MSEE Hairpin Visual Pattern:**
+- The MSEE node is drawn as a single entity with four edges (two ingress, two egress — one per circuit).
+- Each edge is labeled with direction (→ advertise / ← learn), ASN (12076), and prefixes.
+- This conveys BGP reflection behavior without needing a secondary node.
+
+**IPv6 ULA Peering Conventions in Dual-Stack ER:**
+- Peering subnets for IPv4: /30 (e.g., 172.16.1.0/30).
+- Peering subnets for IPv6: /126 (e.g., fd00:f:1::/126).
+- Each eBGP session is labeled with both families' peer addresses.
+- ULA (Unique Local Address) is valid for pure Azure-to-Azure labs where global routing is not required.
+
+**Scope:**
+- Applies to all future ER + hairpin labs.
+- IPv6 ULA convention applies to any dual-stack ER lab without global routing requirement.
+- Diagram files: diagrams/01-topology.mmd, diagrams/02-bgp-control-plane.mmd, etc.
+
+**Checklist for Future Labs:** Identify peering model, address families, routing mechanism, format, and produce four diagrams (Topology, Control Plane, Data Plane, Cleanup Chain).
+
+**Status:** Merged by Scribe 2026-06-15.
+
+---
+
+### 2026-06-15T23:52:53+02:00: Tank — Design C Phase 1B Complete (Lab #2 cleanup)
+
+**By:** Tank (Infrastructure Provisioner)
+
+**Status:** Merged by Scribe 2026-06-15
+
+**Summary:** Design C Phase 1B executed successfully for lab #2 (vwan-dual-er-symmetric). Single-CR GCP-as-on-prem topology is now live and clean.
+
+**Pre-Flight Verification — PASSED:**
+- tt-vwan-symm-b-v2 state: **ACTIVE** ✅
+- outer-vwan-symm-a BGP peers: **2 peers, both UP** ✅
+- GCP Cloud Router "UP" status = established BGP sessions.
+
+**Plan Result:** 0 to add, 0 to change, 2 to destroy (as expected: tt_b_new, cr_onprem_b).
+
+**Apply Duration:** ~30 seconds (2026-06-15, sequential GCP API calls).
+
+**Resources Removed:**
+- megaport_vxc.gcp_b from megaport.tf
+- google_compute_router.cr_onprem_b from gcp.tf
+- google_compute_interconnect_attachment.att_b_new from gcp.tf
+- TF state synced via 	erraform state rm megaport_vxc.gcp_b
+
+**Credential Note:** GCP Application Default Credentials (ADC) not set up on Windows. Used gcloud auth print-access-token → GOOGLE_OAUTH_ACCESS_TOKEN env var as workaround. ADC setup recommended for persistent dev use.
+
+**Open Question: megaport_vxc.gcp_b_v2 Import**
+- New VXC created via Megaport portal (Jose), paired to tt_b_v2.
+- Currently portal-managed and invisible to TF state.
+- **Recommendation:** Once Megaport API unlocks, import new VXC to TF state for automated teardown (Option 1 preferred over leaving portal-managed).
+
+**Post-Flight Verification — ALL PASSED:** BGP, Attachments, Routers, Subnets, VMs all intact and clean. Full evidence in labs/vwan-dual-er-symmetric/show-output/design-c-phase1b-2026-06-15/.
+
+---
