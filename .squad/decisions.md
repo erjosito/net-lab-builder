@@ -637,3 +637,71 @@ The vault sits behind **network restrictions** (firewall ACLs). Jose also runs t
 - All meaningful changes require team consensus
 - Document architectural decisions here
 - Keep history focused on work, decisions focused on direction
+
+
+### 2026-06-15T23:25:00Z: Reconciled Design C attachment naming in design.md
+
+**By:** Copilot (coordinator, on behalf of @erjosito)
+**What:** Renamed `att_c_a` → `att_a` and `att_c_b` → `att_b_v2` throughout `labs/vwan-dual-er-symmetric/design.md` §3 (Design C section).
+**Why:**
+- Trinity-4 wrote the spec using `att_c_a` / `att_c_b` as semantic names tied to Design C.
+- Tank's Phase 1A actually deployed `google_compute_interconnect_attachment.att_b_v2` in TF state.
+- `att_a` was never renamed (still exists from Design B, kept as-is in Design C).
+- Spec now matches deployed TF resource names — no future confusion when reading spec vs running gcloud commands.
+
+**Scope:**
+- 6 hits of `att_c_a` → `att_a`
+- 9 hits of `att_c_b` → `att_b_v2`
+- Mechanical rename only. No content changes.
+
+**Not done in this pass (deferred to next Trinity spec update once Design C is live):**
+- Cloud Router diagram still says `"cr_onprem"` (line 717) — actual TF resource is `router_a` (kept name from Design B). Update when Design C baseline evidence is captured.
+- §3.3 Open questions for Jose still lists Q1-Q4 as TBD. Q1 (Megaport), Q2 (eu-w3 region), Q3 (keep both VMs), Q4 (no fallback needed) are all resolved. Trinity to clean up §3.3 in the post-Phase-1B spec refresh.
+- `att_b_new` (Design B) and `cr_onprem_b` references in §3.4 migration plan are still accurate (those resources still exist; Phase 1B will destroy them).
+
+
+# Decision — Morpheus: Lab #3 MSEE Hairpin Lab Card
+
+**Date:** 2026-06-15  
+**By:** Morpheus (Lead / Architect)  
+**Status:** Pending Jose gate (A/B/C path selection)
+
+---
+
+## What
+
+Lab card produced for lab #3 (`msee-hairpin-hns-vwan-ipv6`) at `labs/msee-hairpin-hns-vwan-ipv6/lab-card.md`.
+
+**Scope:** Hub-and-spoke VNet (single spoke + ER GW) ↔ Virtual WAN hub (single spoke + ER GW), dual-stack IPv4+IPv6, MSEE hairpinning as the connectivity mechanism, no firewall, single region (`swedencentral`).
+
+---
+
+## Key Design Decisions Made
+
+**Path A (ER Direct) selected as primary.** ER Direct avoids Megaport dependency per Jose's request. Customer-side BGP on the port is not required for Azure-to-Azure MSEE hairpinning — only the Azure-side GW↔MSEE BGP sessions matter. Cost (~$65–75/day rate) exceeds $50/day flag; flagged to Jose with short-runtime mitigation (~$18 for 6h).
+
+**Single region.** `swedencentral` only. MSEE hairpin requires both circuits at the same peering location (Stockholm). Multi-region breaks the mechanism.
+
+**ULA IPv6.** `fd00::/8` for all VNet spaces. No globally routable IPv6 needed for Azure-to-Azure lab.
+
+**GW settings are the pedagogical core.** Three non-default toggles (`allowVirtualWanTraffic`, `allowRemoteVnetTraffic`, `allowNonVirtualWanTraffic`) are the "settings that need to be enabled" Jose referenced. These are silent-fail — no error without them, hairpin just doesn't work.
+
+**Deliberate-break S4.** Toggle `allowVirtualWanTraffic=false` after steady state → confirm hairpin breaks. Matches "every design is valuable" doctrine.
+
+**S5 stretch = Path C as a scenario.** IPsec VPN fallback is preserved as a stretch scenario within Path A deployment, not a separate lab. Cheap to add VPN GW alongside ER GW if hairpin fails.
+
+---
+
+## Paths Declined (documented in lab card §9)
+
+| Path | Why declined as primary |
+|---|---|
+| B — Megaport | Overrides Jose's explicit "no partner" preference; structurally inferior for this specific question |
+| C — IPsec only | Changes the mechanism entirely; lab would teach VPN, not MSEE hairpinning |
+
+---
+
+## Open Gate
+
+Jose must select A / B / C before Stage 2 fan-out. If A: also needs explicit cost approval (>$50/day rate). Stage 2 = full manifest + Trinity/Oracle/Niobe parallel fan-out.
+
