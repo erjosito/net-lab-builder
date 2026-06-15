@@ -214,3 +214,33 @@ Chosen for: honesty-first framing, tools-forward, and because the central findin
 ### Scope
 Azure Networking only. Same scope as my publishing target; non-networking topics are out-of-bounds even if they look juicy.
 
+---
+
+📌 Team update (2026-06-15): Phase 1 manifest design fan-out complete on 2026-06-15; Jose gate pending.
+
+## 2026-06-15 — Pre-gate editorial review: vwan-dual-er-symmetric
+
+**Lab**: `vwan-dual-er-symmetric`
+**Dispatch type**: Pre-gate editorial review (routing rule #17)
+**Verdict**: **Publishable with extensions** — narrative arc is strong; two evidence gaps and one mechanism misalignment need resolution before deploy.
+
+### Editorial verdict
+
+S1–S4 form a clean before/after arc: symmetric baselines for Region-A, Region-B, and cross-region east-west; then S4 breaks symmetry and captures the stateful AzFW drop. The headline finding is novel and demonstrable. Passes the "not docs regurgitation" bar.
+
+**Critical alignment issue found:** manifest S4 uses `er_bow_tie=yes` (Azure ER-GW cross-connections) as the perturbation, but validation.md S4 uses MCR1 prefix injection (Megaport-side). These are different mechanisms. The MCR injection approach is more reliable at producing the failure because it directly controls GCP's routing table rather than depending on Azure vWAN best-path selection (manifest §9 Risk #3). Morpheus must choose one before deploy.
+
+### Evidence extensions proposed
+
+1. **S4 pre-perturbation baseline**: add `s4-00-azfw-baseline-both-hubs.txt` before any injection — without a timestamped "before" the reader has no contrast.
+2. **S4 VM-level tcp-state capture**: `ss -tn state SYN-SENT` on the source VM during failure → `s4-vm-half-open.txt`. Readers can replicate without Log Analytics access; firewall-log-only is indirect.
+3. **KQL table standardization**: manifest uses `AZFWNetworkRule` (resource-specific), validation uses legacy `AzureDiagnostics | where Category == "AzureFirewallNetworkRule"`. Align on `AZFWNetworkRule`.
+
+### Learnings for future labs
+
+- **Mechanism misalignment between manifest and validation is a deploy-blocker** — always cross-check S4-class perturbation steps between Morpheus and Niobe docs before gate.
+- **Pre-perturbation baselines must be named artifacts**, not implied. "Before" screenshots are structurally essential for any "deliberate failure demo" scenario in a blog post.
+- **VM-level tcp-state captures** (`ss -tn`, `netstat`) are cheap adds that make firewall-drop evidence reproducible by readers who lack Log Analytics access. Include in every "stateful drop" scenario.
+- **KQL table name** `AZFWNetworkRule` (resource-specific, available since ~2022) is preferred over `AzureDiagnostics | where Category == "AzureFirewallNetworkRule"` — include this as a standing recommendation in evidence templates.
+- Mode-collision guard fired: weekly scout skipped this week (active pre-gate review per routing rule #18).
+
