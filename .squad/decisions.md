@@ -847,3 +847,231 @@ Jose must select A / B / C before Stage 2 fan-out. If A: also needs explicit cos
 **Post-Flight Verification — ALL PASSED:** BGP, Attachments, Routers, Subnets, VMs all intact and clean. Full evidence in labs/vwan-dual-er-symmetric/show-output/design-c-phase1b-2026-06-15/.
 
 ---
+
+## AUTOPILOT PIPELINE — User Directives (2026-06-16)
+
+### 2026-06-16T00:15:00Z: User directive — Mech C is TWO sequential scenarios, not one chosen alternative
+
+**By:** Jose (via Copilot)
+
+**Direct quote:**
+> "We should consider active/active and active/passive as two different scenarios, and investigate both (one after the other). We should start with active/active, since it only requires outbound route maps."
+
+**What changed:**
+- Mechanism C is no longer "Alt A or Alt B, pick one." It is **two sequential mechanisms**:
+  - **Mech C1 — active/active** = reserved-ASN per-prefix outbound prepend on VWAN hub ER connections. Maps to MS Learn article Scenario 2 (any-region-via-any-circuit). Outbound route maps only.
+  - **Mech C2 — active/passive** = primary/standby with one MCR carrying all spokes. Maps to MS Learn article Scenario 1 (local-ER per region). Adds inbound route maps + hub `routing_preference = ASPath` on top of the Mech C1 outbound maps.
+- Implementation order is fixed: **C1 first, then C2.** Rationale: C1 needs only outbound route maps (simpler resource set, faster apply, smaller blast radius). C2 layers in inbound maps + hub preference knobs.
+- Both get full evidence capture (Niobe runs twice post-implementation).
+- Blog covers both, sequentially. Kid's editorial framing aligns naturally with the MS Learn article's Scenario 2 → Scenario 1 ordering.
+
+**Implications for the lab pipeline:**
+- Trinity spec: rename §4 sub-sections from "Alternative A/B" → "Mech C1 active/active" + "Mech C2 active/passive." Remove the recommendation matrix (no longer needed — both are done). Add ordering/dependency note.
+- Tank: two apply phases — Phase 2 (C1 apply, outbound maps only) then Phase 3 (C2 apply, inbound maps + hub preference). Each gated by Jose approval.
+- Niobe: two post-Mech-C evidence captures — `design-c-mechC1-symmetric-{date}` and `design-c-mechC2-symmetric-{date}`.
+- Morpheus completion gate: add explicit C1 + C2 checkpoints.
+- Cost envelope: ~2-3 extra days vs single-implementation path. At $135/day, that's ~$270-405 extra. Acceptable per Jose's pedagogical-priority directive.
+
+**Pedagogical payoff:** Blog can now contrast both modern approaches against the MS Learn article's two original scenarios, side by side, with real evidence for each. Strongest possible narrative.
+
+**Status:** Merged by Scribe 2026-06-16.
+
+---
+
+### 2026-06-16T00:08:00Z: User directive — frame blog as update to MS Learn ER DR article
+
+**By:** Jose (via Copilot)
+
+**What:** Kid should gravitate the blog around what is missing in the official Microsoft Learn article ["Azure ExpressRoute: Designing for disaster recovery"](https://learn.microsoft.com/en-us/azure/expressroute/designing-for-disaster-recovery-with-expressroute-privatepeering). The article was written before Virtual WAN and route maps; positioning this blog as a contemporary update to that article is a strong pedagogical hook.
+
+**Why captured:** This reframes the entire editorial scope. Instead of "here's an asymmetry lab," it becomes "here's what you need to know that the official ER DR guide doesn't tell you — because vWAN and route maps didn't exist when it was written, and because the article assumes you own iBGP on the on-prem side."
+
+**Confirmed gaps the lab fills (from reading the article):**
+1. **Secured vWAN hubs** — Article: "Typically, over the ExpressRoute private peering path you don't come across stateful entities such as NAT or Firewalls." The lab proves that with Azure Firewall integrated into the vWAN hub, asymmetry silently drops traffic (niobe-4 verdict: AzFW1 = 5 Allows, AzFW2 = 0 entries → stateful drop).
+2. **Partner-managed CE** — Article recommends "use local-preference on iBGP on your routers." In partner scenarios (Megaport MCR, GCP Cloud Interconnect, AWS DX), the customer does NOT own iBGP on the carrier and cannot set local-pref. The available knobs are different: VWAN route maps + carrier route filters.
+3. **VWAN route maps** — Did not exist when the article's recommendations were drafted. They are the modern alternative to "advertising more specific routes" or "AS-path prepend at the on-prem CE."
+4. **Cross-cloud as on-prem** — Article assumes a single on-prem AS. The lab demonstrates GCP-as-on-prem where the BGP path is `GCP-CR (16550) → Megaport (64517) → Microsoft (12076)` and the customer controls only the GCP CR's CUSTOM advertise_mode and the VWAN route maps.
+5. **Reserved-ASN prepend** — Article suggests prepending the on-prem ASN. The lab's Mech-C demonstrates that prepending a reserved ASN (per IANA) at the VWAN layer is cleaner diagnostically and avoids polluting the on-prem AS with synthetic paths.
+
+**Article scenarios mapped to lab designs:**
+- Article Scenario 1 (local-ER per region) ≈ Design C with Mech C2 (primary/standby with route-map prepend on secondary)
+- Article Scenario 2 (any-region-via-any-circuit) ≈ Design C with Mech C1 (per-prefix reserved-ASN prepend, active/active)
+
+**Action:** Kid revises outline to frame the blog as "Three blind spots in the official ER DR guide that the modern vWAN + partner-CE world introduced." Each section earns its place by mapping to a gap in the official article.
+
+**Status:** Merged by Scribe 2026-06-16.
+
+---
+
+### 2026-06-16T00:20:50+02:00: User directive — autopilot through all three scenarios
+
+**By:** Jose (via Copilot)
+
+**What:** Complete all three Mech C scenarios end-to-end while user is away — (1) Design C asymmetric baseline evidence, (2) Mech C1 active/active apply + evidence, (3) Mech C2 active/passive apply + evidence (including primary-down failover test). Niobe must collect enough evidence at each step that Kid can write the blog without further data gathering.
+
+**Why:** User authorized full autopilot. No approval gates between phases. Implication: spawn pipeline (Tank Phase 2 → Niobe C1 evidence → Tank Phase 3 → Niobe C2 evidence) automatically as each predecessor lands.
+
+**Implications:**
+- No Jose approval gate between Tank Phase 2 (C1 apply) and Tank Phase 3 (C2 apply). Sequence them automatically.
+- Niobe evidence packs at each phase MUST be blog-grade: 4-tier methodology (control-plane BGP, data-plane probes, AzFW KQL allow/drop counts, GCP effective routes) at minimum. Plus failover evidence for C2.
+- Acceptable to keep lab running through the full pipeline (~2-3 days of $135/day burn = $270-405). Pedagogical priority approved.
+- Teardown is the FINAL step — only after Kid confirms blog draft has all evidence files referenced.
+
+**Quote:** "Feel free to complete all three scenarios (asymmetric traffic, active/active circuits and active/passive circuits) while I am away. Make sure that Niobe collects enough evidence to write the blog."
+
+**Note:** User said "active/active" twice — interpreting as C1 (active/active) + C2 (active/passive) per the prior sequential directive.
+
+**Status:** Merged by Scribe 2026-06-16.
+
+---
+
+## ENGINEERING — Design C & Mechanism C Specs (2026-06-16)
+
+### 2026-06-15T23:52:53+02:00: Niobe Design C baseline — asymmetric evidence complete
+
+**By:** Niobe (Lab Validator)
+
+**Verdict:** 🔴 **DESIGN C ASYMMETRIC — PROVED**
+
+Design C's single Cloud Router (`router_a`, eu-w3) performs per-flow ECMP across both MCRs for all 4 Azure spoke /24 prefixes (10.11, 10.12, 10.21, 10.22 at priority=0, identical AS-path length 2). Return traffic randomly hits the wrong Azure Firewall instance, causing silent stateful drops. Failure rate: 33–100% per flow class depending on ECMP hash.
+
+**File count:** 16 evidence files in `labs/vwan-dual-er-symmetric/show-output/design-c-asymmetric-2026-06-15/`:
+- Tier 1 (control plane): files 01–08 (Hub effective routes, ER circuit tables, GCP router-a status, advertised routes)
+- Tier 2 (data plane probes): files 09–12 (TCP nc probes from spoke VMs to GCP VMs)
+- Tier 3 (AzFW logs): files 13–14 (KQL correlation tables)
+- Tier 4 (VPC routes): files 15–16 (VPC route table + routing mode)
+- `README.md` — verdict document
+
+**Hand-off:** Mechanism B (MCR AS-PATH prepend toward Azure) fixes the Azure→GCP direction only — it does NOT influence how router_a selects between MCR1 and MCR2 for GCP→Azure return traffic. Mechanism C lever needed: configure each MCR's outbound BGP policy toward its GCP attachment so that the *other hub's* spoke /24 prefixes are advertised with a longer AS-path, giving router_a a cost-based tiebreaker that aligns per-prefix best-path with the correct hub.
+
+**Status:** Merged by Scribe 2026-06-16.
+
+---
+
+### 2026-06-16: Trinity Mechanism C Design — sequential C1 + C2 spec
+
+**By:** Trinity (Azure Network SME)
+
+**Spec finalized:** §4 appended to `labs/vwan-dual-er-symmetric/design.md` with full C1 + C2 implementation details.
+
+**Restructured per Jose's directive** — both Mech C variants spec'd as sequential implementations, not alternatives.
+
+**Key decisions:**
+
+1. **Reserved ASN: AS 23456 (AS_TRANS)** — Chosen. Not a private ASN (64512+), not Azure-reserved (8074/8075/12076/65515–65520), 2-byte (Route-Maps 2-byte-only constraint). IANA-reserved for 4-byte BGP transition — no real AS owns it. Instantly recognizable in `gcloud compute routers get-status` output as an intentional engineering prepend.
+
+2. **Implementation order: C1 first, then C2 (sequential, not alternatives)**
+   - **Mech C1 (active/active — outbound route maps only):** Hub1 OUTBOUND prepends Hub2-region prefixes 3×; Hub2 OUTBOUND prepends Hub1-region prefixes 3×. Per-prefix AS-path split at `router_a`. 2 adds, 2 changes, 0 destroys. No vHub reprovision.
+   - **Mech C2 (active/passive — adds inbound + hub routing preference):** Hub1 OUTBOUND route map removed; Hub2 OUTBOUND updated to all-prefixes 5×; Hub2 INBOUND added (GCP prefixes 5×); both hubs `hub_routing_preference = ASPath`. 1 add, 3 changes, 1 destroy. ~10–20 min vHub reprovision per hub.
+   - Evidence checkpoint between phases (Niobe BGP probe + AzFW logs after C1, failover test after C2).
+
+3. **TF resource availability — all confirmed**
+   - `azurerm_virtual_hub_route_map` — ✅ in AzureRM ≥ 3.22 / lab uses `~> 4.0`
+   - `azurerm_express_route_connection routing.outbound_route_map_id` — ✅ in AzureRM 4.x
+   - `azurerm_express_route_connection routing.inbound_route_map_id` — ✅ in AzureRM 4.x
+   - `azurerm_virtual_hub.hub_routing_preference = "ASPath"` — ✅ (C2 only — triggers ~10–20 min vHub reprovision)
+   - **No provider gap for either direction (OUTBOUND or INBOUND).**
+
+4. **Section appended:** `## 4. Mechanism C — VWAN Route Maps` with §4.1–§4.5 appended to end of `labs/vwan-dual-er-symmetric/design.md`. §1–§3 untouched. **No TF authored, no Azure changes made. Spec only.**
+
+**Action items:**
+- Tank: deploy C1 TF (2 adds, 2 changes), await Niobe C1 evidence, then deploy C2 (1 add, 3 changes, 1 destroy)
+- Niobe: (a) baseline asymmetric evidence first; (b) C1 evidence → `show-output/design-c-mech-c1-2026-06-15/`; (c) C2 evidence incl. deliberate failover test
+- Kid: Blog active/active (C1) maps to MS Learn Scenario 2; active/passive (C2) maps to Scenario 1
+- Jose: Gate — approve C1 deploy when ready
+
+**Status:** Merged by Scribe 2026-06-16.
+
+---
+
+## BLOG SCOPE & EDITORIAL (2026-06-16)
+
+### 2026-06-16T00:30:00Z: Morpheus Blog Scope v2 — completion checklist updated
+
+**By:** Morpheus (Lab Director / Scope-keeper)
+
+**Lab:** `vwan-dual-er-symmetric`
+
+**Triggered by:** Kid's outline + scenario wishlist + evidence naming convention landed; trinitymc Mech C spec (§4.1–§4.5) confirmed.
+
+**Completion Checklist Status (v2 — 14 items):**
+
+| Gate | Status |
+|------|--------|
+| Design B asymmetric evidence (niobe-4) | ✅ DONE |
+| Design C topology live (Tank Phase 1B) | ✅ DONE |
+| Trinity Mech C spec (C1 + C2) | ✅ DONE |
+| Design C asymmetric baseline evidence | 🔄 IN FLIGHT (`niobedc`) |
+| Tank Phase 2 (C1 apply) clean | ⏳ PENDING |
+| Niobe C1 evidence pack — 4-tier SYMMETRIC verdict | ⏳ PENDING (post-Tank P2) |
+| Tank Phase 3 (C2 apply) clean | ⏳ PENDING (post-Niobe C1 gate) |
+| Niobe C2 evidence pack — 4-tier + failover ≤90s | ⏳ PENDING (post-Tank P3) |
+| Mech B evidence (bundled with Niobe C1) | ⏳ PENDING |
+| Kid blog draft — prose complete, money shots referenced | 🔄 IN FLIGHT (`kidblog`) |
+| Morpheus scope sign-off | ⚠️ PENDING Jose acknowledgement |
+| Trinity vault backfill | ⏳ PENDING (pre-cleanup gate) |
+| Tank teardown plan dry-run | ⏳ PENDING |
+| Jose "teardown" explicit word | ⏳ PENDING (Phase 8 final gate) |
+
+**11 items remaining (3 done, up from 2 done in v1).**
+
+**Autopilot Pipeline Summary:**
+```
+niobedc (Design C baseline, in-flight)
+  └→ Tank Phase 2 (C1 apply, 2+2+0 delta, ~60s BGP flap)
+       └→ Niobe C1 run (4-tier + GCP CR unchanged proof) ← HARD GATE for P3
+            └→ Tank Phase 3 (C2 apply, 1+3+1 delta, ~10-20 min vHub reprovision)
+                 └→ Niobe C2 run (4-tier + failover test ≤90s)
+                      └→ Kid draft complete (money shots replaced for §8a+§8b)
+                           └→ Jose: "teardown"
+                                └→ Tank cleanup
+```
+
+**⚠️ Items for Jose on return:**
+1. **Cost forecast** — Autopilot directive pre-approved "~$270-405." Realistic estimate for C1+C2 sequential pipeline is **5-6 additional days = $675-810** at $135/day. Flag: **prompt Jose for teardown as soon as all money shots are captured and Kid's draft is committed.**
+2. **Niobe C1 → Tank P3 hard gate** — The GCP CR snapshot after C1 (`gcp-cr-status-after-mechc1.txt`) is the "Mech C is Azure-only" proof. It must be captured BEFORE Tank Phase 3 applies C2. **Tank must NOT proceed to P3 until Niobe signals C1 evidence pack complete.** This is the single highest-severity sequencing risk in the autopilot run.
+3. **Kid outline has two must-fix errors before publish (not blocking autopilot)**
+   - **§10 cost claim** "~$8-12/day" is wrong by ~10×. Correct to ~$135/day.
+   - **§7 ASN-stripping claim** is factually incorrect — AS_TRANS 23456 stays visible at GCP CR (that's how the mechanism works). Kid to correct; Trinity to add one-line §4 annotation confirming.
+4. **Portal screenshots (Wishlist #12) deferred** — Browser-based PNG captures cannot be autopiloted. Defer to Jose-on-return manual step.
+
+**Scope Decisions Captured:**
+1. Mech C1 and C2 are both in-scope and implemented sequentially — not alternatives.
+2. Portal screenshots (Wishlist #12) are out-of-scope for autopilot. Deferred.
+3. Wishlist #13 (Mech B ECMP edge case) and #14 (MCR1 failure) are deferred post-C2 pending explicit Jose authorization.
+4. Niobe C1 evidence pack is a hard gate before Tank Phase 3. Autopilot pipeline must enforce this.
+5. Teardown trigger requires all four conditions including Jose explicit word.
+
+**Status:** Merged by Scribe 2026-06-16.
+
+---
+
+### 2026-06-16T00:27Z: Kid Blog Collaboration — editorial pivot to MS Learn update frame
+
+**By:** The Kid (blog-writer)
+
+**Subject:** Editorial pivot to MS Learn update framing applied per Jose's directive. Three deliverables revised.
+
+**Deliverables revised** in `labs/vwan-dual-er-symmetric/blog/`:
+
+1. **`outline-2026-06-15.md`** (revised 2026-06-16) — Reframed as a contemporary update to the MS Learn ER DR article. New working title: *"Three blind spots in the ExpressRoute DR guide that vWAN, route maps, and partner-managed CEs introduced."* 10 sections map three specific MS Learn claims that the lab disproves or supersedes. Evidence file references unchanged; narrative arc restructured around the three blind spots.
+
+2. **`scenario-wishlist-2026-06-15.md`** (revised 2026-06-16) — Added a "Blind-spot evidence anchors" table mapping each of the three MS Learn claims to its specific evidence file. Money shots upgraded from 2 to 3 required files. Scenarios #1/#4/#7 now explicitly tagged as blind-spot anchors.
+
+3. **`evidence-naming-convention-2026-06-15.md`** — No change needed for this pivot.
+
+**Key scenario gaps identified (post-pivot):**
+
+*Critical (blog cannot ship without):*
+- **Blind Spot #1 anchor** (`desb/11-azfw1-kql-results.txt` + `12-azfw2-kql-results.txt`): ✅ already captured by niobe-4. The MS Learn quote + this evidence is the opening exhibit.
+- **Blind Spot #2 anchor** (`desc/cr-routes-before-mechc.txt`): 🔄 niobedc in-flight. The GCP CR routes showing pure AS-path best-path with no iBGP lever is the evidence that the article's local-pref advice doesn't apply here.
+- **Blind Spot #3 anchor** (`mechc-active/azfw1-kql.txt` + `azfw2-kql.txt`): 📋 future. This is the blog's closing exhibit — both firewalls lit up after vWAN Route Map is applied.
+
+*Plus:*
+- **`ss -tn state SYN-SENT`** during Design C TCP probe: still the highest-value add to niobedc's current run. Makes Blind Spot #1 reproducible without Log Analytics.
+
+**Open questions for Morpheus & Trinity:** [Q&A archived in source inbox file]
+
+**Status:** Merged by Scribe 2026-06-16.
+
+---

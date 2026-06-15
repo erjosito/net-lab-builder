@@ -26,6 +26,18 @@ Niobe completed four distinct missions across lab documentation, validation infr
 
 ---
 
+🔴 **CRITICAL HARD GATE** (2026-06-16T00:40:00Z, Scribe housekeeping): Tank Phase 3 (C2 apply) must NOT proceed until Niobe confirms **C1 evidence pack completion**. 
+
+**Why this matters:** The GCP Cloud Router snapshot after Tank Phase 2 (C1 apply) is the "Mech C is Azure-only; GCP CR unchanged" proof. This must be captured BEFORE C2 is applied (which adds inbound route maps + hub routing preference, potentially changing CR state). Per Morpheus scope v2 checklist, this is the single highest-severity sequencing risk in the autopilot pipeline.
+
+**Evidence gates required before C2:**
+1. Niobe C1 evidence pack: 4-tier symmetric verdict (control-plane, data-plane, AzFW, underlay), with GCP CR snapshot included
+2. Explicit Niobe signal: "C1 evidence capture complete"
+
+**Affected**: Tank → must block Phase 3 until gate met. Kid → must flag in blog draft. Trinity → Mech C spec (AS_TRANS, sequential C1→C2) is the trigger for this gate.
+
+---
+
 ## Learnings (2026-06-15T23:32:10+02:00)
 
 **MSEE hairpin IPv6 validation skeleton** — Lab: `msee-hairpin-hns-vwan-ipv6`
