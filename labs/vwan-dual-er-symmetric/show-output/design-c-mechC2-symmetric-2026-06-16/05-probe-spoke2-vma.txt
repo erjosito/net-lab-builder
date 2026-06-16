@@ -1,0 +1,8 @@
+# Source: vm-spoke2 (10.12.0.4, Hub1/swedencentral), Dest: vm_a (10.50.1.2, GCP eu-w3)
+# Expected C2 steady-state Azure egress: Hub1 -> ER1 -> MCR1 (ASPath primary); return may ECMP across MCR1/MCR2 for /24s
+# Command: az vm run-command invoke -g rg-vwan-symm-103167 --name vm-spoke2 --command-id RunShellScript --scripts 'for i in 1 2 3 4 5; do echo probe=$i time=$(date -Is); nc -zv -w 3 10.50.1.2 22; done' -o json
+# Captured: 2026-06-16T10:44:51.9502654+02:00
+ERROR: (OperationNotAllowed) The operation requires the VM to be running (or set to run).
+Code: OperationNotAllowed
+Message: The operation requires the VM to be running (or set to run).
+

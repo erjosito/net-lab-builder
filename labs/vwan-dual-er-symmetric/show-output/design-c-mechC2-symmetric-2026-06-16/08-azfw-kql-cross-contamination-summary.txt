@@ -1,0 +1,27 @@
+# KQL: AzureDiagnostics AzureFirewallNetworkRule/AZFWNetworkRule cross-contamination summary
+# Workspace: law-vwan-symm-103167 (43c40d1b-69d3-4946-bfad-c8dad84c7e28)
+# TimeRange: 2026-06-16T08:40:00Z .. 2026-06-16T09:20:00Z (post Mech C2 probes)
+# Captured: 2026-06-16T11:10:15.6543287+02:00
+# KQL used:
+#   AzureDiagnostics
+#   | where TimeGenerated between (datetime(2026-06-16T08:40:00Z) .. datetime(2026-06-16T09:20:00Z))
+#   | where Category in ('AzureFirewallNetworkRule','AZFWNetworkRule')
+#   | extend SrcCol = tostring(column_ifexists('SourceIp_s','')), DstCol = tostring(column_ifexists('DestinationIp_s',''))
+#   | where msg_s contains '10.50' or DstCol startswith '10.50' or SrcCol startswith '10.50'
+#   | extend SourceIP = iff(isempty(SrcCol), extract(@'from (\d+\.\d+\.\d+\.\d+)', 1, msg_s), SrcCol)
+#   | project TimeGenerated, Resource, Category, SourceIP, DstCol, msg_s
+
+=== Cross-contamination Analysis (PowerShell-side aggregation of 42 AzFW log rows) ===
+Period: post Mech C2 active/passive probes
+Method: AzureDiagnostics, GCP traffic filter
+
+Firewall                  | SourceIP  | Flows | Status
+--------------------------|-----------|-------|----------------------
+AZFW-HUB1-SWEDENCENTRAL   | (empty)   |    16 | Unparsed legacy row
+AZFW-HUB1-SWEDENCENTRAL   | 10.11.0.4 |    11 | Expected C2 Azure egress via Hub1 primary
+AZFW-HUB1-SWEDENCENTRAL   | 10.21.0.4 |     5 | Expected C2 Azure egress via Hub1 primary
+AZFW-HUB2-NORTHEUROPE     | (empty)   |     5 | Unparsed legacy row
+AZFW-HUB2-NORTHEUROPE     | 10.21.0.4 |     5 | CROSS-CONTAMINATION: spoke-source flow on standby firewall
+
+C2 readout: Hub1 primary spoke-source flows=16; Hub2 standby spoke-source flows=5; total rows=42
+Baseline references: asymmetric baseline cross-contamination was 54 flows; C1 residual was 1 flow per firewall.

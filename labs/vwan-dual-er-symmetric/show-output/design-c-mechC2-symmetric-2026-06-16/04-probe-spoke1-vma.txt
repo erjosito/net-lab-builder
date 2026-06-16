@@ -1,0 +1,15 @@
+# Source: vm-spoke1 (10.11.0.4, Hub1/swedencentral), Dest: vm_a (10.50.1.2, GCP eu-w3)
+# Expected C2 steady-state Azure egress: Hub1 -> ER1 -> MCR1 (ASPath primary); return may ECMP across MCR1/MCR2 for /24s
+# Command: az vm run-command invoke -g rg-vwan-symm-103167 --name vm-spoke1 --command-id RunShellScript --scripts 'for i in 1 2 3 4 5; do echo probe=$i time=$(date -Is); nc -zv -w 3 10.50.1.2 22; done' -o json
+# Captured: 2026-06-16T10:44:03.9736468+02:00
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\nprobe=1 time=2026-06-16T08:44:27+00:00\nprobe=2 time=2026-06-16T08:44:30+00:00\nprobe=3 time=2026-06-16T08:44:30+00:00\nprobe=4 time=2026-06-16T08:44:33+00:00\nprobe=5 time=2026-06-16T08:44:33+00:00\n\n[stderr]\nnc: connect to 10.50.1.2 port 22 (tcp) timed out: Operation now in progress\nConnection to 10.50.1.2 22 port [tcp/ssh] succeeded!\nnc: connect to 10.50.1.2 port 22 (tcp) timed out: Operation now in progress\nConnection to 10.50.1.2 22 port [tcp/ssh] succeeded!\nnc: connect to 10.50.1.2 port 22 (tcp) timed out: Operation now in progress\n"
+    }
+  ]
+}
+

@@ -1,0 +1,12 @@
+# Source: vm-spoke4 (10.22.0.4, Hub2/northeurope), Dest: vm_a (10.50.1.2, GCP eu-w3)
+# Expected C2 steady-state Azure egress: Hub1 -> ER1 -> MCR1 (ASPath primary); return may ECMP across MCR1/MCR2 for /24s
+# Command attempted: az vm run-command invoke -g rg-vwan-symm-103167 --name vm-spoke4 --command-id RunShellScript --scripts 'for i in 1 2 3 4 5; do echo probe=$i time=$(date -Is); nc -zv -w 3 10.50.1.2 22; done' -o json
+# Captured: 2026-06-16T10:59:40.9803261+02:00
+# Result: NOT RUN — vm-spoke4 is deallocated; respecting validation boundary (no Azure VM state changes)
+{
+  "name": "vm-spoke4",
+  "note": "VM deallocated; run-command probe cannot execute without starting VM",
+  "power": "VM deallocated",
+  "privateIp": "10.22.0.4"
+}
+
