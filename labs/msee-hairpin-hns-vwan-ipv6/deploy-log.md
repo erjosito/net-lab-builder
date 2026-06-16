@@ -125,3 +125,7 @@ an alternative such as IPsec VPN with IPv6 traffic selectors.
 
 Lab is live. Jose asked to keep it running for inspection.
 IPv4 hairpin: PROVEN. IPv6 hairpin: NOT WORKING (route propagation gap).
+
+## Teardown (2026-06-16)
+
+Lab deleted via `terraform destroy` after Jose approved cleanup. Deletion order followed the ER Direct dependency graph: connections -> ER GWs -> circuit -> vHub/vWAN -> ER Direct port -> RG. The vHub ER connection delete hit Terraform's 30-min context deadline once (Azure left it in `Failed` state); retried the connection delete via `az network express-route gateway connection delete` (completed), then resumed `terraform destroy` to finish. Verified: RG `rg-msee-hairpin-hns-vwan-ipv6-60536c` no longer exists, no orphaned ER Direct port or circuit remain. Billing stopped.
