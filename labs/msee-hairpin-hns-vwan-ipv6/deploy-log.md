@@ -78,15 +78,23 @@ is NOT the hairpin — it is a fundamental **Azure Virtual WAN limitation: vHubs
 3. The vWAN spoke VM has its IPv6 address (`fd00:4::4`) and a route only to its
    own `/64`; it has no route to `fd00:2::/48`.
 
-**Conclusion:** The vHub silently drops IPv6 prefixes even from its own connected
+**Conclusion (GA, June 2026):** The vHub silently drops IPv6 prefixes even from its own connected
 spoke. Because the vHub carries no IPv6, the vWAN ER GW has no IPv6 to advertise
 to the MSEE, so the hairpin never sees vWAN IPv6 routes. The vWAN `address_prefix`
-property accepts only a single IPv4 prefix; vHubs do not support an IPv6 address space.
+property accepts only a single IPv4 prefix; GA vHubs do not support an IPv6 address space.
 
-**Implication for the lab goal:** Dual-stack MSEE hairpinning is only achievable
-for IPv4 when one side is Virtual WAN. To carry IPv6 to a vWAN environment, an
-alternative is required (e.g., IPsec VPN with IPv6 traffic selectors, or keep IPv6
-within the self-managed HnS side only).
+**Preview status:** An Azure Virtual WAN IPv6 / dual-stack capability is reportedly
+in progress with GA targeted for September 2026 (per internal aka.ms/ipv6roadmap).
+As of this lab there is **no self-service feature flag** exposed in the subscription
+(`az feature list --namespace Microsoft.Network` shows no vWAN-IPv6 AFEC flag), and
+the public "What's new in Virtual WAN" page does not yet mention IPv6. This indicates
+the preview is **private / allowlist-gated** — the subscription must be explicitly
+added by the Virtual WAN product group to test it. Re-test this lab's IPv6 scenarios
+once allowlist access is obtained.
+
+**Implication for the lab goal:** With GA Virtual WAN, dual-stack MSEE hairpinning
+is only achievable for IPv4. IPv6 either requires the vWAN IPv6 preview allowlist, or
+an alternative such as IPsec VPN with IPv6 traffic selectors.
 
 ## Deploy Timeline
 

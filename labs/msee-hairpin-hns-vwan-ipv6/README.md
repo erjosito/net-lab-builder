@@ -6,7 +6,7 @@ This lab verifies MSEE hairpinning between a self-managed hub-and-spoke ER gatew
 
 ## Key Finding
 
-**IPv4 MSEE hairpin: WORKS.** IPv6 MSEE hairpin: does NOT work — but the cause is NOT the hairpin. **Azure Virtual WAN hubs are IPv4-only**, so the vHub never carries IPv6 (not even from its own spoke), and therefore has no IPv6 to hairpin back to the HnS side.
+**IPv4 MSEE hairpin: WORKS.** IPv6 MSEE hairpin: does NOT work on GA Virtual WAN — but the cause is NOT the hairpin. **GA Azure Virtual WAN hubs are IPv4-only**, so the vHub never carries IPv6 (not even from its own spoke), and therefore has no IPv6 to hairpin back to the HnS side. A vWAN IPv6 dual-stack preview is reportedly underway (GA targeted Sept 2026, internal aka.ms/ipv6roadmap); it appears allowlist-gated (no self-service feature flag found), so re-testing requires the subscription to be added to the preview.
 
 ## Designs Studied
 
