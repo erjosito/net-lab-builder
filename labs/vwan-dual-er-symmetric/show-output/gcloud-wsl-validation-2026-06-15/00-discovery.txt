@@ -1,0 +1,81 @@
+================================================================================
+WSL gcloud validation — Discovery output
+Date: 2026-06-15
+Project: gcp-vwan-symm-103167
+================================================================================
+
+## VPCs (networks)
+
+NAME                    AUTO_CREATE_SUBNETWORKS  ROUTING_MODE
+default                 True                     REGIONAL
+vpc-vwan-symm-a-103167  False                    GLOBAL
+
+KEY FINDINGS:
+- Real VPC name: vpc-vwan-symm-a-103167 (NOT the hardcoded placeholder "vpc-onprem")
+- Routing mode: GLOBAL (required for routes learned by one CR to propagate to another region's VM)
+
+================================================================================
+
+## Subnets (in vpc-vwan-symm-a-103167)
+
+NAME                       NETWORK                 RANGE          REGION
+subnet-vwan-symm-a         vpc-vwan-symm-a-103167  10.50.1.0/24   europe-west3
+subnet-vwan-symm-onprem-b  vpc-vwan-symm-a-103167  10.50.2.0/24   europe-west4
+
+KEY FINDINGS:
+- Region A: europe-west3 (10.50.1.0/24)
+- Region B: europe-west4 (10.50.2.0/24)
+
+================================================================================
+
+## Cloud Routers
+
+NAME                   REGION        NETWORK                 ASN
+router-vwan-symm-a     europe-west3  vpc-vwan-symm-a-103167  16550
+cr-vwan-symm-onprem-b  europe-west4  vpc-vwan-symm-a-103167  16550
+
+KEY FINDINGS:
+- Router A: router-vwan-symm-a (europe-west3, ASN 16550)
+- Router B: cr-vwan-symm-onprem-b (europe-west4, ASN 16550)
+- Both routers share the same ASN (16550) — this is intentional for PARTNER Interconnect
+
+================================================================================
+
+## Interconnect Attachments
+
+NAME                 REGION        TYPE     STATE
+att-vwan-symm-a      europe-west3  PARTNER  ACTIVE
+att-vwan-symm-b-new  europe-west4  PARTNER  ACTIVE
+
+KEY FINDINGS:
+- Attachment A: att-vwan-symm-a (europe-west3, ACTIVE)
+- Attachment B: att-vwan-symm-b-new (europe-west4, ACTIVE)
+- Both are PARTNER type (managed by Megaport)
+
+================================================================================
+
+## VMs
+
+NAME            ZONE            INTERNAL_IP  EXTERNAL_IP
+vm-vwan-symm-a  europe-west3-a  10.50.1.2    (none)
+vm-vwan-symm-b  europe-west4-a  10.50.2.2    (none)
+
+KEY FINDINGS:
+- VM A: vm-vwan-symm-a in 10.50.1.0/24 (europe-west3-a)
+- VM B: vm-vwan-symm-b in 10.50.2.0/24 (europe-west4-a)
+
+================================================================================
+
+## PLACEHOLDER MAPPING (for doc updates)
+
+OLD (hardcoded, broken)          NEW (real resource)
+vpc-onprem                       → vpc-vwan-symm-a-103167
+$ROUTER_A                        → router-vwan-symm-a
+$REGION_A                        → europe-west3
+$REGION_B (inferred)             → europe-west4
+$REGION_A-a (inferred zone)      → europe-west3-a
+$REGION_B-a (inferred zone)      → europe-west4-a
+<att-name> (section 9.2)         → att-vwan-symm-a
+<peer-name> (section 8.6)        → auto-ia-bgp-att-vwan-symm-a-748c416bf214189
+
+================================================================================

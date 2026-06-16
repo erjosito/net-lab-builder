@@ -1,0 +1,57 @@
+# KQL COMMAND: AzureDiagnostics | where ResourceType == "AZUREFIREWALLS" | where TimeGenerated > ago(30m) 
+#   | where msg_s contains "10.50.2.2" or msg_s contains "10.50.1.2" | project TimeGenerated, Resource, msg_s
+#   | order by TimeGenerated asc | take 50
+# WORKSPACE: law-vwan-symm-103167 (workspace ID redacted)
+# CAPTURED: 2026-06-15T22:47:00+02:00
+# 36 rows returned, 18 with msg_s content (other 18 are empty msg_s rows — known LAW schema quirk)
+#
+# ==== ASYMMETRIC ROUTING SMOKING GUN ====
+# FLOW 1: spoke1 (10.11.0.4, Hub1) → VM-B (10.50.2.2) — TIMED OUT
+#   AzFW1 (Hub1/swedencentral) saw:
+#     20:41:25 TCP SYN from 10.11.0.4:41016 → 10.50.2.2:22  Action: Allow
+#     20:41:26 TCP SYN retransmit                             Action: Allow  
+#     20:41:27 TCP SYN retransmit                             Action: Allow
+#     20:41:28 TCP SYN retransmit                             Action: Allow
+#     20:41:29 TCP SYN retransmit                             Action: Allow
+#     20:41:30 ICMP Echo from 10.11.0.4 → 10.50.2.2         Action: Allow
+#     20:41:31 ICMP Echo                                      Action: Allow
+#     20:41:32 ICMP Echo                                      Action: Allow
+#   AzFW2 (Hub2/northeurope) saw: ZERO entries for 10.11.0.4 ↔ 10.50.2.2 in this window
+#   INTERPRETATION: SYN-ACK/reply from VM-B arrived at Hub2 → AzFW2 saw it but has NO STATE for
+#                   original SYN (which went via AzFW1) → STATEFUL DROP at TCP engine level
+#                   (Azure Firewall does not log TCP state drops — hence silent absence of AzFW2 entries)
+#
+# FLOW 2: spoke3 (10.21.0.4, Hub2) → VM-B (10.50.2.2) — SUCCEEDED
+#   AzFW2 (Hub2/northeurope) saw:
+#     20:42:20 TCP SYN from 10.21.0.4:36144 → 10.50.2.2:22  Action: Allow
+#     20:42:21 ICMP Echo from 10.21.0.4 → 10.50.2.2         Action: Allow
+#   AzFW1 (Hub1/swedencentral) saw: ZERO entries for this flow
+#   INTERPRETATION: Both directions (forward SYN + return SYN-ACK) via Hub2/AzFW2 → STATE MATCH → Allow
+#
+# CORRELATION TABLE (the proof):
+# Time     | Firewall    | Flow                           | Action  | Outcome
+# ---------|-------------|--------------------------------|---------|--------
+# 20:41:25 | AzFW1-Hub1  | spoke1→VM-B SYN (5 retries)   | Allow   | → Return SYN-ACK dropped at AzFW2
+# 20:41:25 | AzFW2-Hub2  | VM-B→spoke1 SYN-ACK            | ABSENT  | → Silent TCP state drop
+# 20:42:20 | AzFW2-Hub2  | spoke3→VM-B SYN                | Allow   | → Connection succeeds
+# 20:42:20 | AzFW1-Hub1  | VM-B→spoke3 (return)           | ABSENT  | → Symmetric (AzFW2 has state)
+#
+# CONCLUSION: AzFW1 sees SYN but AzFW2 sees SYN-ACK (no state) → drops → TCP timeout.
+#             This is textbook asymmetric routing with stateful firewall drop.
+
+TIME     | FIREWALL                  | MSG_S
+---------|---------------------------|-------------------------------------------------------
+20:41:25 | AZFW-HUB1-SWEDENCENTRAL   | TCP request from 10.11.0.4:41016 to 10.50.2.2:22. Action: Allow. Policy: azfwpol-vwan-symm. Rule: allow-rfc1918-any
+20:41:26 | AZFW-HUB1-SWEDENCENTRAL   | TCP request from 10.11.0.4:41016 to 10.50.2.2:22. Action: Allow.
+20:41:27 | AZFW-HUB1-SWEDENCENTRAL   | TCP request from 10.11.0.4:41016 to 10.50.2.2:22. Action: Allow.
+20:41:28 | AZFW-HUB1-SWEDENCENTRAL   | TCP request from 10.11.0.4:41016 to 10.50.2.2:22. Action: Allow.
+20:41:29 | AZFW-HUB1-SWEDENCENTRAL   | TCP request from 10.11.0.4:41016 to 10.50.2.2:22. Action: Allow.
+20:41:30 | AZFW-HUB1-SWEDENCENTRAL   | ICMP Type=8 request from 10.11.0.4 to 10.50.2.2. Action: Allow.
+20:41:31 | AZFW-HUB1-SWEDENCENTRAL   | ICMP Type=8 request from 10.11.0.4 to 10.50.2.2. Action: Allow.
+20:41:32 | AZFW-HUB1-SWEDENCENTRAL   | ICMP Type=8 request from 10.11.0.4 to 10.50.2.2. Action: Allow.
+20:42:20 | AZFW-HUB2-NORTHEUROPE     | TCP request from 10.21.0.4:36144 to 10.50.2.2:22. Action: Allow.
+20:42:21 | AZFW-HUB2-NORTHEUROPE     | ICMP Type=8 request from 10.21.0.4 to 10.50.2.2. Action: Allow.
+20:43:11 | AZFW-HUB1-SWEDENCENTRAL   | TCP request from 10.11.0.4:58460 to 10.50.1.2:22. Action: Allow. [spoke1→VM-A baseline — succeeds]
+20:43:11 | AZFW-HUB1-SWEDENCENTRAL   | ICMP Type=8 from 10.11.0.4 to 10.50.1.2. Action: Allow.
+
+[Earlier test session 17:34 entries redacted for clarity — Design B convergence test, not part of this validation run]

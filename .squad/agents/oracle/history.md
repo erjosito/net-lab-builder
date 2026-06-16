@@ -80,3 +80,56 @@ Produce the standard 4-diagram set for lab #2 (`vwan-dual-er-symmetric`) ahead o
 ---
 
 📌 Team update (2026-06-15): Phase 1 manifest design fan-out complete on 2026-06-15; Jose gate pending.
+
+📌 2026-06-15T20:14 — Correction (apply to all future vWAN diagrams)
+- vHub external BGP ASN is **65515** (used by ER GW for MSEE peering, VPN GW peering, Route Server peering — same in every hub, vWAN-reserved, non-configurable).
+- **65520** is NOT a peering ASN — it is the AS-path marker vWAN PREPENDS onto routes when they are propagated *across* hubs (inter-hub propagation marker).
+- Lab #2 diagrams I sketched in the Phase-1 prep referenced ASN 65520 as the hub's BGP ASN; this was wrong. Origin: Jose correction 2026-06-15T20:14.
+- Repo memory `azure vwan ASNs` records the canonical distinction.
+
+## 2026-06-15 — Lab #3 diagram set: `msee-hairpin-hns-vwan-ipv6`
+
+### Task
+
+Produce the standard 4-diagram set for lab #3 (`msee-hairpin-hns-vwan-ipv6`) ahead of deploy. Morpheus's lab card: self-managed hub-and-spoke ER gateway + Virtual WAN hub ER gateway, both peering at the same Stockholm MSEE. Dual-stack IPv4+IPv6 BGP. No on-prem router, no Megaport, no GCP. Goal: demonstrate MSEE hairpin mechanism over ER Direct port (10 Gbps, two sub-allocated circuits).
+
+### Files produced
+
+| # | File | Format | Status |
+|---|---|---|---|
+| 01 | `labs/msee-hairpin-hns-vwan-ipv6/diagrams/01-topology.mmd` | mermaid `flowchart LR` | ✅ created |
+| 02 | `labs/msee-hairpin-hns-vwan-ipv6/diagrams/02-bgp-control-plane.mmd` | mermaid `flowchart LR` | ✅ created |
+| 03 | `labs/msee-hairpin-hns-vwan-ipv6/diagrams/03-data-plane.mmd` | mermaid `flowchart LR` with 2 subgraphs | ✅ created |
+| 04 | `labs/msee-hairpin-hns-vwan-ipv6/diagrams/04-cleanup-chain.mmd` | mermaid `flowchart TD` | ✅ created |
+| — | `labs/msee-hairpin-hns-vwan-ipv6/README.md` | Markdown with `## Diagrams` section | ✅ created |
+
+### Key findings — MSEE hairpin visual pattern
+
+1. **Hairpin topology at control plane:** Two eBGP sessions (HnS GW ↔ MSEE, vWAN GW ↔ MSEE) sharing the same MSEE node. Diagram shows dual-direction arrows (→ and ←) on each session, each annotated with the advertised prefixes.
+   - HnS ER GW advertises 10.1.x.x + 10.2.x.x, learns 10.3.x.x + 10.4.x.x from MSEE.
+   - vWAN ER GW advertises 10.3.x.x + 10.4.x.x, learns 10.1.x.x + 10.2.x.x from MSEE.
+   - MSEE is the bridge — same ASN (12076) on both sessions; no VXC configuration; Azure-side BGP sessions only.
+
+2. **IPv6 ULA dual-stack convention:** Dual-stack ER requires separate BGP sessions per address family.
+   - IPv4 peering subnets: 172.16.1.0/30 (Circuit 1), 172.16.2.0/30 (Circuit 2).
+   - IPv6 peering subnets: fd00:f:1::/126 (Circuit 1), fd00:f:2::/126 (Circuit 2).
+   - Both routes advertised on each session (separate address family = separate learned route entries). Diagram labels each session with both address families' peer IPs.
+
+3. **Data plane — dual subgraph encoding:** S1 (IPv4 ping) and S2 (IPv6 ping) share the same topological path but operate independently at the socket/probe level. Encoding as two adjacent `subgraph` blocks in mermaid preserves the "parallel scenarios" narrative without duplicating the path logic.
+
+4. **Cleanup order — ER Direct port timing:** Unlike lab #2 (Megaport, where MCR deletes are bottlenecks), lab #3 bottleneck is the ER Direct port deprovisioning time (~1 hour post-circuit-deletion at provider). Capture that in the cleanup diagram as a separate step with a note on the time SLA.
+
+### TODO labels requiring Tank/Niobe post-deploy refresh
+
+- ER Direct Port resource ID and confirmation of Stockholm region allocation
+- Peer IPs on Circuit 1 and Circuit 2 (172.16.1.x, fd00:f:1::x primary/secondary; 172.16.2.x, fd00:f:2::x primary/secondary)
+- VM IP addresses in each spoke (10.2.0.x, 10.4.0.x for IPv4; fd00:2::x, fd00:4::x for IPv6)
+- MSEE peering location name confirmation (Stockholm)
+
+---
+
+## Learnings
+
+- **MSEE hairpin visual pattern:** Shared MSEE node with dual eBGP sessions (one per circuit, same ASN). Data flows through MSEE as a Layer 3 reflection — packet traverses Circuit 1 tunnel → MSEE routes via BGP → Circuit 2 tunnel. Diagram representation: MSEE as a single node with four edges (in + out per circuit), labeled with ASN + advertised prefixes.
+- **IPv6 ER peering conventions:** Dual-stack requires separate address families on the same eBGP session. Diagrams label each session with both family notations (e.g., "IPv4: 172.16.1.0/30 / IPv6: fd00:f:1::/126"). ULA is a valid choice for pure Azure-to-Azure labs when global routing is not required.
+- **Data-plane multi-scenario encoding in mermaid:** Subgraphs allow parallel scenarios (S1 IPv4 / S2 IPv6) to coexist in one diagram without textual duplication. Keeps the diagram readable and emphasizes that the path topology is identical; only the address families differ.

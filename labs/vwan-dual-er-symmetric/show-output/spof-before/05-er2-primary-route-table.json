@@ -1,0 +1,21 @@
+# COMMAND: az network express-route list-route-tables -n er-vwan-symm-amsterdam -g rg-vwan-symm-103167 --peering-name AzurePrivatePeering --path primary -o json
+# CAPTURED: 2026-06-15T19:24:55+02:00
+# SPOF SIGNAL: 10.50.2.0/24 present via MCR2 (ASN 65002) only. No 10.50.1.0/24.
+{
+  "value": [
+    {"locPrf": "100", "network": "10.11.0.0/24", "nextHop": "10.20.0.12*", "path": "65515 65520 65520 e", "weight": 0},
+    {"locPrf": "100", "network": "10.11.0.0/24", "nextHop": "10.20.0.13", "path": "65515 65520 65520 e", "weight": 0},
+    {"locPrf": "100", "network": "10.12.0.0/24", "nextHop": "10.20.0.12*", "path": "65515 65520 65520 e", "weight": 0},
+    {"locPrf": "100", "network": "10.12.0.0/24", "nextHop": "10.20.0.13", "path": "65515 65520 65520 e", "weight": 0},
+    {"locPrf": "100", "network": "10.20.0.0/23", "nextHop": "10.20.0.12*", "path": "65515", "weight": 0},
+    {"locPrf": "100", "network": "10.20.0.0/23", "nextHop": "10.20.0.13", "path": "65515", "weight": 0},
+    {"locPrf": "100", "network": "10.21.0.0/24", "nextHop": "10.20.0.12*", "path": "65515", "weight": 0},
+    {"locPrf": "100", "network": "10.21.0.0/24", "nextHop": "10.20.0.13", "path": "65515", "weight": 0},
+    {"locPrf": "100", "network": "10.22.0.0/24", "nextHop": "10.20.0.12*", "path": "65515", "weight": 0},
+    {"locPrf": "100", "network": "10.22.0.0/24", "nextHop": "10.20.0.13", "path": "65515", "weight": 0},
+    {"locPrf": "100", "network": "10.50.2.0/24", "nextHop": "169.254.148.89", "path": "65002 16550 ?", "weight": 0},
+    {"locPrf": "100", "network": "169.254.87.240/29", "nextHop": "169.254.148.89", "path": "65002", "weight": 0},
+    {"locPrf": "100", "network": "169.254.148.88/30", "nextHop": "169.254.148.89", "path": "65002", "weight": 0},
+    {"locPrf": "100", "network": "169.254.148.92/30", "nextHop": "169.254.148.89", "path": "65002", "weight": 0}
+  ]
+}

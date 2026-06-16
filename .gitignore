@@ -22,3 +22,22 @@ crash.*.log
 !example.tfvars
 .terraformrc
 terraform.rc
+
+# Lab session state (correlation_id reuse marker)
+.lab-state.json
+
+# Terraform plan binaries and raw run logs (lab artifacts; may embed live resource IDs)
+tfplan
+tfplan*
+deploy-run-*.log
+deploy*.log
+plan-*-raw.txt
+plan-*.txt
+
+# Lab deploy artifacts that may contain PII, ER service keys, live resource IDs, or token traces
+**/deploy/.akv-state.json
+**/deploy/tf-outputs.json
+**/deploy/tf-debug.log
+*-debug.log
+tf-outputs.json
+

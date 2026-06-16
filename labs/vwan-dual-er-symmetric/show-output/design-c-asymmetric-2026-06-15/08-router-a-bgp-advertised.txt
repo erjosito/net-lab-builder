@@ -1,0 +1,7 @@
+# Command (run via WSL): gcloud compute routers get-status router-vwan-symm-a --region europe-west3 --format=json | jq '.result.bgpPeerStatus[] | {peer:.name, advertised:[.advertisedRoutes[]? | .destRange]}'
+Peer: auto-ia-bgp-att-vwan-symm-a-748c416bf214189
+  10.50.1.0/24
+  10.50.2.0/24
+Peer: auto-ia-bgp-att-vwan-symm-b-8a45a420e5e4bb7
+  10.50.1.0/24
+  10.50.2.0/24

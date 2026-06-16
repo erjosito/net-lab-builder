@@ -1,0 +1,8 @@
+# COMMAND: az network vhub get-effective-routes --resource-group rg-vwan-symm-103167 --name hub1-swedencentral --resource-type ExpressRouteGateway --resource-id /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub1 -o json
+# CAPTURED: 2026-06-15T19:24:55+02:00
+# NOTE: az network vhub get-effective-routes returns {"value":[]} for ExpressRouteGateway resource type.
+# This is the known Lab #1 anomaly (Niobe history 2026-06-15, Layer D).
+# The authoritative Azure-side route evidence is in files 03-06 (ER circuit route tables via MSEE).
+{
+  "value": []
+}

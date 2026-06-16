@@ -1,0 +1,38 @@
+# COMMAND: az network vhub get-effective-routes -g rg-vwan-symm-103167 --name hub1-swedencentral --resource-type RouteTable --resource-id /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/hubRouteTables/defaultRouteTable -o json
+# CAPTURED: 2026-06-15T22:30:00+02:00
+# NOTE: Routing-intent=private aggregates all private traffic to AzFW. Specific GCP prefix paths resolved via ER circuit route tables.
+{
+  "value": [
+    {
+      "addressPrefixes": [
+        "10.0.0.0/8"
+      ],
+      "nextHopType": "Azure Firewall",
+      "nextHops": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub1-swedencentral"
+      ],
+      "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/hubRouteTables/defaultRouteTable"
+    },
+    {
+      "addressPrefixes": [
+        "172.16.0.0/12"
+      ],
+      "nextHopType": "Azure Firewall",
+      "nextHops": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub1-swedencentral"
+      ],
+      "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/hubRouteTables/defaultRouteTable"
+    },
+    {
+      "addressPrefixes": [
+        "192.168.0.0/16"
+      ],
+      "nextHopType": "Azure Firewall",
+      "nextHops": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub1-swedencentral"
+      ],
+      "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/hubRouteTables/defaultRouteTable"
+    }
+  ]
+}
+

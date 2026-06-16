@@ -48,3 +48,35 @@
 **Sanitization result:** Pre-merge validation confirmed zero hits on credential/GUID patterns across inbox directive, charter, ceremonies, routing, team, and decision entry. Post-merge grep confirms 5 source files remain clean; this entry and project-journal entry reference patterns only in redacted form.
 
 ---
+
+---
+
+## 2026-06-16: Reserved-ASN choice for VWAN route-map prepend (23456 -> 64496)
+
+**By:** Jose (via Copilot). **Status:** applied, validated live.
+
+**What:** All Mech C1/C2 outbound and inbound route-map AS-path prepends use RFC 5398 documentation ASN **64496** (range 64496-64511), replacing the earlier AS_TRANS placeholder 23456.
+
+**Why:** AS 23456 (AS_TRANS, RFC 4893/6793) carries operational meaning during 4-byte-ASN transition: 2-byte-only BGP speakers substitute 23456 into AS_PATH for any 4-byte ASN they cannot represent. Artificially prepending 23456 risks collision with that transition machinery and any diagnostics that treat 23456 specially. RFC 5398 ASNs are reserved purely for documentation, carry zero operational semantics, and are the cleanest pedagogical choice for a lab plus blog.
+
+**Validation:** Azure Route Maps accepts 64496 (test map provisioningState=Succeeded). Live at GCP Cloud Router: identical de-pref behaviour to 23456. TF delta 0 add / 2 change / 0 destroy (in-place; BGP reconverged ~60s).
+
+**Azure Route Maps ASN constraints:** 2-byte only; no private (64512-65534); no Azure-reserved (8074, 8075, 12076, 65515, 65517-65520). 64496 satisfies all three.
+
+**Quote:** "I meant the range 64496-64511. When you have time, could you check if these also work?" + "I wonder whether using 23456 could have negative effects for a later transition to 4-byte ASNs"
+
+---
+
+## 2026-06-16: Mech C1 evidence + GCP /24-ECMP finding (Niobe)
+
+**By:** Niobe (Validation). **Verdict:** Mech C1 = PARTIAL SYMMETRIC.
+
+**What:** 4-tier evidence captured for Design C Mech C1 (VWAN outbound route maps, AS-path de-pref) at `labs/vwan-dual-er-symmetric/show-output/design-c-mechC1-symmetric-2026-06-16/` (files 01-14 + README; see 14-verdict.md).
+
+**Key findings:**
+- AzFW cross-contamination dropped 54 -> 1 flow per firewall (-98%) vs the asymmetric baseline.
+- **GCP /24-ECMP (critical for blog):** GCP Cloud Router does NOT use AS-path length as an ECMP tiebreaker; it derives VPC route priority from MED. So /24 prefixes install BOTH MCR paths regardless of prepend depth. Only /23 aggregates resolve single-path.
+- Data plane: spoke3 -> vm_a 2/5 TCP success = data-plane proof of /24 ECMP session asymmetry.
+- Megaport has no looking-glass API endpoint (HTTP 404 all variants); MCR product info captured instead, both LIVE.
+
+**Implication:** Full steady-state symmetry needs Mech C3 (suppress /24s on standby / advertise only /23 aggregates, or GCP-side MED). C1 and C2 both leave residual /24 ECMP.

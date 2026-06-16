@@ -1,0 +1,1194 @@
+google_compute_subnetwork.vpc_b_subnet: Destroying... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-b]
+google_compute_firewall.vpc_b_allow: Destroying... [id=projects/gcp-vwan-symm-103167/global/firewalls/fw-vwan-symm-b-allow]
+megaport_vxc.gcp_b: Destroying...
+megaport_vxc.gcp_b: Destruction complete after 2s
+google_compute_interconnect_attachment.att_b: Destroying... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/interconnectAttachments/att-vwan-symm-b]
+google_compute_network.vpc_a: Modifying... [id=projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167]
+google_compute_firewall.vpc_b_allow: Still destroying... [id=projects/gcp-vwan-symm-103167/global/firewalls/fw-vwan-symm-b-allow, 00m10s elapsed]
+google_compute_firewall.vpc_b_allow: Destruction complete after 12s
+google_compute_interconnect_attachment.att_b: Still destroying... [id=projects/gcp-vwan-symm-103167/regions/e...nterconnectAttachments/att-vwan-symm-b, 00m10s elapsed]
+google_compute_network.vpc_a: Still modifying... [id=projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167, 00m10s elapsed]
+google_compute_network.vpc_a: Modifications complete after 12s [id=projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167]
+google_compute_subnetwork.vpc_onprem_subnet_b: Creating...
+google_compute_router.cr_onprem_b: Creating...
+google_compute_router.router_a: Modifying... [id=projects/gcp-vwan-symm-103167/regions/europe-west3/routers/router-vwan-symm-a]
+google_compute_interconnect_attachment.att_b: Still destroying... [id=projects/gcp-vwan-symm-103167/regions/e...nterconnectAttachments/att-vwan-symm-b, 00m20s elapsed]
+google_compute_subnetwork.vpc_onprem_subnet_b: Still creating... [00m10s elapsed]
+google_compute_router.cr_onprem_b: Still creating... [00m10s elapsed]
+google_compute_router.router_a: Still modifying... [id=projects/gcp-vwan-symm-103167/regions/europe-west3/routers/router-vwan-symm-a, 00m10s elapsed]
+google_compute_router.cr_onprem_b: Creation complete after 11s [id=projects/gcp-vwan-symm-103167/regions/europe-west4/routers/cr-vwan-symm-onprem-b]
+google_compute_interconnect_attachment.att_b_new: Creating...
+google_compute_router.router_a: Modifications complete after 11s [id=projects/gcp-vwan-symm-103167/regions/europe-west3/routers/router-vwan-symm-a]
+google_compute_interconnect_attachment.att_b: Still destroying... [id=projects/gcp-vwan-symm-103167/regions/e...nterconnectAttachments/att-vwan-symm-b, 00m30s elapsed]
+google_compute_subnetwork.vpc_onprem_subnet_b: Still creating... [00m20s elapsed]
+google_compute_interconnect_attachment.att_b_new: Still creating... [00m10s elapsed]
+google_compute_subnetwork.vpc_onprem_subnet_b: Creation complete after 21s [id=projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-onprem-b]
+google_compute_interconnect_attachment.att_b_new: Creation complete after 12s [id=projects/gcp-vwan-symm-103167/regions/europe-west4/interconnectAttachments/att-vwan-symm-b-new]
+google_compute_interconnect_attachment.att_b: Still destroying... [id=projects/gcp-vwan-symm-103167/regions/e...nterconnectAttachments/att-vwan-symm-b, 00m40s elapsed]
+google_compute_interconnect_attachment.att_b: Destruction complete after 41s
+google_compute_router.router_b: Destroying... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/routers/router-vwan-symm-b]
+google_compute_router.router_b: Still destroying... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/routers/router-vwan-symm-b, 00m10s elapsed]
+google_compute_router.router_b: Still destroying... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/routers/router-vwan-symm-b, 00m20s elapsed]
+google_compute_router.router_b: Destruction complete after 21s
+╷
+│ Error: Error when reading or editing Subnetwork: googleapi: Error 400: The subnetwork resource 'projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-b' is already being used by 'projects/gcp-vwan-symm-103167/zones/europe-west4-a/instances/vm-vwan-symm-b', resourceInUseByAnotherResource
+│ 
+│ 
+╵
+random_id.correlation: Refreshing state... [id=iZuB]
+google_compute_network.vpc_a: Refreshing state... [id=projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167]
+google_compute_network.vpc_b: Refreshing state... [id=projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-b-103167]
+google_compute_subnetwork.vpc_b_subnet: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-b]
+google_compute_router.cr_onprem_b: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/routers/cr-vwan-symm-onprem-b]
+google_compute_subnetwork.vpc_onprem_subnet_b: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-onprem-b]
+google_compute_firewall.vpc_a_allow: Refreshing state... [id=projects/gcp-vwan-symm-103167/global/firewalls/fw-vwan-symm-a-allow]
+google_compute_router.router_a: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west3/routers/router-vwan-symm-a]
+google_compute_subnetwork.vpc_a_subnet: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west3/subnetworks/subnet-vwan-symm-a]
+google_compute_interconnect_attachment.att_b_new: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/interconnectAttachments/att-vwan-symm-b-new]
+google_compute_instance.vm_b: Refreshing state... [id=projects/gcp-vwan-symm-103167/zones/europe-west4-a/instances/vm-vwan-symm-b]
+google_compute_interconnect_attachment.att_a: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west3/interconnectAttachments/att-vwan-symm-a]
+google_compute_instance.vm_a: Refreshing state... [id=projects/gcp-vwan-symm-103167/zones/europe-west3-a/instances/vm-vwan-symm-a]
+data.megaport_location.loc_b: Reading...
+data.megaport_location.loc_a: Reading...
+data.megaport_location.loc_a: Read complete after 2s [name=Equinix Frankfurt FR5]
+megaport_mcr.mcr1: Refreshing state...
+data.megaport_location.loc_b: Read complete after 2s [name=Equinix Amsterdam AM1]
+megaport_mcr.mcr2: Refreshing state...
+megaport_vxc.gcp_a: Refreshing state...
+data.azurerm_client_config.current: Reading...
+azurerm_resource_group.lab: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167]
+data.azurerm_client_config.current: Read complete after 0s [id=Y2xpZW50Q29uZmlncy9jbGllbnRJZD0wNGIwNzc5NS04ZGRiLTQ2MWEtYmJlZS0wMmY5ZTFiZjdiNDY7b2JqZWN0SWQ9N2Y2ZTJjODItYjY3Ny00N2FiLWFlNmMtYjE1ZjE5Mjk5YzdmO3N1YnNjcmlwdGlvbklkPWE4ZmJkOGUxLWZiNWEtNDQxMS04MDRhLTRhYzgwOTI5YzkzYzt0ZW5hbnRJZD01YWQwMGI2OS0wMzg2LTRjNzQtOGFkYy1hYzdhMjg2NDlmMzQ=]
+azurerm_express_route_circuit.circuit1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteCircuits/er-vwan-symm-stockholm]
+azurerm_virtual_network.spoke["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke1]
+azurerm_network_security_group.spoke["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke2]
+azurerm_virtual_wan.vwan: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualWans/vwan-vwan-symm]
+azurerm_express_route_circuit.circuit2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteCircuits/er-vwan-symm-amsterdam]
+azurerm_firewall_policy.shared: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/firewallPolicies/azfwpol-vwan-symm]
+azurerm_log_analytics_workspace.lab: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.OperationalInsights/workspaces/law-vwan-symm-103167]
+azurerm_network_security_group.spoke["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke3]
+azurerm_network_security_group.spoke["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke1]
+azurerm_network_security_group.spoke["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke4]
+azurerm_virtual_network.spoke["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke2]
+azurerm_virtual_network.spoke["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke3]
+azurerm_virtual_network.spoke["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke4]
+azurerm_virtual_hub.hub2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope]
+azurerm_virtual_hub.hub1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral]
+azurerm_firewall_policy_rule_collection_group.lab_allow_all: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/firewallPolicies/azfwpol-vwan-symm/ruleCollectionGroups/lab-allow-all]
+azurerm_express_route_gateway.hub1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub1]
+azurerm_firewall.hub1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub1-swedencentral]
+megaport_vxc.azure_circuit2_secondary: Refreshing state...
+megaport_vxc.azure_circuit2: Refreshing state...
+azurerm_express_route_gateway.hub2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub2]
+azurerm_firewall.hub2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub2-northeurope]
+megaport_vxc.azure_circuit1: Refreshing state...
+megaport_vxc.azure_circuit1_secondary: Refreshing state...
+azurerm_virtual_hub_routing_intent.hub2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope/routingIntent/intent-hub2]
+azurerm_subnet.spoke_workload["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke1/subnets/snet-workload]
+azurerm_subnet.spoke_workload["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke4/subnets/snet-workload]
+azurerm_subnet.spoke_workload["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke2/subnets/snet-workload]
+azurerm_subnet.spoke_workload["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke3/subnets/snet-workload]
+azurerm_monitor_diagnostic_setting.azfw2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub2-northeurope|diag-azfw2]
+azurerm_monitor_diagnostic_setting.azfw1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub1-swedencentral|diag-azfw1]
+azurerm_virtual_hub_routing_intent.hub1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/routingIntent/intent-hub1]
+azurerm_subnet_network_security_group_association.spoke["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke3/subnets/snet-workload]
+azurerm_subnet_network_security_group_association.spoke["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke1/subnets/snet-workload]
+azurerm_subnet_network_security_group_association.spoke["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke2/subnets/snet-workload]
+azurerm_subnet_network_security_group_association.spoke["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke4/subnets/snet-workload]
+azurerm_network_interface.spoke["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkInterfaces/nic-spoke3-vm]
+azurerm_network_interface.spoke["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkInterfaces/nic-spoke1-vm]
+azurerm_network_interface.spoke["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkInterfaces/nic-spoke4-vm]
+azurerm_network_interface.spoke["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkInterfaces/nic-spoke2-vm]
+azurerm_virtual_hub_connection.spoke["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/hubVirtualNetworkConnections/conn-spoke2]
+azurerm_virtual_hub_connection.spoke["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/hubVirtualNetworkConnections/conn-spoke1]
+azurerm_virtual_hub_connection.spoke["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope/hubVirtualNetworkConnections/conn-spoke4]
+azurerm_virtual_hub_connection.spoke["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope/hubVirtualNetworkConnections/conn-spoke3]
+azurerm_express_route_connection.hub2_circuit2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub2/expressRouteConnections/hub2ergw-circuit2]
+azurerm_express_route_connection.hub1_circuit1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub1/expressRouteConnections/hub1ergw-circuit1]
+azurerm_linux_virtual_machine.spoke["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke2]
+azurerm_linux_virtual_machine.spoke["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke1]
+azurerm_linux_virtual_machine.spoke["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke3]
+azurerm_linux_virtual_machine.spoke["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke4]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+  ~ update in-place
+  - destroy
+
+Terraform will perform the following actions:
+
+  # google_compute_instance.vm_b will be updated in-place
+  ~ resource "google_compute_instance" "vm_b" {
+        id                         = "projects/gcp-vwan-symm-103167/zones/europe-west4-a/instances/vm-vwan-symm-b"
+        name                       = "vm-vwan-symm-b"
+        tags                       = [
+            "onprem-sim",
+        ]
+        # (24 unchanged attributes hidden)
+
+      ~ network_interface {
+            name                        = "nic0"
+          ~ subnetwork                  = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-b" -> "projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-onprem-b"
+            # (10 unchanged attributes hidden)
+        }
+
+        # (3 unchanged blocks hidden)
+    }
+
+  # google_compute_network.vpc_b will be destroyed
+  # (because google_compute_network.vpc_b is not in configuration)
+  - resource "google_compute_network" "vpc_b" {
+      - auto_create_subnetworks                   = false -> null
+      - bgp_always_compare_med                    = false -> null
+      - bgp_best_path_selection_mode              = "LEGACY" -> null
+      - delete_default_routes_on_create           = false -> null
+      - enable_ula_internal_ipv6                  = false -> null
+      - id                                        = "projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-b-103167" -> null
+      - mtu                                       = 0 -> null
+      - name                                      = "vpc-vwan-symm-b-103167" -> null
+      - network_firewall_policy_enforcement_order = "AFTER_CLASSIC_FIREWALL" -> null
+      - network_id                                = "7043759760178265078" -> null
+      - numeric_id                                = "7043759760178265078" -> null
+      - project                                   = "gcp-vwan-symm-103167" -> null
+      - routing_mode                              = "REGIONAL" -> null
+      - self_link                                 = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-b-103167" -> null
+        # (5 unchanged attributes hidden)
+    }
+
+  # google_compute_subnetwork.vpc_b_subnet will be destroyed
+  # (because google_compute_subnetwork.vpc_b_subnet is not in configuration)
+  - resource "google_compute_subnetwork" "vpc_b_subnet" {
+      - creation_timestamp         = "2026-06-15T06:59:03.762-07:00" -> null
+      - enable_flow_logs           = false -> null
+      - gateway_address            = "10.50.2.1" -> null
+      - id                         = "projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-b" -> null
+      - ip_cidr_range              = "10.50.2.0/24" -> null
+      - name                       = "subnet-vwan-symm-b" -> null
+      - network                    = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-b-103167" -> null
+      - private_ip_google_access   = false -> null
+      - private_ipv6_google_access = "DISABLE_GOOGLE_ACCESS" -> null
+      - project                    = "gcp-vwan-symm-103167" -> null
+      - purpose                    = "PRIVATE" -> null
+      - region                     = "europe-west4" -> null
+      - self_link                  = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-b" -> null
+      - stack_type                 = "IPV4_ONLY" -> null
+      - subnetwork_id              = 4925104976346069960 -> null
+        # (9 unchanged attributes hidden)
+    }
+
+  # megaport_vxc.gcp_b will be created
+  + resource "megaport_vxc" "gcp_b" {
+      + a_end                = {
+          + current_product_uid   = (known after apply)
+          + inner_vlan            = (known after apply)
+          + location              = (known after apply)
+          + location_id           = (known after apply)
+          + ordered_vlan          = (known after apply)
+          + owner_uid             = (known after apply)
+          + product_name          = (known after apply)
+          + requested_product_uid = "f07eb97c-6fb8-444f-a921-74728997c704"
+          + secondary_name        = (known after apply)
+          + vlan                  = (known after apply)
+          + vnic_index            = (known after apply)
+        }
+      + admin_locked         = (known after apply)
+      + attribute_tags       = (known after apply)
+      + b_end                = {
+          + current_product_uid   = (known after apply)
+          + inner_vlan            = (known after apply)
+          + location              = (known after apply)
+          + location_id           = (known after apply)
+          + ordered_vlan          = (known after apply)
+          + owner_uid             = (known after apply)
+          + product_name          = (known after apply)
+          + requested_product_uid = (known after apply)
+          + secondary_name        = (known after apply)
+          + vlan                  = (known after apply)
+          + vnic_index            = (known after apply)
+        }
+      + b_end_partner_config = {
+          + google_config = {
+              + pairing_key = "6c17ece7-1aca-4390-8624-ab456c40b770/europe-west4/1"
+            }
+          + partner       = "google"
+        }
+      + cancelable           = (known after apply)
+      + company_name         = (known after apply)
+      + company_uid          = (known after apply)
+      + contract_end_date    = (known after apply)
+      + contract_start_date  = (known after apply)
+      + contract_term_months = 1
+      + cost_centre          = (known after apply)
+      + create_date          = (known after apply)
+      + created_by           = (known after apply)
+      + csp_connections      = (known after apply)
+      + distance_band        = (known after apply)
+      + last_updated         = (known after apply)
+      + live_date            = (known after apply)
+      + locked               = (known after apply)
+      + product_id           = (known after apply)
+      + product_name         = "vxc-mcr2-gcp-b-103167"
+      + product_type         = (known after apply)
+      + product_uid          = (known after apply)
+      + provisioning_status  = (known after apply)
+      + rate_limit           = 50
+      + resource_tags        = {
+          + "correlation_id" = "103167"
+          + "created_by"     = "copilot-lab"
+          + "ephemeral"      = "true"
+          + "lab"            = "vwan-dual-er-symmetric"
+          + "lab_name"       = "vwan-dual-er-symmetric"
+          + "lifetime"       = "manual"
+          + "owner"          = "jose"
+        }
+      + secondary_name       = (known after apply)
+      + service_id           = (known after apply)
+      + shutdown             = (known after apply)
+      + usage_algorithm      = (known after apply)
+    }
+
+Plan: 1 to add, 1 to change, 2 to destroy.
+
+Changes to Outputs:
+  ~ megaport_vxc_uids            = {
+      + azure_circuit1_secondary = "91b54791-43aa-4aa7-90a4-25bd36d11c55"
+      + azure_circuit2_secondary = "817025e4-3efb-44ea-be18-de963223f8c2"
+      ~ gcp_b                    = "1ae8a2c8-6c3a-4ebc-bd88-e4c8fb84983d" -> (known after apply)
+        # (3 unchanged attributes hidden)
+    }
+google_compute_subnetwork.vpc_b_subnet: Destroying... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-b]
+megaport_vxc.gcp_b: Creating...
+megaport_vxc.gcp_b: Still creating... [00m10s elapsed]
+megaport_vxc.gcp_b: Still creating... [00m20s elapsed]
+megaport_vxc.gcp_b: Still creating... [00m30s elapsed]
+megaport_vxc.gcp_b: Still creating... [00m40s elapsed]
+megaport_vxc.gcp_b: Still creating... [00m50s elapsed]
+megaport_vxc.gcp_b: Still creating... [01m00s elapsed]
+megaport_vxc.gcp_b: Still creating... [01m10s elapsed]
+megaport_vxc.gcp_b: Still creating... [01m20s elapsed]
+megaport_vxc.gcp_b: Still creating... [01m30s elapsed]
+megaport_vxc.gcp_b: Still creating... [01m40s elapsed]
+megaport_vxc.gcp_b: Still creating... [01m50s elapsed]
+megaport_vxc.gcp_b: Still creating... [02m00s elapsed]
+megaport_vxc.gcp_b: Still creating... [02m10s elapsed]
+megaport_vxc.gcp_b: Still creating... [02m20s elapsed]
+megaport_vxc.gcp_b: Still creating... [02m30s elapsed]
+megaport_vxc.gcp_b: Still creating... [02m40s elapsed]
+megaport_vxc.gcp_b: Still creating... [02m50s elapsed]
+megaport_vxc.gcp_b: Still creating... [03m00s elapsed]
+megaport_vxc.gcp_b: Still creating... [03m10s elapsed]
+megaport_vxc.gcp_b: Still creating... [03m20s elapsed]
+megaport_vxc.gcp_b: Still creating... [03m30s elapsed]
+megaport_vxc.gcp_b: Still creating... [03m40s elapsed]
+megaport_vxc.gcp_b: Still creating... [03m50s elapsed]
+megaport_vxc.gcp_b: Still creating... [04m00s elapsed]
+megaport_vxc.gcp_b: Still creating... [04m10s elapsed]
+megaport_vxc.gcp_b: Still creating... [04m20s elapsed]
+megaport_vxc.gcp_b: Still creating... [04m30s elapsed]
+megaport_vxc.gcp_b: Still creating... [04m40s elapsed]
+megaport_vxc.gcp_b: Still creating... [04m50s elapsed]
+megaport_vxc.gcp_b: Still creating... [05m00s elapsed]
+megaport_vxc.gcp_b: Still creating... [05m10s elapsed]
+megaport_vxc.gcp_b: Still creating... [05m20s elapsed]
+megaport_vxc.gcp_b: Still creating... [05m30s elapsed]
+megaport_vxc.gcp_b: Still creating... [05m40s elapsed]
+megaport_vxc.gcp_b: Still creating... [05m50s elapsed]
+megaport_vxc.gcp_b: Still creating... [06m00s elapsed]
+megaport_vxc.gcp_b: Still creating... [06m10s elapsed]
+megaport_vxc.gcp_b: Still creating... [06m20s elapsed]
+megaport_vxc.gcp_b: Still creating... [06m30s elapsed]
+megaport_vxc.gcp_b: Still creating... [06m40s elapsed]
+megaport_vxc.gcp_b: Still creating... [06m50s elapsed]
+megaport_vxc.gcp_b: Still creating... [07m00s elapsed]
+megaport_vxc.gcp_b: Still creating... [07m10s elapsed]
+megaport_vxc.gcp_b: Still creating... [07m20s elapsed]
+megaport_vxc.gcp_b: Still creating... [07m30s elapsed]
+megaport_vxc.gcp_b: Still creating... [07m40s elapsed]
+megaport_vxc.gcp_b: Still creating... [07m50s elapsed]
+megaport_vxc.gcp_b: Still creating... [08m00s elapsed]
+megaport_vxc.gcp_b: Still creating... [08m10s elapsed]
+megaport_vxc.gcp_b: Still creating... [08m20s elapsed]
+megaport_vxc.gcp_b: Still creating... [08m30s elapsed]
+megaport_vxc.gcp_b: Still creating... [08m40s elapsed]
+megaport_vxc.gcp_b: Still creating... [08m50s elapsed]
+megaport_vxc.gcp_b: Still creating... [09m00s elapsed]
+megaport_vxc.gcp_b: Still creating... [09m10s elapsed]
+megaport_vxc.gcp_b: Still creating... [09m20s elapsed]
+megaport_vxc.gcp_b: Still creating... [09m30s elapsed]
+megaport_vxc.gcp_b: Still creating... [09m40s elapsed]
+megaport_vxc.gcp_b: Still creating... [09m50s elapsed]
+megaport_vxc.gcp_b: Still creating... [10m00s elapsed]
+megaport_vxc.gcp_b: Still creating... [10m10s elapsed]
+╷
+│ Warning: Deprecated attribute
+│ 
+│   on megaport.tf line 14, in resource "megaport_mcr" "mcr1":
+│   14:     ignore_changes = [prefix_filter_lists]
+│ 
+│ The attribute "prefix_filter_lists" is deprecated. Refer to the provider
+│ documentation for details.
+│ 
+│ (and one more similar warning elsewhere)
+╵
+╷
+│ Error: Error when reading or editing Subnetwork: googleapi: Error 400: The subnetwork resource 'projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-b' is already being used by 'projects/gcp-vwan-symm-103167/zones/europe-west4-a/instances/vm-vwan-symm-b', resourceInUseByAnotherResource
+│ 
+│ 
+╵
+╷
+│ Error: VXC ordered but not ready
+│ 
+│   with megaport_vxc.gcp_b,
+│   on megaport.tf line 177, in resource "megaport_vxc" "gcp_b":
+│  177: resource "megaport_vxc" "gcp_b" {
+│ 
+│ VXC vxc-mcr2-gcp-b-103167 (542564da-bf27-4256-9541-1f23520c728d) was
+│ ordered successfully but did not reach a ready state: time expired waiting
+│ for VXC 542564da-bf27-4256-9541-1f23520c728d to provision. Its UID has been
+│ saved to state and Terraform will replace it on the next apply.
+╵
+╷
+│ Error: Too many command line arguments
+│ 
+│ Expected at most one positional argument.
+╵
+╷
+│ Error: Invalid target "google_compute_instance"
+│ 
+│ Resource specification must include a resource type and name.
+╵
+
+For more help on using this command, run:
+  terraform destroy -help
+[0m[1mrandom_id.correlation: Refreshing state... [id=iZuB][0m
+[0m[1mgoogle_compute_network.vpc_a: Refreshing state... [id=projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167][0m
+[0m[1mgoogle_compute_subnetwork.vpc_onprem_subnet_b: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-onprem-b][0m
+[0m[1mgoogle_compute_instance.vm_b: Refreshing state... [id=projects/gcp-vwan-symm-103167/zones/europe-west4-a/instances/vm-vwan-symm-b][0m
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  [31m-[0m destroy[0m
+
+Terraform will perform the following actions:
+
+[1m  # google_compute_instance.vm_b[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "google_compute_instance" "vm_b" {
+      [31m-[0m[0m can_ip_forward             = false [90m-> null[0m[0m
+      [31m-[0m[0m cpu_platform               = "Intel Broadwell" [90m-> null[0m[0m
+      [31m-[0m[0m creation_timestamp         = "2026-06-15T06:59:35.504-07:00" [90m-> null[0m[0m
+      [31m-[0m[0m current_status             = "RUNNING" [90m-> null[0m[0m
+      [31m-[0m[0m deletion_protection        = false [90m-> null[0m[0m
+      [31m-[0m[0m effective_labels           = {
+          [31m-[0m[0m "goog-terraform-provisioned" = "true"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m enable_display             = false [90m-> null[0m[0m
+      [31m-[0m[0m id                         = "projects/gcp-vwan-symm-103167/zones/europe-west4-a/instances/vm-vwan-symm-b" [90m-> null[0m[0m
+      [31m-[0m[0m instance_id                = "5463291136181124008" [90m-> null[0m[0m
+      [31m-[0m[0m label_fingerprint          = "vezUS-42LLM=" [90m-> null[0m[0m
+      [31m-[0m[0m labels                     = {} [90m-> null[0m[0m
+      [31m-[0m[0m machine_type               = "e2-micro" [90m-> null[0m[0m
+      [31m-[0m[0m metadata                   = {} [90m-> null[0m[0m
+      [31m-[0m[0m metadata_fingerprint       = "jH_8rss5siM=" [90m-> null[0m[0m
+      [31m-[0m[0m metadata_startup_script    = <<-EOT
+            #!/bin/bash
+            apt-get update -y
+            apt-get install -y nginx curl traceroute
+            echo "gcp-vpc-b ready ($(hostname))" > /var/www/html/index.html
+            systemctl enable --now nginx
+        EOT [90m-> null[0m[0m
+      [31m-[0m[0m name                       = "vm-vwan-symm-b" [90m-> null[0m[0m
+      [31m-[0m[0m project                    = "gcp-vwan-symm-103167" [90m-> null[0m[0m
+      [31m-[0m[0m resource_policies          = [] [90m-> null[0m[0m
+      [31m-[0m[0m self_link                  = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/zones/europe-west4-a/instances/vm-vwan-symm-b" [90m-> null[0m[0m
+      [31m-[0m[0m tags                       = [
+          [31m-[0m[0m "onprem-sim",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m tags_fingerprint           = "CrCbNk4VjTw=" [90m-> null[0m[0m
+      [31m-[0m[0m terraform_labels           = {
+          [31m-[0m[0m "goog-terraform-provisioned" = "true"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m zone                       = "europe-west4-a" [90m-> null[0m[0m
+        [90m# (4 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m boot_disk {
+          [31m-[0m[0m auto_delete                     = true [90m-> null[0m[0m
+          [31m-[0m[0m device_name                     = "persistent-disk-0" [90m-> null[0m[0m
+          [31m-[0m[0m force_attach                    = false [90m-> null[0m[0m
+          [31m-[0m[0m guest_os_features               = [
+              [31m-[0m[0m "UEFI_COMPATIBLE",
+              [31m-[0m[0m "VIRTIO_SCSI_MULTIQUEUE",
+              [31m-[0m[0m "GVNIC",
+              [31m-[0m[0m "SEV_CAPABLE",
+              [31m-[0m[0m "SEV_LIVE_MIGRATABLE_V2",
+            ] [90m-> null[0m[0m
+          [31m-[0m[0m mode                            = "READ_WRITE" [90m-> null[0m[0m
+          [31m-[0m[0m source                          = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/zones/europe-west4-a/disks/vm-vwan-symm-b" [90m-> null[0m[0m
+            [90m# (6 unchanged attributes hidden)[0m[0m
+
+          [31m-[0m[0m initialize_params {
+              [31m-[0m[0m architecture                = "X86_64" [90m-> null[0m[0m
+              [31m-[0m[0m enable_confidential_compute = false [90m-> null[0m[0m
+              [31m-[0m[0m image                       = "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-12-bookworm-v20260609" [90m-> null[0m[0m
+              [31m-[0m[0m labels                      = {} [90m-> null[0m[0m
+              [31m-[0m[0m provisioned_iops            = 0 [90m-> null[0m[0m
+              [31m-[0m[0m provisioned_throughput      = 0 [90m-> null[0m[0m
+              [31m-[0m[0m resource_manager_tags       = {} [90m-> null[0m[0m
+              [31m-[0m[0m resource_policies           = [] [90m-> null[0m[0m
+              [31m-[0m[0m size                        = 10 [90m-> null[0m[0m
+              [31m-[0m[0m type                        = "pd-standard" [90m-> null[0m[0m
+                [90m# (2 unchanged attributes hidden)[0m[0m
+            }
+        }
+
+      [31m-[0m[0m network_interface {
+          [31m-[0m[0m internal_ipv6_prefix_length = 0 [90m-> null[0m[0m
+          [31m-[0m[0m name                        = "nic0" [90m-> null[0m[0m
+          [31m-[0m[0m network                     = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-b-103167" [90m-> null[0m[0m
+          [31m-[0m[0m network_ip                  = "10.50.2.2" [90m-> null[0m[0m
+          [31m-[0m[0m queue_count                 = 0 [90m-> null[0m[0m
+          [31m-[0m[0m stack_type                  = "IPV4_ONLY" [90m-> null[0m[0m
+          [31m-[0m[0m subnetwork                  = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-b" [90m-> null[0m[0m
+          [31m-[0m[0m subnetwork_project          = "gcp-vwan-symm-103167" [90m-> null[0m[0m
+            [90m# (4 unchanged attributes hidden)[0m[0m
+        }
+
+      [31m-[0m[0m scheduling {
+          [31m-[0m[0m automatic_restart           = true [90m-> null[0m[0m
+          [31m-[0m[0m availability_domain         = 0 [90m-> null[0m[0m
+          [31m-[0m[0m min_node_cpus               = 0 [90m-> null[0m[0m
+          [31m-[0m[0m on_host_maintenance         = "MIGRATE" [90m-> null[0m[0m
+          [31m-[0m[0m preemptible                 = false [90m-> null[0m[0m
+          [31m-[0m[0m provisioning_model          = "STANDARD" [90m-> null[0m[0m
+            [90m# (2 unchanged attributes hidden)[0m[0m
+        }
+
+      [31m-[0m[0m shielded_instance_config {
+          [31m-[0m[0m enable_integrity_monitoring = true [90m-> null[0m[0m
+          [31m-[0m[0m enable_secure_boot          = false [90m-> null[0m[0m
+          [31m-[0m[0m enable_vtpm                 = true [90m-> null[0m[0m
+        }
+    }
+
+[1mPlan:[0m 0 to add, 0 to change, 1 to destroy.
+[0m[0m[1mgoogle_compute_instance.vm_b: Destroying... [id=projects/gcp-vwan-symm-103167/zones/europe-west4-a/instances/vm-vwan-symm-b][0m[0m
+[0m[1mgoogle_compute_instance.vm_b: Still destroying... [id=projects/gcp-vwan-symm-103167/zones/europe-west4-a/instances/vm-vwan-symm-b, 00m10s elapsed][0m[0m
+[0m[1mgoogle_compute_instance.vm_b: Still destroying... [id=projects/gcp-vwan-symm-103167/zones/europe-west4-a/instances/vm-vwan-symm-b, 00m20s elapsed][0m[0m
+[0m[1mgoogle_compute_instance.vm_b: Still destroying... [id=projects/gcp-vwan-symm-103167/zones/europe-west4-a/instances/vm-vwan-symm-b, 00m30s elapsed][0m[0m
+[0m[1mgoogle_compute_instance.vm_b: Destruction complete after 31s[0m
+[33m╷[0m[0m
+[33m│[0m [0m[1m[33mWarning: [0m[0m[1mResource targeting is in effect[0m
+[33m│[0m [0m
+[33m│[0m [0m[0mYou are creating a plan with the -target option, which means that the
+[33m│[0m [0mresult of this plan may not represent all of the changes requested by the
+[33m│[0m [0mcurrent configuration.
+[33m│[0m [0m
+[33m│[0m [0mThe -target option is not for routine use, and is provided only for
+[33m│[0m [0mexceptional situations such as recovering from errors or mistakes, or when
+[33m│[0m [0mTerraform specifically suggests to use it as part of an error message.
+[33m╵[0m[0m
+[33m╷[0m[0m
+[33m│[0m [0m[1m[33mWarning: [0m[0m[1mApplied changes may be incomplete[0m
+[33m│[0m [0m
+[33m│[0m [0m[0mThe plan was created with the -target option in effect, so some changes
+[33m│[0m [0mrequested in the configuration may have been ignored and the output values
+[33m│[0m [0mmay not be fully updated. Run the following command to verify that no other
+[33m│[0m [0mchanges are pending:
+[33m│[0m [0m    terraform plan
+[33m│[0m [0m
+[33m│[0m [0mNote that the -target option is not suitable for routine use, and is
+[33m│[0m [0mprovided only for exceptional situations such as recovering from errors or
+[33m│[0m [0mmistakes, or when Terraform specifically suggests to use it as part of an
+[33m│[0m [0merror message.
+[33m╵[0m[0m
+[33m╷[0m[0m
+[33m│[0m [0m[1m[33mWarning: [0m[0m[1mDeprecated attribute[0m
+[33m│[0m [0m
+[33m│[0m [0m[0m  on megaport.tf line 14, in resource "megaport_mcr" "mcr1":
+[33m│[0m [0m  14:     ignore_changes = [[4mprefix_filter_lists[0m][0m
+[33m│[0m [0m
+[33m│[0m [0mThe attribute "prefix_filter_lists" is deprecated. Refer to the provider
+[33m│[0m [0mdocumentation for details.
+[33m│[0m [0m
+[33m│[0m [0m(and one more similar warning elsewhere)
+[33m╵[0m[0m
+[0m[1m[32m
+Destroy complete! Resources: 1 destroyed.
+[0m
+[0m[1mrandom_id.correlation: Refreshing state... [id=iZuB][0m
+[0m[1mgoogle_compute_network.vpc_a: Refreshing state... [id=projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167][0m
+[0m[1mgoogle_compute_network.vpc_b: Refreshing state... [id=projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-b-103167][0m
+[0m[1mgoogle_compute_subnetwork.vpc_b_subnet: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-b][0m
+[0m[1mgoogle_compute_firewall.vpc_a_allow: Refreshing state... [id=projects/gcp-vwan-symm-103167/global/firewalls/fw-vwan-symm-a-allow][0m
+[0m[1mgoogle_compute_subnetwork.vpc_a_subnet: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west3/subnetworks/subnet-vwan-symm-a][0m
+[0m[1mgoogle_compute_router.router_a: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west3/routers/router-vwan-symm-a][0m
+[0m[1mgoogle_compute_subnetwork.vpc_onprem_subnet_b: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-onprem-b][0m
+[0m[1mgoogle_compute_router.cr_onprem_b: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/routers/cr-vwan-symm-onprem-b][0m
+[0m[1mgoogle_compute_interconnect_attachment.att_b_new: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/interconnectAttachments/att-vwan-symm-b-new][0m
+[0m[1mgoogle_compute_interconnect_attachment.att_a: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west3/interconnectAttachments/att-vwan-symm-a][0m
+[0m[1mgoogle_compute_instance.vm_a: Refreshing state... [id=projects/gcp-vwan-symm-103167/zones/europe-west3-a/instances/vm-vwan-symm-a][0m
+[0m[1mdata.megaport_location.loc_a: Reading...[0m[0m
+[0m[1mdata.megaport_location.loc_b: Reading...[0m[0m
+[0m[1mdata.megaport_location.loc_a: Read complete after 3s [name=Equinix Frankfurt FR5][0m
+[0m[1mdata.megaport_location.loc_b: Read complete after 3s [name=Equinix Amsterdam AM1][0m
+[0m[1mmegaport_mcr.mcr1: Refreshing state...[0m
+[0m[1mmegaport_mcr.mcr2: Refreshing state...[0m
+[0m[1mmegaport_vxc.gcp_b: Refreshing state...[0m
+[0m[1mmegaport_vxc.gcp_a: Refreshing state...[0m
+[0m[1mdata.azurerm_client_config.current: Reading...[0m[0m
+[0m[1mazurerm_resource_group.lab: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167][0m
+[0m[1mdata.azurerm_client_config.current: Read complete after 0s [id=Y2xpZW50Q29uZmlncy9jbGllbnRJZD0wNGIwNzc5NS04ZGRiLTQ2MWEtYmJlZS0wMmY5ZTFiZjdiNDY7b2JqZWN0SWQ9N2Y2ZTJjODItYjY3Ny00N2FiLWFlNmMtYjE1ZjE5Mjk5YzdmO3N1YnNjcmlwdGlvbklkPWE4ZmJkOGUxLWZiNWEtNDQxMS04MDRhLTRhYzgwOTI5YzkzYzt0ZW5hbnRJZD01YWQwMGI2OS0wMzg2LTRjNzQtOGFkYy1hYzdhMjg2NDlmMzQ=][0m
+[0m[1mazurerm_express_route_circuit.circuit1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteCircuits/er-vwan-symm-stockholm][0m
+[0m[1mazurerm_express_route_circuit.circuit2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteCircuits/er-vwan-symm-amsterdam][0m
+[0m[1mazurerm_network_security_group.spoke["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke1][0m
+[0m[1mazurerm_firewall_policy.shared: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/firewallPolicies/azfwpol-vwan-symm][0m
+[0m[1mazurerm_virtual_wan.vwan: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualWans/vwan-vwan-symm][0m
+[0m[1mazurerm_network_security_group.spoke["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke4][0m
+[0m[1mazurerm_log_analytics_workspace.lab: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.OperationalInsights/workspaces/law-vwan-symm-103167][0m
+[0m[1mazurerm_network_security_group.spoke["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke2][0m
+[0m[1mazurerm_virtual_network.spoke["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke3][0m
+[0m[1mazurerm_network_security_group.spoke["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke3][0m
+[0m[1mazurerm_virtual_network.spoke["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke4][0m
+[0m[1mazurerm_virtual_network.spoke["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke1][0m
+[0m[1mazurerm_virtual_network.spoke["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke2][0m
+[0m[1mazurerm_virtual_hub.hub2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope][0m
+[0m[1mazurerm_firewall_policy_rule_collection_group.lab_allow_all: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/firewallPolicies/azfwpol-vwan-symm/ruleCollectionGroups/lab-allow-all][0m
+[0m[1mazurerm_virtual_hub.hub1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral][0m
+[0m[1mazurerm_express_route_gateway.hub1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub1][0m
+[0m[1mazurerm_firewall.hub1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub1-swedencentral][0m
+[0m[1mmegaport_vxc.azure_circuit2: Refreshing state...[0m
+[0m[1mmegaport_vxc.azure_circuit2_secondary: Refreshing state...[0m
+[0m[1mmegaport_vxc.azure_circuit1_secondary: Refreshing state...[0m
+[0m[1mmegaport_vxc.azure_circuit1: Refreshing state...[0m
+[0m[1mazurerm_virtual_hub_routing_intent.hub1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/routingIntent/intent-hub1][0m
+[0m[1mazurerm_subnet.spoke_workload["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke1/subnets/snet-workload][0m
+[0m[1mazurerm_subnet.spoke_workload["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke3/subnets/snet-workload][0m
+[0m[1mazurerm_subnet.spoke_workload["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke4/subnets/snet-workload][0m
+[0m[1mazurerm_subnet.spoke_workload["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke2/subnets/snet-workload][0m
+[0m[1mazurerm_monitor_diagnostic_setting.azfw1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub1-swedencentral|diag-azfw1][0m
+[0m[1mazurerm_express_route_gateway.hub2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub2][0m
+[0m[1mazurerm_firewall.hub2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub2-northeurope][0m
+[0m[1mazurerm_subnet_network_security_group_association.spoke["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke3/subnets/snet-workload][0m
+[0m[1mazurerm_subnet_network_security_group_association.spoke["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke2/subnets/snet-workload][0m
+[0m[1mazurerm_subnet_network_security_group_association.spoke["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke4/subnets/snet-workload][0m
+[0m[1mazurerm_subnet_network_security_group_association.spoke["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke1/subnets/snet-workload][0m
+[0m[1mazurerm_network_interface.spoke["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkInterfaces/nic-spoke1-vm][0m
+[0m[1mazurerm_network_interface.spoke["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkInterfaces/nic-spoke2-vm][0m
+[0m[1mazurerm_network_interface.spoke["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkInterfaces/nic-spoke4-vm][0m
+[0m[1mazurerm_network_interface.spoke["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkInterfaces/nic-spoke3-vm][0m
+[0m[1mazurerm_express_route_connection.hub1_circuit1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub1/expressRouteConnections/hub1ergw-circuit1][0m
+[0m[1mazurerm_linux_virtual_machine.spoke["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke1][0m
+[0m[1mazurerm_linux_virtual_machine.spoke["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke3][0m
+[0m[1mazurerm_linux_virtual_machine.spoke["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke4][0m
+[0m[1mazurerm_linux_virtual_machine.spoke["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke2][0m
+[0m[1mazurerm_virtual_hub_routing_intent.hub2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope/routingIntent/intent-hub2][0m
+[0m[1mazurerm_monitor_diagnostic_setting.azfw2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub2-northeurope|diag-azfw2][0m
+[0m[1mazurerm_express_route_connection.hub2_circuit2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub2/expressRouteConnections/hub2ergw-circuit2][0m
+[0m[1mazurerm_virtual_hub_connection.spoke["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/hubVirtualNetworkConnections/conn-spoke2][0m
+[0m[1mazurerm_virtual_hub_connection.spoke["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope/hubVirtualNetworkConnections/conn-spoke4][0m
+[0m[1mazurerm_virtual_hub_connection.spoke["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope/hubVirtualNetworkConnections/conn-spoke3][0m
+[0m[1mazurerm_virtual_hub_connection.spoke["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/hubVirtualNetworkConnections/conn-spoke1][0m
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  [32m+[0m create[0m
+  [31m-[0m destroy[0m
+[31m-[0m/[32m+[0m destroy and then create replacement[0m
+
+Terraform will perform the following actions:
+
+[1m  # google_compute_instance.vm_b[0m will be created
+[0m  [32m+[0m[0m resource "google_compute_instance" "vm_b" {
+      [32m+[0m[0m can_ip_forward          = false
+      [32m+[0m[0m cpu_platform            = (known after apply)
+      [32m+[0m[0m creation_timestamp      = (known after apply)
+      [32m+[0m[0m current_status          = (known after apply)
+      [32m+[0m[0m deletion_protection     = false
+      [32m+[0m[0m effective_labels        = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [32m+[0m[0m id                      = (known after apply)
+      [32m+[0m[0m instance_id             = (known after apply)
+      [32m+[0m[0m label_fingerprint       = (known after apply)
+      [32m+[0m[0m machine_type            = "e2-micro"
+      [32m+[0m[0m metadata_fingerprint    = (known after apply)
+      [32m+[0m[0m metadata_startup_script = <<-EOT
+            #!/bin/bash
+            apt-get update -y
+            apt-get install -y nginx curl traceroute
+            echo "gcp-vpc-b ready ($(hostname))" > /var/www/html/index.html
+            systemctl enable --now nginx
+        EOT
+      [32m+[0m[0m min_cpu_platform        = (known after apply)
+      [32m+[0m[0m name                    = "vm-vwan-symm-b"
+      [32m+[0m[0m project                 = "gcp-vwan-symm-103167"
+      [32m+[0m[0m self_link               = (known after apply)
+      [32m+[0m[0m tags                    = [
+          [32m+[0m[0m "onprem-sim",
+        ]
+      [32m+[0m[0m tags_fingerprint        = (known after apply)
+      [32m+[0m[0m terraform_labels        = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [32m+[0m[0m zone                    = "europe-west4-a"
+
+      [32m+[0m[0m boot_disk {
+          [32m+[0m[0m auto_delete                = true
+          [32m+[0m[0m device_name                = (known after apply)
+          [32m+[0m[0m disk_encryption_key_sha256 = (known after apply)
+          [32m+[0m[0m guest_os_features          = (known after apply)
+          [32m+[0m[0m kms_key_self_link          = (known after apply)
+          [32m+[0m[0m mode                       = "READ_WRITE"
+          [32m+[0m[0m source                     = (known after apply)
+
+          [32m+[0m[0m initialize_params {
+              [32m+[0m[0m architecture           = (known after apply)
+              [32m+[0m[0m image                  = "debian-cloud/debian-12"
+              [32m+[0m[0m labels                 = (known after apply)
+              [32m+[0m[0m provisioned_iops       = (known after apply)
+              [32m+[0m[0m provisioned_throughput = (known after apply)
+              [32m+[0m[0m resource_policies      = (known after apply)
+              [32m+[0m[0m size                   = 10
+              [32m+[0m[0m snapshot               = (known after apply)
+              [32m+[0m[0m type                   = (known after apply)
+            }
+        }
+
+      [32m+[0m[0m confidential_instance_config (known after apply)
+
+      [32m+[0m[0m guest_accelerator (known after apply)
+
+      [32m+[0m[0m network_interface {
+          [32m+[0m[0m internal_ipv6_prefix_length = (known after apply)
+          [32m+[0m[0m ipv6_access_type            = (known after apply)
+          [32m+[0m[0m ipv6_address                = (known after apply)
+          [32m+[0m[0m name                        = (known after apply)
+          [32m+[0m[0m network                     = (known after apply)
+          [32m+[0m[0m network_attachment          = (known after apply)
+          [32m+[0m[0m network_ip                  = (known after apply)
+          [32m+[0m[0m stack_type                  = (known after apply)
+          [32m+[0m[0m subnetwork                  = "projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-onprem-b"
+          [32m+[0m[0m subnetwork_project          = (known after apply)
+        }
+
+      [32m+[0m[0m reservation_affinity (known after apply)
+
+      [32m+[0m[0m scheduling (known after apply)
+    }
+
+[1m  # google_compute_network.vpc_b[0m will be [1m[31mdestroyed[0m
+  # (because google_compute_network.vpc_b is not in configuration)
+[0m  [31m-[0m[0m resource "google_compute_network" "vpc_b" {
+      [31m-[0m[0m auto_create_subnetworks                   = false [90m-> null[0m[0m
+      [31m-[0m[0m bgp_always_compare_med                    = false [90m-> null[0m[0m
+      [31m-[0m[0m bgp_best_path_selection_mode              = "LEGACY" [90m-> null[0m[0m
+      [31m-[0m[0m delete_default_routes_on_create           = false [90m-> null[0m[0m
+      [31m-[0m[0m enable_ula_internal_ipv6                  = false [90m-> null[0m[0m
+      [31m-[0m[0m id                                        = "projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-b-103167" [90m-> null[0m[0m
+      [31m-[0m[0m mtu                                       = 0 [90m-> null[0m[0m
+      [31m-[0m[0m name                                      = "vpc-vwan-symm-b-103167" [90m-> null[0m[0m
+      [31m-[0m[0m network_firewall_policy_enforcement_order = "AFTER_CLASSIC_FIREWALL" [90m-> null[0m[0m
+      [31m-[0m[0m network_id                                = "7043759760178265078" [90m-> null[0m[0m
+      [31m-[0m[0m numeric_id                                = "7043759760178265078" [90m-> null[0m[0m
+      [31m-[0m[0m project                                   = "gcp-vwan-symm-103167" [90m-> null[0m[0m
+      [31m-[0m[0m routing_mode                              = "REGIONAL" [90m-> null[0m[0m
+      [31m-[0m[0m self_link                                 = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-b-103167" [90m-> null[0m[0m
+        [90m# (5 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # google_compute_subnetwork.vpc_b_subnet[0m will be [1m[31mdestroyed[0m
+  # (because google_compute_subnetwork.vpc_b_subnet is not in configuration)
+[0m  [31m-[0m[0m resource "google_compute_subnetwork" "vpc_b_subnet" {
+      [31m-[0m[0m creation_timestamp         = "2026-06-15T06:59:03.762-07:00" [90m-> null[0m[0m
+      [31m-[0m[0m enable_flow_logs           = false [90m-> null[0m[0m
+      [31m-[0m[0m gateway_address            = "10.50.2.1" [90m-> null[0m[0m
+      [31m-[0m[0m id                         = "projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-b" [90m-> null[0m[0m
+      [31m-[0m[0m ip_cidr_range              = "10.50.2.0/24" [90m-> null[0m[0m
+      [31m-[0m[0m name                       = "subnet-vwan-symm-b" [90m-> null[0m[0m
+      [31m-[0m[0m network                    = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-b-103167" [90m-> null[0m[0m
+      [31m-[0m[0m private_ip_google_access   = false [90m-> null[0m[0m
+      [31m-[0m[0m private_ipv6_google_access = "DISABLE_GOOGLE_ACCESS" [90m-> null[0m[0m
+      [31m-[0m[0m project                    = "gcp-vwan-symm-103167" [90m-> null[0m[0m
+      [31m-[0m[0m purpose                    = "PRIVATE" [90m-> null[0m[0m
+      [31m-[0m[0m region                     = "europe-west4" [90m-> null[0m[0m
+      [31m-[0m[0m self_link                  = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-b" [90m-> null[0m[0m
+      [31m-[0m[0m stack_type                 = "IPV4_ONLY" [90m-> null[0m[0m
+      [31m-[0m[0m subnetwork_id              = 4925104976346069960 [90m-> null[0m[0m
+        [90m# (9 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # megaport_vxc.gcp_b[0m is tainted, so must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "megaport_vxc" "gcp_b" {
+      [33m~[0m[0m a_end                = {
+          [33m~[0m[0m current_product_uid   = "f07eb97c-6fb8-444f-a921-74728997c704" -> (known after apply)
+          [33m~[0m[0m inner_vlan            = 948 -> (known after apply)
+          [33m~[0m[0m location              = "Equinix Amsterdam AM1" -> (known after apply)
+          [33m~[0m[0m location_id           = 85 -> (known after apply)
+          [32m+[0m[0m ordered_vlan          = (known after apply)
+          [33m~[0m[0m owner_uid             = "d594938d-b56f-42d8-b66e-f71ac55a46d5" -> (known after apply)
+          [33m~[0m[0m product_name          = "mcr2-vwan-symm-103167" -> (known after apply)
+          [33m~[0m[0m requested_product_uid = "" [33m->[0m[0m "f07eb97c-6fb8-444f-a921-74728997c704"
+          [33m~[0m[0m secondary_name        = [90mnull[0m[0m -> (known after apply)
+          [33m~[0m[0m vlan                  = 1436 -> (known after apply)
+          [33m~[0m[0m vnic_index            = 6 -> (known after apply)
+        }
+      [33m~[0m[0m admin_locked         = false -> (known after apply)
+      [33m~[0m[0m attribute_tags       = {} -> (known after apply)
+      [33m~[0m[0m b_end                = {
+          [33m~[0m[0m current_product_uid   = "5b693428-8cc6-4634-a44a-2e9e6ba556af" -> (known after apply)
+          [32m+[0m[0m inner_vlan            = (known after apply)
+          [33m~[0m[0m location              = "Digital Realty Interxion STO5" -> (known after apply)
+          [33m~[0m[0m location_id           = 98 -> (known after apply)
+          [32m+[0m[0m ordered_vlan          = (known after apply)
+          [33m~[0m[0m owner_uid             = "29ba879b-45c8-48eb-bd97-618d0f20ea04" -> (known after apply)
+          [33m~[0m[0m product_name          = "Stockholm (arn-zone1-208)" -> (known after apply)
+          [33m~[0m[0m requested_product_uid = [90mnull[0m[0m -> (known after apply)
+          [33m~[0m[0m secondary_name        = [90mnull[0m[0m -> (known after apply)
+          [33m~[0m[0m vlan                  = 1436 -> (known after apply)
+          [33m~[0m[0m vnic_index            = 0 -> (known after apply)
+        }
+      [32m+[0m[0m b_end_partner_config = {
+          [32m+[0m[0m google_config = {
+              [32m+[0m[0m pairing_key = "6c17ece7-1aca-4390-8624-ab456c40b770/europe-west4/1"
+            }
+          [32m+[0m[0m partner       = "google"
+        }
+      [33m~[0m[0m cancelable           = true -> (known after apply)
+      [33m~[0m[0m company_name         = "Microsoft AU Demo" -> (known after apply)
+      [33m~[0m[0m company_uid          = "d594938d-b56f-42d8-b66e-f71ac55a46d5" -> (known after apply)
+      [32m+[0m[0m contract_end_date    = (known after apply)
+      [32m+[0m[0m contract_start_date  = (known after apply)
+      [33m~[0m[0m cost_centre          = [90mnull[0m[0m -> (known after apply)
+      [33m~[0m[0m create_date          = "Monday, 15-Jun-26 21:26:31 CEST" -> (known after apply)
+      [33m~[0m[0m created_by           = "dbb1e1f8-0861-423b-b85c-e71256d4a486" -> (known after apply)
+      [33m~[0m[0m csp_connections      = [
+          [31m-[0m[0m {
+              [31m-[0m[0m connect_type        = "VROUTER" [90m-> null[0m[0m
+              [31m-[0m[0m ip_addresses        = [] [90m-> null[0m[0m
+              [31m-[0m[0m resource_name       = "a_csp_connection" [90m-> null[0m[0m
+              [31m-[0m[0m resource_type       = "csp_connection" [90m-> null[0m[0m
+              [31m-[0m[0m vlan                = 1436 [90m-> null[0m[0m
+                [90m# (1 unchanged attribute hidden)[0m[0m
+            },
+          [31m-[0m[0m {
+              [31m-[0m[0m bandwidth     = 50 [90m-> null[0m[0m
+              [31m-[0m[0m bandwidths    = [
+                  [31m-[0m[0m 50,
+                  [31m-[0m[0m 100,
+                  [31m-[0m[0m 200,
+                  [31m-[0m[0m 300,
+                  [31m-[0m[0m 400,
+                  [31m-[0m[0m 500,
+                  [31m-[0m[0m 1000,
+                  [31m-[0m[0m 2000,
+                  [31m-[0m[0m 5000,
+                  [31m-[0m[0m 10000,
+                  [31m-[0m[0m 20000,
+                  [31m-[0m[0m 50000,
+                ] [90m-> null[0m[0m
+              [31m-[0m[0m connect_type  = "GOOGLE" [90m-> null[0m[0m
+              [31m-[0m[0m csp_name      = "Google" [90m-> null[0m[0m
+              [31m-[0m[0m pairing_key   = "6c17ece7-1aca-4390-8624-ab456c40b770/europe-west4/1" [90m-> null[0m[0m
+              [31m-[0m[0m resource_name = "b_csp_connection" [90m-> null[0m[0m
+              [31m-[0m[0m resource_type = "csp_connection" [90m-> null[0m[0m
+            },
+        ] -> (known after apply)
+      [33m~[0m[0m distance_band        = "ZONE" -> (known after apply)
+      [32m+[0m[0m last_updated         = (known after apply)
+      [32m+[0m[0m live_date            = (known after apply)
+      [33m~[0m[0m locked               = false -> (known after apply)
+      [33m~[0m[0m product_id           = 293385 -> (known after apply)
+      [33m~[0m[0m product_type         = "VXC" -> (known after apply)
+      [33m~[0m[0m product_uid          = "542564da-bf27-4256-9541-1f23520c728d" -> (known after apply)
+      [33m~[0m[0m provisioning_status  = "DEPLOYABLE" -> (known after apply)
+      [33m~[0m[0m secondary_name       = [90mnull[0m[0m -> (known after apply)
+      [33m~[0m[0m service_id           = 0 -> (known after apply)
+      [33m~[0m[0m shutdown             = false -> (known after apply)
+      [33m~[0m[0m usage_algorithm      = "POST_PAID_HOURLY_SPEED_LONG_HAUL_VXC" -> (known after apply)
+        [90m# (4 unchanged attributes hidden)[0m[0m
+    }
+
+[1mPlan:[0m 2 to add, 0 to change, 3 to destroy.
+[0m
+Changes to Outputs:
+  [33m~[0m[0m gcp_vm_private_ips           = {
+      [33m~[0m[0m vm_b = "10.50.2.2" -> (known after apply)
+        [90m# (1 unchanged attribute hidden)[0m[0m
+    }
+  [33m~[0m[0m megaport_vxc_uids            = {
+      [32m+[0m[0m azure_circuit1_secondary = "91b54791-43aa-4aa7-90a4-25bd36d11c55"
+      [32m+[0m[0m azure_circuit2_secondary = "817025e4-3efb-44ea-be18-de963223f8c2"
+      [33m~[0m[0m gcp_b                    = "1ae8a2c8-6c3a-4ebc-bd88-e4c8fb84983d" -> (known after apply)
+        [90m# (3 unchanged attributes hidden)[0m[0m
+    }
+[0m[1mgoogle_compute_subnetwork.vpc_b_subnet: Destroying... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-b][0m[0m
+[0m[1mgoogle_compute_instance.vm_b: Creating...[0m[0m
+[0m[1mmegaport_vxc.gcp_b: Destroying...[0m[0m
+[0m[1mmegaport_vxc.gcp_b: Destruction complete after 2s[0m
+[0m[1mmegaport_vxc.gcp_b: Creating...[0m[0m
+[0m[1mgoogle_compute_subnetwork.vpc_b_subnet: Still destroying... [id=projects/gcp-vwan-symm-103167/regions/e...e-west4/subnetworks/subnet-vwan-symm-b, 00m10s elapsed][0m[0m
+[0m[1mgoogle_compute_instance.vm_b: Still creating... [00m10s elapsed][0m[0m
+[0m[1mgoogle_compute_instance.vm_b: Creation complete after 17s [id=projects/gcp-vwan-symm-103167/zones/europe-west4-a/instances/vm-vwan-symm-b][0m
+[0m[1mgoogle_compute_subnetwork.vpc_b_subnet: Still destroying... [id=projects/gcp-vwan-symm-103167/regions/e...e-west4/subnetworks/subnet-vwan-symm-b, 00m20s elapsed][0m[0m
+[0m[1mgoogle_compute_subnetwork.vpc_b_subnet: Destruction complete after 21s[0m
+[0m[1mgoogle_compute_network.vpc_b: Destroying... [id=projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-b-103167][0m[0m
+[0m[1mgoogle_compute_network.vpc_b: Still destroying... [id=projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-b-103167, 00m10s elapsed][0m[0m
+[0m[1mgoogle_compute_network.vpc_b: Still destroying... [id=projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-b-103167, 00m20s elapsed][0m[0m
+[0m[1mgoogle_compute_network.vpc_b: Destruction complete after 22s[0m
+[33m╷[0m[0m
+[33m│[0m [0m[1m[33mWarning: [0m[0m[1mDeprecated attribute[0m
+[33m│[0m [0m
+[33m│[0m [0m[0m  on megaport.tf line 14, in resource "megaport_mcr" "mcr1":
+[33m│[0m [0m  14:     ignore_changes = [[4mprefix_filter_lists[0m][0m
+[33m│[0m [0m
+[33m│[0m [0mThe attribute "prefix_filter_lists" is deprecated. Refer to the provider
+[33m│[0m [0mdocumentation for details.
+[33m│[0m [0m
+[33m│[0m [0m(and one more similar warning elsewhere)
+[33m╵[0m[0m
+╷
+│ Error: Error creating VXC
+│ 
+│   with megaport_vxc.gcp_b,
+│   on megaport.tf line 177, in resource "megaport_vxc" "gcp_b":
+│  177: resource "megaport_vxc" "gcp_b" {
+│ 
+│ Could not create vxc-mcr2-gcp-b-103167, there was an error looking up
+│ partner ports: there are no available ports for you to connect to
+╵
+[0m[1mrandom_id.correlation: Refreshing state... [id=iZuB][0m
+[0m[1mgoogle_compute_network.vpc_a: Refreshing state... [id=projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167][0m
+[0m[1mgoogle_compute_subnetwork.vpc_a_subnet: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west3/subnetworks/subnet-vwan-symm-a][0m
+[0m[1mgoogle_compute_router.router_a: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west3/routers/router-vwan-symm-a][0m
+[0m[1mgoogle_compute_firewall.vpc_a_allow: Refreshing state... [id=projects/gcp-vwan-symm-103167/global/firewalls/fw-vwan-symm-a-allow][0m
+[0m[1mgoogle_compute_router.cr_onprem_b: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/routers/cr-vwan-symm-onprem-b][0m
+[0m[1mgoogle_compute_subnetwork.vpc_onprem_subnet_b: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/subnetworks/subnet-vwan-symm-onprem-b][0m
+[0m[1mgoogle_compute_instance.vm_a: Refreshing state... [id=projects/gcp-vwan-symm-103167/zones/europe-west3-a/instances/vm-vwan-symm-a][0m
+[0m[1mgoogle_compute_interconnect_attachment.att_a: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west3/interconnectAttachments/att-vwan-symm-a][0m
+[0m[1mgoogle_compute_interconnect_attachment.att_b_new: Refreshing state... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/interconnectAttachments/att-vwan-symm-b-new][0m
+[0m[1mgoogle_compute_instance.vm_b: Refreshing state... [id=projects/gcp-vwan-symm-103167/zones/europe-west4-a/instances/vm-vwan-symm-b][0m
+[0m[1mdata.megaport_location.loc_a: Reading...[0m[0m
+[0m[1mdata.megaport_location.loc_b: Reading...[0m[0m
+[0m[1mdata.megaport_location.loc_a: Read complete after 3s [name=Equinix Frankfurt FR5][0m
+[0m[1mdata.megaport_location.loc_b: Read complete after 3s [name=Equinix Amsterdam AM1][0m
+[0m[1mmegaport_mcr.mcr2: Refreshing state...[0m
+[0m[1mmegaport_mcr.mcr1: Refreshing state...[0m
+[0m[1mmegaport_vxc.gcp_a: Refreshing state...[0m
+[0m[1mdata.azurerm_client_config.current: Reading...[0m[0m
+[0m[1mazurerm_resource_group.lab: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167][0m
+[0m[1mdata.azurerm_client_config.current: Read complete after 0s [id=Y2xpZW50Q29uZmlncy9jbGllbnRJZD0wNGIwNzc5NS04ZGRiLTQ2MWEtYmJlZS0wMmY5ZTFiZjdiNDY7b2JqZWN0SWQ9N2Y2ZTJjODItYjY3Ny00N2FiLWFlNmMtYjE1ZjE5Mjk5YzdmO3N1YnNjcmlwdGlvbklkPWE4ZmJkOGUxLWZiNWEtNDQxMS04MDRhLTRhYzgwOTI5YzkzYzt0ZW5hbnRJZD01YWQwMGI2OS0wMzg2LTRjNzQtOGFkYy1hYzdhMjg2NDlmMzQ=][0m
+[0m[1mazurerm_network_security_group.spoke["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke1][0m
+[0m[1mazurerm_network_security_group.spoke["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke4][0m
+[0m[1mazurerm_express_route_circuit.circuit2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteCircuits/er-vwan-symm-amsterdam][0m
+[0m[1mazurerm_virtual_wan.vwan: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualWans/vwan-vwan-symm][0m
+[0m[1mazurerm_network_security_group.spoke["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke2][0m
+[0m[1mazurerm_network_security_group.spoke["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke3][0m
+[0m[1mazurerm_express_route_circuit.circuit1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteCircuits/er-vwan-symm-stockholm][0m
+[0m[1mazurerm_firewall_policy.shared: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/firewallPolicies/azfwpol-vwan-symm][0m
+[0m[1mazurerm_virtual_network.spoke["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke1][0m
+[0m[1mazurerm_virtual_network.spoke["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke2][0m
+[0m[1mazurerm_virtual_network.spoke["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke3][0m
+[0m[1mazurerm_virtual_network.spoke["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke4][0m
+[0m[1mazurerm_log_analytics_workspace.lab: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.OperationalInsights/workspaces/law-vwan-symm-103167][0m
+[0m[1mazurerm_firewall_policy_rule_collection_group.lab_allow_all: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/firewallPolicies/azfwpol-vwan-symm/ruleCollectionGroups/lab-allow-all][0m
+[0m[1mmegaport_vxc.azure_circuit1: Refreshing state...[0m
+[0m[1mmegaport_vxc.azure_circuit1_secondary: Refreshing state...[0m
+[0m[1mazurerm_subnet.spoke_workload["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke1/subnets/snet-workload][0m
+[0m[1mazurerm_subnet.spoke_workload["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke3/subnets/snet-workload][0m
+[0m[1mazurerm_subnet.spoke_workload["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke4/subnets/snet-workload][0m
+[0m[1mazurerm_subnet.spoke_workload["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke2/subnets/snet-workload][0m
+[0m[1mmegaport_vxc.azure_circuit2_secondary: Refreshing state...[0m
+[0m[1mazurerm_virtual_hub.hub1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral][0m
+[0m[1mmegaport_vxc.azure_circuit2: Refreshing state...[0m
+[0m[1mazurerm_virtual_hub.hub2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope][0m
+[0m[1mazurerm_firewall.hub1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub1-swedencentral][0m
+[0m[1mazurerm_express_route_gateway.hub1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub1][0m
+[0m[1mazurerm_firewall.hub2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub2-northeurope][0m
+[0m[1mazurerm_express_route_gateway.hub2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub2][0m
+[0m[1mazurerm_subnet_network_security_group_association.spoke["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke1/subnets/snet-workload][0m
+[0m[1mazurerm_subnet_network_security_group_association.spoke["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke4/subnets/snet-workload][0m
+[0m[1mazurerm_subnet_network_security_group_association.spoke["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke3/subnets/snet-workload][0m
+[0m[1mazurerm_subnet_network_security_group_association.spoke["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke2/subnets/snet-workload][0m
+[0m[1mazurerm_network_interface.spoke["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkInterfaces/nic-spoke4-vm][0m
+[0m[1mazurerm_network_interface.spoke["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkInterfaces/nic-spoke2-vm][0m
+[0m[1mazurerm_network_interface.spoke["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkInterfaces/nic-spoke3-vm][0m
+[0m[1mazurerm_network_interface.spoke["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/networkInterfaces/nic-spoke1-vm][0m
+[0m[1mazurerm_virtual_hub_routing_intent.hub1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/routingIntent/intent-hub1][0m
+[0m[1mazurerm_monitor_diagnostic_setting.azfw1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub1-swedencentral|diag-azfw1][0m
+[0m[1mazurerm_virtual_hub_routing_intent.hub2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope/routingIntent/intent-hub2][0m
+[0m[1mazurerm_monitor_diagnostic_setting.azfw2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub2-northeurope|diag-azfw2][0m
+[0m[1mazurerm_express_route_connection.hub2_circuit2: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub2/expressRouteConnections/hub2ergw-circuit2][0m
+[0m[1mazurerm_linux_virtual_machine.spoke["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke3][0m
+[0m[1mazurerm_linux_virtual_machine.spoke["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke4][0m
+[0m[1mazurerm_linux_virtual_machine.spoke["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke1][0m
+[0m[1mazurerm_linux_virtual_machine.spoke["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke2][0m
+[0m[1mazurerm_express_route_connection.hub1_circuit1: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub1/expressRouteConnections/hub1ergw-circuit1][0m
+[0m[1mazurerm_virtual_hub_connection.spoke["spoke2"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/hubVirtualNetworkConnections/conn-spoke2][0m
+[0m[1mazurerm_virtual_hub_connection.spoke["spoke3"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope/hubVirtualNetworkConnections/conn-spoke3][0m
+[0m[1mazurerm_virtual_hub_connection.spoke["spoke1"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/hubVirtualNetworkConnections/conn-spoke1][0m
+[0m[1mazurerm_virtual_hub_connection.spoke["spoke4"]: Refreshing state... [id=/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope/hubVirtualNetworkConnections/conn-spoke4][0m
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  [32m+[0m create[0m
+[31m-[0m/[32m+[0m destroy and then create replacement[0m
+
+Terraform will perform the following actions:
+
+[1m  # google_compute_interconnect_attachment.att_b_new[0m must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "google_compute_interconnect_attachment" "att_b_new" {
+      [32m+[0m[0m attachment_group             = (known after apply)
+      [32m+[0m[0m bandwidth                    = (known after apply)
+      [32m+[0m[0m cloud_router_ip_address      = (known after apply)
+      [32m+[0m[0m cloud_router_ipv6_address    = (known after apply)
+      [33m~[0m[0m creation_timestamp           = "2026-06-15T12:23:38.600-07:00" -> (known after apply)
+      [32m+[0m[0m customer_router_ip_address   = (known after apply)
+      [32m+[0m[0m customer_router_ipv6_address = (known after apply)
+      [33m~[0m[0m edge_availability_domain     = "AVAILABILITY_DOMAIN_1" [33m->[0m[0m "AVAILABILITY_DOMAIN_2" [31m# forces replacement[0m[0m
+      [32m+[0m[0m google_reference_id          = (known after apply)
+      [33m~[0m[0m id                           = "projects/gcp-vwan-symm-103167/regions/europe-west4/interconnectAttachments/att-vwan-symm-b-new" -> (known after apply)
+      [31m-[0m[0m ipsec_internal_addresses     = [] [90m-> null[0m[0m
+      [33m~[0m[0m label_fingerprint            = "vezUS-42LLM=" -> (known after apply)
+      [31m-[0m[0m labels                       = {} [90m-> null[0m[0m
+      [32m+[0m[0m mtu                          = (known after apply)
+        name                         = "att-vwan-symm-b-new"
+      [33m~[0m[0m pairing_key                  = "6c17ece7-1aca-4390-8624-ab456c40b770/europe-west4/1" -> (known after apply)
+      [32m+[0m[0m partner_asn                  = (known after apply)
+      [33m~[0m[0m private_interconnect_info    = [] -> (known after apply)
+      [33m~[0m[0m region                       = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/regions/europe-west4" [33m->[0m[0m "europe-west4"
+      [33m~[0m[0m router                       = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/regions/europe-west4/routers/cr-vwan-symm-onprem-b" [33m->[0m[0m "projects/gcp-vwan-symm-103167/regions/europe-west4/routers/cr-vwan-symm-onprem-b"
+      [33m~[0m[0m self_link                    = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/regions/europe-west4/interconnectAttachments/att-vwan-symm-b-new" -> (known after apply)
+      [33m~[0m[0m stack_type                   = "IPV4_ONLY" -> (known after apply)
+      [33m~[0m[0m state                        = "PENDING_PARTNER" -> (known after apply)
+      [33m~[0m[0m vlan_tag8021q                = 0 -> (known after apply)
+        [90m# (8 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # megaport_vxc.gcp_b[0m will be created
+[0m  [32m+[0m[0m resource "megaport_vxc" "gcp_b" {
+      [32m+[0m[0m a_end                = {
+          [32m+[0m[0m current_product_uid   = (known after apply)
+          [32m+[0m[0m inner_vlan            = (known after apply)
+          [32m+[0m[0m location              = (known after apply)
+          [32m+[0m[0m location_id           = (known after apply)
+          [32m+[0m[0m ordered_vlan          = (known after apply)
+          [32m+[0m[0m owner_uid             = (known after apply)
+          [32m+[0m[0m product_name          = (known after apply)
+          [32m+[0m[0m requested_product_uid = "f07eb97c-6fb8-444f-a921-74728997c704"
+          [32m+[0m[0m secondary_name        = (known after apply)
+          [32m+[0m[0m vlan                  = (known after apply)
+          [32m+[0m[0m vnic_index            = (known after apply)
+        }
+      [32m+[0m[0m admin_locked         = (known after apply)
+      [32m+[0m[0m attribute_tags       = (known after apply)
+      [32m+[0m[0m b_end                = {
+          [32m+[0m[0m current_product_uid   = (known after apply)
+          [32m+[0m[0m inner_vlan            = (known after apply)
+          [32m+[0m[0m location              = (known after apply)
+          [32m+[0m[0m location_id           = (known after apply)
+          [32m+[0m[0m ordered_vlan          = (known after apply)
+          [32m+[0m[0m owner_uid             = (known after apply)
+          [32m+[0m[0m product_name          = (known after apply)
+          [32m+[0m[0m requested_product_uid = (known after apply)
+          [32m+[0m[0m secondary_name        = (known after apply)
+          [32m+[0m[0m vlan                  = (known after apply)
+          [32m+[0m[0m vnic_index            = (known after apply)
+        }
+      [32m+[0m[0m b_end_partner_config = {
+          [32m+[0m[0m google_config = {
+              [32m+[0m[0m pairing_key = (known after apply)
+            }
+          [32m+[0m[0m partner       = "google"
+        }
+      [32m+[0m[0m cancelable           = (known after apply)
+      [32m+[0m[0m company_name         = (known after apply)
+      [32m+[0m[0m company_uid          = (known after apply)
+      [32m+[0m[0m contract_end_date    = (known after apply)
+      [32m+[0m[0m contract_start_date  = (known after apply)
+      [32m+[0m[0m contract_term_months = 1
+      [32m+[0m[0m cost_centre          = (known after apply)
+      [32m+[0m[0m create_date          = (known after apply)
+      [32m+[0m[0m created_by           = (known after apply)
+      [32m+[0m[0m csp_connections      = (known after apply)
+      [32m+[0m[0m distance_band        = (known after apply)
+      [32m+[0m[0m last_updated         = (known after apply)
+      [32m+[0m[0m live_date            = (known after apply)
+      [32m+[0m[0m locked               = (known after apply)
+      [32m+[0m[0m product_id           = (known after apply)
+      [32m+[0m[0m product_name         = "vxc-mcr2-gcp-b-103167"
+      [32m+[0m[0m product_type         = (known after apply)
+      [32m+[0m[0m product_uid          = (known after apply)
+      [32m+[0m[0m provisioning_status  = (known after apply)
+      [32m+[0m[0m rate_limit           = 50
+      [32m+[0m[0m resource_tags        = {
+          [32m+[0m[0m "correlation_id" = "103167"
+          [32m+[0m[0m "created_by"     = "copilot-lab"
+          [32m+[0m[0m "ephemeral"      = "true"
+          [32m+[0m[0m "lab"            = "vwan-dual-er-symmetric"
+          [32m+[0m[0m "lab_name"       = "vwan-dual-er-symmetric"
+          [32m+[0m[0m "lifetime"       = "manual"
+          [32m+[0m[0m "owner"          = "jose"
+        }
+      [32m+[0m[0m secondary_name       = (known after apply)
+      [32m+[0m[0m service_id           = (known after apply)
+      [32m+[0m[0m shutdown             = (known after apply)
+      [32m+[0m[0m usage_algorithm      = (known after apply)
+    }
+
+[1mPlan:[0m 2 to add, 0 to change, 1 to destroy.
+[0m
+Changes to Outputs:
+  [33m~[0m[0m gcp_attachment_pairing_keys  = (sensitive value)
+  [33m~[0m[0m megaport_vxc_uids            = {
+      [32m+[0m[0m azure_circuit1_secondary = "91b54791-43aa-4aa7-90a4-25bd36d11c55"
+      [32m+[0m[0m azure_circuit2_secondary = "817025e4-3efb-44ea-be18-de963223f8c2"
+      [33m~[0m[0m gcp_b                    = "1ae8a2c8-6c3a-4ebc-bd88-e4c8fb84983d" -> (known after apply)
+        [90m# (3 unchanged attributes hidden)[0m[0m
+    }
+[0m[1mgoogle_compute_interconnect_attachment.att_b_new: Destroying... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/interconnectAttachments/att-vwan-symm-b-new][0m[0m
+[0m[1mgoogle_compute_interconnect_attachment.att_b_new: Still destroying... [id=projects/gcp-vwan-symm-103167/regions/e...connectAttachments/att-vwan-symm-b-new, 00m10s elapsed][0m[0m
+[0m[1mgoogle_compute_interconnect_attachment.att_b_new: Destruction complete after 10s[0m
+[0m[1mgoogle_compute_interconnect_attachment.att_b_new: Creating...[0m[0m
+[0m[1mgoogle_compute_interconnect_attachment.att_b_new: Still creating... [00m10s elapsed][0m[0m
+[0m[1mgoogle_compute_interconnect_attachment.att_b_new: Creation complete after 11s [id=projects/gcp-vwan-symm-103167/regions/europe-west4/interconnectAttachments/att-vwan-symm-b-new][0m
+[0m[1mmegaport_vxc.gcp_b: Creating...[0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [00m10s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [00m20s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [00m30s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [00m40s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [00m50s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [01m00s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [01m10s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [01m20s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [01m30s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [01m40s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [01m50s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [02m00s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [02m10s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [02m20s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [02m30s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [02m40s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [02m50s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [03m00s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Still creating... [03m10s elapsed][0m[0m
+[0m[1mmegaport_vxc.gcp_b: Creation complete after 3m18s[0m
+[33m╷[0m[0m
+[33m│[0m [0m[1m[33mWarning: [0m[0m[1mDeprecated attribute[0m
+[33m│[0m [0m
+[33m│[0m [0m[0m  on megaport.tf line 14, in resource "megaport_mcr" "mcr1":
+[33m│[0m [0m  14:     ignore_changes = [[4mprefix_filter_lists[0m][0m
+[33m│[0m [0m
+[33m│[0m [0mThe attribute "prefix_filter_lists" is deprecated. Refer to the provider
+[33m│[0m [0mdocumentation for details.
+[33m│[0m [0m
+[33m│[0m [0m(and one more similar warning elsewhere)
+[33m╵[0m[0m
+[0m[1m[32m
+Apply complete! Resources: 2 added, 0 changed, 1 destroyed.
+[0m[0m[1m[32m
+Outputs:
+
+[0mazfw_ids = {
+  "hub1" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub1-swedencentral"
+  "hub2" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub2-northeurope"
+}
+azfw_private_ips = {
+  "hub1" = "10.10.0.132"
+  "hub2" = "10.20.0.132"
+}
+bgp_azure_circuit1 = {
+  "azure_ip" = tostring(null)
+  "mcr_ip" = null
+  "vlan" = 3944
+}
+bgp_azure_circuit1_secondary = {
+  "azure_ip" = tostring(null)
+  "mcr_ip" = null
+  "vlan" = 3944
+}
+bgp_azure_circuit2 = {
+  "azure_ip" = tostring(null)
+  "mcr_ip" = null
+  "vlan" = 1436
+}
+bgp_azure_circuit2_secondary = {
+  "azure_ip" = tostring(null)
+  "mcr_ip" = null
+  "vlan" = 1436
+}
+correlation_id = "103167"
+er_circuit_ids = {
+  "circuit1" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteCircuits/er-vwan-symm-stockholm"
+  "circuit2" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteCircuits/er-vwan-symm-amsterdam"
+}
+er_connections = {
+  "hub1_circuit1" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub1/expressRouteConnections/hub1ergw-circuit1"
+  "hub1_circuit2_bowtie" = null
+  "hub2_circuit1_bowtie" = null
+  "hub2_circuit2" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub2/expressRouteConnections/hub2ergw-circuit2"
+}
+er_gateway_ids = {
+  "hub1" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub1"
+  "hub2" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub2"
+}
+er_service_keys = <sensitive>
+gcp_attachment_pairing_keys = <sensitive>
+gcp_router_names = {
+  "cr_onprem_b" = "cr-vwan-symm-onprem-b"
+  "router_a" = "router-vwan-symm-a"
+}
+gcp_vm_private_ips = {
+  "vm_a" = "10.50.1.2"
+  "vm_b" = "10.50.2.2"
+}
+gcp_vpc_ids = {
+  "vpc_a" = "projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167"
+}
+hub_ids = {
+  "hub1" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral"
+  "hub2" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope"
+}
+log_analytics_workspace_id = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.OperationalInsights/workspaces/law-vwan-symm-103167"
+mcr_uids = {
+  "mcr1" = "9785d825-989e-45bb-b50f-82f039edb901"
+  "mcr2" = "f07eb97c-6fb8-444f-a921-74728997c704"
+}
+megaport_pops_used = {
+  "mcr1" = "Equinix Frankfurt FR5"
+  "mcr2" = "Equinix Amsterdam AM1"
+}
+megaport_vxc_uids = {
+  "azure_circuit1" = "c895492d-a44a-479a-861e-ea48ba5b3b02"
+  "azure_circuit1_secondary" = "91b54791-43aa-4aa7-90a4-25bd36d11c55"
+  "azure_circuit2" = "c7a2d4aa-6c34-4576-81f8-11f624e31d5e"
+  "azure_circuit2_secondary" = "817025e4-3efb-44ea-be18-de963223f8c2"
+  "gcp_a" = "e461d013-2c8b-45dc-9ae6-e6c135392660"
+  "gcp_b" = "2c2fd022-b0ce-438a-aee9-69f27daa43a2"
+}
+regions = {
+  "region_a" = "swedencentral"
+  "region_b" = "northeurope"
+}
+resource_group_name = "rg-vwan-symm-103167"
+spoke_vm_ids = {
+  "spoke1" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke1"
+  "spoke2" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke2"
+  "spoke3" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke3"
+  "spoke4" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke4"
+}
+spoke_vm_private_ips = {
+  "spoke1" = "10.11.0.4"
+  "spoke2" = "10.12.0.4"
+  "spoke3" = "10.21.0.4"
+  "spoke4" = "10.22.0.4"
+}
+spoke_vnet_ids = {
+  "spoke1" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke1"
+  "spoke2" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke2"
+  "spoke3" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke3"
+  "spoke4" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke4"
+}
+vm_sizes_used = {
+  "region_a" = "Standard_B2als_v2"
+  "region_b" = "Standard_B2s_v2"
+}
+vwan_id = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualWans/vwan-vwan-symm"

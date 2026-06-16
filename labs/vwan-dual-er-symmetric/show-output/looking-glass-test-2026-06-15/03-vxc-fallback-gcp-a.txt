@@ -1,0 +1,20 @@
+# Command:
+# curl -s -H "X-Auth-Token: <REDACTED>" "https://api.megaport.com/v2/product/<VXC_GCP_A_UID>" | jq ".data.resources.csp_connection[0].interfaces[0].bgpConnections"
+#
+# Result: NOT REACHED — VXC fallback also blocked by the same auth failure.
+# Tested: 2026-06-15T20:xx+02:00
+# Lab: vwan-dual-er-symmetric (lab #2)
+#
+# VXC UID (from terraform.tfstate, megaport_vxc.gcp_a):
+#   <VXC_GCP_A_UID> = e461d013-2c8b-45dc-9ae6-e6c135392660
+#
+# Auth response (HTTP 401):
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+
+{"message":"Invalid email or password. Your account will be locked after 10 failed login attempts. Please contact your company administrator to reactivate your account.","terms":"This data is subject to the Acceptable Use Policy https://www.megaport.com/legal/acceptable-use-policy"}
+
+# Conclusion: The VXC fallback path is blocked by the same auth failure.
+# Fallback proof (BGP sessionState) cannot be captured for this round.
+# Note: Terraform state shows VXC provisioningStatus from deploy-time, which is NOT
+# the same as live sessionState (must come from the API).

@@ -1,0 +1,3 @@
+jq: error: syntax error, unexpected '|', expecting BINDING or '[' or '{' (Unix shell quoting issues?) at <top-level>, line 1:
+.result.bgpPeerStatus[] | .name as  | .learnedRoutes[]? | [, .destRange, .routeType, .nextHopIp, (.asPath | @json // "-")] | @tsv                                    
+jq: 1 compile error

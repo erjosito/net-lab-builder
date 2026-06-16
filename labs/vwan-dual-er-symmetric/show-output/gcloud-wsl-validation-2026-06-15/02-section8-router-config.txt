@@ -1,0 +1,18 @@
+{
+  "name": "router-vwan-symm-a",
+  "asn": 16550,
+  "advertiseMode": "CUSTOM",
+  "advertisedRanges": [
+    {
+      "description": "Region A on-prem subnet only",
+      "range": "10.50.1.0/24"
+    },
+    {
+      "description": "Region B GCP subnet (via GLOBAL VPC routing — failover path)",
+      "range": "10.50.2.0/24"
+    }
+  ],
+  "peers": [
+    "auto-ia-bgp-att-vwan-symm-a-748c416bf214189"
+  ]
+}

@@ -1,0 +1,9 @@
+# Command (run via WSL): gcloud compute networks describe vpc-vwan-symm-a-103167 --project=gcp-vwan-symm-103167 --format='json(routingConfig)'
+# Note: Azure BGP-learned prefixes are managed by Cloud Router and appear in 'get-status', not 'routes list'
+# The GLOBAL routing mode means router_a in eu-w3 handles ALL routes for BOTH eu-w3 and eu-w4 VMs
+{
+  "routingConfig": {
+    "bgpBestPathSelectionMode": "LEGACY",
+    "routingMode": "GLOBAL"
+  }
+}

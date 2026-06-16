@@ -1,0 +1,37 @@
+# google_compute_interconnect_attachment.att_b_v2:
+resource "google_compute_interconnect_attachment" "att_b_v2" {
+    admin_enabled                = true
+    attachment_group             = null
+    bandwidth                    = null
+    cloud_router_ip_address      = null
+    cloud_router_ipv6_address    = null
+    creation_timestamp           = "2026-06-15T14:08:04.598-07:00"
+    customer_router_ip_address   = null
+    customer_router_ipv6_address = null
+    description                  = null
+    edge_availability_domain     = "AVAILABILITY_DOMAIN_2"
+    effective_labels             = {
+        "goog-terraform-provisioned" = "true"
+    }
+    encryption                   = "NONE"
+    google_reference_id          = null
+    id                           = "projects/gcp-vwan-symm-103167/regions/europe-west3/interconnectAttachments/att-vwan-symm-b-v2"
+    interconnect                 = null
+    label_fingerprint            = "vezUS-42LLM="
+    mtu                          = null
+    name                         = "att-vwan-symm-b-v2"
+    pairing_key                  = "326ba0de-2aed-4eb2-aaf4-2df34108dc07/europe-west3/2"
+    partner_asn                  = null
+    private_interconnect_info    = []
+    project                      = "gcp-vwan-symm-103167"
+    region                       = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/regions/europe-west3"
+    router                       = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/regions/europe-west3/routers/router-vwan-symm-a"
+    self_link                    = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/regions/europe-west3/interconnectAttachments/att-vwan-symm-b-v2"
+    stack_type                   = "IPV4_ONLY"
+    state                        = "PENDING_PARTNER"
+    terraform_labels             = {
+        "goog-terraform-provisioned" = "true"
+    }
+    type                         = "PARTNER"
+    vlan_tag8021q                = 0
+}

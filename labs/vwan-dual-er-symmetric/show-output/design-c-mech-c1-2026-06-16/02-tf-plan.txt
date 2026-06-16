@@ -1,0 +1,104 @@
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  [32m+[0m create[0m
+  [33m~[0m update in-place[0m
+
+Terraform will perform the following actions:
+
+[1m  # azurerm_express_route_connection.hub1_circuit1[0m will be updated in-place
+[0m  [33m~[0m[0m resource "azurerm_express_route_connection" "hub1_circuit1" {
+        id                                   = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub1/expressRouteConnections/hub1ergw-circuit1"
+        name                                 = "hub1ergw-circuit1"
+        [90m# (7 unchanged attributes hidden)[0m[0m
+
+      [33m~[0m[0m routing {
+          [32m+[0m[0m outbound_route_map_id     = (known after apply)
+            [90m# (2 unchanged attributes hidden)[0m[0m
+
+            [90m# (1 unchanged block hidden)[0m[0m
+        }
+    }
+
+[1m  # azurerm_express_route_connection.hub2_circuit2[0m will be updated in-place
+[0m  [33m~[0m[0m resource "azurerm_express_route_connection" "hub2_circuit2" {
+        id                                   = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub2/expressRouteConnections/hub2ergw-circuit2"
+        name                                 = "hub2ergw-circuit2"
+        [90m# (7 unchanged attributes hidden)[0m[0m
+
+      [33m~[0m[0m routing {
+          [32m+[0m[0m outbound_route_map_id     = (known after apply)
+            [90m# (2 unchanged attributes hidden)[0m[0m
+
+            [90m# (1 unchanged block hidden)[0m[0m
+        }
+    }
+
+[1m  # azurerm_route_map.hub1_out_depref_hub2[0m will be created
+[0m  [32m+[0m[0m resource "azurerm_route_map" "hub1_out_depref_hub2" {
+      [32m+[0m[0m id             = (known after apply)
+      [32m+[0m[0m name           = "hub1-out-depref-hub2"
+      [32m+[0m[0m virtual_hub_id = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral"
+
+      [32m+[0m[0m rule {
+          [32m+[0m[0m name                 = "prepend-hub2-region"
+          [32m+[0m[0m next_step_if_matched = "Continue"
+
+          [32m+[0m[0m action {
+              [32m+[0m[0m type = "Add"
+
+              [32m+[0m[0m parameter {
+                  [32m+[0m[0m as_path = [
+                      [32m+[0m[0m "23456",
+                      [32m+[0m[0m "23456",
+                      [32m+[0m[0m "23456",
+                    ]
+                }
+            }
+
+          [32m+[0m[0m match_criterion {
+              [32m+[0m[0m match_condition = "Contains"
+              [32m+[0m[0m route_prefix    = [
+                  [32m+[0m[0m "10.20.0.0/23",
+                  [32m+[0m[0m "10.21.0.0/24",
+                  [32m+[0m[0m "10.22.0.0/24",
+                ]
+            }
+        }
+    }
+
+[1m  # azurerm_route_map.hub2_out_depref_hub1[0m will be created
+[0m  [32m+[0m[0m resource "azurerm_route_map" "hub2_out_depref_hub1" {
+      [32m+[0m[0m id             = (known after apply)
+      [32m+[0m[0m name           = "hub2-out-depref-hub1"
+      [32m+[0m[0m virtual_hub_id = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope"
+
+      [32m+[0m[0m rule {
+          [32m+[0m[0m name                 = "prepend-hub1-region"
+          [32m+[0m[0m next_step_if_matched = "Continue"
+
+          [32m+[0m[0m action {
+              [32m+[0m[0m type = "Add"
+
+              [32m+[0m[0m parameter {
+                  [32m+[0m[0m as_path = [
+                      [32m+[0m[0m "23456",
+                      [32m+[0m[0m "23456",
+                      [32m+[0m[0m "23456",
+                    ]
+                }
+            }
+
+          [32m+[0m[0m match_criterion {
+              [32m+[0m[0m match_condition = "Contains"
+              [32m+[0m[0m route_prefix    = [
+                  [32m+[0m[0m "10.10.0.0/23",
+                  [32m+[0m[0m "10.11.0.0/24",
+                  [32m+[0m[0m "10.12.0.0/24",
+                ]
+            }
+        }
+    }
+
+[1mPlan:[0m 2 to add, 2 to change, 0 to destroy.
+[0m

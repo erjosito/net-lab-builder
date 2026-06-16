@@ -1,0 +1,35 @@
+# Command: az network vhub get-effective-routes -g rg-vwan-symm-103167 -n hub1-swedencentral --resource-type RouteTable --resource-id /subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/hubRouteTables/defaultRouteTable -o json
+{
+  "value": [
+    {
+      "addressPrefixes": [
+        "10.0.0.0/8"
+      ],
+      "nextHopType": "Azure Firewall",
+      "nextHops": [
+        "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub1-swedencentral"
+      ],
+      "routeOrigin": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/hubRouteTables/defaultRouteTable"
+    },
+    {
+      "addressPrefixes": [
+        "172.16.0.0/12"
+      ],
+      "nextHopType": "Azure Firewall",
+      "nextHops": [
+        "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub1-swedencentral"
+      ],
+      "routeOrigin": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/hubRouteTables/defaultRouteTable"
+    },
+    {
+      "addressPrefixes": [
+        "192.168.0.0/16"
+      ],
+      "nextHopType": "Azure Firewall",
+      "nextHops": [
+        "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub1-swedencentral"
+      ],
+      "routeOrigin": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/hubRouteTables/defaultRouteTable"
+    }
+  ]
+}

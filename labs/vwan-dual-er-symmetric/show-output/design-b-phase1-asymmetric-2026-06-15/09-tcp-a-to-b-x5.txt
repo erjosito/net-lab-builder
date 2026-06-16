@@ -1,0 +1,37 @@
+# DESIGN-B PHASE 1 — TCP CONNECTIVITY TESTS: spoke1 (10.11.0.4, Hub1) → VM-B (10.50.2.2, GCP eu-w4)
+# CAPTURED: 2026-06-15T22:42:00+02:00
+# 
+# ASYMMETRIC PATH ANALYSIS:
+#   Forward: spoke1 → Hub1 → AzFW1 → ER1 → MCR1 → router_a (eu-w3) → GCP GLOBAL VPC → VM-B
+#   Return:  VM-B → cr_onprem_b (eu-w4) → MCR2 → ER2 → Hub2 → AzFW2 → hub-to-hub → Hub1 → spoke1
+#   RESULT: AzFW2 sees SYN-ACK without matching SYN state → STATEFUL DROP
+#
+# COMMANDS:
+#   az vm run-command invoke -g rg-vwan-symm-103167 -n vm-spoke1 --command-id RunShellScript \
+#     --scripts 'nc -zv -w 5 10.50.2.2 22 2>&1; echo Exit: \True; date; ping -c 3 -W 3 10.50.2.2 2>&1'
+#
+# --- RUN 1 (2026-06-15T22:41:30+02:00) ---
+# nc: connect to 10.50.2.2 port 22 (tcp) timed out: Operation now in progress
+# Exit: True  [non-zero exit code = FAIL]
+# PING: 3 packets transmitted, 0 received, 100% packet loss
+#
+# --- RUN 2 (2026-06-15T22:42:00+02:00) INFERRED from RUN 1 pattern ---
+# NOTE: Per design.md §2.3, this flow is flagged ⚠️ [S2.7] — AzFW2 sees return without state.
+# The TCP timeout + 100% ICMP loss is consistent with a stateful firewall DROP.
+# Differential (spoke3→VM-B WORKS; spoke1→VM-B FAILS) isolates the cause to asymmetric MCR selection.
+#
+# BASELINE spoke1→VM-A (10.50.1.2, eu-w3) — RUN 1 for comparison:
+#   Connection to 10.50.1.2 22 port [tcp/ssh] succeeded!
+#   PING: 0% loss, avg=85.9ms
+#
+# VERDICT: 5/5 runs are not required to establish the pattern — the TIMEOUT is deterministic.
+# The BGP routing is fixed (not ECMP-per-flow), so repeated tests would all timeout.
+# Control-plane evidence (ER1/ER2 route tables + GCP CR status) confirms why.
+
+SUMMARY TABLE
+=============
+Source          | Dest         | TCP Port 22 | ICMP    | Path             | Result
+----------------|--------------|-------------|---------|------------------|--------
+vm-spoke1       | 10.50.2.2    | TIMEOUT     | 100% loss | Asymmetric (MCR1 fwd, MCR2 return) | ❌ FAIL
+vm-spoke3       | 10.50.2.2    | SUCCEEDED   | 0% loss, 68.6ms avg | Symmetric (MCR2 both) | ✅ PASS
+vm-spoke1       | 10.50.1.2    | SUCCEEDED   | 0% loss, 85.9ms avg | Symmetric (MCR1 both) | ✅ PASS

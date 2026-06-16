@@ -1,0 +1,38 @@
+# COMMAND: az network vhub get-effective-routes -g rg-vwan-symm-103167 --name hub2-northeurope --resource-type RouteTable --resource-id /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope/hubRouteTables/defaultRouteTable -o json
+# CAPTURED: 2026-06-15T22:30:00+02:00
+# NOTE: Same shape as Hub1 — routing-intent=private aggregates to AzFW. See ER circuit route tables for per-prefix GCP paths.
+{
+  "value": [
+    {
+      "addressPrefixes": [
+        "10.0.0.0/8"
+      ],
+      "nextHopType": "Azure Firewall",
+      "nextHops": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub2-northeurope"
+      ],
+      "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope/hubRouteTables/defaultRouteTable"
+    },
+    {
+      "addressPrefixes": [
+        "172.16.0.0/12"
+      ],
+      "nextHopType": "Azure Firewall",
+      "nextHops": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub2-northeurope"
+      ],
+      "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope/hubRouteTables/defaultRouteTable"
+    },
+    {
+      "addressPrefixes": [
+        "192.168.0.0/16"
+      ],
+      "nextHopType": "Azure Firewall",
+      "nextHops": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub2-northeurope"
+      ],
+      "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope/hubRouteTables/defaultRouteTable"
+    }
+  ]
+}
+

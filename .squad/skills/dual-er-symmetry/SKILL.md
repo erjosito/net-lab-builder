@@ -142,3 +142,88 @@ A dual-circuit design that documents steady-state symmetry but not failure modes
 Each ER circuit has two MSEE peering ports (primary + secondary). Wire both via separate `megaport_vxc` resources with `port_choice = "primary"` and `port_choice = "secondary"`. Validate via `bgpState=Established ×4` (2 per circuit) across a dual-circuit lab. Lab #2 was initially deployed with single VXC per circuit and caught by Jose at validation time (patch applied 2026-06-15T18:55:36+02:00).
 
 The platform KV firewall + GSA collision is an operator workflow problem, not a Terraform problem. Don't add `data "azurerm_key_vault_secret"` blocks that fight the ACL; fetch secrets in `deploy.ps1` (Path A: pause GSA; Path B: `try`/`finally` ACL flip with `.akv-state.json` snapshot), export as `TF_VAR_*`, and let Terraform see plain `variable` blocks. **The `finally` block is load-bearing — ACL must restore on script crash too.**
+
+---
+
+## Validation: SPOF demonstration
+
+**Added 2026-06-15T19:24:55+02:00 — Niobe, lab #2 (`vwan-dual-er-symmetric`)**
+
+This section captures the reusable recipe for demonstrating a single-MCR-per-region SPOF before and after a resiliency patch.
+
+### Passive proof (Option 3 — no fault injection)
+
+When active fault injection is not safely achievable (e.g., KV in Deny state, no Megaport credentials), the SPOF can be proven analytically from steady-state route evidence:
+
+**Step 1 — Identify the prefix-to-MCR mapping via ER circuit route tables:**
+
+```bash
+# For each ER circuit, check both primary and secondary paths
+az network express-route list-route-tables -n <er-circuit-name> -g <rg> \
+  --peering-name AzurePrivatePeering --path primary -o json
+az network express-route list-route-tables -n <er-circuit-name> -g <rg> \
+  --peering-name AzurePrivatePeering --path secondary -o json
+```
+
+Key signal: `10.50.x.0/24` appears in ER1's table (via MCR1 ASN) but NOT in ER2's table, and vice versa. If a prefix appears in only one circuit's table, it has a single-MCR dependency.
+
+**Step 2 — Confirm GCP single-peer via Cloud Router status:**
+
+```bash
+gcloud compute routers get-status <router-name> --region <gcp-region> \
+  --project <project-id> --format=json
+```
+
+Key signal: `bgpPeerStatus` array has exactly ONE entry. `numLearnedRoutes > 0` but `len(bgpPeerStatus) == 1` = single BGP peer = single MCR dependency on the GCP side too.
+
+**Step 3 — Confirm VXC count on MCR via TF state:**
+
+```bash
+terraform state show megaport_vxc.<vxc-name>
+```
+
+All VXCs with `a_end.product_name = "<mcr-name>"` share a single MCR. `shutdown=false` on all = all active. Count should be: 2 ER VXCs (primary + secondary) + 1 GCP VXC = 3 per MCR for a single-circuit-per-hub topology.
+
+**Step 4 — Build the path matrix:**
+
+From the above evidence, construct a table:
+
+| Source | Destination | Path | Single MCR? |
+|---|---|---|---|
+| spoke (hub1) | GCP VPC-A | hub1→ER1→MCR1→VPC-A | YES |
+| spoke (hub1) | GCP VPC-B | hub1→hub2→ER2→MCR2→VPC-B | YES |
+| spoke (hub2) | GCP VPC-A | hub2→hub1→ER1→MCR1→VPC-A | YES |
+| spoke (hub2) | GCP VPC-B | hub2→ER2→MCR2→VPC-B | YES |
+
+**Analytical claim:** Any flow in the "Single MCR?" column = YES has zero alternate paths in Mechanism A. F-table failure modes F1/F2 (MCR down), F3/F4 (ER circuit down), F11/F12 (GCP BGP session drops) all produce TOTAL LOSS for the affected prefix.
+
+### Active proof via Megaport admin-shutdown (Option 1 — preferred when KV accessible)
+
+Requires Megaport API key + secret from KV. Before attempting, confirm KV ACL state and coordinate via Path A (GSA pause) or Path B (ACL flip/restore).
+
+**Identify the 3 MCR1 VXCs to shut:**
+- `azure_circuit1` (primary MSEE)
+- `azure_circuit1_secondary` (secondary MSEE)
+- `gcp_a` (GCP VPC-A side)
+
+**Admin-shutdown via Megaport API (requires API key):**
+
+```bash
+# Set shutdown=true on each VXC using Megaport API
+curl -X PUT https://api.megaport.com/v2/product/<vxc-product-uid> \
+  -H "Authorization: Bearer <token>" \
+  -d '{"shutdown": true}'
+# Repeat for all 3 VXC UIDs
+```
+
+**Wait 60–90s** for BGP hold-down timers. Then re-run Phase A captures into `spof-before/20-during-fault/`. Expected: ER1 route table empty for `10.50.1.0/24`; GCP Router A `bgpPeerStatus[0].state = "Idle"`.
+
+**Restore:** Set `shutdown=false` on all 3 VXCs. Wait 90s. Re-run Phase A into `spof-before/30-recovery-confirmed/`. Total fault window target: ≤ 5 min.
+
+### Gotchas observed in lab #2
+
+1. **`az network vhub get-effective-routes --resource-type ExpressRouteGateway` returns `{"value":[]}` on a working lab.** This is a known CLI anomaly. Use ER circuit route-table commands (MSEE view) as the authoritative Azure-layer evidence. Document the empty result verbatim and move on.
+2. **GCP router region must match the interconnect attachment region, NOT the VPC region.** Router A was in `europe-west3` even though the VPC was named with region suffix; the attachment drove the router's region.
+3. **GCP Cloud Router custom advertise mode (`advertiseMode: CUSTOM`) limits BGP advertisements to explicitly listed `advertisedIpRanges`.** This is Mechanism A's GCP-side implementation: router-a only advertises `10.50.1.0/24`, ensuring VPC-A traffic takes the MCR1 path.
+4. **MCR1 `provisioning_status = "CONFIGURED"` (not "LIVE") for the secondary VXC** does not indicate a problem — the BGP session was Established per `az network express-route list-route-tables-summary`. Status reflects Megaport's API state, not BGP state.
+5. **AS-path on ER1 secondary table shows `65001 12076 I` for Azure prefixes** — this is the MSEE reflecting Azure prefixes back through MCR1's secondary session (normal Megaport reflector behavior). These are loop-prevented by the MSEE and not installed as active routes.

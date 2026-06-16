@@ -163,6 +163,17 @@ ER private peering is dual-port at the MSEE (primary peering endpoint + secondar
 Origin: Jose directive 2026-06-15 — Lab #2 v1 was deployed with single VXC per circuit; caught at validation time. Re-confirm via `terraform state list | rg megaport_vxc` for every ER lab — expect 2× the circuit count, not 1×.
 - Do **not** include `config: {}` in the MCR payload (validation error).
 
+### Patching live TF state: carry forward state-dependent values, ALWAYS inspect the plan
+
+When applying a `-target=` patch (Mech B swap, secondary VXC, bow-tie, etc.) against a live TF stack, all `random_id`, `random_pet`, `random_password`, and any other state-only resources MUST be carried forward through the patch tfvars via their `_override` inputs (`correlation_id_override`, `password_override`, etc.). Forgetting one re-rolls the value to a new random seed, and every resource whose `name`/`tags`/`prefix` is interpolated from it will plan as **destroy-and-recreate** — including the entire RG.
+
+Pre-apply checklist for any `-target=` patch on a live env:
+1. Diff the patch tfvars against the active deploy tfvars (`Compare-Object` on key set). Every `_override` present in the original MUST be present in the patch — same value.
+2. Run `terraform plan -target=<new resources> -out=tfplan` and inspect `terraform show tfplan | rg '# .* will be (destroyed|replaced)'`. Expect ZERO destroys. Any destroy of a non-target resource = abort; the patch tfvars are wrong.
+3. Only then `terraform apply tfplan`.
+
+Origin: Lab #2 secondary-VXC patch (`tank-1`, 2026-06-15) — `correlation_id_override` was omitted from the patch tfvars; `random_id.correlation.hex` diverged from the live value (`899b81` → new seed); plan summary would have destroyed the entire `rg-vwan-symm-103167` and re-created with a new correlation. Caught at the plan-summary inspection step before apply. Always run the plan-show step. Never blind-apply a patch.
+
 ### Cleanup dependency chain — non-negotiable order
 
 Megaport refuses to delete a VXC while the Azure-side peering still references the circuit's service key (HTTP 409). Skip this order and you waste 30–40 minutes:

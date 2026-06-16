@@ -145,24 +145,19 @@ output "mcr_uids" {
 }
 
 output "megaport_vxc_uids" {
-  description = "Megaport VXC product UIDs (6 total: 2 ER primary, 2 ER secondary, 2 GCP)."
+  description = "Megaport VXC product UIDs (5 in Design C: 2 ER primary, 2 ER secondary, 1 GCP native; gcp_b removed — portal-managed new VXC not yet imported)."
   value = {
     azure_circuit1           = megaport_vxc.azure_circuit1.product_uid
     azure_circuit1_secondary = megaport_vxc.azure_circuit1_secondary.product_uid
     azure_circuit2           = megaport_vxc.azure_circuit2.product_uid
     azure_circuit2_secondary = megaport_vxc.azure_circuit2_secondary.product_uid
     gcp_a                    = megaport_vxc.gcp_a.product_uid
-    gcp_b                    = megaport_vxc.gcp_b.product_uid
   }
 }
 
-output "megaport_prefix_filter_lists" {
-  description = "MCR prefix-filter list IDs (Niobe inspects post-S4b)."
-  value = {
-    mcr1 = megaport_mcr_prefix_filter_list.mcr1_gcp_export.id
-    mcr2 = megaport_mcr_prefix_filter_list.mcr2_gcp_export.id
-  }
-}
+# P1 (2026-06-15): megaport_prefix_filter_lists output REMOVED — Mech B swap
+# eliminated megaport_mcr_prefix_filter_list.mcr1_gcp_export/.mcr2_gcp_export.
+# GCP isolation now via Cloud Router CUSTOM advertise mode + P2 AS-path prepend.
 
 output "bgp_azure_circuit1" {
   description = "BGP summary for Azure VXC on Circuit1 primary (Megaport exposes IPs/VLAN)."
@@ -208,7 +203,6 @@ output "gcp_vpc_ids" {
   description = "GCP VPC resource IDs."
   value = {
     vpc_a = google_compute_network.vpc_a.id
-    vpc_b = google_compute_network.vpc_b.id
   }
 }
 
@@ -216,15 +210,16 @@ output "gcp_router_names" {
   description = "GCP Cloud Router names (for gcloud route inspection)."
   value = {
     router_a = google_compute_router.router_a.name
-    router_b = google_compute_router.router_b.name
+    # cr_onprem_b removed in Design C Phase 1B — destroyed with att_b_new
   }
 }
 
 output "gcp_attachment_pairing_keys" {
   description = "GCP Partner Interconnect pairing keys (Niobe diagnostic only; consumed by Megaport)."
   value = {
-    att_a = google_compute_interconnect_attachment.att_a.pairing_key
-    att_b = google_compute_interconnect_attachment.att_b.pairing_key
+    att_a    = google_compute_interconnect_attachment.att_a.pairing_key
+    att_b_v2 = google_compute_interconnect_attachment.att_b_v2.pairing_key
+    # att_b_new removed in Design C Phase 1B — destroyed with cr_onprem_b
   }
   sensitive = true
 }

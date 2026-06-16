@@ -1,0 +1,111 @@
+# Command: az network express-route list-route-tables -g rg-vwan-symm-103167 -n er-vwan-symm-amsterdam --peering-name AzurePrivatePeering --path primary -o json
+WARNING: This command is in preview and under development. Reference and support levels: https://aka.ms/CLI_refstatus
+{
+  "value": [
+    {
+      "locPrf": "100",
+      "network": "10.11.0.0/24",
+      "nextHop": "10.20.0.12*",
+      "path": "65515 65520 65520 e",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.11.0.0/24",
+      "nextHop": "10.20.0.13",
+      "path": "65515 65520 65520 e",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.12.0.0/24",
+      "nextHop": "10.20.0.12*",
+      "path": "65515 65520 65520 e",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.12.0.0/24",
+      "nextHop": "10.20.0.13",
+      "path": "65515 65520 65520 e",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.20.0.0/23",
+      "nextHop": "10.20.0.12*",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.20.0.0/23",
+      "nextHop": "10.20.0.13",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.21.0.0/24",
+      "nextHop": "10.20.0.12*",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.21.0.0/24",
+      "nextHop": "10.20.0.13",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.22.0.0/24",
+      "nextHop": "10.20.0.12*",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.22.0.0/24",
+      "nextHop": "10.20.0.13",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.50.1.0/24",
+      "nextHop": "169.254.148.89",
+      "path": "65002 16550 ?",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.50.2.0/24",
+      "nextHop": "169.254.148.89",
+      "path": "65002 16550 ?",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "169.254.93.152/29",
+      "nextHop": "169.254.148.89",
+      "path": "65002",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "169.254.148.88/30",
+      "nextHop": "169.254.148.89",
+      "path": "65002",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "169.254.148.92/30",
+      "nextHop": "169.254.148.89",
+      "path": "65002",
+      "weight": 0
+    }
+  ]
+}

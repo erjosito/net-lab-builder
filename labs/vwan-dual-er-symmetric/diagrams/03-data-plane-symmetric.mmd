@@ -1,0 +1,64 @@
+flowchart LR
+    subgraph S1["S1: Spoke1 to GCP — Symmetric (one firewall each way)"]
+        s1_vm["Spoke1-VM"]
+        s1_fw["Hub1-Firewall"]
+        s1_gw["Hub1-ER-GW"]
+        s1_crc["ER-Circuit-A"]
+        s1_mcr["MCR1"]
+        s1_gcp["GCP\n10.100.0.0/24"]
+
+        s1_vm -->|"fwd: src=Spoke1, dst=GCP"| s1_fw
+        s1_fw -->|"fwd: allowed, stateful conn created"| s1_gw
+        s1_gw -->|"fwd: BGP next-hop"| s1_crc
+        s1_crc -->|"fwd: VXC A"| s1_mcr
+        s1_mcr -->|"fwd: GCP VXC"| s1_gcp
+
+        s1_gcp -.->|"return: src=GCP, dst=Spoke1"| s1_mcr
+        s1_mcr -.->|"return: VXC A"| s1_crc
+        s1_crc -.->|"return: ER circuit"| s1_gw
+        s1_gw -.->|"return: routing-intent → FW"| s1_fw
+        s1_fw -.->|"return: matched conn state OK"| s1_vm
+    end
+
+    subgraph S3["S3: Spoke1 to Spoke3 — Cross-region Symmetric (two firewalls each way)"]
+        s3_vm1["Spoke1-VM\n(Region A)"]
+        s3_fw1["Hub1-Firewall\n(Region A) — 1st FW"]
+        s3_link["vHub-to-vHub link"]
+        s3_fw2["Hub2-Firewall\n(Region B) — 2nd FW"]
+        s3_vm3["Spoke3-VM\n(Region B)"]
+
+        s3_vm1 -->|"fwd: src=Spoke1, dst=Spoke3\nrouting-intent cross-region"| s3_fw1
+        s3_fw1 -->|"fwd: allowed, conn created at Hub1-FW"| s3_link
+        s3_link -->|"fwd"| s3_fw2
+        s3_fw2 -->|"fwd: allowed, conn created at Hub2-FW"| s3_vm3
+
+        s3_vm3 -.->|"return: src=Spoke3, dst=Spoke1"| s3_fw2
+        s3_fw2 -.->|"return: matched conn state OK at Hub2-FW"| s3_link
+        s3_link -.->|"return"| s3_fw1
+        s3_fw1 -.->|"return: matched conn state OK at Hub1-FW"| s3_vm1
+    end
+
+    subgraph AP["Anti-pattern: Asymmetric path — STATEFUL DROP at Hub2-FW"]
+        ap_vm1["Spoke1-VM"]
+        ap_fw1["Hub1-FW\nsees forward flow"]
+        ap_mcr1["MCR1"]
+        ap_gcp["GCP"]
+        ap_mcr2["MCR2\nasymmetric return"]
+        ap_fw2["Hub2-FW\n❌ STATEFUL DROP\nno matching connection state\n(forward went via Hub1, return via Hub2)"]
+
+        ap_vm1 -->|"fwd: Spoke1 → Hub1 → Circuit-A"| ap_fw1
+        ap_fw1 --> ap_mcr1
+        ap_mcr1 --> ap_gcp
+        ap_gcp -->|"return: GCP picks MCR2 (no prefix affinity)"| ap_mcr2
+        ap_mcr2 -->|"return enters Hub2"| ap_fw2
+    end
+
+    classDef fwNode fill:#fce4ec,stroke:#e91e63,color:#000
+    classDef gcpNode fill:#e8f5e9,stroke:#34a853,color:#000
+    classDef megaNode fill:#ffe6cc,stroke:#d6b656,color:#000
+    classDef dropNode fill:#ffebee,stroke:#f44336,color:#c62828,fontStyle=1
+
+    class s1_fw,s3_fw1,s3_fw2,ap_fw1 fwNode
+    class s1_gcp,ap_gcp gcpNode
+    class s1_mcr,ap_mcr1,ap_mcr2 megaNode
+    class ap_fw2 dropNode

@@ -40,6 +40,7 @@ locals {
   vxc2_azure_secondary_name = "vxc-mcr2-circuit2-secondary-${local.correlation_id}"
   vxc1_gcp_name             = "vxc-mcr1-gcp-a-${local.correlation_id}"
   vxc2_gcp_name             = "vxc-mcr2-gcp-b-${local.correlation_id}"
+  # P2 cross-region session names REMOVED in Design B — GLOBAL VPC handles cross-region routing
 
   # --- Spoke layout -----------------------------------------------------
   spokes = {
@@ -82,8 +83,11 @@ locals {
     hub2 = azurerm_virtual_hub.hub2.id
   }
 
-  # --- MCR prefix-filter scope (Mechanism A — per-region) ----------------
-  # MCR1 exports only its own region's GCP /24 by default; mcr1_injected_prefixes appends extras for S4b.
-  mcr1_export_prefixes = concat([var.gcp_vpc_a_subnet], var.mcr1_injected_prefixes)
-  mcr2_export_prefixes = concat([var.gcp_vpc_b_subnet], var.mcr2_injected_prefixes)
+  # --- MCR prefix-filter scope (Mechanism A — REMOVED in P1 Mech B swap) ----
+  # mcr1_export_prefixes and mcr2_export_prefixes were used by the now-removed
+  # megaport_mcr_prefix_filter_list resources. Isolation is now achieved by:
+  # 1. GCP Cloud Router CUSTOM advertise mode (per-VPC subnet only).
+  # 2. AS-path prepend=3 on cross-region sessions (P2 below).
+  # var.mcr1_injected_prefixes / mcr2_injected_prefixes retained in variables.tf
+  # as S4b perturbation documentation, but no longer wired to any resource.
 }

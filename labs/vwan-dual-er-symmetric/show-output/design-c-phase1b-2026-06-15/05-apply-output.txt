@@ -1,0 +1,114 @@
+[0m[1mgoogle_compute_interconnect_attachment.att_b_new: Destroying... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/interconnectAttachments/att-vwan-symm-b-new][0m[0m
+[0m[1mgoogle_compute_interconnect_attachment.att_b_new: Still destroying... [id=projects/gcp-vwan-symm-103167/regions/e...connectAttachments/att-vwan-symm-b-new, 00m10s elapsed][0m[0m
+[0m[1mgoogle_compute_interconnect_attachment.att_b_new: Destruction complete after 11s[0m
+[0m[1mgoogle_compute_router.cr_onprem_b: Destroying... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/routers/cr-vwan-symm-onprem-b][0m[0m
+[0m[1mgoogle_compute_router.cr_onprem_b: Still destroying... [id=projects/gcp-vwan-symm-103167/regions/europe-west4/routers/cr-vwan-symm-onprem-b, 00m10s elapsed][0m[0m
+[0m[1mgoogle_compute_router.cr_onprem_b: Destruction complete after 11s[0m
+[0m[1m[32m
+Apply complete! Resources: 0 added, 0 changed, 2 destroyed.
+[0m[0m[1m[32m
+Outputs:
+
+[0mazfw_ids = {
+  "hub1" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub1-swedencentral"
+  "hub2" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/azureFirewalls/azfw-hub2-northeurope"
+}
+azfw_private_ips = {
+  "hub1" = "10.10.0.132"
+  "hub2" = "10.20.0.132"
+}
+bgp_azure_circuit1 = {
+  "azure_ip" = tostring(null)
+  "mcr_ip" = null
+  "vlan" = 3944
+}
+bgp_azure_circuit1_secondary = {
+  "azure_ip" = tostring(null)
+  "mcr_ip" = null
+  "vlan" = 3944
+}
+bgp_azure_circuit2 = {
+  "azure_ip" = tostring(null)
+  "mcr_ip" = null
+  "vlan" = 1436
+}
+bgp_azure_circuit2_secondary = {
+  "azure_ip" = tostring(null)
+  "mcr_ip" = null
+  "vlan" = 1436
+}
+correlation_id = "103167"
+er_circuit_ids = {
+  "circuit1" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteCircuits/er-vwan-symm-stockholm"
+  "circuit2" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteCircuits/er-vwan-symm-amsterdam"
+}
+er_connections = {
+  "hub1_circuit1" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub1/expressRouteConnections/hub1ergw-circuit1"
+  "hub1_circuit2_bowtie" = null
+  "hub2_circuit1_bowtie" = null
+  "hub2_circuit2" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub2/expressRouteConnections/hub2ergw-circuit2"
+}
+er_gateway_ids = {
+  "hub1" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub1"
+  "hub2" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub2"
+}
+er_service_keys = <sensitive>
+gcp_attachment_pairing_keys = <sensitive>
+gcp_router_names = {
+  "router_a" = "router-vwan-symm-a"
+}
+gcp_vm_private_ips = {
+  "vm_a" = "10.50.1.2"
+  "vm_b" = "10.50.2.2"
+}
+gcp_vpc_ids = {
+  "vpc_a" = "projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167"
+}
+hub_ids = {
+  "hub1" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral"
+  "hub2" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope"
+}
+log_analytics_workspace_id = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.OperationalInsights/workspaces/law-vwan-symm-103167"
+mcr_uids = {
+  "mcr1" = "9785d825-989e-45bb-b50f-82f039edb901"
+  "mcr2" = "f07eb97c-6fb8-444f-a921-74728997c704"
+}
+megaport_pops_used = {
+  "mcr1" = "Equinix Frankfurt FR5"
+  "mcr2" = "Equinix Amsterdam AM1"
+}
+megaport_vxc_uids = {
+  "azure_circuit1" = "c895492d-a44a-479a-861e-ea48ba5b3b02"
+  "azure_circuit1_secondary" = "91b54791-43aa-4aa7-90a4-25bd36d11c55"
+  "azure_circuit2" = "c7a2d4aa-6c34-4576-81f8-11f624e31d5e"
+  "azure_circuit2_secondary" = "817025e4-3efb-44ea-be18-de963223f8c2"
+  "gcp_a" = "e461d013-2c8b-45dc-9ae6-e6c135392660"
+}
+regions = {
+  "region_a" = "swedencentral"
+  "region_b" = "northeurope"
+}
+resource_group_name = "rg-vwan-symm-103167"
+spoke_vm_ids = {
+  "spoke1" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke1"
+  "spoke2" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke2"
+  "spoke3" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke3"
+  "spoke4" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Compute/virtualMachines/vm-spoke4"
+}
+spoke_vm_private_ips = {
+  "spoke1" = "10.11.0.4"
+  "spoke2" = "10.12.0.4"
+  "spoke3" = "10.21.0.4"
+  "spoke4" = "10.22.0.4"
+}
+spoke_vnet_ids = {
+  "spoke1" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke1"
+  "spoke2" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke2"
+  "spoke3" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke3"
+  "spoke4" = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualNetworks/vnet-spoke4"
+}
+vm_sizes_used = {
+  "region_a" = "Standard_B2als_v2"
+  "region_b" = "Standard_B2s_v2"
+}
+vwan_id = "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualWans/vwan-vwan-symm"

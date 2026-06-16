@@ -1,0 +1,20 @@
+# COMMAND: gcloud compute routers get-status cr-vwan-symm-onprem-b --region=europe-west4 --project=gcp-vwan-symm-103167 --format=json
+# CAPTURED: 2026-06-15T22:40:00+02:00
+# DESIGN-B PHASE 1:
+#   cr_onprem_b NEW in eu-w4, ASN 16550, CUSTOM advertising both subnets
+#   ONE BGP peer: MCR2 at 169.254.110.226 (ASN 65002), state=Established, numLearnedRoutes=8
+#   Advertises: BOTH 10.50.1.0/24 AND 10.50.2.0/24 to MCR2
+#
+# KEY: VM-B (10.50.2.2, eu-w4) is served by cr_onprem_b for GCP GLOBAL VPC routing (regional locality)
+#   → ALL Azure-bound traffic from VM-B goes via cr_onprem_b → MCR2 → ER2 → Hub2
+#   → This includes traffic to Hub1 prefixes (10.11.0.0/24) which then must cross hubs
+#   → ASYMMETRIC vs forward path (which goes Hub1→MCR1→router_a→GLOBAL→VM-B)
+#
+# BEST ROUTES FOR CR-ONPREM-B (Hub prefixes only):
+#   10.11.0.0/24 → 169.254.110.226 (MCR2) AS=[65002,12076] ACTIVE
+#   10.12.0.0/24 → 169.254.110.226 (MCR2) AS=[65002,12076] ACTIVE
+#   10.20.0.0/23 → 169.254.110.226 (MCR2) AS=[65002,12076] ACTIVE
+#   10.21.0.0/24 → 169.254.110.226 (MCR2) AS=[65002,12076] ACTIVE
+#   10.22.0.0/24 → 169.254.110.226 (MCR2) AS=[65002,12076] ACTIVE
+# NOTE: Hub1 prefix (10.10.0.0/23) not present — MCR2 receives Hub1 as-path 65515 65520 65520 (cross-hub)
+#       but Hub1/Spoke1/Spoke2 prefixes (10.10,10.11,10.12) DO appear via 65002,12076 path

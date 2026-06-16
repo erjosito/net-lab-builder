@@ -1,0 +1,32 @@
+flowchart LR
+    GCP["GCP VPC (simulated on-prem)\nASN 65003 TBD\n10.100.0.0/24 TBD\n10.100.1.0/24 TBD"]
+
+    MCR1["Megaport MCR1\nASN 65001 TBD\nER peering loc TBD"]
+    MCR2["Megaport MCR2\nASN 65002 TBD\nER peering loc TBD"]
+
+    ERC1["ER Circuit A\n(MSEE pair A)\nASN 12076"]
+    ERC2["ER Circuit B\n(MSEE pair B)\nASN 12076"]
+
+    HubA["vHub-A ER GW\nASN 65515\nPeer IP TBD"]
+    HubB["vHub-B ER GW\nASN 65515\nPeer IP TBD"]
+
+    GCP -- "eBGP  ASN 65003 to 65001 TBD\nadvertises 10.100.0.0/24, 10.100.1.0/24" --> MCR1
+    GCP -- "eBGP  ASN 65003 to 65002 TBD\nadvertises 10.100.0.0/24, 10.100.1.0/24" --> MCR2
+
+    MCR1 -- "VXC A  eBGP  ASN 65001 to 12076 TBD\nPREFIX FILTER: exports only Region-A spokes to GCP" --> ERC1
+    MCR2 -- "VXC B  eBGP  ASN 65002 to 12076 TBD\nPREFIX FILTER: exports only Region-B spokes to GCP" --> ERC2
+
+    ERC1 -- "ER private peering\nASN 12076 to 65515" --> HubA
+    ERC2 -- "ER private peering\nASN 12076 to 65515" --> HubB
+
+    HubA -- "vHub-to-vHub routing intent\n(vWAN internal — not eBGP)\nroute propagation across regions" --> HubB
+
+    classDef gcp fill:#e8f5e9,stroke:#34a853,color:#000
+    classDef megaport fill:#ffe6cc,stroke:#d6b656,color:#000
+    classDef msee fill:#f5f5f5,stroke:#666666,color:#000
+    classDef azure fill:#dae8fc,stroke:#6c8ebf,color:#000
+
+    class GCP gcp
+    class MCR1,MCR2 megaport
+    class ERC1,ERC2 msee
+    class HubA,HubB azure

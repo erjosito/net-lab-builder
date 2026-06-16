@@ -1,0 +1,43 @@
+# COMMAND: gcloud compute routers get-status router-vwan-symm-b --region europe-west4 --project gcp-vwan-symm-103167 --format=json
+# CAPTURED: 2026-06-15T19:24:55+02:00
+# SPOF SIGNAL: Single BGP peer (peerIpAddress=169.254.87.242 = MCR2 GCP interface, ASN 65002).
+# Advertises ONLY 10.50.2.0/24. No redundant peer. Status=Established, UP 1h22m.
+{
+  "kind": "compute#routerStatusResponse",
+  "result": {
+    "bgpPeerStatus": [
+      {
+        "advertisedRoutes": [
+          {
+            "destRange": "10.50.2.0/24",
+            "kind": "compute#route",
+            "network": "projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-b-103167",
+            "nextHopIp": "169.254.87.241",
+            "priority": 100,
+            "routeType": "BGP"
+          }
+        ],
+        "enableIpv4": true,
+        "ipAddress": "169.254.87.241",
+        "name": "auto-ia-bgp-att-vwan-symm-b-267fdb2a3b9c2b1",
+        "numLearnedRoutes": 8,
+        "peerIpAddress": "169.254.87.242",
+        "state": "Established",
+        "status": "UP",
+        "uptime": "1 hours, 22 minutes, 23 seconds",
+        "uptimeSeconds": "4943"
+      }
+    ],
+    "bestRoutesForRouter": [
+      {"destRange": "10.11.0.0/24", "asPaths": [{"asLists": [65002, 12076]}], "nextHopIp": "169.254.87.242", "routeStatus": "ACTIVE"},
+      {"destRange": "10.12.0.0/24", "asPaths": [{"asLists": [65002, 12076]}], "nextHopIp": "169.254.87.242", "routeStatus": "ACTIVE"},
+      {"destRange": "10.20.0.0/23", "asPaths": [{"asLists": [65002, 12076]}], "nextHopIp": "169.254.87.242", "routeStatus": "ACTIVE"},
+      {"destRange": "10.21.0.0/24", "asPaths": [{"asLists": [65002, 12076]}], "nextHopIp": "169.254.87.242", "routeStatus": "ACTIVE"},
+      {"destRange": "10.22.0.0/24", "asPaths": [{"asLists": [65002, 12076]}], "nextHopIp": "169.254.87.242", "routeStatus": "ACTIVE"},
+      {"destRange": "169.254.87.240/29", "asPaths": [{"asLists": [65002]}], "nextHopIp": "169.254.87.242", "routeStatus": "ACTIVE"},
+      {"destRange": "169.254.148.88/30", "asPaths": [{"asLists": [65002]}], "nextHopIp": "169.254.87.242", "routeStatus": "ACTIVE"},
+      {"destRange": "169.254.148.92/30", "asPaths": [{"asLists": [65002]}], "nextHopIp": "169.254.87.242", "routeStatus": "ACTIVE"}
+    ],
+    "network": "projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-b-103167"
+  }
+}

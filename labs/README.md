@@ -8,13 +8,14 @@ Each lab lives at `labs/<lab-name>/` and contains:
 
 | File / Folder           | Owner    | Purpose                                                                          |
 |-------------------------|----------|----------------------------------------------------------------------------------|
-| `README.md`             | Niobe    | Lab summary — scenarios run, what to look at, how to reproduce                   |
+| `README.md`             | Niobe    | Lab summary — MUST surface a `## Designs studied` section with one entry per design (recommended AND not recommended), each with status, verdict, and evidence link. See routing rule #30. |
 | `lessons-learned.md`    | Niobe    | What worked, what didn't, gotchas, links to issues filed upstream                |
 | `validation.md`         | Niobe    | Validation matrix — what was checked, expected vs actual, evidence link          |
 | `show-output/`          | Niobe    | Sanitized CLI output (effective routes, BGP peerings, traceroutes, logs)         |
 | `screenshots/`          | Niobe    | Azure portal screenshots (topology, route tables, metrics)                       |
 | `diagrams/`             | Trinity  | Architecture diagrams (Mermaid, drawio, or PNG exports)                          |
 | `deploy/`               | Tank     | Lab-specific deploy artifacts (parameter files, overrides, post-deploy scripts)  |
+| `design.md`             | Trinity  | Authoritative network design — sections include Mechanism trade-offs, Resiliency analysis (F-table, M-table, Patch catalogue), per-design rationale. README cites design.md sections for verdict reasoning. |
 
 ## Naming
 

@@ -1,0 +1,13 @@
+# Source: vm-spoke3 (10.21.0.4), Dest: vm_a (10.50.1.2), Cross-hub probe
+# Forward: spoke3 → Hub2 → AzFW2 → ER2 → MCR2 → router_a → vm_a
+# Time: 2026-06-15T22:26:33Z
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\nConnection to 10.50.1.2 22 port [tcp/ssh] succeeded!\nnc: connect to 10.50.1.2 port 22 (tcp) timed out: Operation now in progress\nConnection to 10.50.1.2 22 port [tcp/ssh] succeeded!\n\n[stderr]\n"
+    }
+  ]
+}

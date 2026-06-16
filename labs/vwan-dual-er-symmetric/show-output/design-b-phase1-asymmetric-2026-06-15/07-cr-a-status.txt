@@ -1,0 +1,25 @@
+# COMMAND: gcloud compute routers get-status router-vwan-symm-a --region=europe-west3 --project=gcp-vwan-symm-103167 --format=json
+# CAPTURED: 2026-06-15T22:37:00+02:00
+# DESIGN-B PHASE 1:
+#   router_a (eu-w3) now advertises BOTH 10.50.1.0/24 AND 10.50.2.0/24 (was only 10.50.1.0/24 in Design A)
+#   Still ONE BGP peer: MCR1 at 169.254.159.194 (ASN 65001), state=Established
+#   bestRoutes shows TWO path entries per Azure prefix:
+#     - Via MCR1 (169.254.159.194, priority=0): Hub1+Hub2 prefixes — THIS PEER WINS (lower priority # = more preferred in GCP)
+#     - Via MCR2 (169.254.110.226, priority=213): Hub1+Hub2 prefixes — backup path via cr_onprem_b GLOBAL routing
+#
+# KEY INSIGHT: VM-A (eu-w3) → Azure traffic uses MCR1 (best path priority=0)
+#   VM-B (eu-w4) → Azure traffic uses cr_onprem_b (eu-w4 regional router) → MCR2
+#   This is the SPLIT that creates asymmetric routing for cross-hub flows
+#
+# ADVERTISED (router_a → MCR1):
+#   10.50.1.0/24 (directly connected subnet, eu-w3)
+#   10.50.2.0/24 (via GLOBAL VPC routing from eu-w4 subnet — NEW in Design B)
+#
+# BGPPEER STATUS: Established, UP 4h28m, numLearnedRoutes=8
+#
+# BEST ROUTES FOR ROUTER-A (subset for Azure prefixes):
+#   10.10.0.0/23 → 169.254.159.194 (MCR1) AS=[65001,12076] priority=0 ACTIVE
+#   10.11.0.0/24 → 169.254.159.194 (MCR1) AS=[65001,12076] priority=0 ACTIVE
+#   10.12.0.0/24 → 169.254.159.194 (MCR1) AS=[65001,12076] priority=0 ACTIVE
+#   10.21.0.0/24 → 169.254.159.194 (MCR1) AS=[65001,12076] priority=0 ACTIVE
+#   10.22.0.0/24 → 169.254.159.194 (MCR1) AS=[65001,12076] priority=0 ACTIVE

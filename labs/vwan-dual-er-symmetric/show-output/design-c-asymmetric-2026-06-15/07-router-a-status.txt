@@ -1,0 +1,673 @@
+# Command (run via WSL): gcloud compute routers get-status router-vwan-symm-a --region europe-west3 --project gcp-vwan-symm-103167 --format=json
+{
+  "kind": "compute#routerStatusResponse",
+  "result": {
+    "bestRoutes": [
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65001,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T10:07:48.342-07:00",
+        "destRange": "10.22.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.159.194",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65001,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T10:07:48.342-07:00",
+        "destRange": "10.11.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.159.194",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65001
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T10:07:48.342-07:00",
+        "destRange": "169.254.150.120/30",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.159.194",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65001
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T10:11:47.301-07:00",
+        "destRange": "169.254.150.124/30",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.159.194",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65001,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T10:07:48.342-07:00",
+        "destRange": "10.21.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.159.194",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65001,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T10:07:48.341-07:00",
+        "destRange": "10.10.0.0/23",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.159.194",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65001,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T10:07:48.342-07:00",
+        "destRange": "10.12.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.159.194",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65002,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T14:32:25.756-07:00",
+        "destRange": "10.12.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.93.154",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65002
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T14:32:25.756-07:00",
+        "destRange": "169.254.148.92/30",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.93.154",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65002
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T14:32:25.756-07:00",
+        "destRange": "169.254.148.88/30",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.93.154",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65002,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T14:32:25.756-07:00",
+        "destRange": "10.11.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.93.154",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65002,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T14:32:25.756-07:00",
+        "destRange": "10.21.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.93.154",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65002,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T14:32:25.756-07:00",
+        "destRange": "10.22.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.93.154",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65002,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T14:32:25.756-07:00",
+        "destRange": "10.20.0.0/23",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.93.154",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      }
+    ],
+    "bestRoutesForRouter": [
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65001,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T09:23:00.428-07:00",
+        "destRange": "10.10.0.0/23",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.159.194",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65001,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T09:23:00.432-07:00",
+        "destRange": "10.11.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.159.194",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65001,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T09:23:00.432-07:00",
+        "destRange": "10.12.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.159.194",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65001,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T09:23:00.433-07:00",
+        "destRange": "10.21.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.159.194",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65001,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T09:23:00.434-07:00",
+        "destRange": "10.22.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.159.194",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65001
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T09:09:06.957-07:00",
+        "destRange": "169.254.150.120/30",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.159.194",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65001
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T10:11:47.300-07:00",
+        "destRange": "169.254.150.124/30",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.159.194",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65001
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T09:09:06.956-07:00",
+        "destRange": "169.254.159.192/29",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.159.194",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65002,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T14:32:25.756-07:00",
+        "destRange": "10.11.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.93.154",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65002,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T14:32:25.756-07:00",
+        "destRange": "10.12.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.93.154",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65002,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T14:32:25.755-07:00",
+        "destRange": "10.20.0.0/23",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.93.154",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65002,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T14:32:25.756-07:00",
+        "destRange": "10.21.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.93.154",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65002,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T14:32:25.756-07:00",
+        "destRange": "10.22.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.93.154",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65002
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T14:32:25.756-07:00",
+        "destRange": "169.254.93.152/29",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.93.154",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65002
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T14:32:25.756-07:00",
+        "destRange": "169.254.148.88/30",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.93.154",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65002
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-06-15T14:32:25.756-07:00",
+        "destRange": "169.254.148.92/30",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+        "nextHopIp": "169.254.93.154",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      }
+    ],
+    "bgpPeerStatus": [
+      {
+        "advertisedRoutes": [
+          {
+            "destRange": "10.50.1.0/24",
+            "kind": "compute#route",
+            "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+            "nextHopIp": "169.254.159.193",
+            "nextHopOrigin": "INCOMPLETE",
+            "priority": 100,
+            "routeType": "BGP"
+          },
+          {
+            "destRange": "10.50.2.0/24",
+            "kind": "compute#route",
+            "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+            "nextHopIp": "169.254.159.193",
+            "nextHopOrigin": "INCOMPLETE",
+            "priority": 100,
+            "routeType": "BGP"
+          }
+        ],
+        "enableIpv4": true,
+        "enableIpv6": false,
+        "ipAddress": "169.254.159.193",
+        "md5AuthEnabled": false,
+        "name": "auto-ia-bgp-att-vwan-symm-a-748c416bf214189",
+        "numLearnedRoutes": 8,
+        "peerIpAddress": "169.254.159.194",
+        "state": "Established",
+        "status": "UP",
+        "uptime": "5 hours, 58 minutes, 52 seconds",
+        "uptimeSeconds": "21532"
+      },
+      {
+        "advertisedRoutes": [
+          {
+            "destRange": "10.50.1.0/24",
+            "kind": "compute#route",
+            "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+            "nextHopIp": "169.254.93.153",
+            "nextHopOrigin": "INCOMPLETE",
+            "priority": 100,
+            "routeType": "BGP"
+          },
+          {
+            "destRange": "10.50.2.0/24",
+            "kind": "compute#route",
+            "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167",
+            "nextHopIp": "169.254.93.153",
+            "nextHopOrigin": "INCOMPLETE",
+            "priority": 100,
+            "routeType": "BGP"
+          }
+        ],
+        "enableIpv4": true,
+        "enableIpv6": false,
+        "ipAddress": "169.254.93.153",
+        "md5AuthEnabled": false,
+        "name": "auto-ia-bgp-att-vwan-symm-b-8a45a420e5e4bb7",
+        "numLearnedRoutes": 8,
+        "peerIpAddress": "169.254.93.154",
+        "state": "Established",
+        "status": "UP",
+        "uptime": "35 minutes, 33 seconds",
+        "uptimeSeconds": "2133"
+      }
+    ],
+    "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167"
+  }
+}
+
+# --- Analysis: bestRoutesForRouter for Azure prefixes ---
+# Peer mapping:
+#   auto-ia-bgp-att-vwan-symm-a-* → att_a (MCR1 ASN 65001) peerIP=169.254.159.194
+#   auto-ia-bgp-att-vwan-symm-b-* → att_b_v2 (MCR2 ASN 65002) peerIP=169.254.93.154
+#
+# PREFIX            | VIA MCR1 (65001)   | VIA MCR2 (65002)   | PRIORITY | RESULT
+# 10.10.0.0/23      | YES (169.254.159.194) | NO              | 0        | MCR1 ONLY
+# 10.11.0.0/24      | YES (169.254.159.194) | YES (169.254.93.154) | 0/0 | ECMP
+# 10.12.0.0/24      | YES (169.254.159.194) | YES (169.254.93.154) | 0/0 | ECMP
+# 10.20.0.0/23      | NO                  | YES (169.254.93.154) | 0     | MCR2 ONLY
+# 10.21.0.0/24      | YES (169.254.159.194) | YES (169.254.93.154) | 0/0 | ECMP
+# 10.22.0.0/24      | YES (169.254.159.194) | YES (169.254.93.154) | 0/0 | ECMP
+#
+# KEY FINDING: Hub supernets (/23) are isolated per MCR (correct).
+# ALL spoke /24 subnets are ECMP across both MCRs (PROBLEM).
+# AS-path length is identical (2 hops each): [65001,12076] vs [65002,12076]
+# GCP uses LEGACY bgpBestPathSelectionMode → per-flow ECMP (5-tuple hash)

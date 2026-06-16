@@ -1,0 +1,59 @@
+# SOURCE: terraform state show megaport_vxc.azure_circuit1 + .azure_circuit1_secondary + .gcp_a
+# From: src/terraform/vwan-dual-er-symmetric/ (state captured 2026-06-15T19:24:55+02:00)
+# PURPOSE: Declares the 3 VXCs anchored on MCR1 — all would go dark if MCR1 fails.
+# NOTE: service_key values are sensitive and not surfaced in TF state show. product_uid is non-secret.
+
+## VXC 1: MCR1 → ER1 Stockholm (primary MSEE)
+resource: megaport_vxc.azure_circuit1
+  product_name        = "vxc-mcr1-circuit1-103167"
+  product_uid         = "<VXC_UID_AZURE_CIRCUIT1>"      # redacted per charter
+  product_id          = 293352
+  provisioning_status = "LIVE"
+  shutdown            = false
+  rate_limit          = 50
+  a_end.location      = "Equinix Frankfurt FR5"         # MCR1 PoP
+  a_end.product_name  = "mcr1-vwan-symm-103167"
+  b_end.location      = "Equinix Stockholm SK1"
+  b_end.product_name  = "Stockholm Primary"
+  b_end_partner_config.azure_config.port_choice = "primary"
+  b_end_partner_config.partner                  = "azure"
+
+## VXC 2: MCR1 → ER1 Stockholm (secondary MSEE)
+resource: megaport_vxc.azure_circuit1_secondary
+  product_name        = "vxc-mcr1-circuit1-secondary-103167"
+  product_uid         = "<VXC_UID_AZURE_CIRCUIT1_SEC>"  # redacted per charter
+  product_id          = 293363
+  provisioning_status = "CONFIGURED"
+  shutdown            = false
+  rate_limit          = 50
+  a_end.location      = "Equinix Frankfurt FR5"         # MCR1 PoP
+  a_end.product_name  = "mcr1-vwan-symm-103167"
+  b_end.location      = "Equinix Stockholm SK1"
+  b_end.product_name  = "Stockholm Secondary"
+  b_end_partner_config.azure_config.port_choice = "secondary"
+  b_end_partner_config.partner                  = "azure"
+
+## VXC 3: MCR1 → GCP VPC-A Cloud Router (europe-west3)
+resource: megaport_vxc.gcp_a
+  product_name        = "vxc-mcr1-gcp-a-103167"
+  product_uid         = "<VXC_UID_GCP_A>"               # redacted per charter
+  product_id          = 293354
+  provisioning_status = "LIVE"
+  shutdown            = false
+  rate_limit          = 50
+  a_end.location      = "Equinix Frankfurt FR5"         # MCR1 PoP
+  a_end.product_name  = "mcr1-vwan-symm-103167"
+  b_end.location      = "Digital Realty Interxion STO5"
+  b_end_partner_config.google_config.pairing_key = "<GCP_PAIRING_KEY_A>"  # redacted
+  b_end_partner_config.partner                   = "google"
+
+## MCR1 identification
+MCR1 UID (product_uid): <MCR1_UID>   # redacted per charter
+MCR1 ASN: 65001
+MCR1 PoP: Equinix Frankfurt FR5 (fallback — Sweden market not enabled on Megaport account)
+
+## SPOF conclusion from TF state:
+# All 3 VXCs above share a_end.product_uid = MCR1. 
+# shutdown=false on all 3 (no admin-shutdown applied, all active).
+# MCR1 failure = all 3 VXCs lose BGP peering simultaneously.
+# No MCR1 backup path exists in current TF state.

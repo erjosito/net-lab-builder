@@ -1,0 +1,20 @@
+# DESIGN-B PHASE 1 — TCP CONNECTIVITY TESTS: spoke3 (10.21.0.4, Hub2) → VM-B (10.50.2.2, GCP eu-w4)
+# CAPTURED: 2026-06-15T22:42:00+02:00
+#
+# SYMMETRIC PATH ANALYSIS:
+#   Forward: spoke3 → Hub2 → AzFW2 → ER2 → MCR2 → cr_onprem_b (eu-w4) → VM-B
+#   Return:  VM-B → cr_onprem_b (eu-w4) → MCR2 → ER2 → Hub2 → AzFW2 → spoke3
+#   RESULT: BOTH directions via AzFW2 → STATE MATCH → SUCCESS
+#
+# COMMANDS:
+#   az vm run-command invoke -g rg-vwan-symm-103167 -n vm-spoke3 --command-id RunShellScript \
+#     --scripts 'nc -zv -w 5 10.50.2.2 22 2>&1; echo Exit: \True; date; ping -c 3 -W 3 10.50.2.2 2>&1'
+#
+# --- RUN 1 (2026-06-15T22:42:21+02:00) ---
+# Connection to 10.50.2.2 22 port [tcp/ssh] succeeded!
+# Exit: True [exit 0 = SUCCESS]
+# PING: 3 packets transmitted, 3 received, 0% packet loss
+# RTT: min=63.059ms avg=68.589ms max=74.133ms mdev=4.520ms
+#
+# VERDICT: Symmetric path (spoke3/Hub2 ↔ VM-B via MCR2) works as expected.
+# Contrast with spoke1→VM-B (asymmetric) which FAILS — definitively isolates asymmetric routing cause.

@@ -1,0 +1,24 @@
+# Source: vm-spoke1 (10.11.0.4), Dest: vm_b (10.50.2.2), Probe: nc -zv -w5 10.50.2.2 22 x5
+# Forward path expected: spoke1 → Hub1/AzFW1 → ER1 → MCR1 → router_a → vm_b
+# Return path expected: router_a ECMP (MCR1 or MCR2) → ER? → Hub? → AzFW?
+# Time: 2026-06-15T22:11:30Z
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\n\n[stderr]\n/var/lib/waagent/run-command/download/5/script.sh: 7: Syntax error: end of file unexpected (expecting \"done\")\n"
+    }
+  ]
+}
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\nExit1:True\nExit2:True\nExit3:True\n\n[stderr]\nConnection to 10.50.2.2 22 port [tcp/ssh] succeeded!\nnc: connect to 10.50.2.2 port 22 (tcp) timed out: Operation now in progress\nnc: connect to 10.50.2.2 port 22 (tcp) timed out: Operation now in progress\n"
+    }
+  ]
+}

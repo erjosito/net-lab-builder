@@ -1,0 +1,85 @@
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # google_compute_interconnect_attachment.att_b_new will be destroyed
+  # (because google_compute_interconnect_attachment.att_b_new is not in configuration)
+  - resource "google_compute_interconnect_attachment" "att_b_new" {
+      - admin_enabled                = true -> null
+      - bandwidth                    = "BPS_50M" -> null
+      - cloud_router_ip_address      = "169.254.110.225/29" -> null
+      - creation_timestamp           = "2026-06-15T12:47:17.006-07:00" -> null
+      - customer_router_ip_address   = "169.254.110.226/29" -> null
+      - edge_availability_domain     = "AVAILABILITY_DOMAIN_2" -> null
+      - effective_labels             = {
+          - "goog-terraform-provisioned" = "true"
+        } -> null
+      - encryption                   = "NONE" -> null
+      - id                           = "projects/gcp-vwan-symm-103167/regions/europe-west4/interconnectAttachments/att-vwan-symm-b-new" -> null
+      - ipsec_internal_addresses     = [] -> null
+      - label_fingerprint            = "vezUS-42LLM=" -> null
+      - labels                       = {} -> null
+      - name                         = "att-vwan-symm-b-new" -> null
+      - pairing_key                  = "b64df2cd-5637-404a-ae40-f15a2797a767/europe-west4/2" -> null
+      - partner_asn                  = "65002" -> null
+      - private_interconnect_info    = [] -> null
+      - project                      = "gcp-vwan-symm-103167" -> null
+      - region                       = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/regions/europe-west4" -> null
+      - router                       = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/regions/europe-west4/routers/cr-vwan-symm-onprem-b" -> null
+      - self_link                    = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/regions/europe-west4/interconnectAttachments/att-vwan-symm-b-new" -> null
+      - stack_type                   = "IPV4_ONLY" -> null
+      - state                        = "DEFUNCT" -> null
+      - terraform_labels             = {
+          - "goog-terraform-provisioned" = "true"
+        } -> null
+      - type                         = "PARTNER" -> null
+      - vlan_tag8021q                = 1436 -> null
+        # (7 unchanged attributes hidden)
+    }
+
+  # google_compute_router.cr_onprem_b will be destroyed
+  # (because google_compute_router.cr_onprem_b is not in configuration)
+  - resource "google_compute_router" "cr_onprem_b" {
+      - creation_timestamp            = "2026-06-15T12:23:27.586-07:00" -> null
+      - encrypted_interconnect_router = false -> null
+      - id                            = "projects/gcp-vwan-symm-103167/regions/europe-west4/routers/cr-vwan-symm-onprem-b" -> null
+      - name                          = "cr-vwan-symm-onprem-b" -> null
+      - network                       = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/global/networks/vpc-vwan-symm-a-103167" -> null
+      - project                       = "gcp-vwan-symm-103167" -> null
+      - region                        = "europe-west4" -> null
+      - self_link                     = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-symm-103167/regions/europe-west4/routers/cr-vwan-symm-onprem-b" -> null
+        # (1 unchanged attribute hidden)
+
+      - bgp {
+          - advertise_mode     = "CUSTOM" -> null
+          - advertised_groups  = [] -> null
+          - asn                = 16550 -> null
+          - keepalive_interval = 20 -> null
+            # (1 unchanged attribute hidden)
+
+          - advertised_ip_ranges {
+              - description = "Region A GCP subnet (via GLOBAL VPC routing — failover path)" -> null
+              - range       = "10.50.1.0/24" -> null
+            }
+          - advertised_ip_ranges {
+              - description = "Region B GCP subnet (directly connected)" -> null
+              - range       = "10.50.2.0/24" -> null
+            }
+        }
+    }
+
+Plan: 0 to add, 0 to change, 2 to destroy.
+
+Changes to Outputs:
+  ~ gcp_attachment_pairing_keys  = (sensitive value)
+  ~ gcp_router_names             = {
+      - cr_onprem_b = "cr-vwan-symm-onprem-b"
+        # (1 unchanged attribute hidden)
+    }
+  ~ megaport_vxc_uids            = {
+      - gcp_b                    = "2c2fd022-b0ce-438a-aee9-69f27daa43a2"
+        # (5 unchanged attributes hidden)
+    }

@@ -1,0 +1,74 @@
+# TF Changes — Mech C1 Apply 2026-06-16
+# Provider discovery: AzureRM 4.77.0 uses azurerm_route_map (not azurerm_virtual_hub_route_map).
+# Schema corrected before plan gate.
+
+## MODIFIED: azure-expressroute.tf
+## hub1_circuit1 — added routing block:
++  routing {
++    outbound_route_map_id = azurerm_route_map.hub1_out_depref_hub2.id
++  }
+
+## hub2_circuit2 — added routing block:
++  routing {
++    outbound_route_map_id = azurerm_route_map.hub2_out_depref_hub1.id
++  }
+
+## NEW FILE: azure-route-maps.tf (resource type: azurerm_route_map)
++###############################################################################
++# VWAN Route Maps — Mechanism C1 (Phase 2)                                   #
++#                                                                             #
++# Outbound AS-path prepend (hub→MCR direction) using reserved ASN 23456       #
++# (AS_TRANS, RFC 4893) — not private, not Azure-reserved, 2-byte.            #
++#                                                                             #
++# Hub1 OUTBOUND: de-prefer Hub2-region prefixes toward MCR1 (3× prepend).    #
++#   router_a sees 5-hop path via MCR1 vs 2-hop via MCR2 → chooses MCR2. ✓   #
++# Hub2 OUTBOUND: de-prefer Hub1-region prefixes toward MCR2 (3× prepend).    #
++#   router_a sees 5-hop path via MCR2 vs 2-hop via MCR1 → chooses MCR1. ✓   #
++#                                                                             #
++# Provider note: AzureRM 4.x uses azurerm_route_map (not                     #
++# azurerm_virtual_hub_route_map which was the pre-GA name).                  #
++###############################################################################
++
++resource "azurerm_route_map" "hub1_out_depref_hub2" {
++  name           = "hub1-out-depref-hub2"
++  virtual_hub_id = azurerm_virtual_hub.hub1.id
++
++  rule {
++    name                 = "prepend-hub2-region"
++    next_step_if_matched = "Continue"
++
++    match_criterion {
++      match_condition = "Contains"
++      route_prefix    = ["10.20.0.0/23", "10.21.0.0/24", "10.22.0.0/24"]
++    }
++
++    action {
++      type = "Add"
++      parameter {
++        as_path = ["23456", "23456", "23456"]
++      }
++    }
++  }
++}
++
++resource "azurerm_route_map" "hub2_out_depref_hub1" {
++  name           = "hub2-out-depref-hub1"
++  virtual_hub_id = azurerm_virtual_hub.hub2.id
++
++  rule {
++    name                 = "prepend-hub1-region"
++    next_step_if_matched = "Continue"
++
++    match_criterion {
++      match_condition = "Contains"
++      route_prefix    = ["10.10.0.0/23", "10.11.0.0/24", "10.12.0.0/24"]
++    }
++
++    action {
++      type = "Add"
++      parameter {
++        as_path = ["23456", "23456", "23456"]
++      }
++    }
++  }
++}

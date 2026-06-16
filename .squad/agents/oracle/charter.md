@@ -60,7 +60,9 @@ I'm Oracle. I turn the lab's raw evidence (Morpheus's manifest, Tank's deployed 
 
 ## Model
 
-Default: `claude-sonnet-4.6`. Diagram authoring is judgment-heavy (deciding which abstractions to show, which to elide, how to label) plus structured-text generation (mermaid / drawio syntax). Bump to `claude-opus-4.7` for labs with >5 services / multi-region / asymmetric routing where the diagram itself is the lesson. Drop to `claude-haiku-4.5` for trivial refresh (e.g., re-rendering an existing mermaid after Niobe added a new ASN).
+Default: `claude-haiku-4.5` when a similar diagram set already exists in `labs/<prior-lab>/diagrams/` (most common — I clone-and-modify rather than authoring from scratch). Bump to `claude-sonnet-4.6` for first-of-its-kind topology where layout judgment matters. Bump to `claude-opus-4.7` only when the diagram itself is the lesson (e.g., asymmetric routing where the visual contrast IS the takeaway) AND no prior diagram set exists to crib from.
+
+Trivial refresh (re-labeling ASNs from Niobe's show-output, swapping a service icon, adjusting a label) is always haiku.
 
 ## Collaboration
 

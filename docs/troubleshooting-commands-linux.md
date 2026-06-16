@@ -32,6 +32,8 @@ export ROUTER_A=router-vwan-symm-a
 export REGION_A=europe-west3
 ```
 
+**Placeholder convention:** Commands in this document use `<YOUR_...>` tokens for values that vary per lab (e.g., `<YOUR_VPC>`, `<YOUR_ATTACHMENT_NAME>`, `<YOUR_VM_NAME>`). Replace these with your actual resource names before running commands.
+
 **jq tip:** prefix any `gcloud`/`az`/`curl` command with `-o json` (Azure CLI) or `--format=json` (gcloud) and pipe to `jq -r '… | @tsv'`. `@tsv` beats manual `join("\t")` because it escapes embedded tabs/newlines.
 
 ---
@@ -157,11 +159,17 @@ export MP_TOKEN=$(curl -s -X POST "$MP_API/v2/login" \
 | Goal | Command |
 |---|---|
 | List routers in a region | `gcloud compute routers list --filter="region:$REGION_A" --format="table(name, region, network.basename(), bgp.asn)"` |
+| | <!-- Validated 2026-06-15 WSL: works (output: 01-validation-results.txt) --> |
 | Router config (BGP + advertised) | `gcloud compute routers describe $ROUTER_A --region=$REGION_A --format=json \| jq '{name, asn:.bgp.asn, advertiseMode:.bgp.advertiseMode, advertisedRanges:.bgp.advertisedIpRanges, peers:[.bgpPeers[].name]}'` |
+| | <!-- Validated 2026-06-15 WSL: works (output: 01-validation-results.txt) --> |
 | Best routes (post-selection) | `gcloud compute routers get-status $ROUTER_A --region=$REGION_A --format=json \| jq -r '.result.bestRoutesForRouter[] \| [.destRange, .routeType, .nextHopIp, (.priority\|tostring)] \| @tsv'` |
+| | <!-- Validated 2026-06-15 WSL: works (output: 01-validation-results.txt) --> |
 | **Learned routes per peer, with AS path** | `gcloud compute routers get-status $ROUTER_A --region=$REGION_A --format=json \| jq -r '.result.bgpPeerStatus[] \| .name as $peer \| .learnedRoutes[]? \| [$peer, .destRange, .routeType, .nextHopIp, (.asPath \| @json // "-")] \| @tsv'` |
+| | <!-- Validated 2026-06-15 WSL: works (output: 01-validation-results.txt; empty result is correct) --> |
 | BGP peer status (up/down, uptime, counters) | `gcloud compute routers get-status $ROUTER_A --region=$REGION_A --format=json \| jq -r '.result.bgpPeerStatus[] \| [.name, .ipAddress, (.peerIpAddress // "-"), .status, .state, (.uptime // "-"), (.numLearnedRoutes\|tostring)] \| @tsv'` |
-| Routes advertised to a specific peer | `gcloud compute routers get-status $ROUTER_A --region=$REGION_A --format=json \| jq -r '.result.bgpPeerStatus[] \| select(.name=="<peer-name>") \| .advertisedRoutes[]? \| [.destRange, (.asPath \| @json // "-")] \| @tsv'` |
+| | <!-- Validated 2026-06-15 WSL: works (output: 01-validation-results.txt) --> |
+| Routes advertised to a specific peer | `gcloud compute routers get-status $ROUTER_A --region=$REGION_A --format=json \| jq -r '.result.bgpPeerStatus[] \| select(.name=="<YOUR_BGP_PEER_NAME>") \| .advertisedRoutes[]? \| [.destRange, (.asPath \| @json // "-")] \| @tsv'` |
+| | <!-- Validated 2026-06-15 WSL: works with placeholder fix (output: 01-validation-results.txt) --> |
 
 **Gotcha #1 — `.asPath` shape varies.** Sometimes an object (`{asns: [...], asPathSegmentType: "AS_SEQUENCE"}`), sometimes an array, sometimes absent. The `@json` trick renders whatever's there as a single TSV cell instead of crashing jq.
 
@@ -176,11 +184,16 @@ export MP_TOKEN=$(curl -s -X POST "$MP_API/v2/login" \
 | Goal | Command |
 |---|---|
 | List Interconnect attachments | `gcloud compute interconnects attachments list --format="table(name, region, type, edgeAvailabilityDomain, state, pairingKey)"` |
-| One attachment in detail | `gcloud compute interconnects attachments describe <att-name> --region=$REGION_A --format=json \| jq '{name, state, type, bandwidth, pairingKey, vlanTag8021q, cloudRouterIpAddress, customerRouterIpAddress, partnerAsn}'` |
-| Effective VPC routes (what the data plane sees) | `gcloud compute routes list --filter="network:vpc-onprem" --format="table(name, destRange, nextHopIp, nextHopGateway.basename(), nextHopVpnTunnel.basename(), priority)"` |
-| Firewalls applied to a VM (no per-VM route-table CLI exists) | `gcloud compute instances get-effective-firewalls <vm> --zone=$REGION_A-a` |
+| | <!-- Validated 2026-06-15 WSL: works (output: 01-validation-results.txt) --> |
+| One attachment in detail | `gcloud compute interconnects attachments describe <YOUR_ATTACHMENT_NAME> --region=$REGION_A --format=json \| jq '{name, state, type, bandwidth, pairingKey, vlanTag8021q, cloudRouterIpAddress, customerRouterIpAddress, partnerAsn}'` |
+| | <!-- Validated 2026-06-15 WSL: works with placeholder fix (output: 01-validation-results.txt) --> |
+| Effective VPC routes (what the data plane sees) | `gcloud compute routes list --filter="network:<YOUR_VPC>" --format="table(name, destRange, nextHopIp, nextHopGateway.basename(), nextHopVpnTunnel.basename(), priority)"` |
+| | <!-- Validated 2026-06-15 WSL: CRITICAL FIX — hardcoded vpc-onprem replaced with <YOUR_VPC> (output: 01-validation-results.txt) --> |
+| Firewalls applied to a VPC | `gcloud compute firewall-rules list --filter="network:<YOUR_VPC>" --format="table(name, direction, priority, sourceRanges[0], targetTags[0], allowed[0].map().firewall_rule())"` |
+| | <!-- Validated 2026-06-15 WSL: FIXED — original used deprecated get-effective-firewalls; replaced with firewall-rules list (output: 01-validation-results.txt) --> |
 
-**Gotcha — VPC routing mode (`REGIONAL` vs `GLOBAL`) is invisible in `routes list` output.** A route learned by Router-A (region-X) won't appear in region-Y's VM forwarding table unless the VPC has `routing_mode=GLOBAL`. Check the VPC's mode first: `gcloud compute networks describe <vpc> --format='value(routingConfig.routingMode)'`.
+**Gotcha — VPC routing mode (`REGIONAL` vs `GLOBAL`) is invisible in `routes list` output.** A route learned by Router-A (region-X) won't appear in region-Y's VM forwarding table unless the VPC has `routing_mode=GLOBAL`. Check the VPC's mode first: `gcloud compute networks describe <YOUR_VPC> --format='value(routingConfig.routingMode)'`.
+<!-- Validated 2026-06-15 WSL: works with placeholder fix (output: 01-validation-results.txt; confirmed GLOBAL mode) -->
 
 ---
 
@@ -254,6 +267,82 @@ When you suspect AzFW drops because forward and return packets hit different fir
 3. Compare the egress hub for each direction. If they differ → asymmetric. Each AzFW instance maintains its own state table; only the one that saw the SYN will accept the SYN-ACK back.
 
 The fix is at the routing layer (prepending, prefix filters, hub-to-hub routing intent) — not at the firewall.
+
+### Pattern D — "Prove asymmetric routing with firewall logs (dual-hub ER + GCP)"
+
+**Context:** Design B Phase 1 (`vwan-dual-er-symmetric`, 2026-06-15). Two GCP Cloud Routers advertise both GCP subnets into both MCRs. Without AS-PATH prepend tiebreaker, Azure's BGP selects the direct ER path (shorter AS-path) for each prefix; GCP's GLOBAL VPC uses regional routing (VM-B in eu-w4 always returns via eu-w4's Cloud Router).
+
+**Step 1: ER circuit route table scan — is the same GCP prefix on both ER circuits?**
+
+```bash
+# If BOTH prefixes appear on BOTH ER circuits → multiple paths → asymmetry is mathematically possible.
+# In Design A (Mechanism A, filter lists): each ER shows only its "home" prefix.
+for ERCKT in er-vwan-symm-stockholm er-vwan-symm-amsterdam; do
+  echo "=== $ERCKT ==="
+  az network express-route list-route-tables -g $RG -n $ERCKT \
+    --peering-name AzurePrivatePeering --path primary -o json \
+    | jq -r '.value[] | select(.network | startswith("10.50")) | [.network, .nextHop, .path] | @tsv'
+done
+```
+
+**Step 2: GCP GLOBAL VPC multi-router bestRoutes scan — does each router see both MCR paths?**
+
+```bash
+# bestRoutes (all VPC routes) shows BOTH MCR paths for each Azure prefix.
+# bestRoutesForRouter shows THIS router's best-path selection.
+# Priority difference (0 vs 213) = not ECMP. Always one MCR wins per region.
+for ROUTER in router-vwan-symm-a cr-vwan-symm-onprem-b; do
+  REGION=$(gcloud compute routers describe $ROUTER --project=$GCP_PROJECT --format='value(region)' | sed 's|.*/||')
+  echo "=== $ROUTER ($REGION) ==="
+  gcloud compute routers get-status $ROUTER --region=$REGION --project=$GCP_PROJECT --format=json \
+    | jq -r '.result.bestRoutesForRouter[] | select(.destRange | startswith("10.1")) | [.destRange, .nextHopIp, (.asPaths[0].asLists|@json), .routeStatus] | @tsv'
+done
+```
+
+**Step 3: Two-VM differential connectivity test — the minimal proof**
+
+```bash
+# Run the SAME test from BOTH hubs. If one succeeds and one fails:
+#   - Policy is NOT the issue (policy is hub-wide, not VM-specific)
+#   - Asymmetric routing IS the issue
+# nm: nc returns exit 0 on success, non-zero on timeout.
+az vm run-command invoke -g $RG -n vm-spoke1 --command-id RunShellScript \
+  --scripts 'nc -zv -w 5 10.50.2.2 22 2>&1; echo "Exit: $?"'
+az vm run-command invoke -g $RG -n vm-spoke3 --command-id RunShellScript \
+  --scripts 'nc -zv -w 5 10.50.2.2 22 2>&1; echo "Exit: $?"'
+# spoke1 (Hub1) timeout + spoke3 (Hub2) success = asymmetric routing proved.
+```
+
+**Step 4: Firewall KQL correlation — find the "absent AzFW" signature**
+
+```kql
+// Run against the shared Log Analytics workspace.
+// Asymmetric routing signature: AzFW-A logs forward SYN; AzFW-B logs ZERO entries for the same flow.
+// Azure Firewall does NOT log TCP stateful drops — the absence IS the evidence.
+AzureDiagnostics
+| where ResourceType == "AZUREFIREWALLS"
+| where TimeGenerated > ago(30m)
+| where msg_s contains "10.50.2.2" or msg_s contains "10.50.1.2"
+| project TimeGenerated, Resource, msg_s
+| order by TimeGenerated asc
+```
+
+```bash
+az monitor log-analytics query -w <workspace-id> --analytics-query "$(cat above_kql)" -o json \
+  | jq -r '.[] | select(.msg_s != null) | [.TimeGenerated, .Resource, .msg_s] | @tsv'
+```
+
+**Interpretation guide:**
+
+| Pattern | Meaning |
+|---|---|
+| Only AzFW1 entries for flow A→B | Forward path via Hub1; return SYN-ACK silently dropped at AzFW2 (no state) |
+| Only AzFW2 entries for flow A→B | Symmetric via Hub2; both directions logged at AzFW2 |
+| Both AzFW1 and AzFW2 entries for same 5-tuple | ECMP/hash-pinning split — rare, indicates routing instability |
+
+**Key gotcha:** Azure Firewall does NOT emit a log entry for packets dropped by the TCP stateful engine (SYN-ACK without matching SYN, RST/FIN without established state). Only policy-matched packets (ALLOW or DENY by rule) appear in `AzureDiagnostics`. The absence of AzFW2 entries for a flow whose SYN was logged at AzFW1 is therefore the proof of asymmetric routing with stateful drop — not a logging gap.
+
+Evidence: `labs/vwan-dual-er-symmetric/show-output/design-b-phase1-asymmetric-2026-06-15/` (2026-06-15).
 
 ---
 

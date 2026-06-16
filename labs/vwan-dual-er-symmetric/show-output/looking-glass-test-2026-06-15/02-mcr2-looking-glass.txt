@@ -1,0 +1,23 @@
+# Command:
+# curl -s -i -H "X-Auth-Token: <REDACTED>" "https://api.megaport.com/v2/product/mcr2/<MCR2_UID>/diagnostics/routes/bgp"
+#
+# Result: NOT REACHED — Megaport API authentication failed before request could be issued.
+# Tested: 2026-06-15T20:xx+02:00
+# Lab: vwan-dual-er-symmetric (lab #2)
+#
+# Auth attempt (same session as MCR1 test):
+#   POST https://api.megaport.com/v2/login
+#   Content-Type: application/x-www-form-urlencoded
+#   Body: username=<REDACTED>&password=<REDACTED>
+#
+# Auth response (HTTP 401):
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+
+{"message":"Invalid email or password. Your account will be locked after 10 failed login attempts. Please contact your company administrator to reactivate your account.","terms":"This data is subject to the Acceptable Use Policy https://www.megaport.com/legal/acceptable-use-policy"}
+
+# MCR2 UID (from terraform.tfstate, megaport_mcr.mcr2):
+#   <MCR2_UID> = f07eb97c-6fb8-444f-a921-74728997c704
+#
+# Looking-glass endpoint was NOT reached because no valid session token was issued.
+# Conclusion: Same auth failure; endpoint status unknown.

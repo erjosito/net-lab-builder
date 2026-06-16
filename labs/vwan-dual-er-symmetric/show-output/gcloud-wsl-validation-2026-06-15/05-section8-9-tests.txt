@@ -1,0 +1,31 @@
+=== SECTION 8.4 — Learned routes per peer with AS path ===
+
+=== SECTION 8.5 — BGP peer status ===
+auto-ia-bgp-att-vwan-symm-a-748c416bf214189	169.254.159.193	169.254.159.194	UP	Established	4 hours, 42 minutes, 14 seconds	8
+
+=== SECTION 8.6 — Routes advertised to a specific peer ===
+Peer: auto-ia-bgp-att-vwan-symm-a-748c416bf214189
+10.50.1.0/24	null
+10.50.2.0/24	null
+
+=== SECTION 9.2 — One attachment in detail ===
+{
+  "name": "att-vwan-symm-a",
+  "state": "ACTIVE",
+  "type": "PARTNER",
+  "bandwidth": "BPS_50M",
+  "pairingKey": "bc00d370-b116-4395-94e3-5c57cca4d380/europe-west3/1",
+  "vlanTag8021q": 3944,
+  "cloudRouterIpAddress": "169.254.159.193/29",
+  "customerRouterIpAddress": "169.254.159.194/29",
+  "partnerAsn": "65001"
+}
+
+=== SECTION 9.3 — Effective VPC routes (FIXED: vpc-vwan-symm-a-103167 not vpc-onprem) ===
+NAME                              DEST_RANGE    NEXT_HOP_IP  NEXT_HOP_GATEWAY          PRIORITY
+default-route-703265cb79258a08    0.0.0.0/0                  default-internet-gateway  1000
+default-route-r-71ade70319b1846e  10.50.1.0/24                                         0
+default-route-r-a80ecb75c8c4ac18  10.50.2.0/24                                         0
+
+=== VPC routing mode ===
+GLOBAL

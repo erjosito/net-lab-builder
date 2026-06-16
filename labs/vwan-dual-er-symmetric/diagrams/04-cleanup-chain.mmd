@@ -1,0 +1,46 @@
+flowchart TD
+    Start([Begin Teardown]) --> Step1
+
+    Step1["1. Delete Megaport VXC: MCR1 to Circuit-A\n+ Delete Megaport VXC: MCR2 to Circuit-B\nER circuit cannot delete while peering exists;\nremove VXCs before touching the circuit"] --> Step2
+
+    Step2["2. Delete Megaport VXC: MCR1 to GCP\n+ Delete Megaport VXC: MCR2 to GCP\nMCR cannot delete while VXCs remain attached"] --> Step3
+
+    Step3["3. Delete ER GW Connection x2 (hub-side)\nHub holds a reference to the circuit via the connection;\nconnection must go before circuit delete"] --> Step4
+
+    Step4["4. Delete ER Gateway x2\n(Allow 20-45 min per GW; block on completion)\nGateway must be fully gone before circuit delete\nor circuit reports active peerings"] --> Step5
+
+    Step5["5. Delete ER Circuit x2\nCircuit must be provider-deprovisioned (Megaport side);\nno active peerings allowed at delete time"] --> Step6
+
+    Step6["6. Delete Megaport MCR x2\nAll VXCs already removed; MCR is now isolated\nand safe to delete"] --> Step7
+
+    Step7["7. Delete vHub VNet connection x4\n(one per spoke VNet)\nSpoke VNets cannot be deleted while connected;\nconnection removal is fast"] --> Step8
+
+    Step8["8. Delete vHub x2\nAll spoke connections and ER GW connections removed;\nhub can now be deleted"] --> Step9
+
+    Step9["9. Delete Virtual WAN\nBoth hubs must be deleted first;\nvWAN resource is a logical container only"] --> Step10
+
+    Step10["10. Delete Spoke VNet x4\nAll vHub connections already removed;\nVNets are now standalone and safe to delete"] --> Step11
+
+    Step11["11. KV RBAC role removal\n(if Tank added a role assignment for deploy secrets)\nClean up access before RG delete to avoid\norphan role assignments"] --> Step12
+
+    Step12["12. Delete Resource Group (--no-wait)\nDeletes all remaining Azure resources in background;\nmust confirm no resources are locked first"] --> Step13
+
+    Step13["13. GCP-side teardown\n⚠️ OUT OF SCOPE for Tank\nNote for Jose: manually tear down GCP VPC,\nBGP sessions, and any static routes on GCP side"] --> Done
+
+    Done([Lab fully torn down])
+
+    style Start fill:#e8f5e9,stroke:#2e7d32
+    style Done fill:#e8f5e9,stroke:#2e7d32
+    style Step1 fill:#ffe6cc,stroke:#d6b656
+    style Step2 fill:#ffe6cc,stroke:#d6b656
+    style Step3 fill:#dae8fc,stroke:#6c8ebf
+    style Step4 fill:#dae8fc,stroke:#6c8ebf
+    style Step5 fill:#dae8fc,stroke:#6c8ebf
+    style Step6 fill:#ffe6cc,stroke:#d6b656
+    style Step7 fill:#dae8fc,stroke:#6c8ebf
+    style Step8 fill:#dae8fc,stroke:#6c8ebf
+    style Step9 fill:#dae8fc,stroke:#6c8ebf
+    style Step10 fill:#dae8fc,stroke:#6c8ebf
+    style Step11 fill:#f5f5f5,stroke:#666666
+    style Step12 fill:#fce4ec,stroke:#e91e63
+    style Step13 fill:#fff9e6,stroke:#f9a825

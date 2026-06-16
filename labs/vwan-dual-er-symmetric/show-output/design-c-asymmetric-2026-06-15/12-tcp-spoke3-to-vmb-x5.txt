@@ -1,0 +1,13 @@
+# Source: vm-spoke3 (10.21.0.4), Dest: vm_b (10.50.2.2), Control probe (Hub2 side)
+# Forward: spoke3 → Hub2 → AzFW2 → ER2 → MCR2 → router_a → vm_b
+# Time: 2026-06-15T22:27:57Z
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\nnc: connect to 10.50.2.2 port 22 (tcp) timed out: Operation now in progress\nnc: connect to 10.50.2.2 port 22 (tcp) timed out: Operation now in progress\nnc: connect to 10.50.2.2 port 22 (tcp) timed out: Operation now in progress\n\n[stderr]\n"
+    }
+  ]
+}

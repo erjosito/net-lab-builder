@@ -1,0 +1,146 @@
+# Command: az network express-route list-route-tables -g rg-vwan-symm-103167 -n er-vwan-symm-stockholm --peering-name AzurePrivatePeering --path secondary -o json
+WARNING: This command is in preview and under development. Reference and support levels: https://aka.ms/CLI_refstatus
+{
+  "value": [
+    {
+      "locPrf": "100",
+      "network": "10.10.0.0/23",
+      "nextHop": "10.10.0.12*",
+      "path": "65515 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.10.0.0/23",
+      "nextHop": "10.10.0.13",
+      "path": "65515 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.10.0.0/23",
+      "nextHop": "169.254.150.125",
+      "path": "65001 12076 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.11.0.0/24",
+      "nextHop": "10.10.0.12*",
+      "path": "65515 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.11.0.0/24",
+      "nextHop": "10.10.0.13",
+      "path": "65515 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.11.0.0/24",
+      "nextHop": "169.254.150.125",
+      "path": "65001 12076 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.12.0.0/24",
+      "nextHop": "10.10.0.12*",
+      "path": "65515 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.12.0.0/24",
+      "nextHop": "10.10.0.13",
+      "path": "65515 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.12.0.0/24",
+      "nextHop": "169.254.150.125",
+      "path": "65001 12076 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.21.0.0/24",
+      "nextHop": "169.254.150.125*",
+      "path": "65001 12076 E\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.21.0.0/24",
+      "nextHop": "10.10.0.12",
+      "path": "65515 65520 65520 E\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.21.0.0/24",
+      "nextHop": "10.10.0.13",
+      "path": "65515 65520 65520 E\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.22.0.0/24",
+      "nextHop": "169.254.150.125*",
+      "path": "65001 12076 E\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.22.0.0/24",
+      "nextHop": "10.10.0.12",
+      "path": "65515 65520 65520 E\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.22.0.0/24",
+      "nextHop": "10.10.0.13",
+      "path": "65515 65520 65520 E\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.50.1.0/24",
+      "nextHop": "169.254.150.125",
+      "path": "65001 16550 ?\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.50.2.0/24",
+      "nextHop": "169.254.150.125",
+      "path": "65001 16550 ?\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "169.254.150.120/30",
+      "nextHop": "169.254.150.125",
+      "path": "65001 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "169.254.150.124/30",
+      "nextHop": "169.254.150.125",
+      "path": "65001 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "169.254.159.192/29",
+      "nextHop": "169.254.150.125",
+      "path": "65001 I\n                    ",
+      "weight": 0
+    }
+  ]
+}

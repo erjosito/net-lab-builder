@@ -1,0 +1,68 @@
+/mnt/c/Users/jomore/Repos/net-lab-builder/labs/vwan-dual-er-symmetric/show-output/gcloud-wsl-validation-2026-06-15/test-commands.sh: line 2: $'\r': command not found
+=== §8.4 — Learned routes per peer with AS path ===
+/mnt/c/Users/jomore/Repos/net-lab-builder/labs/vwan-dual-er-symmetric/show-output/gcloud-wsl-validation-2026-06-15/test-commands.sh: line 5: $'\r': command not found
+jq: error: syntax error, unexpected INVALID_CHARACTER, expecting end of file (Unix shell quoting issues?) at <top-level>, line 1:
+.result.bgpPeerStatus[] | .name as $peer | .learnedRoutes[]? | [$peer, .destRange, .routeType, .nextHopIp, (.asPath | @json // "-")] | @tsv
+                                                                                                                                           
+jq: 1 compile error
+/mnt/c/Users/jomore/Repos/net-lab-builder/labs/vwan-dual-er-symmetric/show-output/gcloud-wsl-validation-2026-06-15/test-commands.sh: line 7: $'\r': command not found
+
+=== §8.5 — BGP peer status ===
+/mnt/c/Users/jomore/Repos/net-lab-builder/labs/vwan-dual-er-symmetric/show-output/gcloud-wsl-validation-2026-06-15/test-commands.sh: line 11: $'\r': command not found
+jq: error: syntax error, unexpected INVALID_CHARACTER, expecting end of file (Unix shell quoting issues?) at <top-level>, line 1:
+.result.bgpPeerStatus[] | [.name, .ipAddress, (.peerIpAddress // "-"), .status, .state, (.uptime // "-"), (.numLearnedRoutes|tostring)] | @tsv
+                                                                                                                                              
+jq: 1 compile error
+/mnt/c/Users/jomore/Repos/net-lab-builder/labs/vwan-dual-er-symmetric/show-output/gcloud-wsl-validation-2026-06-15/test-commands.sh: line 13: $'\r': command not found
+
+=== §8.6 — Routes advertised to a specific peer ===
+/mnt/c/Users/jomore/Repos/net-lab-builder/labs/vwan-dual-er-symmetric/show-output/gcloud-wsl-validation-2026-06-15/test-commands.sh: line 18: $'\r': command not found
+jq: error: syntax error, unexpected INVALID_CHARACTER, expecting end of file (Unix shell quoting issues?) at <top-level>, line 1:
+.result.bgpPeerStatus[] | select(.name==$peer) | .advertisedRoutes[]? | [.destRange, (.asPath | @json // "-")] | @tsv
+                                                                                                                     
+jq: 1 compile error
+/mnt/c/Users/jomore/Repos/net-lab-builder/labs/vwan-dual-er-symmetric/show-output/gcloud-wsl-validation-2026-06-15/test-commands.sh: line 20: $'\r': command not found
+
+=== §9.1 — List Interconnect attachments ===
+NAME                 REGION        TYPE     EDGE_AVAILABILITY_DOMAIN  STATE   PAIRING_KEY
+att-vwan-symm-a      europe-west3  PARTNER  AVAILABILITY_DOMAIN_1     ACTIVE  bc00d370-b116-4395-94e3-5c57cca4d380/europe-west3/1
+att-vwan-symm-b-new  europe-west4  PARTNER  AVAILABILITY_DOMAIN_2     ACTIVE  b64df2cd-5637-404a-ae40-f15a2797a767/europe-west4/2
+/mnt/c/Users/jomore/Repos/net-lab-builder/labs/vwan-dual-er-symmetric/show-output/gcloud-wsl-validation-2026-06-15/test-commands.sh: line 25: $'\r': command not found
+
+=== §9.2 — One attachment in detail ===
+/mnt/c/Users/jomore/Repos/net-lab-builder/labs/vwan-dual-er-symmetric/show-output/gcloud-wsl-validation-2026-06-15/test-commands.sh: line 29: $'\r': command not found
+jq: error: syntax error, unexpected INVALID_CHARACTER, expecting end of file (Unix shell quoting issues?) at <top-level>, line 1:
+{name, state, type, bandwidth, pairingKey, vlanTag8021q, cloudRouterIpAddress, customerRouterIpAddress, partnerAsn}
+                                                                                                                   
+jq: 1 compile error
+/mnt/c/Users/jomore/Repos/net-lab-builder/labs/vwan-dual-er-symmetric/show-output/gcloud-wsl-validation-2026-06-15/test-commands.sh: line 31: $'\r': command not found
+
+=== §9.3 — Effective VPC routes (fixed placeholder) ===
+head: invalid trailing option -- 
+Try 'head --help' for more information.
+/mnt/c/Users/jomore/Repos/net-lab-builder/labs/vwan-dual-er-symmetric/show-output/gcloud-wsl-validation-2026-06-15/test-commands.sh: line 36: $'\r': command not found
+
+=== §9.4 — Firewalls applied to a VM ===
+jq: error: syntax error, unexpected INVALID_CHARACTER, expecting end of file (Unix shell quoting issues?) at <top-level>, line 1:
+.firewallPolicys[0:2]
+                     
+jq: 1 compile error
+ERROR: (gcloud.compute.instances) Invalid choice: 'get-effective-firewalls'.
+Maybe you meant:
+  gcloud compute instance-groups list-instances
+  gcloud compute instance-groups managed all-instances-config delete
+  gcloud compute instance-groups managed all-instances-config update
+  gcloud compute instance-groups managed instance-configs create
+  gcloud compute instance-groups managed instance-configs delete
+  gcloud compute instance-groups managed instance-configs list
+  gcloud compute instance-groups managed instance-configs update
+  gcloud compute instances add-access-config
+  gcloud compute instances add-iam-policy-binding
+  gcloud compute instances add-labels
+
+To search the help text of gcloud commands, run:
+  gcloud help -- SEARCH_TERMS
+/mnt/c/Users/jomore/Repos/net-lab-builder/labs/vwan-dual-er-symmetric/show-output/gcloud-wsl-validation-2026-06-15/test-commands.sh: line 41: $'\r': command not found
+
+=== VPC routing mode check ===
+GLOBAL

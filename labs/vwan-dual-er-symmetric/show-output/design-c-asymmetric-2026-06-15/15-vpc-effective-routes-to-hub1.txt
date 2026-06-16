@@ -1,0 +1,5 @@
+# Command (run via WSL): gcloud compute routes list --filter='network:vpc-vwan-symm-a-103167' --project=gcp-vwan-symm-103167 --format='table(name,destRange,nextHopIp,nextHopGateway.basename(),priority)'
+NAME                              DEST_RANGE    NEXT_HOP_IP  NEXT_HOP_GATEWAY          PRIORITY
+default-route-703265cb79258a08    0.0.0.0/0                  default-internet-gateway  1000
+default-route-r-71ade70319b1846e  10.50.1.0/24                                         0
+default-route-r-a80ecb75c8c4ac18  10.50.2.0/24                                         0
