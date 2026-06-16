@@ -1,0 +1,83 @@
+# Command: az network express-route gateway connection list for ergw-hub1 and ergw-hub2
+# Captured: 2026-06-16T08:10:41+02:00
+
+=== Hub1 ER Gateway (ergw-hub1) Connections (outbound_route_map verification) ===
+{
+  "value": [
+    {
+      "enableInternetSecurity": false,
+      "expressRouteCircuitPeering": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteCircuits/er-vwan-symm-stockholm/peerings/AzurePrivatePeering",
+        "resourceGroup": "rg-vwan-symm-103167"
+      },
+      "expressRouteGatewayBypass": false,
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub1/expressRouteConnections/hub1ergw-circuit1",
+      "name": "hub1ergw-circuit1",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-vwan-symm-103167",
+      "routingConfiguration": {
+        "associatedRouteTable": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/hubRouteTables/defaultRouteTable",
+          "resourceGroup": "rg-vwan-symm-103167"
+        },
+        "outboundRouteMap": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/routeMaps/hub1-out-depref-hub2",
+          "resourceGroup": "rg-vwan-symm-103167"
+        },
+        "propagatedRouteTables": {
+          "ids": [
+            {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub1-swedencentral/hubRouteTables/noneRouteTable",
+              "resourceGroup": "rg-vwan-symm-103167"
+            }
+          ],
+          "labels": [
+            "none"
+          ]
+        }
+      },
+      "routingWeight": 0
+    }
+  ]
+}
+
+=== Hub2 ER Gateway (ergw-hub2) Connections (outbound_route_map verification) ===
+{
+  "value": [
+    {
+      "enableInternetSecurity": false,
+      "expressRouteCircuitPeering": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteCircuits/er-vwan-symm-amsterdam/peerings/AzurePrivatePeering",
+        "resourceGroup": "rg-vwan-symm-103167"
+      },
+      "expressRouteGatewayBypass": false,
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub2/expressRouteConnections/hub2ergw-circuit2",
+      "name": "hub2ergw-circuit2",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-vwan-symm-103167",
+      "routingConfiguration": {
+        "associatedRouteTable": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope/hubRouteTables/defaultRouteTable",
+          "resourceGroup": "rg-vwan-symm-103167"
+        },
+        "outboundRouteMap": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope/routeMaps/hub2-out-depref-hub1",
+          "resourceGroup": "rg-vwan-symm-103167"
+        },
+        "propagatedRouteTables": {
+          "ids": [
+            {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope/hubRouteTables/noneRouteTable",
+              "resourceGroup": "rg-vwan-symm-103167"
+            }
+          ],
+          "labels": [
+            "none"
+          ]
+        }
+      },
+      "routingWeight": 0
+    }
+  ]
+}
+

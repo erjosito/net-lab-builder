@@ -1,0 +1,40 @@
+# KQL: AzureDiagnostics AzureFirewallNetworkRule - AZFW-HUB2-NORTHEUROPE GCP traffic
+# Workspace: law-vwan-symm-103167 (43c40d1b-69d3-4946-bfad-c8dad84c7e28)
+# TimeRange: last 60 minutes (post Mech C1)
+# Captured: 2026-06-16T08:54:14+02:00
+# KQL used:
+#   AzureDiagnostics
+#   | where TimeGenerated > ago(60m) and Category == 'AzureFirewallNetworkRule'
+#   | where msg_s contains '10.50'
+#   | extend SourceIP = extract(@'from (\d+\.\d+\.\d+\.\d+)', 1, msg_s)
+#   | project TimeGenerated, Resource, SourceIP, msg_s
+
+=== Cross-contamination Analysis (PowerShell-side aggregation of 208 AzFW log rows) ===
+Period: Last 60 minutes (post Mech C1 application)
+Method: AzureDiagnostics, Category=AzureFirewallNetworkRule, msg_s contains '10.50'
+
+Firewall                  | SourceIP  | Flows | Status
+--------------------------|-----------|-------|----------------------
+AZFW-HUB1-SWEDENCENTRAL   | 10.11.0.4 |    49 | ✅ Expected (Hub1 spoke)
+AZFW-HUB1-SWEDENCENTRAL   | 10.21.0.4 |     1 | ❌ CROSS-CONTAMINATION (Hub2 spoke via Hub1 FW)
+AZFW-HUB1-SWEDENCENTRAL   | (empty)   |    50 | (GCP return traffic, SrcIP in DestIP)
+AZFW-HUB2-NORTHEUROPE     | 10.21.0.4 |    53 | ✅ Expected (Hub2 spoke)
+AZFW-HUB2-NORTHEUROPE     | 10.11.0.4 |     1 | ❌ CROSS-CONTAMINATION (Hub1 spoke via Hub2 FW)
+AZFW-HUB2-NORTHEUROPE     | (empty)   |    54 | (GCP return traffic, SrcIP in DestIP)
+
+Baseline (design-c-asymmetric-2026-06-15) cross-contamination:
+  Hub1 AzFW saw 10.21.0.4 (Hub2 spoke): 54 flows
+  Hub2 AzFW saw 10.11.0.4 (Hub1 spoke): 54 flows
+
+Post-Mech-C1 cross-contamination:
+  Hub1 AzFW saw 10.21.0.4 (Hub2 spoke): 1 flow  (98% reduction)
+  Hub2 AzFW saw 10.11.0.4 (Hub1 spoke): 1 flow  (98% reduction)
+
+ROOT CAUSE of residual cross-contamination:
+  GCP Cloud Router router-vwan-symm-a installs BOTH paths in bestRoutes for /24 prefixes
+  (even with AS-path difference of 2 vs 5-7 hops), performing ECMP. Occasionally a GCP→Azure
+  packet takes the longer-AS-path route (via the "other" MCR), creating 1 asymmetric flow each.
+  The /23 supernet routes (10.10.0.0/23, 10.20.0.0/23) are single-path (no ECMP) which is the
+  Mech C1 mechanism that achieves near-symmetry. But /24 subnets remain ECMP'd.
+
+VERDICT: ⚠️ PARTIAL — Near-symmetric (98% improvement), not fully symmetric

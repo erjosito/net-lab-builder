@@ -1,0 +1,47 @@
+{
+  "associatedInboundConnections": [],
+  "associatedOutboundConnections": [
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/expressRouteGateways/ergw-hub2/expressRouteConnections/hub2ergw-circuit2"
+  ],
+  "etag": "W/\"63793124-5937-416f-b94f-c3afefde30fc\"",
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-symm-103167/providers/Microsoft.Network/virtualHubs/hub2-northeurope/routeMaps/hub2-out-depref-hub1",
+  "name": "hub2-out-depref-hub1",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-vwan-symm-103167",
+  "rules": [
+    {
+      "actions": [
+        {
+          "parameters": [
+            {
+              "asPath": [
+                "23456",
+                "23456",
+                "23456"
+              ],
+              "community": [],
+              "routePrefix": []
+            }
+          ],
+          "type": "Add"
+        }
+      ],
+      "matchCriteria": [
+        {
+          "asPath": [],
+          "community": [],
+          "matchCondition": "Contains",
+          "routePrefix": [
+            "10.10.0.0/23",
+            "10.11.0.0/24",
+            "10.12.0.0/24"
+          ]
+        }
+      ],
+      "name": "prepend-hub1-region",
+      "nextStepIfMatched": "Continue"
+    }
+  ],
+  "type": "Microsoft.Network/virtualHubs/routeMaps"
+}
+

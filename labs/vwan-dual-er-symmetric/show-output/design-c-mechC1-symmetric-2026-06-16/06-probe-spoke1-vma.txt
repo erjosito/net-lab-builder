@@ -1,0 +1,14 @@
+# Source: vm-spoke1 (10.11.0.4, Hub1/swedencentral), Dest: vm_a (10.50.1.2, GCP eu-w3)
+# Expected path: Hub1 -> ER1 -> MCR1 (local hub = symmetric)
+# Command: nc -zv -w 3 10.50.1.2 22 x5
+# Captured: 2026-06-16T08:42:07+02:00
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\nConnection to 10.50.1.2 22 port [tcp/ssh] succeeded!\nConnection to 10.50.1.2 22 port [tcp/ssh] succeeded!\nConnection to 10.50.1.2 22 port [tcp/ssh] succeeded!\nnc: connect to 10.50.1.2 port 22 (tcp) timed out: Operation now in progress\nConnection to 10.50.1.2 22 port [tcp/ssh] succeeded!\n\n[stderr]\n"
+    }
+  ]
+}
