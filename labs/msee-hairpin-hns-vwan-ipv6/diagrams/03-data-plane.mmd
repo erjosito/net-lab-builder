@@ -1,0 +1,60 @@
+flowchart LR
+    subgraph S1["S1: IPv4 Ping HnS-Spoke → vWAN-Spoke via MSEE Hairpin"]
+        s1_vm["HnS-Spoke VM<br/>10.2.0.x"]
+        s1_spoke["HnS Spoke VNet<br/>10.2.0.0/24"]
+        s1_hub["HnS Hub VNet<br/>10.1.0.0/16"]
+        s1_gw["HnS ER Gateway"]
+        s1_crc["ER Circuit 1<br/>172.16.1.0/30"]
+        s1_msee["MSEE<br/>(hairpin)"]
+        s1_crc2["ER Circuit 2<br/>172.16.2.0/30"]
+        s1_gwv["vWAN ER Gateway"]
+        s1_hub2["vHub<br/>10.3.0.0/23"]
+        s1_spoke2["vWAN Spoke VNet<br/>10.4.0.0/24"]
+        s1_vm2["vWAN-Spoke VM<br/>10.4.0.x"]
+        
+        s1_vm -->|Layer 3: 10.2.0.x → 10.4.0.x| s1_spoke
+        s1_spoke -->|Routing: match 10.4.0.0/24 via hub| s1_hub
+        s1_hub -->|BGP next-hop via ER GW| s1_gw
+        s1_gw -->|Encapsulation| s1_crc
+        s1_crc -->|Layer 2 tunnel| s1_msee
+        s1_msee -->|Layer 2 tunnel| s1_crc2
+        s1_crc2 -->|Decapsulation| s1_gwv
+        s1_gwv -->|Routing: match 10.4.0.0/24| s1_hub2
+        s1_hub2 -->|Routing: match 10.4.0.0/24| s1_spoke2
+        s1_spoke2 -->|Layer 3| s1_vm2
+    end
+    
+    subgraph S2["S2: IPv6 Ping HnS-Spoke → vWAN-Spoke via MSEE Hairpin"]
+        s2_vm["HnS-Spoke VM<br/>fd00:2::x"]
+        s2_spoke["HnS Spoke VNet<br/>fd00:2::/48"]
+        s2_hub["HnS Hub VNet<br/>fd00:1::/48"]
+        s2_gw["HnS ER Gateway"]
+        s2_crc["ER Circuit 1<br/>fd00:f:1::/126"]
+        s2_msee["MSEE<br/>(hairpin)"]
+        s2_crc2["ER Circuit 2<br/>fd00:f:2::/126"]
+        s2_gwv["vWAN ER Gateway"]
+        s2_hub2["vHub<br/>fd00:3::/48"]
+        s2_spoke2["vWAN Spoke VNet<br/>fd00:4::/48"]
+        s2_vm2["vWAN-Spoke VM<br/>fd00:4::x"]
+        
+        s2_vm -->|Layer 3: fd00:2::x → fd00:4::x| s2_spoke
+        s2_spoke -->|Routing: match fd00:4::/48 via hub| s2_hub
+        s2_hub -->|BGP next-hop via ER GW| s2_gw
+        s2_gw -->|Encapsulation| s2_crc
+        s2_crc -->|Layer 2 tunnel| s2_msee
+        s2_msee -->|Layer 2 tunnel| s2_crc2
+        s2_crc2 -->|Decapsulation| s2_gwv
+        s2_gwv -->|Routing: match fd00:4::/48| s2_hub2
+        s2_hub2 -->|Routing: match fd00:4::/48| s2_spoke2
+        s2_spoke2 -->|Layer 3| s2_vm2
+    end
+    
+    classDef vm fill:#e8f5e9,stroke:#2e7d32,color:#000
+    classDef vnet fill:#dae8fc,stroke:#6c8ebf,color:#000
+    classDef gw fill:#fff9e6,stroke:#f9a825,color:#000
+    classDef msee fill:#fce4ec,stroke:#e91e63,color:#000
+    
+    class s1_vm,s1_vm2,s2_vm,s2_vm2 vm
+    class s1_spoke,s1_hub,s1_hub2,s1_spoke2,s2_spoke,s2_hub,s2_hub2,s2_spoke2 vnet
+    class s1_gw,s1_gwv,s2_gw,s2_gwv gw
+    class s1_msee,s2_msee msee

@@ -1,0 +1,24 @@
+# terraform.auto.tfvars.example
+# Copy to terraform.auto.tfvars (gitignored) and fill in values.
+# DO NOT commit a file containing real values.
+
+# Lab identity
+lab_name = "msee-hairpin-hns-vwan-ipv6"
+location = "swedencentral"
+
+# Correlation ID — leave empty to generate; or set to match a prior run.
+# correlation_id_override = "abc123"
+
+# VM credentials — normally injected as TF_VAR_vm_admin_password by deploy.ps1
+vm_admin_username = "azurelabuser"
+# vm_admin_password = "<fetched-from-KV-by-deploy.ps1>"
+
+# ER Direct
+er_port_peering_location = "Equinix-Stockholm-SK1"
+
+# VM sizing — B2als_v2 confirmed available unrestricted in swedencentral 2026-06-16
+vm_size = "Standard_B2als_v2"
+
+# Key Vault (read-only data source)
+key_vault_name           = "platform-secrets-1138"
+key_vault_resource_group = "platform"

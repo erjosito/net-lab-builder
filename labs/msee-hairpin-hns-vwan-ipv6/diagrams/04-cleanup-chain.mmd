@@ -1,0 +1,31 @@
+flowchart TD
+    Start([Begin Teardown]) --> Step1
+
+    Step1["1. Delete ER Connections (HnS &amp; vWAN)<br/>Circuit connections must be removed<br/>before circuit or gateway deletion"] --> Step2
+
+    Step2["2. Delete ER Gateways x2<br/>(HnS ErGw1AZ + vWAN scale unit)<br/>Allow 20-45 min per GW; block on completion<br/>Gateway must be fully deleted before circuit deletion"] --> Step3
+
+    Step3["3. Delete ER Circuits x2<br/>Circuit 1 (HnS) + Circuit 2 (vWAN)<br/>No active peerings allowed; both circuits<br/>sub-allocated from same Stockholm port"] --> Step4
+
+    Step4["4. Delete ER Direct Port<br/>Stockholm 10 Gbps port<br/>All circuits must be deleted first;<br/>port deprovisioning takes ~1 hour at provider"] --> Step5
+
+    Step5["5. Delete vHub<br/>All spoke connections &amp; ER connections removed;<br/>vHub can now be safely deleted"] --> Step6
+
+    Step6["6. Delete vWAN<br/>vHub must be fully deleted first;<br/>vWAN resource is logical container only"] --> Step7
+
+    Step7["7. Delete VNets x4<br/>(HnS Hub, HnS Spoke, vWAN Spoke)<br/>All connections already removed;<br/>VNets are now standalone &amp; safe to delete"] --> Step8
+
+    Step8["8. Delete Resource Group (--no-wait)<br/>Deletes all remaining Azure resources in background;<br/>all explicit resource deletes must complete first"] --> Done
+
+    Done([Lab fully torn down])
+
+    style Start fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style Done fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style Step1 fill:#dae8fc,stroke:#6c8ebf,color:#000
+    style Step2 fill:#dae8fc,stroke:#6c8ebf,color:#000
+    style Step3 fill:#fff9e6,stroke:#f9a825,color:#000
+    style Step4 fill:#fff9e6,stroke:#f9a825,color:#000
+    style Step5 fill:#dae8fc,stroke:#6c8ebf,color:#000
+    style Step6 fill:#dae8fc,stroke:#6c8ebf,color:#000
+    style Step7 fill:#dae8fc,stroke:#6c8ebf,color:#000
+    style Step8 fill:#fce4ec,stroke:#e91e63,color:#000

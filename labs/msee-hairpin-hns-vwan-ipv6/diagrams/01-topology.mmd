@@ -1,0 +1,41 @@
+flowchart LR
+    HnSHub["HnS Hub VNet<br/>10.1.0.0/16, fd00:1::/48"]
+    HnSSpoke["HnS Spoke VNet<br/>10.2.0.0/24, fd00:2::/48"]
+    HnSGW["HnS ER Gateway<br/>ASN 65515"]
+    
+    vHubRS["vHub<br/>10.3.0.0/23, fd00:3::/48"]
+    vWANSpoke["vWAN Spoke VNet<br/>10.4.0.0/24, fd00:4::/48"]
+    vWANGW["vWAN ER Gateway<br/>ASN 65515"]
+    
+    ERPort["ER Direct Port<br/>Stockholm<br/>10 Gbps"]
+    
+    Circuit1["ER Circuit 1 (HnS)<br/>Peering: 172.16.1.0/30<br/>IPv6: fd00:f:1::/126<br/>ASN 12076"]
+    Circuit2["ER Circuit 2 (vWAN)<br/>Peering: 172.16.2.0/30<br/>IPv6: fd00:f:2::/126<br/>ASN 12076"]
+    
+    MSEE["MSEE Pair<br/>Stockholm<br/>ASN 12076"]
+    
+    HnSHub --> HnSSpoke
+    HnSHub --> HnSGW
+    vHubRS --> vWANSpoke
+    vHubRS --> vWANGW
+    
+    HnSGW --> Circuit1
+    vWANGW --> Circuit2
+    
+    Circuit1 --> MSEE
+    Circuit2 --> MSEE
+    
+    ERPort -.->|allocated| Circuit1
+    ERPort -.->|allocated| Circuit2
+    
+    MSEE -.->|hairpin reflection| MSEE
+    
+    classDef azure fill:#dae8fc,stroke:#6c8ebf,color:#000
+    classDef circuit fill:#fff9e6,stroke:#f9a825,color:#000
+    classDef msee fill:#f5f5f5,stroke:#666666,color:#000
+    classDef port fill:#e8f5e9,stroke:#2e7d32,color:#000
+    
+    class HnSHub,HnSSpoke,HnSGW,vHubRS,vWANSpoke,vWANGW azure
+    class Circuit1,Circuit2 circuit
+    class MSEE msee
+    class ERPort port

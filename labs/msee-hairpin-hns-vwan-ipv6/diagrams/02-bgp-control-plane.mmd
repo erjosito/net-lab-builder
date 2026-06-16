@@ -1,0 +1,23 @@
+flowchart LR
+    HnSGW["HnS ER Gateway<br/>ASN 65515"]
+    vWANGW["vWAN ER Gateway<br/>ASN 65515"]
+    MSEE["MSEE Pair<br/>ASN 12076"]
+    
+    HnSGW -->|IPv4 eBGP Session<br/>Peer: 172.16.1.1<br/>Advertises: 10.1.0.0/16, 10.2.0.0/24| MSEE
+    MSEE -->|IPv4 eBGP Session<br/>Peer: 172.16.1.2<br/>Advertises: 10.3.0.0/23, 10.4.0.0/24| HnSGW
+    
+    HnSGW -->|IPv6 eBGP Session<br/>Peer: fd00:f:1::1/126<br/>Advertises: fd00:1::/48, fd00:2::/48| MSEE
+    MSEE -->|IPv6 eBGP Session<br/>Peer: fd00:f:1::2/126<br/>Advertises: fd00:3::/48, fd00:4::/48| HnSGW
+    
+    vWANGW -->|IPv4 eBGP Session<br/>Peer: 172.16.2.1<br/>Advertises: 10.3.0.0/23, 10.4.0.0/24| MSEE
+    MSEE -->|IPv4 eBGP Session<br/>Peer: 172.16.2.2<br/>Advertises: 10.1.0.0/16, 10.2.0.0/24| vWANGW
+    
+    vWANGW -->|IPv6 eBGP Session<br/>Peer: fd00:f:2::1/126<br/>Advertises: fd00:3::/48, fd00:4::/48| MSEE
+    MSEE -->|IPv6 eBGP Session<br/>Peer: fd00:f:2::2/126<br/>Advertises: fd00:1::/48, fd00:2::/48| vWANGW
+    
+    classDef gw fill:#dae8fc,stroke:#6c8ebf,color:#000
+    classDef msee fill:#fff9e6,stroke:#f9a825,color:#000
+    classDef hairpin fill:#fce4ec,stroke:#e91e63,color:#000
+    
+    class HnSGW,vWANGW gw
+    class MSEE msee

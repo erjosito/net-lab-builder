@@ -220,7 +220,7 @@ az network vhub bgpconnection list --vhub-name <vwan-hub-name> -g <RG> \
 
 | # | Design | Status | Verdict | Evidence | Why this verdict | Use when | Avoid when |
 |---|---|---|---|---|---|---|---|
-| **A** | ER Direct — MSEE hairpin (dual-stack IPv4+IPv6) | _pending evidence_ | ✅ Recommended if S1–S2 pass with learned routes + connectivity | S1–S4 evidence files | ER hairpinning eliminates Megaport dependency; dual-stack BGP proven viable | Testing MSEE multi-tenant reflector; no on-prem site needed | Cost sensitivity (>$50/day) or Megaport preference |
+| **A** | ER Direct — MSEE hairpin (dual-stack IPv4+IPv6) | _pending evidence_ | ✅ Recommended if S1–S2 pass with learned routes + connectivity | S1–S4 evidence files | ER hairpinning eliminates Megaport dependency; dual-stack BGP proven viable; port free first 45 days from provisioning | Testing MSEE multi-tenant reflector; no on-prem site needed | Lab needs to outlive the 45-day free port window, or Megaport preference |
 | **B** | Megaport circuits — MSEE hairpin (fallback) | _pending evidence_ | ⚠️ Not recommended per Jose gate | N/A (not deployed in Path A) | Cheaper port + MCR BGP adds complexity; Jose explicit "no Megaport" constraint | Downgrade if Path A cost overruns | Jose has ruled out for this lab |
 | **C** | IPsec VPN — S2S with BGP (anti-pattern / stretch) | _pending evidence_ | 📚 Teaching-only (mechanism differs entirely) | S5 evidence (if captured) | Dual-stack VPN over IKEv2 is valid but not an MSEE hairpin; different test surface | Demonstrating site-to-site VPN as ER fallback | Replacing ER Direct for hairpin use-case |
 
