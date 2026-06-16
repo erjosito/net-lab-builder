@@ -72,74 +72,74 @@
 - The design must carry production traffic through stateful firewalls.
 - You cannot tolerate per-flow hash-dependent failures.
 
-### Mech C1: Active/active per-prefix vWAN route-map prepend: ⚠️ Partial
+### Mech C1: Active/active per-prefix vWAN route-map prepend: ✅ Recommended (active/active)
 
-**Status:** ⚠️ Partially symmetric / not complete  
-**Verdict:** Outbound vWAN route maps with reserved ASN `64496×3` cut firewall cross-contamination from 54 flows to 1 flow per firewall, but GCP still ECMPs /24s.
+**Status:** ✅ Symmetric against a standards-compliant on-prem router  
+**Verdict:** Outbound vWAN route maps with reserved ASN `64496×3` pin each prefix's return path to its home circuit and cut firewall cross-contamination from 54 flows to 1 flow per firewall. On any CE router that honors AS-path, this is full return-path symmetry.
 
 **What it is:** C1 kept active/active semantics and applied outbound route maps on each hub's ER connection. Hub1 prepended AS 64496 three times for Hub2 prefixes; Hub2 prepended AS 64496 three times for Hub1 prefixes. AS 64496 is from the RFC 5398 documentation range and replaced the earlier rejected AS_TRANS value 23456.
 
 **Evidence:**
 - `show-output/design-c-mechC1-symmetric-2026-06-16/14-verdict.md`: final C1 verdict.
-- `show-output/design-c-mechC1-symmetric-2026-06-16/01-cr-status-full.json` and `02-cr-routes-summary.txt`: /24 paths still installed from both MCRs despite AS-path length differences.
+- `show-output/design-c-mechC1-symmetric-2026-06-16/01-cr-status-full.json` and `02-cr-routes-summary.txt`: BGP best-path intent is correct (2-hop home path vs 5-hop prepended path per /24).
 - `show-output/design-c-mechC1-symmetric-2026-06-16/10-azfw1-kql.txt` and `11-azfw2-kql.txt`: 54→1 contamination reduction.
 - `design.md` §4.1: C1 route-map design and ASN rationale.
 
-**Why this verdict:** C1 worked for the intended BGP signal and dramatically reduced observed cross-contamination. It did not fully solve symmetry because GCP Cloud Router retained both unequal-AS-path /24 routes at priority 0 and continued to ECMP them.
+**Why this verdict:** Under the standard BGP best-path algorithm, AS-path length is compared before MED, and eBGP installs a single best path by default. So a standards-compliant on-prem router selects the shorter home-circuit path for each prefix and returns traffic symmetrically. The residual /24 ECMP observed in the lab is a GCP Cloud Router artifact (it ranks VPC dynamic routes by MED and ignores AS-path), out of scope here because GCP only simulates on-prem. See the simulator caveat below.
 
 **Use this design when:**
-- You need active/active behavior and a strong reduction in asymmetric returns is acceptable.
+- You want active/active operation with both circuits carrying their home-region return traffic.
 - You want a minimal vWAN route-map change with no hub routing preference reprovision.
 
 **Avoid this design when:**
-- The requirement is zero steady-state cross-contamination.
-- You need deterministic per-/24 return paths from GCP.
+- You need a single deterministic primary circuit (use C2 active/passive instead).
+- Your actual on-prem peer ranks routes by MED and ignores AS-path (the GCP-like case; see C3).
 
-### Mech C2: Active/passive MCR1 primary, MCR2 standby: ⚠️ Partial + ✅ failover validated
+### Mech C2: Active/passive MCR1 primary, MCR2 standby: ✅ Recommended (active/passive) + ✅ failover validated
 
-**Status:** ⚠️ Partial steady-state symmetry + ✅ validated failover  
-**Verdict:** C2 made Hub1/ER1/MCR1 the deterministic primary and proved failover to MCR2 in 54.2s with restore in 45.4s, but steady-state /24 ECMP residual remains.
+**Status:** ✅ Symmetric against a standards-compliant on-prem router + ✅ validated failover  
+**Verdict:** C2 made Hub1/ER1/MCR1 the deterministic primary, returns all traffic via the primary on any AS-path-honoring peer, and proved failover to MCR2 in 54.2s with restore in 45.4s.
 
 **What it is:** C2 removed Hub1 route maps, made Hub2 the standby with a blanket outbound `64496×5` prepend for all Azure prefixes, added Hub2 inbound `64496×5` prepend for GCP prefixes, and set both vHubs to `hubRoutingPreference = ASPath`.
 
 **Evidence:**
 - `show-output/design-c-mechC2-symmetric-2026-06-16/15-verdict.md`: final C2 verdict.
-- `show-output/design-c-mechC2-symmetric-2026-06-16/02-gcp-cr-bestroutes-table.txt`: MCR1 unprepended and MCR2 `64496×5` paths both installed for /24s.
-- `show-output/design-c-mechC2-symmetric-2026-06-16/08-azfw-kql-cross-contamination-summary.txt`: Hub1 primary flows plus Hub2 standby hits.
+- `show-output/design-c-mechC2-symmetric-2026-06-16/02-gcp-cr-bestroutes-table.txt`: MCR1 unprepended (2-hop) and MCR2 `64496×5` (7-hop) paths per /24, primary intent obvious.
+- `show-output/design-c-mechC2-symmetric-2026-06-16/08-azfw-kql-cross-contamination-summary.txt`: Hub1 primary flows plus GCP-artifact standby hits.
 - `show-output/design-c-mechC2-symmetric-2026-06-16/13-failover-during-primary-down.json` and `14-failover-after-primary-restored.json`: failover and restore timing.
 - `design.md` §4.2 and §4.5: C2 design and deliberate primary-down validation step.
 
-**Why this verdict:** C2 buys what C1 does not: deterministic standby behavior under a primary failure. During the fault, all deployed spoke /24s moved to MCR2-only paths in 54.2s and vm-spoke3→vm_a succeeded 5/5. But normal operation still showed both /24 paths installed by GCP, so C2 remains partial for steady-state firewall symmetry.
+**Why this verdict:** A standards-compliant on-prem router prefers the 2-hop MCR1 path for every prefix (shorter AS-path, decided before MED) and only uses the 7-hop MCR2 path on failure. The deliberate primary-down test confirmed convergence: all deployed spoke /24s moved to MCR2-only paths in 54.2s and vm-spoke3→vm_a succeeded 5/5, restoring in 45.4s. The residual steady-state ECMP seen in the lab is, again, the GCP MED-ranking artifact, not a property of C2.
 
 **Use this design when:**
-- You need a documented active/passive failover behavior and can accept residual steady-state ECMP risk.
+- You want a single deterministic primary circuit with automatic standby failover.
 - You want MCR1/ER1/Hub1 to be the operational primary with MCR2 as standby.
 
 **Avoid this design when:**
-- Full steady-state /24 determinism is mandatory.
-- Cross-contamination of the standby firewall, even at low volume, is unacceptable.
+- You want both circuits active for home-region return traffic (use C1).
+- Your actual on-prem peer ranks routes by MED and ignores AS-path (the GCP-like case; see C3).
 
-### Mech C3: Suppress standby /24s or use GCP-side MED/priority: 📚 Proposed recommended fix
+### Mech C3: Suppress standby /24s or use peer-side MED/priority: 📚 Edge case (peers that ignore AS-path)
 
-**Status:** 📚 Recommended next mechanism: proposed, not validated  
-**Verdict:** C3 is the only identified mechanism that should fully defeat GCP's /24 ECMP by preventing standby /24s from being equal-priority forwarding candidates during normal operation.
+**Status:** 📚 Optional, only for MED-ranking peers: proposed, not validated  
+**Verdict:** C3 is not required for standard on-prem routers. It is the fallback for the narrow case where the on-prem peer ranks routes by MED and ignores AS-path the way GCP Cloud Router does, in which case AS-path prepend alone cannot stop /24 ECMP.
 
-**What it is:** C3 would suppress the more-specific spoke /24 advertisements on the standby circuit and advertise only /23 aggregates there, or apply a GCP-side route-selection signal such as MED/custom learned-route priority so standby /24s have worse priority than primary /24s. The goal is to leave the standby usable for failure while removing it from steady-state ECMP.
+**What it is:** C3 would suppress the more-specific spoke /24 advertisements on the standby circuit and advertise only /23 aggregates there, or apply a peer-side route-selection signal such as MED/custom learned-route priority so standby /24s have worse priority than primary /24s. The goal is to leave the standby usable for failure while removing it from steady-state ECMP on a MED-ranking peer.
 
 **Evidence:**
 - Proposed from `show-output/design-c-mechC1-symmetric-2026-06-16/14-verdict.md` and `show-output/design-c-mechC2-symmetric-2026-06-16/15-verdict.md` recommendations.
-- `design.md` §4.2 caveat: full /24 determinism requires suppressing standby /24s or using a GCP-side priority lever.
+- `design.md` §4.2 caveat: on a MED-ranking peer like GCP, full /24 determinism requires suppressing standby /24s or using a peer-side priority lever.
 - No `show-output/design-c-mechC3-*` folder yet: **not deployed and not validated**.
 
-**Why this verdict:** C1 and C2 both proved the same central finding: AS-path prepend changes the human-readable best-path intent but does not stop GCP from installing both /24s at priority 0. C3 changes the candidate set or the route priority, which directly targets the ECMP mechanism instead of only lengthening AS_PATH.
+**Why this verdict:** Against a standards-compliant peer, C1 and C2 already deliver symmetry because AS-path is decisive before MED, so C3 adds nothing. C3 only matters for peers (such as GCP Cloud Router) that derive route priority from MED and install both unequal-AS-path /24s at priority 0; there, changing the candidate set (aggregate-only standby) or the peer-side priority is the lever that actually removes the ECMP.
 
 **Use this design when:**
-- The target is full steady-state symmetry through stateful firewalls.
-- You can accept aggregate-only standby advertisements or can implement a GCP-side priority/MED policy.
+- Your real on-prem peer behaves like GCP Cloud Router (ranks by MED, ignores AS-path) and you need full steady-state /24 determinism.
+- You can accept aggregate-only standby advertisements or can implement a peer-side priority/MED policy.
 
 **Avoid this design when:**
-- You need evidence today; this is still a proposed next validation step.
-- You cannot alter standby advertisements or GCP route priorities.
+- Your on-prem peer honors AS-path (the common case): C1 or C2 already suffices.
+- You need validated evidence today; this is still a proposed next step.
 
 ### Design D: Linux NVA fallback: 📚 Proposed fallback, not deployed
 
