@@ -64,17 +64,29 @@ HnS ER GW has 2 BGP peers (MSEE primary + secondary, ASN 12076) in Connected sta
 | HnS→vWAN (fd00:2::4→fd00:4::4) | IPv6 ICMP | ❌ 0/4 | N/A |
 | vWAN→HnS (fd00:4::4→fd00:2::4) | IPv6 ICMP | ❌ 0/4 | N/A |
 
-## IPv6 Finding
+## IPv6 Finding — Root Cause Identified
 
-IPv4 MSEE hairpinning works perfectly. IPv6 does NOT work:
-- IPv6 peering is configured and "Enabled" on the circuit
-- HnS GW advertises fd00:1::/48 and fd00:2::/48 (its own prefixes)
-- But no fd00:3::/48 or fd00:4::/48 routes are learned from MSEE
-- This suggests the vWAN ER GW does not advertise IPv6 prefixes over ER private peering, or the MSEE does not reflect IPv6 routes in the hairpin scenario
+IPv4 MSEE hairpinning works perfectly. IPv6 does NOT work, and the root cause
+is NOT the hairpin — it is a fundamental **Azure Virtual WAN limitation: vHubs are IPv4-only.**
 
-**Root cause hypothesis:** Azure vWAN ER GW may not support IPv6 route advertisement
-over ExpressRoute private peering in the hairpin (same-circuit multi-connection) topology.
-Further investigation needed (check if vHub even has IPv6 effective routes to advertise).
+**Evidence chain:**
+1. HnS ER GW (dual-stack) correctly advertises `fd00:1::/48` and `fd00:2::/48`
+   to the MSEE — verified via `list-advertised-routes` (the HnS side does its job).
+2. The vHub `defaultRouteTable` effective routes contain ONLY IPv4 prefixes:
+   `10.1.0.0/16`, `10.2.0.0/24`, `10.4.0.0/24`. There is **no IPv6 at all** —
+   not even the vWAN spoke's own `fd00:4::/48`.
+3. The vWAN spoke VM has its IPv6 address (`fd00:4::4`) and a route only to its
+   own `/64`; it has no route to `fd00:2::/48`.
+
+**Conclusion:** The vHub silently drops IPv6 prefixes even from its own connected
+spoke. Because the vHub carries no IPv6, the vWAN ER GW has no IPv6 to advertise
+to the MSEE, so the hairpin never sees vWAN IPv6 routes. The vWAN `address_prefix`
+property accepts only a single IPv4 prefix; vHubs do not support an IPv6 address space.
+
+**Implication for the lab goal:** Dual-stack MSEE hairpinning is only achievable
+for IPv4 when one side is Virtual WAN. To carry IPv6 to a vWAN environment, an
+alternative is required (e.g., IPsec VPN with IPv6 traffic selectors, or keep IPv6
+within the self-managed HnS side only).
 
 ## Deploy Timeline
 

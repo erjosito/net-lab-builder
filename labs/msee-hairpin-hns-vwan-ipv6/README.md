@@ -6,7 +6,7 @@ This lab verifies MSEE hairpinning between a self-managed hub-and-spoke ER gatew
 
 ## Key Finding
 
-**IPv4 MSEE hairpin: WORKS.** IPv6 MSEE hairpin: does NOT work (routes not propagated).
+**IPv4 MSEE hairpin: WORKS.** IPv6 MSEE hairpin: does NOT work — but the cause is NOT the hairpin. **Azure Virtual WAN hubs are IPv4-only**, so the vHub never carries IPv6 (not even from its own spoke), and therefore has no IPv6 to hairpin back to the HnS side.
 
 ## Designs Studied
 
@@ -22,7 +22,7 @@ This lab verifies MSEE hairpinning between a self-managed hub-and-spoke ER gatew
 - **Effective routes (vWAN spoke NIC):** `10.1.0.0/16` and `10.2.0.0/24` via VirtualNetworkGateway
 - **Ping HnS→vWAN (IPv4):** 3/4 success, RTT 9-17ms
 - **Ping vWAN→HnS (IPv4):** 4/4 success, RTT 9-11ms
-- **Ping (IPv6):** 0/4 both directions. No IPv6 prefixes (fd00:3::/48, fd00:4::/48) learned from MSEE despite IPv6 peering being Enabled.
+- **Ping (IPv6):** 0/4 both directions. Root cause: the vHub `defaultRouteTable` carries only IPv4 (`10.1.0.0/16`, `10.2.0.0/24`, `10.4.0.0/24`) — no IPv6 at all, not even the vWAN spoke's own `fd00:4::/48`. Azure Virtual WAN hubs are IPv4-only. The HnS side correctly advertises `fd00:1::/48` + `fd00:2::/48` to the MSEE; the vWAN side has nothing IPv6 to reciprocate.
 - See `deploy-log.md` for full details.
 
 ### Critical design requirement: ONE circuit, not two
