@@ -576,3 +576,37 @@ As     Neighbor        StatePfxRcd    UpDown
 ```
 
 **Result:** Lab now meets Trinity §1.5 + S1.1 criteria: `bgpState=Established ×4` across 2 circuits, 2 sessions per circuit.
+
+---
+
+## Teardown (2026-06-16)
+
+Lab fully decommissioned across all three providers. All resources confirmed gone.
+
+**Final verification:**
+- Azure: `az group exists -n rg-vwan-symm-103167` -> `false`
+- Terraform: `terraform state list` -> empty (0 resources)
+- Megaport: both MCRs (`mcr1-vwan-symm-103167`, `mcr2-vwan-symm-103167`) -> `DECOMMISSIONED`
+- GCP: `gcp-vwan-symm-103167` -> `DELETE_REQUESTED` (30-day grace, billing stopped)
+
+**Teardown ordering gotcha (ER + Megaport VXC circular dependency):**
+A Megaport VXC that provisions an Azure ExpressRoute circuit's private peering cannot be
+deleted directly while the peering exists (HTTP 409 "has an attached peering connection that
+must be removed in Azure first"). The Azure circuit in turn cannot be deleted while its
+service-provider provisioning state is `Provisioned` ("circuit is not in Deprovisioned state").
+Correct order:
+1. `az resource delete --ids <circuit-id> --api-version 2024-05-01` on the circuit. This
+   removes the AzurePrivatePeering child but leaves the circuit in `Failed`/`Provisioned`
+   (delete cannot complete yet) with `peerings=0`.
+2. `terraform destroy -target=megaport_vxc.azure_circuitN` -- now succeeds (peering gone),
+   which deprovisions the circuit on the Megaport side (`spProv -> NotProvisioned`).
+3. Re-delete the Azure circuit (now `Succeeded`/`NotProvisioned`) -- succeeds.
+4. `terraform destroy` for the MCRs + RG.
+
+**Two reusable gotchas:**
+- `az resource delete --ids` auto-selected an unsupported future api-version (`2026-01-01`,
+  because the host clock is 2026) and failed with `NoRegisteredProviderFound`. Pin a known-good
+  version with `--api-version 2024-05-01`.
+- A GCP-facing VXC created out-of-band (`vxc-mcr2-gcp-b-v2-103167`) was not in Terraform state
+  and blocked MCR2 deletion ("has active VXCs"). Deleted directly via Megaport API
+  `POST /v3/product/<uid>/action/CANCEL_NOW?safeDelete=true` with `Content-Type: application/json`.
