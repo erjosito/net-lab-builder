@@ -1,9 +1,11 @@
 # File: 02-cr-routes-summary.txt
-# Command: Parsed from gcloud compute routers get-status router-vwan-symm-a --region europe-west3 --project gcp-vwan-symm-103167 --format json
-# Captured: 2026-06-16T08:11:54+02:00
+# Command: gcloud compute routers get-status router-vwan-symm-a --region europe-west3 --project gcp-vwan-symm-103167 --format json
+# Captured: 2026-06-16T08:59:37+02:00
+# ASN note: Earlier capture (08:08) used AS 23456 (AS_TRANS). Route maps updated at ~08:55 to
+#            AS 64496 (RFC 5398 documentation range). This file reflects the canonical 64496 state.
 # Cloud Router: router-vwan-symm-a (GCP eu-w3 / europe-west3)
-# MCR1 peer IP: 169.254.159.194 (ASN 65001, MCR1 Stockholm via ER1)
-# MCR2 peer IP: 169.254.93.154  (ASN 65002, MCR2 Amsterdam via ER2)
+# MCR1 peer IP: 169.254.159.194 (ASN 65001, MCR1 Frankfurt via ER1/Hub1-swedencentral)
+# MCR2 peer IP: 169.254.93.154  (ASN 65002, MCR2 Amsterdam via ER2/Hub2-northeurope)
 
 === BGP Peer Status ===
 Peer: auto-ia-bgp-att-vwan-symm-a-748c416bf214189
@@ -15,39 +17,38 @@ Peer: auto-ia-bgp-att-vwan-symm-b-8a45a420e5e4bb7
   State: Established
   NumLearnedRoutes: 8
 === Best Routes Summary Table ===
-destRange         | nextHopIp        | AS-path                                | path-len | winner
-------------------|------------------|----------------------------------------|----------|-------
-10.10.0.0/23      | 169.254.159.194   | 65001 12076                            | 2        | MCR1 (ER1/Hub1)
-10.11.0.0/24      | 169.254.159.194   | 65001 12076                            | 2        | MCR1 (ER1/Hub1)
-10.21.0.0/24      | 169.254.159.194   | 65001 12076 23456 23456 23456 65520 65520 | 7        | MCR1 (ER1/Hub1)
-10.12.0.0/24      | 169.254.159.194   | 65001 12076                            | 2        | MCR1 (ER1/Hub1)
-10.22.0.0/24      | 169.254.159.194   | 65001 12076 23456 23456 23456 65520 65520 | 7        | MCR1 (ER1/Hub1)
-169.254.150.124/30 | 169.254.159.194   | 65001                                  | 1        | MCR1 (ER1/Hub1)
-169.254.150.120/30 | 169.254.159.194   | 65001                                  | 1        | MCR1 (ER1/Hub1)
-10.12.0.0/24      | 169.254.93.154    | 65002 12076 23456 23456 23456          | 5        | MCR2 (ER2/Hub2)
-169.254.148.92/30 | 169.254.93.154    | 65002                                  | 1        | MCR2 (ER2/Hub2)
-169.254.148.88/30 | 169.254.93.154    | 65002                                  | 1        | MCR2 (ER2/Hub2)
-10.11.0.0/24      | 169.254.93.154    | 65002 12076 23456 23456 23456          | 5        | MCR2 (ER2/Hub2)
-10.22.0.0/24      | 169.254.93.154    | 65002 12076                            | 2        | MCR2 (ER2/Hub2)
-10.20.0.0/23      | 169.254.93.154    | 65002 12076                            | 2        | MCR2 (ER2/Hub2)
-10.21.0.0/24      | 169.254.93.154    | 65002 12076                            | 2        | MCR2 (ER2/Hub2)
-=== ECMP Analysis for /24 Prefixes ===
-GCP bestRoutes shows BOTH paths for /24 prefixes (routes appear twice in the bestRoutes list):
-- 10.11.0.0/24: MCR1 path (len=2) AND MCR2 path (len=5) -> BOTH in bestRoutes (ECMP?)
-- 10.12.0.0/24: MCR1 path (len=2) AND MCR2 path (len=5) -> BOTH in bestRoutes (ECMP?)
-- 10.21.0.0/24: MCR1 path (len=7) AND MCR2 path (len=2) -> BOTH in bestRoutes (ECMP?)
-- 10.22.0.0/24: MCR1 path (len=7) AND MCR2 path (len=2) -> BOTH in bestRoutes (ECMP?)
+destRange          | nextHopIp         | AS-path                                      | path-len | winner
+-------------------|-------------------|----------------------------------------------|----------|------------------
+10.10.0.0/23       | 169.254.159.194    | 65001 12076                                  | 2        | MCR1 (ER1/Hub1)
+169.254.150.124/30 | 169.254.159.194    | 65001                                        | 1        | MCR1 (ER1/Hub1)
+169.254.150.120/30 | 169.254.159.194    | 65001                                        | 1        | MCR1 (ER1/Hub1)
+10.11.0.0/24       | 169.254.159.194    | 65001 12076                                  | 2        | MCR1 (ER1/Hub1)
+10.21.0.0/24       | 169.254.159.194    | 65001 12076 64496 64496 64496 65520 65520    | 7        | MCR1 (ER1/Hub1)
+10.22.0.0/24       | 169.254.159.194    | 65001 12076 64496 64496 64496 65520 65520    | 7        | MCR1 (ER1/Hub1)
+10.12.0.0/24       | 169.254.159.194    | 65001 12076                                  | 2        | MCR1 (ER1/Hub1)
+10.12.0.0/24       | 169.254.93.154     | 65002 12076 64496 64496 64496                | 5        | MCR2 (ER2/Hub2)
+169.254.148.92/30  | 169.254.93.154     | 65002                                        | 1        | MCR2 (ER2/Hub2)
+169.254.148.88/30  | 169.254.93.154     | 65002                                        | 1        | MCR2 (ER2/Hub2)
+10.11.0.0/24       | 169.254.93.154     | 65002 12076 64496 64496 64496                | 5        | MCR2 (ER2/Hub2)
+10.21.0.0/24       | 169.254.93.154     | 65002 12076                                  | 2        | MCR2 (ER2/Hub2)
+10.22.0.0/24       | 169.254.93.154     | 65002 12076                                  | 2        | MCR2 (ER2/Hub2)
+10.20.0.0/23       | 169.254.93.154     | 65002 12076                                  | 2        | MCR2 (ER2/Hub2)
+=== ECMP Analysis for /24 Prefixes (post 64496 reconvergence) ===
+Hub1 prefixes (10.10.0.0/23, 10.11.0.0/24, 10.12.0.0/24):
+  - 10.10.0.0/23: MCR1 only [65001 12076]                len=2  → SINGLE-PATH ✅
+  - 10.11.0.0/24: MCR1 [65001 12076] len=2 AND MCR2 [65002 12076 64496 64496 64496] len=5 → ECMP ⚠️
+  - 10.12.0.0/24: MCR1 [65001 12076] len=2 AND MCR2 [65002 12076 64496 64496 64496] len=5 → ECMP ⚠️
 
-For /23 supernets (only one path exists):
-- 10.10.0.0/23: MCR1 only (len=2)  -- Hub1 prefix, not depreffed from Hub1 side
-- 10.20.0.0/23: MCR2 only (len=2)  -- Hub2 prefix, not depreffed from Hub2 side
+Hub2 prefixes (10.20.0.0/23, 10.21.0.0/24, 10.22.0.0/24):
+  - 10.20.0.0/23: MCR2 only [65002 12076]                len=2  → SINGLE-PATH ✅
+  - 10.21.0.0/24: MCR2 [65002 12076] len=2 AND MCR1 [65001 12076 64496 64496 64496 65520 65520] len=7 → ECMP ⚠️
+  - 10.22.0.0/24: MCR2 [65002 12076] len=2 AND MCR1 [65001 12076 64496 64496 64496 65520 65520] len=7 → ECMP ⚠️
 
 KEY FINDING: GCP Cloud Router installs BOTH paths for /24 prefixes in bestRoutes despite
-unequal AS-path lengths (2 vs 5 hops, or 2 vs 7 hops). This indicates GCP performs
-ECMP across both ER paths regardless of AS-path length differentiation.
-The Mech C1 depref via /23 supernets is the effective traffic-steering mechanism:
-GCP routes to 10.10.0.0/23 only via MCR1 (longer /23 match takes effect for /24s under it?
-No - /24 is more specific than /23, so GCP will prefer /24 routes for destinations in the /24).
-IMPORTANT: GCP will use the /24 ECMP routes for specific /24 destinations. The /23 is only
-used if no /24 matches. Since Hub1 advertises 10.10.0.0/23 (supernet) + 10.11.0.0/24 + 10.12.0.0/24,
-the /24 routes (with ECMP) will be used for spoke VMs in those subnets.
+AS-path length differences of 2 vs 5 (or 2 vs 7 hops). AS 64496 prepend x3 does NOT prevent
+GCP ECMP for /24 prefixes. Only /23 supernets achieve true single-path routing.
+
+WHY 64496 (not 23456): AS 23456 (AS_TRANS) carries operational meaning during 4-byte ASN
+transition — old BGP speakers substitute it for un-representable 4-byte ASNs. AS 64496–64511
+is reserved exclusively for documentation (RFC 5398) with no operational semantics, making it
+cleaner for lab use and blog narrative.

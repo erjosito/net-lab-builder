@@ -3,8 +3,9 @@
 **Captured by:** Niobe (Validation / Observability Engineer)  
 **Lab:** vwan-dual-er-symmetric  
 **Design:** C — Active/Active VWAN Dual-ER with AS-path de-preference (route maps)  
-**Mechanism:** C1 — Outbound VWAN route maps prepending AS 23456 (AS_TRANS) ×3 on remote-hub prefixes  
-**Capture time:** 2026-06-16T08:00–09:00+02:00
+**Mechanism:** C1 — Outbound VWAN route maps prepending AS 64496 (RFC 5398 documentation ASN) ×3 on remote-hub prefixes  
+**Capture time:** 2026-06-16T08:00–09:00+02:00  
+**ASN note:** An earlier capture at 08:08 used AS 23456 (AS_TRANS). Route maps were updated at ~08:55 to AS 64496 (RFC 5398, 64496–64511 reserved for documentation, no operational transition semantics). Control-plane files 01–04 were re-captured after BGP reconvergence; data-plane and KQL files are unaffected by the ASN value.
 
 ---
 
@@ -25,7 +26,8 @@ Both VWAN hub ER connections have outbound route maps applied and confirmed:
 | hub1-swedencentral | hub1-out-depref-hub2 | ✅ Yes — `/virtualHubs/hub1-swedencentral/routeMaps/hub1-out-depref-hub2` |
 | hub2-northeurope | hub2-out-depref-hub1 | ✅ Yes — `/virtualHubs/hub2-northeurope/routeMaps/hub2-out-depref-hub1` |
 
-Route map rules: `Add AS-path [23456, 23456, 23456]` on matched prefixes (remote-hub subnets).
+Route map rules: `Add AS-path [64496, 64496, 64496]` on matched prefixes (remote-hub subnets).  
+*(Earlier run used 23456/AS_TRANS; updated to 64496 at ~08:55 — see ASN note above.)*
 
 ### GCP Cloud Router bestRoutes (files 01–02)
 
@@ -35,15 +37,15 @@ BGP peers: 2 established (MCR1 at 169.254.159.194, ASN 65001; MCR2 at 169.254.93
 | destRange | Best via | AS-path | path-len | Notes |
 |-----------|----------|---------|----------|-------|
 | 10.10.0.0/23 | MCR1 | 65001 12076 | 2 | Hub1 supernet — MCR1 only ✅ |
-| 10.11.0.0/24 | MCR1 | 65001 12076 | 2 | Hub1 /24 — ALSO via MCR2 (5 hops) ⚠️ ECMP |
-| 10.12.0.0/24 | MCR1 | 65001 12076 | 2 | Hub1 /24 — ALSO via MCR2 (5 hops) ⚠️ ECMP |
+| 10.11.0.0/24 | MCR1 | 65001 12076 | 2 | Hub1 /24 — ALSO via MCR2 (65002 12076 64496×3, 5 hops) ⚠️ ECMP |
+| 10.12.0.0/24 | MCR1 | 65001 12076 | 2 | Hub1 /24 — ALSO via MCR2 (65002 12076 64496×3, 5 hops) ⚠️ ECMP |
 | 10.20.0.0/23 | MCR2 | 65002 12076 | 2 | Hub2 supernet — MCR2 only ✅ |
-| 10.21.0.0/24 | MCR2 | 65002 12076 | 2 | Hub2 /24 — ALSO via MCR1 (7 hops) ⚠️ ECMP |
-| 10.22.0.0/24 | MCR2 | 65002 12076 | 2 | Hub2 /24 — ALSO via MCR1 (7 hops) ⚠️ ECMP |
+| 10.21.0.0/24 | MCR2 | 65002 12076 | 2 | Hub2 /24 — ALSO via MCR1 (65001 12076 64496×3 65520×2, 7 hops) ⚠️ ECMP |
+| 10.22.0.0/24 | MCR2 | 65002 12076 | 2 | Hub2 /24 — ALSO via MCR1 (65001 12076 64496×3 65520×2, 7 hops) ⚠️ ECMP |
 
-**CRITICAL ECMP FINDING:** GCP Cloud Router installs BOTH paths for /24 prefixes in `bestRoutes` despite AS-path lengths of 2 vs 5 (or 2 vs 7) hops. GCP does NOT apply AS-path length as a tie-breaker to eliminate ECMP; it installs equal-cost routes regardless of unequal AS-path lengths. The /23 supernets are the ONLY truly single-path routes.
+**CRITICAL ECMP FINDING:** GCP Cloud Router installs BOTH paths for /24 prefixes in `bestRoutes` despite AS-path lengths of 2 vs 5 (or 2 vs 7) hops — even with AS 64496 prepended ×3. GCP does NOT apply AS-path length as a tie-breaker to eliminate ECMP; it installs equal-cost routes regardless of unequal AS-path lengths. The /23 supernets are the ONLY truly single-path routes.
 
-**Implication for blog:** AS-path de-preference (Mech C1) successfully steers GCP's ECMP away for supernet prefixes (10.10.0.0/23 → MCR1 only, 10.20.0.0/23 → MCR2 only). For /24 prefixes, GCP continues ECMPing across both MCRs. The practical effect: for VMs in /24 subnets, return traffic from GCP is non-deterministic — approximately 50% of flows will take the "wrong" MCR.
+**Implication for blog:** AS-path de-preference (Mech C1, AS 64496×3) successfully steers GCP's routing for supernet prefixes (10.10.0.0/23 → MCR1 only, 10.20.0.0/23 → MCR2 only). For /24 prefixes, GCP continues ECMPing across both MCRs. The practical effect: for VMs in /24 subnets, return traffic from GCP is non-deterministic — approximately 50% of flows will take the "wrong" MCR.
 
 ---
 

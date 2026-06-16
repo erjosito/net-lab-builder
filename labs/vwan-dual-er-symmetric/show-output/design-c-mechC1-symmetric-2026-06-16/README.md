@@ -2,6 +2,9 @@
 # Capture date: 2026-06-16
 # Captured by: Niobe (Validation / Observability Engineer)
 
+**Mechanism:** C1 — Outbound VWAN route maps prepending AS **64496** (RFC 5398 documentation ASN) ×3 on remote-hub prefixes  
+**ASN note:** An earlier capture at 08:08 used AS 23456 (AS_TRANS). Route maps updated at ~08:55 to AS 64496 (64496–64511, RFC 5398, documentation-only, no 4-byte-ASN transition semantics). Control-plane files 01–04 re-captured after BGP reconvergence; data-plane + KQL files unaffected.
+
 ## ⚠️ PARTIAL SYMMETRIC
 
 > Mech C1 reduces AzFW cross-contamination by 98% (54→1 flows per firewall) but does not achieve full symmetry due to GCP Cloud Router ECMP on /24 prefixes.
@@ -14,8 +17,8 @@
 |---|------|------|----------|--------|
 | 01 | `01-cr-status-full.json` | T1/BGP | `gcloud compute routers get-status router-vwan-symm-a europe-west3` full JSON | ✅ |
 | 02 | `02-cr-routes-summary.txt` | T1/BGP | Formatted route table: destRange, nextHop, AS-path, path-len, winner | ✅ |
-| 03 | `03-az-routemap-hub1.json` | T1/BGP | Hub1 outbound route map config (hub1-out-depref-hub2) | ✅ |
-| 04 | `04-az-routemap-hub2.json` | T1/BGP | Hub2 outbound route map config (hub2-out-depref-hub1) | ✅ |
+| 03 | `03-az-routemap-hub1.json` | T1/BGP | Hub1 outbound route map config (hub1-out-depref-hub2, asPath=[64496,64496,64496]) | ✅ |
+| 04 | `04-az-routemap-hub2.json` | T1/BGP | Hub2 outbound route map config (hub2-out-depref-hub1, asPath=[64496,64496,64496]) | ✅ |
 | 05 | `05-er-connection-routing.txt` | T1/BGP | ER connection outboundRouteMap IDs for ergw-hub1 and ergw-hub2 | ✅ |
 | 06 | `06-probe-spoke1-vma.txt` | T2/Data | vm-spoke1 (10.11.0.4) → vm_a (10.50.1.2): 4/5 TCP:22 success | ✅ |
 | 07 | `07-probe-spoke1-vmb.txt` | T2/Data | vm-spoke1 → vm_b (10.50.2.2): NOT DEPLOYED in eu-w4 | ⚠️ |
@@ -44,7 +47,7 @@
 
 ## Critical ECMP Finding (Blog-worthy)
 
-GCP Cloud Router `router-vwan-symm-a` installs **both paths** in `bestRoutes` for /24 prefixes despite AS-path length differences of **2 vs 5 hops** (Hub1 prefixes) and **2 vs 7 hops** (Hub2 prefixes). GCP does NOT use AS-path length as a tiebreaker to eliminate ECMP — it routes across both paths equally.
+GCP Cloud Router `router-vwan-symm-a` installs **both paths** in `bestRoutes` for /24 prefixes despite AS-path length differences of **2 vs 5 hops** (Hub1 prefixes, depreffed path `65002 12076 64496×3`) and **2 vs 7 hops** (Hub2 prefixes, depreffed path `65001 12076 64496×3 65520×2`). GCP does NOT use AS-path length as a tiebreaker to eliminate ECMP — it routes across both paths equally.
 
 This is a significant architectural finding: AS-path de-preference (AS_TRANS prepend ×3) does NOT prevent GCP ECMP for specific /24 routes. The Mech C1 mechanism achieves symmetry only for /23 **aggregate** routes (which are single-path, no ECMP). Specific /24 destinations remain ECMP'd.
 
