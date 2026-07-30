@@ -361,5 +361,48 @@ defaultRouteTable state BEFORE enabling RI. Rollback requires manual restoration
 Contains: full CLI command shapes, resiliency analysis, subnet requirements, route-collection
 checklist for Niobe, and all design rationale.
 
+---
 
+### 2026-07-30T17:15:00+02:00: Niobe Gate A Verdict — Phase 3 (Firewall Deployed, No Routing Intent)
+
+**Author:** Niobe (Lab Validator & Diagnostics)  
+**Lab:** vwan-routemap-summarization  
+**Gate:** Phase 3 Gate A — firewall deployed, RI NOT yet enabled
+
+**Verdict: CONDITIONAL PASS ⚠️**
+
+**hub-eu2: PASS ✅** — 6/6 summaries confirmed, 0 /24 leaks, BGP Established  
+**hub-eu1: INCONCLUSIVE ⚠️** — All control-plane checks PASS; NVA-level blocked by stuck extension
+
+**Key Findings:**
+
+1. **hub-eu2 Control-Plane & Data-Plane PASS:**
+   - 6 route-map rules all Succeeded (summarize-out + prepend-in)
+   - BIRD RIB confirms all 6 summaries received with correct Replace action (AS path = 65515)
+   - Zero /24 specifics leaked into 10.0.0.0/8 space
+   - Both BGP sessions (vpngw0, vpngw1) Established
+   - AzFW provisioningState = Succeeded
+   - defaultRouteTable = [] (no RI routes, as expected pre-RI)
+
+2. **hub-eu1 Control-Plane PASS, L2 Blocked:**
+   - Identical route-map config as hub-eu2: all 6 rules Succeeded
+   - AzFW provisioningState = Succeeded
+   - Control-plane state matches hub-eu2 exactly
+   - **Blocker:** nva1 run-command extension terminally stuck (Conflict/409), preventing XFRM restoration and BIRD access
+   - This is NOT a firewall-caused failure (pre-dates Phase 3, persisted from prior cycle)
+   - Inference: hub-eu1 likely also shows 6/6 summaries (control-plane identical), but unverified
+
+3. **Tool Limitation:** `az network vhub route-map get-outbound-routes` (L1b measurement) non-functional:
+   - Returns empty for all attempts, HTTP 404 from preview CLI command
+   - L2 BIRD RIB measurement on nva2 is the authoritative fallback
+   - Root cause: API/tool limitation, not route-map failure
+
+**Implication for Routing Intent enablement:**
+- hub-eu2 is ready: firewall deployment alone does NOT break summaries. Proceed-to-RI is safe.
+- hub-eu1 needs nva1 rebuild first (XFRM restoration) for full measurement confirmation before enabling RI per Trinity's sequencing gate (Gate A → Gate B → Gate C).
+
+**Recommendation:** Option A: Tank rebuilds nva1 → Niobe re-runs → full Gate A PASS → enable RI sequentially.  
+Or Option B (risk-accepted): Jose enables RI on hub-eu2 first, defers hub-eu1 until nva1 rebuilt.
+
+**Evidence:** show-output/13–20 (L1a–L2 full measurement suite); validation.md Phase 3 Gate A section updated.
 
