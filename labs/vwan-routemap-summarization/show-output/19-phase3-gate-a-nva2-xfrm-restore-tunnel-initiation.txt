@@ -1,0 +1,66 @@
+# vm_run_command — nva2 XFRM restore + IPsec tunnel initiation (Gate A)
+# Captured: 2026-07-30T17:08:00+02:00
+# Gate: Phase 3 Gate A
+# Context: nva2 was deallocated; started; XFRM interfaces + swanctl restored manually
+# Hub: hub-eu2 (westeurope) | NVA: nva2 | BGP peers: 192.168.4.12 (vpngw0), 192.168.4.13 (vpngw1)
+
+=== Step 1: VM start (parallel with nva1) ===
+# az vm start -g routemap-test-rg -n nva2 --no-wait
+nva2 power state: VM running (confirmed within ~90s)
+
+=== Step 2: XFRM interface creation + swanctl load ===
+# Script: ip link add xfrm41 type xfrm dev eth0 if_id 41 2>/dev/null; ip link set xfrm41 up;
+#          ip link add xfrm42 type xfrm dev eth0 if_id 42 2>/dev/null; ip link set xfrm42 up;
+#          swanctl --load-all; echo XFRM_READY
+Enable succeeded:
+loaded ike secret 'ike-1'
+loaded connection 'vng0'
+loaded connection 'vng1'
+successfully loaded 2 connections, 0 unloaded
+XFRM_READY
+
+(plugin load warnings for test-vectors, ldap, pkcs11, rdrand, gcrypt, af-alg, curve25519,
+ chapoly, cmac, ctr, ccm, ntru, curl are expected — these optional plugins are not installed)
+
+=== Step 3: Route add + tunnel initiation ===
+# Script: ip route add 192.168.4.12/32 dev xfrm41 2>/dev/null;
+#          ip route add 192.168.4.13/32 dev xfrm42 2>/dev/null;
+#          swanctl --initiate --child s2s0 --ike vng0 --timeout 30;
+#          swanctl --initiate --child s2s1 --ike vng1 --timeout 30; echo INITIATE_DONE
+Enable succeeded:
+[vng0] IKE_SA established: 10.201.0.4[20.8.91.22]...132.164.1.51[132.164.1.51]
+[vng0] CHILD_SA s2s0{3} established with SPIs c22c31f3_i 0aa65ee8_o — ESP:AES_GCM_16_256
+initiate completed successfully
+[vng1] IKE_SA established: 10.201.0.4[20.8.91.22]...108.141.210.92[108.141.210.92]
+[vng1] CHILD_SA s2s1{4} established with SPIs c6c8668a_i b7679a86_o — ESP:AES_GCM_16_256
+initiate completed successfully
+INITIATE_DONE
+
+Tunnel endpoints:
+  vng0: nva2 10.201.0.4 ↔ vpngw-eu2 Instance0 132.164.1.51 (public IP)
+  vng1: nva2 10.201.0.4 ↔ vpngw-eu2 Instance1 108.141.210.92 (public IP)
+
+BGP convergence wait: 75 seconds (based on prior cycle #4 timing)
+
+=== Step 4: BGP protocol status after convergence ===
+# birdc show protocols
+BIRD 1.6.8 ready.
+name     proto    table    state  since       info
+device1  Device   master   up     14:57:00
+direct1  Direct   master   down   14:57:00
+kernel1  Kernel   master   up     14:57:00
+static1  Static   master   up     14:57:00
+vpngw0   BGP      master   up     15:00:17    Established
+vpngw1   BGP      master   up     15:00:17    Established
+
+BGP: vpngw0 Established, vpngw1 Established → BOTH SESSIONS UP
+
+XFRM RESTORATION PROCEDURE (for reference/reuse):
+  1. ip link add xfrm41 type xfrm dev eth0 if_id 41 && ip link set xfrm41 up
+  2. ip link add xfrm42 type xfrm dev eth0 if_id 42 && ip link set xfrm42 up
+  3. ip route add <hub-vpngw-Instance0-bgp-ip>/32 dev xfrm41
+     ip route add <hub-vpngw-Instance1-bgp-ip>/32 dev xfrm42
+  4. swanctl --load-all
+  5. swanctl --initiate --child s2s0 --ike vng0 --timeout 30
+     swanctl --initiate --child s2s1 --ike vng1 --timeout 30
+  6. wait ~75s for BGP convergence

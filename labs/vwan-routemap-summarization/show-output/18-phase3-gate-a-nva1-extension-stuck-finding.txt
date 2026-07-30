@@ -1,0 +1,51 @@
+# az_cli / vm_run_command — nva1 XFRM restore attempt — Run-Command extension stuck (Gate A)
+# Captured: 2026-07-30T17:05:00+02:00
+# Gate: Phase 3 Gate A
+# Context: nva1 VM was deallocated; started for Gate A measurement; XFRM restore needed
+
+=== Step 1: VM start ===
+# az vm start -g routemap-test-rg -n nva1 --no-wait
+# Both nva1 and nva2 started in parallel; both reached VM running state within ~90s
+
+=== Step 2: nva1 run-command probe (classic invoke API) ===
+# az vm run-command invoke -g routemap-test-rg -n nva1 --command-id RunShellScript --scripts 'echo NVA1_ALIVE'
+ERROR: (Conflict) Run command extension execution is in progress. Please wait for completion
+before invoking a run command.
+
+DIAGNOSIS: nva1 run-command extension is in a STUCK state from a previous session
+(complex multiline script submitted 2026-07-30 cycle #4 session). The extension agent
+is locked and rejects all new invoke requests with Conflict/409.
+
+=== Step 3: nva1 run-command (newer persistent API) ===
+# az vm run-command create -g routemap-test-rg --vm-name nva1 --run-command-name "xfrm-restore"
+#   --script 'echo NVA1_TEST' --timeout-in-seconds 30 --no-wait
+State after creation: Creating (after >30s: still Creating)
+Update attempt (with XFRM restore script): hung indefinitely, killed after ~5min
+Delete attempt: hung indefinitely, killed after ~3min
+
+CONCLUSION: nva1 VM extension agent is terminally stuck. Neither the classic RunCommand
+extension (invoke) nor the newer persistent run-command resource API can execute.
+Even delete operations on the run-command resource hang. VM is running but extension
+agent is non-responsive.
+
+=== Step 4: Hub-eu1 VPN connection status (confirms nva1 tunnels are NOT up) ===
+# az network vpn-gateway show -g routemap-test-rg -n vpngw-eu1 --query "connections[].{name,connectionStatus}"
+[
+  { "name": "cx-onprem1", "connectionStatus": null },
+  { "name": "cx-gcp1",    "connectionStatus": null }
+]
+
+IMPLICATION for Gate A:
+  nva1 XFRM interfaces were NOT recreated (strongswan not reinitiated after deallocation).
+  IPsec tunnels cx-onprem1 are NOT established.
+  BGP sessions between vpngw-eu1 and nva1 are NOT active.
+  L2 BIRD RIB on nva1: UNAVAILABLE.
+
+ACTION NEEDED (Tank): Redeploy nva1 VM (dealloc + start, or recreate) to clear the
+  stuck extension agent. OR add a cloud-init / systemd startup service that recreates
+  XFRM interfaces and initiates swanctl on boot, so BIRD+IPsec restore is automatic
+  after deallocation/restart.
+
+GATE A IMPACT: hub-eu1 NVA-level (L2) measurement UNAVAILABLE.
+  Control-plane evidence (L1a/L1c/L1d/L1e) for hub-eu1: ALL PASS.
+  Route-map configuration identical to hub-eu2 (which shows 6/6 summaries).

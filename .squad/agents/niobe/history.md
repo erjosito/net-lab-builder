@@ -38,6 +38,43 @@ Niobe completed four distinct missions across lab documentation, validation infr
 
 ---
 
+## Learnings (2026-07-30T17:15:00+02:00)
+
+**Phase 3 Gate A — vwan-routemap-summarization**
+
+### Gate A outcome
+
+- **hub-eu2/nva2: PASS** — 6/6 summaries (10.0.0.0/16, 10.1.0.0/16, 10.2.0.0/16, 10.3.0.0/16, 10.4.0.0/17, 10.4.128.0/17), 0 /24 leaks, BGP Established (vpngw0+vpngw1), firewall did NOT break route-maps.
+- **hub-eu1/nva1: INCONCLUSIVE** — All control-plane checks PASS; nva1 NVA-level measurement blocked by terminally stuck RunCommandLinux extension (pre-existing fault, persists across restart/deallocation). VPN tunnels not restored. Not a firewall-caused failure.
+- **Overall: CONDITIONAL PASS** — Proceed-to-RI conditionally safe for hub-eu2; Tank must rebuild nva1 before hub-eu1 can be fully measured.
+
+### XFRM restoration procedure (tested, reusable — see .squad/skills/vwan-nva-xfrm-restore/SKILL.md)
+
+Six-step procedure for hub-eu2/nva2 (tested and confirmed):
+1. `ip link add xfrm41 type xfrm dev eth0 if_id 41; ip link set xfrm41 up`
+2. `ip link add xfrm42 type xfrm dev eth0 if_id 42; ip link set xfrm42 up`
+3. `ip route add 192.168.4.12/32 dev xfrm41; ip route add 192.168.4.13/32 dev xfrm42`
+4. `swanctl --load-all`
+5. `swanctl --initiate --child s2s0 --ike vng0 --timeout 30; swanctl --initiate --child s2s1 --ike vng1 --timeout 30`
+6. Wait 75s for BGP convergence
+Total time from deallocated → BGP Established: ~3 minutes.
+
+### `get-outbound-routes` API is non-functional in this config
+
+`az network vhub route-map get-outbound-routes` (preview) consistently returns empty. REST API returns HTTP 404 "No route data was found." Use L2 BIRD RIB (`birdc show route`) as the authoritative measurement for all Gates.
+
+### nva1 stuck extension: persistent across restart
+
+The RunCommandLinux extension on nva1 is terminally stuck. Conflict/409 on invoke; newer persistent API hangs on create/update/delete. Even delete of the resource hangs. VM restart/deallocation does not clear it. Tank must `az vm redeploy` or delete+recreate nva1.
+
+### Key file paths
+
+- show-output/13–20: Gate A evidence files
+- validation.md: Phase 3 Gate A section added with full checklist
+- lessons-learned.md: Phase 3 findings section added
+- .squad/decisions/inbox/niobe-phase3-gate-a.md: verdict for Jose
+- .squad/skills/vwan-nva-xfrm-restore/SKILL.md: reusable XFRM restore skill
+
 ## Learnings (2026-07-30T15:21:56+02:00)
 
 **Documentation review pass — vwan-routemap-summarization**

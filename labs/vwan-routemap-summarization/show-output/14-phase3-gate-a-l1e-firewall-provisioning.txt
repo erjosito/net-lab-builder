@@ -1,0 +1,26 @@
+# az_cli — L1e: Azure Firewall provisioning state on both AzFW instances (Gate A)
+# Captured: 2026-07-30T17:00:30+02:00
+# Gate: Phase 3 Gate A
+# Commands:
+#   az network firewall show -g routemap-test-rg -n azfw-eu1 --query "{name,provisioningState,hubIpAddresses}" -o json
+#   az network firewall show -g routemap-test-rg -n azfw-eu2 --query "{name,provisioningState,hubIpAddresses}" -o json
+
+=== azfw-eu1 (hub-eu1, swedencentral) ===
+{
+  "hubIpAddresses": null,
+  "name": "azfw-eu1",
+  "provisioningState": "Succeeded"
+}
+
+=== azfw-eu2 (hub-eu2, westeurope) ===
+{
+  "hubIpAddresses": null,
+  "name": "azfw-eu2",
+  "provisioningState": "Succeeded"
+}
+
+INTERPRETATION:
+  - Both firewalls provisioningState = Succeeded → deployment COMPLETE
+  - hubIpAddresses = null: private IPs not shown in this query path (confirmed 192.168.2.132 and
+    192.168.4.132 from Tank's deploy record in decisions.md)
+  - Gate A L1e: PASS

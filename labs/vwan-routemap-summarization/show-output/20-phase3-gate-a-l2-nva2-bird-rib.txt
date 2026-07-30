@@ -1,0 +1,111 @@
+# vm_run_command — L2: nva2 BIRD RIB — PRIMARY EVIDENCE for hub-eu2 summary advertisements (Gate A)
+# Captured: 2026-07-30T17:10:00+02:00
+# Gate: Phase 3 Gate A (firewall deployed, NO Routing Intent)
+# Hub: hub-eu2 (westeurope) | NVA: nva2 (ASN 65002) | BGP peers: vpngw0/vpngw1 (Established)
+# Commands:
+#   birdc show protocols
+#   birdc show route
+#   birdc show route 10.0.0.0/16 all
+#   birdc show route 10.4.128.0/17 all
+#   birdc show route count
+
+=== birdc show protocols ===
+BIRD 1.6.8 ready.
+name     proto    table    state  since       info
+device1  Device   master   up     14:57:00
+direct1  Direct   master   down   14:57:00
+kernel1  Kernel   master   up     14:57:00
+static1  Static   master   up     14:57:00
+vpngw0   BGP      master   up     15:00:17    Established
+vpngw1   BGP      master   up     15:00:17    Established
+
+BGP STATUS: vpngw0 Established (since 15:00:17), vpngw1 Established (since 15:00:17)
+VERDICT: PASS — both BGP sessions Established
+
+=== birdc show route (all prefixes) ===
+BIRD 1.6.8 ready.
+10.2.0.0/16        via 192.168.4.12 on xfrm41 [vpngw0 15:00:19] ! (100/0) [AS65515i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 15:00:16] (100/0) [AS65515i]
+10.3.0.0/16        via 192.168.4.12 on xfrm41 [vpngw0 15:00:19] ! (100/0) [AS65515i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 15:00:16] (100/0) [AS65515i]
+10.0.0.0/16        via 192.168.4.12 on xfrm41 [vpngw0 15:00:19] ! (100/0) [AS65515i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 15:00:16] (100/0) [AS65515i]
+10.1.0.0/16        via 192.168.4.12 on xfrm41 [vpngw0 15:00:19] ! (100/0) [AS65515i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 15:00:16] (100/0) [AS65515i]
+10.4.0.0/17        via 192.168.4.12 on xfrm41 [vpngw0 15:00:19] ! (100/0) [AS65515i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 15:00:16] (100/0) [AS65515i]
+10.201.0.0/24      via 10.201.0.1 on eth0 [static1 14:56:59] * (200)
+192.168.4.13/32    dev xfrm42 [kernel1 15:00:16] * (254)
+192.168.4.12/32    dev xfrm41 [kernel1 15:00:14] * (254)
+192.168.2.0/23     via 192.168.4.12 on xfrm41 [vpngw0 15:00:19] ! (100/0) [AS12076i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 15:00:16] (100/0) [AS12076i]
+192.168.4.0/23     via 192.168.4.12 on xfrm41 [vpngw0 15:00:19] ! (100/0) [AS65515i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 15:00:16] (100/0) [AS65515i]
+10.4.128.0/17      via 192.168.4.12 on xfrm41 [vpngw0 15:00:19] ! (100/0) [AS65515i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 15:00:16] (100/0) [AS65515i]
+10.100.0.0/24      via 192.168.4.12 on xfrm41 [vpngw0 15:00:19] ! (100/0) [AS16550i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 15:00:16] (100/0) [AS16550i]
+172.27.0.0/16      via 10.201.0.1 on eth0 [static1 14:56:59] * (200)
+172.26.0.0/16      via 10.201.0.1 on eth0 [static1 14:56:59] * (200)
+172.25.0.0/16      via 10.201.0.1 on eth0 [static1 14:56:59] * (200)
+172.24.0.0/16      via 10.201.0.1 on eth0 [static1 14:56:59] * (200)
+172.29.0.0/16      via 10.201.0.1 on eth0 [static1 14:56:59] * (200)
+172.28.0.0/16      via 10.201.0.1 on eth0 [static1 14:56:59] * (200)
+172.19.0.0/16      via 10.201.0.1 on eth0 [static1 14:56:59] * (200)
+172.18.0.0/16      via 10.201.0.1 on eth0 [static1 14:56:59] * (200)
+172.17.0.0/16      via 10.201.0.1 on eth0 [static1 14:56:59] * (200)
+172.16.0.0/16      via 10.201.0.1 on eth0 [static1 14:56:59] * (200)
+172.23.0.0/16      via 10.201.0.1 on eth0 [static1 14:56:59] * (200)
+172.22.0.0/16      via 10.201.0.1 on eth0 [static1 14:56:59] * (200)
+172.21.0.0/16      via 10.201.0.1 on eth0 [static1 14:56:59] * (200)
+172.20.0.0/16      via 10.201.0.1 on eth0 [static1 14:56:59] * (200)
+
+=== birdc show route count ===
+35 of 35 routes for 26 networks
+
+=== birdc show route 10.0.0.0/16 all (AS path detail) ===
+BIRD 1.6.8 ready.
+10.0.0.0/16   via 192.168.4.12 on xfrm41 [vpngw0 15:00:19] ! (100/0) [AS65515i]
+  BGP.as_path: 65515
+  BGP.next_hop: 192.168.4.12
+  BGP.local_pref: 100
+              via 192.168.4.13 on xfrm42 [vpngw1 15:00:16] (100/0) [AS65515i]
+  BGP.as_path: 65515
+  BGP.next_hop: 192.168.4.13
+  BGP.local_pref: 100
+
+=== birdc show route 10.4.128.0/17 all (AS path detail) ===
+10.4.128.0/17 via 192.168.4.12 on xfrm41 [vpngw0 15:00:19] ! (100/0) [AS65515i]
+  BGP.as_path: 65515
+  BGP.next_hop: 192.168.4.12
+  BGP.local_pref: 100
+              via 192.168.4.13 on xfrm42 [vpngw1 15:00:16] (100/0) [AS65515i]
+  BGP.as_path: 65515
+  BGP.next_hop: 192.168.4.13
+  BGP.local_pref: 100
+
+=== SUMMARY ANALYSIS (hub-eu2 / nva2) ===
+
+Summaries received (6/6 expected):
+  10.0.0.0/16     ✅  via vpngw0 + vpngw1  AS65515
+  10.1.0.0/16     ✅  via vpngw0 + vpngw1  AS65515
+  10.2.0.0/16     ✅  via vpngw0 + vpngw1  AS65515
+  10.3.0.0/16     ✅  via vpngw0 + vpngw1  AS65515
+  10.4.0.0/17     ✅  via vpngw0 + vpngw1  AS65515
+  10.4.128.0/17   ✅  via vpngw0 + vpngw1  AS65515
+
+/24 leaks (0 expected): NONE (no /24 prefixes in 10.0.0.0/8 space)
+
+BGP AS path for summaries: 65515 (vWAN hub ASN) — route-map Replace action produces
+  hub-originated routes, AS path carries only hub ASN (expected behavior).
+
+Additional routes (NOT summaries, contextual):
+  192.168.2.0/23  — hub-eu1 prefix via ER (AS: 65515 12076 133937 12076)
+  192.168.4.0/23  — hub-eu2 prefix (AS: 65515)
+  10.100.0.0/24   — on-prem route via ER (AS: 16550)
+  10.201.0.0/24   — nva2 local subnet (static)
+  172.16-29.0.0/16 — nva2 originated (14 /16s, for prepend-in testing)
+  192.168.4.12/32, 192.168.4.13/32 — XFRM BGP peer routes (kernel)
+
+GATE A L2 VERDICT (hub-eu2 / nva2): PASS
+  6/6 summaries ✅ | 0 /24 leaks ✅ | BGP Established (both sessions) ✅

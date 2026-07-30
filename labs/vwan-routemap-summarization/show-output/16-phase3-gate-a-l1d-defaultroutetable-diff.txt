@@ -1,0 +1,53 @@
+# az_cli — L1d: defaultRouteTable both hubs — Gate A (before Routing Intent)
+# Captured: 2026-07-30T17:01:30+02:00
+# Gate: Phase 3 Gate A
+# Commands:
+#   az network vhub route-table show -g routemap-test-rg --vhub-name hub-eu1 -n defaultRouteTable -o json
+#   az network vhub route-table show -g routemap-test-rg --vhub-name hub-eu2 -n defaultRouteTable -o json
+# Pre-phase3 snapshots: deploy/hub-eu1-defaultRT-pre-phase3.json, deploy/hub-eu2-defaultRT-pre-phase3.json
+
+=== defaultRouteTable hub-eu1 (Gate A state) ===
+{
+  "associatedConnections": [
+    ".../vpnGateways/vpngw-eu1/vpnConnections/cx-onprem1",
+    ".../expressRouteGateways/ergw-eu1/expressRouteConnections/conn-er-eu1",
+    ".../vpnGateways/vpngw-eu1/vpnConnections/cx-gcp1"
+  ],
+  "labels": ["default"],
+  "name": "defaultRouteTable",
+  "propagatingConnections": [
+    ".../vpnGateways/vpngw-eu1/vpnConnections/cx-onprem1",
+    ".../expressRouteGateways/ergw-eu1/expressRouteConnections/conn-er-eu1",
+    ".../vpnGateways/vpngw-eu1/vpnConnections/cx-gcp1"
+  ],
+  "provisioningState": "Succeeded",
+  "routes": []
+}
+
+=== defaultRouteTable hub-eu2 (Gate A state) ===
+{
+  "associatedConnections": [
+    ".../vpnGateways/vpngw-eu2/vpnConnections/cx-onprem2",
+    ".../expressRouteGateways/ergw-eu2/expressRouteConnections/conn-er-eu2",
+    ".../vpnGateways/vpngw-eu2/vpnConnections/cx-gcp2"
+  ],
+  "labels": ["default"],
+  "name": "defaultRouteTable",
+  "propagatingConnections": [
+    ".../vpnGateways/vpngw-eu2/vpnConnections/cx-onprem2",
+    ".../expressRouteGateways/ergw-eu2/expressRouteConnections/conn-er-eu2",
+    ".../vpnGateways/vpngw-eu2/vpnConnections/cx-gcp2"
+  ],
+  "provisioningState": "Succeeded",
+  "routes": []
+}
+
+=== DIFF vs pre-phase3 snapshots ===
+hub-eu1: routes = [] (pre-phase3) vs routes = [] (Gate A) → NO CHANGE
+hub-eu2: routes = [] (pre-phase3) vs routes = [] (Gate A) → NO CHANGE
+
+INTERPRETATION:
+  - routes array is EMPTY on both hubs before and after firewall deployment
+  - NO _policy_PrivateTraffic routes present (these are added only when Routing Intent is enabled)
+  - Routing Intent is confirmed NOT active → defaultRouteTable is in pre-RI state
+  - Gate A L1d: PASS — no RI-inserted routes, defaultRouteTable unchanged from pre-phase3 baseline

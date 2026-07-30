@@ -1,0 +1,33 @@
+# az_cli — L1a: Hub secured state — AzFW association + Routing Intent check (Gate A)
+# Captured: 2026-07-30T17:00:00+02:00
+# Gate: Phase 3 Gate A (firewall deployed, no Routing Intent)
+# Commands:
+#   az network vhub show -g routemap-test-rg -n hub-eu1 --query "{name,azureFirewall,sku,provisioningState}" -o json
+#   az network vhub routing-intent list -g routemap-test-rg --vhub hub-eu1 -o json
+#   az network vhub show -g routemap-test-rg -n hub-eu2 --query "{name,azureFirewall,sku,provisioningState}" -o json
+#   az network vhub routing-intent list -g routemap-test-rg --vhub hub-eu2 -o json
+
+=== HUB hub-eu1 ===
+{
+  "azureFirewall": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/azureFirewalls/azfw-eu1",
+  "name": "hub-eu1",
+  "provisioningState": "Succeeded",
+  "sku": null
+}
+=== RI hub-eu1 ===
+[]
+
+=== HUB hub-eu2 ===
+{
+  "azureFirewall": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/azureFirewalls/azfw-eu2",
+  "name": "hub-eu2",
+  "provisioningState": "Succeeded",
+  "sku": null
+}
+=== RI hub-eu2 ===
+[]
+
+INTERPRETATION:
+  - Both hubs have azureFirewall != null → secured virtual hubs CONFIRMED
+  - Routing Intent = [] on BOTH hubs → RI NOT enabled (Gate A pre-condition MET)
+  - Gate A pre-condition L1a: PASS

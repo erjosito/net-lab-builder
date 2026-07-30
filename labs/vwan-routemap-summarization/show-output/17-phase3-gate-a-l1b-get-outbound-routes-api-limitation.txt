@@ -1,0 +1,48 @@
+# az_cli — L1b: get-outbound-routes attempts (PRIMARY MEASUREMENT) — API limitation finding (Gate A)
+# Captured: 2026-07-30T17:02:00+02:00
+# Gate: Phase 3 Gate A
+# Commands attempted:
+#   az network vhub route-map get-outbound-routes -g routemap-test-rg --vhub-name hub-eu1
+#     --connection-type VpnConnection --resource-uri .../vpngw-eu1/vpnConnections/cx-onprem1 -o json
+#   az network vhub route-map get-outbound-routes -g routemap-test-rg --vhub-name hub-eu2
+#     --connection-type VpnConnection --resource-uri .../vpngw-eu2/vpnConnections/cx-onprem2 -o json
+# Also attempted REST direct calls + get-inbound-routes + effective-routes
+
+=== Attempt 1: get-outbound-routes hub-eu1 cx-onprem1 (NVAs deallocated) ===
+Output: (empty, exit code 0)
+
+=== Attempt 2: get-outbound-routes hub-eu2 cx-onprem2 (NVAs deallocated) ===
+Output: (empty, exit code 0)
+
+=== Attempt 3: REST POST hub-eu1/routeMaps/summarize-out/getOutboundRoutes (api-version 2024-05-01) ===
+ERROR: Not Found — "No route data was found for this request."
+
+=== Attempt 4: REST POST hub-eu2/getOutboundRoutes hub-level (api-version 2024-05-01) ===
+ERROR: Not Found — "No route data was found for this request."
+
+=== Attempt 5: get-outbound-routes hub-eu2 cx-onprem2 AFTER nva2 BGP established ===
+Output: (empty, exit code 0)
+
+=== Attempt 6: get-inbound-routes hub-eu2 cx-onprem2 ===
+Output: (empty, exit code 0)
+
+=== Attempt 7: hub get-effective-routes hub-eu2 (--resource-type VpnConnection) ===
+{"value": []}
+
+FINDING:
+  The 'az network vhub route-map get-outbound-routes' command (from the 'virtual-wan' preview
+  extension, WARNING: in preview) consistently returns empty output (exit code 0) regardless of
+  whether VPN tunnels/BGP sessions are active or not. Direct REST API calls to both
+  /virtualHubs/{hub}/routeMaps/{rm}/getOutboundRoutes and /virtualHubs/{hub}/getOutboundRoutes
+  return HTTP 404 "No route data was found for this request."
+
+  This appears to be an API platform limitation in the swedencentral/westeurope regions for
+  secured virtual hubs with route-maps. The CLI command is marked 'in preview and under
+  development.'
+
+FALLBACK: L2 BIRD RIB measurement on nva2 (see file 19/20) is the authoritative evidence
+  for hub-eu2 summary advertisements. L1c route-map config + L1d defaultRouteTable are the
+  supporting control-plane evidence.
+  For hub-eu1: nva1 access is unavailable (see file 18 for nva1 extension status).
+
+GATE A L1b STATUS: MEASUREMENT UNAVAILABLE (tool/API limitation — not a FAIL signal)

@@ -1,0 +1,55 @@
+# az_cli — L1c: Route-map list + summarize-out + prepend-in state (Gate A)
+# Captured: 2026-07-30T17:01:00+02:00
+# Gate: Phase 3 Gate A
+# Commands:
+#   az network vhub route-map list -g routemap-test-rg --vhub-name hub-eu1 -o table
+#   az network vhub route-map show -g routemap-test-rg --vhub-name hub-eu1 -n summarize-out -o json
+#   az network vhub route-map list -g routemap-test-rg --vhub-name hub-eu2 -o table
+#   az network vhub route-map show -g routemap-test-rg --vhub-name hub-eu2 -n summarize-out -o json
+#   az network vhub route-map show -g routemap-test-rg --vhub-name hub-eu2 -n prepend-in -o json
+
+=== route-map list hub-eu1 ===
+Name           ProvisioningState    ResourceGroup
+-------------  -------------------  ----------------
+summarize-out  Succeeded            routemap-test-rg
+
+=== summarize-out hub-eu1 ===
+associatedOutboundConnections:
+  - cx-onprem1 (vpngw-eu1)
+  - cx-gcp1    (vpngw-eu1)
+rules: sum1..sum6 (6 Replace rules)
+  sum1: Contains 10.0.0.0/16 → Replace 10.0.0.0/16   nextStepIfMatched: Continue
+  sum2: Contains 10.1.0.0/16 → Replace 10.1.0.0/16   nextStepIfMatched: Continue
+  sum3: Contains 10.2.0.0/16 → Replace 10.2.0.0/16   nextStepIfMatched: Continue
+  sum4: Contains 10.3.0.0/16 → Replace 10.3.0.0/16   nextStepIfMatched: Continue
+  sum5: Contains 10.4.0.0/17 → Replace 10.4.0.0/17   nextStepIfMatched: Continue
+  sum6: Contains 10.4.128.0/17 → Replace 10.4.128.0/17 nextStepIfMatched: Continue
+provisioningState: Succeeded
+
+=== route-map list hub-eu2 ===
+Name           ProvisioningState    ResourceGroup
+-------------  -------------------  ----------------
+summarize-out  Succeeded            routemap-test-rg
+prepend-in     Succeeded            routemap-test-rg
+
+=== summarize-out hub-eu2 ===
+associatedOutboundConnections:
+  - cx-onprem2 (vpngw-eu2)
+  - cx-gcp2    (vpngw-eu2)
+rules: sum1..sum6 (6 Replace rules, identical structure to hub-eu1)
+provisioningState: Succeeded
+
+=== prepend-in hub-eu2 ===
+associatedInboundConnections:
+  - cx-onprem2 (vpngw-eu2)
+  - cx-gcp2    (vpngw-eu2)
+rules:
+  prepend1: Contains 172.16.0.0/16..172.29.0.0/16 → Add AS path [64496, 64497, 64498]
+            nextStepIfMatched: Continue
+provisioningState: Succeeded
+
+INTERPRETATION:
+  - summarize-out on BOTH hubs: Succeeded, 6/6 Replace rules INTACT, still bound to cx-onprem1/cx-onprem2
+  - prepend-in on hub-eu2: Succeeded, still bound to cx-onprem2 inbound
+  - Firewall deployment did NOT change route-map configuration or associations
+  - Gate A L1c: PASS
