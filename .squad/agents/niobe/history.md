@@ -38,6 +38,59 @@ Niobe completed four distinct missions across lab documentation, validation infr
 
 ---
 
+## Learnings (2026-07-30T15:21:56+02:00)
+
+**Documentation review pass — vwan-routemap-summarization**
+
+Reviewed and updated three lab files after the Phase 3 audit and failover/failback session:
+
+- **validation.md** (Niobe's file): corrected stale self-reference about README gap (now fixed); tightened Phase 2 summary sentence to remove "awaiting Tank/Kid correction" since the fix was applied in this session.
+- **README.md**: updated "Designs studied" table (Phase 1 → "Deployed/validated" with cycle count; Phase 2 → "Infrastructure deployed, ER connections active"; Phase 3 → "Not started, confirmed 2026-07-30"). Added Phase 2 resources to "Deployed state" section (ER circuits, ER gateways, GCP VPN sites, kv-pe private endpoint, ER connections).
+- **manifest.md**: updated resource inventory table with Phase 2 resources (added Phase column); corrected "Out of scope" section (Phase 2 is deployed, Phase 3 not yet started); added Phase 2 NVA operational note (XFRM persistence gap + startup sequence) to Scenario 3.
+- **decisions/inbox/niobe-phase3-audit.md**: added Oracle (Docs) routing note with 4 structural items that are prose/diagram rewrites, out of Niobe's factual-correction scope.
+
+**Items routed to Oracle:** README intro paragraph, manifest topology ASCII, manifest §6 scenario walkthroughs (Phase 2 repro), manifest §2 in-scope statement.
+
+---
+
+## Learnings (2026-07-30T13:48:36+02:00)
+
+**Failover/failback cycle #4 + Phase 2 documentation gap — routemap-test-rg**
+
+1. **Phase 2 fully deployed (documentation gap).** First audit incorrectly reported ER gateways as having no connections because the query used `--query "connections"` instead of `--query "expressRouteConnections"`. The correct field for ExpressRoute gateway connections is `expressRouteConnections`. Both ergw-eu1 and ergw-eu2 have active ER connections (conn-er-eu1 / conn-er-eu2, both Succeeded). README and manifest.md show Phase 2 as "Not started" — this is a documentation gap requiring Tank/Kid action.
+
+2. **XFRM interfaces not persistent across deallocation.** After VMs are deallocated/started, XFRM interfaces (xfrm41/xfrm42, type xfrm, if_id 41/42) are NOT recreated automatically. Must run: `ip link add xfrm41 type xfrm dev eth0 if_id 41; ip link set xfrm41 up; ip route add 192.168.4.12/32 dev xfrm41` (and same for xfrm42/42). Also: `swanctl --load-all` is needed since strongswan-starter uses ipsec.conf (empty) not swanctl.conf. And `swanctl --initiate --child s2sX --ike vngX` needed since `start_action = trap` does not auto-connect.
+
+3. **Failover cycle #4 CLEAN.** hub-eu2/nva2: 6/6 summaries before and after 45s IPsec+BGP teardown and restart. Phase 2 ER routes visible in nva2 BIRD table (192.168.2.0/23 with ER AS paths, 10.100.0.0/24 via GCP ER).
+
+4. **CLI gotcha: ER gateway field.** `az network express-route gateway show --query connections` returns empty. Correct field: `expressRouteConnections`. Confirm with `az network express-route gateway show -g <rg> -n <gw> -o json | findstr -i connection` to see actual field names.
+
+5. **nva1 run-command stuck.** A complex multiline shell script with mixed PowerShell/bash syntax got stuck in the Azure VM run-command extension. The extension locked nva1 for the entire session, blocking all subsequent run-command attempts. Avoid multi-line scripts with `2>/dev/null` piped grep patterns in PowerShell — use @' '@ heredoc and simple single-line commands.
+
+---
+
+## Learnings (2026-07-30T13:35:49+02:00)
+
+**Phase 3 audit — routemap-test-rg live state**
+
+Ran a full live audit of `routemap-test-rg` on 2026-07-30 to answer "are we in Phase 3?"
+
+**Key findings:**
+1. **Phase 3 NOT started.** No Azure Firewalls (`az network firewall list` → empty), no Firewall Policies, no Routing Intent on any of the 3 hubs. Hub `azureFirewall = null` and `securityProviderName = null` on hub-us, hub-eu1, hub-eu2. All hubs are non-secured virtual hubs.
+
+2. **Phase 2 infrastructure partially deployed (undocumented).** The RG contains 2 ER circuits (er-eu1/swedencentral, er-eu2/westeurope — both Enabled/Provisioned), 2 ER gateways (ergw-eu1, ergw-eu2 — both Succeeded), 4 VPN sites (onprem1/2 + gcp1/2), and a Key Vault private endpoint. However, both ER gateways have `connections = null` — so Phase 2 is infrastructure-deployed but not operationally connected.
+
+3. **Phase 1 substrate intact.** All 3 hubs Provisioned/Succeeded. Route maps `summarize-out` on hub-eu1 and hub-eu2 (Succeeded); `prepend-in` on hub-eu2 (Succeeded).
+
+4. **Sequencing discrepancy.** Jose wants to jump straight to Phase 3 (Azure Firewall + Routing Intent), but docs sequence Phase 2 first. Phase 2 infra already exists with no connections. Team needs to decide: complete Phase 2 first, or clean-skip to Phase 3.
+
+**CLI gotcha:** `az network vhub routing-intent list` requires `--vhub` (short flag), NOT `--vhub-name`. Using `--vhub-name` returns "argument required: --vhub" error.
+
+**Evidence filed:** show-output/08 (resource inventory), 09 (Phase 3 audit), 10 (Phase 2 ER audit).
+**Decisions inbox:** `.squad/decisions/inbox/niobe-phase3-audit.md`
+
+---
+
 ## Learnings (2026-06-15T23:32:10+02:00)
 
 **MSEE hairpin IPv6 validation skeleton** — Lab: `msee-hairpin-hns-vwan-ipv6`
