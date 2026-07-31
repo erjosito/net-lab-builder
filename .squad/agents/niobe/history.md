@@ -6,41 +6,51 @@
 - **Created:** 2026-05-28
 - **Role:** Lab Validator & Diagnostics — own labs/<lab>/{README.md, lessons-learned.md, show-output/, screenshots/, validation.md}; action verb vocabulary; sanitization checklist
 
-## Summary (2026-06-15)
+## Learnings (2026-07-31T09:52:00+02:00)
 
-Niobe completed four distinct missions across lab documentation, validation infrastructure, and CLI integrity:
+**Phase 3 Gate A — FULL PASS — vwan-routemap-summarization**
 
-1. **Lab back-fill & charter integration (2026-05-28 to 2026-05-29):** Established output mapping conventions (skill aw-output/ → labs/<lab>/show-output/), created sanitization sweep patterns for secrets (ER keys, Megaport credentials, VM passwords, base64 tokens → placeholder format), and back-filled Lab 1 README with Kid's published blog post link.
+### Gate A full re-run outcome
 
-2. **Multi-hub ER symmetry validation skeleton (2026-06-15):** Designed seven-layer capture strategy (VM NICs, hub routes via REST, BGP connections, ER circuit tables, MCR looking-glass, GCP Cloud Routers, Azure Firewall logs) for Lab 2 pre-deploy baseline. Key learnings: Lab 1's get-effective-routes anomaly is persistent; route evidence must flow through ER circuit route-tables (MSEE view, not hub REST); routing-intent rollout requires 10–20 min wait before capture; asymmetric-injection testing (forcing stateful drops) is the strongest evidence of symmetry importance.
+After Tank rebuilt nva1 via `az vm redeploy` (~90 min in swedencentral, clearing the stuck
+RunCommandLinux extension), Niobe completed the full Gate A measurement on both NVAs.
 
-3. **Lab 2 MCR SPOF analytical proof (2026-06-15):** Captured steady-state route evidence confirming single-path (ER1 carries all 10.50.1.0/24, ER1 secondary carries only MGP-reflected Azure prefixes; ER2 carries all 10.50.2.0/24). Documented tool gotchas: gcloud region lookup, PowerShell JSON escaping with z rest, 10-min z vm run-command latency, Megaport provisioning_status ≠ BGP state.
+| Hub | NVA | BGP | Summaries | /24 leaks | Verdict |
+|-----|-----|-----|-----------|-----------|---------|
+| hub-eu1 | nva1 | vpngw0+vpngw1 **Established** | **6/6** | **0** | **PASS** |
+| hub-eu2 | nva2 | vpngw0+vpngw1 **Established** | **6/6** | **0** | **PASS** |
 
-4. **WSL gcloud validation pass — CLI doc remediation (2026-06-15):** Discovered critical bug (hardcoded pc-onprem → real pc-vwan-symm-a-103167; returns 0 rows unfixed). Established <YOUR_...> placeholder convention. Validated 11 gcloud commands: 8 work as-is, 2 need standardization (peer-name/vpc tokens), 1 needs replacement (get-effective-firewalls deprecated). Ported validation pattern for reuse on cross-platform CLI docs; identified PowerShell bash-quoting conflicts and solutions (temp files, single-command forms).
+**Overall: FULL PASS.** Deploying Azure Firewalls (RI OFF) does NOT break outbound
+route-map summarization on either hub. Gate B (RI enable) may proceed on both hubs.
 
-**Key outputs:** Lab 2 validation skeleton (§6 pre-deploy requirements), WSL test suite + placeholder mapping (§gcloud-wsl-validation-2026-06-15), Windows doc remediation ready (niobe-3 pass 2 pending Jose handoff). Detailed learnings and evidence archived in history-archive.md.
+### Key facts
 
----
+- Both NVAs: 37 routes / 27 networks in BIRD RIB.
+- 6 summaries confirmed: 10.0.0.0/16, 10.1.0.0/16, 10.2.0.0/16, 10.3.0.0/16, 10.4.0.0/17, 10.4.128.0/17.
+- Non-summary /24s (10.100.0.0/24 GCP, 10.200.0.0/24 nva1 mgmt, 10.201.0.0/24 nva2 mgmt) are infrastructure prefixes outside the route-map scope — not leaks.
+- `az network vhub route-map get-outbound-routes` remains non-functional. Correct syntax confirmed: `--resource-uri <ARM_URI>` (not `--connection-name`). Still returns empty (exit 0, no body). L2 BIRD RIB is the authoritative gate.
 
-📌 Team update (2026-06-15): Windows troubleshooting doc cleanup complete. niobe-3 Pass 1 fixed §0 Conventions + duplicate heading (§6-§9 → §13-§16). Pass 2 synchronized 4 placeholder fixes from validated Linux doc (niobewsl's gcloud-wsl-validation). docs/troubleshooting-commands-windows.md now 29.4 KB, fully self-contained, ready for Jose's PowerShell validation. History file summarized; detailed entries archived. Awaiting Jose's Megaport portal signal (Phase 1B gating) and tank Phase 1B trigger (att_b_new destruction + cr_onprem_b creation).
+### Key file paths
 
----
+- show-output/23: nva1 birdc show protocols (BGP Established)
+- show-output/24: nva2 birdc show protocols (BGP Established)
+- show-output/25: **PRIMARY** nva1 BIRD RIB (6/6 summaries, 0 leaks)
+- show-output/26: **PRIMARY** nva2 BIRD RIB (6/6 summaries, 0 leaks)
+- show-output/27: nva1 route count (37/27)
+- show-output/28: nva2 route count (37/27)
+- show-output/29: get-outbound-routes API gap (--resource-uri syntax confirmed, still empty)
+- show-output/30: AzFW Succeeded + RI = [] both hubs re-confirmed
+- validation.md: Phase 3 Gate A section updated to FULL PASS
+- decisions/inbox/niobe-gate-a-full.md: team verdict
 
-🔴 **CRITICAL HARD GATE** (2026-06-16T00:40:00Z, Scribe housekeeping): Tank Phase 3 (C2 apply) must NOT proceed until Niobe confirms **C1 evidence pack completion**. 
+### CLI gotcha: --resource-uri vs --connection-name
 
-**Why this matters:** The GCP Cloud Router snapshot after Tank Phase 2 (C1 apply) is the "Mech C is Azure-only; GCP CR unchanged" proof. This must be captured BEFORE C2 is applied (which adds inbound route maps + hub routing preference, potentially changing CR state). Per Morpheus scope v2 checklist, this is the single highest-severity sequencing risk in the autopilot pipeline.
+`az network vhub route-map get-outbound-routes` requires `--resource-uri <full_ARM_path>`,
+NOT `--connection-name`. The ARM URI must include the full vpnGateway/vpnConnections path:
+  `/subscriptions/<SUB>/resourceGroups/<RG>/providers/Microsoft.Network/vpnGateways/<gw>/vpnConnections/<conn>`
+Even with correct syntax, the API returns empty. Capture this once per gate to document the gap.
 
-**Evidence gates required before C2:**
-1. Niobe C1 evidence pack: 4-tier symmetric verdict (control-plane, data-plane, AzFW, underlay), with GCP CR snapshot included
-2. Explicit Niobe signal: "C1 evidence capture complete"
 
-**Affected**: Tank → must block Phase 3 until gate met. Kid → must flag in blog draft. Trinity → Mech C spec (AS_TRANS, sequential C1→C2) is the trigger for this gate.
-
----
-
-## Learnings (2026-07-30T17:15:00+02:00)
-
-**Phase 3 Gate A — vwan-routemap-summarization**
 
 ### Gate A outcome
 
@@ -154,4 +164,5 @@ Ran a full live audit of `routemap-test-rg` on 2026-07-30 to answer "are we in P
 
 **Designs studied section** — Three rows (Path A ER Direct, Path B Megaport fallback, Path C IPsec VPN) with verdicts TBD; evidence links pending; A is "recommended if S1–S2 pass", B is "not recommended per Jose gate", C is "teaching-only (mechanism differs)". This follows rule #30: every design enumerated by Morpheus gets documented.
 
-**Reuse from vwan-dual-er-symmetric** — Assertion table structure (# | Assertion | Command | Expected | Evidence), three-layer checklist pattern, sanitization checklist, post-deploy validation order, BGP peer-status check pattern. Adapted for simpler topology (no MCR, no vHub REST layers) and dual-stack MSEE-only (no GCP multi-region cross-traffic).
+**Reuse from vwan-dual-er-symmetric** — Assertion table structure (# | Assertion | Command | Expected | Evidence), three-layer checklist pattern, sanitization checklist, post-deploy validation order, BGP peer-status check pattern. Adapted for simpler topology (no MCR, no vHub REST layers) and dual-stack MSEE-only (no GCP multi-region cross-traffic).
+
