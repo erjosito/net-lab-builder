@@ -1,6 +1,6 @@
 # vwan-routemap-summarization
 
-**Status: VALIDATION COMPLETE — TEARDOWN IN PROGRESS (Megaport ✅ complete; Azure RG + GCP cleanup in progress)**
+**Status: ✅ LAB FULLY DECOMMISSIONED — no running resources, no billing (as of 2026-07-31)**
 
 This lab reproduces and investigates a customer-reported **Virtual WAN route-map bug**: on a secured
 vWAN hub with outbound **summarization** route-map rules applied to a VPN connection, one /16 or /17
@@ -219,8 +219,8 @@ BIRD RIB does not show the prepended paths.
 | [50-teardown](show-output/50-teardown-er-conn-fw.txt) | Step 1: ER connections deleted (conn-er-eu1/eu2 ✅), Routing Intent deleted (hub-eu1-ri/eu2-ri ✅), Azure Firewalls deleted (azfw-eu1/eu2 ✅); Provider-owned ER peerings deferred |
 | [51-teardown](show-output/51-teardown-megaport.txt) | Step 3: Megaport teardown — `DELETE` endpoint failed (wrong method); retried with `POST /action/CANCEL_NOW` → all 3 VXCs + MCR2 DECOMMISSIONED; final verification 16:12 confirms all `jomore-copilot-*` products gone |
 | [52-teardown](show-output/52-teardown-er-peering.txt) | Step 2: ER private peerings deleted on er-eu1 + er-eu2 ✅ |
-| [53-teardown](show-output/53-teardown-azure-rg.txt) | Step 4: Azure RG delete — `az group delete -n routemap-test-rg` *(in progress; file pending)* |
-| [54-teardown](show-output/54-teardown-gcp-interconnect.txt) | Step 5: GCP Interconnect cleanup *(in progress; file pending)* |
+| [53-teardown](show-output/53-teardown-azure-rg.txt) | Step 4: `az group delete -n routemap-test-rg` — exit 0, ~39 min; verified ResourceGroupNotFound post-delete; includes VWAN, hubs, firewalls, ER circuits, gateways, spokes, NVAs |
+| [54-teardown](show-output/54-teardown-gcp-interconnect.txt) | Step 5: GCP project `vwan-routemap-lab` lifecycle = `DELETE_REQUESTED`; Compute APIs return 404; billing stopped; no per-resource deletion required |
 
 </details>
 
@@ -261,8 +261,8 @@ Full step-by-step specification: [design-phase3.md § Gate C Result + Gate D Pro
 | 1c | Delete Azure Firewalls (azfw-eu1, azfw-eu2) | ✅ DONE | [50-teardown](show-output/50-teardown-er-conn-fw.txt) |
 | 2 | Delete ER private peering (er-eu1, er-eu2) | ✅ DONE | [52-teardown](show-output/52-teardown-er-peering.txt) |
 | 3 | CANCEL_NOW Megaport VXCs (vxc-er-eu1-mcr2, vxc-er-eu2-mcr2, vxc-mcr-gcp) + MCR2 | ✅ DONE — all DECOMMISSIONED (16:12 verified) | [51-teardown](show-output/51-teardown-megaport.txt) |
-| 4 | Delete Azure resource group `routemap-test-rg` | ⏳ IN PROGRESS | [53-teardown](show-output/53-teardown-azure-rg.txt) *(pending)* |
-| 5 | GCP Interconnect cleanup | ⏳ IN PROGRESS | [54-teardown](show-output/54-teardown-gcp-interconnect.txt) *(pending)* |
+| 4 | Delete Azure resource group `routemap-test-rg` | ✅ DONE — RG deleted, exit 0 (~39 min, ended 17:22); `az group show` + `az network express-route list` both return ResourceGroupNotFound | [53-teardown](show-output/53-teardown-azure-rg.txt) |
+| 5 | GCP project `vwan-routemap-lab` cleanup | ✅ DONE — project in `DELETE_REQUESTED` state; all Compute APIs return 404; billing stopped; auto-purge within 30 days | [54-teardown](show-output/54-teardown-gcp-interconnect.txt) |
 
 ### Megaport teardown method (for the lab record)
 

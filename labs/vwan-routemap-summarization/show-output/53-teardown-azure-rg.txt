@@ -1,0 +1,119 @@
+=== Phase: Final Azure Teardown — routemap-test-rg ===
+Date: 2026-07-31
+Operator: Tank (IaC Engineer)
+Requested by: Jose Moreno (@erjosito)
+Context: Megaport fully decommissioned (all jomore-copilot-* VXCs + MCRs), ER private peerings deleted.
+
+=== Step 1: RG Existence Check ===
+Command: az group show -n routemap-test-rg -o table
+
+Location       Name
+-------------  ----------------
+swedencentral  routemap-test-rg
+
+Exit: 0  (RG exists — proceeding)
+
+=== Step 2: Pre-Delete Inventory ===
+Command: az resource list -g routemap-test-rg -o table
+
+Name                                            ResourceGroup     Location       Type                                           Status
+----------------------------------------------  ----------------  -------------  ---------------------------------------------  ---------
+vwan-routemap                                   routemap-test-rg  swedencentral  Microsoft.Network/virtualWans                  Succeeded
+hub-us                                          routemap-test-rg  westus2        Microsoft.Network/virtualHubs                  Succeeded
+hub-eu1                                         routemap-test-rg  swedencentral  Microsoft.Network/virtualHubs                  Succeeded
+hub-eu2                                         routemap-test-rg  westeurope     Microsoft.Network/virtualHubs                  Succeeded
+spoke-us-a                                      routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+spoke-us-b                                      routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+spoke-us-c                                      routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+spoke-us-d                                      routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+spoke-us-e                                      routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+spoke-us-f                                      routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+onprem1-vnet                                    routemap-test-rg  swedencentral  Microsoft.Network/virtualNetworks              Succeeded
+nva1-nsg                                        routemap-test-rg  swedencentral  Microsoft.Network/networkSecurityGroups        Succeeded
+nva1-pip                                        routemap-test-rg  swedencentral  Microsoft.Network/publicIPAddresses            Succeeded
+nva1VMNic                                       routemap-test-rg  swedencentral  Microsoft.Network/networkInterfaces            Succeeded
+onprem2-vnet                                    routemap-test-rg  westeurope     Microsoft.Network/virtualNetworks              Succeeded
+nva1                                            routemap-test-rg  swedencentral  Microsoft.Compute/virtualMachines              Succeeded
+nva1_OsDisk_1_2837fb663907455fa07fb56cf0a79e2e  ROUTEMAP-TEST-RG  swedencentral  Microsoft.Compute/disks                        Succeeded
+nva2-nsg                                        routemap-test-rg  westeurope     Microsoft.Network/networkSecurityGroups        Succeeded
+spoke-us-a2                                     routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+spoke-us-b2                                     routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+spoke-us-c2                                     routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+nva2-pip                                        routemap-test-rg  westeurope     Microsoft.Network/publicIPAddresses            Succeeded
+nva2VMNic                                       routemap-test-rg  westeurope     Microsoft.Network/networkInterfaces            Succeeded
+nva2                                            routemap-test-rg  westeurope     Microsoft.Compute/virtualMachines              Succeeded
+nva2_disk1_200ec3103af84ff2924d4bdb704c3c1b     ROUTEMAP-TEST-RG  westeurope     Microsoft.Compute/disks                        Succeeded
+spoke-us-d2                                     routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+spoke-us-e2                                     routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+spoke-us-f2                                     routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+vpngw-eu1                                       routemap-test-rg  swedencentral  Microsoft.Network/vpnGateways                  Succeeded
+vpngw-eu2                                       routemap-test-rg  westeurope     Microsoft.Network/vpnGateways                  Succeeded
+site-onprem1                                    routemap-test-rg  swedencentral  Microsoft.Network/vpnSites                     Succeeded
+site-onprem2                                    routemap-test-rg  westeurope     Microsoft.Network/vpnSites                     Succeeded
+nva1/enablevmAccess                             ROUTEMAP-TEST-RG  swedencentral  Microsoft.Compute/virtualMachines/extensions   Succeeded
+nva2/enablevmAccess                             routemap-test-rg  westeurope     Microsoft.Compute/virtualMachines/extensions   Succeeded
+onprem1-vnet-nva-nsg-swedencentral              routemap-test-rg  swedencentral  Microsoft.Network/networkSecurityGroups        Succeeded
+onprem2-vnet-nva-nsg-westeurope                 routemap-test-rg  westeurope     Microsoft.Network/networkSecurityGroups        Succeeded
+spoke-us-c-dummy-nsg-westus2                    routemap-test-rg  westus2        Microsoft.Network/networkSecurityGroups        Succeeded
+spoke-us-a2-dummy-nsg-westus2                   routemap-test-rg  westus2        Microsoft.Network/networkSecurityGroups        Succeeded
+spoke-us-c2-dummy-nsg-westus2                   routemap-test-rg  westus2        Microsoft.Network/networkSecurityGroups        Succeeded
+spoke-us-b-dummy-nsg-westus2                    routemap-test-rg  westus2        Microsoft.Network/networkSecurityGroups        Succeeded
+spoke-us-b2-dummy-nsg-westus2                   routemap-test-rg  westus2        Microsoft.Network/networkSecurityGroups        Succeeded
+spoke-us-f-dummy-nsg-westus2                    routemap-test-rg  westus2        Microsoft.Network/networkSecurityGroups        Succeeded
+spoke-us-d-dummy-nsg-westus2                    routemap-test-rg  westus2        Microsoft.Network/networkSecurityGroups        Succeeded
+spoke-us-e-dummy-nsg-westus2                    routemap-test-rg  westus2        Microsoft.Network/networkSecurityGroups        Succeeded
+spoke-us-d2-dummy-nsg-westus2                   routemap-test-rg  westus2        Microsoft.Network/networkSecurityGroups        Succeeded
+spoke-us-e2-dummy-nsg-westus2                   routemap-test-rg  westus2        Microsoft.Network/networkSecurityGroups        Succeeded
+spoke-us-f2-dummy-nsg-westus2                   routemap-test-rg  westus2        Microsoft.Network/networkSecurityGroups        Succeeded
+spoke-us-a-dummy-nsg-westus2                    routemap-test-rg  westus2        Microsoft.Network/networkSecurityGroups        Succeeded
+spoke-us-a-scale                                routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+spoke-us-b-scale                                routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+spoke-us-c-scale                                routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+spoke-us-d-scale                                routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+spoke-us-e-scale                                routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+spoke-us-f-scale                                routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+spoke-us-scale2                                 routemap-test-rg  westus2        Microsoft.Network/virtualNetworks              Succeeded
+er-eu1                                          routemap-test-rg  swedencentral  Microsoft.Network/expressRouteCircuits         Succeeded
+er-eu2                                          routemap-test-rg  westeurope     Microsoft.Network/expressRouteCircuits         Succeeded
+kv-pe                                           routemap-test-rg  swedencentral  Microsoft.Network/privateEndpoints             Succeeded
+kv-pe.nic.783ca516-552a-4ec6-bdf2-9b37beeeed5a  routemap-test-rg  swedencentral  Microsoft.Network/networkInterfaces            Succeeded
+ergw-eu1                                        routemap-test-rg  swedencentral  Microsoft.Network/expressRouteGateways         Succeeded
+ergw-eu2                                        routemap-test-rg  westeurope     Microsoft.Network/expressRouteGateways         Succeeded
+onprem1-vnet-pe-subnet-nsg-swedencentral        routemap-test-rg  swedencentral  Microsoft.Network/networkSecurityGroups        Succeeded
+site-gcp1                                       routemap-test-rg  swedencentral  Microsoft.Network/vpnSites                     Succeeded
+site-gcp2                                       routemap-test-rg  westeurope     Microsoft.Network/vpnSites                     Succeeded
+nva2/MDE.Linux                                  ROUTEMAP-TEST-RG  westeurope     Microsoft.Compute/virtualMachines/extensions   Succeeded
+nva1/MDE.Linux                                  ROUTEMAP-TEST-RG  swedencentral  Microsoft.Compute/virtualMachines/extensions   Succeeded
+azfwpol-routemap-lab                            routemap-test-rg  swedencentral  Microsoft.Network/firewallPolicies             Succeeded
+nva1/xfrm-restore                               routemap-test-rg  swedencentral  Microsoft.Compute/virtualMachines/runCommands  Succeeded
+
+Note: Microsoft.Network/azureFirewalls (azfw-eu1, azfw-eu2) are present in the hub but not surfaced
+by az resource list for AZFW_Hub SKU. Confirmed via az network firewall list pre-delete (Phase 3
+deploy evidence: azfw-eu1 privateIP=192.168.2.132, azfw-eu2 privateIP=192.168.4.132).
+
+=== Step 3: Delete RG ===
+Command: az group delete -n routemap-test-rg --yes
+Start:   2026-07-31T16:42:51+02:00
+End:     2026-07-31T17:22:12+02:00
+Elapsed: ~39 minutes
+Exit:    0  (SUCCESS)
+
+=== Step 4: Post-Delete Verification ===
+
+--- az group show -n routemap-test-rg ---
+ERROR: (ResourceGroupNotFound) Resource group 'routemap-test-rg' could not be found.
+Code: ResourceGroupNotFound
+Message: Resource group 'routemap-test-rg' could not be found.
+Exit: 3  (PASS — RG is gone)
+
+--- az network express-route list -g routemap-test-rg ---
+ERROR: (ResourceGroupNotFound) Resource group 'routemap-test-rg' could not be found.
+Code: ResourceGroupNotFound
+Message: Resource group 'routemap-test-rg' could not be found.
+Exit: 3  (PASS — ER circuits are gone)
+
+=== TEARDOWN COMPLETE ===
+All resources in routemap-test-rg have been deleted.
+Lab vwan-routemap-summarization is fully decommissioned (Azure side).
+Megaport was confirmed decommissioned prior to this operation (by Jose).
+No other RGs touched. platform-secrets-1138 KV RG untouched.
