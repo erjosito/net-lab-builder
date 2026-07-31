@@ -1,0 +1,14 @@
+# az vm run-command invoke -g routemap-test-rg -n nva1 --command-id RunShellScript --scripts "sudo birdc show route count" --query "value[0].message" -o tsv
+# Gate A FULL — nva1 (hub-eu1, swedencentral) BIRD route count
+# Captured: 2026-07-31T09:52:00+02:00
+# Subscription: <SUBSCRIPTION_ID>
+# RG: routemap-test-rg
+
+Enable succeeded: 
+[stdout]
+BIRD 1.6.8 ready.
+37 of 37 routes for 27 networks
+
+[stderr]
+
+# 37 routes / 27 networks (ECMP-aware: each prefix has up to 2 paths via vpngw0+vpngw1)

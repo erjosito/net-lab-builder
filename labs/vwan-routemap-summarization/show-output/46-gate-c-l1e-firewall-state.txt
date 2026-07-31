@@ -1,0 +1,27 @@
+# az network firewall show -g routemap-test-rg -n azfw-eu1 --query "{name:name,provisioningState:provisioningState,hubIpAddresses:hubIpAddresses}" -o json
+# az network firewall show -g routemap-test-rg -n azfw-eu2 --query "{name:name,provisioningState:provisioningState,hubIpAddresses:hubIpAddresses}" -o json
+# Gate C — L1e firewall provisioning state (both hubs)
+# Captured: 2026-07-31T11:45:00+02:00
+# Subscription: <SUBSCRIPTION_ID>
+# RG: routemap-test-rg
+
+===========================================================================
+azfw-eu1 (hub-eu1, swedencentral)
+===========================================================================
+{
+  "hubIpAddresses": null,
+  "name": "azfw-eu1",
+  "provisioningState": "Succeeded"
+}
+
+===========================================================================
+azfw-eu2 (hub-eu2, westeurope)
+===========================================================================
+{
+  "hubIpAddresses": null,
+  "name": "azfw-eu2",
+  "provisioningState": "Succeeded"
+}
+
+# VERDICT: Both firewalls Succeeded. Gate C pre-condition confirmed.
+# Note: hubIpAddresses=null is normal in this API query form; IPs are allocated internally by the platform.

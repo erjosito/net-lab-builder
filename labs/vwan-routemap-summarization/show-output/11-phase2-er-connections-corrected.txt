@@ -1,0 +1,58 @@
+# Phase 2 audit: ExpressRoute connections (corrected — full JSON query)
+# Captured: 2026-07-30T13:48:36+02:00
+# NOTE: Previous capture (show-output/10) used wrong query field 'connections' instead of
+# 'expressRouteConnections', causing both gateways to appear as having no connections.
+# This file corrects that finding.
+
+=== COMMAND 1: az network express-route gateway show -g routemap-test-rg -n ergw-eu1 (selected fields) ===
+{
+  "name": "ergw-eu1",
+  "provisioningState": "Succeeded",
+  "expressRouteConnections": [
+    {
+      "name": "conn-er-eu1",
+      "provisioningState": "Succeeded",
+      "expressRouteCircuitPeering": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/expressRouteCircuits/er-eu1/peerings/AzurePrivatePeering"
+      },
+      "routingConfiguration": {
+        "associatedRouteTable": "hub-eu1/hubRouteTables/defaultRouteTable",
+        "propagatedRouteTables": ["hub-eu1/hubRouteTables/defaultRouteTable"]
+      }
+    }
+  ]
+}
+
+=== COMMAND 2: az network express-route gateway show -g routemap-test-rg -n ergw-eu2 (selected fields) ===
+{
+  "name": "ergw-eu2",
+  "provisioningState": "Succeeded",
+  "expressRouteConnections": [
+    {
+      "name": "conn-er-eu2",
+      "provisioningState": "Succeeded",
+      "expressRouteCircuitPeering": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/expressRouteCircuits/er-eu2/peerings/AzurePrivatePeering"
+      }
+    }
+  ]
+}
+
+=== REVISED PHASE 2 VERDICT ===
+Phase 2 is FULLY DEPLOYED AND CONNECTED:
+  - er-eu1 (swedencentral): Enabled / Provisioned
+  - er-eu2 (westeurope):    Enabled / Provisioned
+  - ergw-eu1: Succeeded — conn-er-eu1 CONNECTED to er-eu1 (Succeeded)
+  - ergw-eu2: Succeeded — conn-er-eu2 CONNECTED to er-eu2 (Succeeded)
+
+CORRECTS: show-output/10 which incorrectly reported "connections = null" due to
+using --query "connections" instead of "expressRouteConnections" field name.
+
+ROUTE EVIDENCE (from nva2 BIRD table during failback validation):
+nva2 received routes with ER AS paths, confirming active ER plane:
+  192.168.2.0/23  via vpngw0 [AS65515i, AS path: 65515 12076 133937 12076]  <- hub-eu1 via ER hairpin
+  10.100.0.0/24   via vpngw0 [AS65515i, AS path: 65515 12076 133937 16550]  <- on-prem via ER
+
+DOCUMENTATION GAP: README.md "Designs studied" table and manifest.md both show
+Phase 2 as "Not started". This is INCORRECT — Phase 2 is fully deployed and connected.
+Tank/Kid must update the README phase table to "Deployed / validated (Phase 1 NO REPRO)".

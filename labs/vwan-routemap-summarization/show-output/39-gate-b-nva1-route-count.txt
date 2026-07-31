@@ -1,0 +1,16 @@
+# az vm run-command invoke -g routemap-test-rg -n nva1 --command-id RunShellScript --scripts "sudo birdc show route count" --query "value[0].message" -o tsv
+# Gate B — nva1 (hub-eu1, swedencentral) BIRD route count
+# hub-eu1 state: Routing Intent PrivateTraffic ENABLED
+# Captured: 2026-07-31T10:55:00+02:00
+# Subscription: <SUBSCRIPTION_ID>
+# RG: routemap-test-rg
+
+Enable succeeded: 
+[stdout]
+BIRD 1.6.8 ready.
+37 of 37 routes for 27 networks
+
+[stderr]
+
+# Identical to Gate A count (37/27). RI on hub-eu1 did NOT change the route count seen by nva1.
+# Confirms the NVA RIB is driven by BGP advertisements from the hub, not by the hub's RI forwarding table.

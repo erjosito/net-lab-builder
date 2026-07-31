@@ -1,0 +1,25 @@
+# az vm run-command invoke -g routemap-test-rg -n nva1 --command-id RunShellScript --scripts "sudo birdc show protocols" --query "value[0].message" -o tsv
+# Gate B — nva1 (hub-eu1, swedencentral) BGP session state
+# hub-eu1 state: Routing Intent PrivateTraffic ENABLED (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 → azfw-eu1)
+# Captured: 2026-07-31T10:55:00+02:00
+# Subscription: <SUBSCRIPTION_ID>
+# RG: routemap-test-rg
+# Run-command conflict note: no conflict observed — Link's credential fetch had already completed.
+
+Enable succeeded: 
+[stdout]
+BIRD 1.6.8 ready.
+name     proto    table    state  since       info
+device1  Device   master   up     06:07:59    
+direct1  Direct   master   down   06:07:59    
+kernel1  Kernel   master   up     06:07:59    
+static1  Static   master   up     06:07:59    
+vpngw0   BGP      master   up     07:37:23    Established   
+vpngw1   BGP      master   up     07:37:38    Established   
+
+[stderr]
+
+# KEY OBSERVATION: vpngw0 and vpngw1 timestamps (07:37:23, 07:37:38) are UNCHANGED from Gate A.
+# BGP sessions on nva1 did NOT reconverge during RI enablement on hub-eu1.
+# RI enablement was transparent to the VPN BGP sessions on the RI-enabled hub.
+# VERDICT: vpngw0 Established, vpngw1 Established — PASS

@@ -1,0 +1,66 @@
+# az network vhub route-map show -g routemap-test-rg --vhub-name hub-eu1 -n summarize-out -o json
+# az network vhub route-map show -g routemap-test-rg --vhub-name hub-eu2 -n summarize-out -o json
+# az network vhub route-map show -g routemap-test-rg --vhub-name hub-eu2 -n prepend-in -o json
+# Gate C — L1c route-map state (summarize-out both hubs; prepend-in hub-eu2)
+# Captured: 2026-07-31T11:45:00+02:00
+# Subscription: <SUBSCRIPTION_ID>
+# RG: routemap-test-rg
+
+===========================================================================
+hub-eu1 summarize-out
+===========================================================================
+  "name": "summarize-out"
+  "provisioningState": "Succeeded"
+  rules: sum1, sum2, sum3, sum4, sum5, sum6  (6 Replace rules — confirmed present)
+
+===========================================================================
+hub-eu2 summarize-out
+===========================================================================
+  "name": "summarize-out"
+  "provisioningState": "Succeeded"
+  rules: sum1, sum2, sum3, sum4, sum5, sum6  (6 Replace rules — confirmed present)
+
+===========================================================================
+hub-eu2 prepend-in (full output)
+===========================================================================
+{
+  "name": "prepend-in",
+  "provisioningState": "Succeeded",
+  "rules": [
+    {
+      "actions": [
+        {
+          "parameters": [
+            {
+              "asPath": ["64496", "64497", "64498"],
+              "community": [],
+              "routePrefix": []
+            }
+          ],
+          "type": "Add"
+        }
+      ],
+      "matchCriteria": [
+        {
+          "asPath": [],
+          "community": [],
+          "matchCondition": "Contains",
+          "routePrefix": [
+            "172.16.0.0/16","172.17.0.0/16","172.18.0.0/16","172.19.0.0/16",
+            "172.20.0.0/16","172.21.0.0/16","172.22.0.0/16","172.23.0.0/16",
+            "172.24.0.0/16","172.25.0.0/16","172.26.0.0/16","172.27.0.0/16",
+            "172.28.0.0/16","172.29.0.0/16"
+          ]
+        }
+      ],
+      "name": "prepend1"
+    }
+  ]
+}
+
+# prepend-in: applied INBOUND at hub-eu2 on cx-onprem2.
+# When nva2 advertises its local 172.x routes to hub-eu2, hub-eu2 prepends ASNs 64496/64497/64498.
+# Effect: these routes propagate intra-hub (hub-eu2 → hub-eu1) with longer AS-path → de-preferred
+#         vs hub-eu1's own 172.x routes from nva1.
+# Not visible in nva2 BIRD RIB (nva2 sees what hub-eu2 sends to it, not what hub-eu2 does internally).
+# VERDICT: All route-maps Succeeded, intact after both-hub RI enablement.

@@ -1,0 +1,10 @@
+# Both EU hubs with identical summarize-out (Replace, rules sum1..sum6 ascending) applied outbound.
+# Baseline stable-state comparison (no failover yet).
+
+nva1 (via hub-eu1 / swedencentral):  all 6 summaries present, 0 missing, 0 leaks, 25 networks
+nva2 (via hub-eu2 / westeurope):     all 6 summaries present, 0 missing, 0 leaks, 25 networks
+
+Summaries: 10.0.0.0/16 10.1.0.0/16 10.2.0.0/16 10.3.0.0/16 10.4.0.0/17 10.4.128.0/17
+
+Result: NO missing-summary reproduction in steady state with ascending rule order.
+Next: rule reorder + link failover/failback churn (customer's trigger).

@@ -1,0 +1,63 @@
+# az vm run-command invoke -g routemap-test-rg -n nva1 --command-id RunShellScript --scripts "sudo birdc show route" --query "value[0].message" -o tsv
+# Gate C — PRIMARY — nva1 (hub-eu1, swedencentral) full BIRD RIB
+# hub-eu1 state: Routing Intent PrivateTraffic ENABLED (since Gate B); hub-eu2 now also RI-ON
+# Both hubs are RI-enabled. This is the full Gate C steady state.
+# Captured: 2026-07-31T11:45:00+02:00
+# Subscription: <SUBSCRIPTION_ID>
+# RG: routemap-test-rg
+
+Enable succeeded: 
+[stdout]
+BIRD 1.6.8 ready.
+10.2.0.0/16        via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS65515i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS65515i]
+10.3.0.0/16        via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS65515i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS65515i]
+10.0.0.0/16        via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS65515i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS65515i]
+10.1.0.0/16        via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS65515i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS65515i]
+10.4.0.0/17        via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS65515i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS65515i]
+10.200.0.0/24      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+10.201.0.0/24      via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS65002i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS65002i]
+192.168.2.12/32    dev xfrm41 [kernel1 07:37:20] * (254)
+192.168.2.13/32    dev xfrm42 [kernel1 07:37:20] * (254)
+192.168.2.0/23     via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS65515i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS65515i]
+192.168.4.0/23     via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS12076i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS12076i]
+10.4.128.0/17      via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS65515i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS65515i]
+10.100.0.0/24      via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS16550i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS16550i]
+172.27.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.26.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.25.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.24.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.29.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.28.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.19.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.18.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.17.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.16.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.23.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.22.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.21.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.20.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+
+[stderr]
+
+# ANALYSIS — Customer summary space (10.0.0.0–10.4.255.255):
+#   Summaries present (6/6): 10.0.0.0/16, 10.1.0.0/16, 10.2.0.0/16, 10.3.0.0/16, 10.4.0.0/17, 10.4.128.0/17
+#   /24 leaks in customer space: ZERO
+#   Other /24s (NOT leaks): 10.200.0.0/24 (nva1 mgmt static), 10.201.0.0/24 (nva2 mgmt, via BGP), 10.100.0.0/24 (GCP)
+#
+# BGP TIMESTAMPS: vpngw0 07:37:22, vpngw1 07:37:54 — unchanged from Gate A and Gate B.
+# Neither RI enablement (hub-eu1 at Gate B, hub-eu2 at Gate C) reset nva1's sessions.
+#
+# GATE C HEADLINE: Both hubs RI-ON. 6/6 summaries intact on nva1 (hub-eu1's NVA, RI-ON since Gate B).
+# RI on the SECOND hub (hub-eu2) did NOT disturb summarization on hub-eu1's NVA.
+# BUG NOT REPRODUCED with enablement order: hub-eu1 FIRST, hub-eu2 SECOND.
+# VERDICT: 6/6 summaries, 0 /24 leaks — PASS

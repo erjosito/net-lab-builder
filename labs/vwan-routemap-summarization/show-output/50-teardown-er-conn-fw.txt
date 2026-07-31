@@ -1,0 +1,83 @@
+# Teardown Step 1: ER Connections + Routing Intent + Azure Firewalls
+# Captured: 2026-07-31T15:31:51+02:00
+# Operator: Tank (IaC)
+# Subscription: Litware-MngEnvMCAP642473-jomore (ID: <SUBSCRIPTION_ID>)
+# RG: routemap-test-rg
+
+===========================================================================
+PRE-DELETE DISCOVERY
+===========================================================================
+
+ER connections found:
+  ergw-eu1: conn-er-eu1 → er-eu1/AzurePrivatePeering (provisioningState: Succeeded)
+  ergw-eu2: conn-er-eu2 → er-eu2/AzurePrivatePeering (provisioningState: Succeeded)
+
+ER peerings found:
+  er-eu1: AzurePrivatePeering — lastModifiedBy: Provider — NOT directly deletable
+  er-eu2: AzurePrivatePeering — lastModifiedBy: Provider — NOT directly deletable
+  (Provider-owned peerings clear with circuit delete / RG delete — deferred to final step)
+
+Routing intent found:
+  hub-eu1: hub-eu1-ri → azfw-eu1 (PrivateTraffic)
+  hub-eu2: hub-eu2-ri → azfw-eu2 (PrivateTraffic)
+  (Must remove before firewall delete)
+
+===========================================================================
+JOB 1: DELETE ER CONNECTIONS (Step 1 of cleanup chain)
+===========================================================================
+
+2026-07-31T15:11:55 — az network express-route gateway connection delete
+  --gateway-name ergw-eu1 -g routemap-test-rg -n conn-er-eu1
+2026-07-31T15:18:38 — conn-er-eu1 DELETED (exit 0)
+
+2026-07-31T15:11:55 — az network express-route gateway connection delete
+  --gateway-name ergw-eu2 -g routemap-test-rg -n conn-er-eu2
+2026-07-31T15:22:10 — conn-er-eu2 DELETED (exit 0)
+
+Verification:
+  ergw-eu1 connections: {"value": []}  ← empty
+  ergw-eu2 connections: {"value": []}  ← empty
+  STATUS: BOTH ER CONNECTIONS GONE ✅
+
+Note: --yes flag not supported on express-route gateway connection delete command.
+
+===========================================================================
+JOB 2a: DELETE ROUTING INTENT (prerequisite for firewall delete)
+===========================================================================
+
+2026-07-31T15:09:05 — az network vhub routing-intent delete
+  -g routemap-test-rg --vhub hub-eu1 -n hub-eu1-ri --yes
+2026-07-31T15:15:53 — hub-eu1-ri DELETED (~6 min, exit 0)
+
+2026-07-31T15:09:05 — az network vhub routing-intent delete
+  -g routemap-test-rg --vhub hub-eu2 -n hub-eu2-ri --yes
+2026-07-31T15:17:33 — hub-eu2-ri DELETED (~8 min, exit 0)
+
+===========================================================================
+JOB 2b: DELETE AZURE FIREWALLS (~/day cost stop)
+===========================================================================
+
+2026-07-31T15:20:03 — az network firewall delete -g routemap-test-rg -n azfw-eu1 --no-wait
+2026-07-31T15:20:03 — az network firewall delete -g routemap-test-rg -n azfw-eu2 --no-wait
+2026-07-31T15:30:XX — Both firewalls DELETED (az network firewall list returns empty, count=0)
+
+Verification:
+  az network firewall list -g routemap-test-rg → (empty)
+  STATUS: BOTH FIREWALLS GONE ✅
+
+===========================================================================
+REMAINING (Provider-owned — deferred to circuit/RG delete)
+===========================================================================
+
+er-eu1/AzurePrivatePeering  — State: Enabled, LastModifiedBy: Provider
+er-eu2/AzurePrivatePeering  — State: Enabled, LastModifiedBy: Provider
+These are Megaport-owned peering objects. They cannot be deleted independently;
+they will clear when the ER circuits are deleted (or with the RG delete, final step).
+
+===========================================================================
+GATE FOR LINK (Megaport VXC teardown)
+===========================================================================
+
+Both ER gateway connections DELETED → Megaport side is now unlinked.
+Link can safely proceed to delete Megaport VXCs (step 3) and MCR (step 4).
+Do NOT delete Azure RG until Megaport teardown is confirmed complete.

@@ -1,0 +1,15 @@
+# az vm run-command invoke -g routemap-test-rg -n nva2 --command-id RunShellScript --scripts "sudo birdc show route count" --query "value[0].message" -o tsv
+# Gate C — nva2 (hub-eu2, westeurope) BIRD route count
+# hub-eu2 state: Routing Intent PrivateTraffic ENABLED
+# Captured: 2026-07-31T11:45:00+02:00
+# Subscription: <SUBSCRIPTION_ID>
+# RG: routemap-test-rg
+
+Enable succeeded: 
+[stdout]
+BIRD 1.6.8 ready.
+37 of 37 routes for 27 networks
+
+[stderr]
+
+# Identical to Gate A and Gate B counts (37/27). RI on hub-eu2 did NOT change the route count.

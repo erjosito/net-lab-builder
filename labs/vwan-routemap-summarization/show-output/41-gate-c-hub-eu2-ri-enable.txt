@@ -1,0 +1,21 @@
+# az network vhub routing-intent create -g routemap-test-rg --vhub hub-eu2 -n hub-eu2-ri \
+#   --routing-policies "[{name:PrivateTraffic,destinations:[PrivateTraffic],nextHop:<azfw-eu2-id>}]"
+# Captured: 2026-07-31T11:43:46+02:00
+# WARNING: This command is in preview and under development.
+{
+  "etag": "W/\"a45db273-3fc1-42a7-bd36-19161674da99\"",
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/virtualHubs/hub-eu2/routingIntent/hub-eu2-ri",
+  "name": "hub-eu2-ri",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "routemap-test-rg",
+  "routingPolicies": [
+    {
+      "destinations": [
+        "PrivateTraffic"
+      ],
+      "name": "PrivateTraffic",
+      "nextHop": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/azureFirewalls/azfw-eu2"
+    }
+  ],
+  "type": "Microsoft.Network/virtualHubs/routingIntent"
+}

@@ -1,0 +1,63 @@
+# az network vhub route-table show -g routemap-test-rg --vhub-name hub-eu1 -n defaultRouteTable -o json
+# az network vhub route-table show -g routemap-test-rg --vhub-name hub-eu2 -n defaultRouteTable -o json
+# Gate C — L1d defaultRouteTable BOTH hubs (post-RI, both RI-ON)
+# Captured: 2026-07-31T11:45:00+02:00
+# Subscription: <SUBSCRIPTION_ID>
+# RG: routemap-test-rg
+
+===========================================================================
+hub-eu1 defaultRouteTable (RI ON since Gate B)
+===========================================================================
+{
+  "associatedConnections": [
+    "...ergw-eu1/expressRouteConnections/conn-er-eu1",
+    "...vpnGateways/vpngw-eu1/vpnConnections/cx-onprem1",
+    "...vpnGateways/vpngw-eu1/vpnConnections/cx-gcp1"
+  ],
+  "name": "defaultRouteTable",
+  "provisioningState": "Succeeded",
+  "routes": [
+    {
+      "destinationType": "CIDR",
+      "destinations": [
+        "10.0.0.0/8",
+        "172.16.0.0/12",
+        "192.168.0.0/16"
+      ],
+      "name": "_policy_PrivateTraffic",
+      "nextHop": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/azureFirewalls/azfw-eu1",
+      "nextHopType": "ResourceId"
+    }
+  ]
+}
+
+===========================================================================
+hub-eu2 defaultRouteTable (RI ON — just enabled for Gate C)
+===========================================================================
+{
+  "associatedConnections": [
+    "...ergw-eu2/expressRouteConnections/conn-er-eu2",
+    "...vpnGateways/vpngw-eu2/vpnConnections/cx-onprem2",
+    "...vpnGateways/vpngw-eu2/vpnConnections/cx-gcp2"
+  ],
+  "name": "defaultRouteTable",
+  "provisioningState": "Succeeded",
+  "routes": [
+    {
+      "destinationType": "CIDR",
+      "destinations": [
+        "10.0.0.0/8",
+        "172.16.0.0/12",
+        "192.168.0.0/16"
+      ],
+      "name": "_policy_PrivateTraffic",
+      "nextHop": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/azureFirewalls/azfw-eu2",
+      "nextHopType": "ResourceId"
+    }
+  ]
+}
+
+# FINDING: Both hubs now carry _policy_PrivateTraffic.
+# hub-eu1: RFC1918 → azfw-eu1 (in place since Gate B, ~09:30)
+# hub-eu2: RFC1918 → azfw-eu2 (new for Gate C, enabled ~11:30)
+# This is the full Gate C state: BOTH hubs RI-ON, BOTH carry the 10.0.0.0/8 aggregate for AzFW steering.

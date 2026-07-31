@@ -1,0 +1,138 @@
+=== MEGAPORT TEARDOWN — vwan-routemap-summarization ===
+Timestamp: 2026-07-31T15:30:00+02:00
+Auth: AK last4=****7umi, SK last4=****k6s2, bearer last4=****o4OQ
+
+--- FULL ACCOUNT INVENTORY (all products) ---
+[MEGAPORT] sea-eqx-lab-pri | uid=67cc7cf4-ca81-4ad5-8efb-347a591ea4b7 | status=LIVE | locationId=57
+  VXC: vxc-sea-eqx-lab-pub-pri | uid=86e68038-32d5-4e83-ac9b-f1730b9819c3 | status=LIVE
+  VXC: vxc-sea-eqx-lab-pri | uid=246c5c21-157c-473b-9250-cc6077b749ed | status=LIVE
+[MEGAPORT] sea-eqx-lab-sec | uid=a67417c3-0870-4ded-8930-59ec9cd2e474 | status=LIVE | locationId=57
+  VXC: vxc-sea-eqx-lab-secondary | uid=33b261d5-8912-43ac-8f37-03aba3792637 | status=LIVE
+  VXC: vxc-sea-eqx-lab-pub-sec | uid=c2111ad7-4aba-4236-8be8-b39c514085d8 | status=LIVE
+[MCR2] sea-eqx-lab-brcosden | uid=8fe0812c-4b96-4786-b7bd-ceb0aaf6144a | status=LIVE | locationId=77
+  VXC: vxc-sea-eqx-lab-pub-pri | uid=86e68038-32d5-4e83-ac9b-f1730b9819c3 | status=LIVE
+  VXC: vxc-sea-eqx-lab-secondary | uid=33b261d5-8912-43ac-8f37-03aba3792637 | status=LIVE
+  VXC: vxc-sea-eqx-lab-pub-sec | uid=c2111ad7-4aba-4236-8be8-b39c514085d8 | status=LIVE
+  VXC: vxc-sea-eqx-lab-pri | uid=246c5c21-157c-473b-9250-cc6077b749ed | status=LIVE
+  VXC: vxc-azure-private-sea-eqx-lab-pri | uid=04bac550-468e-4a13-9ec2-ee821e006c80 | status=LIVE
+  VXC: vxc-azure-private-sea-eqx-lab-sec | uid=5f37d4ac-aa14-47fe-8060-3c5fd0e37dc3 | status=LIVE
+[MCR2] dmauser-ervpn-pglab | uid=004b75d5-3c0c-43b7-93d4-ecac2a981029 | status=LIVE | locationId=69
+  VXC: branch-er-circuit | uid=d3672a37-82f9-4cd4-bc6d-982f81c3f919 | status=LIVE
+[MVE] c8k-london | uid=edea3f1e-024c-4682-a33c-2eb8cf779af2 | status=LIVE | locationId=90
+  VXC: c8k-london to Megaport Internet | uid=18dee2c6-8c2a-4012-bb9f-a282d1fdd42a | status=LIVE
+[MCR2] neneogi-MCR | uid=1489ab85-2690-462d-a8b7-1dfb5537fb4e | status=LIVE | locationId=67
+  VXC: ER-Azure | uid=ad748930-d08e-41a1-9f29-be372b6eb599 | status=LIVE
+  VXC: ER-Onprem | uid=51f6ddf3-f501-484a-9766-5d26d99f606f | status=LIVE
+[MCR2] Lukman-aws-es-1 | uid=0ba51dca-29fe-4457-aaf6-0164e6c9d785 | status=LIVE | locationId=67
+  VXC: Lukman-azure-er-01 | uid=9200b119-08b3-4cc4-9cf9-a1f2635b9e31 | status=LIVE
+  VXC: lukaws | uid=f0a6e8d2-17be-4666-a4fc-560b9c0e9306 | status=LIVE
+[MCR2] msrini-T-Mobile-poc | uid=282d7eda-59a8-4512-9076-6622344587c3 | status=LIVE | locationId=61
+  VXC: msirni-T-Mobile-Azure1 | uid=80518ed3-27da-4b4b-b653-27b9c97d4d24 | status=LIVE
+[MCR2] Maalgeba-MCR | uid=b9c9a5eb-e29c-4051-91ce-fe44eb499bba | status=LIVE | locationId=71
+  VXC: Azure-con-Primary | uid=13a714de-0d4e-445d-a3b8-3db56462eb1a | status=LIVE
+[MCR2] shrnair-er-dal-rm | uid=436f70c9-832e-4a0d-a60f-68ef2f52daed | status=DECOMMISSIONED | locationId=71
+  VXC: shr-er-rm-vwan | uid=cab31e5c-f45f-48f7-8a14-461fe6d7ee13 | status=DECOMMISSIONED
+  VXC: shr-rm-branch | uid=1caf9004-1716-419f-a33b-499d59a0b076 | status=DECOMMISSIONED
+[MCR2] shrnair-er-dal-comm | uid=ac9e0388-587d-4432-8813-d3f59cf15ea3 | status=DECOMMISSIONED | locationId=71
+  VXC: shr_er_vwan_comm | uid=fc304ede-0222-47eb-b8fe-9595502af652 | status=DECOMMISSIONED
+  VXC: shr_er_dal_branch_comm | uid=b32445e5-d570-4973-b86d-abd6d8e0cac3 | status=DECOMMISSIONED
+[MCR2] maroja-mcr-centralUS | uid=c889804d-a854-4cda-ac33-0fc5e3b32a60 | status=LIVE | locationId=71
+  VXC: to-router-1 | uid=38214d9c-8b57-42d6-a620-29f160eb753e | status=DECOMMISSIONED
+  VXC: to-gcp-cus | uid=4dd36519-bcc8-4bbb-828f-2075fa3f0195 | status=LIVE
+  VXC: exr-to-centralus-hub | uid=540887a5-52b3-4c4b-9353-2152b043d01d | status=LIVE
+[MCR2] maroja-mcr-southcentralus | uid=ab56e132-610b-4a2f-a1de-c21ad5996fa9 | status=LIVE | locationId=71
+  VXC: exr-to-scentral-vhub | uid=03e4d816-4d68-4aef-a36a-4021e4ba8f61 | status=LIVE
+  VXC: conn-2 | uid=fe0d7704-1626-4fba-b208-ca9b1ef95289 | status=DECOMMISSIONED
+  VXC: southcentral-us-gcp | uid=d6a1cfb1-9f80-4fbf-aed4-ff680e655651 | status=LIVE
+[MCR2] xaelizon-mcr | uid=034b5545-55b1-4e9b-8531-2a31895d0690 | status=LIVE | locationId=69
+  VXC: tor1-prim-equinix-canadacentral | uid=ebfe8249-f311-4f44-baa5-0e0d35cfc658 | status=LIVE
+  VXC: chi1-prim-equinix-central-us | uid=f230659f-7f05-4490-85e2-7cb4e9806c05 | status=LIVE
+[MCR2] adtork-mcr-seattle | uid=e0d6d984-3ed6-4ee7-b48e-9227f62cd6c4 | status=LIVE | locationId=57
+  VXC: adtork-gcp-conn | uid=eba01712-d645-4d14-a419-62ec154a9c69 | status=LIVE
+  VXC: adtork-sea-conn2 | uid=ef5aa6d8-ad4b-49f1-8c27-9df61cc04568 | status=LIVE
+  VXC: adtork-sea-conn | uid=7e4079e9-e566-4fd7-b233-ef4fe93779be | status=LIVE
+  VXC: adtork-sanjose-conn | uid=10209be7-982d-4c2e-8917-476e81396801 | status=LIVE
+[MCR2] mcr-cynthia | uid=253d4e4e-ae72-440a-b49a-e68f4683b361 | status=LIVE | locationId=906
+  VXC: cynthia-frk-conn | uid=24ad4de9-d54a-4cbc-8b33-9cd1da1c5ba0 | status=LIVE
+[MCR2] Danieleg-MCR | uid=9bad805d-8cc0-408e-b143-61bf8bda0900 | status=LIVE | locationId=85
+  VXC: Danieleg-IntraMCR | uid=688ba0b0-984f-4977-9a91-f8a6aa3f9f2a | status=LIVE
+  VXC: ER-Milan-HUB | uid=4f15c5c1-1dc9-49fa-81c1-b8af3cfd9bc2 | status=LIVE
+[MCR2] DanielegMCR2 | uid=be26e04c-069f-4aeb-86a1-d5c719a87717 | status=LIVE | locationId=85
+  VXC: Danieleg-IntraMCR | uid=688ba0b0-984f-4977-9a91-f8a6aa3f9f2a | status=LIVE
+[MCR2] dmauser-mcr-sv1 | uid=d850ce19-01e4-45cc-b671-2eca41a2a720 | status=DECOMMISSIONED | locationId=66
+  VXC: er-wdc | uid=d0c01f46-70a7-424d-aa6d-a27bb3680bbc | status=DECOMMISSIONED
+  VXC: er-pri | uid=7d1fb75d-aa7b-4851-99b3-22098887e37d | status=DECOMMISSIONED
+  VXC: gcp | uid=2ba881a9-b711-4da2-bd62-44fe4be1b83a | status=DECOMMISSIONED
+[MCR2] erbail-MCR | uid=8ede650c-f10b-4823-ba8c-5ef721a64101 | status=DECOMMISSIONED | locationId=67
+  VXC: erbail-ExR-DC | uid=ada79333-9dff-49aa-815a-4bd5f1b5d073 | status=DECOMMISSIONED
+  VXC: erbail-EXR-SEA | uid=e93bfd7f-b168-450f-856c-84789aa23716 | status=DECOMMISSIONED
+  VXC: erbail-onpremsim | uid=6b3a05a2-64ad-4573-baf9-724243109616 | status=DECOMMISSIONED
+[MCR2] shrnair_dal_er | uid=71612375-efc4-4372-b24e-d5cd1a6fe144 | status=LIVE | locationId=71
+  VXC: shrnair_onprem | uid=fd4d3980-bc7e-4751-9f26-72d8e2faab44 | status=LIVE
+  VXC: shrnair_hub_er | uid=bc70a72a-8752-4650-8bc5-b37ff7119a54 | status=LIVE
+[MCR2] MSFT-carlost | uid=7409be8b-73c0-4eaa-9411-4a3919e279c8 | status=LIVE | locationId=57
+  VXC: TMO-lab | uid=b6f80f60-e7f5-4249-a392-dba8c2898eb4 | status=LIVE
+  VXC: TMO-MSEE-2 | uid=7055309b-281c-4585-b064-70b6c39cc9c3 | status=LIVE
+  VXC: TMO-MSEE-2 | uid=26570873-2a12-4ba9-ae31-81fffb41ba21 | status=DECOMMISSIONED
+  VXC: TMO-MSEE2-new | uid=674ba348-7d2f-4d85-96bc-d51e34af8ea5 | status=LIVE
+[MCR2] jomore-copilot-mcr-routemap | uid=4ca97a61-e8a7-4c95-b963-0d5de0f897c4 | status=DECOMMISSIONED | locationId=131
+  VXC: jomore-copilot-vxc-er-eu2 | uid=02cec229-173e-4853-a71e-27a3873d3757 | status=DECOMMISSIONED
+  VXC: jomore-copilot-vxc-er-eu1-sec | uid=168b71ce-485c-4268-ade3-69b3234ad99e | status=DECOMMISSIONED
+  VXC: jomore-copilot-vxc-er-eu1 | uid=6b5df196-fd45-41eb-a1df-fbeee36cf836 | status=DECOMMISSIONED
+  VXC: jomore-copilot-vxc-mcr-gcp | uid=4aa59671-c36e-4eb5-8f77-7b693da6f028 | status=DECOMMISSIONED
+  VXC: jomore-copilot-vxc-mcr-gcp | uid=58f31120-5274-4d26-8913-5f0eedf3ca62 | status=DECOMMISSIONED
+[MCR2] jomore-copilot-mcr-routemap2 | uid=c95d174c-0914-4efd-a56c-4508055e256c | status=LIVE | locationId=85
+  VXC: jomore-copilot-vxc-mcr-gcp | uid=085a00e7-e444-4a37-91d3-e5cb1aafe12f | status=LIVE
+  VXC: jomore-copilot-vxc-er-eu2-mcr2 | uid=c7add98b-dd74-4cb4-83cb-9ebd78024833 | status=LIVE
+  VXC: jomore-copilot-vxc-er-eu1-mcr2 | uid=2bf97db4-b073-46a8-a4f4-8b8a1ecf7f8d | status=LIVE
+
+--- LAB PRODUCTS (jomore-copilot-*) ---
+MCR: jomore-copilot-mcr-routemap | uid=4ca97a61-e8a7-4c95-b963-0d5de0f897c4 | status=DECOMMISSIONED | locationId=131
+  VXC: jomore-copilot-vxc-er-eu2 | uid=02cec229-173e-4853-a71e-27a3873d3757 | status=DECOMMISSIONED
+  VXC: jomore-copilot-vxc-er-eu1-sec | uid=168b71ce-485c-4268-ade3-69b3234ad99e | status=DECOMMISSIONED
+  VXC: jomore-copilot-vxc-er-eu1 | uid=6b5df196-fd45-41eb-a1df-fbeee36cf836 | status=DECOMMISSIONED
+  VXC: jomore-copilot-vxc-mcr-gcp | uid=4aa59671-c36e-4eb5-8f77-7b693da6f028 | status=DECOMMISSIONED
+  VXC: jomore-copilot-vxc-mcr-gcp | uid=58f31120-5274-4d26-8913-5f0eedf3ca62 | status=DECOMMISSIONED
+MCR: jomore-copilot-mcr-routemap2 | uid=c95d174c-0914-4efd-a56c-4508055e256c | status=LIVE | locationId=85
+  VXC: jomore-copilot-vxc-mcr-gcp | uid=085a00e7-e444-4a37-91d3-e5cb1aafe12f | status=LIVE
+  VXC: jomore-copilot-vxc-er-eu2-mcr2 | uid=c7add98b-dd74-4cb4-83cb-9ebd78024833 | status=LIVE
+  VXC: jomore-copilot-vxc-er-eu1-mcr2 | uid=2bf97db4-b073-46a8-a4f4-8b8a1ecf7f8d | status=LIVE
+
+--- VXC DELETIONS ---
+VXC DELETE jomore-copilot-vxc-mcr-gcp uid=085a00e7-e444-4a37-91d3-e5cb1aafe12f -> ERROR: 
+{
+  "message": "No endpoint DELETE /v3/product/085a00e7-e444-4a37-91d3-e5cb1aafe12f.",
+  "terms": "This data is subject to the Acceptable Use Policy https://www.megaport.com/legal/acceptable-use-policy"
+}
+VXC DELETE jomore-copilot-vxc-er-eu2-mcr2 uid=c7add98b-dd74-4cb4-83cb-9ebd78024833 -> ERROR: 
+{
+  "message": "No endpoint DELETE /v3/product/c7add98b-dd74-4cb4-83cb-9ebd78024833.",
+  "terms": "This data is subject to the Acceptable Use Policy https://www.megaport.com/legal/acceptable-use-policy"
+}
+VXC DELETE jomore-copilot-vxc-er-eu1-mcr2 uid=2bf97db4-b073-46a8-a4f4-8b8a1ecf7f8d -> ERROR: 
+{
+  "message": "No endpoint DELETE /v3/product/2bf97db4-b073-46a8-a4f4-8b8a1ecf7f8d.",
+  "terms": "This data is subject to the Acceptable Use Policy https://www.megaport.com/legal/acceptable-use-policy"
+}
+
+--- VXC CANCEL_NOW DELETIONS ---
+VXC jomore-copilot-vxc-mcr-gcp uid=085a00e7-e444-4a37-91d3-e5cb1aafe12f -> CANCEL_NOW OK: {"message":"Action [CANCEL_NOW Service 085a00e7-e444-4a37-91d3-e5cb1aafe12f] has been done.","terms":"This data is subject to the Acceptable Use Policy https://www.megaport.com/legal/acceptable-use-policy"}
+VXC jomore-copilot-vxc-er-eu2-mcr2 uid=c7add98b-dd74-4cb4-83cb-9ebd78024833 -> CANCEL_NOW OK: {"message":"Action [CANCEL_NOW Service c7add98b-dd74-4cb4-83cb-9ebd78024833] has been done.","terms":"This data is subject to the Acceptable Use Policy https://www.megaport.com/legal/acceptable-use-policy"}
+VXC jomore-copilot-vxc-er-eu1-mcr2 uid=2bf97db4-b073-46a8-a4f4-8b8a1ecf7f8d -> CANCEL_NOW OK: {"message":"Action [CANCEL_NOW Service 2bf97db4-b073-46a8-a4f4-8b8a1ecf7f8d] has been done.","terms":"This data is subject to the Acceptable Use Policy https://www.megaport.com/legal/acceptable-use-policy"}
+
+--- MCR DELETIONS ---
+MCR2 jomore-copilot-mcr-routemap2 uid=c95d174c-0914-4efd-a56c-4508055e256c -> CANCEL_NOW OK: {"message":"Action [CANCEL_NOW Service c95d174c-0914-4efd-a56c-4508055e256c] has been done.","terms":"This data is subject to the Acceptable Use Policy https://www.megaport.com/legal/acceptable-use-policy"}
+MCR1 jomore-copilot-mcr-routemap uid=4ca97a61-e8a7-4c95-b963-0d5de0f897c4 -> already DECOMMISSIONED (pre-existing, no action needed)
+
+--- FINAL VERIFICATION ---
+Timestamp: 2026-07-31T16:12:00+02:00
+[MCR2] jomore-copilot-mcr-routemap uid=4ca97a61-e8a7-4c95-b963-0d5de0f897c4 status=DECOMMISSIONED
+  VXC: jomore-copilot-vxc-er-eu2 uid=02cec229-173e-4853-a71e-27a3873d3757 status=DECOMMISSIONED
+  VXC: jomore-copilot-vxc-er-eu1-sec uid=168b71ce-485c-4268-ade3-69b3234ad99e status=DECOMMISSIONED
+  VXC: jomore-copilot-vxc-er-eu1 uid=6b5df196-fd45-41eb-a1df-fbeee36cf836 status=DECOMMISSIONED
+  VXC: jomore-copilot-vxc-mcr-gcp uid=4aa59671-c36e-4eb5-8f77-7b693da6f028 status=DECOMMISSIONED
+  VXC: jomore-copilot-vxc-mcr-gcp uid=58f31120-5274-4d26-8913-5f0eedf3ca62 status=DECOMMISSIONED
+[MCR2] jomore-copilot-mcr-routemap2 uid=c95d174c-0914-4efd-a56c-4508055e256c status=DECOMMISSIONED
+  VXC: jomore-copilot-vxc-mcr-gcp uid=085a00e7-e444-4a37-91d3-e5cb1aafe12f status=DECOMMISSIONED
+  VXC: jomore-copilot-vxc-er-eu2-mcr2 uid=c7add98b-dd74-4cb4-83cb-9ebd78024833 status=DECOMMISSIONED
+  VXC: jomore-copilot-vxc-er-eu1-mcr2 uid=2bf97db4-b073-46a8-a4f4-8b8a1ecf7f8d status=DECOMMISSIONED

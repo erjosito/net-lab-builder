@@ -1,0 +1,66 @@
+# az resource list -g routemap-test-rg -o table
+# Captured: 2026-07-30T13:35:49+02:00
+
+Name                                             ResourceGroup     Location       Type                                          Status
+-----------------------------------------------  ----------------  -------------  --------------------------------------------  ---------
+vwan-routemap                                    routemap-test-rg  swedencentral  Microsoft.Network/virtualWans                 Succeeded
+hub-us                                           routemap-test-rg  westus2        Microsoft.Network/virtualHubs                 Succeeded
+hub-eu1                                          routemap-test-rg  swedencentral  Microsoft.Network/virtualHubs                 Succeeded
+hub-eu2                                          routemap-test-rg  westeurope     Microsoft.Network/virtualHubs                 Succeeded
+spoke-us-a                                       routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+spoke-us-b                                       routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+spoke-us-c                                       routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+spoke-us-d                                       routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+spoke-us-e                                       routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+spoke-us-f                                       routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+spoke-us-a2                                      routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+spoke-us-b2                                      routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+spoke-us-c2                                      routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+spoke-us-d2                                      routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+spoke-us-e2                                      routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+spoke-us-f2                                      routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+spoke-us-a-scale                                 routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+spoke-us-b-scale                                 routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+spoke-us-c-scale                                 routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+spoke-us-d-scale                                 routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+spoke-us-e-scale                                 routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+spoke-us-f-scale                                 routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+spoke-us-scale2                                  routemap-test-rg  westus2        Microsoft.Network/virtualNetworks             Succeeded
+onprem1-vnet                                     routemap-test-rg  swedencentral  Microsoft.Network/virtualNetworks             Succeeded
+onprem2-vnet                                     routemap-test-rg  westeurope     Microsoft.Network/virtualNetworks             Succeeded
+nva1                                             routemap-test-rg  swedencentral  Microsoft.Compute/virtualMachines             Succeeded
+nva2                                             routemap-test-rg  westeurope     Microsoft.Compute/virtualMachines             Succeeded
+nva1VMNic                                        routemap-test-rg  swedencentral  Microsoft.Network/networkInterfaces           Succeeded
+nva2VMNic                                        routemap-test-rg  westeurope     Microsoft.Network/networkInterfaces           Succeeded
+nva1-nsg                                         routemap-test-rg  swedencentral  Microsoft.Network/networkSecurityGroups       Succeeded
+nva2-nsg                                         routemap-test-rg  westeurope     Microsoft.Network/networkSecurityGroups       Succeeded
+nva1-pip                                         routemap-test-rg  swedencentral  Microsoft.Network/publicIPAddresses           Succeeded
+nva2-pip                                         routemap-test-rg  westeurope     Microsoft.Network/publicIPAddresses           Succeeded
+vpngw-eu1                                        routemap-test-rg  swedencentral  Microsoft.Network/vpnGateways                 Succeeded
+vpngw-eu2                                        routemap-test-rg  westeurope     Microsoft.Network/vpnGateways                 Succeeded
+site-onprem1                                     routemap-test-rg  swedencentral  Microsoft.Network/vpnSites                    Succeeded
+site-onprem2                                     routemap-test-rg  westeurope     Microsoft.Network/vpnSites                    Succeeded
+site-gcp1                                        routemap-test-rg  swedencentral  Microsoft.Network/vpnSites                    Succeeded
+site-gcp2                                        routemap-test-rg  westeurope     Microsoft.Network/vpnSites                    Succeeded
+er-eu1                                           routemap-test-rg  swedencentral  Microsoft.Network/expressRouteCircuits        Succeeded
+er-eu2                                           routemap-test-rg  westeurope     Microsoft.Network/expressRouteCircuits        Succeeded
+ergw-eu1                                         routemap-test-rg  swedencentral  Microsoft.Network/expressRouteGateways        Succeeded
+ergw-eu2                                         routemap-test-rg  westeurope     Microsoft.Network/expressRouteGateways        Succeeded
+kv-pe                                            routemap-test-rg  swedencentral  Microsoft.Network/privateEndpoints            Succeeded
+(+ NSGs for spoke subnets, VM extensions, disks - all Succeeded)
+
+--- RESOURCE TYPE COUNTS ---
+   2  Microsoft.Compute/disks
+   2  Microsoft.Compute/virtualMachines
+   4  Microsoft.Compute/virtualMachines/extensions
+   2  Microsoft.Network/expressRouteCircuits        *** NEW vs Phase-1 docs ***
+   2  Microsoft.Network/expressRouteGateways        *** NEW vs Phase-1 docs ***
+   3  Microsoft.Network/networkInterfaces
+  17  Microsoft.Network/networkSecurityGroups
+   1  Microsoft.Network/privateEndpoints            *** NEW vs Phase-1 docs ***
+   2  Microsoft.Network/publicIPAddresses
+   3  Microsoft.Network/virtualHubs
+  21  Microsoft.Network/virtualNetworks
+   1  Microsoft.Network/virtualWans
+   2  Microsoft.Network/vpnGateways
+   4  Microsoft.Network/vpnSites                    *** 4 sites: onprem1/2 + gcp1/2 ***

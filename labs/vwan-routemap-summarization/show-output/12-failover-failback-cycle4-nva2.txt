@@ -1,0 +1,92 @@
+# Failover/failback cycle #4 (Phase 2 state) — hub-eu2 / nva2
+# Captured: 2026-07-30T13:48:36+02:00
+# Lab state: Phase 2 deployed (VPN + ER circuits + ER gateways + connections)
+# NVA state at test start: DEALLOCATED (VMs were stopped for cost savings)
+#   → Niobe started VMs, ran test, restored deallocated state after test.
+# NOTE: nva1 could NOT be validated — stuck run-command extension blocked
+#   all run-command attempts throughout this session. nva2 tested in isolation.
+
+=== PRE-TEST: NVA startup sequence ===
+Both NVAs were deallocated. Services must be manually restored after boot:
+  1. swanctl --load-all          # loads connections from /etc/swanctl/swanctl.conf
+  2. swanctl --initiate ...       # initiates IKE negotiations (start_action=trap needs manual trigger)
+  3. ip link add xfrm41/xfrm42   # XFRM interfaces NOT auto-created on reboot — manually recreated
+  4. ip route add 192.168.4.x    # routes to hub VPN GW BGP peer addresses through XFRM interfaces
+
+KNOWN GAP: XFRM interface creation is not persisted across reboots/deallocations.
+The cloud-init only installs packages; a startup service is needed to recreate xfrm41/xfrm42.
+
+=== STEP 1 — BASELINE (pre-failover) ===
+# Command: birdc show route all (nva2, filtered to summaries)
+
+nva2 BIRD protocols:
+  vpngw0   BGP   Established   (since 12:45:38)
+  vpngw1   BGP   Established   (since 12:45:36)
+
+nva2 summary routes received from hub-eu2 (outbound route-map summarize-out applied):
+  10.0.0.0/16        via 192.168.4.12 on xfrm41 [vpngw0 12:46:10] [AS65515i]
+  10.1.0.0/16        via 192.168.4.12 on xfrm41 [vpngw0 12:46:10] [AS65515i]
+  10.2.0.0/16        via 192.168.4.12 on xfrm41 [vpngw0 12:46:10] [AS65515i]
+  10.3.0.0/16        via 192.168.4.12 on xfrm41 [vpngw0 12:46:10] [AS65515i]
+  10.4.0.0/17        via 192.168.4.12 on xfrm41 [vpngw0 12:46:10] [AS65515i]
+  10.4.128.0/17      via 192.168.4.12 on xfrm41 [vpngw0 12:46:10] [AS65515i]
+
+BASELINE: 6/6 summaries, 0 /24 leaks                                  -> CLEAN
+
+Additional routes (Phase 2 ER evidence):
+  192.168.2.0/23   AS path: 65515 12076 133937 12076   (hub-eu1 via ER hairpin)
+  10.100.0.0/24    AS path: 65515 12076 133937 16550   (on-prem via ER)
+  192.168.4.0/23   AS path: 65515                      (hub-eu2 local prefix)
+
+=== STEP 2 — FAILOVER: stop bird + terminate IPsec on nva2 ===
+# Command: systemctl stop bird; swanctl --terminate --ike vng0; swanctl --terminate --ike vng1
+
+vng0: IKE_SA deleted (terminate completed successfully)
+vng1: IKE_SA deleted (terminate completed successfully)
+BIRD: stopped
+No SAs remaining
+
+Failover window: 45 seconds
+
+=== STEP 3 — FAILBACK: restart bird + reload + initiate IPsec ===
+# Commands: systemctl start bird; swanctl --load-all; swanctl --initiate ...
+
+loaded ike secret 'ike-1'
+loaded connection 'vng0'
+loaded connection 'vng1'
+[IKE] CHILD_SA s2s0{6} established with SPIs c802d62b_i 5155f1dc_o  -> vng0 ESTABLISHED
+[IKE] CHILD_SA s2s1{7} established with SPIs ce53fd04_i 6445e572_o  -> vng1 ESTABLISHED
+
+XFRM interfaces recreated: xfrm41 (if_id 41), xfrm42 (if_id 42)
+Routes reinstalled: 192.168.4.12/32 dev xfrm41, 192.168.4.13/32 dev xfrm42
+
+Convergence wait: 75 seconds
+
+=== STEP 4 — POST-FAILBACK ROUTE CHECK ===
+# Command: birdc show protocols; birdc show route (filtered summaries)
+
+nva2 BIRD protocols after failback:
+  vpngw0   BGP   Established   (since 13:03:31)
+  vpngw1   BGP   Established   (since 13:06:04)
+
+nva2 summary routes after failback:
+  10.0.0.0/16        via 192.168.4.12 on xfrm41 [vpngw0 13:03:34] [AS65515i]
+  10.1.0.0/16        via 192.168.4.12 on xfrm41 [vpngw0 13:03:34] [AS65515i]
+  10.2.0.0/16        via 192.168.4.12 on xfrm41 [vpngw0 13:03:34] [AS65515i]
+  10.3.0.0/16        via 192.168.4.12 on xfrm41 [vpngw0 13:03:34] [AS65515i]
+  10.4.0.0/17        via 192.168.4.12 on xfrm41 [vpngw0 13:03:34] [AS65515i]
+  10.4.128.0/17      via 192.168.4.12 on xfrm41 [vpngw0 13:03:33] [AS65515i]
+
+POST-FAILBACK: 6/6 summaries, 0 /24 leaks                             -> CLEAN
+
+=== FAILOVER/FAILBACK VERDICT ===
+Cycle #4 (Phase 2 state): CLEAN — no missing summaries, no /24 leaks.
+hub-eu2 summarize-out route-map correctly advertised all 6 /16 and /17 summaries
+to nva2 after full IPsec + BGP session teardown and restoration.
+
+Missing from this cycle: nva1 / hub-eu1 not tested (stuck run-command extension).
+nva1 tunnel config is identical structure (vng0/vng1 in swanctl.conf) but was
+unreachable via run-command throughout this session.
+
+=== VM RESTORE ===
+Both VMs (nva1, nva2) deallocated after test to restore original hibernated state.

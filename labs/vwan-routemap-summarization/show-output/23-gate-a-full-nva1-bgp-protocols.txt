@@ -1,0 +1,20 @@
+# az vm run-command invoke -g routemap-test-rg -n nva1 --command-id RunShellScript --scripts "sudo birdc show protocols" --query "value[0].message" -o tsv
+# Gate A FULL — nva1 (hub-eu1, swedencentral) BGP session state
+# Captured: 2026-07-31T09:52:00+02:00
+# Subscription: <SUBSCRIPTION_ID>
+# RG: routemap-test-rg
+
+Enable succeeded: 
+[stdout]
+BIRD 1.6.8 ready.
+name     proto    table    state  since       info
+device1  Device   master   up     06:07:58    
+direct1  Direct   master   down   06:07:58    
+kernel1  Kernel   master   up     06:07:58    
+static1  Static   master   up     06:07:58    
+vpngw0   BGP      master   up     07:37:22    Established   
+vpngw1   BGP      master   up     07:37:37    Established   
+
+[stderr]
+
+# VERDICT: vpngw0 = Established (peer 192.168.2.12), vpngw1 = Established (peer 192.168.2.13) — PASS

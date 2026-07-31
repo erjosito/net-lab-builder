@@ -1,5 +1,25 @@
 # vwan-routemap-summarization — lessons learned
 
+← Back to [README.md](README.md) | Results: [validation.md](validation.md)
+
+## Table of contents
+
+- [StrongSwan swanctl.conf: one setting per line](#strongswan-swanctlconf-requires-one-setting-per-line)
+- [Reading BGP AS_PATH in BIRD](#reading-bgp-as_path-in-bird-vs-the-summary-line)
+- [az vm run-command script delivery on Windows/PowerShell](#az-vm-run-command-script-delivery-on-windowspowershell)
+- [vWAN route-map control-plane operations are slow](#vwan-route-map-control-plane-operations-are-slow)
+- [Preflight capacity check](#preflight-capacity-check-paid-off)
+- [Phase 3 Gate A: get-outbound-routes API gap](#az-network-vhub-route-map-get-outbound-routes-is-non-functional-in-secured-hub--route-map-config)
+- [Phase 3 Gate A: XFRM restore after deallocation](#xfrm-interfaces-are-not-auto-restored-after-vm-deallocationrestart-confirmed-again)
+- [Phase 3 Gate A: stuck run-command extension](#nva1-run-command-extension-is-terminally-stuck-persists-across-reboots)
+- [Phase 3 Gate B/C: root cause — orthogonal planes](#root-cause-ri-privatetrafic-and-summarize-out-operate-on-orthogonal-planes)
+- [Phase 3 Gate B/C: concurrent-churn gap](#the-concurrent-churn-gap-what-was-not-tested)
+- [Phase 3 Gate B/C: BGP stability](#bgp-stability-observation)
+- [Phase 3: az vm redeploy in swedencentral](#az-vm-redeploy-as-stuck-extension-recovery-swedencentral-caveat)
+- [Phase 3: prepend-in + summarize-out coexistence](#prepend-in-and-summarize-out-coexistence)
+
+---
+
 ## StrongSwan `swanctl.conf` requires one setting per line
 
 Compressing a section onto a single line — e.g. `local { auth = psk id = 51.12.82.214 }` — makes the
@@ -106,3 +126,73 @@ extension agent. Without this, nva1 NVA-level measurements are permanently unava
 **Lesson:** Avoid complex multiline scripts (especially with bash-incompatible characters from
 PowerShell string interpolation) in `az vm run-command invoke`. Use a single compact semicolon-
 separated command string. Test with `echo NVA_TEST` before submitting any complex script.
+
+---
+
+## Phase 3 Gate B/C findings (2026-07-31)
+
+### Root-cause: RI PrivateTraffic and summarize-out operate on orthogonal planes
+
+The missing-summary bug did **NOT** reproduce under sequential stable-state RI enablement. The
+reason is architectural: these two mechanisms operate at completely different layers and do not share
+an input.
+
+| Layer | Mechanism | Plane |
+|-------|-----------|-------|
+| RI `_policy_PrivateTraffic` | RFC1918 aggregates (10/8, 172.16/12, 192.168/8) inserted in hub defaultRouteTable → next-hop AzFW | **Data-plane forwarding** |
+| `summarize-out` route-map | Evaluated per-connection during BGP outbound advertisement set computation; input = specific /24 prefixes learned via inter-hub BGP from hub-us | **Control-plane BGP advertisement** |
+
+The hub VPN gateway's outbound advertisement set is derived from **learned BGP routes** (hub-us
+spoke /24s propagated via inter-hub BGP). RI's defaultRouteTable aggregate is a static route for
+forwarding purposes; it does not participate in the per-connection BGP advertisement computation.
+hub-us carries no RI, so its spoke /24 specifics propagate individually to hub-eu1/eu2 →
+`Contains` matching fires → summaries produced. Enabling RI on the EU hubs does not change this
+input chain in steady state.
+
+**Empirical confirmation:** nva1 BGP session timestamps (vpngw0: 07:37:23, vpngw1: 07:37:38) were
+identical across Gates A, B, and C — RI provisioning never reset the BGP control plane.
+
+### The concurrent-churn gap (what was NOT tested)
+
+The lab used sequential stable-state RI enablement. The production bug likely requires concurrent
+churn: a VPN connection reconvergence event racing with RI provisioning. If the hub recomputes the
+per-connection advertisement set while the NVA's BGP session is simultaneously tearing down, the
+/24 specifics may be transiently absent from the route-map evaluation input. A cached zero-match
+result could persist → missing summary after reconvergence.
+
+Gate D (concurrent-churn experiment) is designed and dormant. See
+[design-phase3.md](design-phase3.md#gate-c-result--gate-d-proposal-concurrent-churn).
+
+### BGP stability observation
+
+BGP sessions between the hub VPN gateway and the NVAs were **never reset** across any of the three
+Phase 3 gates, even while RI was being provisioned (10–20 min provisioning window). RI enablement
+is transparent to the BGP peering in stable state. nva2/vpngw0 had a single brief reconvergence at
+Gate B (hub-eu1 RI provision triggered a brief hub-level event); all other sessions were continuous.
+
+### `get-outbound-routes` API gap (confirmed across multiple attempts)
+
+`az network vhub route-map get-outbound-routes` returns empty output (exit code 0) for **both
+secured and non-secured** vWAN hubs in swedencentral/westeurope when route-maps are active.
+HTTP 404 "No route data was found" from the underlying preview API. This is a Microsoft
+CLI/API limitation, not a route-map failure. BIRD RIB on the NVA is the only reliable
+measurement available in this lab configuration.
+
+If Microsoft fixes this API, it would be a cleaner control-plane measurement — until then,
+treat `get-outbound-routes` as unavailable for secured-hub + route-map configurations.
+
+### `az vm redeploy` as stuck-extension recovery (swedencentral caveat)
+
+`az vm redeploy` successfully cleared nva1's terminally stuck RunCommandLinux extension (which had
+persisted across `deallocate`/`start` cycles). However, in swedencentral the redeploy took
+~90 minutes (vs typical 10–15 min). Flag for future operations: if swedencentral nva1 gets stuck
+again, plan for a 90 min redeploy window; escalate to delete+recreate if it exceeds 2 hours.
+
+### prepend-in and summarize-out coexistence
+
+hub-eu2 carries both `prepend-in` (inbound on cx-onprem2) and `summarize-out` (outbound). These
+two route-maps operate on different directions of the VPN connection BGP session and do not
+interfere. Gate C confirmed both Succeeded with no cross-contamination. The `prepend-in`
+AS-path addition (ASNs 64496/64497/64498) is a hub-internal inbound operation; it does not appear
+in nva2's own BIRD RIB (nva2 only sees what hub-eu2 sends back to it, not how hub-eu2 manipulates
+inbound routes for inter-hub propagation).

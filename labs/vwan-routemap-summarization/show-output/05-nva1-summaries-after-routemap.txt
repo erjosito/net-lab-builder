@@ -1,0 +1,11 @@
+# nva1 (via hub-eu1) after summarize-out Replace applied outbound
+# Expect all 6 summaries, no /24 leaks
+
+10.0.0.0/16   -> 1 route
+10.1.0.0/16   -> 1 route
+10.2.0.0/16   -> 1 route
+10.3.0.0/16   -> 1 route
+10.4.0.0/17   -> 1 route
+10.4.128.0/17 -> 1 route
+Leaking 10.x /24 specifics: 0
+RIB total: 33 of 33 routes for 25 networks (was 91 pre-routemap)

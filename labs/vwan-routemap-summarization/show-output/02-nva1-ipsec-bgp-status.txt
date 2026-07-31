@@ -1,0 +1,27 @@
+# nva1 (swedencentral, ASN 65001) - IPsec SAs + BGP status
+# Commands shown inline
+
+Enable succeeded: 
+[stdout]
+# swanctl --list-sas
+vng1: #5, CONNECTING, IKEv2, a84576ce1ee6900b_i* 0000000000000000_r
+vng0: #4, ESTABLISHED, IKEv2, 30eebf08a8be018d_i 70ba7c519728626d_r*
+  s2s0: #5, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA1_96
+
+# birdc show protocols
+BIRD 1.6.8 ready.
+name     proto    table    state  since       info
+device1  Device   master   up     07:30:44    
+direct1  Direct   master   down   07:30:44    
+kernel1  Kernel   master   up     07:30:44    
+static1  Static   master   up     07:30:44    
+vpngw0   BGP      master   up     07:47:17    Established   
+vpngw1   BGP      master   start  07:51:14    Active        Socket: No route to host
+
+# birdc show route count
+BIRD 1.6.8 ready.
+91 of 91 routes for 91 networks
+
+[stderr]
+
+

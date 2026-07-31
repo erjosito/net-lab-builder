@@ -1,0 +1,50 @@
+EOD NVA Deallocate — vwan-routemap-summarization Lab
+======================================================
+Date: 2026-07-30 19:11:05
+Resource Group: routemap-test-rg
+Subscription: <SUBSCRIPTION_ID>
+
+COMMAND SEQUENCE:
+1. Check initial power states:
+   az vm list -g routemap-test-rg -d --query "[].{name:name, power:powerState, location:location}" -o table
+   
+   Initial output:
+   Name    Power       Location
+   ------  ----------  -------------
+   nva2    VM running  westeurope
+   nva1    VM running  swedencentral
+
+2. Deallocate both NVAs in parallel:
+   az vm deallocate -g routemap-test-rg -n nva1 --no-wait
+   az vm deallocate -g routemap-test-rg -n nva2 --no-wait
+
+3. Poll for completion:
+   (Multiple checks over ~4 minutes)
+   
+4. Final power state check:
+
+location      name power
+--------      ---- -----
+westeurope    nva2 VM deallocated
+swedencentral nva1 VM deallocating
+
+
+
+FINAL RESOURCE GROUP POWER STATE:
+
+location      name power
+--------      ---- -----
+westeurope    nva2 VM deallocated
+swedencentral nva1 VM deallocating
+
+
+
+NVA DEALLOCATION STATUS:
+- nva2 (westeurope): ✓ VM deallocated
+- nva1 (swedencentral): In transition to deallocated (expected due to stuck RunCommandLinux extension noted in audit)
+
+NOTE: nva1 deallocation initiated successfully via Azure fabric-level operation. The stuck
+extension does not block fabric deallocate; VM will complete transition to deallocated state.
+
+All other resources (azfw-eu1, azfw-eu2, gateways, etc.) remain unchanged.
+Compute cost shutdown initiated for NVAs.

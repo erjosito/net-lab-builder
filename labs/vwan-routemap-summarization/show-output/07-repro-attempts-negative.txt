@@ -1,0 +1,68 @@
+=============================================================================
+ Repro attempts — Phase 1 (plain S2S VPN) — NEGATIVE RESULT (no repro)
+=============================================================================
+Customer symptom: on a VWAN hub with outbound summarization route-map rules on a
+VPN connection, one /16 or /17 summary intermittently goes MISSING (order-dependent;
+reordering the rules was the customer's WORKAROUND, not the trigger). Trigger was
+the deploy/churn sequence (route maps -> VPN GWs -> ER assoc -> failover/failback).
+
+Lab check per NVA = birdc show route <summary>; expect all 6 present, 0 /24 leaks.
+Summary blocks: 10.0.0.0/16, 10.1.0.0/16, 10.2.0.0/16, 10.3.0.0/16,
+                10.4.0.0/17, 10.4.128.0/17  (sum5/sum6 overlap under 10.4.0.0/16).
+
+-----------------------------------------------------------------------------
+Test matrix and results
+-----------------------------------------------------------------------------
+1. Steady state (both hubs, original rule order sum1..sum6)
+     nva1: 6/6 summaries, 0 leaks     nva2: 6/6 summaries, 0 leaks   -> CLEAN
+
+2. Failover/failback cycle #1 (stop ipsec+bird on nva2 = "DC->primary link down",
+   45s down, restart + swanctl --load-all, 75s reconverge)
+     During failover: nva1 (secondary) held all 6 summaries.
+     After failback:  nva1 6/6, nva2 6/6, SAs=2, BGP=2               -> CLEAN
+
+3. Rule REORDER on hub-eu2 (delete sum1..sum6, re-add in REVERSE sum6..sum1)
+     nva2 (reversed order): 6/6, 0 leaks
+     nva1 (original order):  6/6, 0 leaks                            -> CLEAN
+
+4. Failover/failback cycle #2 (nva2, reversed-order rules in place)
+     nva2 6/6, nva1 6/6, SAs=2, BGP=2                                -> CLEAN
+
+5. SCALE-UP: added 6 "scale" VNets on hub-us, 100x /24 each (+600 routes),
+   one per summary block, non-overlapping, within each summary boundary.
+   hub-us now advertises ~670 /24 specifics.
+     All 6 cx-spoke-us-*-scale connections: provisioningState=Succeeded
+     nva1: 6/6 summaries, 0 /24 leaks    nva2: 6/6, 0 leaks          -> CLEAN
+   (NVA RIB stays ~31 nets: the Replace rules collapse all specifics at hub egress;
+    the ~670-route scale lives in the eu-hub RIB, which is where the customer bug
+    would manifest. All 6 summaries present => all 6 blocks' specifics reached the
+    eu hub route-map engine.)
+
+6. Failover/failback cycle #3 AT SCALE (~670 routes, nva2)
+     nva2 6/6, nva1 6/6, SAs=2, BGP=2                                -> CLEAN
+
+7. Concurrent churn + route-map RE-ASSOCIATION at scale (bounce BOTH nva1 & nva2
+   at once; while down, dissociate then re-associate the outbound route map on
+   cx-onprem2 to force a full summarization recompute; restart both, 95s reconverge)
+     nva1 6/6, nva2 6/6, BGP=2 both                                 -> CLEAN
+     (transient extra half-open IPsec SA after bounce; cosmetic, BGP fine)
+
+-----------------------------------------------------------------------------
+Conclusion (Phase 1)
+-----------------------------------------------------------------------------
+NOT REPRODUCED. Across steady state, two rule orderings, three failover/failback
+cycles, and a ~670-route scale-up, both hubs consistently advertised all 6
+summaries with zero specific-prefix leaks and zero missing summaries.
+
+If the bug is a race in the hub route-map summarization pipeline, it was not
+triggered by rule reorder or S2S-VPN link churn at this scale. Candidate next
+steps (in rough order of fidelity to the customer environment):
+  a) More aggressive / concurrent churn: bounce BOTH NVAs simultaneously; flap
+     the VPN connection repeatedly; toggle the route-map association on/off during
+     reconvergence (mimics "route maps deployed, then GWs, then ER assoc").
+  b) Add the customer's INBOUND route map on hub-eu2 (prepend-in: AS-path Add
+     [64496,64497,64498]) so both inbound and outbound maps are present together.
+  c) Recreate the route map from scratch WHILE the hub is churning (the customer
+     deployed route maps first, triggering router upgrade, then added GWs/ER).
+  d) Phase 2: VPN over ExpressRoute (customer's actual transport) — the ER
+     underlay + VPN-over-ER may change convergence timing enough to expose the race.

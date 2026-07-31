@@ -1,0 +1,27 @@
+# nva2 (westeurope, ASN 65002) - IPsec SAs + BGP status
+
+Enable succeeded: 
+[stdout]
+# swanctl --list-sas
+vng1: #2, ESTABLISHED, IKEv2, 2199fdf27eba2e19_i* bc4f8b1ec27ca023_r
+  s2s1: #3, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_GCM_16-256
+vng0: #1, ESTABLISHED, IKEv2, 78bc3e99e1bae10e_i* 0b7d4c4a24ab67ba_r
+  s2s0: #4, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_GCM_16-256
+
+# birdc show protocols
+BIRD 1.6.8 ready.
+name     proto    table    state  since       info
+device1  Device   master   up     07:32:29    
+direct1  Direct   master   down   07:32:29    
+kernel1  Kernel   master   up     07:32:29    
+static1  Static   master   up     07:32:29    
+vpngw0   BGP      master   up     07:32:33    Established   
+vpngw1   BGP      master   up     07:32:37    Established   
+
+# birdc show route count
+BIRD 1.6.8 ready.
+165 of 165 routes for 91 networks
+
+[stderr]
+
+

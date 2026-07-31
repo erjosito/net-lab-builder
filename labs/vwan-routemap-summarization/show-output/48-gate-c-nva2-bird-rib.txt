@@ -1,0 +1,68 @@
+# az vm run-command invoke -g routemap-test-rg -n nva2 --command-id RunShellScript --scripts "sudo birdc show route" --query "value[0].message" -o tsv
+# Gate C — PRIMARY — nva2 (hub-eu2, westeurope) full BIRD RIB
+# hub-eu2 state: Routing Intent PrivateTraffic ENABLED (Gate C — both hubs now RI-ON)
+# THE authoritative measurement: count 6 summaries, check for /24 leaks
+# Also check: do AS-paths reflect prepend-in on hub-eu2's inbound from nva2?
+# Captured: 2026-07-31T11:45:00+02:00
+# Subscription: <SUBSCRIPTION_ID>
+# RG: routemap-test-rg
+
+Enable succeeded: 
+[stdout]
+BIRD 1.6.8 ready.
+10.2.0.0/16        via 192.168.4.12 on xfrm41 [vpngw0 08:57:32] ! (100/0) [AS65515i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 06:09:22] (100/0) [AS65515i]
+10.3.0.0/16        via 192.168.4.12 on xfrm41 [vpngw0 08:57:32] ! (100/0) [AS65515i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 06:09:22] (100/0) [AS65515i]
+10.0.0.0/16        via 192.168.4.12 on xfrm41 [vpngw0 08:57:32] ! (100/0) [AS65515i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 06:09:22] (100/0) [AS65515i]
+10.1.0.0/16        via 192.168.4.12 on xfrm41 [vpngw0 08:57:32] ! (100/0) [AS65515i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 06:09:22] (100/0) [AS65515i]
+10.4.0.0/17        via 192.168.4.12 on xfrm41 [vpngw0 08:57:32] ! (100/0) [AS65515i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 06:09:22] (100/0) [AS65515i]
+10.200.0.0/24      via 192.168.4.12 on xfrm41 [vpngw0 08:57:35] ! (100/0) [AS65001i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 07:37:26] (100/0) [AS65001i]
+10.201.0.0/24      via 10.201.0.1 on eth0 [static1 06:02:58] * (200)
+192.168.4.13/32    dev xfrm42 [kernel1 06:09:15] * (254)
+192.168.4.12/32    dev xfrm41 [kernel1 06:09:15] * (254)
+192.168.2.0/23     via 192.168.4.12 on xfrm41 [vpngw0 08:57:32] ! (100/0) [AS12076i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 06:09:22] (100/0) [AS12076i]
+192.168.4.0/23     via 192.168.4.12 on xfrm41 [vpngw0 08:57:32] ! (100/0) [AS65515i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 06:09:22] (100/0) [AS65515i]
+10.4.128.0/17      via 192.168.4.12 on xfrm41 [vpngw0 08:57:32] ! (100/0) [AS65515i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 06:09:22] (100/0) [AS65515i]
+10.100.0.0/24      via 192.168.4.12 on xfrm41 [vpngw0 08:57:32] ! (100/0) [AS16550i]
+                   via 192.168.4.13 on xfrm42 [vpngw1 06:09:22] (100/0) [AS16550i]
+172.27.0.0/16      via 10.201.0.1 on eth0 [static1 06:02:58] * (200)
+172.26.0.0/16      via 10.201.0.1 on eth0 [static1 06:02:58] * (200)
+172.25.0.0/16      via 10.201.0.1 on eth0 [static1 06:02:58] * (200)
+172.24.0.0/16      via 10.201.0.1 on eth0 [static1 06:02:58] * (200)
+172.29.0.0/16      via 10.201.0.1 on eth0 [static1 06:02:58] * (200)
+172.28.0.0/16      via 10.201.0.1 on eth0 [static1 06:02:58] * (200)
+172.19.0.0/16      via 10.201.0.1 on eth0 [static1 06:02:58] * (200)
+172.18.0.0/16      via 10.201.0.1 on eth0 [static1 06:02:58] * (200)
+172.17.0.0/16      via 10.201.0.1 on eth0 [static1 06:02:58] * (200)
+172.16.0.0/16      via 10.201.0.1 on eth0 [static1 06:02:58] * (200)
+172.23.0.0/16      via 10.201.0.1 on eth0 [static1 06:02:58] * (200)
+172.22.0.0/16      via 10.201.0.1 on eth0 [static1 06:02:58] * (200)
+172.21.0.0/16      via 10.201.0.1 on eth0 [static1 06:02:58] * (200)
+172.20.0.0/16      via 10.201.0.1 on eth0 [static1 06:02:58] * (200)
+
+[stderr]
+
+# ANALYSIS — Customer summary space (10.0.0.0–10.4.255.255):
+#   Summaries present (6/6): 10.0.0.0/16, 10.1.0.0/16, 10.2.0.0/16, 10.3.0.0/16, 10.4.0.0/17, 10.4.128.0/17
+#   /24 leaks in customer space: ZERO
+#   Other /24s (NOT leaks): 10.200.0.0/24 (nva1 mgmt, via BGP), 10.201.0.0/24 (nva2 mgmt static), 10.100.0.0/24 (GCP)
+#
+# PREPEND-IN AS-PATH NOTE:
+#   The prepend-in route-map on hub-eu2 adds ASNs 64496/64497/64498 INBOUND from nva2 to hub-eu2.
+#   This modifies routes nva2 ADVERTISES to hub-eu2 (its 172.x local routes), not routes nva2 RECEIVES.
+#   The summaries nva2 receives (10.x/16 and /17) originate from hub-eu2's summarize-out, which
+#   operates on the hub's outbound advertisement to cx-onprem2 — unaffected by prepend-in.
+#   AS-path on received summaries: [AS65515i] — the VPN GW's AS, as expected. No prepended ASNs visible
+#   from nva2's perspective (prepend effect is intra-hub, visible to other hubs not to nva2 itself).
+#
+# GATE C KEY FINDING: Both hubs RI-ON. 6/6 summaries intact on nva2 (the newly-RI'd hub).
+# BUG NOT REPRODUCED with this RI enablement order (hub-eu1 FIRST, hub-eu2 SECOND).
+# VERDICT: 6/6 summaries, 0 /24 leaks — PASS

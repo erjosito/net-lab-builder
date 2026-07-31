@@ -1,0 +1,25 @@
+# az network vhub route-table show --vhub-name hub-eu2 -g routemap-test-rg -n defaultRouteTable -o json
+# Captured: 2026-07-31T11:34:30+02:00 (PRE Routing Intent)
+{
+  "associatedConnections": [
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/vpnGateways/vpngw-eu2/vpnConnections/cx-onprem2",
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/expressRouteGateways/ergw-eu2/expressRouteConnections/conn-er-eu2",
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/vpnGateways/vpngw-eu2/vpnConnections/cx-gcp2"
+  ],
+  "etag": "W/\"eb0e38b6-6c09-4951-a732-8bbc117439f8\"",
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/virtualHubs/hub-eu2/hubRouteTables/defaultRouteTable",
+  "labels": [
+    "default"
+  ],
+  "name": "defaultRouteTable",
+  "propagatingConnections": [
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/vpnGateways/vpngw-eu2/vpnConnections/cx-onprem2",
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/expressRouteGateways/ergw-eu2/expressRouteConnections/conn-er-eu2",
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/vpnGateways/vpngw-eu2/vpnConnections/cx-gcp2"
+  ],
+  "provisioningState": "Succeeded",
+  "resourceGroup": "routemap-test-rg",
+  "routes": [],
+  "type": "Microsoft.Network/virtualHubs/hubRouteTables"
+}
+# NOTE: routes: [] — no _policy_PrivateTraffic yet. Clean PRE-RI baseline. propagatingConnections populated (3 connections).

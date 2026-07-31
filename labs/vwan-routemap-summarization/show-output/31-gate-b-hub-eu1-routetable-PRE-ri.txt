@@ -1,0 +1,24 @@
+# az network vhub route-table show --vhub-name hub-eu1 -g routemap-test-rg -n defaultRouteTable
+# Captured: 2026-07-31T10:30:25+02:00 (PRE Routing Intent)
+{
+  "associatedConnections": [
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/vpnGateways/vpngw-eu1/vpnConnections/cx-onprem1",
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/expressRouteGateways/ergw-eu1/expressRouteConnections/conn-er-eu1",
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/vpnGateways/vpngw-eu1/vpnConnections/cx-gcp1"
+  ],
+  "etag": "W/\"71fc2edd-8c16-48a4-a39d-7e586edc8ff5\"",
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/virtualHubs/hub-eu1/hubRouteTables/defaultRouteTable",
+  "labels": [
+    "default"
+  ],
+  "name": "defaultRouteTable",
+  "propagatingConnections": [
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/vpnGateways/vpngw-eu1/vpnConnections/cx-onprem1",
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/expressRouteGateways/ergw-eu1/expressRouteConnections/conn-er-eu1",
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/vpnGateways/vpngw-eu1/vpnConnections/cx-gcp1"
+  ],
+  "provisioningState": "Succeeded",
+  "resourceGroup": "routemap-test-rg",
+  "routes": [],
+  "type": "Microsoft.Network/virtualHubs/hubRouteTables"
+}

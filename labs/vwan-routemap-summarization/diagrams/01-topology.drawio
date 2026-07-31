@@ -1,0 +1,153 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="routemap-testbed" id="routemap-testbed">
+    <mxGraphModel dx="1400" dy="900" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1100" math="0" adaptiveColors="auto" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="VWAN Route-Map Summarization Repro — Phase 1 (plain S2S VPN)  |  RG: routemap-test-rg  |  sub a8fbd8e1-…" style="text;html=1;fontSize=17;fontStyle=1;verticalAlign=middle;align=left;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="1500" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="us_c" value="hub-us region — westus2 (route generators, no gateway)" style="swimlane;startSize=30;html=1;fillColor=#f2f7fc;strokeColor=#6c8ebf;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="440" height="860" as="geometry"/>
+        </mxCell>
+        <mxCell id="hubus" value="hub-us&#xa;192.168.0.0/23" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/networking/Virtual_WAN_Hub.svg;" vertex="1" parent="us_c">
+                  <mxGeometry x="185" y="40" width="64" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="usnote" value="12 spoke VNets (2 per summary) advertise 72×/24&#xa;→ route map aggregates to 4×/16 + 2×/17" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e7f0fb;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="us_c">
+          <mxGeometry x="20" y="120" width="400" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="l0" value="spoke-us-a&#xa;10.0.0-7/24" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=default;imageAspect=0;aspect=fixed;fontSize=10;image=https://icons.diagrams.net/assets/azure/1/Virtual_Network_vNET.svg" vertex="1" parent="us_c">
+          <mxGeometry x="20" y="203.5" width="64" height="37" as="geometry"/>
+        </mxCell>
+        <mxCell id="r0" value="spoke-us-a2&#xa;10.0.8-11/24" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=default;imageAspect=0;aspect=fixed;fontSize=10;image=https://icons.diagrams.net/assets/azure/1/Virtual_Network_vNET.svg" vertex="1" parent="us_c">
+          <mxGeometry x="195" y="203.5" width="64" height="37" as="geometry"/>
+        </mxCell>
+        <mxCell id="s0" value="→ S1&#xa;10.0.0.0/16" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;" vertex="1" parent="us_c">
+          <mxGeometry x="305" y="190" width="120" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="l1" value="spoke-us-b&#xa;10.1.0-7/24" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=default;imageAspect=0;aspect=fixed;fontSize=10;image=https://icons.diagrams.net/assets/azure/1/Virtual_Network_vNET.svg" vertex="1" parent="us_c">
+          <mxGeometry x="20" y="313.5" width="64" height="37" as="geometry"/>
+        </mxCell>
+        <mxCell id="r1" value="spoke-us-b2&#xa;10.1.8-11/24" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=default;imageAspect=0;aspect=fixed;fontSize=10;image=https://icons.diagrams.net/assets/azure/1/Virtual_Network_vNET.svg" vertex="1" parent="us_c">
+          <mxGeometry x="195" y="313.5" width="64" height="37" as="geometry"/>
+        </mxCell>
+        <mxCell id="s1" value="→ S2&#xa;10.1.0.0/16" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;" vertex="1" parent="us_c">
+          <mxGeometry x="305" y="300" width="120" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="l2" value="spoke-us-c&#xa;10.2.0-7/24" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=default;imageAspect=0;aspect=fixed;fontSize=10;image=https://icons.diagrams.net/assets/azure/1/Virtual_Network_vNET.svg" vertex="1" parent="us_c">
+          <mxGeometry x="20" y="423.5" width="64" height="37" as="geometry"/>
+        </mxCell>
+        <mxCell id="r2" value="spoke-us-c2&#xa;10.2.8-11/24" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=default;imageAspect=0;aspect=fixed;fontSize=10;image=https://icons.diagrams.net/assets/azure/1/Virtual_Network_vNET.svg" vertex="1" parent="us_c">
+          <mxGeometry x="195" y="423.5" width="64" height="37" as="geometry"/>
+        </mxCell>
+        <mxCell id="s2" value="→ S3&#xa;10.2.0.0/16" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;" vertex="1" parent="us_c">
+          <mxGeometry x="305" y="410" width="120" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="l3" value="spoke-us-d&#xa;10.3.0-7/24" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=default;imageAspect=0;aspect=fixed;fontSize=10;image=https://icons.diagrams.net/assets/azure/1/Virtual_Network_vNET.svg" vertex="1" parent="us_c">
+          <mxGeometry x="20" y="533.5" width="64" height="37" as="geometry"/>
+        </mxCell>
+        <mxCell id="r3" value="spoke-us-d2&#xa;10.3.8-11/24" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=default;imageAspect=0;aspect=fixed;fontSize=10;image=https://icons.diagrams.net/assets/azure/1/Virtual_Network_vNET.svg" vertex="1" parent="us_c">
+          <mxGeometry x="195" y="533.5" width="64" height="37" as="geometry"/>
+        </mxCell>
+        <mxCell id="s3" value="→ S4&#xa;10.3.0.0/16" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;" vertex="1" parent="us_c">
+          <mxGeometry x="305" y="520" width="120" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="l4" value="spoke-us-e&#xa;10.4.0-7/24" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=default;imageAspect=0;aspect=fixed;fontSize=10;image=https://icons.diagrams.net/assets/azure/1/Virtual_Network_vNET.svg" vertex="1" parent="us_c">
+          <mxGeometry x="20" y="643.5" width="64" height="37" as="geometry"/>
+        </mxCell>
+        <mxCell id="r4" value="spoke-us-e2&#xa;10.4.8-11/24" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=default;imageAspect=0;aspect=fixed;fontSize=10;image=https://icons.diagrams.net/assets/azure/1/Virtual_Network_vNET.svg" vertex="1" parent="us_c">
+          <mxGeometry x="195" y="643.5" width="64" height="37" as="geometry"/>
+        </mxCell>
+        <mxCell id="s4" value="→ S5&#xa;10.4.0.0/17" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;" vertex="1" parent="us_c">
+          <mxGeometry x="305" y="630" width="120" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="l5" value="spoke-us-f&#xa;10.4.128-135/24" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=default;imageAspect=0;aspect=fixed;fontSize=10;image=https://icons.diagrams.net/assets/azure/1/Virtual_Network_vNET.svg" vertex="1" parent="us_c">
+          <mxGeometry x="20" y="753.5" width="64" height="37" as="geometry"/>
+        </mxCell>
+        <mxCell id="r5" value="spoke-us-f2&#xa;10.4.136-139/24" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=default;imageAspect=0;aspect=fixed;fontSize=10;image=https://icons.diagrams.net/assets/azure/1/Virtual_Network_vNET.svg" vertex="1" parent="us_c">
+          <mxGeometry x="195" y="753.5" width="64" height="37" as="geometry"/>
+        </mxCell>
+        <mxCell id="s5" value="→ S6&#xa;10.4.128.0/17" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;" vertex="1" parent="us_c">
+          <mxGeometry x="305" y="740" width="120" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="vwan" value="vwan-routemap&#xa;branch-to-branch ON" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/networking/Virtual_WANs.svg;" vertex="1" parent="1">
+                  <mxGeometry x="540" y="420" width="64" height="64" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="eu1_c" value="hub-eu1  —  PRIMARY  —  swedencentral" style="swimlane;startSize=30;html=1;fillColor=#eef8ee;strokeColor=#2f9e44;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="690" y="120" width="440" height="330" as="geometry"/>
+        </mxCell>
+        <mxCell id="hubeu1" value="hub-eu1&#xa;192.168.2.0/23" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/networking/Virtual_WAN_Hub.svg;" vertex="1" parent="eu1_c">
+                  <mxGeometry x="30" y="45" width="64" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="gw1" value="vpngw-eu1&#xa;ASN 65515" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=default;imageAspect=0;aspect=fixed;fontSize=11;image=https://icons.diagrams.net/assets/azure/1/VPN_Gateway.svg" vertex="1" parent="eu1_c">
+                  <mxGeometry x="213.5" y="40" width="57" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="rm1" value="Route map OUT (summarize-out) on VPN connection&#xa;6 Replace rules:&#xa;10.0.0.0/16 · 10.1.0.0/16 · 10.2.0.0/16&#xa;10.3.0.0/16 · 10.4.0.0/17 · 10.4.128.0/17" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d7f0d7;strokeColor=#2f9e44;fontSize=11;align=left;" vertex="1" parent="eu1_c">
+          <mxGeometry x="20" y="160" width="400" height="140" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="eu2_c" value="hub-eu2  —  SECONDARY  —  westeurope" style="swimlane;startSize=30;html=1;fillColor=#fff6e6;strokeColor=#e67700;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="690" y="500" width="440" height="400" as="geometry"/>
+        </mxCell>
+        <mxCell id="hubeu2" value="hub-eu2&#xa;192.168.4.0/23" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/networking/Virtual_WAN_Hub.svg;" vertex="1" parent="eu2_c">
+                  <mxGeometry x="30" y="45" width="64" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="gw2" value="vpngw-eu2&#xa;ASN 65515" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=default;imageAspect=0;aspect=fixed;fontSize=11;image=https://icons.diagrams.net/assets/azure/1/VPN_Gateway.svg" vertex="1" parent="eu2_c">
+                  <mxGeometry x="213.5" y="40" width="57" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="rm2" value="Route map OUT (summarize-out): same 6 rules&#xa;&#xa;Route map IN (prepend-in):&#xa;AS-path prepend 64496 64497 64498&#xa;(RFC5398 doc ASNs → Azure prefers PRIMARY)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe9c9;strokeColor=#e67700;fontSize=11;align=left;" vertex="1" parent="eu2_c">
+          <mxGeometry x="20" y="160" width="400" height="200" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="op1_c" value="onprem1-vnet — swedencentral — 10.200.0.0/24" style="swimlane;startSize=30;html=1;fillColor=#f6f6f6;strokeColor=#495057;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="120" width="340" height="330" as="geometry"/>
+        </mxCell>
+        <mxCell id="nva1" value="nva1 · Ubuntu 24.04&#xa;StrongSwan + BIRD&#xa;ASN 65001 · 51.12.82.214" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;fillColor=#005F4B;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;fontSize=11;shape=mxgraph.veeam2.linux_server;" vertex="1" parent="op1_c">
+                  <mxGeometry x="67.5" y="45" width="49" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="op1note" value="Simulated on-prem DC.&#xa;Advertises 14×/16 over BGP:&#xa;172.16.0.0/16 … 172.29.0.0/16" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e9ecef;strokeColor=#495057;fontSize=11;align=left;" vertex="1" parent="op1_c">
+          <mxGeometry x="20" y="180" width="300" height="120" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="op2_c" value="onprem2-vnet — westeurope — 10.201.0.0/24" style="swimlane;startSize=30;html=1;fillColor=#f6f6f6;strokeColor=#495057;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="500" width="340" height="400" as="geometry"/>
+        </mxCell>
+        <mxCell id="nva2" value="nva2 · Ubuntu 24.04&#xa;StrongSwan + BIRD&#xa;ASN 65002 · 20.8.91.22" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;fillColor=#005F4B;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;fontSize=11;shape=mxgraph.veeam2.linux_server;" vertex="1" parent="op2_c">
+                  <mxGeometry x="67.5" y="45" width="49" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="op2note" value="Simulated on-prem DC.&#xa;Advertises the same 14×/16:&#xa;172.16.0.0/16 … 172.29.0.0/16" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e9ecef;strokeColor=#495057;fontSize=11;align=left;" vertex="1" parent="op2_c">
+          <mxGeometry x="20" y="180" width="300" height="120" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_uv" value="VWAN hub-to-hub" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#1864ab;" edge="1" parent="1" source="hubus" target="vwan">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_v1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#1864ab;" edge="1" parent="1" source="vwan" target="hubeu1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_v2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#1864ab;" edge="1" parent="1" source="vwan" target="hubeu2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_g1n1" value="S2S IPsec + BGP&#xa;65515 ↔ 65001" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;strokeWidth=2;strokeColor=#2f9e44;" edge="1" parent="1" source="gw1" target="nva1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_g2n2" value="S2S IPsec + BGP&#xa;65515 ↔ 65002" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;strokeWidth=2;strokeColor=#e67700;" edge="1" parent="1" source="gw2" target="nva2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="insight" value="Repro objective: with identical outbound summarization rules, the SECONDARY hub intermittently drops ONE summary (order-dependent — reordering the rules changes which /16 or /17 goes missing), causing asymmetric routing. Validation: compare 'az network vhub route-map get-outbound-routes' on both VPN connections and 'birdc show route' on both NVAs — all 6 summaries (4×/16 + 2×/17) must appear on BOTH hubs." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fde7e9;strokeColor=#d13438;fontSize=12;align=left;" vertex="1" parent="1">
+          <mxGeometry x="40" y="960" width="1480" height="90" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

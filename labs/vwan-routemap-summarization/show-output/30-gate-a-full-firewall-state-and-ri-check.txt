@@ -1,0 +1,47 @@
+# az network firewall show -g routemap-test-rg -n azfw-eu1 --query "{name:name,provisioningState:provisioningState,sku:sku.tier}" -o json
+# az network firewall show -g routemap-test-rg -n azfw-eu2 --query "{name:name,provisioningState:provisioningState,sku:sku.tier}" -o json
+# az network vhub routing-intent list --vhub hub-eu1 -g routemap-test-rg -o json
+# az network vhub routing-intent list --vhub hub-eu2 -g routemap-test-rg -o json
+# Gate A FULL — Firewall provisioning state + Routing Intent check (RI must be OFF)
+# Captured: 2026-07-31T09:52:00+02:00
+# Subscription: <SUBSCRIPTION_ID>
+# RG: routemap-test-rg
+
+===========================================================================
+azfw-eu1 (hub-eu1, swedencentral)
+===========================================================================
+{
+  "name": "azfw-eu1",
+  "provisioningState": "Succeeded",
+  "sku": "Standard"
+}
+
+===========================================================================
+azfw-eu2 (hub-eu2, westeurope)
+===========================================================================
+{
+  "name": "azfw-eu2",
+  "provisioningState": "Succeeded",
+  "sku": "Standard"
+}
+
+===========================================================================
+Routing Intent — hub-eu1
+===========================================================================
+WARNING: This command is in preview and under development. Reference and support levels: https://aka.ms/CLI_refstatus
+[]
+
+===========================================================================
+Routing Intent — hub-eu2
+===========================================================================
+WARNING: This command is in preview and under development. Reference and support levels: https://aka.ms/CLI_refstatus
+[]
+
+===========================================================================
+VERDICT
+===========================================================================
+azfw-eu1: provisioningState = Succeeded, sku = Standard — PASS
+azfw-eu2: provisioningState = Succeeded, sku = Standard — PASS
+RI hub-eu1: [] (empty — Routing Intent NOT enabled) — PASS (Gate A pre-condition met)
+RI hub-eu2: [] (empty — Routing Intent NOT enabled) — PASS (Gate A pre-condition met)
+Gate A pre-conditions confirmed: firewalls deployed, RI still OFF on both hubs.

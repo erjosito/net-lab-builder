@@ -1,0 +1,64 @@
+# az network vhub show -g routemap-test-rg -n hub-eu1 --query "{name:name,azureFirewall:azureFirewall.id,sku:sku,provisioningState:provisioningState}" -o json
+# az network vhub routing-intent list -g routemap-test-rg --vhub hub-eu1 -o json
+# (same two commands repeated for hub-eu2)
+# Gate C — L1a hub secured state + RI list, BOTH hubs
+# Captured: 2026-07-31T11:45:00+02:00
+# Subscription: <SUBSCRIPTION_ID>
+# RG: routemap-test-rg
+
+===========================================================================
+HUB hub-eu1 — secured state
+===========================================================================
+{
+  "azureFirewall": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/azureFirewalls/azfw-eu1",
+  "name": "hub-eu1",
+  "provisioningState": "Succeeded",
+  "sku": null
+}
+
+hub-eu1 Routing Intent:
+[
+  {
+    "name": "hub-eu1-ri",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "routemap-test-rg",
+    "routingPolicies": [
+      {
+        "destinations": ["PrivateTraffic"],
+        "name": "PrivateTraffic",
+        "nextHop": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/azureFirewalls/azfw-eu1"
+      }
+    ],
+    "type": "Microsoft.Network/virtualHubs/routingIntent"
+  }
+]
+
+===========================================================================
+HUB hub-eu2 — secured state
+===========================================================================
+{
+  "azureFirewall": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/azureFirewalls/azfw-eu2",
+  "name": "hub-eu2",
+  "provisioningState": "Succeeded",
+  "sku": null
+}
+
+hub-eu2 Routing Intent:
+[
+  {
+    "name": "hub-eu2-ri",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "routemap-test-rg",
+    "routingPolicies": [
+      {
+        "destinations": ["PrivateTraffic"],
+        "name": "PrivateTraffic",
+        "nextHop": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/azureFirewalls/azfw-eu2"
+      }
+    ],
+    "type": "Microsoft.Network/virtualHubs/routingIntent"
+  }
+]
+
+# VERDICT: Both hubs secured (azureFirewall ≠ null), both RI Succeeded (PrivateTraffic → AzFW).
+# Gate C pre-condition confirmed: BOTH EU hubs are RI-enabled.

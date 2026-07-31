@@ -1,0 +1,34 @@
+# az network vhub route-table show --vhub-name hub-eu1 -g routemap-test-rg -n defaultRouteTable
+# Captured: 2026-07-31T10:40:31+02:00 (POST Routing Intent — hub-eu1-ri PrivateTraffic)
+{
+  "associatedConnections": [
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/expressRouteGateways/ergw-eu1/expressRouteConnections/conn-er-eu1",
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/vpnGateways/vpngw-eu1/vpnConnections/cx-onprem1",
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/vpnGateways/vpngw-eu1/vpnConnections/cx-gcp1"
+  ],
+  "etag": "W/\"d88c6ac2-10c4-4abb-a4c3-a3f1c5f3a190\"",
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/virtualHubs/hub-eu1/hubRouteTables/defaultRouteTable",
+  "labels": [
+    "default"
+  ],
+  "name": "defaultRouteTable",
+  "propagatingConnections": [],
+  "provisioningState": "Succeeded",
+  "resourceGroup": "routemap-test-rg",
+  "routes": [
+    {
+      "destinationType": "CIDR",
+      "destinations": [
+        "10.0.0.0/8",
+        "172.16.0.0/12",
+        "192.168.0.0/16"
+      ],
+      "name": "_policy_PrivateTraffic",
+      "nextHop": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/azureFirewalls/azfw-eu1",
+      "nextHopType": "ResourceId"
+    }
+  ],
+  "type": "Microsoft.Network/virtualHubs/hubRouteTables"
+}
+# NOTE: propagatingConnections is now empty [] — RI takes over propagation control.
+# RFC1918 aggregates present: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 → azfw-eu1. EXPECTED.

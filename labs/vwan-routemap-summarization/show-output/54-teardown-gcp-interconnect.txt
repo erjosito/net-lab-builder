@@ -1,0 +1,52 @@
+=== GCP INTERCONNECT TEARDOWN — vwan-routemap-summarization ===
+Timestamp: 2026-07-31T16:15:00+02:00
+Requested by: Jose Moreno (@erjosito)
+Token: last4=****0214 (OAuth2 refresh via Windows PowerShell, proven method)
+
+--- PROJECT STATUS ---
+projectId:     vwan-routemap-lab
+projectNumber: <REDACTED>
+name:          VWAN Routemap Lab
+lifecycleState: DELETE_REQUESTED
+createTime:    2026-07-29T12:03:29Z
+
+--- INVENTORY ATTEMPT ---
+Region: europe-west3
+
+GET /regions/europe-west3/interconnectAttachments
+  -> 404 The resource 'projects/vwan-routemap-lab' was not found
+  Reason: Project is in DELETE_REQUESTED state; Compute Engine API returns 404 for all resources.
+
+GET /regions/europe-west3/interconnectAttachments/onprem-attach
+  -> 404 The resource 'projects/vwan-routemap-lab' was not found
+
+GET /regions/europe-west3/routers/onprem-router
+  -> 404 The resource 'projects/vwan-routemap-lab' was not found
+
+GET /regions/europe-west3/routers/nat-router
+  -> 404 The resource 'projects/vwan-routemap-lab' was not found
+
+GET /aggregated/interconnectAttachments
+  -> 404 The resource 'projects/vwan-routemap-lab' was not found
+
+--- ASSESSMENT ---
+The GCP project vwan-routemap-lab was placed in DELETE_REQUESTED state prior to this task.
+When a GCP project enters DELETE_REQUESTED:
+  - All Compute Engine APIs return 404 for the project.
+  - All resources (interconnect attachments, cloud routers, firewall rules, VPC) are
+    scheduled for automatic deletion within the 30-day grace period.
+  - No manual per-resource deletion is possible or necessary.
+  - GCP stops billing for the project and its resources at deletion-request time.
+
+Previously confirmed resources (from earlier session, 2026-07-31):
+  - onprem-attach  (PARTNER Interconnect, europe-west3, ACTIVE) -> scheduled for deletion
+  - onprem-router  (Cloud Router, europe-west3)                 -> scheduled for deletion
+  - nat-router     (Cloud Router, europe-west3)                 -> scheduled for deletion
+  - onprem-vpc     (VPC network)                                -> scheduled for deletion
+  - Firewall rules: onprem-allow, onprem-allow-iap, onprem-allow-internal -> scheduled
+  - gcp-nva1, gcp-nva2 (Compute instances) -> already DELETED (session 2026-07-31 morning)
+
+--- CONCLUSION ---
+All GCP Interconnect resources are effectively cleared via project-level deletion.
+No individual resource deletions were executed (project API unavailable).
+No further GCP action required for this lab.

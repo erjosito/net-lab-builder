@@ -1,0 +1,168 @@
+# Phase 3 NVA Restart + Tunnel Restore
+# Captured: 2026-07-31T09:41:00+02:00
+# Operator: Tank (IaC)
+# Subscription: Litware-MngEnvMCAP642473-jomore (ID: <SUBSCRIPTION_ID>)
+# RG: routemap-test-rg
+
+===========================================================================
+STEP 1-2: VM START (no-wait)
+===========================================================================
+
+2026-07-31T08:02:28 - nva2 start issued (--no-wait)
+2026-07-31T08:02:28 - nva1 start issued (--no-wait)
+
+Poll result at 2026-07-31T08:03:50:
+  nva2   VM running
+  nva1   VM running
+
+===========================================================================
+STEP 3a: NVA1 SMOKE TEST (pre-redeploy)
+===========================================================================
+
+2026-07-31T08:03:10 - az vm run-command invoke nva1 --scripts "echo VM_ALIVE"
+Result: ERROR (Conflict) Run command extension execution is in progress.
+        Extension is STUCK (409/Conflict) -- redeploy required.
+
+===========================================================================
+STEP 3b: NVA1 REDEPLOY (az vm redeploy)
+===========================================================================
+
+2026-07-31T08:03:30 - az vm redeploy -g routemap-test-rg -n nva1 (synchronous)
+ProvisioningState tracked: Updating (from 08:03 to 09:33)
+Duration: ~90 minutes (swedencentral infrastructure -- unusually long)
+2026-07-31T09:33:05 - Redeploy complete. nva1: VM running
+
+===========================================================================
+STEP 3c: NVA1 SMOKE TEST (post-redeploy)
+===========================================================================
+
+2026-07-31T09:34:10 - az vm run-command invoke nva1 --scripts "echo VM_ALIVE"
+Result:
+  Enable succeeded:
+  [stdout]
+  VM_ALIVE
+  [stderr]
+Exit code: 0 -- Extension CLEARED by redeploy. SUCCESS.
+
+===========================================================================
+STEP 4a: NVA2 TUNNEL RESTORE (BGP0=192.168.4.12, BGP1=192.168.4.13)
+===========================================================================
+
+2026-07-31T08:08:52 - XFRM interfaces + swanctl load
+Script: ip link add xfrm41 type xfrm dev eth0 if_id 41 2>/dev/null; ip link set xfrm41 up;
+        ip link add xfrm42 type xfrm dev eth0 if_id 42 2>/dev/null; ip link set xfrm42 up;
+        ip route add 192.168.4.12/32 dev xfrm41 2>/dev/null;
+        ip route add 192.168.4.13/32 dev xfrm42 2>/dev/null;
+        swanctl --load-all 2>&1; echo XFRM_READY
+
+Output:
+  [stdout]
+  loaded ike secret 'ike-1'
+  no authorities found, 0 unloaded
+  no pools found, 0 unloaded
+  loaded connection 'vng0'
+  loaded connection 'vng1'
+  successfully loaded 2 connections, 0 unloaded
+  XFRM_READY
+
+2026-07-31T08:09:52 - Tunnel initiation
+Script: swanctl --initiate --child s2s0 --ike vng0 --timeout 30 2>&1;
+        swanctl --initiate --child s2s1 --ike vng1 --timeout 30 2>&1; echo INITIATE_DONE
+
+Output:
+  [stdout]
+  initiate failed: establishing CHILD_SA 's2s0' failed
+  [IKE] not establishing CHILD_SA s2s0{5} due to existing duplicate {4}
+        with SPIs cb3e7b96_i 941ad842_o and TS 0.0.0.0/0 === 0.0.0.0/0
+  initiate failed: establishing CHILD_SA 's2s1' failed
+  [IKE] not establishing CHILD_SA s2s1{6} due to existing duplicate {3}
+        with SPIs cf11fd4d_i 713f5808_o and TS 0.0.0.0/0 === 0.0.0.0/0
+  INITIATE_DONE
+  NOTE: "existing duplicate" means tunnels were already established -- good.
+
+===========================================================================
+STEP 5a: NVA2 BIRDC VERIFICATION
+===========================================================================
+
+2026-07-31T08:13:02 - birdc show protocols + show route count
+
+[stdout]
+BIRD 1.6.8 ready.
+name     proto    table    state  since       info
+device1  Device   master   up     06:02:58    
+direct1  Direct   master   down   06:02:58    
+kernel1  Kernel   master   up     06:02:58    
+static1  Static   master   up     06:02:58    
+vpngw0   BGP      master   up     06:09:28    Established   
+vpngw1   BGP      master   up     06:09:22    Established   
+---
+BIRD 1.6.8 ready.
+35 of 35 routes for 26 networks
+
+RESULT: nva2 -- vpngw0 Established, vpngw1 Established. 35/26. PASS.
+
+===========================================================================
+STEP 4b: NVA1 TUNNEL RESTORE (BGP0=192.168.2.12, BGP1=192.168.2.13)
+===========================================================================
+
+2026-07-31T09:36:52 - XFRM interfaces + swanctl load
+Script: ip link add xfrm41 type xfrm dev eth0 if_id 41 2>/dev/null; ip link set xfrm41 up;
+        ip link add xfrm42 type xfrm dev eth0 if_id 42 2>/dev/null; ip link set xfrm42 up;
+        ip route add 192.168.2.12/32 dev xfrm41 2>/dev/null;
+        ip route add 192.168.2.13/32 dev xfrm42 2>/dev/null;
+        swanctl --load-all 2>&1; echo XFRM_READY
+
+Output:
+  [stdout]
+  loaded ike secret 'ike-1'
+  no authorities found, 0 unloaded
+  no pools found, 0 unloaded
+  loaded connection 'vng0'
+  loaded connection 'vng1'
+  successfully loaded 2 connections, 0 unloaded
+  XFRM_READY
+
+2026-07-31T09:38:24 - Tunnel initiation
+Script: swanctl --initiate --child s2s0 --ike vng0 --timeout 30 2>&1;
+        swanctl --initiate --child s2s1 --ike vng1 --timeout 30 2>&1; echo INITIATE_DONE
+
+Output:
+  [stdout]
+  initiate failed: establishing CHILD_SA 's2s0' failed
+  [IKE] not establishing CHILD_SA s2s0{5} due to existing duplicate {3}
+        with SPIs c236d378_i f36b31d6_o and TS 0.0.0.0/0 === 0.0.0.0/0
+  initiate failed: establishing CHILD_SA 's2s1' failed
+  [IKE] not establishing CHILD_SA s2s1{6} due to existing duplicate {4}
+        with SPIs ce16e9c4_i cda3e6c2_o and TS 0.0.0.0/0 === 0.0.0.0/0
+  INITIATE_DONE
+  NOTE: "existing duplicate" means tunnels were already established -- good.
+
+===========================================================================
+STEP 5b: NVA1 BIRDC VERIFICATION
+===========================================================================
+
+2026-07-31T09:41:22 - birdc show protocols + show route count
+
+[stdout]
+BIRD 1.6.8 ready.
+name     proto    table    state  since       info
+device1  Device   master   up     06:07:58    
+direct1  Direct   master   down   06:07:58    
+kernel1  Kernel   master   up     06:07:58    
+static1  Static   master   up     06:07:58    
+vpngw0   BGP      master   up     07:37:22    Established   
+vpngw1   BGP      master   up     07:37:37    Established   
+---
+BIRD 1.6.8 ready.
+37 of 37 routes for 27 networks
+
+RESULT: nva1 -- vpngw0 Established, vpngw1 Established. 37/27. PASS.
+
+===========================================================================
+SUMMARY
+===========================================================================
+
+nva2 (hub-eu2, westeurope): BGP Established -- PASS
+nva1 (hub-eu1, swedencentral): BGP Established -- PASS (after redeploy)
+nva1 redeploy: SUCCESSFUL -- extension cleared, ~90min in swedencentral
+Niobe Gate A: READY -- both NVAs up, full BGP, hand off to Niobe.

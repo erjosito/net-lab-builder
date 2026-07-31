@@ -1,0 +1,37 @@
+=== Phase 3 Firewall Deploy Log ===
+Deploy start (firewall submit): 2026-07-30T15:56:19+02:00
+Deploy complete (both Succeeded): 2026-07-30T16:08:09+02:00
+Elapsed: ~12 minutes (both firewalls in parallel)
+
+=== Prerequisites Check ===
+hub-eu1 route tables: defaultRouteTable, noneRouteTable (PASS)
+hub-eu2 route tables: defaultRouteTable, noneRouteTable (PASS)
+hub-eu1 defaultRouteTable routes: [] (no VNetConnection nextHops - PASS)
+hub-eu2 defaultRouteTable routes: [] (no VNetConnection nextHops - PASS)
+Rollback snapshots saved to deploy/hub-eu1-defaultRT-pre-phase3.json and hub-eu2-defaultRT-pre-phase3.json
+
+=== Step 1: Firewall Policy ===
+azfwpol-routemap-lab: Standard, swedencentral, provisioningState=Succeeded
+DefaultRuleCollectionGroup: priority=100
+allow-all-lab: Allow, NetworkRule, Any, * -> *, ports=*
+
+=== Step 2: Firewall Deploy (both in parallel via --no-wait) ===
+azfw-eu1: AZFW_Hub / Standard, swedencentral, hub-eu1, provisioningState=Succeeded
+  privateIPAddress: 192.168.2.132
+  publicIP: 4.223.110.6
+  resourceId: /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/azureFirewalls/azfw-eu1
+
+azfw-eu2: AZFW_Hub / Standard, westeurope, hub-eu2, provisioningState=Succeeded
+  privateIPAddress: 192.168.4.132
+  publicIP: 20.105.195.71
+  resourceId: /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/azureFirewalls/azfw-eu2
+
+=== Step 3: Secured-Hub Verification ===
+hub-eu1: azureFirewall=<SUBSCRIPTION_ID>/...azfw-eu1, provisioningState=Succeeded
+hub-eu2: azureFirewall=<SUBSCRIPTION_ID>/...azfw-eu2, provisioningState=Succeeded
+
+=== Routing Intent: NOT enabled (deferred to Niobe Gate A) ===
+No routing-intent configured on hub-eu1 or hub-eu2.
+
+=== NIOBE GATE A STATUS: READY ===
+Both firewalls Succeeded. No routing intent. Gate open for Niobe validation.

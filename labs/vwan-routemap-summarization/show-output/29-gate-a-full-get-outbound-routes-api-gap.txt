@@ -1,0 +1,52 @@
+# az network vhub route-map get-outbound-routes -g routemap-test-rg --vhub-name hub-eu1 --connection-type VpnConnection --resource-uri "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/vpnGateways/vpngw-eu1/vpnConnections/cx-onprem1" -o json
+# (same command repeated for hub-eu2 / cx-onprem2)
+# Gate A FULL — get-outbound-routes API gap documentation (both hubs)
+# Captured: 2026-07-31T09:52:00+02:00
+# Subscription: <SUBSCRIPTION_ID>
+# RG: routemap-test-rg
+
+===========================================================================
+ATTEMPT 1: hub-eu1 / cx-onprem1
+===========================================================================
+Command:
+  az network vhub route-map get-outbound-routes -g routemap-test-rg \
+    --vhub-name hub-eu1 \
+    --connection-type VpnConnection \
+    --resource-uri "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/vpnGateways/vpngw-eu1/vpnConnections/cx-onprem1" \
+    -o json
+
+Output:
+  (empty — exit code 0, no JSON body returned)
+
+===========================================================================
+ATTEMPT 2: hub-eu2 / cx-onprem2
+===========================================================================
+Command:
+  az network vhub route-map get-outbound-routes -g routemap-test-rg \
+    --vhub-name hub-eu2 \
+    --connection-type VpnConnection \
+    --resource-uri "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/routemap-test-rg/providers/Microsoft.Network/vpnGateways/vpngw-eu2/vpnConnections/cx-onprem2" \
+    -o json
+
+Output:
+  (empty — exit code 0, no JSON body returned)
+
+===========================================================================
+PRELIMINARY ATTEMPT (wrong syntax — for reference)
+===========================================================================
+Command: az network vhub route-map get-outbound-routes ... --connection-name cx-onprem1
+Error: ERROR: unrecognized arguments: --connection-name cx-onprem1
+Note: Correct flag is --resource-uri (full ARM URI), not --connection-name.
+      CLI help confirmed: --resource-uri is the required parameter.
+
+===========================================================================
+FINDING: API non-functional
+===========================================================================
+`az network vhub route-map get-outbound-routes` (virtual-wan preview extension) consistently
+returns empty output for both hubs, using the correct --resource-uri syntax.
+This matches the behavior documented in session show-output/17 (2026-07-30):
+  "Direct REST API calls to /routeMaps/{rm}/getOutboundRoutes and
+   /virtualHubs/{hub}/getOutboundRoutes return HTTP 404 'No route data was found.'"
+
+CONCLUSION: This API is non-functional for this lab configuration.
+The L2 BIRD RIB (files 25, 26) is the authoritative Gate A measurement.

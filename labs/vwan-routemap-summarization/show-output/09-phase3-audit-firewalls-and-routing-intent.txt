@@ -1,0 +1,56 @@
+# Phase 3 audit: Azure Firewall + Routing Intent check
+# Captured: 2026-07-30T13:35:49+02:00
+
+=== COMMAND 1: az network firewall list -g routemap-test-rg -o table ===
+(empty — no output, exit code 0)
+RESULT: NO Azure Firewalls in resource group.
+
+=== COMMAND 2: az network firewall policy list -g routemap-test-rg -o table ===
+(empty — no output, exit code 0)
+RESULT: NO Firewall Policies in resource group.
+
+=== COMMAND 3: az network vhub routing-intent list -g routemap-test-rg --vhub hub-us -o json ===
+WARNING: This command is in preview and under development.
+[]
+RESULT: NO routing intent on hub-us.
+
+=== COMMAND 4: az network vhub routing-intent list -g routemap-test-rg --vhub hub-eu1 -o json ===
+WARNING: This command is in preview and under development.
+[]
+RESULT: NO routing intent on hub-eu1.
+
+=== COMMAND 5: az network vhub routing-intent list -g routemap-test-rg --vhub hub-eu2 -o json ===
+WARNING: This command is in preview and under development.
+[]
+RESULT: NO routing intent on hub-eu2.
+
+=== COMMAND 6: Hub secure-hub state (azureFirewall + securityProviderName per hub) ===
+# az network vhub show -g routemap-test-rg -n hub-us --query "{name,azureFirewall,securityProviderName,sku,provisioningState}"
+{
+  "azureFirewall": null,
+  "name": "hub-us",
+  "provisioningState": "Succeeded",
+  "securityProviderName": null,
+  "sku": null
+}
+# az network vhub show -g routemap-test-rg -n hub-eu1 --query "{name,azureFirewall,securityProviderName,sku,provisioningState}"
+{
+  "azureFirewall": null,
+  "name": "hub-eu1",
+  "provisioningState": "Succeeded",
+  "securityProviderName": null,
+  "sku": null
+}
+# az network vhub show -g routemap-test-rg -n hub-eu2 --query "{name,azureFirewall,securityProviderName,sku,provisioningState}"
+{
+  "azureFirewall": null,
+  "name": "hub-eu2",
+  "provisioningState": "Succeeded",
+  "securityProviderName": null,
+  "sku": null
+}
+RESULT: All 3 hubs are NON-SECURED (no firewall association, no security provider, no routing intent).
+
+=== PHASE 3 VERDICT ===
+Phase 3 (Azure Firewall + Routing Intent) has NOT been started.
+No firewall, no firewall policy, no routing intent configuration on any hub.

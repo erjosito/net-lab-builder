@@ -1,0 +1,68 @@
+# az vm run-command invoke -g routemap-test-rg -n nva1 --command-id RunShellScript --scripts "sudo birdc show route" --query "value[0].message" -o tsv
+# Gate B — PRIMARY — nva1 (hub-eu1, swedencentral) full BIRD RIB
+# hub-eu1 state: Routing Intent PrivateTraffic ENABLED → azfw-eu1
+#   defaultRouteTable _policy_PrivateTraffic: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
+# This is the critical measurement: does RI's 10.0.0.0/8 aggregate suppress the /16 summaries?
+# Captured: 2026-07-31T10:55:00+02:00
+# Subscription: <SUBSCRIPTION_ID>
+# RG: routemap-test-rg
+
+Enable succeeded: 
+[stdout]
+BIRD 1.6.8 ready.
+10.2.0.0/16        via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS65515i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS65515i]
+10.3.0.0/16        via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS65515i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS65515i]
+10.0.0.0/16        via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS65515i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS65515i]
+10.1.0.0/16        via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS65515i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS65515i]
+10.4.0.0/17        via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS65515i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS65515i]
+10.200.0.0/24      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+10.201.0.0/24      via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS65002i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS65002i]
+192.168.2.12/32    dev xfrm41 [kernel1 07:37:20] * (254)
+192.168.2.13/32    dev xfrm42 [kernel1 07:37:20] * (254)
+192.168.2.0/23     via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS65515i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS65515i]
+192.168.4.0/23     via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS12076i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS12076i]
+10.4.128.0/17      via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS65515i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS65515i]
+10.100.0.0/24      via 192.168.2.12 on xfrm41 [vpngw0 07:37:22] ! (100/0) [AS16550i]
+                   via 192.168.2.13 on xfrm42 [vpngw1 07:37:54] (100/0) [AS16550i]
+172.27.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.26.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.25.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.24.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.29.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.28.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.19.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.18.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.17.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.16.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.23.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.22.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.21.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+172.20.0.0/16      via 10.200.0.1 on eth0 [static1 06:07:58] * (200)
+
+[stderr]
+
+# ANALYSIS — Customer summary space (10.0.0.0–10.4.255.255):
+#   Summaries present (6/6): 10.0.0.0/16, 10.1.0.0/16, 10.2.0.0/16, 10.3.0.0/16, 10.4.0.0/17, 10.4.128.0/17
+#   /24 leaks in customer space: ZERO
+#   Other /24s (NOT leaks): 10.200.0.0/24 (nva1 mgmt static), 10.201.0.0/24 (nva2 mgmt, via BGP), 10.100.0.0/24 (GCP)
+#
+# KEY FINDING: hub-eu1 has RI PrivateTraffic ON with 10.0.0.0/8 in defaultRouteTable.
+# The route-map summarize-out on cx-onprem1 STILL produces all 6 summaries.
+# RI's RFC1918 aggregate operates at the hub forwarding/next-hop layer (internal AzFW steering).
+# It does NOT suppress the per-connection outbound advertisement set seen by the route-map.
+# The route-map evaluates specifics from remote hub spoke connections BEFORE RI aggregation
+# applies to forwarding — these are orthogonal functions.
+#
+# COMPARISON with nva2 (RI OFF hub): RIB contents IDENTICAL in structure and summary count.
+# No asymmetry between RI-on and RI-off hubs from the NVA perspective.
+#
+# VERDICT: 6/6 summaries, 0 /24 leaks — PASS

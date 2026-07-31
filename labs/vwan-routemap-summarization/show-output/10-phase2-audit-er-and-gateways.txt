@@ -1,0 +1,58 @@
+# Phase 2 audit: ExpressRoute circuits, gateways, and connections
+# Captured: 2026-07-30T13:35:49+02:00
+
+=== COMMAND 1: az network express-route show -g routemap-test-rg -n er-eu1 ===
+{
+  "circuitProvisioningState": "Enabled",
+  "name": "er-eu1",
+  "serviceProviderProvisioningState": "Provisioned",
+  "sku": "Standard"
+}
+
+=== COMMAND 2: az network express-route show -g routemap-test-rg -n er-eu2 ===
+{
+  "circuitProvisioningState": "Enabled",
+  "name": "er-eu2",
+  "circuitProvisioningState": "Enabled",
+  "serviceProviderProvisioningState": "Provisioned",
+  "sku": "Standard"
+}
+
+=== COMMAND 3: az network express-route gateway show -g routemap-test-rg -n ergw-eu1 ===
+{
+  "connections": null,
+  "name": "ergw-eu1",
+  "provisioningState": "Succeeded"
+}
+
+=== COMMAND 4: az network express-route gateway show -g routemap-test-rg -n ergw-eu2 ===
+{
+  "connections": null,
+  "name": "ergw-eu2",
+  "provisioningState": "Succeeded"
+}
+
+=== COMMAND 5: Route maps on EU hubs ===
+# az network vhub route-map list -g routemap-test-rg --vhub-name hub-eu1
+Name           ProvisioningState
+-------------  -------------------
+summarize-out  Succeeded
+
+# az network vhub route-map list -g routemap-test-rg --vhub-name hub-eu2
+Name           ProvisioningState
+-------------  -------------------
+summarize-out  Succeeded
+prepend-in     Succeeded
+
+=== PHASE 2 VERDICT ===
+Phase 2 infrastructure IS deployed:
+  - er-eu1 (swedencentral): Enabled / Provisioned
+  - er-eu2 (westeurope):    Enabled / Provisioned
+  - ergw-eu1 (swedencentral): Succeeded
+  - ergw-eu2 (westeurope):    Succeeded
+  - site-gcp1 + site-gcp2: VPN sites for GCP legs
+
+BUT: ER gateway connections = null on BOTH gateways — no ER connections established.
+Phase 2 is INFRASTRUCTURE-DEPLOYED but NOT CONNECTED / NOT OPERATIONAL.
+
+Phase 1 substrate is intact: route maps summarize-out (hub-eu1 + hub-eu2) and prepend-in (hub-eu2) all Succeeded.
