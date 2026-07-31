@@ -186,6 +186,75 @@ Both hubs are now RI-enabled (PrivateTraffic). hub-eu2 carries `summarize-out` +
 
 ---
 
+## Learnings — Teardown Step 1: ER Connections + RI + Firewalls (2026-07-31)
+
+**Lab:** vwan-routemap-summarization | **RG:** routemap-test-rg
+
+### ER Gateway Connection Delete
+- Command: `az network express-route gateway connection delete --gateway-name <gw> -g <rg> -n <conn>`
+- **`--yes` flag is NOT supported** on this command (returns "unrecognized arguments: --yes"). Drop it — command is non-interactive by default in non-TTY contexts.
+- Both connections deleted synchronously; conn-er-eu1 ~7 min, conn-er-eu2 ~10 min.
+- Verified via `az network express-route gateway connection list` returning `{"value": []}`.
+
+### ER Circuit Peerings (Provider-owned)
+- Both `er-eu1/AzurePrivatePeering` and `er-eu2/AzurePrivatePeering` show `lastModifiedBy: Provider`.
+- These are Megaport-provisioned objects — **NOT directly deletable**. They clear when the ER circuit is deleted (step 5 RG delete). Leave for RG teardown.
+
+### Routing Intent Teardown Sequence
+- RI delete is a prerequisite for AzFW delete (FW cannot be deleted while referenced by RI).
+- Use `az network vhub routing-intent delete -g <rg> --vhub <hub> -n <ri-name> --yes`.
+- hub-eu1-ri: ~6 min to delete. hub-eu2-ri: ~8 min. Both synchronous operations.
+
+### Firewall Deletion
+- Use `az network firewall delete --no-wait` for parallel deletion (both hubs simultaneously).
+- Both deleted within ~10 min of issue.
+- Cost stop: ~$60/day eliminated.
+
+### Cleanup Order Executed (steps 1 of 5)
+| Step | Resource | Status |
+|------|----------|--------|
+| 1 | ER connections (conn-er-eu1, conn-er-eu2) | ✅ DELETED |
+| 2 | ER peerings (Provider-owned) | ⏳ Deferred to RG delete |
+| 3 | Megaport VXCs | ⏳ Link's job |
+| 4 | Megaport MCR | ⏳ Link's job |
+| 5 | Azure RG | ⏳ Final step (after Megaport) |
+
+### File paths
+- Evidence: `labs/vwan-routemap-summarization/show-output/50-teardown-er-conn-fw.txt`
+
+---
+
 📌 Team update (2026-07-31T11:01:11Z): **Phase 3 Gates A, B, C FULL PASS — Complete Testing Arc**. Gate A (firewall deploy, RI OFF): 6/6 summaries on both NVAs, 0 /24 leaks, BGP Established. Gate B (RI hub-eu1): 6/6 summaries intact, BGP transparent (session timestamps unchanged from Gate A). Gate C (RI hub-eu2, both hubs now RI-ON): 6/6 summaries survive, BGP stable across all three gates. Missing-summary bug NOT reproduced under sequential stable-state enablement. Root-cause analysis (Trinity): RI operates on data-plane forwarding table; `summarize-out` operates on BGP advertisement set — orthogonal planes. Gateway D concurrent-churn variant designed (dormant) to test race between RI policy-install and VPN connection rekey. Evidence: show-output/23–52. Decisions merged: tank-ri-eu1-enable, tank-ri-eu2-enable, niobe-gate-a/b/c, link-megaport-kv-retrieval, trinity-gate-c-analysis. Next: Jose direction on Gate D concurrent-churn variant.
+
+---
+
+## Learnings — Final Azure RG Teardown: routemap-test-rg (2026-07-31)
+
+**Lab:** vwan-routemap-summarization | **RG:** routemap-test-rg (now DELETED)
+
+### az group delete behaviour with vWAN + ER + AzFW
+- `az group delete -n routemap-test-rg --yes` deleted all ~70 resources in a single blocking call.
+- **Total elapsed: ~39 minutes** (16:42:51 → 17:22:12 UTC+2). Dominated by vWAN hub deprovision + ER gateway deletion. VPN gateways, ER gateways, and virtual hubs are the slow teardown path.
+- ER circuits (`er-eu1`, `er-eu2`) and their provider-owned AzurePrivatePeerings were cleanly deleted by the RG delete (no manual peering teardown required — they were already disconnected from Megaport before this step).
+- Azure Firewalls (AZFW_Hub SKU) do NOT appear in `az resource list -g <rg> -o table` output. They ARE present in the hub (confirmed by azureFirewall field on hub show). The RG delete handles them correctly despite the resource-list gap.
+- Firewall policy `azfwpol-routemap-lab` IS surfaced by `az resource list`. Policy was deleted by RG delete after the hub firewalls were gone (platform handles dependency ordering automatically in RG delete).
+
+### Prerequisite for clean RG delete (completed before this task)
+- Megaport VXCs and MCRs fully decommissioned (by Jose/Link).
+- ER gateway connections (`conn-er-eu1`, `conn-er-eu2`) deleted.
+- Routing Intent deleted on hub-eu1 and hub-eu2.
+- Azure Firewalls `azfw-eu1`, `azfw-eu2` deleted.
+- These prerequisites avoided 409/conflict errors that would otherwise block hub/ER-circuit deletion.
+
+### Post-delete verification
+- `az group show -n routemap-test-rg` → `ResourceGroupNotFound` (exit 3) ✅
+- `az network express-route list -g routemap-test-rg` → `ResourceGroupNotFound` (exit 3) ✅
+
+### Evidence
+- `labs/vwan-routemap-summarization/show-output/53-teardown-azure-rg.txt`
+
+---
+
+📌 Team update (2026-07-31T15:35:00Z): **LAB VWAN-ROUTEMAP-SUMMARIZATION FULLY DECOMMISSIONED.** All three clouds torn down in parallel session: Tank deleted Azure RG routemap-test-rg (39 min, ResourceGroupNotFound verified). Link decommissioned Megaport VXCs (CANCEL_NOW API, all jomore-copilot-* circuits gone, billing stopped) and GCP project vwan-routemap-lab (DELETE_REQUESTED, billing stopped). Trinity finalized README with teardown-status table (all rows ✅ DONE) and lab completion confirmation banner. 9 inbox decision files merged to .squad/decisions.md. Lab lifecycle: 2026-06-15 through 2026-07-31 (~6 weeks). Total cost: ~$4,200. Evidence preserved in show-output/ for blog/audit. No ongoing costs. Lab ready for publication and archive.
 
 
