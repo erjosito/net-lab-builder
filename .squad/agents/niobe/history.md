@@ -6,9 +6,109 @@
 - **Created:** 2026-05-28
 - **Role:** Lab Validator & Diagnostics — own labs/<lab>/{README.md, lessons-learned.md, show-output/, screenshots/, validation.md}; action verb vocabulary; sanitization checklist
 
-## Learnings (2026-07-31T09:52:00+02:00)
+**📌 SUMMARIZATION NOTE (2026-07-31):** This file has grown to ~19KB. Pre-Phase 3 learnings archived in `history-archive.md`. Active learnings (Phase 3 Gates A, B, C validation) retained below.
 
-**Phase 3 Gate A — FULL PASS — vwan-routemap-summarization**
+## Learnings (2026-07-31T11:45:00+02:00)
+
+**Phase 3 Gate C — FULL PASS / BUG NOT REPRODUCED — vwan-routemap-summarization**
+
+### Gate C outcome
+
+RI PrivateTraffic enabled on hub-eu2 (Tank). Measured both NVAs immediately after.
+RI enablement order: hub-eu1 FIRST (Gate B, ~09:30), hub-eu2 SECOND (Gate C, ~11:30).
+
+| Hub | NVA | RI state | BGP | Summaries | /24 leaks | Verdict |
+|-----|-----|----------|-----|-----------|-----------|---------|
+| hub-eu1 | nva1 | ON | Established | **6/6** | **0** | **PASS** |
+| hub-eu2 | nva2 | ON (new) | Established | **6/6** | **0** | **PASS** |
+
+**Headline: Missing-summary bug NOT reproduced under sequential RI enablement.**
+
+### Key empirical findings
+
+1. **Bug not reproduced.** Sequential RI enablement (stable state, no concurrent churn) did not
+   trigger the missing-summary condition at any gate (A, B, or C). All 6 summaries present on
+   both NVAs throughout the entire Phase 3 validation sequence.
+
+2. **Route count stable at 37/27 across ALL three gates.** No routes added or lost as RI was
+   progressively enabled. NVA BIRD RIB is driven by BGP from the hub VPN GW and is orthogonal
+   to RI's forwarding table changes.
+
+3. **BGP transparency across both RI enablements.** nva1's vpngw0/vpngw1 timestamps unchanged
+   from Gate A through Gate C (07:37:23/07:37:38 — never reset). nva2's vpngw0 had one brief
+   reconvergence at Gate B (hub-eu1 RI provision, 08:57:07), then was stable through Gate C.
+   Both RI enablements on hub-eu2 itself were BGP-transparent.
+
+4. **defaultRouteTable both hubs: _policy_PrivateTraffic confirmed.** Both hubs carry RFC1918
+   aggregates (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) → AzFW. This is the full RI state.
+   These aggregates did NOT suppress the per-connection route-map advertisement set at any point.
+
+5. **prepend-in AS-path effect is intra-hub.** The prepend-in route-map on hub-eu2 modifies
+   routes received FROM nva2 into hub-eu2. This effect is not visible in nva2's received-route
+   BIRD table. nva2 sees the hub's outbound (summarize-out) advertisement, not the inbound
+   prepend result. Confirmed Succeeded; de-preference mechanism intact at hub level.
+
+6. **Outstanding question for Trinity.** Bug may require concurrent churn: VPN connection
+   re-provisioning + RI enablement in the same time window. Not tested in this sequential lab.
+
+### Key file paths
+
+- show-output/43: both hubs secured + RI Succeeded (L1a)
+- show-output/44: route-maps intact (L1c); prepend-in confirmed
+- show-output/45: both defaultRouteTables with _policy_PrivateTraffic (L1d)
+- show-output/46: both firewalls Succeeded (L1e)
+- show-output/47: nva2 BGP Established (RI-ON)
+- show-output/48: **PRIMARY** nva2 BIRD RIB (6/6, 0 leaks, newly RI-ON hub)
+- show-output/49: nva2 route count (37/27)
+- show-output/50: nva1 BGP Established (stable since Gate A)
+- show-output/51: **PRIMARY** nva1 BIRD RIB (6/6, 0 leaks, both hubs RI-ON)
+- show-output/52: nva1 route count (37/27)
+- validation.md: Gate C section added (FULL PASS, bug not reproduced)
+- decisions/inbox/niobe-gate-c.md: team verdict + repro gap analysis
+
+
+
+### Gate B outcome
+
+RI PrivateTraffic enabled on hub-eu1 (swedencentral). Measured both NVAs immediately after.
+
+| Hub | NVA | RI state | BGP | Summaries | /24 leaks | Verdict |
+|-----|-----|----------|-----|-----------|-----------|---------|
+| hub-eu1 | nva1 | **ON** | vpngw0+vpngw1 Established | **6/6** | **0** | **PASS** |
+| hub-eu2 | nva2 | OFF (control) | vpngw0+vpngw1 Established | **6/6** | **0** | **PASS** |
+
+**Overall: FULL PASS.** RI and route-map summaries coexist without interference.
+
+### Key empirical findings
+
+1. **RI does NOT suppress route-map summaries.** The 10.0.0.0/8 aggregate in hub-eu1's
+   defaultRouteTable (_policy_PrivateTraffic) is a forwarding-layer construct (AzFW next-hop steering).
+   It does not modify the BGP advertisement set outbound to the VPN connection.
+   nva1's BIRD RIB: identical structure to Gate A — 6/6 summaries, 37/27, 0 /24 leaks.
+
+2. **RI enablement is BGP-transparent to the branch NVA.** nva1 vpngw0+vpngw1 timestamps
+   unchanged (07:37:23 / 07:37:38 from Gate A restore). Sessions not reset during RI enablement.
+
+3. **Brief vpngw0 reconvergence on nva2 (08:57:07).** Expected: when hub-eu1 undergoes
+   provisioning, nva2's vpngw0 session briefly reconverged. Not a failure — the RI enablement
+   on a peer hub causes a momentary hub-to-hub topology update that ripples to the non-RI hub's
+   VPN gateway BGP sessions. vpngw1 on nva2 stayed up continuously.
+
+4. **RIB symmetry confirmed.** nva1 (RI-on hub) and nva2 (RI-off hub) show structurally
+   identical RIBs at Gate B — same 6 summaries, same 37/27 count.
+
+### Key file paths
+
+- show-output/34: nva2 birdc show protocols (RI-off control, Established)
+- show-output/35: **PRIMARY** nva2 BIRD RIB (6/6 summaries, RI-off)
+- show-output/36: nva2 route count (37/27)
+- show-output/37: nva1 birdc show protocols (RI-ON hub, Established, timestamps unchanged)
+- show-output/38: **PRIMARY** nva1 BIRD RIB (6/6 summaries, RI-ON hub — key evidence)
+- show-output/39: nva1 route count (37/27)
+- validation.md: Gate B section added (FULL PASS)
+- decisions/inbox/niobe-gate-b.md: team verdict
+
+
 
 ### Gate A full re-run outcome
 
@@ -166,3 +266,7 @@ Ran a full live audit of `routemap-test-rg` on 2026-07-30 to answer "are we in P
 
 **Reuse from vwan-dual-er-symmetric** — Assertion table structure (# | Assertion | Command | Expected | Evidence), three-layer checklist pattern, sanitization checklist, post-deploy validation order, BGP peer-status check pattern. Adapted for simpler topology (no MCR, no vHub REST layers) and dual-stack MSEE-only (no GCP multi-region cross-traffic).
 
+
+---
+
+📌 Team update (2026-07-31T11:01:11Z): **Phase 3 Gates A, B, C FULL PASS — Complete Testing Arc**. Gate A (firewall deploy, RI OFF): 6/6 summaries on both NVAs, 0 /24 leaks, BGP Established. Gate B (RI hub-eu1): 6/6 summaries intact, BGP transparent (session timestamps unchanged from Gate A). Gate C (RI hub-eu2, both hubs now RI-ON): 6/6 summaries survive, BGP stable across all three gates. Missing-summary bug NOT reproduced under sequential stable-state enablement. Root-cause analysis (Trinity): RI operates on data-plane forwarding table; summarize-out operates on BGP advertisement set — orthogonal planes. Gate D concurrent-churn variant designed (dormant) to test race between RI policy-install and VPN connection rekey. Evidence: show-output/23–52. Decisions merged: tank-ri-eu1-enable, tank-ri-eu2-enable, niobe-gate-a/b/c, link-megaport-kv-retrieval, trinity-gate-c-analysis. Next: Jose direction on Gate D concurrent-churn variant.

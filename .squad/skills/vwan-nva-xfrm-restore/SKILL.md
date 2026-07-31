@@ -119,6 +119,11 @@ If `az vm run-command invoke` returns `Conflict/409` ("execution in progress"):
 - `az vm run-command create` (newer persistent API) may also hang
 - Resolution: `az vm redeploy -g <rg> -n <vm>` or `az vm delete + recreate`
 - The stuck state persists across VM deallocation/restart (extension agent state is on disk)
+- **Only a host migration (redeploy) clears the stuck extension.**
+
+**Redeploy timing note (2026-07-31, nva1, swedencentral):** Redeploy took ~90 minutes due to
+swedencentral infrastructure congestion. VM stayed in `ProvisioningState: Updating` for the full
+duration. This is not a failure — wait it out. If >90 min, consider delete+recreate instead.
 
 **Do NOT submit complex multiline scripts** (bash heredocs, grep with pipes, 2>/dev/null in
 complex chains) via PowerShell az vm run-command. Always use semicolon-separated single-line
@@ -126,7 +131,7 @@ commands. Test with `echo VM_ALIVE` before any longer script.
 
 ---
 
-## Timing Reference (tested, nva2, routemap-test-rg)
+## Timing Reference (tested, routemap-test-rg)
 
 | Operation | Duration |
 |-----------|----------|
@@ -135,8 +140,18 @@ commands. Test with `echo VM_ALIVE` before any longer script.
 | IPsec tunnel establishment (both) | ~15 seconds (per swanctl output) |
 | BGP convergence (Idle → Established) | ~75 seconds |
 | **Total: deallocated → BGP Established** | **~3 minutes** |
+| az vm redeploy (swedencentral, 2026-07-31) | ~90 minutes (infrastructure congestion) |
+| az vm redeploy (typical) | ~10–15 minutes |
+
+## XFRM Tunnel "Existing Duplicate" Observation
+
+If `swanctl --initiate` returns "not establishing CHILD_SA due to existing duplicate":
+- This is **not an error** — it means the Azure VPN GW already renegotiated the IPsec SA
+- The tunnel is already up; the explicit initiate step is belt-and-suspenders
+- BGP convergence will still follow within ~75s of xfrm interface creation + swanctl load
 
 ---
 
 *Niobe — Lab Validator & Diagnostics*  
-*Tested: 2026-07-30T17:10:00+02:00 on nva2 (hub-eu2, westeurope)*
+*Tested: 2026-07-30T17:10:00+02:00 on nva2 (hub-eu2, westeurope)*  
+*Updated: 2026-07-31T09:45:00+02:00 by Tank — redeploy timing + existing-duplicate observation added (nva1, swedencentral)*

