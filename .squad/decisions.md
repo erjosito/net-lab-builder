@@ -3437,3 +3437,164 @@ carrying the same false endpoint claim was corrected to point at the same two NV
    `conn-hub2-to-onprem` / `conn-onprem-to-hub2` (Δ2 direct-adjacency evidence is destroyed by it).
 6. Outcome C remains **unclaimed and untested** under variant N; variant D (and its cost/burden) is
    the only path that would make it testable in this lab.
+
+
+# Oracle — inline Mermaid diagrams for US01–US12 (route-map user stories)
+
+**Author:** Oracle (Documentation & Diagrams)
+**Date:** 2026-08-05T11:10:29+02:00
+**Status:** Recorded — awaiting Scribe merge
+**Artifact:** `labs/dual-hub-hubless-region-ars/route-map-user-stories.md` (v5.1, owner Morpheus)
+**Requested by:** Jose Moreno, routed via Niobe (US01–US12 approved; inline Mermaid authoring
+explicitly authorised)
+
+## Context
+
+The user story catalogue carried 17 approved diagram specifications in `§3 Diagram index for Oracle`
+but no rendered figures. Jose's request — *"Adding mermaid diagrams to the user stories would improve
+readability."* — is a readability change only. The mandate was explicit that nothing else moves:
+architecture, feasibility claims, applicability classifications, story intent, validation plans,
+current-lab deltas, costs, citations, Azure/IaC, README, manifest and live resources are all
+unchanged, and no commit is made.
+
+## 1. What was added
+
+19 inline, GitHub-renderable ` ```mermaid ` blocks covering all 17 stable diagram IDs. Every story
+US01–US12 has at least one figure.
+
+| Story | Anchor ID(s) | Blocks |
+|---|---|---|
+| US01 | `US01-inter-hub-selective-exchange` | 1 |
+| US02 | `US02-hybrid-egress-preference` | 1 |
+| US03 | `US03-dynamic-default-injection` | 1 |
+| US04 | `US04-inbound-prefix-admission` | 1 |
+| US05 | `US05-outbound-prefix-hygiene` | 1 |
+| US06 | `US06-per-group-policy-segmentation` | 1 |
+| US07 | `US07-route-aggregation-scale` | 1 |
+| US08 | `US08-community-tagging-policy` | 1 |
+| US09 | `US09-policy-placement-migration` | 1 |
+| US10 | `US10-bow-tie-generic-er` | 2 (normal; F1+F4 failure) |
+| US10 | `US10-bow-tie-lab-vpn-analogue` | 1 |
+| US11 | `US11-no-overlay-native-peering` | 1 |
+| US11 | `US11-no-overlay-direct-workloads` | 1 |
+| US11 | `US11-no-overlay-static-nva-transit` | 1 |
+| US12 | `US12-square-hybrid-normal` | 1 |
+| US12 | `US12-square-hybrid-failover` | 2 (S-A lost; S-D lost) |
+| US12 | `US12-square-hybrid-lab-analogue` | 1 |
+
+Each block sits immediately after its story's generic reference topology and before the detailed
+mechanism analysis; lab-analogue blocks head their own "current lab" subsection. Each carries an
+`<a id="...">` anchor on the index's stable ID, a bold figure caption, one concise *What to look for*
+sentence, and a `%% diagram-id:` comment inside the fence so the ID survives extraction.
+
+## 2. Visual grammar (uniform across all 19 blocks)
+
+| Meaning | Edge |
+|---|---|
+| Native Azure connectivity / ordinary forwarding | `-->` |
+| BGP or other control-plane adjacency | `-.->` |
+| Primary / active data path | `==>` |
+| Conditional / backup data path | labelled `-.->` |
+| Policy or annotation attachment | `-.-` dotted, no arrowhead, to a side node |
+
+Policy nodes are never inserted as forwarding hops. **Azure Route Server appears only on dashed
+control-plane and dotted policy edges** — verified mechanically: zero `ars*` node occurrences on any
+`==>` or `-->` edge in any block. Shared `classDef` palette reused throughout: `azure`, `onprem`,
+`nva`, `policy`, `blocked`, `note`.
+
+## 3. Overlay terminology (§0.1)
+
+Global VNet peering is drawn as **underlay / native connectivity**. NVA-to-NVA BGP is drawn as a
+**control-plane adjacency**, never as an encapsulation. GRE/IPsec/VXLAN appears only where the story
+genuinely requires encapsulation, on a separate labelled edge, with the forwarded data path kept
+visually distinct. Diagrams stay generic and topology-independent; current-lab reuse appears only as
+a short `*Current-lab note (not drawn):*` caption line or inside the two explicitly approved
+lab-analogue diagrams. The deployed topology is never silently substituted for a generic test bed.
+
+## 4. Story-specific constraints honoured
+
+- **US01** — the simpler non-overlay path (global peering underlay, thick edge) is the default;
+  encapsulation appears only as a greyed conditional-variant note node. The approved shared-services
+  subset is visually motivated ("the only R1 prefix R2 may learn"; both spokes marked not offered).
+- **US06** — remains a platform-blocked story. The *desired* per-group policy attachment is retained
+  and drawn, alongside an explicit node stating the missing Azure attachment boundary. UDR policy
+  nodes carry the real differentiation. It does not read as supported.
+- **US10** — both approved IDs used; generic ER plus VPN lab analogue. No association is shown as
+  proven (the ARS↔NVA label preserves "map-eligible per D2, association untested"). Route Server is
+  never a data hop. The overlay import/export explicitly excludes `0.0.0.0/0` and set-C. The lab
+  analogue carries the S3 `conn-hub2-to-onprem` deletion, the `65515` drop on `vpngw-hub2`, and a
+  note that `ars-hub2` is not on the failure chain.
+- **US11** — all three retained index IDs used, clearly distinguishing native hub-only peering,
+  direct workload/AVNM connectivity, and conditional static NVA transit (marked "to be
+  demonstrated"). Variant A carries three explicit "does NOT cross" annotations and states that no
+  NVA-to-NVA tunnel and no NVA-to-NVA BGP session exists in the figure, so hub peering is never
+  implied to propagate spoke prefixes.
+- **US12** — `flowchart TB` with four quadrant subgraphs and explicit S-A/S-B/S-C/S-D side labels.
+  The absent diagonal hybrid links are represented **only** by a `NOT PRESENT — by design`
+  annotation node; no diagonal edges are drawn. The normal figure marks B2 as hub-address-space-only
+  under variant N. The failure figure shows the three surviving sides and states that full outcome C
+  requires dynamic prefix carriage and automatic withdrawal (both left unchecked in the
+  prerequisites panel). Global Reach appears only on S-D/B1 and never as an S-B or outcome-C path.
+
+## 5. Splits and one documented exception
+
+Two approved specs were **split into two fences under a single anchor** rather than compressed into
+one hairball, keeping each figure near the ~15-node budget without shrinking labels:
+
+- `US10-bow-tie-generic-er` — normal state / F1+F4 failure state. The spec itself calls for a
+  "failure inset".
+- `US12-square-hybrid-failover` — S-A lost / S-D lost. The spec itself allows "a second, smaller
+  figure (or a clearly separated subgraph)".
+
+Both splits preserve the one-anchor-per-index-ID invariant (one `<a id>`, two fences).
+
+`US12-square-hybrid-normal` ends at **16 nodes** — a deliberate, recorded exception. Splitting the
+square would destroy the figure's core assertion, which is precisely that all four sides are read
+together.
+
+## 6. Grammar reconciliation (flagged for review)
+
+The US12 specification text states *"BGP control plane = `-->`, tunnel = `-.->`"*, which inverts the
+global grammar mandated for this task. I followed the **task's** grammar so that all 19 figures read
+consistently, and stated the mapping explicitly inside the US12 `Legend` subgraph so a reader of that
+one figure is not misled. The load-bearing US12 constraint — no Route Server on a thick data-plane
+edge — holds under either convention. If Morpheus prefers the spec's local convention, the fix is a
+one-line legend change plus edge-style swap in the three US12 blocks; flagging rather than deciding.
+
+## 7. Index and summary-table updates (scope-limited)
+
+- Front summary table: the `Diagram IDs` cells were converted from plain code spans to anchor links
+  (`[`ID`](#ID)`). No other field in that table was touched.
+- `§3 Diagram index for Oracle`: each ID/slug is now an anchor link, and a new `Status` column reads
+  **Embedded and validated** with the block count. The existing Story and Core-visual-assertion text
+  is unchanged.
+
+## Validation
+
+| Check | Result |
+|---|---|
+| Distinct Mermaid blocks rendered | **19 / 19 PASS** |
+| Renderer | already-installed `@mermaid-js/mermaid-cli` from the local npx cache — no new tooling installed |
+| Renderer proven meaningful | confirmed exit 1 on deliberately broken syntax before trusting exit 0 |
+| Re-render after table/index edits | 19 / 19 PASS |
+| Fence balance | 19 open ` ```mermaid ` / 19 close / 0 unterminated |
+| Anchors per index ID | 17 anchors, exactly one per ID, no duplicates |
+| Stories with >= 1 diagram | 12 / 12 (US01–US12) |
+| Route Server on a data-plane arrow | none — zero `ars*` occurrences on `==>` or `-->` in any block |
+| Deletions | none — heading count and all 12 story headings unchanged; US06's blocked framing, the scenario-retention policy and the retained US10 scenarios all still present |
+| Content hygiene | no raw resource IDs, subscription IDs, secrets, portal URLs, non-ASCII arrows inside node labels, or HTML-heavy labels |
+
+Per-block validation inventory (ID · blocks · result): all 17 IDs **PASS**; the two multi-block IDs
+(`US10-bow-tie-generic-er`, `US12-square-hybrid-failover`) passed on both fences.
+
+## Change footprint
+
+| File | Change |
+|---|---|
+| `labs/dual-hub-hubless-region-ars/route-map-user-stories.md` | 19 Mermaid blocks + 17 anchors + captions inserted; front-table diagram-ID cells linked; §3 index linked and given a `Status` column |
+| `.squad/agents/oracle/history.md` | appended this task's entry |
+| `.squad/decisions/inbox/oracle-user-story-mermaid.md` | this brief |
+
+**Not changed:** architecture, feasibility claims, applicability classifications, story intent,
+validation plans, current-lab deltas, costs, citations, Azure/IaC, README, manifest, live resources.
+**No deployment. No git commit.** Scratch working directory removed after validation.

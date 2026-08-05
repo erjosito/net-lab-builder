@@ -1,5 +1,5 @@
 # Scribe Session Log
 
-- **Time:** 2026-08-05T10:26:52.618+02:00
-- **Scope:** decisions merge, archival, and team logging
-- **Outcome:** merged inbox decisions into decisions.md; archived stale decisions older than 7 days; wrote orchestration and session logs.
+- **Time:** 2026-08-05T11:10:29.060+02:00
+- **Scope:** decisions merge, orchestration logging, and health measurement
+- **Outcome:** merged the oracle inbox brief into decisions.md, confirmed no archive candidates by timestamp, removed the processed inbox file, and wrote orchestration logs plus this session note.
