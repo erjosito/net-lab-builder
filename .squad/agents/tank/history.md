@@ -14,7 +14,8 @@ Tank completed three major infrastructure missions: Lab #1 multi-step cleanup au
 
 **Lab #1 (2026-05-28):** Established 6-step mandatory ER cleanup chain; fixed Windows subprocess environment variable isolation (inline HCL ternary-evaluated credentials bypass scope leakage); secured credential files and .gitignore patterns.
 
-**Lab #2 IaC scaffold (2026-06-15):** Deployed fully multi-cloud lab (g-vwan-symm-103167 + gcp-vwan-symm-103167, 71 resources) with per-region VM size variables (SKU catalog drift between swedencentral/northeurope), routing-intent dependency ordering, GCP provider aliasing, Megaport MCR market pre-flight validation, permissive AzFW RFC1918 rules for routing-intent=private flows. **Pre-deploy 	erraform plan with placeholder credentials is a valid graph-validation step** — confirms resource graph, inter-resource references, and conditional resources (bow-tie) build correctly before secrets are injected.
+**Lab #2 IaC scaffold (2026-06-15):** Deployed fully multi-cloud lab (
+g-vwan-symm-103167 + gcp-vwan-symm-103167, 71 resources) with per-region VM size variables (SKU catalog drift between swedencentral/northeurope), routing-intent dependency ordering, GCP provider aliasing, Megaport MCR market pre-flight validation, permissive AzFW RFC1918 rules for routing-intent=private flows. **Pre-deploy 	erraform plan with placeholder credentials is a valid graph-validation step** — confirms resource graph, inter-resource references, and conditional resources (bow-tie) build correctly before secrets are injected.
 
 **Lab #2 patches & iterations:** Fixed missing secondary ER VXCs (dual-port MSEE requires 2 VXCs per circuit); migrated GCP vpc_a from REGIONAL to GLOBAL routing (in-place update, pairing key preserved); debugged and resolved Megaport API errors (TF_LOG=DEBUG required — "Still creating..." heartbeats hide 400s for 30+ min), GCP PARTNER attachment constraints (no andwidth field, ASN=16550 mandatory, pairing_key from Terraform google provider), vWAN routing-intent + spoke connection routing block conflict (must be empty; Azure auto-populates), ER GW + connection 409 races (retryable on next apply), PowerShell async wrapper + KV ACL (finally-blocks don't run on Stop-Process — always synchronous for KV-modifying scripts). **Key architectural decision deferred:** Megaport credential variables retained in TF as reusable cleanup pattern (enables faster automation without re-implementing provider modifications).
 
@@ -258,3 +259,57 @@ Both hubs are now RI-enabled (PrivateTraffic). hub-eu2 carries `summarize-out` +
 📌 Team update (2026-07-31T15:35:00Z): **LAB VWAN-ROUTEMAP-SUMMARIZATION FULLY DECOMMISSIONED.** All three clouds torn down in parallel session: Tank deleted Azure RG routemap-test-rg (39 min, ResourceGroupNotFound verified). Link decommissioned Megaport VXCs (CANCEL_NOW API, all jomore-copilot-* circuits gone, billing stopped) and GCP project vwan-routemap-lab (DELETE_REQUESTED, billing stopped). Trinity finalized README with teardown-status table (all rows ✅ DONE) and lab completion confirmation banner. 9 inbox decision files merged to .squad/decisions.md. Lab lifecycle: 2026-06-15 through 2026-07-31 (~6 weeks). Total cost: ~$4,200. Evidence preserved in show-output/ for blog/audit. No ongoing costs. Lab ready for publication and archive.
 
 
+
+---
+
+## 2026-08-03 — Lab #4 dual-hub-hubless-region-ars: IaC Authored + Validated
+
+Bicep IaC complete. Preflight all 4 regions PASS. ARM validate PASS. NOT deployed.
+Files: deploy/{templates/main.bicep,modules/,nva1/2-cloud-init.yaml,deploy.ps1,cleanup.ps1,parameters/,deploy-log.md}
+Key decisions: Bicep; single-RG multi-region; ARS as virtualHubs + ipConfigurations child; PSKs in-process; BIRD multihop 4; VPN GW ASN=65515; b2b=true hub1/hub2 ARS; Δ3 not wired (S4 only).
+
+---
+
+## Learnings — Hub ARS Route-Map Upgrade (ars-hub1/ars-hub2) — 2026-08-05
+
+**Lab:** dual-hub-hubless-region-ars | **RG:** rg-dual-hub-hubless-region-ars-lab3d001
+
+### Route-map upgrade on hub ARS works (contrast with ars-poland failure)
+- `ars-hub1` peer-nva1 IP `10.10.1.4` is within `vnet-hub1` (10.10.0.0/16) → same VNet as the ARS. `HubBgpConnectionFromSpokeVnetCannotReferenceRouteMap` does NOT fire.
+- `ars-hub2` peer-nva2 IP `10.20.1.4` is within `vnet-hub2` (10.20.0.0/16) → same logic. Route maps are fully usable on hub ARS NVA peerings.
+- The locality constraint only blocks cross-VNet multihop BGP peers (as ars-poland demonstrated).
+
+### `az rest` body must use `@file` syntax on Windows
+- `az rest --body '{"json":"inline"}'` works on Linux but caused `UnsupportedMediaType: null` errors on Windows PowerShell (Content-Type header not set correctly when body is a raw string).
+- Correct pattern: write body to a `.json` file, then `az rest --body "@C:\full\path\to\body.json"`. This sets Content-Type automatically and works on Windows.
+- The delta3 show-output `routemap-body.json` was the template to follow — same format works for hub ARS.
+
+### Upgrade timing observed (concurrent triggers, ~30 min each)
+- hub1 `Updating → Succeeded`: 22.4 min
+- hub2 `Updating → Succeeded`: 25.7 min (triggered 23 seconds after hub1; both converged separately)
+- Both within the documented ~30 min window. Triggering in parallel is safe.
+
+### Activation map design (inert, idempotent)
+- Map name pattern: `rm-<ars-name>-activate` (e.g. `rm-hub1-activate`)
+- Rule: match RFC5737 TEST-NET `192.0.2.0/24` (Equals) → Add AS-Path [64496] → Terminate
+- No `associatedInboundConnections` / `associatedOutboundConnections` → inert, no routing effect
+- Body omits association arrays — API defaults to `[]`, confirmed in response.
+- Idempotency: GET before PUT; if `provisioningState == Succeeded`, skip create.
+
+### API version: 2024-10-01 confirmed required (not 2024-05-01)
+- Both hub upgrades used `2024-10-01`. Confirmed as minimum for routeMaps sub-resource on ARS virtualHubs.
+
+### Cost surcharge
+- Each hub ARS now incurs route-map surcharge (~$6/day). Two hubs = ~$12/day additional on top of existing lab cost.
+- Surcharge is irreversible without ARS recreate. Confirmed by prior ars-poland experience.
+
+### Smoke-check after upgrade
+- 4 VPN connections remain Connected ✅
+- ARS peering provisioningState = Succeeded ✅
+- ars-poland untouched ✅
+- Hub learned routes remained empty (BIRD idle between scenarios — same as pre-upgrade, not upgrade-induced)
+
+### Activation script saved
+- `labs/dual-hub-hubless-region-ars/deploy/activate-hub-ars-routemaps.ps1` — idempotent, parallel, polls until Succeeded or 45-min timeout.
+
+📌 Team update (2026-08-05T10:26:52.618+02:00): Hub ARS route-map upgrade decision merged; inert activation maps recorded without affecting live routing.

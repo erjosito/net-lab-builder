@@ -43,6 +43,7 @@ hub-eu2). There is no reason to stagger by hub — both have identical PASS stat
 Primary evidence: 25 (nva1 RIB) and 26 (nva2 RIB).
 Full verdict in: `labs/vwan-routemap-summarization/validation.md` → "Phase 3 — Gate A" section.
 
+---
 
 ### 2026-07-31T09:45:00+02:00: nva1 Redeploy Outcome + NVA Restore Results
 
@@ -92,6 +93,7 @@ Capture file: `labs/vwan-routemap-summarization/show-output/22-phase3-nva-restar
 - **Tank (deferred, Phase 4):** Implement systemd service for xfrm-persistence to eliminate manual restore on future dealloc/start cycles.
 - **Tank (future risk):** If nva1 gets a stuck extension again after another failover cycle, try `az vm redeploy` first. If it takes >90 min again, escalate to delete+recreate (coordinates with Jose for NVA config preservation).
 
+---
 
 ### 2026-07-30T17:15:00+02:00: Niobe Gate A Verdict — Phase 3 (Firewall Deployed, No Routing Intent)
 
@@ -136,11 +138,15 @@ Or Option B (risk-accepted): Jose enables RI on hub-eu2 first, defers hub-eu1 un
 
 **Evidence:** show-output/13–20 (L1a–L2 full measurement suite); validation.md Phase 3 Gate A section updated.
 
+---
+
 ### 2026-07-30T21:49:01+02:00: Alternate failover method - Megaport VXC BGP (next session)
 **By:** Jose (via Copilot)
 **What:** For triggering a leg-down / failover, an easier method than NVA-side teardown (systemctl stop bird + swanctl --terminate) is to disable or misconfigure BGP on one of the Megaport VXCs at the Megaport (L2 fabric) level - IF Megaport API/portal credentials are available.
 **Why:** Cleaner, fabric-level failover trigger. Drops a leg at the ExpressRoute/Megaport layer instead of at the NVA, and would exercise the VPN<->ER path-switch dimension noted as still-untested in Phase 2. Requires Megaport credentials - confirm availability before attempting.
 **Action:** Next session, check for Megaport credentials. If present, Niobe/Tank can use a Megaport VXC BGP disable/misconfig as the failover trigger for the fabric-level path-switch test.
+
+---
 
 ### 2026-07-31T10:40:00+02:00: Routing Intent Enabled on hub-eu1
 **By:** Tank
@@ -186,6 +192,8 @@ Policy: PrivateTraffic only (no InternetTraffic). nextHop = azfw-eu1 resource ID
 - `show-output/32-gate-b-hub-eu1-ri-enable.txt`
 - `show-output/33-gate-b-hub-eu1-routetable-POST-ri.txt`
 
+---
+
 ### 2026-07-31T10:55:00+02:00: Gate B FULL PASS — vwan-routemap-summarization
 **By:** Niobe
 **From:** Niobe (Validation)
@@ -229,6 +237,8 @@ No risk signal from single-hub RI. The coexistence hypothesis is empirically con
 `labs/vwan-routemap-summarization/show-output/` — files 34–39.
 Primary evidence: 38 (nva1 RIB, RI-ON hub) and 35 (nva2 RIB, RI-off control).
 Full verdict in: `labs/vwan-routemap-summarization/validation.md` → "Phase 3 — Gate B" section.
+
+---
 
 ### 2026-07-31T11:45:00+02:00: Routing Intent Enabled on hub-eu2 — PRIMARY REPRO STATE
 **By:** Tank
@@ -277,6 +287,8 @@ az network vhub routing-intent create \
 - `show-output/40-gate-c-hub-eu2-routetable-PRE-ri.txt`
 - `show-output/41-gate-c-hub-eu2-ri-enable.txt`
 - `show-output/42-gate-c-hub-eu2-routetable-POST-ri.txt`
+
+---
 
 ### 2026-07-31T11:45:00+02:00: Gate C FULL PASS — vwan-routemap-summarization
 **By:** Niobe
@@ -331,6 +343,8 @@ The stress variant (concurrent churn) remains untested.
 Primary evidence: 48 (nva2 RIB, newly RI-ON hub) and 51 (nva1 RIB, RI-ON both hubs).
 Full verdict in: `labs/vwan-routemap-summarization/validation.md` → "Phase 3 — Gate C" section.
 
+---
+
 ### 2026-07-31T12:00:00+02:00: Megaport Credentials Retrieved — Reusable Pattern
 **By:** Link
 **Date:** 2026-07-31T12:00:00+02:00
@@ -357,6 +371,8 @@ This pattern is reusable for any future phase that requires private vault access
 ## Security Note
 
 Secret values are **NOT** recorded anywhere in this repository. Only KV secret names and retrieval method are documented.
+
+---
 
 ### 2026-07-31T12:05:00+02:00: Gate C Root-Cause Analysis + Gate D Proposal
 **By:** Trinity
@@ -555,6 +571,8 @@ Final state: **all `jomore-copilot-*` products → DECOMMISSIONED**.
 
 ## Reusable Teardown Pattern
 
+---
+
 ### Step 1: Auth
 
 ```powershell
@@ -566,12 +584,16 @@ $TOKEN = (Invoke-RestMethod -Uri "https://auth-m2m.megaport.com/oauth2/token" `
 $H = @{ Authorization = "Bearer $TOKEN"; "Content-Type" = "application/json" }
 ```
 
+---
+
 ### Step 2: Inventory
 
 ```powershell
 $products = (Invoke-RestMethod -Uri "https://api.megaport.com/v2/products" -Headers $H).data
 $labProds = $products | Where-Object { $_.productName -like "jomore-copilot-*" }
 ```
+
+---
 
 ### Step 3: Delete VXCs First (order matters)
 
@@ -581,6 +603,8 @@ foreach ($uid in $vxcUids) {
     Invoke-RestMethod -Uri $url -Method POST -Headers $H
 }
 ```
+
+---
 
 ### Step 4: Delete MCRs
 
@@ -770,6 +794,8 @@ Do NOT delete the RG until Link confirms Megaport teardown is complete.
 
 ## What changed and why
 
+---
+
 ### README.md — complete rewrite
 
 The existing README described Phase 3 as "Not started" and had no scannable entry point for a
@@ -782,17 +808,25 @@ casual reader. Rewritten as the lab's front door with:
 
 **Structure decision:** Evidence index lives as a collapsible in README (not a separate evidence.md file) to minimize link depth — one click from landing page to any of the 52 files.
 
+---
+
 ### manifest.md — Phase 3 resources added
 
 Added three Phase 3 resources to the inventory table (azfwpol-routemap-lab, azfw-eu1/eu2, hub-eu1-ri/eu2-ri). Updated Out-of-scope section (removed stale "Phase 3 not started" bullet). Updated validation plan section with API gap note. Added back-link to README. Topology ASCII updated to show secured hubs with 🔒 marker.
+
+---
 
 ### lessons-learned.md — Phase 3 Gate B/C section added
 
 Added TOC + back-link header. New section covers: orthogonal-planes root cause (table form), concurrent-churn gap, BGP stability observation, az vm redeploy swedencentral caveat, prepend-in + summarize-out coexistence finding.
 
+---
+
 ### design-phase3.md — status updated, back-link added
 
 Changed Status from "DESIGN-ONLY" to "COMPLETE — all gates validated 2026-07-31". Added back-link to README. (Gate C Result + Gate D section was added in earlier dispatch.)
+
+---
 
 ### validation.md — back-link added only
 
@@ -901,16 +935,24 @@ The Megaport v3 REST API does not have a `DELETE /v3/product/{uid}` endpoint —
 
 ## Decision: Azure Route Server in Bicep via `Microsoft.Network/virtualHubs` + child `ipConfigurations`
 
+---
+
 ### Context
 No existing Bicep ARS pattern in src/. ARM schema for `virtualHubs` marks `kind` and `ipConfigurations` as read-only in the resource properties object, blocking the naive `kind: 'RouteServer'` approach.
+
+---
 
 ### Decision
 1. Declare ARS as `Microsoft.Network/virtualHubs@2023-09-01` with `properties: { sku: 'Standard', allowBranchToBranchTraffic: bool }`.
 2. Attach PIP + subnet via separate child resource `Microsoft.Network/virtualHubs/ipConfigurations`.
 3. Wire NVA BGP peerings via `Microsoft.Network/virtualHubs/bgpConnections` sub-resources depending on `ipConfigurations`.
 
+---
+
 ### Why
 `kind` is auto-inferred from `sku: 'Standard'` by ARM. `ipConfigurations` as a child resource avoids the BCP073 read-only warning and matches how ARS is actually provisioned via the REST API.
+
+---
 
 ### Implication for future labs
 Any new ARS in Bicep should follow the two-step pattern: `virtualHubs` resource → `ipConfigurations` child → `bgpConnections` children. Not `kind: 'RouteServer'` inline.
@@ -1142,6 +1184,8 @@ Morpheus's structural claims are a mix of one correct fact wrapped in three inco
 
 ## Answers to the 8 review questions
 
+---
+
 ### Q1 — Feasibility of the original chain with per-NVA AS-path stripping
 
 **Yes, feasible.** This is the Microsoft-documented multi-region ARS pattern. From the Learn doc's "BGP AS path manipulation" section:
@@ -1170,6 +1214,8 @@ Loop-prevention issues:
 - NVA1↔NVA2 do **not** BGP-peer to each other directly in the original design (both peer to central ARS, and each peers to its own local hub ARS). The central-ARS fanout is the only inter-hub path, so there's no direct hub↔hub loop.
 - The only real loop risk is the NVA-to-local-ARS step above — solved by the AS_PATH-delete filter. BIRD and FRR both support this natively (no scripting).
 
+---
+
 ### Q2 — Does NVA2 prepend survive VPN Gateway propagation to the simulated-on-prem Azure VPN GW?
 
 **Yes, private ASNs are preserved across Azure VPN Gateway.** The ARS FAQ is explicit that private-ASN stripping is an **ExpressRoute** behaviour (via MSEE), not a VPN behaviour:
@@ -1180,6 +1226,8 @@ Loop-prevention issues:
 No equivalent statement exists for VPN Gateway. Azure VPN Gateway BGP is a straightforward eBGP speaker; AS_PATH prepends applied upstream are preserved end-to-end over IPsec.
 
 Practical consequence: NVA2's `bgp_path.prepend(65002)` (×N) in BIRD, or FRR's `set as-path prepend 65002 65002`, produces a longer AS_PATH that survives all the way to the on-prem VPN GW. **Preference works.**
+
+---
 
 ### Q3 — Can ARS route maps be usefully tested by an inbound map on NVA2's BGP peering to prepend NVA2-originated 0/0?
 
@@ -1196,6 +1244,8 @@ Practical consequence: NVA2's `bgp_path.prepend(65002)` (×N) in BIRD, or FRR's 
 
 So route maps can carry the **default-route preference** experiment. The **spoke-prefix preference** experiment must stay NVA-side (BIRD/FRR).
 
+---
+
 ### Q4 — Do two hub VPN GWs at ASN 65515 confuse the on-prem VPN GW?
 
 **No.** eBGP peers may share a remote ASN — they're identified by IP. Best-path selection at the on-prem VPN GW is then driven by AS_PATH length (there is no `LOCAL_PREF` lever on Azure VPN GW), which is exactly the lever NVA2's prepend gives us. Multiple-tunnel semantics with automatic withdrawal are documented at https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-bgp-overview ("Support multiple tunnels between a VNet and an on-premises site with automatic failover based on BGP").
@@ -1206,6 +1256,8 @@ Coexistence constraint (ARS + VPN GW same VNet, from https://learn.microsoft.com
 - Branch-to-branch **must** be enabled for NVA↔GW exchange.
 
 All three are satisfied by the original design.
+
+---
 
 ### Q5 — Regional-outage failover: exact withdrawal events + 180s bound
 
@@ -1237,6 +1289,8 @@ During the asymmetry window: **forward via NVA1 (dead) black-holes, return via h
 - **NVA-side**: aggressively short BGP keepalive/hold on the NVA (that doesn't tune ARS but does propagate BGP KEEPALIVE more often, letting ARS detect faster on any TCP-level nudge).
 - **Datapath-side**: on the spoke, keep the VPN-GW-hosted default as a secondary via UDR (belt-and-braces). Adds operational complexity — leave as a documented patch, not baseline.
 
+---
+
 ### Q6 — Route-reflection/loop with 65515 appearing twice in the path
 
 The AS_PATH toward on-prem for a spoke prefix via hub1 is `[65515, 65001]` in the clean case (central ARS's 65515 stripped by NVA1, hub1 VPN GW re-prepends 65515). Only one 65515 in the path.
@@ -1253,6 +1307,8 @@ Prepend-in-addition (for NVA2 spoke-prefix demotion):
 - BIRD 2: `bgp_path.prepend(65002); bgp_path.prepend(65002);` in the same export filter, after the delete.
 - FRR: `set as-path prepend 65002 65002` in the same route-map.
 
+---
+
 ### Q7 — Does the design prove full-regional outage?
 
 **No — it proves hub-regional outages, not a full 3-region outage.** The central-ARS VNet is a fourth-region control-plane SPOF for spoke-injection. If the central-ARS region fails, spokes stop learning both defaults and lose spoke↔on-prem entirely (because their gateway-transit peering points at central ARS's fabric).
@@ -1262,6 +1318,8 @@ Prepend-in-addition (for NVA2 spoke-prefix demotion):
 - **Reject:** if Jose actually wants full 3-region outage coverage, this design won't demonstrate it. Morpheus's alternative (or a per-hub ARS + inter-hub NVA tunnels variant) is the answer for that.
 
 **Reviewer recommendation:** Accept the scoping as-is. Document the SPOF in `design.md` and reference the production evolution path.
+
+---
 
 ### Q8 — Corrected verdict
 
@@ -1383,6 +1441,8 @@ One blocking defect. **Tank is under reviewer lockout — a DIFFERENT eligible a
 
 ## Blocking Defect
 
+---
+
 ### B1 — NVA1 NSG missing multihop BGP allow rule for Poland ARS [BLOCKING]
 
 **File:** `deploy\templates\main.bicep`, resource `nsgNvaHub1` (lines ~148–200)
@@ -1421,11 +1481,17 @@ destinationPortRange: '179'
 
 ## Non-Blocking Observations (no re-review required for these)
 
+---
+
 ### O1 — Manifest peering count inconsistency
 `manifest.md §1` Resource Count states "26 peering objects (13 logical pairs)". Actual Bicep has **20 objects (10 logical pairs)**, consistent with `design.md §3` and `cleanup.ps1` step 5 comment. The manifest annotation is incorrect. Does not affect deployment.
 
+---
+
 ### O2 — Manifest BGP multihop annotation
 `manifest.md §3` BGP session table says `BIRD multihop 3`; both `nva1-cloud-init.yaml` and `nva2-cloud-init.yaml` correctly set `multihop 4` per `design.md §4` (≥4 required). The BIRD configs are correct; the manifest annotation is wrong. Does not affect deployment.
+
+---
 
 ### O3 — ARS Bicep SKU property format (BCP073)
 `ars.bicep` sets `properties.sku: 'Standard'` (string) instead of the object form `sku: { name: 'Standard', tier: 'Standard' }` at top-level. Triggers BCP073 lint warning. ARM `validate` passed per deploy-log. Not blocking in practice but worth aligning to canonical resource shape on next revision.
@@ -1538,11 +1604,15 @@ All review findings resolved. Tank is clear to proceed with deployment subject t
 
 The premise — "modern Azure estates deploy workloads into regions where a full hub is uneconomical; ARS is a lightweight control-plane extension" — is correct and matches the customer patterns behind blog `Multi-region design with ARS (no overlay)`. **But** the sketch as written ("dedicated ARS VNet in the third region; ARS BGP-peers with NVA1/NVA2 across direct global peerings; spokes peer only to the ARS VNet with `UseRemoteGateways=true`") has a **data-plane reachability gap** that is masked by the fact that ARS is control-plane only.
 
+---
+
 ### The gap in one paragraph
 
 ARS advertises `0/0` to the third-region spokes with **next hop = NVA1_IP** (an IP inside hub1's VNet, region A). The spoke's fabric can deliver a packet to `NVA1_IP` only if the spoke's effective route table has a peering-derived path to hub1's address space. The spoke is peered **only** to the third-region ARS VNet. VNet peering is **non-transitive** (peering overview, "gateway/on-premises" section). Therefore the spoke has no peering path to hub1, and the fabric drops the packet. The dual-homed ARS doc is explicit that **"virtual network peering [must be] configured between the spoke and each hub virtual network"** for this pattern to work — the spoke needs data-plane peering to each hub whose NVA it will next-hop to.
 
 This is why the multi-region ARS reference architecture puts **an NVA in each region** and uses **overlay tunnels** between NVAs — the local NVA is the local next-hop, and the tunnel handles the cross-region transit.
+
+---
 
 ### Two clean fixes (pick one, both preserve Jose's cost intent)
 
@@ -1555,6 +1625,8 @@ This is why the multi-region ARS reference architecture puts **an NVA in each re
 ---
 
 ## 2. Answers to the 8 review questions
+
+---
 
 ### Q1 — Is workload-aligned third-region ARS the right fix for the independent fourth-region SPOF? Blast radius per outage.
 
@@ -1575,6 +1647,8 @@ This is why the multi-region ARS reference architecture puts **an NVA in each re
 - Fix-A third-region route-hub: no VNet or ARS is shared between regions. Each region's ARS blast radius stays local. **The independent fourth-region SPOF is eliminated.** This is a genuine improvement over Δ1–Δ4 for the multi-region-outage story, at the cost of one extra small NVA VM in the third region.
 
 **Trade-off honesty**: hub-local spokes (sets A and B) trade the "central-ARS SPOF" for their "own-region SPOF" — but their workloads are in that region anyway, so losing region = losing workloads regardless of the routing design. This is exactly Jose's point in Q4 below.
+
+---
 
 ### Q2 — Peering matrix and the single "Use remote virtual network gateway or Route Server" flag
 
@@ -1609,6 +1683,8 @@ Source: ARS FAQ `Does Azure Route Server support virtual network peering?` — v
 | Third-region route-hub ↔ hub2 (global) | true / true | true / true | false / false | false / false | Symmetric. |
 | Hub1 ↔ hub2 (optional, see Q5) | Only if inter-hub NVA overlay is added | — | — | — | Not required for the goal scenarios. |
 
+---
+
 ### Q3 — Third-region ARS BGP-peering with NVAs in two different peered hub VNets over global peering
 
 **Supported.** Requirements confirmed from the ARS FAQ:
@@ -1633,6 +1709,8 @@ Source: ARS FAQ `Does Azure Route Server support virtual network peering?` — v
 **AS_PATH loop-prevention:** Both NVA1 and NVA2 must strip ASN 65515 (the third-region ARS's ASN) from the AS_PATH before advertising anything back to their **local** hub ARS (also ASN 65515). Otherwise the local hub ARS drops the route for standard loop-prevention. Confirmed by FAQ: *"If an NVA advertises a route to Azure Route Server that already contains 65515 in the BGP AS\_PATH attribute, Azure Route Server identifies its own ASN in the AS path and rejects the route as part of standard BGP loop prevention behavior."*
 
 Also, when the third-region local NVA (Fix A) advertises routes to the third-region ARS, if it re-advertised on-prem routes learned from the hub NVAs, and those routes still had `65515` in the AS_PATH from the hub side, the third-region ARS would drop them. The third-region local NVA must strip 65515 too on the local-ARS-facing side. All three NVAs run the same one-line filter.
+
+---
 
 ### Q4 — Path symmetry under steady state and hub1 failure/recovery
 
@@ -1664,6 +1742,8 @@ On hub1 outage: **set A workloads are gone with the region.** There is no cross-
 
 **Asymmetry window** exists during the ~30–180 s reconvergence gap between forward-path (bound by ARS hold) and return-path (bound by IPsec DPD + on-prem BGP hold). During that window: forward via dead NVA1 + return via hub2 → half-open blackhole for set-C. This is unchanged from the Δ1–Δ4 analysis and is a **teaching moment**, not a design defect.
 
+---
+
 ### Q5 — Inter-hub NVA overlays: needed?
 
 **For third-region-spoke ↔ on-prem: not needed.** The overlay hop is between third-region NVA and hub-region NVAs — not between hub1 NVA and hub2 NVA. Set-C traffic goes third-region-NVA → hub1-NVA → hub1-VPN-GW → on-prem. Hub2 is a standby path via a separate overlay (third-region-NVA → hub2-NVA), not via hub1↔hub2.
@@ -1675,6 +1755,8 @@ On hub1 outage: **set A workloads are gone with the region.** There is no cross-
 3. **Set-C failover via a hub-to-hub bypass** (routing set-C's on-prem traffic via hub1→hub2→on-prem when hub1↔on-prem WAN is dead but hub1 region is up). Very niche; not in the goal.
 
 **Baseline recommendation: NO inter-hub NVA overlays.** Two overlays only: third-region-NVA↔NVA1, third-region-NVA↔NVA2. Add hub1↔hub2 overlay as a **P4 patch** (dormant) if Jose wants to demonstrate cross-spoke transit as a Phase-2 topic.
+
+---
 
 ### Q6 — Spoke/VM count
 
@@ -1692,6 +1774,8 @@ On hub1 outage: **set A workloads are gone with the region.** There is no cross-
 **Why not more:** every additional VM adds 24×7 running charge. Beyond the "two prefixes per region" evidence the design's goals need, more spokes only add noise.
 
 **Total VMs in the lab (excluding NVAs and gateways):** 3 workload VMs. Adding NVA VMs (1 in each hub + 1 in third-region route-hub = 3), and Azure VPN GWs (1 per hub = 2 hosted resources, non-VM), total spend is dominated by the two VPN GWs and the ARSes.
+
+---
 
 ### Q7 — Challenge the "relatively low cost" claim for ARS as a control-plane extension
 
@@ -1726,6 +1810,8 @@ Qualitative comparison (no unsourced price figures):
 - Peering churn: adding a new set-C spoke triggers ARS soft-reset on peered NVAs (per FAQ). Bounded but visible. **Low-medium.**
 - **First route-map creation on an ARS triggers ~30-min upgrade window**. Must schedule. Not repeatable — subsequent maps don't. Plan Phase-0 to bake in this one-off wait.
 
+---
+
 ### Q8 — Corrected baseline, peering/policy table, pass/fail scenarios, remaining decisions
 
 Covered in §3, §4, §5, §9.
@@ -1744,6 +1830,8 @@ Covered in §3, §4, §5, §9.
   - **Δ3 (default-route de-preference via route map)**: **inbound** route map on third-region ARS's peering with NVA2, prepending NVA2-originated `0/0` twice. Deterministic best-path shift for set-C's default toward NVA1. Uses route-maps preview.
   - **Δ3-bis (investigate at Phase-0, not baseline)**: could the spoke-prefix prepend live on an *outbound* route map on the hub2 ARS → VPN GW connection instead of NVA2's BGP export? The route-maps preview supports outbound maps on VPN gateway connections, and the set-C prefixes arriving at hub2 ARS are eBGP-learned from NVA2 (they are not VNet address space to hub2 ARS — they're re-originated from the third region), so the "cannot modify VNet address space" restriction does not strictly apply. If confirmed at Phase-0 the prepend moves from NVA to route-map, tightening the "which policy lever lives where" teaching story. If ambiguous, keep Δ2 as NVA-side prepend. Either way this is a Phase-0 experiment, not a baseline blocker.
 
+---
+
 ### 3.1 Peering + policy table
 
 Baseline. All flags shown are on each SIDE of the peering. Notation: `<hub-side-value> / <spoke-side-value>` for hub↔spoke peerings.
@@ -1756,6 +1844,8 @@ Baseline. All flags shown are on each SIDE of the peering. Notation: `<hub-side-
 | set-C-spoke-2 ↔ third-region route-hub | true/true | true/true | true/− | −/true | Same as set-C-spoke-1. Prefix-only, no VM. |
 | Third-region route-hub ↔ hub1 (global) | true/true | true/true | false/false | false/false | Underlay for third-region ARS ↔ NVA1 BGP session AND for third-region-NVA ↔ NVA1 IPsec overlay. No gateway transit. |
 | Third-region route-hub ↔ hub2 (global) | true/true | true/true | false/false | false/false | Symmetric. |
+
+---
 
 ### 3.2 ASN plan
 
@@ -1797,6 +1887,8 @@ Baseline. All flags shown are on each SIDE of the peering. Notation: `<hub-side-
 | F6 | Single BGP session flap (NVA↔ARS one instance) | OK | OK | OK — ECMP + redundant peer | OK | Yes (auto) |
 | F7 | Set-C spoke UseRemoteGateways peering flap | OK | OK | That spoke loses everything until re-peering completes | Withdraws that spoke's /24 | Yes on peering restore |
 | F8 | Hub1↔on-prem tunnels break but hub1 region up (S2 injection) | Set A locally OK; on-prem reachability lost for set A | OK | Reconverges to hub2 | Only hub2 path | Yes |
+
+---
 
 ### Patch catalogue (dormant)
 
@@ -1880,3 +1972,232 @@ Just three — behaviour actually changes with each:
 
 No lab file, `design.md`, manifest, or IaC touched in this pass. This document + the Trinity history append are the only artefacts.
 
+---
+
+---
+
+## Tank Runtime Finding — 2026-08-03T16:50 UTC+02:00
+
+**Finding:** VPN GW SKU `VpnGw1` retired by Azure platform. Cannot create — only VpnGw1AZ-VpnGw5AZ accepted.  
+**File:** `labs/dual-hub-hubless-region-ars/deploy/templates/modules/vpngw.bicep`  
+**Required fix (one line):** `sku: { name: 'VpnGw1AZ', tier: 'VpnGw1AZ' }`  
+**Topology/cost impact:** None — VpnGw1AZ is direct equivalent, same billing.  
+**Action needed:** Reviewer approve single-line SKU fix; Tank then resumes with `deploy-apply.ps1 -CorrelationId lab3d001 -ResumeRg rg-dual-hub-hubless-region-ars-lab3d001`.  
+**Current RG cost:** ~$35/day (3 ARS + 6 VMs + 9 PIPs — no GWs yet).  
+**ARM validate gap:** The platform retirement policy is NOT enforced at validate time — it only fails at create time.
+
+*Tank — 2026-08-03T16:50 UTC+02:00*
+
+---
+
+## Tank Runtime Finding B2 — 2026-08-03T17:25 UTC+02:00
+
+**Finding:** VpnGw1AZ (AZ SKU) requires associated Standard PIPs to have `zones: ['1','2','3']` configured. Existing 6 GW PIPs deployed without zones (zones are immutable — cannot update in-place).  
+**Error:** `VmssVpnGatewayPublicIpsMustHaveZonesConfigured`  
+**Files affected:** `main.bicep` — 6 PIP resources (pipGwHub1A/B, pipGwHub2A/B, pipGwOnpremA/B)  
+**Required IaC fix:** `zones: ['1', '2', '3']` property on each of those 6 PIP resources.  
+**Required operational pre-step:** Delete 6 existing zone-less GW PIPs before ARM retry (not an IaC change).  
+**ARS PIPs:** Not affected by this error.  
+**Action needed:** Reviewer approve `zones` addition to 6 GW PIP resources in `main.bicep`; then Tank executes pre-step deletion and resumes.  
+**Current RG cost:** ~$35/day (ARS + VMs + PIPs; no GWs).
+
+*Tank — 2026-08-03T17:25 UTC+02:00*
+
+---
+
+## Tank Runtime Finding — Delta3 Activation Blocked — 2026-08-03T20:11 UTC+02:00
+
+**Status:** ROLLBACK COMPLETE — baseline restored
+
+**Blocker:** HubBgpConnectionFromSpokeVnetCannotReferenceRouteMap
+
+Route maps on ARS can only reference BGP connections where the peer IP is WITHIN the
+Route Server's own VNet. NVA1 (10.10.1.4) and NVA2 (10.20.1.4) are cross-VNet multihop
+peers — their IPs are NOT in vnet-poland-ars (10.30.0.0/24). Platform rejects association.
+
+This restriction was not in the activation contract (Trinity research gap from docs).
+
+**ARS tier:** Upgraded (~$6/day surcharge active). Downgrade requires ARS delete+recreate.
+
+**Route map:** Deleted. Baseline ECMP restored: peer-nva2 asPath=65002, c1-ep 0/0 ECMP.
+
+**API version finding:** Platform requires 2024-10-01 minimum for route maps (contract had 2024-05-01).
+No semantic difference — same policy body.
+
+**Options for reviewer:**
+1. Relay NVA in vnet-poland-ars (10.30.0.0/24) with local BGP to ARS — IaC change
+2. NVA2 secondary NIC with IP in 10.30.0.0/24 for BGP session — IaC change
+3. BIRD export filter on NVA2: do not advertise 0/0 to ars-poland — operational OR IaC
+
+*Tank — 2026-08-03T20:11 UTC+02:00*
+
+---
+
+# Oracle Route-Map Scenario Doc
+
+**Date:** 2026-08-05
+**Owner:** Oracle
+**Scope:** dual-hub-hubless-region-ars
+
+## Decision / documentation outcome
+
+- Added `labs/dual-hub-hubless-region-ars/route-map-scenarios.md` as the canonical 15-scenario route-map catalogue.
+- Preserved the current lab constraints: remote `ars-poland` NVA peers cannot reference route maps, maps do not originate routes, and current `10.31.0.0/24` + `10.32.0.0/24` cannot be safely summarized.
+- Ranked the safest first experiment as the local synthetic-peer proof-of-concept, with hub-side tests gated on the `ars-hub1` and `ars-hub2` upgrades Tank is handling concurrently.
+
+## Follow-up
+
+- Keep the catalogue as the single reference for future route-map refinement.
+- If the experiment plan changes, update only the scenario entry and the ranking block; do not rewrite the validated lab outcomes.
+
+---
+
+# Decision: Hub ARS Route-Map Upgrade — ars-hub1 / ars-hub2
+**Date:** 2026-08-05T10:36:38+02:00
+**Author:** Tank (IaC Engineer)
+**Status:** EXECUTED — Both Succeeded
+**Lab:** dual-hub-hubless-region-ars | RG: rg-dual-hub-hubless-region-ars-lab3d001
+
+---
+
+## Decision
+
+Upgrade `ars-hub1` and `ars-hub2` to the route-map tier by creating one inert activation-only
+route map per ARS. Maps are NOT associated with any BGP connection and cannot affect live routing.
+
+## Rationale
+
+Route maps are required for future scenario testing on hub Route Servers (e.g. selective
+prepend, community tagging, path steering on NVA peerings). The ~30 min first-use upgrade
+must be completed before any map can be applied to a connection. Creating an inert map now
+unlocks the tier without any routing risk.
+
+## Key Findings
+
+### 1. Hub ARS locality constraint does NOT apply
+- ars-hub1 peer-nva1 (`10.10.1.4`) is within vnet-hub1 (10.10.0.0/16) — same VNet.
+- ars-hub2 peer-nva2 (`10.20.1.4`) is within vnet-hub2 (10.20.0.0/16) — same VNet.
+- `HubBgpConnectionFromSpokeVnetCannotReferenceRouteMap` only fires for cross-VNet peers.
+- Route maps CAN be applied to hub ARS NVA peerings (future scenarios unblocked).
+
+### 2. Activation maps created (inert)
+| ARS | Map Name | API Version | Rule | Associations |
+|-----|----------|-------------|------|--------------|
+| ars-hub1 | `rm-hub1-activate` | 2024-10-01 | 192.0.2.0/24 Equals → Add [64496] → Terminate | None |
+| ars-hub2 | `rm-hub2-activate` | 2024-10-01 | 192.0.2.0/24 Equals → Add [64496] → Terminate | None |
+
+### 3. Upgrade timing
+- hub1: Triggered 10:35:37, Succeeded at 10:59:11 (+22.4 min)
+- hub2: Triggered 10:36:00, Succeeded at 11:02:24 (+25.7 min)
+
+### 4. Cost impact
+- ~$6/day per hub ARS = ~$12/day additional, irreversible without ARS recreate.
+- Covered by Jose's explicit $72/day waiver.
+
+## Post-Upgrade Health
+- All 4 VPN connections: Connected ✅
+- All ARS peering objects: Succeeded ✅
+- ars-poland: Untouched, Succeeded ✅
+- BIRD sessions: idle between scenarios (same as pre-upgrade) ✅
+
+## Artifacts
+- Evidence: `labs/dual-hub-hubless-region-ars/show-output/route-map-upgrade/`
+- Activation script: `labs/dual-hub-hubless-region-ars/deploy/activate-hub-ars-routemaps.ps1`
+- Deploy log: `labs/dual-hub-hubless-region-ars/deploy-log.md` (section: Hub ARS Route-Map Upgrade 2026-08-05)
+
+---
+
+# Route-Map User Stories — Design Decisions
+**Author:** Trinity (Azure Network SME)  
+**Date:** 2026-08-05T10:32:00+02:00  
+**Lab:** `dual-hub-hubless-region-ars`  
+**For:** Jose Moreno  
+**Status:** DECISION ARTIFACT — no Azure changes made
+
+---
+
+## Summary
+
+This decision captures the key team-relevant findings from the route-map user stories guide
+(`labs/dual-hub-hubless-region-ars/route-map-user-stories.md`).
+
+---
+
+## Decisions
+
+### D1 — Four-Mechanism Model Is the Correct Design Frame
+
+Before applying any routing policy, distinguish:
+- **A** Route visibility/advertisement (BGP control plane) — what route maps can influence
+- **B** Next-hop selection (UDR/BGP precedence) — UDR > BGP always
+- **C** Traffic authorization/containment (NSG/firewall) — route maps cannot help here
+- **D** Topology/reachability (peering/tunnel) — route maps cannot create paths
+
+**Implication:** Requests like "advertise only to the NVA subnet" require all four mechanisms.
+Route maps alone address only A. This distinction must be explicit in all future design reviews.
+
+### D2 — ARS Route-Map Eligibility Rule (Same-VNet Constraint)
+
+Route maps can only be applied to BGP peers whose peerIp is within the ARS VNet address space.
+
+| ARS instance | NVA peer | peerIp | ARS VNet | Eligible? |
+|---|---|---|---|---|
+| ars-hub1 | NVA1 | 10.10.1.4 | 10.10.0.0/16 | ✅ Yes |
+| ars-hub2 | NVA2 | 10.20.1.4 | 10.20.0.0/16 | ✅ Yes |
+| ars-poland | NVA1 | 10.10.1.4 | 10.30.0.0/24 | ❌ No (EMP-001) |
+| ars-poland | NVA2 | 10.20.1.4 | 10.30.0.0/24 | ❌ No (EMP-001) |
+| ars-hub1 | VPN GW connection | (in-VNet) | 10.10.0.0/16 | ✅ Yes |
+| ars-hub2 | VPN GW connection | (in-VNet) | 10.20.0.0/16 | ✅ Yes |
+
+This constraint is **not documented by Microsoft as of 2026-08-03**. Runtime error is authoritative.
+
+### D3 — Recommended Experiment Order (ars-hub1/hub2 upgrade required)
+
+Priority order for remaining route-map experiments — all require ars-hub1 and/or ars-hub2
+first-use upgrade (~30 min + ~$6/day surcharge irreversible per ARS):
+
+1. **Story H — Community tagging** (ars-hub1/hub2 inbound NVA peering): zero risk, additive
+2. **Story E — On-prem inbound filter** (ars-hub1/hub2 inbound VPN GW connection): security value
+3. **Story D — Infra prefix filter outbound** (ars-hub1/hub2 outbound VPN GW): hygiene
+4. **Story G — Summarization** (requires address plan redesign first — 10.31/24 + 10.32/24 not adjacent)
+
+Do not proceed with any of these until Jose approves ars-hub1 and ars-hub2 upgrades.
+
+### D4 — Inter-Hub Communication Requires Topology Change First
+
+There is currently **no hub1↔hub2 data-plane path**. Route maps cannot create one.
+Options:
+- (Recommended for production) NVA-to-NVA IPsec overlay with BGP + BIRD filters
+- (Lab teaching shortcut) Direct hub1↔hub2 global VNet peering + UDRs forcing NVA on both sides
+
+Route maps become useful on the inter-hub story **only after** the topology is fixed.
+Without the topology fix, any "inter-hub prefix filtering" discussion is premature.
+
+### D5 — Summarization Requires Contiguous CIDR Planning
+
+`10.31.0.0/24` and `10.32.0.0/24` cannot be safely summarized — smallest common aggregate
+is `10.0.0.0/10`.
+
+For future spoke growth: allocate from `10.32.0.0/20` (spoke-c1 = `10.32.0.0/24`,
+spoke-c2 = `10.32.1.0/24`, ... spoke-c16 = `10.32.15.0/24`). Advertise summary `10.32.0.0/20`
+to on-prem. This is the correct production-scale addressing pattern.
+
+### D6 — Prefer BIRD for Cross-VNet Scenarios; Use Route Maps for Hub-Local Eligible Connections
+
+| Scenario type | Preferred tool | Reason |
+|---|---|---|
+| Cross-VNet BGP peer (ars-poland ↔ NVA1/NVA2) | **BIRD/FRR** | No locality constraint, no upgrade, no surcharge |
+| Hub-local BGP peer (ars-hub1 ↔ NVA1) | **Route map OR BIRD** | Both eligible; route map adds GUI observability |
+| VPN/ER GW connection filtering | **Route map** | No BIRD equivalent; map is the only ARS-native lever |
+| Per-spoke policy | **UDR** | Route maps have no per-spoke attachment point |
+| Traffic containment | **NSG/firewall** | Route maps are control-plane only |
+
+---
+
+## Open Questions for Jose Moreno
+
+- [ ] **D3:** Approve ars-hub1 first-use upgrade for Story H (community tagging)? (~$6/day surcharge; irreversible)
+- [ ] **D3:** Approve ars-hub2 upgrade after hub1? (or both in sequence same session?)
+- [ ] **D4:** Is inter-hub data-plane path (hub1↔hub2) in scope for a future experiment? If yes: IPsec overlay or direct peering?
+- [ ] **D5:** Should future spoke-c3 be allocated from 10.32.x to enable clean /23 summarization demo?
+- [ ] **EMP-001:** File Microsoft support ticket / feedback for undocumented ARS route-map locality constraint?

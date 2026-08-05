@@ -128,8 +128,44 @@ Produce the standard 4-diagram set for lab #3 (`msee-hairpin-hns-vwan-ipv6`) ahe
 
 ---
 
+## 2026-08-03 — Lab #4 diagram set: `dual-hub-hubless-region-ars`
+
+### Task
+
+Produce the standard 4-diagram set for lab #4 (`dual-hub-hubless-region-ars`) ahead of deploy. Morpheus's locked manifest: workload-aligned ARS VNet in a hubless Poland Central region acting as shared BGP control-plane extension for Set-C spokes toward two remote hubs (swedencentral = hub1, switzerlandnorth = hub2). On-prem simulated in norwayeast via VPN V2V connections. Three mandatory policy deltas (Δ1 loop-strip, Δ2 AS-path prepend, Δ3 ARS inbound route-map PREVIEW).
+
+### Files produced
+
+| # | File | Format | Status |
+|---|---|---|---|
+| 01 | `labs/dual-hub-hubless-region-ars/diagrams/01-topology.excalidraw` | Excalidraw JSON v2 · 59 elements | ✅ JSON valid, all IDs unique, all text elements have width+height |
+| 02 | `labs/dual-hub-hubless-region-ars/diagrams/02-bgp-control-plane.mmd` | Mermaid `flowchart TD` | ✅ validated via `drawio-mcp-open_drawio_mermaid` |
+| 03 | `labs/dual-hub-hubless-region-ars/diagrams/03-steady-failover-failback.mmd` | Mermaid `flowchart TD` with 3 subgraphs (S1/S2/S3) | ✅ validated |
+| 04 | `labs/dual-hub-hubless-region-ars/diagrams/04-cleanup-chain.mmd` | Mermaid `flowchart TD` | ✅ validated |
+
+### Layout decisions
+
+- **Excalidraw topology (01):** 4-region column layout (hub1 left, Poland center, hub2 right, Set-C+Norway below Poland). Microsoft/Fluent colors: hub1=#0078D4/CFE4FA, hub2=#5C2D91/E8DAEF, Poland=#107C10/DFF6DD, Norway=#F7630C/FFF4CE. Orange policy-split box (Δ1/Δ2/Δ3) embedded inside Poland container. V2V arrows (strokeWidth=2) from each hub's VPN GW to on-prem. Dashed arrows for BGP sessions; solid arrows for data-plane peerings. 59 elements total.
+- **BGP control-plane (02):** Hub-subgraph grouping makes AS 65515 coexistence between ARS and VPN GW explicit. Policy split node inside Poland subgraph. All 10 BGP sessions shown.
+- **Steady/failover/failback (03):** Three scenario subgraphs (S1 steady / S2 hub1 outage / S3 recovery) linked by "fault injection" and "recovery" edges. Fault injection and Restore boxes shown with red/green styling respectively.
+- **Cleanup (04):** Single `az group delete` as root node capturing all 30+ tagged resources. KV delete + purge as two parallel post-delete steps. Notes box for V2V (no LNG) and SSH pubkey preservation.
+
+### Technical notes
+
+- First lab to use Excalidraw format (v2, source=`claude`) per instruction. Previous labs used draw.io XML for topology.
+- Non-ASCII chars (Δ, ·, →, ×) used in `.mmd` files — valid in modern Mermaid renderers. ASCII equivalents used in the draw.io validator call (which was used for syntax-checking only).
+- `direction LR` inside subgraphs of a `flowchart TD` outer diagram works cleanly in draw.io Mermaid renderer.
+- No live IPs used; all addresses from manifest CIDRs (/27 subnets, /24 spokes, /16 hubs). PSK names referenced without values.
+- Set-C spokes triple-peered (Poland ARS + hub1 + hub2 no-transit) captured as a text annotation inside the Set-C leaf node rather than as three separate arrows, to keep the diagram under the arrow-density threshold.
+
+---
+
 ## Learnings
 
 - **MSEE hairpin visual pattern:** Shared MSEE node with dual eBGP sessions (one per circuit, same ASN). Data flows through MSEE as a Layer 3 reflection — packet traverses Circuit 1 tunnel → MSEE routes via BGP → Circuit 2 tunnel. Diagram representation: MSEE as a single node with four edges (in + out per circuit), labeled with ASN + advertised prefixes.
 - **IPv6 ER peering conventions:** Dual-stack requires separate address families on the same eBGP session. Diagrams label each session with both family notations (e.g., "IPv4: 172.16.1.0/30 / IPv6: fd00:f:1::/126"). ULA is a valid choice for pure Azure-to-Azure labs when global routing is not required.
 - **Data-plane multi-scenario encoding in mermaid:** Subgraphs allow parallel scenarios (S1 IPv4 / S2 IPv6) to coexist in one diagram without textual duplication. Keeps the diagram readable and emphasizes that the path topology is identical; only the address families differ.
+- **Route-map catalogues should be explicit and repeatable:** When documenting preview routing features, include purpose, attachment point/direction, classification, prerequisite change, expected route effect, safe test outline, evidence, rollback, and operational risk for each numbered scenario. That structure made the Poland route-map note much easier to refine without losing the operational constraints.
+- **Route-map attachment locality matters:** For this lab, `ars-poland` can only reference route maps from peers inside the ARS VNet, so remote NVA peers remain blocked regardless of how carefully the rule is written. This is a useful first-check for future ARS route-map docs and prevents misclassifying a topology issue as a policy issue.
+
+📌 Team update (2026-08-05T10:26:52.618+02:00): Route-map scenario catalogue and README link updates merged into shared decisions.

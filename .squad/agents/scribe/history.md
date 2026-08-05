@@ -25,3 +25,5 @@ Initial setup complete.
 ---
 
 📌 Session update (2026-07-30T14:20:00Z): Phase 3 Firewall Deploy Session — Decision Archive & Inbox Merge. Executed full Tier-2 archival (decisions.md 63.6 KB → 138 bytes header; 54 entries archived 2026-05-29 through 2026-06-16 to decisions-archive.md 34.8 KB). Merged 5 inbox files (niobe-phase3-audit, trinity-phase3-firewall-design, tank-phase3-firewall-deploy, plus 2 stale 2026-06-16 entries). Created orchestration logs for niobe, trinity, tank (3 files, 0.8 KB each). Created session log: 2026-07-30T14-20-00Z-vwan-phase3-firewall-deploy.md (1.2 KB). Updated Tank history with XFRM-persistence action item from Niobe audit. No history files exceeded 15360-byte summarization threshold. Prepared for git commit of .squad/ changes only (no labs/ or deploy/ files). **Status: READY FOR COMMIT.**
+
+📌 Team update (2026-08-05T10:26:52.618+02:00): Decision inbox swept, stale decisions archived, and session logs written.
