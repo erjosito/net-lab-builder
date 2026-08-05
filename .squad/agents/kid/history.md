@@ -66,3 +66,41 @@ Full narrative, factual corrections table, and scout mechanics preserved in hist
 ---
 
 📌 **Current status (2026-06-16T00:40:00Z, per Scribe):** Pre-gate editorial review complete. Awaiting Morpheus S4 perturbation alignment decision and Trinity editorial feedback on Mech C cost implications (~$270-405 approved; realistic ~$675-810) before lab deploy authorization.
+
+---
+
+### 2026-08-05: Editorial pass — US01–US10 intent reframing (dual-hub-hubless-region-ars)
+
+**Trigger:** Jose flagged US01's story sentence ("I want each hub to learn only an approved subset
+of the other's prefixes...") as mechanism-first — asked why an owner would want partial reachability,
+whether applications are deliberately isolated, and whether the driver is security. Clarified the ask
+is about intent framing, not the formal story definition.
+
+**What I did:** Rewrote every US01–US10 `**Story.**` sentence that led with mechanism instead of
+motivation (US01/US03/US04/US05/US06/US07/US08/US09; US02/US10 tightened only), and replaced each
+one-line `**Intent.**` with a fixed three-field block — **Why this need exists**, **Desired user
+outcome**, **When this story does not apply** — so no story implies route filtering supplies packet
+security, and every unsupported/blocked story (US06 per-tenant differentiation, US10's
+gateway-connection gap) still states a user-centric reason to exist. Added one shared reading note at
+the top of §1 explaining the convention once instead of repeating it. US01 now names concrete drivers
+Jose asked about explicitly: intentional application autonomy, fault-domain/change isolation, route
+scale, tenant/overlapping address space, regulatory constraints, and security as one driver among
+several (with an explicit "filtering is not authorization — NSG/firewall still apply" caveat) plus the
+"don't impose this if every app needs full reachability" counter-case.
+
+**Scope discipline:** Touched only Story sentences and Intent blocks across US01–US10, plus the new
+§1 note. Left every technical reference topology, attachment point, supported/unsupported
+classification, current-lab applicability line, expansion delta, validation plan, rollback, diagram
+spec, citation, cost figure, and the §2/§3 matrices untouched. No diagram authored, no Azure/IaC
+touched, nothing committed.
+
+**Verdict:** No story's user value remained ambiguous. US09 is flagged (not fixed) as a different
+*kind* of story — its stakeholder is the network engineering team avoiding policy drift, not an
+application team experiencing a routing outcome — but its intent is not ambiguous.
+
+**Status:** ✅ Editorial pass complete. Brief filed at
+`.squad/decisions/inbox/kid-user-story-intents.md`. Awaiting Jose's read before any further US01–US10
+wording changes.
+---
+
+📌 2026-08-05T13:43:07.691+02:00 — Scribe merge pass: US01–US10 intent-reframing brief recorded in decisions.md; no lab/design file staging occurred.

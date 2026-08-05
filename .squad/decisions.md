@@ -2201,3 +2201,1239 @@ to on-prem. This is the correct production-scale addressing pattern.
 - [ ] **D4:** Is inter-hub data-plane path (hub1↔hub2) in scope for a future experiment? If yes: IPsec overlay or direct peering?
 - [ ] **D5:** Should future spoke-c3 be allocated from 10.32.x to enable clean /23 summarization demo?
 - [ ] **EMP-001:** File Microsoft support ticket / feedback for undocumented ARS route-map locality constraint?
+
+### 2026-08-05T11:10:29.060+02:00: User directive
+**By:** Jose Moreno (via Copilot)
+**What:** Whenever a user story includes an NVA-to-NVA overlay, explain the requirement that justifies its complexity and compare it with simpler non-overlay designs. Add a distinct hub-to-hub-without-overlay user story if that is a meaningful alternative.
+**Why:** User request — captured for team memory
+
+### Decision Brief — US01–US10 Intent Reframing
+
+**Author:** The Kid (Public Storyteller / user-value editor) · **Date:** 2026-08-05
+**Artifact:** `labs/dual-hub-hubless-region-ars/route-map-user-stories.md` — intent framing for
+US01–US10 only, plus one new shared reading note in §1
+**Requested by:** Jose Moreno
+
+**Context:** Jose flagged US01's original wording — "I want each hub to learn only an approved
+subset of the other's prefixes, so inter-region blast radius and route-table growth stay bounded" —
+as mechanism-first: it didn't say *why* an owner would want partial reachability, whether
+applications are deliberately isolated, or whether the driver is security. He clarified the ask is
+about **intent**, not the formal `As a... I want... so that...` definition. This is an editorial
+pass, not a scenario redesign: no topology, attachment point, supported/unsupported classification,
+current-lab applicability, expansion delta, validation plan, rollback, diagram spec, citation, cost,
+or matrix row was touched.
+
+## 1. Editorial pattern applied
+
+Every US01–US10 story now carries a three-field **Intent** block, replacing the previous one-line
+Intent paragraph:
+
+- **Why this need exists** — concrete application/organizational/operational context (autonomy,
+  fault domains, change isolation, tenancy, scale, regulation — never "because the mechanism allows
+  it").
+- **Desired user outcome** — what the platform owner or application team experiences, stated before
+  any route-map mechanics.
+- **When this story does not apply** — the condition under which the restriction/optimization would
+  be artificial or counterproductive, so every unsupported/blocked story (US06, and US10's
+  gateway-connection gap) still carries a user-centric reason to exist rather than reading as a
+  rejected idea.
+
+A one-paragraph reading note was added at the top of §1 (`## 1. User stories`) explaining this
+convention once, so it is not repeated ten times, and stating explicitly that route filtering is
+never treated as authorization in any Intent field.
+
+Each `**Story.**` sentence was rewritten only where it previously led with the mechanism (US01, US03
+lightly, US04, US05, US06, US07 lightly, US08, US09); US02 and US10 already carried motivating
+context in the story sentence and were tightened rather than restructured. No technical/scenario
+meaning changed in any sentence — topology, objective, and evidence sections were left untouched and
+were checked against each rewritten Story sentence for consistency.
+
+## 2. US01 — before / after
+
+**Before:** "As a platform network owner with two regional hubs, I want each hub to learn only an
+approved subset of the other's prefixes, so inter-region blast radius and route-table growth stay
+bounded while shared services remain reachable." Intent: one sentence about policy boundaries.
+
+**After (Story):** "As a platform network owner running two regional hubs whose application estates
+are built, changed, and operated independently, I want each hub to learn only the specific set of the
+other region's prefixes that its own workloads actually depend on — not the other region's full
+address space by default — so that a change, incident, or uncontrolled route-table growth in one
+region cannot silently spread into the other, while the shared services, DR, and management flows
+each region does depend on stay reachable."
+
+**After (Intent, condensed):**
+- *Why* — regional estates are often intentionally autonomous (different teams, change windows,
+  overlapping/tenant address space); only shared services, DR, management, or specific approved
+  inter-region flows need to cross. Drivers: fault-domain separation, change isolation, route-scale
+  control, tenant boundaries, regulatory/data-residency constraints.
+- *Desired outcome* — one region's teams keep operating without an uninvited routing/incident
+  spillover from the other, while their real cross-region dependencies keep working.
+- *Does not apply* — if every app in both regions legitimately needs full cross-region reachability
+  and prefix scale is fine, don't impose an allow-list. Security can be a driver, but filtering is not
+  authorization — NSGs/firewall/app controls still gate what a permitted path may carry.
+
+This directly answers Jose's three questions: yes, applications can be deliberately isolated by
+design (autonomy/fault-domain/tenancy reasons, named explicitly); the driver can be security among
+several others, and BGP filtering is explicitly stated as not being authorization; and the story now
+states the condition under which selective exchange should *not* be imposed.
+
+## 3. Stories whose user value remained ambiguous
+
+None of US01–US10 was left with an ambiguous or mechanism-only intent after this pass. One nuance
+worth flagging rather than hiding: **US09** ("choosing and migrating between NVA-side and ARS-side
+policy") is inherently a network-architecture/governance story — its "user" is the network engineering
+team avoiding silent policy drift between two enforcement points, not an application team experiencing
+a routing outcome. That is a legitimate and clearly stated value (incidents caused by duplicated or
+lost BGP policy), just a different *kind* of stakeholder than US01–US08/US10, which are framed from an
+application- or site-facing outcome. This is noted for transparency, not as a defect requiring further
+edits.
+
+## 4. Validation
+
+- Targeted `grep` for `Why this need exists|Desired user outcome|When this story does not apply`
+  returns exactly 3 hits per story (30 total) plus the one-time definitions in the new §1 reading
+  note — no story is missing a field, none duplicated.
+- Re-read every `**Maps solve**` / `**Maps do not solve**` / `**Alternatives**` / `**Recommended**`
+  section against its rewritten Story sentence — no technical claim was altered or contradicted.
+- File line count grew from a pre-edit baseline (~1324 lines, per initial truncated read) to 1464
+  lines — confirms no accidental content loss; end-of-file sections (`## 2. Comparison matrix`,
+  `## 3. Diagram index for Oracle`, `## 4. References`) are byte-for-byte present and unedited.
+- No diagram created or modified, no Azure/IaC touched, nothing committed (file is untracked in this
+  workspace, confirmed via `git status`).
+
+## 5. Change footprint
+
+- `labs/dual-hub-hubless-region-ars/route-map-user-stories.md` — US01–US10 `**Story.**` sentences
+  (rewritten where mechanism-first) and `**Intent.**` blocks (restructured to the three-field
+  format); one new reading-note paragraph added at the top of §1. Nothing else in the file touched.
+- `.squad/agents/kid/history.md` — entry appended for this editorial pass.
+- `.squad/decisions/inbox/kid-user-story-intents.md` — this brief.
+
+Nothing else touched. No diagrams authored. No Azure/IaC change. No secrets or subscription
+identifiers recorded.
+
+### Decision Brief — Route-Map User Stories v2 (Reframing + Diagram Handoff)
+
+**Author:** Morpheus (Lead / Architect) · **Date:** 2026-08-05 · **Status:** For review
+**Artifact:** `labs/dual-hub-hubless-region-ars/route-map-user-stories.md` (replaced in place, 40 KB)
+
+## 1. What was decided
+
+The user-story document is now a **topology-independent design guide**, not a scenario catalogue
+written against the deployed lab.
+
+| Aspect | v1 (superseded) | v2 (this artifact) |
+|---|---|---|
+| Baseline topology | The deployed `dual-hub-hubless-region-ars` estate | A purpose-built generic reference topology per story |
+| Story framing | Argumentative; dissected the prompt wording | Neutral; states mechanism, options, and decision criteria |
+| Lab relationship | Implicit throughout | Isolated to one `Current lab` line per story + §2 matrix |
+| Applicability | Prose verdicts (`yes` / `partly` / `no`) | Four explicit classes with an exact additive delta |
+| Diagrams | Not specified | A `Diagram specification` block per story with stable IDs |
+
+**Rationale.** A catalogue written against the deployed estate silently inherits that estate's
+constraints, so the reader cannot separate a platform limitation from a local accident. Leading with
+a clean reference topology and treating current-lab applicability as a separate question produces a
+reusable design guide and a cleaner test plan simultaneously.
+
+**Ownership.** Trinity authored v1 and was locked out of this revision cycle by the requester. The
+replacement was authored independently; v1 was superseded rather than revised by its original author,
+consistent with the existing pattern for contested design reviews.
+
+## 2. Story set (9)
+
+| ID | Story | Route-map value |
+|---|---|---|
+| US01 | Selective regional prefix exchange between two hubs | supporting |
+| US02 | Primary/backup hybrid egress with a matching return path | primary |
+| US03 | Dynamic default-route injection into workload networks | supporting |
+| US04 | Admission control for prefixes learned from on-premises | primary |
+| US05 | Outbound workload-prefix hygiene toward on-premises | primary |
+| US06 | Per-tenant / per-spoke-group routing policy | none |
+| US07 | Route aggregation for spoke-scale growth | primary |
+| US08 | BGP community tagging for downstream policy and diagnostics | primary |
+| US09 | Choosing and migrating between NVA-side and ARS-side policy | supporting |
+
+Each story carries: statement · problem and operational intent · generic reference topology with
+named nodes, links, address examples and BGP relationships · policy objective and desired route
+outcome · what route maps solve · what they do not solve · alternatives · recommended solution with
+decision criteria · test-bed requirements and pass/fail evidence · rollback · current-lab
+applicability class · exact additive delta · diagram specification.
+
+## 3. Applicability distribution
+
+| Class | Count | Stories |
+|---|---|---|
+| `testable as-is` | 5 | US02, US04, US05, US08, US09 |
+| `testable with additive expansion` | 2 | US01, US03 |
+| `requires isolated alternate test bed` | 1 | US07 |
+| `blocked by platform limitation` | 1 | US06 |
+
+**Cost inflection worth flagging.** All three Route Servers have now completed the first-use
+route-map upgrade — `ars-poland` during the failed Δ3 association attempt, `ars-hub1` and `ars-hub2`
+on 2026-08-05 (~26 min, both `Succeeded`, with inert activation maps left unassociated). The ~30-min
+wait and the per-ARS surcharge are sunk. Every `testable as-is` story therefore costs nothing
+additional to run, which inverts the previous priority ordering that deferred these behind an upgrade
+gate.
+
+**Recommended run order** (from §2 of the artifact): US08 and US04 first (priority 1 — zero cost,
+minimal disruption, and US08 establishes the community scheme the other stories reference), then
+US02, US05, US03, US01, US06, US07.
+
+## 4. Diagram handoff to Oracle
+
+Nine diagrams, stable IDs below. Each `Diagram specification` block in the artifact lists node set,
+grouping/regions, labelled edges, the highlighted route or policy element, and the required
+before/after states. **Diagrams must use the story's generic reference topology, not the deployed lab
+topology.** Oracle owns authoring; no diagrams were created or modified in this cycle.
+
+| Diagram ID | Story | Core visual assertion |
+|---|---|---|
+| `US01-inter-hub-selective-exchange` | US01 | Overlay creates the path; the map narrows what crosses it |
+| `US02-hybrid-egress-preference` | US02 | AS-PATH length decides the return path; failover inset |
+| `US03-dynamic-default-injection` | US03 | ECMP default resolved into a deterministic primary |
+| `US04-inbound-prefix-admission` | US04 | Allow-list at gateway ingress, before propagation |
+| `US05-outbound-prefix-hygiene` | US05 | eBGP-learned prefixes filterable; VNet-native prefixes are not |
+| `US06-per-group-policy-segmentation` | US06 | No per-peering attachment; UDR carries the differentiation |
+| `US07-route-aggregation-scale` | US07 | Many /24s become one /20; attributes stripped on the aggregate |
+| `US08-community-tagging-policy` | US08 | Attributes change, reachability does not |
+| `US09-policy-placement-migration` | US09 | Same intent, two control points; eligibility decides placement |
+
+## 5. Capability grounding
+
+Route-map statements were re-verified against Microsoft Learn on 2026-08-05 (*About route maps for
+Azure Route Server*, *Route Server FAQ*, *ExpressRoute and VPN gateway support*, *Route Server in
+multiple regions*) and cross-checked against lab evidence in `lessons-learned.md`, `deploy-log.md`
+and `show-output/route-map-upgrade/`. The peer-locality restriction
+(`HubBgpConnectionFromSpokeVnetCannotReferenceRouteMap`) remains absent from Learn; our runtime
+evidence is still the only authority for it.
+
+## 6. Scope and deviations
+
+**Changed:** `labs/dual-hub-hubless-region-ars/route-map-user-stories.md` ·
+`.squad/agents/morpheus/history.md` · this brief.
+**Not touched:** README, `route-map-scenarios.md`, `design.md`, `manifest.md`, `validation.md`,
+`deploy-log.md`, IaC, diagrams, live Azure. Nothing committed.
+
+**Deviation — size.** Target was ≤25 KB; the artifact is 40 KB. Nine stories × twelve mandated
+subsections plus a diagram specification each does not compress below roughly 40 KB without deleting
+decision content, and the stated tiebreaker was decision usefulness over prose. Reducing to seven
+stories would land near 32 KB at the cost of dropping two of the mandated coverage topics. Flagging
+for a call rather than deciding unilaterally.
+
+## 7. Open questions
+
+- [ ] Accept the 40 KB artifact, or trim to 7 stories (~32 KB) by folding US09 into §0 and merging
+      US05 into US04?
+- [ ] Approve the recommended run order (US08 + US04 first) as the next experiment batch?
+- [ ] US01 requires an inter-hub path. Preference: global VNet peering (fast, coarse) or NVA-to-NVA
+      IPsec overlay (production-representative, more setup)?
+- [ ] US07 needs an isolated bed or a fresh contiguous allocation. Approve `10.34.0.0/23` for the
+      additive variant, or defer until a dedicated aggregation lab?
+- [ ] File a documentation-feedback item with Microsoft for the undocumented peer-locality
+      restriction?
+
+### Decision — Storage endpoint path-equivalence lab
+
+**Timestamp:** 2026-08-05T13:43:07.691+02:00  
+**Owner:** Morpheus  
+**Artifact:** `labs/storage-endpoint-path-equivalence/lab-card.md`
+
+## Decision
+
+Use Azure Blob Storage and a sequential, single-client paired-control design to compare ordinary public access, a classic `Microsoft.Storage` service endpoint, a target-only service-endpoint policy, and a blob private endpoint.
+
+The lab must not state that these modes use an identical physical data-plane path. It can establish or falsify equivalence only at observable layers:
+
+- Service endpoint: public DNS/destination remains, but the effective next hop becomes `VirtualNetworkServiceEndpoint` and Storage sees the client's private source/VNet identity.
+- Private endpoint: the same application FQDN resolves to a private-endpoint NIC address and is routed VNet-locally.
+- Service endpoint policy: changes allowed destination resources, not DNS or endpoint route type.
+
+DNS, effective routes, packet captures, Storage resource logs, endpoint/firewall state, and optional VNet flow records form the evidence contract. Traceroute and latency are explicitly non-authoritative because Azure PaaS/Private Link underlay visibility is opaque.
+
+Phase 0 selected `swedencentral` + `Standard_B2ts_v2`: B1ls and B1s were absent from the regional catalog; B2ts_v2 passed catalog and live `az vm create --validate`. The exact tagged preflight RG was verified deleted. Phase 4 remains closed; no lab deployment is authorized.
+
+## Trinity handoff
+
+Trinity must specify the safe transition/rollback order for Storage public access, subnet rules, private DNS, and endpoint-policy association; confirm policy resource-ID shape; define fresh-connection request commands and correlation IDs; and mark which VNet flow-log records are expected versus optional.
+
+### Decision Brief — US10 Bow-Tie Dual-Site Regional Affinity
+
+**Author:** Morpheus (Lead / Architect) · **Date:** 2026-08-05 · **Status:** For review
+**Artifact:** `labs/dual-hub-hubless-region-ars/route-map-user-stories.md` (v2 → v3, +30 KB, now 71 KB)
+**Requested by:** Jose Moreno · **Trinity:** locked out of this revision cycle, as directed
+
+## 1. What was added
+
+A tenth topology-independent story, stable ID `US10-bow-tie-dual-site-regional-affinity`, plus the
+matrix, distribution, diagram-index and reference updates it forces. No other lab file, diagram,
+README, IaC, validation result or live Azure resource was touched. Nothing committed.
+
+Jose's description was treated as design direction. The document does not discuss whether "square" or
+"bow-tie" is the formally correct label; it simply builds the pattern he described.
+
+## 2. Generic reference architecture (ExpressRoute)
+
+Diagonal attachment matrix, no cross-connections:
+
+| Element | Value |
+|---|---|
+| Region R1 | `hub-1` 10.1.0.0/16 · `ergw-1` · `ars-1` · `nva-1` 10.1.1.4 AS 64496 · spokes 10.1.16.0/24, 10.1.17.0/24 |
+| Region R2 | `hub-2` 10.2.0.0/16 · `ergw-2` · `ars-2` · `nva-2` 10.2.1.4 AS 64497 · spokes 10.2.16.0/24, 10.2.17.0/24 |
+| Site 1 | `dc-1` 10.8.0.0/16 behind `cpe-1` AS 64500 → `er-1` → `ergw-1` **only** |
+| Site 2 | `dc-2` 10.9.0.0/16 behind `cpe-2` AS 64501 → `er-2` → `ergw-2` **only** |
+| Excluded | `cpe-1`→`er-2` and `cpe-2`→`er-1` — drawn explicitly as crossed-out edges |
+| On-prem DCI | `cpe-1`↔`cpe-2` corporate WAN, eBGP 64500↔64501 |
+| Azure inter-region | `nva-1`↔`nva-2` eBGP 64496↔64497 over `hub-1`↔`hub-2` global peering, 65515 stripped on export |
+| Microsoft edge | AS 12076 on both private peerings |
+
+**Inter-region mechanism — why the NVA overlay.** Global peering alone gives reachability but no BGP
+attribute to shape and no automatic withdrawal. Global Reach is a genuine second *site-to-site* path
+(and the right answer for DCI loss) but joins sites, not hub VNets, so it cannot provide hub-to-hub
+transit; across geopolitical regions it also requires Premium circuits. vWAN inter-hub solves the
+problem but replaces the Route Server construct this guide is about. The overlay is the only
+candidate that both creates the path and gives a BGP policy point on each side — which is where the
+AS-path hygiene has to live.
+
+**Azure-to-Azure transit through the circuits does not work**, and this is documented rather than
+merely discouraged: ExpressRoute cannot be configured as a transit router, and the Route Server FAQ
+states that NVA-advertised routes returning through the MSEE are dropped by the second Route Server.
+
+## 3. What route maps do and do not solve here
+
+**Solve.** (a) Inbound on `ars-*`←ER-gateway connection: admission control on what each circuit may
+inject, and — because inbound runs *before* best-path — genuine de-preference or rejection of a
+DCI-leaked remote-site prefix, which is the one place a map preserves regional affinity by changing
+forwarding rather than advertisement. (b) Outbound on `ars-*`→ER-gateway connection: shape and tag
+what each region offers its own circuit, de-prefer backup-role prefixes, defend the ER advertisement
+budget under branch-to-branch. Prepends must use a **public** ASN — the MSEE strips private ASNs, so
+a private prepend is invisible on-premises. (c) Inbound/outbound on ARS↔NVA: bound and tag what
+crosses the overlay.
+
+**Do not solve.** Creating the DCI, the overlay, the peering or Global Reach. Modifying or filtering
+the natively advertised VNet address space. Removing 65515, or rescuing a route already dropped by
+loop prevention — that check runs before inbound policy. Attaching on the MSEE side. Changing the
+local best path from an outbound map, which runs after best-path selection. Guaranteeing symmetric
+forwarding — a map shapes one direction of one connection; symmetry is an outcome of two mirrored
+policies. Per-spoke granularity — no VNet-peering attachment object exists.
+
+**Compared to.** CPE LOCAL_PREF (strongest, authoritative site-side lever) · NVA BGP policy (owns the
+65515 strip and non-eligible peers) · ER connection routing weight (coarse Azure-side preference) ·
+ER BGP communities (site-side regional classification with no Azure-side tagging) · UDR (only way to
+force a next hop) · AVNM routing configuration (keeps those UDRs consistent at scale) · NSG /
+Azure Firewall (a backup that works in one direction only is often better closed than half-open) ·
+Global Reach (site-to-site, never hub-to-hub) · vWAN (managed replacement for the whole construct).
+
+## 4. Applicability — new class introduced
+
+**`requires disruptive topology change` — additive staging, disruptive activation.**
+
+The four classes used in v2 could not describe US10 honestly. Every new resource stages while the lab
+runs, but the affinity pattern is only reachable by **deleting `conn-hub2-to-onprem` and
+`conn-onprem-to-hub2`** — the exact path on which the Δ2 prepend result and the S2/S3 failover
+timings were measured. Classifying it as `testable with additive expansion` on the strength of the
+staging phase would have been misleading. New distribution across 10 stories: as-is 5 · additive 2 ·
+isolated bed 1 · blocked 1 · disruptive 1.
+
+## 5. Required lab delta (VPN analogue)
+
+Retained as **onprem1**: `vnet-onprem` (norwayeast, 10.40.0.0/16, `vpngw-onprem` AS 65000).
+
+| Added | Detail |
+|---|---|
+| `vnet-onprem2` | polandcentral, 10.50.0.0/16 — preflight-validated region; **must not** be peered to `vnet-poland-ars` or the set-C spokes |
+| `vpngw-onprem2` | VpnGw1 active-active, BGP, **ASN 65003**, 2 Standard PIPs (lab total 11) |
+| `vm-onprem2-ep` | `Standard_B2ts_v2`, 10.50.1.x |
+| DCI | `conn-onprem-to-onprem2` / `conn-onprem2-to-onprem`, V2V + BGP, new PSK |
+| Hub interconnect | `vnet-hub1`↔`vnet-hub2` global peering, AllowForwardedTraffic, no gateway transit |
+| Overlay | `vm-nva1` 65001 ↔ `vm-nva2` 65002 multi-hop eBGP, with `bgp_path.delete(65515)` on export |
+| New affinity pair | `conn-hub2-to-onprem2` / `conn-onprem2-to-hub2` |
+| **Removed** | `conn-hub2-to-onprem`, `conn-onprem-to-hub2` |
+
+Reused: all three Route Servers (all past the first-use upgrade), all three existing VPN gateways,
+both NVAs, all existing spokes, both route tables.
+
+**Cost class medium — ~+$10–11/day**, taking the lab from roughly $72/day to roughly $83/day. This is
+a further breach of the ~$50/day guardrail (rule #7) and needs a **fresh explicit approval**; the
+existing approval covered the current footprint only. **Time** ~60–75 min staging (the `vpngw-onprem2`
+long pole dominates) + ~15 min activation + ~30 min evidence capture. **Disruption risk high and
+specific:** `vpngw-onprem` stops seeing the hub2 copies of 10.31.0.0/24 and 10.32.0.0/24, so the Δ2
+`65515-65001` versus `65515-65002-65002-65002` comparison ceases to exist on that gateway and the
+S2/S3 timings stop describing the live topology.
+
+## 6. Key ASN constraint and recommended mitigation
+
+All hub-side gateways and all Route Servers use 65515. Route maps cannot remove it — the drop happens
+in gateway/ARS loop prevention *before* inbound policy, and reserved ASNs may not be prepended or
+removed.
+
+- **Works:** site prefixes stay clean. 10.40.0.0/16 originates `65000`, becomes `65003 65000` across
+  the DCI, and `vpngw-hub2` accepts it. The Azure-to-site backup direction is also clean because the
+  on-prem gateways hold distinct ASNs (65000 / 65003). Both directions of the site-1 backup converge.
+- **Does not work:** Azure prefixes cannot make a second Azure entry. Re-advertised across the DCI
+  they still carry 65515 and are dropped by `vpngw-hub2` and `ars-hub2`. The on-prem DCI therefore
+  backs up *site* prefixes only — never Azure-to-Azure. The ExpressRoute equivalent wall is AS 12076
+  plus private-ASN stripping at the MSEE.
+
+**Mitigation, ranked.** (1) **NVA-side 65515 strip on the overlay plus an explicit scope statement —
+additive, recommended**; it reuses the proven Δ1 filter and matches production ExpressRoute reality.
+(2) Controlled re-origination on an on-prem-side NVA — **disruptive**: no BGP policy point exists
+between two Azure VPN gateways, so it means a fourth Route Server with branch-to-branch or
+NVA-terminated IPsec (the previously rejected D5), rebuilding the on-prem side. (3) Distinct gateway
+ASNs — only actionable where the gateway does not coexist with a Route Server; ARS coexistence pins
+the hub gateways to 65515. Option 3 is precisely why option 1 works at all.
+
+**Shared-dependency warning.** The overlay is a dependency of two nominally independent failure
+responses — cross-region Azure-to-Azure traffic *and* the ER/VPN-failure backup. If it fails, both
+fail, and the DCI cannot substitute. Build it redundantly; do not document the corporate WAN as its
+backup.
+
+## 7. Evidence and rollback
+
+Six layers, all captured **before** activation: L1 gateway learned/advertised routes (VPN gateways;
+ER route table in the generic bed) · L2 Route Server learned/advertised routes on all three ARS ·
+L3 NVA/CPE RIB via `birdc` · L4 VM effective route tables on all five endpoints · L5 ping and
+traceroute matrix, both directions · L6 timed polls at 30/60/120/180 s, failover ≤180 s and failback
+≤90 s measured **independently per direction**. One-directional convergence is a FAIL, not a partial
+PASS — it is the characteristic defect of this topology.
+
+Rollback sequence (1–5 restore service, 6–8 restore cost): detach maps → restore NVA BIRD config from
+version control → delete the new hub2↔onprem2 pair → recreate the hub2↔onprem1 pair with a fresh
+matching PSK on both halves → confirm Δ2 evidence returned at `vpngw-onprem` → delete the DCI pair →
+remove the peering and overlay → delete `vpngw-onprem2`, `vm-onprem2-ep`, `vnet-onprem2` and the two
+PIPs → re-run L1–L5 and diff against baseline.
+
+## 8. Diagram handoff to Oracle
+
+| Diagram ID | Core visual assertion |
+|---|---|
+| `US10-bow-tie-generic-er` | Diagonal attachment plus two indirect backups; maps defend affinity, topology defends reachability. Includes crossed-out `cpe-1`⇢`er-2` / `cpe-2`⇢`er-1` edges and two failure insets (F1 circuit loss, F4 overlay loss) |
+| `US10-bow-tie-lab-vpn-analogue` | The additive stage, the one connection pair that must be deleted, and the `vpngw-hub2` annotation showing where 65515 blocks the on-prem backup |
+
+Two diagrams because one would be unreadable at this density. `US10-bow-tie-lab-vpn-analogue` is the
+single documented exception to the "diagrams use the generic reference topology" rule, since its
+entire purpose is to show the delta including the deleted edges.
+
+## 9. Grounding
+
+Microsoft Learn, retrieved 2026-08-05: *About route maps for Azure Route Server* (attachment points,
+inbound before / outbound after best-path, reserved-ASN prohibitions, no VNet-address-space
+modification, no MSEE-side maps, 2-byte ASNs) · *Azure Route Server FAQ* (65515 loop-prevention drop;
+NVA routes dropped by the second Route Server via the MSEE — the FAQ's own bow-tie diagram; ER
+preferred over VPN; branch-to-branch advertisement limit) · *Configure and manage Azure Route Server*
+(co-located VPN gateway must be active-active with ASN 65515) · *ExpressRoute routing* (AS 12076;
+MSEE removes private ASNs; ExpressRoute is not a transit router; no data-transfer symmetry
+requirement) · *About ExpressRoute Global Reach* (site-to-site only; Premium across geopolitical
+regions). Lab evidence: `lessons-learned.md` (Δ1 strip, Δ2 prepend, S2/S3 timings, EMP-001 peer
+locality, DEV-001 PSK recovery) and `show-output/baseline-pre-delta3/`.
+
+## 10. Open questions
+
+- [ ] Approve the disruptive activation at all, or keep US10 as a paper design until a dedicated
+      bow-tie lab can be built in its own resource group?
+- [ ] If approved: fresh cost approval for ~$83/day, or tear down something else first?
+- [ ] Confirm `polandcentral` for `vnet-onprem2`, or prefer co-locating site 2 in
+      `switzerlandnorth` with hub2?
+- [ ] Capture and archive a full L1–L5 baseline before activation as a named evidence set, so the
+      pre-US10 lab state stays citable after the hub2↔onprem1 connections are gone?
+- [ ] IPsec on the NVA-to-NVA overlay, or plain eBGP over the global peering (cheaper, sufficient for
+      every routing assertion in the story)?
+
+### Decision Brief — Overlay audit (Task A) and US11 no-overlay story (Task B)
+
+**Author:** Morpheus (Lead / Architect) · **Date:** 2026-08-05
+**Artifact:** `labs/dual-hub-hubless-region-ars/route-map-user-stories.md` — v3 → **v4**, 10 → **11 stories**
+**Requested by:** Jose Moreno
+**Scope guard:** no Azure/IaC change, no diagram files authored, nothing committed, live lab untouched.
+
+## 0. The user question
+
+> "Some of the user stories include an overlay between NVA1 and NVA2. If an overlay is really
+> required, please explain why, since it adds significant complexity as compared to non-overlay
+> topologies. That might be another User Story, hub-to-hub without an overlay?"
+
+Both halves were correct. v3 used "overlay" as one word for three different things, and the
+no-overlay design was a genuinely missing story rather than a footnote.
+
+## 1. What was wrong — terminology, not topology
+
+v3 wrote *"IPsec overlay carrying eBGP"* as an atomic phrase. That hid three independent layers:
+
+| Layer | What it is | What it buys |
+|---|---|---|
+| Azure-native **underlay** | Global VNet peering / AVNM connected group | The forwarding path. No BGP, no header. Non-transitive. |
+| NVA-to-NVA **BGP adjacency** | Multi-hop eBGP over that underlay, TCP/179 | Prefix-level policy, attributes, automatic withdrawal. **Not an encapsulation.** |
+| **Encapsulation** | IPsec / GRE / VXLAN tunnel between the NVAs | Separation of underlay reachability from overlay forwarding. Nothing else. |
+| **Forwarded data path** | The devices a packet actually touches | Never includes a Route Server. |
+
+Once separated, the answer to Jose falls out: the BGP session buys the allow-list; the encapsulation
+buys nothing for policy. New **§0.1** defines this once and is referenced by US01, US10 and US11.
+
+## 2. The one Azure limitation that actually necessitates encapsulation
+
+Not reachability, and not the BGP session. From `azure/route-server/multiregion`: Route Server
+programs learned routes into **all** subnets in its VNet — including the NVA's own subnet — so the
+moment remote-region prefixes are redistributed into the local Route Server, the local NVA's route to
+the remote region points back at itself. Encapsulation breaks the recursion because the tunnel's
+outer destination is the remote NVA's underlay address, still covered by the peering system route.
+
+**It is conditional.** No redistribution into ARS → no loop → no tunnel. The same Learn article
+documents the escape hatch (`disableBgpRoutePropagation` on the NVA subnets + explicit UDRs), which
+became US11 variant C.
+
+## 3. Task A outcome — per story
+
+| Story | Overlay verdict | Reason |
+|---|---|---|
+| **US01** | **Demoted to conditional variant.** Retained, not deleted. | The allow-list is a BGP requirement, satisfied by the adjacency alone. US01's own premise is "a small approved subset", which is exactly the condition under which the static/native design suffices. Default is now the smallest sufficient mechanism, with a pointer to US11; encapsulation applies only when approved prefixes are redistributed into ARS, churn, or need NAT. |
+| **US10** | **Retained as required**, with the requirement named. | Four requirements converge and no non-overlay mechanism meets all four: automatic spoke-wide propagation; **automatic withdrawal** on ExpressRoute failure; AS-PATH/community-based affinity; a churning prefix set (every spoke in two regions plus two on-prem estates). Requirement two is decisive — a static route cannot withdraw itself. US11-C is named as the rejected simpler alternative, with the reason. |
+| **US02–US09** | No overlay present. | `nva-1`/`nva-2` in US03 are an in-region HA pair, not a cross-region pair. US09's "decision overlay" was a *visual* term and was renamed to "decision panel" to remove the ambiguity. |
+
+Both retaining stories now carry an explicit **"Overlay: required or not"** block with *why the added
+complexity is justified*, *simpler non-overlay alternative*, and a pointer to §0.1's operational
+burden list: NVA HA/lifecycle, tunnel **and** BGP monitoring, two-sided prefix filters, 65515
+stripping (route maps cannot do it — the drop happens before inbound policy), MTU/MSS when
+encapsulated, BGP-timer-bound convergence (60 s keepalive / 180 s hold), two-ended capture for
+asymmetry, and one shared failure domain for every cross-region flow.
+
+§0.1 also carries the **shared overlay decision table** (requirement → simplest mechanism → overlay
+needed? → why) and the closing rule: *an overlay must solve a stated requirement; being present in a
+reference architecture is not a requirement.*
+
+## 4. Task B outcome — US11 (`US11-hub-to-hub-without-nva-overlay`)
+
+**Classification:** `testable with additive expansion` · route-map value **limited / supporting** ·
+cost **very low** · **priority 1**.
+
+Three variants, deliberately *not* interchangeable:
+
+- **A — native hub peering.** One global VNet peering pair; hub address space / shared services only.
+  `AllowGatewayTransit` and `UseRemoteGateways` false both sides — a VNet using a remote gateway may
+  not have its own, and both hubs have one.
+- **B — direct workload connectivity.** Direct spoke↔spoke global peerings, or AVNM connectivity
+  configurations (mesh + global mesh, or hub-and-spoke with direct connectivity). Removes the hub hop;
+  next-hop type `ConnectedGroup` for AVNM mesh. Explicitly flags that a more-specific cross-region
+  route beats an existing `0/0`→NVA UDR, so the flow becomes uninspected **by design**.
+- **C — bounded static NVA transit.** Global peering as underlay + UDRs with next hop
+  `VirtualAppliance` = the **remote** NVA's IP, on each NVA subnet. Six constraints stated: a spoke
+  UDR may never point at the remote NVA (peering is non-transitive, "direct connectivity" fails); the
+  UDR destination must not contain the next-hop address; `VirtualNetworkGateway` next hop is
+  unavailable in any VNet hosting a Route Server (Learn: the Route Server *is* that VNet's gateway);
+  Basic ILB frontends are unreachable across global peering; blanket `disableBgpRoutePropagation` on a
+  brownfield NVA subnet also removes ARS-injected on-prem routes existing flows depend on; and it is
+  static. **Written as "to be demonstrated", not "supported".**
+
+**Why global hub peering alone is not transit** — three things people expect and none happen:
+attached spoke prefixes do not cross; Route Server-learned prefixes do not cross; gateway-learned
+prefixes do not cross. The Route Server FAQ settles the hub-to-hub case in one sentence — *"Can I
+peer two Azure Route Servers in two peered virtual networks…? No, Azure Route Server doesn't forward
+data traffic. To enable transit connectivity through the NVA, set up a direct connection (for
+example, an IPsec tunnel) between the NVAs"* — which is simultaneously why US11 exists (the Route
+Server is not the missing piece) and why US10 keeps its tunnel.
+
+**Decision threshold to leave US11** — six testable triggers with thresholds: route churn/scale,
+automatic convergence, policy attributes, overlapping address space, multi-tenant isolation, N²
+peering avoidance.
+
+**Route-map value — limited/supporting, stated honestly.** Local maps can still govern eligible local
+ARS routes (inbound to stop an unwanted remote copy being installed; outbound on `ars`→`gw` to stop
+remote prefixes being offered to on-prem). Maps have **no role at all** in variants A and B (no BGP
+present) and none in variant C's forwarding decision (a UDR, which no map can influence). Maps cannot
+make a route cross a global peering, cannot attach to a VNet peering, and cannot filter the VNet
+address space ARS advertises natively — which is precisely what variant A relies on.
+
+**Alternatives:** direct peering (GA) · AVNM connectivity configurations (GA; vWAN-hub-as-hub is
+preview, high-scale connected groups need preview registration — flagged, not assumed) · AVNM routing
+configurations / UDR management (incl. `UseExisting`, API 2025-01-01+) · vWAN with routing intent ·
+static UDRs · Private Link / application-layer patterns, since a private-link resource may live in a
+different region from the endpoint's VNet, giving service access with **no** inter-region network at
+all — frequently correct, almost never proposed.
+
+## 5. Current-lab applicability — proposed only, nothing deployed
+
+1. **Test 1 (recommended first experiment for the whole catalogue).** `vnet-hub1` (10.10.0.0/16,
+   swedencentral) ↔ `vnet-hub2` (10.20.0.0/16, switzerlandnorth) global peering; all transit flags
+   false. Prove hub endpoint VM reachability. **Expected non-effects are the point:** no ARS route-set
+   change on `ars-hub1`/`ars-hub2`/`ars-poland`, 10.20.0.0/16 must not appear in `vpngw-hub1`
+   advertisements, set-C spoke tables and the two `0/0` copies unchanged.
+2. **Test 2.** Direct `vnet-spoke-a` (10.11.0.0/24) ↔ `vnet-spoke-b` (10.21.0.0/24) peering — the
+   smallest defensible variant-B proof; AVNM is the scale alternative but a larger first step.
+   Acknowledge up front that the new /24 beats the existing `0/0`→NVA UDR.
+3. **Test 3 (optional, conditional on test 1, reversible).** Route table per NVA subnet:
+   `snet-nva` hub1 → `10.21.0.0/24` via `10.20.1.4`; `snet-nva` hub2 → `10.11.0.0/24` via `10.10.1.4`.
+   Do **not** disable BGP propagation on those subnets in the live lab. Deliverable is the
+   demonstration, not the assertion.
+
+**Caveats recorded:** creating a peering on a Route Server VNet triggers a route refresh to all peered
+NVAs — soft if BIRD supports RFC 2918, **hard with traffic disruption** if not; confirm via
+`birdc show protocols all` first and treat both hubs as a change window, on create *and* on rollback.
+**Cost delta:** no billable resource — peerings and route tables carry no hourly charge; only
+inter-region peering data transfer, per GB both directions, negligible at probe volumes (confirm
+current swedencentral↔switzerlandnorth rates before sustained testing). **Time:** under 5 minutes per
+test. **Rollback:** delete in reverse order, re-diff every capture.
+
+**Evidence (traceroute explicitly not accepted):** peering state/sync/flags · effective routes
+before/after · Network Watcher next hop as the platform-authoritative per-direction answer and the
+primary legality proof for variant C · Network Watcher connectivity check + bidirectional matrix ·
+ARS learned/advertised diffs on all three Route Servers · gateway learned/advertised per peer ·
+variant C only, NVA interface/firewall counters and LAN captures at **both** NVAs · `birdc show
+protocols all` before/after to prove a soft, not hard, reset.
+
+## 6. Diagram IDs added (specifications only — Oracle authors)
+
+- `US11-no-overlay-native-peering` — hub↔hub peering with three explicit ✗ annotations for what does
+  not cross; a callout stating no tunnel and no NVA-to-NVA BGP session exists in the figure.
+- `US11-no-overlay-direct-workloads` — cross-region workload edge bypassing both hubs, with a
+  longest-match route panel showing the `0/0`→NVA UDR being beaten.
+- `US11-no-overlay-static-nva-transit` — **conditional**, publish marked "to be demonstrated":
+  five-hop native chain through both NVAs with UDR badges and no encapsulation.
+
+All three use the generic topology; current-lab forms appear in captions only. `US01-…`'s spec now
+draws the encapsulation greyed as a conditional variant.
+
+## 7. Document-level updates
+
+Version 3 → 4 with a change summary · story count 10 → 11 · new §0.1 · matrix row US11 and a reworded
+US01 control column · applicability distribution now 5 / **3** / 1 / 1 / 1 · a new explicit
+**recommended experiment ordering** (US11 test 1 first, US10 last) · cost note extended with US11's
+zero-resource delta · diagram index +3 rows · references +7 Learn pages (multiregion overlay
+rationale and its UDR alternative, VNet peering overview, UDR overview, AVNM connectivity
+configurations, AVNM UDR management, hub-spoke non-transitivity, private endpoint cross-region).
+
+A new **overlay-retention policy** paragraph sits beside the existing scenario-retention policy:
+nothing is deleted; unnecessary overlays are demoted to labelled conditional variants with the
+condition stated; required overlays name the requirement and the rejected simpler alternative.
+
+## 8. Change footprint
+
+- `labs/dual-hub-hubless-region-ars/route-map-user-stories.md` — §0 lever D wording, new §0.1, US01
+  (topology / alternatives / recommended / overlay block / current lab / diagram spec), US09 wording
+  fix, US10 (overlay block + US11 pointer), new US11, §2 matrix + counts + ordering + cost note +
+  retention policy, §3 diagram index, §4 references. 1464 → 1967 lines; ~117 KB → ~164 KB.
+- `.squad/agents/morpheus/history.md` — entry appended.
+- `.squad/decisions/inbox/morpheus-us11-no-overlay.md` — this brief.
+
+Nothing else touched. No Azure/IaC change, no diagram files, no commits, no secrets or subscription
+identifiers recorded.
+
+## 9. Open questions for Jose
+
+- [ ] US11 test 1 (`vnet-hub1`↔`vnet-hub2` peering) — approve? It is the cheapest experiment in the
+      catalogue and a prerequisite for US01 and US10, but it does put both hub Route Servers through a
+      BGP refresh. Confirm the change window.
+- [ ] Confirm BIRD route-refresh (RFC 2918) support on `vm-nva1`/`vm-nva2` before test 1, so we know
+      whether the refresh is soft or hard.
+- [ ] Is variant C worth demonstrating at all, or is documenting it as "Learn-documented, unproven
+      here" sufficient for now?
+
+### Decision Brief — US12 square hybrid connectivity (Task A) and the front-page story index (Task B)
+
+**Author:** Morpheus (Lead / Architect) · **Date:** 2026-08-05
+**Artifact:** `labs/dual-hub-hubless-region-ars/route-map-user-stories.md` — v4 → **v5**, 11 → **12 stories**
+**Requested by:** Jose Moreno
+**Scope guard:** no Azure/IaC change, no diagram files authored, nothing committed, live lab untouched.
+
+## 0. The correction that drove this
+
+> US10's "bow-tie with cross-region backup" is useful but is not the exact suggested design. Preserve
+> US10. Add a separate story for the **square hybrid connectivity** design: two on-prem DCs, each
+> connected only to its regional Azure hub; no diagonal cross-connections. The four sides are
+> DC1↔Hub1, Hub1↔Hub2, Hub2↔DC2 and DC2↔DC1.
+
+Accepted as direction. US10 is preserved verbatim apart from two cross-reference sentences (a
+`**Related.**` line under its Stable ID, and one clause appended to its *Alternatives* paragraph).
+Nothing in US10 was merged, renamed, reclassified or deleted.
+
+## 1. US10 versus US12 — the distinction, stated once
+
+The two stories produce the same four-corner picture and are **not** the same design.
+
+| | US10 | US12 |
+|---|---|---|
+| Unit of design | The cross-region **backup**; the topology exists to make it work | The **square itself** — four named sides, no diagonals |
+| Failover | Automatic cross-region hybrid backup is a **requirement**; the design is judged on it | A **bounded, written contract**; documented partial degradation is an acceptable outcome |
+| Inter-hub mechanism | Decided in advance: dynamic NVA-to-NVA BGP **with** encapsulation, because four requirements converge | **Open and separately justified**; native peering is the default, vWAN is a first-class native answer |
+| DCI | One line (corporate WAN), Global Reach named as an alternative | A **taxonomy** — enterprise WAN, SD-WAN, Global Reach, VPN — with their different preference semantics distinguished |
+| DC↔remote-hub | Implied by the backup narrative | Its **own outcome (B3)**, with two mutually exclusive realisations and separate prerequisites |
+| Cost of being right | Accepts the overlay's burden and its shared failure domain | Prefers to **reduce the claim** rather than add the fabric |
+
+Neither supersedes the other; the guide says so explicitly in both stories.
+
+## 2. US12 — classification and feasibility boundaries
+
+**Stable ID** `US12-square-hybrid-connectivity` · **Disposition** `Conditional` ·
+**Current-lab fit** `requires disruptive topology change` (the Hub1↔Hub2 side alone is additive) ·
+**Route-map role** supporting · **Priority** 9.
+
+**The load-bearing statement of the whole story:** *four physical sides do not imply failover.* The
+four outcomes are separated and each carries its own prerequisites:
+
+- **A — normal regional affinity.** Needs prefix admission plus AS-PATH/LOCAL_PREF discipline, and
+  needs the DCI-leaked copy of the peer site's prefix to be strictly longer than the direct copy.
+  **Requires nothing from the Hub1↔Hub2 side** — outcome A is complete with that side absent.
+- **B — cross-region reachability**, split into three genuinely different sub-outcomes: **B1** DC↔DC
+  (DCI only), **B2** Hub↔Hub (whatever the chosen mechanism actually propagates — a native peering
+  propagates *nothing*: it creates system routes for each hub's own address space and there is no BGP
+  session), **B3** DC↔remote-Hub (two mutually exclusive realisations, via Azure or via the DCI plus
+  the peer circuit, each with its own loop-prevention constraints). **B3 is not implied by B1 + B2.**
+- **C — failover after the local ER side fails.** Six named prerequisites, of which two are the ones
+  that actually decide feasibility: Azure-side carriage of a *foreign* site prefix across the
+  inter-hub side, and **automatic withdrawal** — a static UDR set can forward the packets but cannot
+  withdraw itself. With a native-peering inter-hub side, outcome C is **not delivered**, and the
+  design must say so in a *bounded-failover contract* written per flow per failure.
+- **D — restoration/failback.** Backup path at least one ASN longer on every hop, no aggregation
+  shortening it, nothing left UDR-pinned, and post-restoration tables **attribute-identical** to the
+  pre-fault baseline, timed per direction.
+
+**Retention rule applied.** If a build rejects or is blocked on the full-failover variant, the story
+is retained with outcomes A, B1, B2 and D as its delivered value. Deleting it would remove the
+reasoning that justified declining outcome C.
+
+## 3. Inter-hub (side S-B) mechanisms — analysed independently
+
+| Mechanism | Delivers | Choose when |
+|---|---|---|
+| **vWAN inter-hub** (native routing fabric) | B2, B3 and, with the hybrid attachments in the vWAN hubs, outcome C natively — *"when multiple hubs are enabled in a single virtual WAN, the hubs are automatically interconnected via hub-to-hub links"*; routing intent adds branch-to-branch secure transit | Inter-region transit is a standing requirement and nobody wants to own NVAs. **Replaces** the Route Server construct |
+| **NVA-to-NVA BGP over a global-peering underlay** (dynamic classic-VNet) | Dynamic propagation, automatic withdrawal, attributes — therefore outcome C | Outcome C is a hard requirement and vWAN is unacceptable. Encapsulation **only** when remote prefixes are redistributed into the local Route Server (the self-next-hop loop of `azure/route-server/multiregion`) |
+| **US11 variants A / B / C** (no overlay) | Hub address space; named workload pairs; bounded static transit | The cross-region prefix set is small, named and stable and the design does **not** claim outcome C. **This is US12's default** |
+| **Application / private-endpoint** | Cross-region access to a *service* with no inter-region network at all | The requirement, once written down, names applications rather than networks |
+
+**Default-and-justification rule recorded:** choose no overlay unless the design claims outcome C or
+one of §0.1's decision-table rows. An encapsulated tunnel must be bought by automatic withdrawal,
+attribute survival, ARS redistribution or overlapping address space — not by resemblance to a
+reference architecture.
+
+## 4. DCI (side S-D) mechanisms — and the sentence worth keeping
+
+Enterprise WAN/MPLS · SD-WAN overlay (path selection may be policy-driven, so the "one ASN longer"
+reasoning does **not** automatically hold — prove how the SD-WAN expresses backup preference) ·
+**ExpressRoute Global Reach** · VPN (the lab analogue).
+
+**Global Reach is S-D, never S-B.** It *"connects your on-premises networks via the ExpressRoute
+service through Microsoft's global network"* and can be enabled *"between the private peering of any
+two ExpressRoute circuits, as long as they're located in supported countries/regions and were created
+at different peering locations"* (Premium across geopolitical regions). It joins circuits and sites;
+it does **not** connect the hub VNets. A design that draws Global Reach as the Azure inter-region side
+is drawing a link that does not exist.
+
+## 5. Loop prevention — four mechanisms, all documented, all silent
+
+1. **MSEE ASN 12076.** Microsoft uses AS 12076 for private peering, so any route that crossed one
+   circuit carries it and trips the second circuit's MSEE own-AS check. *"You can't configure
+   ExpressRoute as transit routers"* (`azure/expressroute/expressroute-routing`).
+2. **Circuit-to-circuit reflection is not available through a Route Server** — the new hard citation
+   this cycle: *"ExpressRoute circuit-to-circuit connectivity isn't supported through Azure Route
+   Server. Routes from one ExpressRoute circuit aren't advertised to another ExpressRoute circuit
+   connected to the same virtual network gateway. For ExpressRoute-to-ExpressRoute connectivity,
+   consider using ExpressRoute Global Reach"* (`azure/route-server/expressroute-vpn-support`).
+   Branch-to-branch covers NVA↔ER, NVA↔VPN and ER↔S2S-VPN — **not** ER↔ER, and not P2S.
+   Microsoft's own documented two-circuit transit pattern shows what it costs instead: Route Server
+   plus BGP-capable NVAs, **supernets** rather than exact prefixes *"because the exact prefixes are
+   already announced in the opposite direction"*, and *"the BGP-capable NVAs must remove the AS paths
+   to prevent routes from being dropped by BGP loop detection"*
+   (`azure/cloud-adoption-framework/scenarios/azure-vmware/on-premises-connectivity`).
+3. **Own-AS 65515.** ARS rejects a route whose AS_PATH already contains 65515 *before* inbound policy
+   runs (Route Server FAQ). Hub-side gateways are pinned to 65515 by Route Server coexistence; the
+   distinct on-premises ASNs (65000/65003 here) are what keep the site-prefix direction clean.
+4. **When re-origination / `as-override` / NVA policy is necessary** — `as-override` for the
+   dual-homed pattern, 65515 removal for the multi-region pattern, CPE-side re-origination on the site
+   side. **What no route map can do:** remove its own ASN, rescue a dropped route, attach to the MSEE
+   side, or make ER↔ER transit exist.
+
+## 6. Route-map role in US12 — honest scope
+
+Eligible local attachment points, named per region: the **ARS↔ER-gateway connection**, the
+**ARS↔NVA BGP peering**, and the **ARS↔VPN-gateway connection** — all inside the Route Server's own
+VNet (peer-locality rule EMP-001 / D2). Four jobs: **admission** (inbound on the gateway connection —
+the one place a map influences which next hop is programmed, because inbound runs before best-path),
+**tagging** (community add for origin region and backup role), **preference** (outbound AS-PATH add,
+using a public ASN the enterprise owns — never a private, Azure-reserved or 64496–64511 documentation
+ASN toward a circuit), and **backup-path de-preference** (inbound on the inter-hub side).
+
+Limits restated: outbound runs after best-path so it cannot fix a wrong local best path; the VNet
+address space ARS advertises natively is unfilterable; no map creates topology; no map removes 65515;
+no map guarantees symmetry; no attachment object exists for a VNet peering; summarization strips
+AS-PATH and community; 2-byte ASNs only; association is an ARM write against a live Route Server and
+is not documented as session-preserving.
+
+## 7. Current-lab analogue — the delta
+
+`vnet-onprem` is **reused as DC1, unchanged**. Site 2 (`vnet-onprem2` 10.50.0.0/16 polandcentral,
+`vpngw-onprem2` `VpnGw1AZ` active-active ASN **65003**, `vm-onprem2-ep`, two zoned Standard PIPs) is
+added exactly as in US10 — **reused by reference, not duplicated**, including US10's S0 gateway
+SKU/zone preflight gate, cost basis, timings and 9-step rollback.
+
+Four sides in lab form: **S-A** existing `conn-hub1-to-onprem` pair (reused) · **S-C** new
+`conn-hub2-to-onprem2` pair · **S-D** new `conn-onprem-to-onprem2` V2V pair with BGP — the two
+on-premises VPN gateways connected directly · **S-B** two clearly separated, mutually exclusive
+variants:
+
+- **Variant N (default, no overlay).** `vnet-hub1`↔`vnet-hub2` global peering, US11 test 1 flags
+  (`AllowGatewayTransit`/`UseRemoteGateways` false both sides), optionally US11-C's bounded static
+  UDRs. Delivers A, B1 and hub-address-space B2. Does **not** deliver B3-via-Azure or outcome C.
+- **Variant D (dynamic).** The same peering as underlay plus `vm-nva1`↔`vm-nva2` multi-hop eBGP with
+  `bgp_path.delete(65515)`, and encapsulation only if remote prefixes are redistributed into the hub
+  Route Servers. US10's narrow tunnel policy is imported unchanged — **no `0.0.0.0/0` and no set-C
+  prefixes in either direction**, because `ars-poland`'s two default copies are what resolved DEF-001.
+
+**Diagonal-free activation:** create and verify the S-C pair, then delete `conn-hub2-to-onprem` /
+`conn-onprem-to-hub2`. Nothing else is removed. Today `vnet-onprem` is dual-homed, so the current lab
+is *not* the square.
+
+**Ledger.** Reused unchanged: all three Route Servers, all three existing gateways, both NVAs, all
+existing VNets/spokes/endpoints/route tables/peerings, and the hub1↔onprem1 connection pair. Added
+(variant N square): 1 VNet + 2 subnets, 2 zoned PIPs, 1 `VpnGw1AZ` gateway, 1 VM, 4 connection
+objects, 1 global peering pair; PIPs 9 → 11. Added (variant D increment only): BIRD policy blocks and,
+conditionally, one IPsec tunnel. Removed at activation: the two hub2↔onprem1 connections.
+
+**Preflight / ASNs / cost / time / risk.** US10's S0 gate verbatim (`VpnGw1AZ` mandatory, PIPs with
+zones 1,2,3 created first; neither `validate` nor `what-if` catches the two create-time failures this
+lab already hit). Distinct ASNs 65000 / 65003 / 65001 / 65002 / 65515. Cost floor identical to
+US10 — ~**$95+/day** against ~$84/day today, a floor pending a `VpnGw1AZ` retail lookup for
+`polandcentral`; both breach the ~$50/day guardrail and the $72/day waiver covers neither, so a fresh
+explicit approval is required before any resource is created. Variant N versus D is not a material
+cost difference — the gateway dominates — so choose on operational burden. Time ~60–75 min additive,
+~10 min preflight, ~15 min activation, ~30 min evidence. Risks: peering create **and** delete trigger
+an ARS route refresh to all peered NVAs (soft with RFC 2918, **hard with traffic disruption**
+without — confirm via `birdc show protocols all` and treat both as change windows); the activation
+deletes the Δ2 direct-adjacency evidence path.
+
+**One inherited assertion is now better supported.** US10's post-activation expectation that
+`vpngw-onprem2` relays the set-C prefixes onward to `vpngw-onprem` is no longer inference alone:
+*"Does Azure VPN Gateway support BGP transit routing? Yes. BGP transit routing is supported, with the
+exception that VPN gateways don't advertise default routes to other BGP peers"* (VPN Gateway FAQ).
+It still must be **measured**, because the reciprocal Azure-to-Azure case stays masked by the 65515
+drop.
+
+## 8. Validation and evidence (V1–V11)
+
+All gateway learned **and** advertised routes with **`--peer` per peer IP** and both active-active
+instance peers (plus `az network express-route list-route-table` in the generic bed) · Route Server
+RIBs in and out per peering name, before/after, diffed · NVA/CPE BGP RIBs (`birdc show protocols
+all` / `show route all`, CPE received/advertised routes) · effective route tables on every NIC in
+scope · Network Watcher **next hop** per direction as the platform-authoritative forwarding answer ·
+Network Watcher connectivity check plus a bidirectional matrix · **simultaneous packet capture at
+both ends** filtered on the probe identity, plus interface/firewall **counters** — one-sided counter
+growth is a FAIL, not a partial pass · **timed fault and failback** polls at 30/60/120/180 s per
+direction · **route-table equality after restoration** (attribute-identical, not merely reachable).
+**Traceroute is secondary and indicative only**, in every row.
+
+B1/B2/B3 must be tested and reported **separately**, with B3 explicitly marked *not delivered* when
+the chosen inter-hub side is variant N.
+
+## 9. Task B — front-page story index
+
+A new **Story index — start here** section sits immediately after the version header and before §0,
+covering US01–US12 with: ID/title · user outcome · design disposition · route-map role ·
+current-lab fit · key delta/blocker · diagram IDs.
+
+Five disposition terms are defined **immediately above** the table — `Accepted candidate`,
+`Conditional`, `Rejected as implementation — retained`, `Platform-blocked — retained`,
+`Pending validation` — followed by an explicit *Not a disposition* paragraph stating that a
+reviewer's rejection of draft wording is a wording correction, never a disposition, and never grounds
+to drop a scenario. Every rejected or blocked scenario stays listed and linked.
+
+**Dispositions, derived from the detailed stories rather than invented:** Accepted candidate 6
+(US02, US04, US05, US08, US09, US11) · Conditional 5 (US01, US03, US07, US10, US12) ·
+Platform-blocked — retained 1 (US06) · Rejected as implementation — retained 0 at whole-story level
+(the term is used *inside* US10 for Learn's UDR-only alternative and inside US12 for ER↔ER transit and
+the diagonal link) · Pending validation 0 at whole-story level (US11 variant C only).
+**Current-lab fit:** as-is 5 · additive 3 · disruptive activation 2 · isolated alternate bed 1 ·
+blocked 1.
+
+Nothing was upgraded to Accepted on the strength of an unexecuted experiment: US10 and US12 are
+Conditional behind the E-1/E-2 gate and a cost approval, US11 variant C is Pending validation, and
+US02's Accepted rests on the *outcome* already demonstrated by the Δ2 NVA-side prepend, with the map
+variant explicitly still gated.
+
+## 10. Diagram IDs added (specifications only — Oracle authors)
+
+- `US12-square-hybrid-normal` — a **true square**, four corners, all four sides drawn and labelled
+  S-A/S-B/S-C/S-D, **both diagonals ghosted and red-crossed** as absent by design, data and control
+  planes as separate edge weights, Route Servers beside their hubs and never on a thick edge, and an
+  outcome callout ticking A/B1/B2 with an amber flag on B3.
+- `US12-square-hybrid-failover` — recovery drawn **around** the square, never across it: S-A struck
+  through, a bold three-side chain with no Route Server on it, a prerequisites panel whose unchecked
+  boxes show precisely what a native-peering inter-hub side does not deliver, plus a second inset for
+  the DCI-lost case.
+- `US12-square-hybrid-lab-analogue` *(optional — publish only if the generic pair cannot carry the
+  delta readably)* — the deployed four corners, the deleted hub2↔onprem1 pair, and the inter-hub side
+  drawn as two mutually exclusive lanes.
+
+## 11. Document-level updates (Task C)
+
+Version 4 → **5**, stories 11 → **12**, new v5 change summary · new **Story index** section with
+disposition definitions and counts · new **US12** with the three-field Intent, the four-side topology,
+outcomes A–D with per-outcome prerequisites, independent S-B and S-D mechanism analyses, the
+loop-prevention section, route-map scope, the lab analogue (by reference to US10), V1–V11 evidence,
+alternatives, residual risks, an explicit *US10 versus US12* comparison, and three diagram specs ·
+§2 matrix +US12 row, applicability distribution now 5/3/1/1/**2**, new disposition distribution,
+recommended ordering reworked so US12 variant N precedes US10/US12 variant D, fifth-class paragraph
+extended to both stories, retention policy extended to US01–US12, cost note extended · §3 diagram
+index +3 rows and a second lab-topology exception · §4 references +9 Learn pages. All twelve stories
+carry the three Intent fields. US01–US11 detailed content is otherwise untouched.
+
+**Change footprint:** `labs/dual-hub-hubless-region-ars/route-map-user-stories.md` (1967 → ~2560
+lines) · `.squad/agents/morpheus/history.md` (entry appended) · this brief. No Azure/IaC change, no
+diagram files, no commits, no secrets or subscription identifiers.
+
+## 12. Unresolved platform question for Jose
+
+- [ ] **The one genuine open question:** does an Azure VPN gateway re-advertise routes learned on one
+      BGP-enabled connection to another BGP-enabled connection **in this subscription's
+      configuration**? Learn says BGP transit routing is supported; this lab has never been able to
+      observe it, because the reciprocal Azure-to-Azure case is masked by the 65515 drop at the far
+      hub. The square's DCI-based backup (outcome C's first hop) depends on it. It becomes measurable
+      the moment `vpngw-onprem2` exists — and it should be the **first** assertion checked after S1,
+      before any activation.
+- [ ] Confirm the S-B variant for the lab: **N (native peering, no outcome C)** or **D (dynamic,
+      outcome C plus the overlay burden)**. Recommendation: run N first — it shares every staged
+      resource with D, and its bounded-failover contract is measurable without a tunnel.
+- [ ] Fresh cost approval quoting a looked-up `VpnGw1AZ` retail price for `polandcentral`, before any
+      resource is created (~$84/day now, ~$95+/day floor after).
+- [ ] Approve the maintenance window for the `vnet-hub1`↔`vnet-hub2` peering create and delete, after
+      confirming BIRD's RFC 2918 route-refresh capability on both NVAs.
+
+### Decision Brief — US10 Wording Fix (four overclaims) + Scenario-Retention Policy
+
+**Author:** Oracle (Documentation & Diagrams) · **Date:** 2026-08-05 · **Status:** For review
+**Artifact:** `labs/dual-hub-hubless-region-ars/route-map-user-stories.md` — four US10 overclaim
+locations, plus the §2 applicability/classification section (retention policy) and the matrix row it
+touches
+**Requested by:** Jose Moreno
+
+**Context:** Tank authored the current US10 revision after Morpheus's version was rejected. Niobe
+rejected Tank's revision for four wording-only overclaims. Tank, Morpheus, and Trinity are locked out
+of this revision cycle; I am the eligible replacement author for this narrow wording fix. This is a
+documentation-accuracy correction, not a topology redesign.
+
+Scope honoured exactly: only the four US10 overclaim locations, the scenario-retention policy, and the
+matrix/index wording directly required by these changes were touched. US01–US09 bodies untouched, no
+diagrams authored, no Azure/IaC change, nothing committed.
+
+## 1. The four corrections (all "association proven" → "eligibility proven, unassociated")
+
+Niobe's finding: US10 repeatedly stated or implied that NVA-peering **association** had been proven,
+when the lab has only proven route-map **eligibility** (per the D2 locality rule and the upgraded hub
+Route Servers). No association has ever been executed against a live Route Server in this lab; E-1 is
+the pending experiment that would prove it.
+
+| # | Location | Before | After |
+|---|---|---|---|
+| 1 | Recommended-section prose (US10 body) | "the lab has proven NVA-peering attachment and has *not* yet proven gateway-connection attachment" | "the lab has proven route-map *eligibility* on the hub ARS↔NVA peerings, per the D2 locality rule and the upgraded hub Route Servers — no association has been executed anywhere, and E-1 is the test that would prove it; gateway-connection attachment is separately unverified" |
+| 2 | §2 comparison-matrix, US10 row | "supporting — proven on ARS↔NVA peerings; gateway-connection attachment **unverified**, pending the US10 pre-activation gate" | "supporting — eligible (unassociated) on ARS↔NVA peerings; gateway-connection attachment unverified; both pending the US10 pre-activation gate" |
+| 3 | RM-A / RM-B eligibility-status cells | "**Proven eligible**" | "**Eligible, unassociated:** peerIp in-VNet per D2, ARS route-map tier active, inert map provisioned; association never executed" |
+| 4 | `US10-bow-tie-lab-vpn-analogue` diagram spec, thin control-plane edge label | `BGP · map-eligible (proven)` | `BGP · map-eligible (D2) · association untested` |
+
+## 2. Scenario-retention policy (Jose's directive)
+
+Jose's exact instruction: *"If any scenario is rejected, please don't delete it from the file, just
+explain why it is not possible."* Added a **Scenario-retention policy** paragraph in §2, placed
+immediately after the "Fifth applicability class" paragraph (which explains why US10 keeps its own
+`requires disruptive topology change` classification) and immediately before "Cost note." — i.e.
+directly beside the existing applicability/classification explanation it generalizes.
+
+The policy states: no scenario is deleted from the catalogue on the strength of an applicability
+classification, a reviewer's rejection of draft wording, or a platform limitation. `blocked by
+platform limitation` (US06) and `requires disruptive topology change` (US10) are retained rows, not
+removed ones. A reviewer rejecting how a scenario's evidence is *worded* — e.g. this US10 case, where
+"proven" association was overclaimed when only eligibility was demonstrated — is a wording correction,
+never grounds to drop the scenario. Every retained-but-blocked or retained-but-unverified scenario
+must record: blocking reason, residual value, alternatives/conditions, and the evidence needed to
+revisit the classification (e.g. US10's E-1). Applies uniformly to US01–US10 and any future addition.
+
+## 3. Validation
+
+Targeted `grep` across the file for
+`proven NVA-peering|proven eligible|map-eligible \(proven\)|proven on ARS|association.*proven|proven.*association`
+after all edits returns a single hit — inside the new retention-policy paragraph's own explanatory
+sentence describing the anti-pattern ("overclaiming an association as 'proven'...") — not an actual
+overclaim anywhere in the US10 content. Zero remaining overclaim phrases.
+
+## 4. Change footprint
+
+- `labs/dual-hub-hubless-region-ars/route-map-user-stories.md` — four US10 overclaim phrases
+  corrected; scenario-retention policy paragraph added in §2.
+- `.squad/agents/oracle/history.md` — revision entry appended.
+- `.squad/decisions/inbox/oracle-us10-wording-fix.md` — this brief.
+
+Nothing else touched. No diagrams created. Nothing committed. No secrets or subscription identifiers
+recorded.
+
+### Decision Brief — US10 Bow-Tie Revision (independent replacement author)
+
+**Author:** Tank (IaC Engineer) · **Date:** 2026-08-05 · **Status:** For review
+**Artifact:** `labs/dual-hub-hubless-region-ars/route-map-user-stories.md` — US10 section plus its
+comparison-matrix, applicability, cost-note, diagram-index and reference rows
+**Requested by:** Jose Moreno
+**Morpheus:** locked out of this revision (original author, rejected) · **Trinity:** locked out of the
+current user-story revision cycle · neither consulted.
+
+Scope honoured exactly: US01–US09 bodies untouched, no diagrams authored, no Azure change, no
+association experiment executed, no IaC modified, nothing committed.
+
+## 1. Why the revision exists
+
+My own review of `US10-bow-tie-dual-site-regional-affinity` returned REJECTED with five blocking
+findings and six cautions. Morpheus is locked out, so I authored the replacement. Jose's terminology
+("bow-tie") and the topology-independent framing are preserved without critique; the corrections are
+factual, not stylistic.
+
+## 2. Blocking findings — resolution
+
+| ID | Finding | Resolution |
+|---|---|---|
+| B1 | Azure Route Server drawn/listed as a packet-forwarding hop | Added a **plane convention** table. Every path table now lists forwarding hops only; `ars-*` nodes appear exclusively on **thin dashed control-plane edges**, with **thick edges** reserved for the data plane in both diagram specs. The impossible failure-inset chain `vpngw-hub2 → ars-hub2 → vm-nva2` is corrected to `vpngw-hub2 → vm-nva2`. Grounded in the Route Server FAQ: ARS exchanges BGP routes only; data traffic goes directly from the NVA to the destination. |
+| B2 | Wrong gateway SKU / PIP zones for the current lab's second on-prem site | `vpngw-onprem2` is specified as **`VpnGw1AZ`**, with two Standard public IPs created **zones 1,2,3** *before* the gateway. Added a five-step **Poland Central SKU/zone preflight gate** (region AZ mapping → zoned PIPs first → SKU parity check → gateway create → stop on first failure), with an explicit note that ARM `validate` / `what-if` does **not** catch `NonAzSkusNotAllowedForVPNGateway` or `VmssVpnGatewayPublicIpsMustHaveZonesConfigured` — both are create-time-only failures already recorded in `deploy-log.md` §7. |
+| B3 | Stale run-rate | Current run-rate corrected to **≈ $84/day** (≈ $65.86/day baseline + 3 × ≈ $6/day route-map surcharge after `ars-poland`, `ars-hub1`, `ars-hub2`). Target stated as **≈ $95+/day**, explicitly a *floor* **pending a current `VpnGw1AZ` retail lookup for `polandcentral`**. No exactness claimed. The fresh explicit cost-approval gate is preserved; the earlier $72/day waiver covers neither figure. |
+| B4 | Documentation ASN suggested on an ExpressRoute AS_PATH | Generic ER prepend policy now **requires a real customer-owned public ASN**. ASN 64496 (and the whole 64496–64511 documentation range) is stated as never valid on an ER AS_PATH; private ASNs are stripped by the MSEE regardless. Documentation ASN 64496 is retained **only** in the closed lab VPN analogue, matching the Δ3 activation contract and the existing inert `rm-hub1-activate` / `rm-hub2-activate` maps. The two test beds are clearly separated so the ASN rules cannot be mixed. |
+| B5 | Route-map attachments unnamed; no PASS/FAIL assertions; association assumed to work | Candidate maps named against the D2 eligibility table: **RM-A** `ars-hub1`↔`peer-nva1` (proven eligible), **RM-B** `ars-hub2`↔`peer-nva2` (proven eligible), **RM-C / RM-D** VPN gateway connections (**unverified**), **RM-X** `ars-poland` (proven ineligible, EMP-001 peer-locality constraint). Each map carries explicit PASS and FAIL assertions. A mandatory **S2 pre-activation experiment stage** was added, gated on explicit user approval because association may reset BGP. Not called zero-disruption; not executed now. |
+
+## 3. Cautions — resolution
+
+1. **Global peering resets.** Creating or deleting a global VNet peering triggers a Route Server BGP
+   **soft reset**, and a **hard reset** if the NVA does not support route refresh — Learn warns this
+   "might cause connectivity disruption". Now requires a maintenance window, before/after/+5 min RIB
+   and peer-state captures, and continuous ping across the change.
+2. **NVA overlay prefix policy.** Explicit import/export table. **`0.0.0.0/0` excluded
+   unconditionally in both directions**, plus set-C prefixes 10.31.0.0/24 and 10.32.0.0/24, scoped to
+   approved regional aggregates — so Poland's Δ3 default-route experiment cannot gain extra copies.
+   Backup-site prefixes are permitted but prepended ×2.
+3. **Set-C behaviour corrected.** Prefixes are not lost after S3: they can still transit
+   hub2 → `vpngw-onprem2` → DCI → `vpngw-onprem`. Both AS paths are shown — `65515-65001` (unchanged
+   via hub1) and `65003-65515-65002-65002-65002` (via onprem2 + DCI). The Δ2 comparison therefore
+   *changes shape* (2-vs-4 becomes 2-vs-5) rather than disappearing, and the original 4-ASN form
+   survives one hop upstream at `vpngw-onprem2`. Flagged as an assertion to **measure**, with PASS and
+   ALT/FAIL branches, because it depends on `vpngw-onprem2` re-advertising between its two BGP
+   connections — unproven in this lab.
+4. **Citation mapping corrected.** The FAQ MSEE bow-tie diagram describes a *different* shape and is
+   now cited only as the reason a shared-MSEE hairpin is not a substitute — never as proof of the
+   separate-circuit diagonal design. `as-override` is described strictly as the sanctioned mitigation
+   in the dual-homed / same-ASN pattern (`azure/route-server/about-dual-homed-network`, plus the
+   65515 rewrite in `azure/route-server/multiregion`). Global Reach is preserved as a valid on-prem
+   DCI alternative while stating plainly that it joins sites, not hub VNets.
+5. **Symmetry proof replaced.** Traceroute is demoted to secondary/indicative. Primary evidence is
+   simultaneous NVA packet captures on tunnel and LAN interfaces filtered on probe identity, plus
+   interface/firewall counters (`ip -s link`, `nft`/`iptables`) correlated at **both** NVAs, plus
+   gateway and Route Server RIB evidence.
+6. **`--peer` context added.** Every advertised-route collection line now carries
+   `--peer <bgp-peer-ip>` — a **required** parameter of `az network vnet-gateway
+   list-advertised-routes`. Peers are enumerated first with `list-bgp-peer-status` and the call is
+   repeated per peer, including both active-active instance peers.
+
+## 4. Final classification
+
+**`requires disruptive topology change`** — retained, but the stage table now splits additive staging
+from disruptive activation precisely:
+
+| Stage | Nature | Reversible |
+|---|---|---|
+| S0 preflight (cost approval, Poland SKU/zone gate) | none | n/a |
+| S1 additive build (`vnet-onprem2` + `vpngw-onprem2` `VpnGw1AZ`, DCI connections, NVA overlay tunnel) | additive | yes, by delete |
+| S2 **route-map pre-activation experiment** (E-1 then E-2) | probing, approval-gated | yes, by disassociation |
+| S3 **activation** — delete the `vnet-onprem`↔`vnet-hub2` connection pair | **disruptive** | only by rebuild + re-measure |
+| S4 rollback | restorative | recreates the deleted pair; Δ2/S2/S3 evidence must be re-measured |
+
+The single disruptive act is S3. It deletes the connection pair on which the Δ2 prepend result and
+the S2/S3 failover timings were measured in their direct-adjacency form — which is exactly why
+`testable with additive expansion` would be the wrong label.
+
+## 5. Cost range
+
+| Item | Figure | Confidence |
+|---|---|---|
+| Current lab run-rate, all three Route Servers route-map-upgraded | **≈ $84/day** | good — ≈ $65.86/day baseline + 3 × ≈ $6/day surcharge |
+| US10 expansion target | **≈ $95+/day** | **floor only**, pending a current `VpnGw1AZ` retail lookup for `polandcentral` |
+| Guardrail | ~$50/day | breached by both figures |
+| Existing waiver | $72/day | **does not cover** either figure — now stale |
+
+**Gate:** a fresh explicit cost approval from Jose is required before any US10 resource is created.
+No exactness is claimed for either number.
+
+## 6. Route-map pre-activation gate (S2)
+
+Mandatory, sequenced, and **not executed**. Requires explicit user approval before either step,
+because association may reset BGP. This is **not** a zero-disruption operation.
+
+- **E-1 — proven-eligible path.** Associate an inert map (`rm-hub1-activate` pattern: match RFC 5737
+  `192.0.2.0/24` Equals → Add AS-Path [64496] → Terminate) on `ars-hub1`↔`peer-nva1` via
+  `routingConfiguration.inboundRouteMap` on the ARS **bgpConnection** child, API `2024-10-01`.
+  PASS = association succeeds, no non-matching prefix altered, no BIRD session uptime reset, no ping
+  loss. FAIL = any of those, or `provisioningState != Succeeded`.
+- **E-2 — the unknown.** Independently test association against an **eligible local VPN gateway
+  connection**, using the actual resource/API semantics rather than the read-only
+  `associatedInboundConnections` composite. PASS = the API accepts the association and the effect is
+  observable in the gateway RIB. FAIL = record the exact error code and treat RM-C/RM-D as
+  unsupported.
+
+**No expansion funding and no S3 activation proceeds until E-1 and E-2 have produced evidence.**
+
+**If VPN-gateway association proves unsupported:** US10 is **retained**, but Azure-side route-map
+value is reclassified to *"proven on ARS↔NVA peerings only"* and the on-prem-facing policy function
+moves to NVA / CPE policy. The story's topology and affinity argument are unaffected.
+
+## 7. Diagram IDs (stable — Oracle owns authoring)
+
+- `US10-bow-tie-generic-er` — generic, topology-independent ExpressRoute bed. Diagonal attachment
+  plus two indirect backups; thick data-plane edges never touch a Route Server; thin dashed edges
+  carry BGP only.
+- `US10-bow-tie-lab-vpn-analogue` — deliberately drawn on the deployed lab topology, to show the
+  additive stage, the one connection pair deleted at S3, the tunnel's `no 0.0.0.0/0 / no set-C`
+  policy, and where 65515 blocks the on-prem backup.
+
+Neither spec contains an impossible path, and no Route Server appears as a forwarding hop in either.
+
+## 8. Open questions for Jose
+
+1. **Cost approval** — approve ≈ $95+/day (floor) for the S1 additive build, or defer until the
+   `VpnGw1AZ` `polandcentral` retail price is looked up and the number is firmed?
+2. **S2 approval** — run E-1 and E-2? Both may reset BGP; both need a maintenance window.
+3. **Caution 3 assertion** — accept it as a documented prediction with PASS/ALT branches, or make
+   measuring `vpngw-onprem2`'s re-advertisement behaviour a prerequisite of S3?
+4. **Generic-bed ASN** — is a real customer-owned public ASN available for the ER prepend narrative,
+   or should the generic story stay abstract (`AS <customer-public>`) as currently written?
+
+## 9. Change footprint
+
+- `labs/dual-hub-hubless-region-ars/route-map-user-stories.md` — US10 section replaced; matrix US10
+  row, applicability-distribution note, fifth-class paragraph and cost note updated; both US10
+  diagram-index rows updated; three verified references added
+  (`about-dual-homed-network`, `create-zone-redundant-vnet-gateway`, CLI `--peer` requirement).
+- `.squad/agents/tank/history.md` — revision entry appended.
+- `.squad/decisions/inbox/tank-us10-revision.md` — this brief.
+
+Nothing else touched. Nothing committed. No secrets or subscription identifiers recorded.
+
+### Trinity decision — Storage endpoint path-equivalence design
+
+**Date:** 2026-08-05  
+**Lab:** `storage-endpoint-path-equivalence`  
+**Status:** Design complete; Phase 4 approval closed
+
+## Team-relevant decisions
+
+1. Use one sequential client VM/subnet/account/FQDN/object/request method. Parallel VMs would add uncontrolled client/subnet variance.
+2. Pre-stage the target Storage VNet rule while `defaultAction=Allow`; enabling `Microsoft.Storage` is then the only measured S1→S2 change.
+3. Authority is the combined DNS answer, PCAP destination, NIC effective next-hop type, and Storage `CallerIpAddress`/authorization log. VNet flow logs corroborate only.
+4. Same-region Storage IP firewall rules cannot form the public control. S1 uses public access Allow plus stable NAT egress.
+5. Keep the service endpoint and target-only endpoint policy attached for S4; linking private DNS changes only resolution/destination and demonstrates that PE traffic is VNet-local.
+6. Traceroute, hop count, and latency cannot prove Microsoft physical-underlay equivalence or difference.
+7. S5 disables target public network access and compares forced-public TLS/SNI-preserving access with normal private-DNS access.
+8. No ExpressRoute/Megaport and no deployment/IaC before Jose grants Phase 4 approval.
+
+Design: `labs/storage-endpoint-path-equivalence/design.md`.
+
+### trinity-us12-revision — US12 revision after Niobe's rejection
+
+**Author:** Trinity (Azure Network SME) · **Date:** 2026-08-05 · **Status:** revision complete,
+awaiting reviewer pass · **Scope:** US12 only, plus its front-matter cells, the US11 test-1 endpoint
+reference, and one stale count in `manifest.md`. Morpheus (US12's original author) is under reviewer
+lockout for this revision and was not consulted.
+
+## Files touched
+
+| File | Change |
+|---|---|
+| `labs/dual-hub-hubless-region-ars/route-map-user-stories.md` | US12 body; story-index row + disposition-terms table + counts; §2 matrix row, disposition distribution, recommended-order items 1 and 9; §3 diagram index US12 rows; §4 reference annotations; US11 *test 1* probe sentence; header v5.1 revision summary |
+| `labs/dual-hub-hubless-region-ars/manifest.md` | Peering count only: 26 objects / 13 pairs → **20 objects / 10 pairs** (4 places + correction note) |
+
+No other story body was edited. No diagram was authored. No Azure resource, IaC file or commit was
+made. No scenario was deleted.
+
+## Blocking corrections
+
+**B-1 — Global Reach scope.** Every claim that Global Reach contributes to full outcome C or to
+local-ER-side failover is removed. Its scope is now stated identically in five places (index row,
+*When this story does not apply*, a dedicated *Global Reach and outcome C — the boundary* paragraph,
+the S-D mechanism table, *Alternatives*, residual risks, and both diagram specs): **side S-D
+(site/circuit interconnect) and outcome B1 (`dc-1`↔`dc-2`) only.** It links on-premises networks —
+*"With ExpressRoute Global Reach, you can link ExpressRoute circuits to create a private network
+between your on-premises networks"* (`azure/expressroute/expressroute-global-reach`) — so it never
+carries a prefix across S-B and therefore never restores `hub-1` workload reachability via `hub-2`.
+Outcome C's prerequisite 2 (Azure-side carriage of a foreign site prefix across S-B) is unaffected by
+it.
+
+**B-2 — Global Reach shared failure domain.** Added as a four-row table plus a consequence paragraph
+in *DCI mechanisms for side S-D*, mirrored into residual risks and both diagram specs. Global Reach
+rides **both** ER private peerings: usable when the failure is the ER gateway or anything above a
+still-live circuit; **lost** when the defining failure is the local circuit, the private peering, or
+the peering-location/provider edge. Consequence recorded: it may be documented as a DCI that survives
+gateway-and-above faults, never as one that survives a circuit/private-peering fault; genuine DCI
+independence needs enterprise WAN, SD-WAN or VPN over a different transport. Its routes also count
+against the private-peering budget (ExpressRoute FAQ), which is now folded into the outcome-C
+route-count risk row.
+
+**B-3 — no-overlay B2 probe re-anchored.** The rejected draft proved hub-address-space reachability
+"between the existing hub endpoint VMs in `snet-endpoint` 10.10.2.0/27 and 10.20.2.0/27". Verified
+independently: `deploy/templates/main.bicep` creates both subnets but places **no VM** in either; the
+six deployed VMs are `vm-nva1`, `vm-nva2`, `vm-hub1-ep` (→ `vnet-spoke-a/snet-workload`, 10.11.0.x),
+`vm-hub2-ep` (→ `vnet-spoke-b/snet-workload`, 10.21.0.x), `vm-c1-ep`, `vm-onprem-ep`
+(`manifest.md` §1, `deploy-log.md` §1). The spoke-resident pair cannot substitute — spoke prefixes do
+not cross a plain hub↔hub peering, so that probe would be expected to fail and would prove the wrong
+claim. **Reuse chosen and defended: `vm-nva1` 10.10.1.4 ↔ `vm-nva2` 10.20.1.4**, both inside their
+hub's own address space, which is exactly what a global VNet peering carries. Prerequisites N1–N8
+added: ICMP already allowed from 10.0.0.0/8 (`allow-icmp-inbound` p110) and TCP/22 (p120) on both NVA
+NSGs so **no NSG change is needed**; `deny-other-inbound` p4000 means no arbitrary-port probe and
+**never** TCP/179; default `AllowVnetOutBound` covers the peered space; BIRD strictly read-only
+(no stop/start/reload — Δ1/Δ2 and `ars-poland`'s two `0/0` copies are live evidence); route-refresh
+capability confirmed in `birdc show protocols all` before the peering create, with create *and*
+rollback treated as change windows; host-terminated traffic so the probe does not depend on
+`AllowForwardedTraffic` and makes no transit claim; `ip route get` + effective-route check expecting
+next-hop type `GlobalVNetPeering`. Costed fallback (2 dedicated hub endpoint VMs, VM count 6 → 8,
+existing subnets and NSGs) is documented but explicitly not recommended. The **US11 test-1** sentence
+carrying the same false endpoint claim was corrected to point at the same two NVAs.
+
+## Non-blocking corrections
+
+- **(a) Citation scoping.** The `azure/route-server/expressroute-vpn-support` quote is now explicitly
+  limited to "two circuits on the **same** virtual network gateway" and is no longer used as proof
+  for the square's separate circuits/gateways/regions. The square is anchored on route-propagation
+  facts: AS **12076** for Azure private peering and 65515–65520 reserved
+  (`azure/expressroute/expressroute-routing`), private ASNs stripped on the ExpressRoute path
+  (`azure/virtual-wan/route-maps-prepend-routes`), and *"You can't configure ExpressRoute as transit
+  routers"* (same routing article). Reference list annotated accordingly.
+- **(b) Reclassification.** ER circuit-to-circuit through a Route Server is now
+  `Platform-blocked — retained` wherever the classification is about platform support. The
+  disposition-terms table, the counts line and the §2 disposition distribution were updated;
+  `Rejected as implementation — retained` inside US12 now covers **only** the diagonal fifth link.
+- **(c) Caveat.** Both the index route-map cell and the §2 matrix cell now read *eligible but
+  unassociated; gateway-connection attachment unverified*.
+- **(d) Diagram truth.** The normal-state callout no longer ticks B2 unconditionally: `A ✅ · B1 ✅ ·
+  B2 ⚠ hub address space only (variant N) — remote spokes need US11-B or US11-C · B3 ❓ depends on
+  S-B mechanism · C ❌ not delivered by variant N; Global Reach does not supply it`.
+- **(e) Mermaid.** Mermaid is retained as the required, canonical, readable form. The spec is now
+  written to what Mermaid can express: `flowchart TB` with four quadrant subgraphs, corner identity
+  in subgraph titles rather than geometry, side letters inside every edge label, `==>` / `-->` /
+  `-.->` mapped to the plane convention with a `Legend` subgraph, and **absent diagonals carried as a
+  `NOT PRESENT — by design` annotation node** instead of red-crossed edges. A draw.io/Excalidraw
+  render may supplement it later for a pixel-exact square; it never replaces the Mermaid source.
+- **(f) Manifest count.** 26 objects / 13 pairs → **20 objects / 10 pairs**, corrected in the
+  resource-count summary, Wave 4, cleanup step 5 and the Phase-4 approval block, with an evidence
+  note. Verified independently: `manifest.md` §3 lists 10 logical pairs; `main.bicep` declares 20
+  `virtualNetworkPeerings` resources. No topology change.
+
+## Consistency scan result
+
+| Check | Result |
+|---|---|
+| All US12 Global Reach references match the corrected scope | PASS — 20 in-story references reviewed; S-D/B1 only, shared failure domain stated at every S-D/residual-risk point |
+| Summary table, comparison matrix, story detail and diagram specs agree | PASS — index row, §2 row, story body, §3 index and both diagram specs carry the same disposition, caveat and B2 qualification |
+| True-square sides and absent diagonals preserved | PASS — four sides S-A…S-D retained verbatim; diagonals still absent by design, now rendered as annotation rather than geometry |
+| No implication that native hub peering gives spoke reachability | PASS — variant N delivers "B2 for hub address space only"; PASS/FAIL criteria fail a B2 claim evidenced from a spoke-resident VM |
+| Story remains Conditional / requires disruptive activation | PASS — unchanged in index, §2 and the lab-analogue classification line |
+| No Route Server on a data-plane hop | PASS — plane convention, FAQ quote and both diagram specs unchanged on this point |
+| Scenario retention | PASS — nothing deleted; rejected/blocked items retained with reasons (diagonal link, ER↔ER platform block, outcome C under variant N) |
+
+## Remaining live-test gates (unchanged by this revision)
+
+1. Fresh explicit cost approval — US12 shares US10's ~**$95+/day** floor against ~$84/day current;
+   the $72/day waiver covers neither.
+2. US10 **S0** Poland Central gateway SKU/zone preflight (`VpnGw1AZ` + two zoned Standard PIPs)
+   before `vpngw-onprem2`.
+3. **E-1/E-2** route-map pre-activation gate — association is still *eligible but unassociated*, and
+   ARS↔gateway-connection attachment is **unverified**.
+4. **Route-refresh capability check** on both NVAs (`birdc show protocols all`) before creating or
+   deleting the `vnet-hub1`↔`vnet-hub2` peering; treat both as change windows.
+5. Full pre-activation baseline at every layer before the S3 deletion of
+   `conn-hub2-to-onprem` / `conn-onprem-to-hub2` (Δ2 direct-adjacency evidence is destroyed by it).
+6. Outcome C remains **unclaimed and untested** under variant N; variant D (and its cost/burden) is
+   the only path that would make it testable in this lab.

@@ -313,3 +313,107 @@ Key decisions: Bicep; single-RG multi-region; ARS as virtualHubs + ipConfigurati
 - `labs/dual-hub-hubless-region-ars/deploy/activate-hub-ars-routemaps.ps1` — idempotent, parallel, polls until Succeeded or 45-min timeout.
 
 📌 Team update (2026-08-05T10:26:52.618+02:00): Hub ARS route-map upgrade decision merged; inert activation maps recorded without affecting live routing.
+
+---
+
+## Learnings — US10 Bow-Tie Revision (independent replacement author) — 2026-08-05
+
+Rejected artifact `US10-bow-tie-dual-site-regional-affinity` in
+`labs/dual-hub-hubless-region-ars/route-map-user-stories.md` rewritten by me after my own review
+verdict REJECTED it. Morpheus and Trinity both locked out; neither consulted. Scope: US10 section
+plus its comparison-matrix and diagram-index rows only. No Azure changes, no IaC changes, no
+diagrams, no experiments, no commit.
+
+### B1 — Route Server is never a forwarding hop
+- Learn (Route Server FAQ) is unambiguous: ARS exchanges BGP routes only; data traffic goes directly
+  from the NVA to the destination. The rejected draft drew `vpngw-hub2 → ars-hub2 → vm-nva2` in the
+  failure inset — an impossible chain.
+- Fix: added a **plane convention** table to the story; both diagram specs now mandate **thick
+  data-plane edges** vs **thin dashed control-plane edges**, and every path table lists forwarding
+  hops only. `ars-*` appears exclusively on thin edges.
+- Rule to carry forward: any path table row containing an `ars-` node is a defect, full stop.
+
+### B2 — Poland Central gateway SKU/zone preflight
+- `vpngw-onprem2` corrected to **`VpnGw1AZ`**; its two Standard PIPs must be created with
+  **zones 1,2,3** *before* the gateway.
+- Added a 5-step preflight gate. Key point recorded from deploy-log §7: ARM `validate` / `what-if`
+  does **not** catch `NonAzSkusNotAllowedForVPNGateway` or
+  `VmssVpnGatewayPublicIpsMustHaveZonesConfigured` — both are create-time-only failures. A green
+  what-if is not evidence here.
+
+### B3 — Run-rate corrected
+- Stale $72/day figure removed. Current run-rate is **≈ $84/day** (≈ $65.86/day baseline +
+  3 × ≈ $6/day route-map surcharge, after `ars-poland`, `ars-hub1`, `ars-hub2` upgrades).
+- US10 target stated as **≈ $95+/day**, explicitly a *floor* pending a current `VpnGw1AZ` retail
+  lookup for `polandcentral`. No exactness claimed. Fresh explicit approval gate preserved — the
+  existing $72/day waiver covers neither figure.
+
+### B4 — ASN discipline separated per test bed
+- Generic ER story now **requires a real customer-owned public ASN** for prepending. 64496 (and all
+  of 64496–64511) is IANA documentation-only and must never touch an ER AS_PATH; private ASNs are
+  stripped by the MSEE anyway (`azure/expressroute/expressroute-routing`).
+- Documentation ASN 64496 retained **only** in the closed lab VPN analogue, matching the Δ3
+  activation contract and the existing inert `rm-hub1-activate` / `rm-hub2-activate` maps.
+- The two test beds are now visually and textually separated so the ASN rules cannot be mixed.
+
+### B5 — Named attachments + mandatory pre-activation experiment
+- Candidate maps named explicitly: **RM-A** `ars-hub1`↔`peer-nva1` (proven eligible), **RM-B**
+  `ars-hub2`↔`peer-nva2` (proven eligible), **RM-C/RM-D** VPN gateway connections (**unverified**),
+  **RM-X** `ars-poland` (proven ineligible — EMP-001 peer-locality constraint).
+- New stage **S2 pre-activation experiment**, gated on explicit user approval because association
+  may reset BGP: **E-1** inert TEST-NET map on `ars-hub1`↔`peer-nva1`, then **E-2** independent test
+  of eligible local VPN gateway connection association using the real resource/API semantics
+  (`routingConfiguration.inboundRouteMap` on the ARS bgpConnection child, API `2024-10-01`).
+- Explicitly **not** called zero-disruption and **not** executed. No expansion funding and no
+  activation proceeds until support is evidenced.
+- If gateway-connection association turns out to be unsupported, US10 is retained but Azure-side
+  route-map value reclassifies to "ARS↔NVA peerings only", with the on-prem-facing function moved to
+  NVA/CPE policy.
+
+### Cautions
+1. Global peering create/delete triggers an ARS BGP **soft reset** (hard reset if the NVA lacks route
+   refresh — Learn warns this "might cause connectivity disruption"). Maintenance window plus
+   before/after/+5 min captures and continuous ping now required.
+2. Tunnel import/export prefix policy specified explicitly. **`0.0.0.0/0` excluded unconditionally**
+   in both directions, plus set-C 10.31.0.0/24 and 10.32.0.0/24, so Poland's Δ3 default-route
+   experiment cannot gain extra copies. Backup-site prefixes permitted but prepended ×2.
+3. Set-C behaviour corrected: prefixes can still transit hub2 → `vpngw-onprem2` → DCI → `vpngw-onprem`.
+   Both AS paths shown (`65515-65001` unchanged vs `65003-65515-65002-65002-65002`); Δ2 evidence
+   *changes shape* (2-vs-4 becomes 2-vs-5) rather than disappearing. Flagged as an assertion to
+   measure, with PASS and ALT/FAIL branches — it depends on `vpngw-onprem2` re-advertising between
+   its two BGP connections, which this lab has not proven.
+4. Citation mapping corrected: the FAQ MSEE bow-tie diagram is a *different* shape and is cited only
+   as the reason a shared-MSEE hairpin is not a substitute — never as proof of the separate-circuit
+   diagonal design. `as-override` described strictly as the sanctioned mitigation in the dual-homed /
+   same-ASN pattern (`azure/route-server/about-dual-homed-network`, plus the 65515 rewrite in
+   `azure/route-server/multiregion`). Global Reach preserved as a valid on-prem DCI alternative while
+   stating plainly that it joins sites, not hub VNets.
+5. Traceroute demoted to secondary/indicative. Primary symmetry proof is now simultaneous NVA packet
+   captures on tunnel and LAN interfaces filtered on probe identity, plus interface/firewall counters
+   (`ip -s link`, `nft`/`iptables`) correlated at both NVAs, plus gateway/Route Server RIB evidence.
+6. Every advertised-route collection line now carries `--peer <bgp-peer-ip>` — it is a **required**
+   parameter of `az network vnet-gateway list-advertised-routes`. Peers enumerated first via
+   `list-bgp-peer-status`, repeated per peer including both active-active instance peers.
+
+### Classification retained
+`requires disruptive topology change` kept, but the stage table now splits it precisely:
+S0/S1 additive and fully reversible · S2 pre-activation experiment (approval-gated) ·
+S3 the single disruptive step (deleting the `vnet-onprem`↔`vnet-hub2` connection pair that carries
+the Δ2 and S2/S3 evidence in its direct-adjacency form) · S4 rollback sequence.
+
+### Diagram IDs (stable, Oracle owns authoring)
+`US10-bow-tie-generic-er` · `US10-bow-tie-lab-vpn-analogue`
+
+### Operator notes
+- Wrote the replacement section to a scratch file, spliced by line range (kept 1–570 and the
+  post-US10 tail verbatim), then deleted the scratch. US01–US09 bodies untouched; only the US10
+  matrix row, the applicability/cost-note paragraphs and the two diagram-index rows changed.
+- References section gained only what I verified this session: `about-dual-homed-network`,
+  `create-zone-redundant-vnet-gateway`, and the CLI `--peer` requirement.
+- No citation added for anything unexecuted. No association claimed to work.
+
+📌 Decision inbox written: `.squad/decisions/inbox/tank-us10-revision.md`
+
+---
+
+📌 2026-08-05T13:43:07.691+02:00 — Scribe merge pass: US10 revision brief recorded in decisions.md; no lab/design file staging occurred.

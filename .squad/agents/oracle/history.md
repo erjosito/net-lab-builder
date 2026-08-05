@@ -169,3 +169,43 @@ Produce the standard 4-diagram set for lab #4 (`dual-hub-hubless-region-ars`) ah
 - **Route-map attachment locality matters:** For this lab, `ars-poland` can only reference route maps from peers inside the ARS VNet, so remote NVA peers remain blocked regardless of how carefully the rule is written. This is a useful first-check for future ARS route-map docs and prevents misclassifying a topology issue as a policy issue.
 
 📌 Team update (2026-08-05T10:26:52.618+02:00): Route-map scenario catalogue and README link updates merged into shared decisions.
+
+## 2026-08-05 — US10 wording-fix revision (post-Niobe rejection of Tank's revision)
+
+- **Context:** Tank authored the current US10 revision after Morpheus's version was rejected; Niobe
+  rejected Tank's revision for four wording-only overclaims. Tank, Morpheus, and Trinity were locked
+  out of this revision cycle, so I (Oracle) took it as the eligible replacement author, per Jose's
+  direct request. Scope: wording-only accuracy fix in `route-map-user-stories.md`, not a topology
+  redesign — no diagrams created, no US01–US09 edits, no Azure/IaC changes, no commit.
+- **Four US10 overclaim corrections applied** (all "proven association" → "proven eligibility,
+  unassociated"):
+  1. Recommended-section prose: replaced "the lab has proven NVA-peering attachment and has *not* yet
+     proven gateway-connection attachment" with language stating the lab has proven route-map
+     *eligibility* on hub ARS↔NVA peerings (D2 locality rule, upgraded hub Route Servers); no
+     association has been executed anywhere; E-1 is the test.
+  2. §2 comparison-matrix US10 row: "supporting — proven on ARS↔NVA peerings" → "supporting — eligible
+     (unassociated) on ARS↔NVA peerings; gateway-connection attachment unverified; both pending the
+     US10 pre-activation gate".
+  3. RM-A/RM-B eligibility-status cells: "Proven eligible" → "Eligible, unassociated: peerIp in-VNet
+     per D2, ARS route-map tier active, inert map provisioned; association never executed."
+  4. `US10-bow-tie-lab-vpn-analogue` diagram spec, thin control-plane edge label: `BGP · map-eligible
+     (proven)` → `BGP · map-eligible (D2) · association untested`.
+- **Scenario-retention policy added** (Jose's directive: rejected scenarios must never be deleted from
+  the file, only explained). Placed in §2 immediately after the "Fifth applicability class" paragraph
+  (right before "Cost note."), so it sits next to the applicability/classification explanation it
+  governs. States: no scenario is deleted for its applicability classification, a reviewer's rejection
+  of draft wording, or a platform limitation; every retained-but-blocked/unverified scenario (US06,
+  US10 today) must record blocking reason, residual value, alternatives/conditions, and the evidence
+  needed to revisit the classification (e.g. US10's E-1). Explicitly distinguishes "reviewer rejects
+  wording" from "scenario deleted" — those are not the same event.
+- **Validated** with a targeted `grep` for `proven NVA-peering|proven eligible|map-eligible \(proven\)|
+  proven on ARS|association.*proven|proven.*association` across the file after edits: zero remaining
+  overclaim hits (the only match is the retention-policy paragraph's own explanatory mention of the
+  word "proven" in quotes, describing the anti-pattern, not asserting it).
+- **Not touched:** US01–US09 bodies, diagram index prose beyond what the label change required, Azure
+  resources/IaC. No diagrams generated this task. No git commit made.
+- Decision recorded at `.squad/decisions/inbox/oracle-us10-wording-fix.md`.
+
+---
+
+📌 2026-08-05T13:43:07.691+02:00 — Scribe merge pass: US10 wording-fix brief recorded in decisions.md; no lab/design file staging occurred.
