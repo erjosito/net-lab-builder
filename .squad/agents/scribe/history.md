@@ -31,3 +31,6 @@ Initial setup complete.
 ---
 
 📌 2026-08-05T13:43:07.691+02:00 — Scribe merge pass: merged 13 inbox decision briefs, wrote orchestration/session/health logs, and cleared the inbox.
+
+
+📌 Session update (2026-08-06T19:21:48.855+02:00) — Merged 15 decision inbox briefs into decisions.md, performed no archival because no entries crossed the timestamp cutoff, cleared the inbox, and wrote orchestration/session/health logs. Next gate recorded as explicit U3a/U3b approval after Stage 1 baseline restoration; Stage 2 square cost/resource/deletion approval remains separate.

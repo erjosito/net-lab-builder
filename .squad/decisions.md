@@ -2,6 +2,67 @@
 
 > Active decisions from all agents (merged by Scribe)
 
+### 2026-08-06T10:30:00+02:00: U0 + conditional U1 EXECUTED and PASSED — dual-hub-interconnect-ars-route-policy
+**By:** Tank
+**From:** Tank (IaC Engineer / Azure activation executor)
+**Date:** 2026-08-06T10:30:00+02:00
+**Lab:** dual-hub-interconnect-ars-route-policy (TP-HH Stage 1)
+**Re:** Approved activation `U0 + conditional U1` (Jose Moreno)
+
+## Decision / Finding
+
+**U0: PASS-with-note.** `vm-nva1` + `vm-nva2` started (`VM running`); BGP sessions
+`ars_hub1_0/1`/`ars_hub2_0/1` `Established`; route-refresh capability confirmed both sides, both
+hubs (U1 hard gate satisfied); all 4 VPN connections `Connected`; `ars_poland_0/1` in `Connect`
+(expected, harmless). **New finding (`TANK-001`):** both NVAs' hand-edited `bird.conf` re-originate
+a stale `10.30.0.0/27` (Poland-shaped) static route into ARS — contained (does not reach gateways,
+on-prem, or ARS's advertised-back set), does not block the gate, but corrects the manifest's
+assumption that NVA1 "re-originates `10.10.0.64/27`" (that prefix is not actually visible in ARS's
+learned-routes set).
+
+**U1 (T1): PASS.** Created exactly `peer-hub1-to-hub2` / `peer-hub2-to-hub1` with the exact required
+flags (`allowVirtualNetworkAccess=true`, `allowForwardedTraffic=true`, `allowGatewayTransit=false`,
+`useRemoteGateways=false`); both `Connected`/`FullyInSync`, re-confirmed stable at T+~20min.
+`vm-nva1` (10.10.1.4) ↔ `vm-nva2` (10.20.1.4): 0% ICMP loss both directions post-peering (100% loss
+pre-peering). Non-transitivity confirmed: ARS learned/advertised (both hubs), `vpngw-hub1`
+advertised-to-onprem, `vpngw-onprem` learned, and all 4 VPN connection statuses are **byte-identical**
+pre- vs post-peering. Each NVA NIC gained exactly one new `VNetGlobalPeering` route (the remote
+hub's `/16`) and nothing else. No route-map association exists (T2/U2 untouched).
+
+## Scope discipline
+
+Only U0/U1 executed, exactly as approved. **Not executed:** U2–U5, any route-map association, any
+BIRD edit, any other VM, any VPN connection change, any deletion, any git commit. No rollback was
+triggered — both VMs and both peerings remain live as the approved end-state.
+
+## Cost / timing
+
++$0.58/day (VM compute, U0) while running; ≈$0.00 incremental data-transfer cost (U1, test ICMP
+only). Wall-clock ≈75 min end-to-end (dominated by `az vm run-command invoke` latency, 1.5–3+ min
+per BIRD query, and deliberate convergence spacing) — the underlying Azure operations themselves
+(VM start, peering create) each completed in under 3 minutes, consistent with the plan's estimates.
+
+## Evidence
+
+`labs/dual-hub-interconnect-ars-route-policy/show-output/new/u0-u1/{pre,post-u0,pre-u1,post-u1}/`
+(one command per file, sanitized — grep-verified zero raw subscription/tenant IDs). Docs updated:
+`validation.md` (§U0/§T1 actual results), `deploy-log.md` (change log + approval-unit ledger + G1
+partial-progress note), `README.md` (status + Phase-4 table), `design.md` (§8a(c)-correction),
+`lessons-learned.md` (`TANK-001`, `TANK-002`, `TANK-003`), source lab
+`dual-hub-hubless-region-ars/deploy-log.md` (VM power-state update note).
+
+## Next approval gate
+
+**U2/T2a** — inert route-map association (`rm-hub1-tmp-assoc`) on `ars-hub1`/`peer-nva1` only —
+remains **unapproved and not executed**. Recommend Trinity/Morpheus review `TANK-001`'s correction
+to the manifest's `10.10.0.64/27` re-origination assumption before U2/T2b planning proceeds.
+
+No git commit made, per instruction.
+
+📌 Decision inbox written: `.squad/decisions/inbox/tank-u0-u1-execution.md`
+
+---
+
 ### 2026-07-31T09:52:00+02:00: Gate A FULL PASS — vwan-routemap-summarization
 **By:** Niobe
 **From:** Niobe (Validation)  
@@ -3598,3 +3659,2352 @@ Per-block validation inventory (ID · blocks · result): all 17 IDs **PASS**; th
 **Not changed:** architecture, feasibility claims, applicability classifications, story intent,
 validation plans, current-lab deltas, costs, citations, Azure/IaC, README, manifest, live resources.
 **No deployment. No git commit.** Scratch working directory removed after validation.
+
+# Decision Brief — Bow-tie first, square second: two-stage sequencing for `dual-hub-interconnect-ars-route-policy`
+
+**Author:** Morpheus (Lead / Architect) · **Date:** 2026-08-05 · **Status:** For review
+**Requested by:** Jose Moreno
+
+**Trigger (paraphrased direction).** After testing the bow-tie topology with regional affinity,
+evaluate the square design. Jose expects he would probably **not** recommend the square, but wants
+**evidence of feasibility and technical complexity rather than a prejudgement**.
+
+**Scope of this task:** documentation and sequencing only. **No Azure change, no IaC change, no
+test run, no resource deletion, no commit.** Files written are the lab's own documents, one new
+diagram, this brief, and Morpheus's history entry.
+
+---
+
+## 1. Decision
+
+**Sequence the lab in two stages, and keep the square as an evaluation candidate with an explicit,
+evidence-gated verdict ladder.**
+
+| | Stage 1 — `TP-HH` | Stage 2 — `TP-SQ` |
+|---|---|---|
+| Content | Bow-tie / regional-affinity test program composed from **US10 + US11**: no-overlay baseline (T1), route-map association gate (T2a/T2b), policy placement (T4), dynamic variant (T3) **only where justified**, gateway-connection attachment (T5) only if approved | **US12 square-hybrid feasibility study**: four sides, no diagonals |
+| Status now | Written, gated per scenario, not yet run | **Activation contract only** — written, gated, **not executed, not approved** |
+| Ends with | Full rollback to the source lab's certified baseline, diffed byte-comparable | An evidence-based verdict on the square, whichever way it falls |
+
+**Why this order.** Stage 1 answers the three questions Stage 2 depends on and cannot proceed
+without: (a) whether an ARS route-map **association** is possible at all on a live hub connection and
+at what operational cost; (b) what a native hub↔hub peering actually carries, which is exactly
+US12's default S-B mechanism; (c) whether the gateway-connection attachment point exists. Running the
+square first would spend a disruptive topology change and ~$95+/day to discover facts that a $0/day
+additive test answers.
+
+## 2. Square = candidate, not recommendation
+
+The square is retained and studied under the repository rule that **every design is documented with
+an evidence-based verdict, and no design is deleted because its verdict was unfavourable**
+(`.squad/routing.md` rule #30; Jose directive 2026-06-15). Jose's expectation that he would probably
+not recommend it is recorded as an **expectation**, explicitly not as a verdict — writing it as one
+would make the study pointless and would violate rule #30.
+
+Four possible verdicts, each with the evidence that chooses it:
+
+| Verdict | Chosen when | Evidence required |
+|---|---|---|
+| **Recommended** | Feasibility criteria F1–F7 all pass and no complexity dimension scores 4–5 | Full E0–E6 evidence set; scorecard filled from counted artefacts; bounded-failover contract written *before* the fault and matched by the instruments |
+| **Conditionally viable** | F1–F7 all pass but a dimension scores 4–5, or the outcome set is sufficient only under stated conditions | The above, plus each condition written as a testable statement traced to its evidence |
+| **Technically feasible but operationally unattractive** | **Every** packet-level criterion passes and the burden still exceeds the benefit | The above, plus an explicit "no feasibility criterion failed" statement, and the named complexity dimensions carrying the verdict |
+| **Platform-blocked** | A required behaviour is not offered by the platform | Verbatim API error or documented platform property **with its exact scope** — a same-gateway limitation may not be generalised to the square |
+
+## 3. Feasibility is separated from desirability
+
+**F1–F7 decide feasibility** (packets): technical reachability with A/B1/B2/B3 reported separately ·
+failover against the *written* bounded-failover contract · failback without operator action ·
+symmetry by two-ended simultaneous capture plus counters, never traceroute · convergence measured
+**per direction** at 30/60/120/180 s · route restoration attribute-identical to the E0 baseline ·
+no collateral damage to set-C, the two `ars-poland` `0/0` copies, or the Δ2 evidence path.
+
+**The 8-dimension scorecard decides desirability:** resource count · routing domains · policy
+locations · failure dependencies · operational procedures · observability points · convergence
+behaviour · cost. Scored 1–5, per variant, **only from counted artefacts**.
+
+A design whose packets all arrive and whose burden is still excessive is recorded as *Technically
+feasible but operationally unattractive*, with an explicit statement that no feasibility criterion
+failed. A design that fails a criterion is failed **on that criterion** and never softened into a
+complexity judgement.
+
+## 4. Stage-2 activation contract (defined, not executed)
+
+- **Topology delta from the Stage-1 *restored* baseline:** DC1↔Hub1 (S-A, reused) · Hub1↔Hub2 (S-B,
+  added — Stage-1's T1 delta **re-created**, never inherited) · Hub2↔DC2 (S-C, added) · DC1↔DC2
+  (S-D, added). **No diagonals**: no DC1↔Hub2 and no DC2↔Hub1 link is ever created.
+- **The disruptive step** is the deletion of `conn-hub2-to-onprem` / `conn-onprem-to-hub2`.
+  **Nothing else is removed.** Everything before it is additive and reversible at zero disruption.
+- **`onprem2` and its VPN gateway are added only when approved.** **No Poland resource is reused** —
+  `vnet-onprem2` is a new VNet with a new address space; `ars-poland`, `vnet-poland-ars`, set-C and
+  `vm-c1-ep` remain out of scope as control captures that must not move. The `polandcentral`
+  placement is a region choice from the catalogue and is not load-bearing.
+- **S-B is no-overlay bounded (variant N) first.** The dynamic variant D is admissible **only** if
+  full failover requires **automatic prefix carriage and withdrawal** — a static/UDR carriage cannot
+  withdraw itself, which is precisely why it is not an alternative.
+- **Activation A0–A11 and rollback steps 1–9** are specified in `design.md` §11, with evidence
+  checkpoints **E0–E6** in `validation.md`. Rollback step 6 — recreating the deleted connection pair
+  with a fresh matching PSK pair (DEV-001) — is flagged as the highest-risk step in the whole
+  program, because it restores **another lab's** certified evidence path.
+- **Constraints recorded:** same-AS/own-AS (ARS fixed at 65515 and the permanent NVA-side strip;
+  distinct on-prem ASNs 65000/65003; distinct NVA ASNs; lab-only 64496 prepends; MSEE 12076 as
+  analytical-only in this bed) and Route Server limits (D2 same-VNet eligibility, loop prevention
+  before policy, ER circuit-to-circuit `Platform-blocked — retained`, self-next-hop recursion across
+  regions, branch-to-branch prerequisite, 180 s hold, route refresh on peering create *and* delete,
+  VPN gateways not advertising `0/0`).
+
+## 5. Gates — Stage 2 cannot start until all four close
+
+| Gate | Condition |
+|---|---|
+| **G1** | Stage 1 complete **and** rolled back to the certified baseline, diffed byte-comparable |
+| **G2** | Poland cleanup status **known and recorded** — *status only, explicitly **not** a dependency*. Stage 2 may proceed with Poland running, pending cleanup, or already cleaned; it may not proceed with the status **unknown** |
+| **G3** | **Fresh** cost / resource / **deletion** approval from Jose: ~$95+/day floor vs the ~$84/day run-rate (both breach the ~$50/day guardrail; the existing $72/day waiver covers neither), the site-2 ledger, **and** the connection deletion. No Stage-1 approval or prior waiver carries forward |
+| **G4** | Exact route-map attachment behaviour known from Stage 1: T2a `Succeeded` with the working request body, or the **verbatim** error code; plus T5's verdict or an explicit "T5 not run — attachment remains unverified" |
+
+Tracked as an explicit ledger in `deploy-log.md` §Stage gate ledger — **all four currently OPEN.**
+
+## 6. Files changed by this task
+
+| File | Change |
+|---|---|
+| `labs/dual-hub-interconnect-ars-route-policy/README.md` | New §Two-stage roadmap: stage table, verdict ladder, feasibility-vs-desirability split, G1–G4, Stage-2 delta summary, US12 cross-link, embedded roadmap diagram. Quick Links, Regions, Designs studied (Stage-1/Stage-2 split), Next steps updated |
+| `.../manifest.md` | Lab card gains the roadmap row; Stage-1 heading; new §Stage 2 (delta ledger with rollbacks, verdict ladder, cost, G1–G4); Designs studied split with US12 candidates; two new risks; Approval gate split by stage |
+| `.../design.md` | New §9 topology deltas · §10 same-AS/own-AS + Route Server limits + prefix policy + preflight + variant rule · §11 gates, activation A0–A11, rollback 1–9, accepted evidence loss · §12 8-dimension complexity scorecard · §13 F1–F7 feasibility criteria and the four-verdict desirability ladder |
+| `.../validation.md` | Two-stage note; new Stage-2 part: E0–E6 checkpoints, Q1–Q6 scenario map (all "not run — gated"), feasibility verdict worksheet (all *not determined*), separation rule |
+| `.../lessons-learned.md` | New §Stage 2 — no findings yet, plus the constraints-carried-forward table |
+| `.../deploy-log.md` | New §Stage gate ledger (G1–G4, all OPEN, with the last-known Poland status) and an empty gated TP-SQ change log |
+| `.../diagrams/HH-stage-roadmap.mmd` | **New** roadmap diagram, validated with the cached `@mermaid-js/mermaid-cli` |
+| `.squad/decisions/inbox/morpheus-bowtie-square-sequence.md` | This brief |
+| `.squad/agents/morpheus/history.md` | History entry appended |
+
+**Not touched:** any Azure resource, any IaC, `scripts/`, `show-output/`, the source lab's files, and
+the canonical `route-map-user-stories.md` — US10, US11 and US12 keep their stable IDs, dispositions
+and text unchanged, and are **cross-linked, never copied**.
+
+## 7. Open approval points for Jose
+
+1. **Sequencing** — bow-tie first, square second, with a mandatory rollback between them. Confirm.
+2. **Stage-1 execution** — T2's maintenance window is still unapproved; T5 still needs its separate
+   approval; T3 still needs its justification test to be answered before it is scheduled.
+3. **G2 wording** — Poland cleanup status is required to be *known*, not *done*. Confirm that is the
+   intent.
+4. **G3** — no Stage-2 resource may be created, and no connection deleted, without a fresh dated
+   approval. It has not been requested.
+5. **Variant D** — confirm that "full failover requires automatic prefix carriage and withdrawal" is
+   the *only* trigger that buys the dynamic S-B, and that its absence makes non-execution the
+   deliverable.
+6. **Verdict authority** — confirm that the square's verdict is written only after E0–E6 exist, and
+   that a `Technically feasible but operationally unattractive` outcome is an acceptable, publishable
+   lab result rather than a failed lab.
+
+# Decision — Storage endpoint performance-equivalence manifest
+
+**Date:** 2026-08-05T16:16+02:00  
+**Owner:** Morpheus  
+**Lab:** `storage-endpoint-path-equivalence`  
+**Status:** Pre-deployment plan complete; Phase 4 closed
+
+## Decisions
+
+1. Lock `swedencentral` + non-zonal Ubuntu 22.04 `Standard_B2ts_v2`. Refreshed Phase 0 found B1ls/B1s absent and B2ts_v2 catalog/live-capacity available. Exact tagged preflight RG was removed.
+2. Use one sequential VM and one target Blob account to minimize host/account variance. Public, SE, and PE modes are measured in randomized/interleaved blocks, not as three independent clients.
+3. Keep correctness evidence separate from performance evidence. DNS, destination IP, NIC effective routes, endpoint/firewall state, and service/client logs establish observable behavior; equivalence tests use latency, throughput, jitter, error rate, and retransmission evidence.
+4. Equivalence requires TOST/90% CI within predeclared margins, with 95% CIs also reported. Failure to detect a difference is not equivalence.
+5. Conclusions are conditional on the tested region, time, VM, load, payload, and account tier. They do not establish identical physical Microsoft paths.
+6. Incorporate all reviewer cautions: same-region `CallerIpAddress` is non-decisive alone; TLS PCAP does not expose request ID; policy drops may lack Storage logs; enable SE before tightening Storage default action; treat `show-next-hop` as corroborative.
+7. No Megaport or ExpressRoute is involved. No IaC or billable deployment occurs before Jose explicitly approves Phase 4; cleanup later requires a separate approval.
+
+## Phase 4 fields
+
+- **Resource list:** 1 resource group; 1 VNet; 2 subnets; 1 NSG; 1 NAT Gateway with 1 Standard static IPv4; 1 Ubuntu 22.04 `Standard_B2ts_v2` VM with NIC and 30-GiB Standard SSD; 3 GPv2 Standard_LRS Storage accounts; 2 containers with two test blobs each; 1 Blob private endpoint; 1 Private DNS zone, zone group, and VNet link; 1 target-only Storage service-endpoint policy; 1 Log Analytics workspace; 2 Blob diagnostic settings; 1 VNet flow-log resource; and 2 Blob Data Reader role assignments.
+- **Region:** `swedencentral` only.
+- **Estimated deployment time:** 10–20 minutes; allow another 10–15 minutes for diagnostics/log readiness before testing.
+- **Estimated cost:** approximately US$0.15–0.30/hour, under US$3 for a ten-hour lab, plus low-volume Storage transactions, test data, and Log Analytics ingestion.
+- **Connectivity statement:** No Megaport or ExpressRoute resources are involved.
+- **Approval gate:** Phase 4 is CLOSED. No billable lab resources or IaC will be created until Jose explicitly approves deployment.
+
+**Artifact:** `labs/storage-endpoint-path-equivalence/manifest.md`
+
+# Morpheus decision inbox — Storage endpoint lab PaaS redesign
+
+**Date:** 2026-08-06
+**Lab:** `storage-endpoint-path-equivalence`
+**Status:** Phase 4 delta approval required; no Azure changes made
+
+## Decision
+
+Replace the blocked Blob experiment with **Azure AI Translator F0** in
+`swedencentral`. It is the cheapest supported service that preserves a meaningful
+public endpoint → classic service endpoint → Private Endpoint comparison.
+
+Actual inherited policy inspection shows:
+
+- Storage, Azure SQL, Key Vault, and Cosmos DB public access is actively modified to
+  `Disabled`; reject them.
+- Cognitive Services local authentication is modified off and diagnostics are
+  deployed, but public access is not forced off.
+- Translator F0 and S1 are listed without SKU restrictions in Sweden Central.
+
+Reuse the existing VM/VNet/NAT/NSG/Log Analytics/flow-log bed. Replace the two
+experimental Storage accounts and Storage-specific PE/DNS/endpoint-policy objects
+with one F0 Translator account and one Translator PE/DNS path. The existing
+US$0.01/hour PE is replaced, so steady-state fixed cost is effectively unchanged;
+no S1 fallback is authorized.
+
+## Approval requested
+
+Approve deletion of the two experiment Storage accounts and Storage-specific
+endpoint artifacts; creation of one F0 Translator account, replacement PE/private
+DNS, diagnostic setting, and VM `Cognitive Services User` assignment; subnet/NSG
+change to `Microsoft.CognitiveServices`; and the revised five-scenario test plan.
+Maximum temporary overlap is US$0.01/hour for 10–20 minutes.
+
+Full evidence and limitations: `labs/storage-endpoint-path-equivalence/redesign.md`.
+
+# Decision Brief — US10 + US11 extraction into a new two-region hub-to-hub ARS route-policy lab
+
+**Author:** Morpheus (Lead / Architect) · **Date:** 2026-08-05 · **Status:** For review
+**Requested by:** Jose Moreno
+**Trigger (verbatim):** *"Could we merge US10 and US11 in a new lab? This one was about adding
+regions, but we wouldn't need region 3 (Poland) for the ARS route map functionality test. You
+wouldn't need to recreate the resources, since that would take a long time, just to move the
+required assets to a new directory in the labs folder"*
+
+**Scope of this task:** design + migration contract only. No Azure change, no redeployment, no
+cleanup, no commits, and **no lab file was edited**. The only files written are this brief and
+Morpheus's history entry.
+
+---
+
+## 1. Proposed slug and title
+
+| Field | Value |
+|---|---|
+| **Directory** | `labs/dual-hub-interconnect-ars-route-policy/` |
+| **Slug** | `dual-hub-interconnect-ars-route-policy` |
+| **Title** | *Dual-Hub Interconnect and Route Server Route-Map Policy (two regions)* |
+| **One-line** | Two regional hubs (`swedencentral` / `switzerlandnorth`), their Route Servers and NVAs: what native hub-to-hub peering does and does not carry, whether an ARS route map can actually be **associated** on a local hub connection, and where routing policy should live — NVA/BIRD or ARS route map. |
+
+Rejected slug candidates and why: `third-region-*` / `region-expansion-*` (describes the *old*
+framing Jose explicitly moved away from), `us10-us11-merged` (encodes story IDs into a directory
+name and would break if the catalogue is renumbered), `hub-to-hub-overlay` (pre-judges the overlay
+question that Scenario T3 exists to decide).
+
+**Regions in scope:** `swedencentral` (hub1), `switzerlandnorth` (hub2). `norwayeast`
+(`vnet-onprem`) is **adjacent, shared and read-only** — it is the only place the hub gateway
+advertisement effects are observable, so it is referenced but never claimed as new-lab scope.
+`polandcentral` is **out of scope entirely**.
+
+---
+
+## 2. Composition decision — test program, not a merged story
+
+**Decision: a test-program composition of two retained stories. Do not create a merged user story.**
+
+- `US10-bow-tie-dual-site-regional-affinity` and `US11-hub-to-hub-without-nva-overlay` remain in
+  `labs/dual-hub-hubless-region-ars/route-map-user-stories.md`, unchanged, with their stable IDs,
+  dispositions, diagram IDs and §2 matrix rows intact. Nothing is deleted or renumbered.
+- The new lab defines a **test program `TP-HH`** (five scenarios, §3) whose every scenario cites the
+  story it derives from by stable ID and anchor. The catalogue stays canonical; the new lab is a
+  consumer of it.
+
+**Why merging would be wrong, concretely:**
+
+1. The two stories have **different and incompatible dispositions**: US11 is *Accepted candidate
+   (A, B) / Pending validation (C)* with current-lab fit `additive`; US10 is *Conditional* with fit
+   `disruptive activation`. A merged story would have to collapse to the stricter of the two and
+   would silently re-classify US11's cheap, additive, GA-supported baseline as gated work.
+2. US10's unit of design is the **cross-region backup requirement** (which is what buys the
+   encapsulation); US11's unit is **not building a second fabric at all**. Merging destroys the one
+   sentence the catalogue exists to teach — *overlays are bought by withdrawal and attribute
+   requirements, never by reachability requirements* (Morpheus history, v4 2026-08-05).
+3. US12 already exists as the "same picture, different unit of design" case and is deliberately a
+   separate story (decisions.md, US12 brief). Merging US10+US11 now would contradict that precedent
+   within the same document.
+4. The scenario-retention policy (§2 of the stories doc, Jose directive: *"If any scenario is
+   rejected, please don't delete it from the file, just explain why it is not possible"*) makes
+   catalogue subtraction a governance violation, and a merge is a subtraction of two rows.
+
+**If a catalogue entry is later wanted for the merged program**, the correct shape is an *additive*
+`US13 — Two-region hub interconnect policy program` that is explicitly a **composition pointer**
+(one paragraph, no new mechanism) referencing US10 §*Overlay: required or not*, US11 variants A/B/C
+and US09 policy placement. That is a follow-up decision for Jose, not a prerequisite for this lab.
+
+---
+
+## 3. Scope and test scenarios (TP-HH)
+
+**In scope:** `vnet-hub1` ↔ `vnet-hub2` interconnect (native peering vs dynamic NVA BGP); ARS
+route-map **association** on hub-local connections (`ars-hub1`↔`peer-nva1`, `ars-hub2`↔`peer-nva2`);
+policy-placement comparison (ARS route map vs BIRD); the 65515 pre-policy drop limitation.
+
+**Out of scope (explicit, so absence is never read as a defect):** `ars-poland`, `vnet-poland-ars`,
+set-C spokes (`10.31.0.0/24`, `10.32.0.0/24`), `vm-c1-ep`, the Δ3/DEF-001 storyline, the US10
+`vnet-onprem2` / site-2 expansion (`10.50.0.0/16`, `vpngw-onprem2`, ASN 65003), ExpressRoute and
+Global Reach, vWAN, spoke↔spoke transitivity claims, and any cost-increasing resource creation.
+
+**Standing gates for every scenario:** every change is reversible; every change that touches a
+Route Server VNet's peering set is treated as a **maintenance window** (ARS issues a route refresh
+to all peered NVAs — soft reset if BIRD supports RFC 2918, otherwise a **hard** reset with traffic
+disruption); `birdc show protocols all` route-refresh capability must be recorded **before** the
+first change; and the original lab's certified evidence (Δ1, Δ2, Δ3-via-BIRD, S2/S3 timings,
+DEF-001 resolution) must be byte-comparable after rollback.
+
+### T1 — No-overlay native global-peering baseline *(from US11 variant A)*
+
+- **User intent:** "I have two regional hubs. Tell me exactly what I get, and what I do **not** get,
+  from the one thing Azure gives me for free."
+- **Change:** create the `vnet-hub1`↔`vnet-hub2` global VNet peering pair —
+  `AllowVirtualNetworkAccess=true`, `AllowForwardedTraffic=true`,
+  `AllowGatewayTransit=false`, `UseRemoteGateways=false`, **both directions** (neither hub may use
+  the other's gateway; both already have one). No UDR, NSG or BIRD change.
+- **Probe endpoints:** `vm-nva1` 10.10.1.4 ↔ `vm-nva2` 10.20.1.4 — the only deployed VMs inside the
+  hub address spaces. `vm-hub1-ep` / `vm-hub2-ep` live in spoke VNets and **cannot** prove this test.
+- **PASS:** peering `Connected` + `FullyInSync` on both sides with the four flags as specified;
+  `vm-nva1`↔`vm-nva2` reachable both directions; effective route tables gain exactly one
+  `GlobalVNetPeering` entry for the remote hub prefix and nothing else; `ars-hub1`/`ars-hub2`
+  learned + advertised sets and `vpngw-hub1`/`vpngw-hub2` learned + advertised sets are
+  byte-comparable to the pre-change capture; BIRD session **uptime unbroken** on both NVAs.
+- **FAIL:** any ARS or gateway route set changes; a BGP session hard-resets; 10.20.0.0/16 appears in
+  `vpngw-hub1`'s advertisements toward on-premises (or the mirror); any existing certified lab flow
+  is perturbed.
+- **Explicitly not tested, and stated in the artifact:** spoke prefixes, ARS-learned prefixes and
+  gateway-learned prefixes crossing the peering. Peering is non-transitive; their **absence is the
+  expected result**, not a scenario that failed.
+- **Rollback:** delete both peering objects inside a second maintenance window; re-capture and diff.
+
+### T2 — Hub-local ARS↔NVA route-map association and route modification *(from US10 E-1 / RM-A, RM-B)*
+
+**Gated. No route-map association has ever succeeded anywhere in this lab.** The only association
+attempts on record failed with `HubBgpConnectionFromSpokeVnetCannotReferenceRouteMap` on
+`ars-poland` (EMP-001 / decisions.md D2). `ars-hub1` and `ars-hub2` are **eligible but
+unassociated**: peerIp in-VNet per D2, route-map tier active since 2026-08-05, inert maps
+`rm-hub1-activate` / `rm-hub2-activate` provisioned, associations never executed.
+
+- **User intent:** "Before I design any policy around route maps, prove that attaching one to a live
+  Route Server connection is a thing I can actually do, and that doing it does not cost me an outage."
+- **T2a — inert gate (must pass first).** Associate the existing inert map (match `192.0.2.0/24`
+  Equals — RFC 5737 TEST-NET-1, matchable by no lab prefix) inbound on `ars-hub1`/`peer-nva1` via
+  `routingConfiguration.inboundRouteMap` on the ARS `bgpConnections/peer-nva1` child object, API
+  `2024-10-01`, body from a file (`az rest --body "@file.json"`; inline bodies fail on Windows
+  PowerShell — Tank, 2026-08-05).
+  **PASS:** association `Succeeded`; no BIRD session uptime reset; learned/advertised sets
+  attribute-identical; zero ping loss on a continuous probe spanning the operation.
+  **PASS-with-note:** association succeeds but a session resets and recovers — record the outage
+  duration; the change class becomes "requires maintenance window".
+  **FAIL:** association rejected (record the error code verbatim, as EMP-001 was recorded), or
+  routing changes despite an inert map.
+- **T2b — real modification (only after T2a passes).** Inbound AS-Path `Add` on one named prefix
+  learned from the NVA (documentation ASN **64496** ×2 — private/Azure-reserved ASNs are invalid
+  prepend values; 64496 is acceptable only because this is a closed lab with no MSEE and no public
+  routing).
+  **PASS:** exactly the matched prefix carries the two additional leading ASNs; every other prefix
+  is byte-identical to the pre-association capture; endpoint effective routes unchanged where the
+  test does not intend a change.
+  **FAIL:** any non-matching prefix altered; map `provisioningState != Succeeded`; peering state not
+  `Succeeded`; any BIRD uptime reset; any ping loss.
+- **Mirror on `ars-hub2`/`peer-nva2`** as T2a'/T2b'. **Δ2 evidence at `ars-hub2` must not move** —
+  any change to the `65002-65002-65002` AS-PATHs is an immediate FAIL and rollback.
+- **Rollback:** PATCH `inboundRouteMap` back to `null`; re-verify against baseline. Note that the
+  ARS route-map **tier and its surcharge do not revert** — that cost is already sunk and is not
+  charged to this lab.
+
+### T3 — Dynamic inter-hub NVA BGP / tunnel variant *(from US10; conditional)*
+
+- **User intent:** "Do I actually need a second routing fabric between my regions, or am I building
+  one because a reference architecture had one?"
+- **Run only if** the program claims at least one of: automatic spoke-wide propagation of remote-region
+  prefixes, **automatic withdrawal** on failure, or AS-PATH/community-based preference surviving the
+  regional boundary. If none is claimed, T3 is **not run**, and that non-execution is the deliverable
+  (US11's decision threshold table is the written justification).
+- **Shape if run:** T1's peering as the underlay + `vm-nva1`↔`vm-nva2` eBGP 65001↔65002 with
+  `bgp_path.delete(65515)` on export; encapsulation added **only** when remote prefixes are
+  redistributed into the local Route Server (that redistribution is what creates the NVA
+  self-next-hop recursion — `azure/route-server/multiregion`), which is the single Azure limitation
+  that necessitates it.
+- **Prefix policy — deny by default.** Permit `10.10.0.0/16`, `10.11.0.0/24` one way and
+  `10.20.0.0/16`, `10.21.0.0/24` the other. **Deny `0.0.0.0/0` unconditionally in both directions,
+  and deny `10.31.0.0/24` / `10.32.0.0/24` in both directions** — a second copy of the default or of
+  a set-C prefix would corrupt the original lab's live Δ3/DEF-001 evidence, which is the sharpest
+  cross-lab blast-radius risk in this whole program.
+- **PASS:** sessions Established; the permitted prefixes appear with the expected AS-PATH and no
+  65515; `ars-poland`'s two `0/0` copies (`65001` and `65002-65002-65002`) and `vm-c1-ep`'s
+  `0/0 → 10.10.1.4` are **unchanged**; withdrawal observed within the BGP hold window when a side is
+  stopped, and failback restores attribute-identical tables.
+- **FAIL:** any set-C or default-route change anywhere; one-directional convergence; a route silently
+  absent because it carried 65515.
+
+### T4 — Policy placement: ARS route map vs NVA BIRD policy *(from US09 + US10 §Maps do not solve)*
+
+- **User intent:** "Same routing outcome, two possible control points. Which one do I put it in, and
+  what can each one never do?"
+- **Method:** express one identical intent twice — (a) as a hub ARS inbound route map (T2b), (b) as a
+  BIRD import/export filter on the same session — and compare observability, blast radius,
+  reversibility, version-control story and failure modes.
+- **The load-bearing negative result to record:** a route map **cannot** strip ASN 65515 and cannot
+  rescue a route already discarded, because ARS applies loop prevention **before** inbound policy
+  runs. The Δ1 strip therefore must live on the NVA, permanently. This is why the lab's proven Δ1/Δ2/
+  Δ3 policies are BIRD-side and not map-side, and it is the honest answer to "should we move
+  everything to route maps".
+- **PASS:** both control points produce the same RIB outcome for the map-expressible intent, and the
+  65515 case is demonstrated as map-inexpressible with the exact error/absence recorded.
+- **FAIL:** the comparison is asserted rather than measured, or the BIRD baseline is changed without a
+  restored-from-version-control diff.
+
+### T5 — Local VPN-gateway connection route-map attachment *(from US10 E-2 / RM-C, RM-D; OPTIONAL, UNVERIFIED)*
+
+- **Status: unverified. No claim is made in either direction.** Learn lists VPN gateway connections
+  as an attachment point; this lab has never performed the association. The Δ3 attempt proved that
+  `associatedInboundConnections` on the route map is a **read-only composite property** and is not
+  the write path.
+- **Runs only after T2a passes, and only with separate explicit approval.** First establish the real
+  resource/API semantics empirically (portal *Apply route maps* list; `Az.Network ≥ 8.0.0`
+  `-InboundConnection` / `-OutboundConnection`, which take a **connection resource ID**) rather than
+  assuming which ID form is accepted.
+- **PASS:** association `Succeeded` with the inert TEST-NET map, zero routing effect, all VPN
+  connections stay `Connected`.
+- **FAIL:** the API rejects it — record the exact error code verbatim; RM-C/RM-D are then
+  reclassified as unsupported, the on-prem-facing admission/hygiene function moves to NVA/CPE policy,
+  and the US10 §2 row in the original catalogue is updated accordingly (by Oracle, in the original
+  lab).
+- **Blast-radius note:** this scenario touches the shared `vpngw-hub1`/`vpngw-hub2`↔`vpngw-onprem`
+  connections, which are the original lab's certified S1/S2/S3 evidence path. It is the one scenario
+  that can damage another lab's results, which is why it is last, optional and separately approved.
+
+**Execution order:** T1 → T2a → T2b → T4 → (T3 only if required) → (T5 only if approved).
+
+---
+
+## 4. Asset inventory — what moves, what is copied, what is referenced, what stays
+
+### 4a. Two-region generic docs and diagrams — safe to extract (copy)
+
+| Asset | Note |
+|---|---|
+| Mermaid block `US11-no-overlay-native-peering` | Generic R1/R2, no Poland, no set-C. Extract verbatim. |
+| Mermaid block `US11-no-overlay-direct-workloads` | Generic. Extract verbatim (supports the "why T1 is not a transitivity test" explanation). |
+| Mermaid block `US11-no-overlay-static-nva-transit` | Generic; variant C, explicitly "to be demonstrated". Extract verbatim with its status label preserved. |
+| US11 prose: the three-variant comparison table, *Why global hub peering alone is not transit*, the *decision threshold* table, the US11 evidence table E1–E8 | Two-region generic, no Poland dependency. Extract as quoted excerpts with a backlink to the canonical story. |
+| US10 prose: *Overlay: required or not*, *Why this inter-region mechanism*, *Maps do not solve*, the 65515/`as-override` paragraph, the global-peering BGP-reset caution | Generic, mechanism-level. Extract as quoted excerpts with backlinks. |
+| US10 `RM-A`–`RM-X` eligibility table, E-1/E-2 definitions, RM-A/RM-B PASS/FAIL rows | Hub-scoped; the RM-X (Poland) row is retained **only** as the one-line contrast that explains why hub ARS is eligible. |
+| decisions.md **D2** eligibility table and **D6** placement table | Reference by link + reproduce the table (it is squad-canonical, small, and load-bearing for T2/T4). |
+
+### 4b. Live hub1/hub2 evidence — safe to copy (never move)
+
+Destination: `labs/dual-hub-interconnect-ars-route-policy/show-output/inherited/` — every file gets a
+provenance header naming the original lab, the original path, the original capture timestamp and the
+capturing agent.
+
+| Source (under `labs/dual-hub-hubless-region-ars/show-output/`) | Why it belongs |
+|---|---|
+| `route-map-upgrade/` — all 11 files | The hub1/hub2 route-map tier activation. This is the direct prerequisite evidence for T2 and is 100% hub-scoped. |
+| `baseline-pre-delta3/02-ars-bgp-peerings.json` | Contains hub1/hub2 peer rows; the `ars-poland` rows are kept as context and must be annotated "out of new-lab scope". |
+| `baseline-pre-delta3/03-vpngw-hub1-bgp-peers.json`, `04-vpngw-hub2-bgp-peers.json` | Hub gateway BGP baselines — the T1 non-effect diff needs them. |
+| `baseline-pre-delta3/06-ars-hub1-peer-nva1-learned.json`, `07-ars-hub2-peer-nva2-learned.json` | The exact RIBs T1 and T2 must leave unchanged; `07` also carries the Δ2 prepend evidence T2b' must not move. |
+| `baseline-pre-delta3/10-vpngw-hub1-learned-routes-summary.txt`, `11-vpngw-hub2-...txt` | Hub gateway RIB baselines. |
+| `baseline-pre-delta3/13-effective-routes-hub1-ep.json`, `14-effective-routes-hub2-ep.json` | Endpoint baselines in the two in-scope regions. |
+| `baseline-pre-delta3/17-nva1-bird-status.txt`, `18-nva2-bird-status.txt`, `19-nva1-nic-effective-routes.json` | BIRD session uptime + NVA NIC routes — the primary reset/non-reset evidence for T1 and T2. |
+| `delta3-bird/02-nva1-bird-post-delta3.txt`, `02-post-ars-hub2-peer-nva2-learned.json` | Current-state hub-side BIRD/ARS captures; needed because the live bed is post-Δ3, not pre-Δ3. |
+
+### 4c. Shared evidence — reference by relative link, do **not** duplicate
+
+`vpngw-onprem` learned-route captures (`baseline-pre-delta3/05`, `12`, `deploy/vpngw-onprem-learned-routes.json`,
+`delta3-bird/02-post-vpngw-onprem-learned-routes.json`), the ping matrices
+(`baseline-pre-delta3/20-ping-matrix.txt`), `validation.md`'s FINAL CERTIFICATION table,
+`lessons-learned.md` in full, and `deploy-log.md` §7 (platform blockers) / §"Hub ARS Route-Map
+Upgrade". These are either mixed-scope, or they are the original lab's certified narrative — a second
+copy will drift and there will be no way to tell which one is authoritative.
+
+### 4d. Poland / set-C assets — remain **only** in the original lab (hard exclusion)
+
+`delta3-activation-contract.md` · `decision-inbox/delta3-failure-brief.md` ·
+`decision-inbox/route-maps-scenario-catalogue.md` (Poland-centric scenarios 1–7) ·
+`show-output/delta3/**` (all 14 files) · `show-output/delta3-bird/**` except the two files listed in
+4b · `show-output/s2-failover/**` · `show-output/s3-failback/**` ·
+`baseline-pre-delta3/08`, `09`, `15`, `16`, `20` · `deploy/nva*-cloud-init.yaml` Poland peering
+sections · `diagrams/01-topology.excalidraw`, `02-bgp-control-plane.mmd`,
+`03-steady-failover-failback.mmd`, `04-cleanup-chain.mmd` (all four are three-region/four-region
+pictures — copying any of them into a two-region lab would be a factual misstatement).
+`route-map-scenarios.md` stays where it is (Poland-anchored catalogue).
+
+**The one Poland fact the new lab must carry:** EMP-001 /
+`HubBgpConnectionFromSpokeVnetCannotReferenceRouteMap` and the D2 locality rule, because they are
+*why* hub-local attachment is the only viable T2. Carry it as **one referenced sentence + the D2
+table**, not as copied `delta3/` evidence.
+
+### 4e. IaC — reference only; must never be presented as new-lab deployment code
+
+`deploy/templates/main.bicep` (38.9 KB), `deploy/templates/main.json` (120.7 KB),
+`deploy/templates/modules/*.bicep`, `deploy/deploy.ps1`, `deploy/deploy-apply.ps1`,
+`deploy/cleanup.ps1`, `deploy/parameters/lab.parameters.json`, `deploy/nva1-cloud-init.yaml`,
+`deploy/nva2-cloud-init.yaml` — all describe the **full four-region deployment** (8 VNets, 3 ARS,
+3 VPN gateways, Poland, on-prem). Copying any of them into the new lab would create a template that,
+if ever executed, deploys a second copy of a live lab and re-creates Poland.
+
+`deploy/activate-hub-ars-routemaps.ps1` is hub-scoped and already executed; **reference** it, and let
+Tank fork a fresh `associate-hub-routemap.ps1` for T2 rather than editing the executed artifact.
+
+The new lab's `deploy/` therefore contains **only additive, reversible change scripts + their JSON
+bodies + a matching rollback for each**, and its README must state in the first screen: *"This
+directory contains no deployment code. The resources under test already exist and are owned by
+`labs/dual-hub-hubless-region-ars`."*
+
+---
+
+## 5. Copy vs move — recommendation
+
+**Recommendation: copy/extract everything. Move nothing. Zero deletions from the original lab.**
+
+Jose asked to "move the required assets". The literal move is unsafe here for four specific reasons:
+
+1. `lessons-learned.md`, `validation.md` and `deploy-log.md` cite `show-output/**` paths inline.
+   Moving any evidence file breaks a **certified** evidence chain that was signed off by Niobe on
+   2026-08-04 ("FINAL CERTIFICATION — READY FOR JOSE TO EXPLORE").
+2. `route-map-user-stories.md` is the canonical 12-story catalogue with stable IDs, a front-page
+   index, a §2 comparison matrix and a §3 diagram index. Splitting US10/US11 out of it would leave
+   ten dangling anchors and violate the scenario-retention policy.
+3. The evidence is **shared-bed** evidence: the same live resources back both labs. Provenance is
+   only interpretable if the capture stays attached to the lab that captured it.
+4. The original lab's cost, cleanup and ownership statements are written against its own inventory.
+   Removing assets makes its manifest describe a bed it no longer documents.
+
+**Bidirectional cross-links (added later by Tank/Oracle, not in this task):**
+
+- New lab `README.md` → *"Live resources are shared with and owned by
+  [`../dual-hub-hubless-region-ars/`](../dual-hub-hubless-region-ars/README.md). Canonical stories:
+  [US10](../dual-hub-hubless-region-ars/route-map-user-stories.md#us10--bow-tie-dual-site-regional-affinity-with-cross-region-backup),
+  [US11](../dual-hub-hubless-region-ars/route-map-user-stories.md#us11--cross-region-reachability-without-an-nva-to-nva-overlay)."*
+- Original lab `README.md` → one line under Quick Links: *"Two-region hub-to-hub / route-map
+  association program: [`../dual-hub-interconnect-ars-route-policy/`](../dual-hub-interconnect-ars-route-policy/README.md)"*.
+  **This is the only edit proposed to the original lab, and it is additive.**
+
+---
+
+## 6. New-lab content contract
+
+All eight artifacts are **new files authored against this contract** — none is a copy of the original
+lab's equivalent.
+
+**`README.md`** (≤ 4 KB) — one-paragraph overview; a **Shared live resources** banner as the first
+section after the title (see §7); Quick Links; *Designs studied* scaffolded from the manifest;
+Status line stating that **nothing has been deployed or changed by this lab yet**; sanitization note
+(no subscription IDs, no PSKs, resource-group name only where already public in-repo); backlink to
+the original lab and to the canonical US10/US11 anchors.
+
+**`manifest.md`** (≤ 15 KB) — lab card (slug, two regions, reused SKUs/ASNs, address plan limited to
+`10.10.0.0/16`, `10.11.0.0/24`, `10.20.0.0/16`, `10.21.0.0/24`, and `10.40.0.0/16` marked
+*adjacent/read-only*); **Reused resource ledger** (explicitly *reused, not created*: `vnet-hub1`,
+`vnet-hub2`, `vnet-spoke-a`, `vnet-spoke-b`, `ars-hub1`, `ars-hub2`, `vpngw-hub1`, `vpngw-hub2`,
+`vm-nva1`, `vm-nva2`, `vm-hub1-ep`, `vm-hub2-ep`, the two route tables, the hub↔spoke peerings, both
+inert route maps); **Delta ledger** (what TP-HH creates: one global peering pair, route-map
+associations, optionally NVA-to-NVA BGP/tunnel + BIRD policy blocks — each with its rollback);
+**cost delta** (peering has no hourly charge; inter-region egress billed per GB; the three ARS
+route-map surcharges are **already sunk against the original lab** and are not re-charged here — the
+new lab's own delta is ≈ $0/day and must say so rather than restating the ~$84/day bed);
+the five scenarios with pass/fail; *Designs studied* (US11-A / US11-B / US11-C / US10 dynamic-overlay
+/ ARS-map-vs-BIRD placement, each with a verdict); risks; approval gate for T2/T3/T5.
+
+**`design.md`** — two-region topology only; peering flag matrix for the new pair; the ARS↔NVA and
+ARS↔gateway attachment-eligibility table (D2); the 65515 loop-prevention-before-policy statement;
+prefix policy for the conditional T3 session including the **deny `0/0` and deny set-C**
+non-negotiables; the maintenance-window/BGP-reset protocol; explicit *No-transitivity scope* section
+stating what T1 deliberately does not prove.
+
+**`validation.md`** — per-scenario, per-layer evidence plan (L1 gateway, L2 Route Server, L3 NVA RIB,
+L4 effective routes, L5 data-plane forensics via `tcpdump` + interface/firewall counters, L6 ping
+matrix, L7 traceroute *indicative only, never a symmetry proof*, L8 timing at 30/60/120/180 s);
+before/after diff discipline; the **non-effect assertions are first-class** (the primary evidence for
+T1 is "nothing moved"); explicit "not run yet" status for every scenario at creation time.
+
+**`lessons-learned.md`** — created with a single *No results yet* section plus an
+**Inherited findings (from the original lab, by reference)** table: EMP-001/D2 locality, the
+route-map tier upgrade timings (22.4 / 25.7 min), `az rest` inline-body failure on Windows PowerShell,
+`peeringState=null` CLI quirk, PSK/IKE-SA lifetime observation, KV private-endpoint recovery
+(DEV-001). Inherited rows link out; they are never restated as this lab's own findings.
+
+**`deploy-log.md`** — created empty-but-structured: a *Pre-existing bed* section pointing at the
+original deploy-log (with the note that the bed was deployed 2026-08-03 and certified 2026-08-04),
+then an empty *Change log* table (timestamp · change · executor · rollback · evidence path) for
+TP-HH. **No fabricated entries.**
+
+**`diagrams/`** — see §7.
+
+**`show-output/`** — `inherited/` (copied baselines from §4b, each with a provenance header) and one
+empty directory per scenario: `t1-hub-peering/`, `t2-routemap-assoc/`, `t3-nva-bgp/`,
+`t4-policy-placement/`, `t5-gwconn-assoc/`, each with a `.gitkeep` and a one-line `README` naming the
+captures the scenario's PASS criteria require.
+
+---
+
+## 7. Diagrams — extraction and the one new diagram
+
+**Extract (copy verbatim into `diagrams/` as `.mmd`, preserving the `%% diagram-id:` comment and the
+`classDef` grammar):**
+
+| New file | Source block | Status |
+|---|---|---|
+| `us11-no-overlay-native-peering.mmd` | `US11-no-overlay-native-peering` | Generic, unchanged |
+| `us11-no-overlay-direct-workloads.mmd` | `US11-no-overlay-direct-workloads` | Generic, unchanged |
+| `us11-no-overlay-static-nva-transit.mmd` | `US11-no-overlay-static-nva-transit` | Generic, unchanged, "to be demonstrated" label preserved |
+
+**Do not extract:** `US10-bow-tie-generic-er` (both blocks) — four-corner ExpressRoute bed with two
+DCs, two circuits and MSEE AS 12076; none of it exists in this lab and copying it would imply an ER
+scope the lab does not have. Reference it by anchor instead. **Do not extract**
+`US10-bow-tie-lab-vpn-analogue` — it contains `ars-poland`, set-C, `vnet-onprem2`, `vpngw-onprem2`
+and the S3 deleted-connection annotation, i.e. exactly the excluded scope.
+
+**One new combined diagram is needed** — `HH-two-region-hub-interconnect` (Oracle authors):
+
+- **Nodes:** `vnet-hub1` (`vpngw-hub1` 65515, `ars-hub1`, `vm-nva1` 10.10.1.4 AS 65001),
+  `vnet-hub2` (`vpngw-hub2` 65515, `ars-hub2`, `vm-nva2` 10.20.1.4 AS 65002), `vnet-spoke-a`
+  10.11.0.0/24 (`vm-hub1-ep`), `vnet-spoke-b` 10.21.0.0/24 (`vm-hub2-ep`), and `vnet-onprem`
+  10.40.0.0/16 (`vpngw-onprem` AS 65000) drawn **greyed and labelled "shared / adjacent — read-only,
+  owned by the original lab"**.
+- **Edge grammar (inherited, mandatory):** thick solid = data plane; thin dotted = BGP control plane;
+  dashed = encapsulation over an underlay. **No Route Server may appear on a thick edge.**
+- **Two mutually exclusive lanes on the hub↔hub side:** lane **A** = native global peering (T1),
+  lane **D** = NVA-to-NVA eBGP with *conditional* encapsulation (T3), drawn as alternatives, never
+  simultaneously.
+- **Policy annotations:** RM-A / RM-B on the `ars-hub*`↔`peer-nva*` edges labelled
+  `BGP · map-eligible (D2) · association untested (T2)`; RM-C / RM-D on the `ars-hub*`↔`vpngw-hub*`
+  edges labelled `attachment unverified (T5)`; a red note on both Route Servers reading
+  `drops routes containing 65515 before inbound policy — no map can repair it`; a note on the new
+  peering reading `create/delete triggers ARS route refresh — soft, or hard if BIRD lacks RFC 2918 —
+  maintenance window`.
+- **A second, optional figure** `HH-policy-placement` for T4: one intent, two control points (ARS map
+  vs BIRD filter), with the 65515 case marked map-inexpressible.
+- Poland, set-C, `vnet-onprem2` and any ER/MSEE element **must not appear** in either figure.
+
+---
+
+## 8. File-action table for Tank
+
+Root: `C:\Users\jomore\Repos\net-lab-builder\labs\`. `OLD` = `dual-hub-hubless-region-ars`,
+`NEW` = `dual-hub-interconnect-ars-route-policy`. **Every action is copy/extract/reference/create —
+no `git mv`, no deletion, nothing committed.**
+
+| # | Source | Destination | Action | Transformation | Rationale |
+|---|---|---|---|---|---|
+| 1 | — | `NEW\` (+ `deploy\`, `diagrams\`, `show-output\inherited\`, `show-output\t1-hub-peering\` … `t5-gwconn-assoc\`) | create | new dirs + `.gitkeep` | Skeleton per §6 |
+| 2 | — | `NEW\README.md` | create | authored to §6 contract | Entry point + shared-resource banner |
+| 3 | — | `NEW\manifest.md` | create | authored to §6 contract | Reused ledger + delta ledger + TP-HH |
+| 4 | — | `NEW\design.md` | create | authored to §6 contract | Two-region routing design |
+| 5 | — | `NEW\validation.md` | create | authored to §6 contract | Evidence plan, all scenarios "not run" |
+| 6 | — | `NEW\lessons-learned.md` | create | authored to §6 contract | Inherited findings by reference only |
+| 7 | — | `NEW\deploy-log.md` | create | authored to §6 contract | Pre-existing bed + empty change log |
+| 8 | `OLD\route-map-user-stories.md` (US11 block `US11-no-overlay-native-peering`) | `NEW\diagrams\us11-no-overlay-native-peering.mmd` | extract | strip fences, keep `%% diagram-id:` + classDefs | Generic two-region figure for T1 |
+| 9 | same file, `US11-no-overlay-direct-workloads` | `NEW\diagrams\us11-no-overlay-direct-workloads.mmd` | extract | as above | Variant B context |
+| 10 | same file, `US11-no-overlay-static-nva-transit` | `NEW\diagrams\us11-no-overlay-static-nva-transit.mmd` | extract | as above; keep "to be demonstrated" | Variant C, unproven |
+| 11 | `OLD\route-map-user-stories.md` US10/US11 prose (§4a list) | `NEW\design.md` / `NEW\manifest.md` excerpt blocks | extract | quoted excerpt + `Source: OLD/route-map-user-stories.md#<anchor>` line under each | Reasoning reused without forking the catalogue |
+| 12 | `OLD\route-map-user-stories.md` US10 RM-A…RM-X table + E-1/E-2 | `NEW\validation.md` (T2/T5 sections) | extract | keep "Eligible, **unassociated**" wording verbatim; RM-X kept as a one-line contrast | Overclaim-free per Oracle's US10 wording fix |
+| 13 | `.squad\decisions.md` D2 + D6 tables | `NEW\design.md` | extract | reproduce tables + link to `.squad/decisions.md` | Squad-canonical eligibility/placement rules |
+| 14 | `OLD\show-output\route-map-upgrade\*` (11 files) | `NEW\show-output\inherited\route-map-upgrade\` | copy | prepend provenance header (original path, timestamp, capturing agent) | Direct prerequisite evidence for T2 |
+| 15 | `OLD\show-output\baseline-pre-delta3\{02,03,04,06,07,10,11,13,14,17,18,19}` | `NEW\show-output\inherited\baseline-2026-08-03\` | copy | provenance header; on `02`, annotate the `ars-poland` rows "context only — out of scope" | Hub-scoped pre-change baselines for T1/T2 diffs |
+| 16 | `OLD\show-output\delta3-bird\{02-nva1-bird-post-delta3.txt, 02-post-ars-hub2-peer-nva2-learned.json}` | `NEW\show-output\inherited\current-state-2026-08-04\` | copy | provenance header | The live bed is post-Δ3; the T1/T2 baseline must reflect that |
+| 17 | `OLD\show-output\{baseline-pre-delta3\05,12,16,20; deploy\vpngw-onprem-learned-routes.json; delta3-bird\02-post-vpngw-onprem-learned-routes.json}` | — | **reference** | relative links from `NEW\validation.md` | Shared/mixed-scope on-prem evidence; duplication would drift |
+| 18 | `OLD\{validation.md, lessons-learned.md, deploy-log.md, route-map-scenarios.md}` | — | **reference** | relative links only | Certified narrative stays single-source |
+| 19 | `OLD\deploy\**` (bicep/json/ps1/params/cloud-init) | — | **reference** | link + explicit "describes the full four-region bed; not this lab's deployment code" note | Prevents a template that would re-create Poland |
+| 20 | `OLD\deploy\activate-hub-ars-routemaps.ps1` | — | **reference** | link; Tank forks a *new* `NEW\deploy\associate-hub-routemap.ps1` | Executed artifact stays with its lab |
+| 21 | — | `NEW\deploy\{peer-hubs.ps1, unpeer-hubs.ps1, associate-hub-routemap.ps1, dissociate-hub-routemap.ps1, bodies\*.json}` | create | each change script ships with its rollback; JSON bodies from file (`az rest --body "@file"`) | Additive/reversible change scripts only |
+| 22 | — | `NEW\diagrams\HH-two-region-hub-interconnect.mmd` (+ optional `HH-policy-placement.mmd`) | create (Oracle) | per §7 spec | The one genuinely new picture |
+| 23 | `OLD\README.md` | `OLD\README.md` | edit (additive, 1 line) | add Quick Link to `NEW` | Bidirectional discoverability |
+| 24 | `OLD\{delta3-*, decision-inbox\**, show-output\{delta3,delta3-bird*,s2-failover,s3-failback}\**, baseline-pre-delta3\{08,09,15}, diagrams\**, route-map-scenarios.md}` | — | **do not copy** | — | Poland / set-C / three-region scope; §4d |
+
+**Secret and identifier hygiene:** nothing in rows 8–16 may carry a subscription ID. Nine files in
+the original lab contain `/subscriptions/<GUID>` — `delta3\{01-create-routemap-response,
+03-apply-routemap-assoc-response, 03b-apply-via-bgpconn-response, bgpconn-update-body,
+routemap-assoc-body, routemap-update-body}.json`, `deploy\deploy-error.txt`,
+`deploy\resource-list-final.json`, `s2-failover\00-pre-vpn-connections.json` — and **none of them is
+on the copy list**. That is not an accident; it must be re-verified by scan (§9) rather than trusted.
+No PSK value, no SSH key, no Key Vault secret name/value is copied anywhere.
+
+---
+
+## 9. Risks and validation checklist
+
+**Broken-link risks**
+
+1. Anchor drift — `route-map-user-stories.md` headings contain em-dashes; GitHub anchor slugs must be
+   verified against the rendered document rather than hand-derived.
+2. Relative-depth errors — every cross-lab link is `../dual-hub-hubless-region-ars/...`; a one-level
+   mistake fails silently in Markdown.
+3. `show-output` links inside **copied** files still point at the original tree; every copied file
+   must be scanned for internal path references, not just for secrets.
+4. If the original lab is ever torn down or archived, every reference in §4c/§8 rows 17–20 becomes a
+   dead link — the new README must state this dependency explicitly.
+
+**Evidence-provenance risks**
+
+5. **Stale-baseline risk (highest).** The copied baselines are `2026-08-03` (pre-Δ3) and `2026-08-04`
+   (post-Δ3-via-BIRD); the live bed has since had the hub route-map tier upgrade (`2026-08-05`).
+   T1/T2 must capture a **fresh** pre-change baseline at execution time; the inherited files are
+   context, never the diff reference.
+6. **Ambiguous ownership.** Two labs citing the same capture creates "which copy is authoritative".
+   Mitigated by: copies live only under `show-output/inherited/`, always carry a provenance header,
+   and are never edited.
+7. **Cost double-counting.** The three ARS route-map surcharges (~$6/day each) are already charged to
+   the original lab; the new manifest must not restate them as its own delta.
+8. **Cross-lab contamination.** T3 leaking `0/0` or set-C prefixes, or T5 disturbing the hub↔on-prem
+   connections, would invalidate another lab's certified results. Encoded as hard FAIL criteria.
+9. **Overclaim regression.** The "eligible, unassociated" wording was a governance fix (Oracle,
+   2026-08-05). Any copy that reintroduces "proven association" is a regression.
+
+**Validation checklist for the migration (run before handing back)**
+
+- [ ] `NEW\` contains exactly the eight required artifacts plus `deploy\`, `diagrams\`, `show-output\`.
+- [ ] `rg -n "/subscriptions/[0-9a-fA-F-]{36}" labs\dual-hub-interconnect-ars-route-policy` → **0 hits**.
+- [ ] Grep for `psk|shared-key|BEGIN .*PRIVATE KEY|platform-secrets` in `NEW\` → 0 hits.
+- [ ] Grep `poland|10\.30\.|10\.31\.|10\.32\.|c1-ep|ars-poland|onprem2|10\.50\.|65003` in `NEW\` → hits
+      only inside explicitly-labelled *out-of-scope* / *contrast* lines; zero hits in `diagrams\`.
+- [ ] Every relative link in `NEW\**\*.md` resolves to an existing file (link-check pass).
+- [ ] Every file under `NEW\show-output\inherited\` has a provenance header naming original path +
+      timestamp + capturing agent.
+- [ ] `git status` on `OLD\` shows **one** modified file (`README.md`, one added line) and **zero**
+      deletions/renames.
+- [ ] Every anchor cited from `route-map-user-stories.md` resolves in the rendered document.
+- [ ] Extracted `.mmd` files render (Mermaid parse) and retain their `%% diagram-id:` comment.
+- [ ] `NEW\deploy\` contains no bicep/ARM template and no `main.*`; every change script has a paired
+      rollback script.
+- [ ] `NEW\README.md` and `NEW\manifest.md` both state that live resources are **owned by the
+      original lab** and that this lab has deployed nothing.
+- [ ] Original lab's `validation.md` / `lessons-learned.md` / `deploy-log.md` are byte-identical to
+      their pre-migration state.
+
+---
+
+## 10. Ownership and cleanup statement (to be reproduced verbatim in `NEW\README.md` and `NEW\manifest.md`)
+
+> **Shared live resources — reused, not created.** Every Azure resource this lab exercises was
+> deployed by, is documented by, and remains owned by
+> [`labs/dual-hub-hubless-region-ars`](../dual-hub-hubless-region-ars/README.md) (resource group
+> `rg-dual-hub-hubless-region-ars-<corrID>`, deployed 2026-08-03, certified 2026-08-04). This lab
+> creates **no** long-lived resource and holds **no** deployment code.
+>
+> **Cost.** The running cost of the bed (≈ $84/day, including three irreversible Azure Route Server
+> route-map-tier surcharges) is accounted against the original lab. This lab's own cost delta is
+> effectively zero: a VNet peering carries no hourly charge, and only inter-region data transfer is
+> billed. Any scenario that would create a billable resource (T3's tunnel endpoints, if ever built)
+> requires a fresh, explicit cost approval from Jose Moreno before execution.
+>
+> **Cleanup authority.** Teardown of the shared bed is governed **solely** by
+> `../dual-hub-hubless-region-ars/manifest.md` §6 (Cleanup Sequence) and by Jose's Phase-8 approval
+> gate. This lab may only roll back its **own** additive deltas (the hub↔hub peering pair, any
+> route-map association, any NVA BGP/tunnel configuration) and must leave the original lab's
+> certified state byte-comparable to its pre-change baseline. Ownership transfers to this lab only
+> if a decision recorded in `.squad/decisions.md` says so explicitly; until then, the original lab
+> is the single source of truth for inventory, cost and cleanup.
+
+---
+
+## 11. Recommended next executor
+
+1. **Tank** — mechanical migration: rows 1, 8–10, 14–17, 21 of §8 (directory skeleton, `.mmd`
+   extraction, evidence copies with provenance headers, additive change scripts + rollbacks) plus the
+   §9 checklist. Tank also owns row 20 (fork the association script) because the `az rest --body
+   "@file"` Windows PowerShell constraint is his finding.
+2. **Trinity** — `design.md` (row 4): two-region peering flags, T3 prefix policy, the
+   BGP-reset/maintenance-window protocol, the no-transitivity scope statement.
+3. **Niobe** — `validation.md` (row 5) and the per-scenario `show-output` capture contracts;
+   Niobe also authors `README.md` (row 2) per the standing convention.
+4. **Oracle** — the new `HH-two-region-hub-interconnect` diagram and optional `HH-policy-placement`
+   (row 22); Oracle is also the only agent who should touch the original catalogue if T5 forces a
+   US10 §2 reclassification.
+5. **Morpheus** — `manifest.md` (row 3), and the Phase-4 gate wording for T2/T3/T5.
+
+**Blocking questions for Jose (all cheap to answer):**
+
+- Confirm the slug `dual-hub-interconnect-ars-route-policy` (or supply a preferred one) before Tank
+  creates the directory — renaming after the cross-links exist is the expensive path.
+- Confirm **copy, not move** (§5). If a true move is required, say so and the plan changes materially.
+- Confirm T2 (first-ever route-map **association** on a live Route Server) may be scheduled as a
+  maintenance window on the shared bed — it is the gate that decides whether the ARS-side half of
+  US10/US12 is real.
+- Confirm whether an additive catalogue row `US13` (composition pointer) is wanted, or whether the
+  test-program-only composition (§2) is sufficient.
+
+# Niobe — read-only verification of Tank's U1.5 + U2 execution (TP-HH)
+
+**By:** Niobe (Lab Validator & Diagnostics)
+**Date:** 2026-08-06 (real system clock)
+**Lab:** `labs/dual-hub-interconnect-ars-route-policy` (TP-HH Stage 1)
+**Requested by:** Jose Moreno
+**Trigger:** Tank was authorized to execute U1.5 + U2; its final response was corrupted/lost.
+**Mode:** READ-ONLY. No Azure object, NVA, route map, peering, BIRD config, evidence file or commit
+was modified by this task. Only this note and `.squad/agents/niobe/history.md` were written.
+
+---
+
+## VERDICT: **PARTIAL**
+
+- **Technical execution (Azure + NVA): COMPLETE PASS.** Both U1.5 and U2 were fully executed,
+  verified live, and are healthy. No rollback was performed; the U2 association is **left active**.
+- **Documentation / ledger deliverable: NOT DONE.** Every narrative doc still describes U1.5 and U2
+  as "NOT RUN / PENDING APPROVAL". This is the only gap, and it carries **zero live risk**.
+
+---
+
+## 1. U1.5 — verified live on both NVAs
+
+Live `cat /etc/bird/bird.conf` + `birdc show protocols` + `birdc show route` via read-only
+`az vm run-command`:
+
+| Check | vm-nva1 | vm-nva2 |
+|---|---|---|
+| `protocol bgp ars_poland_0` / `_1` | absent | absent |
+| `filter export_to_poland_ars` | absent | absent |
+| `route 10.30.0.0/27` static | absent | absent |
+| set-C prepend clause (`10.31.0.0/24`,`10.32.0.0/24`) in `export_to_hub2_ars` | n/a | absent (filter is `bgp_path.delete(65515); accept;` only) |
+| Local hub ARS sessions | `ars_hub1_0` / `ars_hub1_1` **Established** | `ars_hub2_0` / `ars_hub2_1` **Established** |
+| BGP `Since` (no flap since 2026-08-06 07:12Z) | `07:12:12.272` / `07:12:13.010` | `07:12:17.496` / `07:12:20.643` |
+| `master4` | 9 of 9 routes / 6 networks | 9 of 9 routes / 6 networks |
+| Pre-change backup on host | `bird.conf.pre-u15.20260806T124403Z` | `bird.conf.pre-u15.20260806T143555Z` |
+
+The live `Since` values are **byte-identical to the `pre/`, `b1/`, `b2/` and `u2/` captures**, which
+independently proves no session reset occurred at any point during U1.5 or U2.
+
+**`10.30.0.0/27` withdrawal confirmed live, not just from files:**
+
+- `az network routeserver peering list-learned-routes` on `ars-hub1/peer-nva1` → `{0.0.0.0/0}` on
+  `RouteServiceRole_IN_0`, `{0.0.0.0/0, 10.40.0.0/16}` on `_IN_1`. Same shape on
+  `ars-hub2/peer-nva2`. No `10.30.0.0/27` anywhere.
+- NIC effective routes: `nic-vm-nva1` and `nic-vm-nva2` each show exactly 5 entries
+  (VnetLocal /16, VNetPeering spoke /24, GW `10.40.0.0/16`, GW `0.0.0.0/0`, VNetGlobalPeering peer
+  hub /16). No `10.30.0.0/27`.
+- `vpngw-onprem` learned routes: only the expected IBgp `/32` ARS-instance routes via `10.40.0.4/.5`
+  — unchanged shape, no Poland residue.
+
+**Backups / SHA / validation / apply evidence: present.** `u15-nva1/00`, `u15-nva2/00` (backup +
+sha256), `01-*-syntax-check.txt` (`bird -p -c` exit 0 and `configure check` → `Configuration OK`),
+`02-*-configure-output.txt` (`birdc configure`), plus full pre/post capture sets and per-NVA diff
+summaries. `systemctl restart bird` was never used.
+
+**Authoritative sanitized configs exist and match live:**
+`nva-config/bird-nva1.u15-target.conf` and `bird-nva2.u15-target.conf` — config bodies are identical
+to the live `/etc/bird/bird.conf` on each host. As-found snapshots also retained.
+
+**U1.5 = PASS (independently confirmed live).**
+
+## 2. U2 — verified live on ARM
+
+Live `GET` (api-version `2024-10-01`; note `2024-05-01` **does not project** `routingConfiguration`
+— use `2024-10-01`+ or the association looks absent):
+
+- `ars-hub1/routeMaps/rm-hub1-tmp-assoc` — exists, `Succeeded`, one rule `rule-tmp-inert`:
+  match `routePrefix Equals ["203.0.113.0/24"]` → `Add asPath ["64496"]` → `Terminate`.
+  `associatedInboundConnections: [ .../bgpConnections/peer-nva1 ]`.
+- `ars-hub1/bgpConnections/peer-nva1` — `provisioningState: Succeeded`,
+  `routingConfiguration.inboundRouteMap.id` = `.../routeMaps/rm-hub1-tmp-assoc`,
+  `vnetRoutes.staticRoutes: []`, `staticRoutesConfig.propagateStaticRoutes: true`,
+  `vnetLocalRouteOverrideCriteria: "Contains"` — **all preserved**. `peerAsn 65001`, `peerIp 10.10.1.4`
+  unchanged.
+- **No hub2 change:** `ars-hub2` has only `rm-hub2-activate` with
+  `associatedInboundConnections: []`; `peer-nva2` has **no** `inboundRouteMap`.
+  `rm-hub1-activate` also still has `associatedInboundConnections: []` — untouched.
+- **All four VPN connections `Connected` / `Succeeded`** (`conn-hub1-to-onprem`,
+  `conn-hub2-to-onprem`, `conn-onprem-to-hub1`, `conn-onprem-to-hub2`).
+- **B1 → B2 route/session delta re-computed by me, not taken on trust:** `Compare-Object` over all
+  9 comparable capture files (ARS learned/advertised both hubs, both NIC effective-route tables,
+  both `vpngw-*-advertised-to-onprem`, `vpngw-onprem` learned) → **0 differences**. The only delta
+  is the association metadata.
+- **Evidence completeness:** `u2/00-pre-peer-nva1-GET.json` (fresh GET, etag
+  `W/"a78c47b3-…"`), `u2/01` (route-map PUT response), `u2/02` (bgpConnection PUT response, new etag
+  `W/"5ae5cf3d-…"`, `provisioningState: Updating`), `u2/02-put-timing.txt` (issued 15:52:35Z →
+  response 15:52:43Z), `u2/03` post-GET `Succeeded`, `u2/07` BIRD session timeline, `u2/08`
+  route-map inventory. `If-Match` + PUT (no PATCH) throughout.
+
+**U2 = PASS (independently confirmed live). Association LEFT ACTIVE — not rolled back.**
+`rollback-if-any/` contains only a README stating the path was prepared but never invoked;
+that matches live state.
+
+## 3. Files / status
+
+- **Evidence inventory:** `show-output/new/u15-u2/` = `pre/` (17 files), `u15-nva1/` (13),
+  `u15-nva2/` (12), `b1/` (17), `u2/` (11), `b2/` (17), `rollback-if-any/README.md`. Complete and
+  internally consistent.
+- **Sanitization: CLEAN.** Zero raw subscription or tenant IDs anywhere under the lab; 81
+  `<SUBSCRIPTION_ID>` placeholders in the U1.5/U2 evidence set.
+- **No U3/U4/U5 activity:** `rm-hub1-tmp-assoc` still matches `203.0.113.0/24` (not
+  `198.51.100.0/24`); no `u3_doc_test` protocol in either live `bird.conf`;
+  `show-output/new/u3a-doc-prefix/` and `u15-bird-cleanup/` contain only `.gitkeep` + README;
+  `nsg-nva-hub1`/`nsg-nva-hub2` still carry the original 5-rule baseline (no U5 cross-hub BGP rules);
+  no NVA↔NVA BGP protocol exists.
+- **Live bed state:** 50 resources; `vm-nva1`/`vm-nva2` **running**, `vm-hub1-ep`/`vm-hub2-ep`/
+  `vm-onprem-ep` deallocated; 2 peerings per hub, all `Connected`/`FullyInSync` (incl. the U1
+  hub1↔hub2 pair); 2 ARS, 3 VPN GWs, 4/4 connections `Connected`. Run-rate ≈$66–73/day + ≈$0.58/day
+  for the two running NVAs — unchanged by U1.5/U2 (both are $0 units, as planned).
+- **No commit was made.** Last commit is still `3a137f4` (2026-08-05).
+
+## 4. Remaining / risky state — documentation only
+
+Nothing in Azure or on the NVAs is unfinished, inconsistent, or at risk. The gap is entirely in the
+written record (docs were last saved 10:46–11:05, execution ran 14:17–18:40 — i.e. all docs are
+pre-execution):
+
+| Artefact | Current (stale) text | Should say |
+|---|---|---|
+| `deploy-log.md` change log | no U1.5 / U2 rows | two rows: U1.5 (2026-08-06T14:12:35Z nva1, 14:46:26Z nva2) and U2 (PUT 15:52:35Z → `Succeeded` ~16:01:43Z), executor Tank, rollback not exercised |
+| `deploy-log.md` approval ledger | U1.5 and U2 = **PENDING APPROVAL** | **EXECUTED 2026-08-06 — PASS** |
+| `deploy-log.md` gate **G4** | **OPEN** — "no route-map association has ever succeeded anywhere in this lab family" | **CLOSED** — U2 produced an accepted PUT body + `Succeeded`; this is exactly G4's stated closing condition |
+| `validation.md` §U1.5 | "NOT RUN. NOT APPROVED." | EXECUTED / PASS, evidence paths |
+| `validation.md` §T2a/U2 | "NOT RUN." | EXECUTED / PASS, evidence paths |
+| `README.md` status banner + tranche box | "T2–T5 (U2–U5) remain not run"; "Next approval gate: the U1.5 + U2 tranche" | U1.5 + U2 executed; next gate is U3a |
+| `manifest.md` §U1.5 / §U2 rows | framed as proposals | executed, with the "authoritative `nva-config/`" claim now true |
+| `.squad/agents/tank/history.md` | last TP-HH entry is U0/U1 | needs a U1.5 + U2 entry |
+| `.squad/decisions/inbox/` | no `tank-u15-u2-execution.md` | execution report note missing |
+
+**Minor evidence defects (cosmetic, no action required):**
+1. `u2/10-diff-summary.md` says the PUT polled `Succeeded` at "18:01:43Z" — that is local time; the
+   Z-time is ~16:01:43Z (PUT issued 15:52:35Z). Timestamp typo only.
+2. `u15-nva2/` has no `12-timing.txt` (nva1 does) — asymmetric but non-material.
+3. `b2/13` and `b2/15` capture only the `master4` route **count**, not the full table. I re-ran the
+   full `birdc show route` live and it corroborates 9 routes / 6 networks on both NVAs.
+
+## 5. Recommended minimum recovery
+
+**Executor: Tank (docs-only, zero Azure/NVA/BIRD action).** Alternative: Scribe, if Tank's context
+is unrecoverable — everything needed is already on disk under `show-output/new/u15-u2/`.
+
+1. Append the two U1.5/U2 rows to `deploy-log.md` §"Change log — TP-HH's own deltas" and flip both
+   ledger rows to EXECUTED — PASS.
+2. Close **G4** in the stage-gate table, citing `u2/02-bgpconn-assoc-put-response.json` +
+   `u2/03-post-peer-nva1-GET.json`. (G1 stays OPEN — Stage 1 is still not rolled back; G3 stays OPEN.)
+3. Flip `validation.md` §U1.5 and §T2a/U2 to EXECUTED/PASS with evidence paths.
+4. Update the `README.md` status banner and `manifest.md` U1.5/U2 rows; next gate is **U3a**.
+5. Write `.squad/decisions/inbox/tank-u15-u2-execution.md` and a Tank history entry.
+6. Decide explicitly whether the inert `rm-hub1-tmp-assoc` association stays for U3a (it is the
+   required precondition for U3b) or is rolled back — **currently it is left active**, which is
+   consistent with the plan and with proceeding to U3.
+
+**Do not re-run U1.5 or U2.** Both are complete, verified live, and idempotent-by-completion;
+re-execution would be a needless change window.
+
+# Tank — Poland Central cleanup EXECUTED
+
+**Author:** Tank (IaC Engineer)
+**Date:** 2026-08-05T~19:15+02:00 (execution completed)
+**Requested by:** Jose Moreno
+**Status:** ✅ Executed — all 29 approved objects deleted, zero failures, zero retries
+**Artifact:** `labs/dual-hub-hubless-region-ars/cleanup-poland-dry-run.md` §10 (executed-result
+record appended; §0-§9 preserved unedited as the original dry-run proposal)
+
+## Authorization
+
+Structured confirmation received: "Confirm deletion of the exact 29-object dry-run list" against
+`labs/dual-hub-hubless-region-ars/cleanup-poland-dry-run.md`, for
+`rg-dual-hub-hubless-region-ars-lab3d001`. Honored as covering the full 29-object §2 scope (no
+subset), consistent with the dry-run's own §8 gate condition that any approval short of the full
+scope requires a re-numbered list first — no such re-numbering was needed since the full scope was
+confirmed.
+
+## What was executed
+
+Exactly the 29-object delete list from the dry-run, in the dependency order already specified in
+that document's §4 (Stage 1 → 2 → 3 → 4 → 4b), with **no reordering** beyond what was already
+documented there (the NSG-after-VNet correction was baked into the plan before execution began, not
+discovered during it).
+
+- **Stage 1** (6 objects): remote-side Poland-facing peerings on the *preserved* `vnet-hub1`/
+  `vnet-hub2` VNets — `peer-hub1-to-poland`, `peer-hub1-to-spoke-c1`, `peer-hub1-to-spoke-c2`,
+  `peer-hub2-to-poland`, `peer-hub2-to-spoke-c1`, `peer-hub2-to-spoke-c2`.
+- **Stage 2** (3 objects): `ars-poland`'s two BGP peerings (`peer-nva1`, `peer-nva2`), then
+  `ars-poland` (Route Server) itself — waited ~25 minutes for terminal state (longer than the
+  manifest's ~10-minute estimate; not a scope deviation, documented).
+- **Stage 3** (4 objects): `vm-c1-ep` (which auto-removed its 2 extensions), `nic-vm-c1-ep`,
+  `osdisk-vm-c1-ep`, `pip-ars-poland` (deleted last, only after `ars-poland` was fully gone).
+- **Stage 4/4b** (4 objects): `vnet-spoke-c1`, `vnet-spoke-c2`, `vnet-poland-ars` (which
+  auto-removed their 10 nested peering child objects), then `nsg-ep-poland` (deleted *after* the
+  VNets, per the dry-run's live-evidence finding that the NSG was subnet-associated, not
+  NIC-associated).
+
+**Total: 17 explicitly commanded deletions + 12 automatic side-effect removals = 29 objects, all
+confirmed gone.**
+
+## One documented deviation (non-blocking, does not meet any STOP condition)
+
+`vm-c1-ep` — and, discovered during live verification, all 5 other preserved VMs (`vm-nva1`,
+`vm-nva2`, `vm-hub1-ep`, `vm-hub2-ep`, `vm-onprem-ep`) — were already in a `deallocated` power state
+at task start. This is a pre-existing, lab-wide condition unrelated to this cleanup (not caused by
+Tank, not a change made during this task). It meant two Stage-0 read-only diagnostic captures
+(`az network nic show-effective-route-table`, `az vm run-command invoke ... ping`) could not run —
+captured verbatim in `show-output/cleanup-poland-execution/pre/04-vm-poweroff-deviation-and-skipped-captures.md`.
+This is **not** a new dependency, missing target, unexpected replacement, or preserve-object
+selection — `vm-c1-ep` was still the exact named object on the approved list, present, and targeted
+for deletion — so execution proceeded per plan without stopping.
+
+## Post-delete verification (all 6 required checks passed)
+
+1. **All 29 approved objects absent** — resource count 61 → 50, exact match to the dry-run's
+   predicted count.
+2. **No Poland-facing peering remains on preserved VNets** — `vnet-hub1` retains only
+   `peer-hub1-to-spoke-a`; `vnet-hub2` retains only `peer-hub2-to-spoke-b`.
+3. **All preserve-list top-level objects still exist and are healthy** — `ars-hub1`/`ars-hub2`
+   (2 Route Servers), 3 VPN gateways (`Succeeded`), both NVAs, set-A/set-B spokes, on-prem
+   resources, all re-verified present with unchanged `provisioningState`. VM deallocation is a
+   pre-existing condition, not a health issue caused by this task.
+4. **hub1/hub2 ARS BGP peerings and inert route-map activation maps unchanged** — `ars-hub1` still
+   has exactly its 1 peering (`peer-nva1`) and 1 route map (`rm-hub1-activate`); `ars-hub2` still has
+   exactly its 1 peering (`peer-nva2`) and 1 route map (`rm-hub2-activate`).
+5. **VPN connections outside Poland remain Connected** — all 4 (`conn-hub1-to-onprem`,
+   `conn-onprem-to-hub1`, `conn-hub2-to-onprem`, `conn-onprem-to-hub2`) report `connectionStatus=Connected`.
+6. **Shared RG remains** — `rg-dual-hub-hubless-region-ars-lab3d001` present, `Succeeded`, all
+   original tags unchanged; never targeted for deletion.
+
+**Current resource counts/regions:** 50 top-level resources across `swedencentral` (20),
+`switzerlandnorth` (19), `norwayeast` (11) — zero in `polandcentral`.
+
+## Docs updated
+
+- **Source lab** (`dual-hub-hubless-region-ars`): `cleanup-poland-dry-run.md` (status → Executed,
+  §10 appended), `README.md` (callout → executed retirement), `deploy-log.md` (new dated section),
+  `lessons-learned.md` (ARS cost lesson updated — surcharge now moot via deletion, not recreation),
+  `validation.md` (new top note: S4/S5 permanently non-repeatable, historical results preserved
+  unchanged). **`manifest.md` intentionally not touched** — its Resource Inventory/Cleanup
+  Sequence/Cost sections were flagged in the dry-run as a follow-up for a future Morpheus/Trinity
+  pass, outside this task's authorized scope (README/deploy-log/lessons/validation only).
+- **Two-region lab** (`dual-hub-interconnect-ars-route-policy`): `README.md` (Poland scope note →
+  retired; cost callout → ≈$66-73/day; **Stage-2 gate G2 marked satisfied** in prose and diagram;
+  G3's stale $84/day comparator corrected), `deploy-log.md` (G2 stage-gate row → `CLOSED`, dated,
+  evidenced; G3 row's comparator corrected). This lab's T1-T5 scenarios were never dependent on
+  Poland and are confirmed unaffected.
+
+## Revised cost estimate
+
+**≈$66-73/day**, down from ≈$84/day (a ~13-21% reduction) — matches the dry-run's own §7 estimate
+exactly, since the deletion executed precisely as previewed with no discovered differences requiring
+re-derivation. The dry-run's flagged uncertainty (whether `ars-poland`'s route-map child object was
+live/billing) is now moot: the resource no longer exists, so any surcharge it carried has
+definitively stopped. Confidence: MEDIUM/LOW, same basis as the dry-run (derived per-unit shares of
+`manifest.md` §11's lab-wide totals, not independently retail-priced).
+
+## Duration
+
+Approximately 65 minutes end-to-end, dominated by the ~25-minute `ars-poland` Route Server delete
+(BGP peering deletes ran a few minutes each; VM/NIC/disk/PIP/VNet/NSG deletes were fast, under a
+minute each).
+
+## Deviations / retries
+
+One documented deviation (VM power-off, see above) — non-blocking, did not require a retry or a
+stop. **Zero retries were needed anywhere in the 29-object sequence** — every command succeeded on
+first attempt (exit 0).
+
+## Stage-2 gate G2 (two-region lab)
+
+**Can be marked satisfied/CLOSED.** G2 only requires Poland cleanup status to be *known and
+recorded* (explicitly not a dependency on the outcome) — this is now true and recorded in both labs'
+`deploy-log.md`. G1 (Stage 1 completion), G3 (fresh cost/deletion approval for Stage 2), and G4
+(route-map attachment behaviour) remain open and untouched by this task.
+
+## Validation that scope was not exceeded
+
+- Every delete command named exactly one resource via `-g/-n` or parent flags (`--vnet-name`,
+  `--routeserver`) — no resource ID string concatenation, no wildcard, no `az resource list | delete`
+  loop, no `az group delete`.
+- The only objects deleted were the 17 explicitly listed in the approved §2a table plus their 12
+  documented automatic side effects (§2b) — verified by exact pre/post count arithmetic (61-11=50 ✅)
+  and by name-by-name post-delete list checks on every preserved category (VNets, Route Servers, ARS
+  peerings/route maps, VPN gateways/connections, VMs, NSGs, PIPs).
+- No Sweden Central, Switzerland North, or Norway East top-level resource was touched (region
+  breakdown confirms: 20+19+11=50, matching the preserve-list count exactly, with 0 in
+  `polandcentral`).
+
+## Not changed by this task
+
+`main.bicep`/deploy templates, `manifest.md` (either lab), architecture/feasibility claims elsewhere,
+Sweden/Switzerland/Norway resource configuration, git history. **No git commit made.**
+
+# Tank — Poland Central cleanup deletion preview (DRY RUN ONLY)
+
+**Author:** Tank (IaC Engineer)
+**Date:** 2026-08-05T16:00:43+02:00
+**Requested by:** Jose Moreno
+**Status:** Recorded — awaiting Jose's exact confirmation phrase before any execution
+**Artifact:** `labs/dual-hub-hubless-region-ars/cleanup-poland-dry-run.md`
+
+## What was authorized vs. what was done
+
+Jose authorized **investigating and previewing** removal of Poland Central resources from the
+shared live resource group. The task was explicit that this pass is **dry-run only**: no delete,
+update, stop, resize, disassociate, or other mutating command was permitted, and none was run. Every
+Azure CLI/REST command executed was read-only (`show`, `list`, `az rest --method GET`). No git
+commit was made.
+
+## Live resource group confirmed
+
+`rg-dual-hub-hubless-region-ars-lab3d001` (region `swedencentral`), resolved from `az group list`
+against the active CLI context — matches `deploy-log.md` and `manifest.md` exactly. Subscription/
+tenant IDs are not recorded anywhere in the produced artifacts; all captures use
+`<SUBSCRIPTION_ID>` / `<TENANT_ID>` placeholders.
+
+## Delete-scope summary (29 objects total, 0 deleted)
+
+- **17 explicitly commanded deletions:** `ars-poland` (Route Server) + its 2 BGP peerings
+  (`peer-nva1`, `peer-nva2`); `vnet-poland-ars`, `vnet-spoke-c1`, `vnet-spoke-c2`; `vm-c1-ep`,
+  `nic-vm-c1-ep`, `osdisk-vm-c1-ep`; `pip-ars-poland`; `nsg-ep-poland`; and the **6 Poland-facing
+  peerings that live on the preserved `vnet-hub1`/`vnet-hub2` VNets** (`peer-hub1-to-poland`,
+  `peer-hub1-to-spoke-c1`, `peer-hub1-to-spoke-c2`, `peer-hub2-to-poland`, `peer-hub2-to-spoke-c1`,
+  `peer-hub2-to-spoke-c2`) — this is the nested/dependent-resource case the task specifically asked
+  to be discovered, and it was: confirmed live via `az network vnet peering list`.
+- **12 removed as an automatic side effect:** 2 VM extensions (removed with `vm-c1-ep`) and 10 VNet
+  peerings hosted on the 3 Poland VNets themselves (removed with their parent VNet delete).
+
+## Explicitly excluded (confirmed safe via live evidence, not assumption)
+
+- All Sweden Central, Switzerland North, and Norway East resources, **except** the 6 cross-region
+  peerings above.
+- The shared resource group itself — never a deletion target.
+- `ars-hub1`/`ars-hub2` (each carries exactly 1 BGP peering, to its own local NVA only — zero Poland
+  references, verified via `az network routeserver peering list`), the 3 VPN gateways, both NVAs,
+  set-A/set-B spokes, and all on-prem resources.
+
+## Discrepancies found and recorded (not silently resolved)
+
+1. **No Poland route table exists.** Manifest's "2 Route Tables" (`rt-spoke-a`, `rt-spoke-b`) are
+   Sweden/Switzerland-scoped only; set-C spokes rely on ARS-injected `0.0.0.0/0` with no UDR, per
+   `main.bicep`. No route-table delete step applies to Poland.
+2. **`ars-poland` route-map child object is not live** (`routeMaps` ARM REST call returns `[]`),
+   while `ars-hub1`/`ars-hub2` each retain one inert activation map. This appears to contradict
+   `.squad/agents/tank/history.md`'s own B3 note that the route-map surcharge already applies to all
+   3 ARS including poland. Not resolved here — carried into the cost estimate as an explicit
+   uncertainty range (±$6/day), flagged for whoever executes the real cleanup to re-verify against
+   the Azure bill directly (ARM state cannot prove or disprove billing).
+3. Pre-existing, Poland-unrelated: live NSG count is 6 vs. manifest's stated 4 — noted for
+   completeness, not actioned (out of this task's scope).
+
+## Dependency-order correction found from live evidence
+
+`nsg-ep-poland` is associated to the **subnet** `vnet-spoke-c1/snet-workload`, not to the NIC
+(`nic-vm-c1-ep`'s `networkSecurityGroup` is `null`). This means the NSG must be deleted **after**
+`vnet-spoke-c1` is deleted, not before — the reverse of what a generic "delete dependencies before
+the VNet" template would suggest. The proposed order in `cleanup-poland-dry-run.md` §4 reflects this
+correction explicitly, with the live-evidence citation.
+
+## Cost estimate (approximate, MEDIUM/LOW confidence — not exact)
+
+Poland's share of the current ≈$84/day run-rate (per `.squad/agents/tank/history.md` B3) is
+approximately **$11.51-17.51/day** depending on whether the unresolved route-map surcharge (finding
+#2 above) is still billing — roughly a 14-21% reduction, or **≈$345-525/month**. Derived from
+`manifest.md` §11's lab-wide per-resource-class totals divided by unit count; this is directional,
+not an independent retail-price lookup per resource.
+
+## Confirmation gate
+
+Tank will not execute any deletion until Jose gives the exact phrase recorded in
+`cleanup-poland-dry-run.md` §8:
+
+```
+CONFIRM POLAND DELETE — rg-dual-hub-hubless-region-ars-lab3d001 — 29 objects per
+labs/dual-hub-hubless-region-ars/cleanup-poland-dry-run.md dated 2026-08-05 — preserve all
+Sweden Central, Switzerland North, Norway East, and shared-RG resources — proceed.
+```
+
+## Validation that nothing was mutated
+
+Pre/post `az resource list -g rg-dual-hub-hubless-region-ars-lab3d001` counts identical (61 objects,
+identical type breakdown); pre/post VNet peering counts on `vnet-hub1` and `vnet-poland-ars`
+identical (4 each, re-verified after the investigation). `git diff --stat` / `git status --porcelain`
+show only the two README planned-cleanup callouts as modifications to existing tracked files, plus
+new untracked files (the dry-run document, its 9 sanitized `show-output/cleanup-poland-dry-run/*.md`
+captures, this decision-inbox entry, and the Tank history append). No existing IaC, manifest,
+deploy-log, or evidence file was changed. No commit was made.
+
+## Not changed by this task
+
+Architecture, feasibility claims, live resource state, cost of any resource, README claims beyond
+the one-paragraph callouts, Azure/IaC files, and git history. **No deployment. No deletion. No git
+commit.**
+
+# Tank decision inbox — Storage endpoint lab deployment blocker
+
+**Date:** 2026-08-05T19:04:00+02:00  
+**Lab:** `storage-endpoint-path-equivalence`  
+**Run:** `sepath-20260805-175837`
+
+Phase 4 was explicitly approved and the Sweden Central ARM deployment succeeded. The selected `Standard_B2ts_v2` passed catalog and live validation immediately before deployment.
+
+Subscription security automation forces `publicNetworkAccess=Disabled` on the target and decoy Storage accounts. CLI and direct ARM REST updates could not retain `Enabled`; activity-log evidence attributes an automatic write to `StorageAccounts/securityOperators/DefenderForStorageSecurityOperator`. This prevents the approved public and service-endpoint baselines (S1–S3).
+
+Tank stopped before test-blob upload and before any experimental transition. The service endpoint remains off, endpoint policy detached, and private DNS unlinked. Resources remain deployed; no cleanup was run. Niobe is blocked pending an authorized subscription/resource exemption or a revised design/subscription.
+
+Evidence: `labs/storage-endpoint-path-equivalence/raw-output/sepath-20260805-175837/`. Operational status: `deployment.md`.
+
+# Tank decision inbox — Translator redesign deployed
+
+**Date:** 2026-08-05T17:52:19.278+02:00  
+**Lab:** `storage-endpoint-path-equivalence`  
+**Run:** `sepath-20260805-175837`
+
+Jose's approved redesign delta is deployed. Azure AI Translator `TextTranslation`
+F0 now replaces the blocked Blob experiment while preserving the existing
+VM/VNet/NAT/NSG/Log Analytics/flow-log bed.
+
+Only the approved Storage experiment resources were deleted. The flow-log Storage
+account and platform diagnostics resources were retained. Translator local
+authentication is disabled; the VM uses managed identity with `Cognitive Services
+User`. The replacement PE is Approved at `10.61.2.4`; its private zone exists but
+is unlinked in the final R1 public-baseline handoff.
+
+Deployment smoke probes returned HTTP 200 in public, service-endpoint,
+restricted-subnet, and private modes. The VM was returned to deallocated state.
+No full benchmark and no cleanup were run. Translator F0 plus replacement PE
+produces approximately US$0/hour steady-state fixed incremental cost versus the
+prior live lab.
+
+Niobe is unblocked. Exact transition/probe commands are in
+`labs/storage-endpoint-path-equivalence/deployment.md`; sanitized evidence is in
+`raw-output/sepath-20260805-175837/11-translator-redesign-deployment.json` and
+`12-translator-redesign-inventory.json`.
+
+# Decision — TP-HH two-region extraction executed (documentation-only)
+
+**Date:** 2026-08-05T16:00:43.761+02:00
+**Owner:** Tank (IaC Engineer)
+**Lab:** `dual-hub-interconnect-ars-route-policy` (new)
+**Source lab:** `dual-hub-hubless-region-ars` (unchanged owner of all live resources)
+**Status:** Artifact skeleton complete; zero Azure resources touched; not committed
+
+## What was executed
+
+Implemented Morpheus's approved extraction contract (`.squad/decisions/inbox/morpheus-us10-us11-extraction.md`)
+plus Jose's broader task scope (full build, not just Tank's originally-recommended rows 1/8-10/14-17/21).
+Created `labs/dual-hub-interconnect-ars-route-policy/` as a **test-program composition TP-HH** of
+retained US10 + US11 (Sweden Central + Switzerland North only; Poland/set-C explicitly out of scope,
+`vnet-onprem` referenced read-only where needed) — not a merged/renumbered story. No edits to
+`route-map-user-stories.md`'s 12-story catalogue.
+
+## Decisions
+
+1. **No Azure/IaC action taken.** No `az` command executed against any subscription; no bicep/ARM/
+   parameters copied as standalone; source `main.bicep` referenced read-only with an explicit warning
+   that it also deploys Poland/set-C.
+2. **Copy, not move**, for all 25 hub-scoped evidence files (11 `route-map-upgrade/` + 12
+   `baseline-pre-delta3/` subset + 2 `delta3-bird/` subset). Every file carries a provenance header
+   (source path, capture context/date, capturing agent, "Inherited; not recaptured for TP-HH",
+   sanitization status) with the underlying evidence content byte-unchanged below it. Originals in
+   the source lab confirmed present and untouched via `git status`/diff.
+3. **Scenarios T1–T5 documented exactly per Morpheus's contract** (intent, prerequisites, exact
+   pass/fail, evidence-file targets under `show-output/new/`, rollback ownership) in `manifest.md`
+   and `validation.md`: T1 native peering baseline (host-terminated `vm-nva1`↔`vm-nva2` probe), T2a
+   inert route-map association gate → T2b real attribute-change test only if T2a passes, T3
+   conditional dynamic NVA BGP/tunnel (deny `0.0.0.0/0` and set-C explicitly in the filter, no
+   topology dependency), T4 route-map-vs-BIRD placement comparison including the ASN 65515
+   pre-policy-drop case, T5 optional/unverified local VPN-gateway-connection route-map association,
+   separately approval-gated.
+4. **Ownership contract reproduced verbatim** in README/manifest/deploy-log: all live resources and
+   cleanup remain owned by `dual-hub-hubless-region-ars` until an explicit future transfer; new lab
+   must not delete/recreate shared resources; current shared run-rate ~US$84/day (source lab's last
+   verified estimate: $72/day Δ3-active baseline + $12/day route-map surcharge) remains documented by
+   the source lab; TP-HH's own artifact baseline delta is $0/day; route-map tests may be no-cost but
+   changes need Jose's approval due to BGP-reset risk; no cleanup command in the new artifact may
+   target the shared RG (`rg-dual-hub-hubless-region-ars-lab3d001`).
+5. **Scripts are gated skeletons only** — `scripts/apply.ps1` / `scripts/rollback.ps1` refuse to run
+   unless `-ResourceGroup` matches the exact shared bed name, `-SubscriptionId` is a non-placeholder
+   GUID, and `-ApprovalConfirmed` is passed explicitly; every real `az`/`az rest` command is commented
+   out inside a per-scenario switch. Functionally re-tested after fixing a `SupportsShouldProcess`
+   parameter-collision bug (see Learnings below) — all 4 gate cases behave correctly and zero Azure
+   command executes even when all gates are satisfied.
+6. **Diagrams:** extracted the three approved US11 Mermaid blocks verbatim into `.mmd` files by their
+   stable IDs (`us11-no-overlay-native-peering`, `us11-no-overlay-direct-workloads`,
+   `us11-no-overlay-static-nva-transit`); authored `HH-two-region-hub-interconnect.mmd` (native
+   peering and conditional NVA BGP/tunnel as mutually exclusive lanes, Route Servers control-plane-
+   only, route-map attachment points, no Poland nodes) and an optional `HH-policy-placement.mmd` for
+   T4. All 5 validated via a pre-existing cached `mmdc` binary (no new install) — 5/5 rendered
+   without error.
+7. **Cross-links:** added exactly one additive line to the source lab's `README.md` Quick Links
+   pointing at the new lab. Did **not** edit `route-map-user-stories.md` near US10/US11 — Morpheus's
+   contract's own validation checklist requires `git status` on the source lab to show only that one
+   modified file with zero deletions/renames, and the task's phrasing ("README ... and ... US10/US11
+   vicinity **or** shared summary") permits satisfying the second location via the README itself.
+   Reciprocal links from the new lab back to the source lab are in `README.md`/`manifest.md`.
+
+## Sanitization / migration validation results
+
+- **Subscription/tenant GUID scan:** 0 hits across the entire new lab.
+- **Secret/key scan** (`psk|shared-key|BEGIN .*PRIVATE KEY|platform-secrets`): 3 hits, all in
+  `lessons-learned.md`/`README.md` prose *describing* a PSK-mismatch finding and stating no secret
+  values were ever logged/printed — no actual secret material present.
+- **Poland/set-C/10.30/10.31/10.32 scan:** 86 hits total. Every hit in authored markdown/scripts is
+  an explicit exclusion, contrast, or deny-filter note (verified individually). The two hits inside
+  `diagrams/*.mmd` are comments stating "No Poland/set-C element appears" — no diagram node. Hits
+  inside inherited evidence files are factual, unmodified BGP/route-table content from the live
+  shared topology at capture time (not a new topology dependency); added an explicit clarifying note
+  in `validation.md`'s Migration gaps section rather than editing evidence bodies.
+- **Relative-link check:** 55 relative links across 12 markdown files (new lab + the one touched line
+  in the source lab README) — 0 broken.
+- **Provenance-header check:** all 25 inherited evidence files carry a `PROVENANCE` header as their
+  first line.
+- **No migration gaps:** every file named in Morpheus's file-action table (§8) was found and copied;
+  `validation.md` records "No migration gap to record for this pass."
+- **No bicep/ARM/parameters files** present anywhere in the new lab (confirmed via recursive glob).
+
+## Learnings (new this session)
+
+- `[CmdletBinding(SupportsShouldProcess = $true)]` auto-injects `-WhatIf`/`-Confirm` common
+  parameters. Declaring custom `[switch]$Confirm` or `[switch]$WhatIf` params on the same function
+  causes a runtime "parameter defined multiple times" error that **static parsing
+  (`Parser::ParseFile`) does not catch** — only actual invocation does. Fixed by renaming the custom
+  explicit-approval gate to `-ApprovalConfirmed` in both `apply.ps1` and `rollback.ps1`. Lesson:
+  always functionally invoke (not just syntax-check) any `SupportsShouldProcess` script before
+  considering it validated.
+- GitHub-anchor slugs for em-dash headings (`US10 — Title`) produce a **double hyphen** where the
+  em-dash sits (`us10--title`), confirmed via Unicode-aware slug algorithm — used for both new
+  backlinks into `route-map-user-stories.md#us10--...` and `#us11--...`.
+- This repo's evidence `.json` files are frequently not strict JSON — many have `# Command:`/
+  `# Timestamp:` comment header lines prepended before the JSON body. This precedent justified using
+  `#`-prefixed provenance headers rather than a JSON-envelope wrapper, preserving "no change to
+  underlying evidence content."
+
+## Blocked / not done (explicitly out of scope for this task)
+
+- No Azure command was run, no resource created/modified/deleted, no cleanup performed, nothing
+  committed — all per explicit task constraints.
+- T2b/T3/T4/T5 evidence files under `show-output/new/` are not yet populated (correct — no
+  scenario has been executed; only per-scenario `README.md` + `.gitkeep` placeholders exist).
+
+**Artifacts:** `labs/dual-hub-interconnect-ars-route-policy/{README,manifest,design,validation,lessons-learned,deploy-log}.md`,
+`diagrams/*.mmd` (5), `scripts/{apply,rollback}.ps1` + `scripts/bodies/*.json` (4),
+`show-output/inherited/**` (25 evidence files), `show-output/new/**` (5 scenario placeholders).
+
+# Tank — U0 + conditional U1 execution report: dual-hub-interconnect-ars-route-policy
+
+**By:** Tank (IaC Engineer / Azure activation executor)
+**Date:** 2026-08-06 (real system clock; task header's stated `CURRENT_DATETIME` of
+2026-08-05T16:00:43+02:00 did not match this sandbox's actual clock — all timestamps below are the
+real captured system-clock times, consistent with every other evidence file in this repo)
+**Lab:** `labs/dual-hub-interconnect-ars-route-policy` (TP-HH Stage 1)
+**Requested by:** Jose Moreno
+**Approved unit:** `U0 + conditional U1` (start `vm-nva1`/`vm-nva2`, validate health/baseline/
+route-refresh, and only if safe create the exact two hub global VNet peerings)
+
+---
+
+## 1. Scope and safety compliance
+
+Exact scope executed, nothing more:
+
+- VMs touched: **`vm-nva1`, `vm-nva2` only** (started).
+- VNets touched: **`vnet-hub1`, `vnet-hub2` only** (two new peering objects).
+- Peering names and flags exactly as specified: `peer-hub1-to-hub2` (on `vnet-hub1` → remote
+  `vnet-hub2`), `peer-hub2-to-hub1` (on `vnet-hub2` → remote `vnet-hub1`), both with
+  `allowVirtualNetworkAccess=true`, `allowForwardedTraffic=true`, `allowGatewayTransit=false`,
+  `useRemoteGateways=false`.
+- **Not executed:** U2–U5, any route-map association, any BIRD config edit, any other VM, any VPN
+  connection change, any resource deletion, any git commit.
+- No wildcard/broad-scope command was issued at any point — every Azure CLI call named one resource
+  explicitly.
+- Live pre-change state matched the plan/manifest exactly (all 5 VMs deallocated, no hub1↔hub2
+  peering) — confirmed before any mutation; no stop-before-mutation condition was triggered.
+
+## 2. U0 outcome — PASS-with-note
+
+Both `vm-nva1` and `vm-nva2` reached `VM running` (confirmed 09:12:43 local time, ~2-3 min after
+`az vm start` was issued). BIRD/BGP validated via `az vm run-command invoke`:
+
+- `ars_hub1_0`, `ars_hub1_1` (on `vm-nva1`) and `ars_hub2_0`, `ars_hub2_1` (on `vm-nva2`): all
+  **Established** within seconds of BIRD daemon start.
+- **Route-refresh capability confirmed present on both local and neighbor sides, all four
+  sessions** — this is the explicit U1 hard-gate requirement and it was met.
+- `ars_poland_0`/`ars_poland_1` on both NVAs: permanently in `Connect` — expected and harmless
+  (their peers `10.30.0.4`/`.5` were deleted with the Poland retirement); documented, not edited.
+- All 4 VPN connections: `Connected` throughout.
+
+**New finding (`TANK-001`), material but non-blocking:** both NVAs' hand-edited `/etc/bird/bird.conf`
+(not in version control) contain a `protocol static` block with **three** routes — the hub's own
+RouteServerSubnet (`10.10.0.64/27` / `10.20.0.64/27`), a **stale `10.30.0.0/27`** (the former Poland
+RouteServerSubnet shape), and `0.0.0.0/0` — all exported to the local hub ARS via a filter that only
+strips AS 65515, not by prefix. Consequence: `10.30.0.0/27` genuinely appears in both `ars-hub1` and
+`ars-hub2`'s *learned-routes* sets purely from static re-origination (independent of Poland's BGP
+peer, which is gone forever). **Containment fully verified:**
+- Absent from ARS's *advertised* routes back to the NVA (clean).
+- Absent from `vpngw-hub1`/`vpngw-hub2` learned/advertised sets — their BGP session to the local
+  ARS instance (ASN 65515) is **permanently stuck in `Connecting`**, a **pre-existing** condition
+  matching the manifest's own live-state reconciliation table, not caused by U0/U1.
+- Absent from `vpngw-onprem`'s learned routes (verified clean both pre- and post-change).
+- Present only in each NVA's own NIC effective-route table, `nextHopType: VirtualNetworkGateway`,
+  scoped to that NVA's own hub VNet.
+- Whether it also reaches `vnet-spoke-a`/`vnet-spoke-b` could not be directly verified because
+  `vm-hub1-ep`/`vm-hub2-ep` correctly remained deallocated (strict U0 scope: exact VMs only) — this
+  is an **explicitly documented, unresolved residual item**, out of scope for this task, flagged for
+  a future separately-approved unit. It is not a blocker: U1 (`allowGatewayTransit=false`) cannot be
+  the transport mechanism for any such spoke-side leak even if it exists.
+- Separately, `10.10.0.64/27` (cited by the manifest/design as NVA1's "re-originated" prefix for
+  future T2b targeting) was **not observed** in ARS's learned-routes set at all, despite being
+  exported the same way — Azure Route Server appears to implicitly reject a route matching its own
+  RouteServerSubnet. **This should be reviewed by Trinity/Morpheus before T2b/U3 is planned**, since
+  U3's target prefix may not be visible to a route map the way the design currently assumes.
+
+**Verdict:** U0 = **PASS-with-note**. This is the same class of finding as the already-documented,
+expected, harmless stale Poland BGP neighbor sessions — a sibling artifact of the same
+never-cleaned-up hand-edited BIRD config. It is fully contained within the ARS-NVA control-plane
+bubble plus each hub's own VNet route table, does not cross the hub↔hub peering, and does not reach
+on-prem. BIRD config was **not** edited, per explicit instruction.
+
+## 3. U1 gate decision — PASS
+
+Per the task's explicit gate: "BIRD must show healthy local ARS adjacencies and route-refresh
+capability... both ARS peerings must establish and baseline routes must match expected post-Poland
+shape." All criteria met:
+- Both ARS peerings per NVA Established. ✅
+- Route-refresh capability confirmed both sides. ✅
+- Baseline routes matched the expected post-Poland shape (only the documented, contained stale
+  `10.30.0.0/27` anomaly, judged non-blocking per the analysis above). ✅
+
+**Gate decision: PASS → proceed to U1.**
+
+## 4. U1 outcome — PASS
+
+Immediate pre-U1 baseline captured (peerings confirmed absent; ARS learned/advertised both hubs;
+gateway advertised-to-onprem; on-prem learned; NIC effective routes; VPN connections; BIRD status).
+Pre-peering ping test `vm-nva1 → 10.20.1.4`: 100% loss (expected, no peering yet).
+
+Created via `az network vnet peering create`:
+- `vnet-hub1/virtualNetworkPeerings/peer-hub1-to-hub2` (remote `vnet-hub2`)
+- `vnet-hub2/virtualNetworkPeerings/peer-hub2-to-hub1` (remote `vnet-hub1`)
+
+Both reached `peeringState=Connected`/`peeringSyncLevel=FullyInSync` within ~15–60 s. All four
+required flags verified exactly: `allowVirtualNetworkAccess=true`, `allowForwardedTraffic=true`,
+`allowGatewayTransit=false`, `useRemoteGateways=false`.
+
+**Reachability:** `vm-nva1` (10.10.1.4) ↔ `vm-nva2` (10.20.1.4) ICMP — **0% packet loss both
+directions**, tested ~30-90 s after convergence.
+
+**Non-transitivity — proven via byte-identical before/after diffs** (not just narrative):
+- `ars-hub1` learned + advertised: unchanged.
+- `ars-hub2` learned + advertised: unchanged.
+- `vpngw-hub1` advertised-to-onprem: unchanged.
+- `vpngw-onprem` learned routes: unchanged.
+- All 4 VPN connection statuses: unchanged (`Connected`).
+- Spoke peerings `peer-hub1-to-spoke-a` / `peer-hub2-to-spoke-b`: unchanged, re-confirmed.
+
+**Effective-route-table check:** each NVA NIC gained **exactly one** new route — a
+`VNetGlobalPeering` entry for the remote hub's `/16` (`10.20.0.0/16` on `vm-nva1`'s NIC,
+`10.10.0.0/16` on `vm-nva2`'s NIC) — and nothing else changed (spoke `/24`s, the stale
+`10.30.0.0/27`, the `10.40.0.0/16` gateway prefix, and `0.0.0.0/0` all remained byte-identical).
+
+**Route-map association check:** confirmed `ars-hub1`/`peer-nva1` and `ars-hub2`/`peer-nva2`
+`routingConfiguration` carries only empty `staticRoutes` — **no route-map association exists**
+(T2/U2 untouched, as required).
+
+**Stability re-check at T+~20 min:** both peerings still `Connected`/`FullyInSync`; BIRD session
+`Since` timestamps identical to the post-U0 capture on both NVAs — **no BGP session flap or reset**
+was caused by the peering-create operation.
+
+**Verdict:** U1 = **PASS**. No rollback-trigger condition was met (sessions recovered immediately —
+in fact never dropped; no unexpected spoke/default route crossed natively; hub health did not
+degrade).
+
+## 5. Rollback status
+
+**Not exercised.** Both U0 and U1 PASS criteria were met with evidence. Both `vm-nva1`/`vm-nva2`
+remain `VM running` and both peerings remain `Connected`/`FullyInSync` as the intended, approved
+end-state of this task. No health, reachability, or non-transitivity criterion failed at any point.
+
+## 6. Cost / timing
+
+- **U0:** +$0.58/day (VM compute) while both NVAs run — unchanged from the manifest's pre-approved
+  estimate. VM start → running: ~2-3 min per VM. BGP Established within seconds of BIRD start (well
+  under the plan's 30-90s estimate).
+- **U1:** $0/hr for the peering objects themselves; ≈$0.00 incremental data-transfer cost (only a
+  handful of ICMP test packets were generated in each direction). Peering create → Connected/
+  FullyInSync: ~15-60s (under the plan's 2-min estimate).
+- **Total wall clock, this session:** ≈75 minutes end-to-end, dominated by `az vm run-command
+  invoke` latency (1.5–3+ min per BIRD query, needed many times for pre/post/gate evidence) and
+  deliberate convergence-spacing between steps — not by the underlying Azure operations, each of
+  which completed in under 3 minutes.
+
+## 7. Evidence
+
+All under `labs/dual-hub-interconnect-ars-route-policy/show-output/new/u0-u1/`:
+- `pre/` — sanitized pre-U0 baseline (12 files: context, VM power states, peerings, ARS
+  learned/advertised, gateway BGP status, VPN connections, NSG rules, route tables, ARS route-map
+  inventory).
+- `post-u0/` — sanitized post-U0 evidence (19 files: VM power states, BIRD protocols-all/conf/
+  route-all for both NVAs, ARS learned/advertised both hubs, gateway BGP peer status,
+  advertised-to-onprem, on-prem learned, VPN connection status, NIC effective routes).
+- `pre-u1/` — immediate pre-U1 baseline (peerings-absent confirmation, ARS/gateway/on-prem/NIC/VPN/
+  BIRD snapshots, pre-peering ping test).
+- `post-u1/` — post-U1 evidence (peering objects, NIC effective routes, ARS/gateway/on-prem/VPN/BIRD
+  snapshots, bidirectional ping tests, spoke-peering-unchanged confirmation, VM power states, T+20min
+  stability re-check).
+- `06-timing-and-cost-summary.txt` — compiled timing and cost evidence.
+
+One command per file, numbered, sanitized (`<SUBSCRIPTION_ID>`/`<TENANT_ID>` placeholders; a final
+grep sweep across every file in this tree confirmed **zero** occurrences of the real subscription ID
+or tenant ID).
+
+## 8. Documentation updated
+
+- `validation.md` — §U0 and §T1 actual results (PASS-with-note / PASS), evidence paths, the
+  `TANK-001` finding and its correction to the manifest's re-origination assumption.
+- `deploy-log.md` — Change log table (2 real entries), Phase-4 approval-unit ledger (U0/U1 rows →
+  EXECUTED), Stage-gate ledger (G1 row → "OPEN — partially advanced", **not** claimed closed/complete
+  — per the explicit instruction not to claim full bow-tie).
+- `README.md` — top status callout, Phase-4 activation-plan section (actuals + next-gate note),
+  TP-HH scenario table (U0/T1 rows → executed/PASS).
+- `design.md` — §8a(c)-correction: documents `TANK-001` without editing BIRD config, flags the
+  `10.10.0.64/27` visibility question for Trinity/Morpheus before T2b/U3.
+- `lessons-learned.md` — new "TP-HH's own findings" section: `TANK-001` (stale-route
+  re-origination), `TANK-002` (`az vm run-command invoke` does not detach backgrounded processes),
+  `TANK-003` (`az group list --query` bracket-filter parsing quirk on this Windows setup).
+- Source lab `dual-hub-hubless-region-ars/deploy-log.md` — forward-pointing update note on the
+  VM power-state change (ownership-contract-respecting; does not rewrite the 2026-08-05
+  post-cleanup verification snapshot).
+- `.squad/agents/tank/history.md` and `.squad/decisions.md` — this session's entry appended.
+
+**No git commit made, per instruction.**
+
+## 9. Next approval gate
+
+**U2/T2a** — create the dedicated, inert route map `rm-hub1-tmp-assoc` and associate it inbound on
+**`ars-hub1`/`peer-nva1` only** (a `PUT` on the BGP connection, not a PATCH) — remains **unapproved
+and not executed**. Recommend Trinity/Morpheus review the `TANK-001` correction (the manifest's
+`10.10.0.64/27` re-origination assumption does not hold as written; `10.10.0.64/27` is not visible in
+ARS's learned-routes set) before U2/T2b is planned, since T2b's target prefix may need to change.
+
+# Tank — U1.5 + U2 execution report (docs-only recovery)
+
+**By:** Tank (IaC Engineer)
+**Date:** 2026-08-06
+**Lab:** `labs/dual-hub-interconnect-ars-route-policy` (TP-HH Stage 1)
+**Requested by:** Jose Moreno
+**Trigger:** U1.5 + U2 were technically executed in a prior turn; the final response/docs
+write-up was interrupted/lost. Niobe independently re-verified the live state, read-only, and
+recommended a docs-only recovery — `.squad/decisions/inbox/niobe-u15-u2-verification.md`.
+**Mode: DOCS-ONLY.** No Azure CLI/REST command, VM run-command, BIRD command, route-map operation,
+peering mutation, or git commit was run or re-run in this pass. Only lab markdown files and
+`.squad/agents/tank/history.md` were written.
+
+---
+
+## 1. Basis for this recovery
+
+This report does not re-derive verdicts independently — it transcribes into the lab's docs the
+results Niobe already confirmed live on 2026-08-06 (`niobe-u15-u2-verification.md`), cross-checked
+against the on-disk evidence under `show-output/new/u15-u2/`. Where Niobe's note and the evidence
+files agreed, that is what was written. No claim below goes beyond what is on disk.
+
+## 2. U1.5 — PASS (both NVAs)
+
+- Graceful `birdc configure` applied: `vm-nva1` at **2026-08-06T14:12:35Z**, `vm-nva2` at
+  **14:46:26Z**. `systemctl restart bird` never invoked.
+- Removed from both NVAs: static `route 10.30.0.0/27`, `protocol bgp ars_poland_0`,
+  `protocol bgp ars_poland_1`, `filter export_to_poland_ars`. Removed from `vm-nva2` only: the dead
+  `10.31.0.0/24`/`10.32.0.0/24` prepend clause inside `export_to_hub2_ars`.
+- **Exactly `10.30.0.0/27`** withdrawn from both `RouteServiceRole_IN_0`/`_IN_1` instances of both
+  `ars-hub1` and `ars-hub2`. No other prefix moved.
+- **No BGP flap:** `ars_hub1_0`/`_1` and `ars_hub2_0`/`_1` `Since` timestamps are byte-identical
+  pre/post across `pre/`, `u15-nva1/`, `u15-nva2/`, `b1/`, `b2/` and `u2/` captures, and were
+  re-confirmed live by Niobe against the current running BIRD state.
+  `ars_hub1_0`=`07:12:12.272`, `ars_hub1_1`=`07:12:13.010`, `ars_hub2_0`=`07:12:17.496`,
+  `ars_hub2_1`=`07:12:20.643` — unchanged throughout.
+- **Gateway and on-prem sets byte-identical** — `vpngw-hub1`/`vpngw-hub2` advertised-to-onprem and
+  `vpngw-onprem` learned routes are unchanged; all 4 VPN connections `Connected` throughout.
+- Config gates passed before every apply: `bird -p -c` (exit 0) and `birdc configure check` →
+  `Configuration OK`, on both hosts, both before the live file was overwritten.
+- **Authoritative configs:** `nva-config/bird-nva{1,2}.u15-target.conf` are now the version-controlled,
+  authoritative BIRD configs and match the live `/etc/bird/bird.conf` on each host byte-for-byte
+  (confirmed by Niobe). As-found snapshots retained at
+  `nva-config/bird-nva{1,2}.as-found-2026-08-06.conf`.
+- Evidence: `show-output/new/u15-u2/{pre,u15-nva1,u15-nva2,b1}/`.
+
+## 3. U2 — PASS
+
+- Created `ars-hub1/routeMaps/rm-hub1-tmp-assoc` — one rule, `match routePrefix Equals
+  ["203.0.113.0/24"]` (RFC 5737 TEST-NET-3, absent from every live surface) → `Add asPath
+  ["64496"]` → `Terminate`.
+- Associated it inbound on `ars-hub1/bgpConnections/peer-nva1` via a byte-preserving `PUT`: body
+  derived from a fresh `GET` (etag `If-Match`), `peerAsn 65001`/`peerIp 10.10.1.4` unchanged,
+  `routingConfiguration.vnetRoutes.staticRoutes: []` and `staticRoutesConfig` (`propagateStaticRoutes:
+  true`, `vnetLocalRouteOverrideCriteria: "Contains"`) preserved verbatim. PUT issued
+  **2026-08-06T15:52:35Z**, polled to `provisioningState: Succeeded` at **~16:01:43Z** (the
+  `u2/10-diff-summary.md` file's "18:01:43Z" is a local-time typo, not a UTC discrepancy).
+- **No route effect:** `Compare-Object` across all 9 comparable capture files (ARS learned/advertised
+  both hubs, both NIC effective-route tables, both `vpngw-*-advertised-to-onprem`, `vpngw-onprem`
+  learned) → **0 differences**, re-computed independently by Niobe, not taken on trust.
+- **`rm-hub1-activate` and all of `ars-hub2` untouched** — `ars-hub2` has only `rm-hub2-activate`
+  with no associated connections; `peer-nva2` has no `inboundRouteMap`.
+- All 4 VPN connections `Connected`/`Succeeded` throughout.
+- **Association left ACTIVE** — not rolled back; `rollback-if-any/README.md` records only that the
+  path was prepared, never invoked. This is consistent with the plan: the inert association is the
+  required precondition for U3a/U3b.
+- **API trap:** `api-version=2024-05-01` does **not** project `routingConfiguration` in the GET
+  response — the association would look absent under that version. `2024-10-01`+ was used
+  throughout for every GET/PUT in this unit.
+- Evidence: `show-output/new/u15-u2/{u2,b2}/`.
+
+## 4. B1 → B2
+
+Zero route or session differences across every comparable capture file between the post-U1.5
+baseline (B1) and the post-U2 baseline (B2) — the only delta is the route-map association metadata
+itself (`rm-hub1-tmp-assoc.associatedInboundConnections` and `peer-nva1.routingConfiguration.inboundRouteMap`).
+
+## 5. Gate state
+
+- **G4 CLOSED.** U2 produced `Succeeded` with the working request body and observed no-reset
+  behaviour — exactly G4's documented closing condition. Evidence:
+  `show-output/new/u15-u2/u2/02-bgpconn-assoc-put-response.json`,
+  `show-output/new/u15-u2/u2/03-post-peer-nva1-GET.json`.
+- **G1 remains OPEN** — Stage 1 is further advanced (U0, U1, U1.5, U2 all PASSED) but still not
+  rolled back to a byte-comparable baseline, and U3–U5 have not run.
+- **G2 remains CLOSED** (unaffected — Poland status was already known/recorded).
+- **G3 remains OPEN** — no fresh cost/deletion approval has been requested.
+- **U4 (T5, gateway-connection attachment) is separately unverified** — not implied or satisfied by
+  G4's closure. It remains "not run — attachment unverified" pending its own approval.
+- U3/U4/U5 are **not** marked complete or approved by this recovery.
+
+## 6. Final live-state statement (copied from Niobe's independent verification)
+
+> Technical execution (Azure + NVA): COMPLETE PASS. Both U1.5 and U2 were fully executed, verified
+> live, and are healthy. No rollback was performed; the U2 association is left active.
+
+## 7. Cost
+
+Run-rate unchanged: ≈$66–73/day (post-Poland-retirement baseline) plus the already-accounted-for
++$0.58/day NVA compute increment from U0 (both NVAs running). No new route-map surcharge — the ARS
+route-map tier upgrade was already sunk against the source lab before this lab existed. U1.5 and U2
+are both **$0** deltas.
+
+## 8. Next approval gate
+
+**U3a/U3b** — real route-map modification (`198.51.100.0/24`, RFC 5737 TEST-NET-2), gated on U2
+having passed and settled, which it has. U4 Step 1 (read-only gateway-attachment probe) may still
+be bundled at zero write risk.
+
+## 9. Confirmation
+
+No Azure object, NVA, BIRD config, route map, peering, or VPN connection was touched in this pass.
+No `az`, `birdc`, or REST command was executed. No git commit was made. Only the six lab documents
+listed in Tank's history entry, this file, and `.squad/agents/tank/history.md` were written.
+
+# Trinity — Phase-4 activation plan for Stage 1 (TP-HH) bow-tie / regional-affinity evaluation
+
+**Author:** Trinity (Azure Network SME)
+**Date:** 2026-08-05T~19:45+02:00
+**Requested by:** Jose Moreno
+**Lab:** `labs/dual-hub-interconnect-ars-route-policy` (Stage 1, `TP-HH`)
+**Shared bed:** `rg-dual-hub-hubless-region-ars-lab3d001` — owned by `labs/dual-hub-hubless-region-ars`
+**Status:** Plan only. **Nothing was mutated.** All Azure calls in this pass were read-only
+(`az … show/list/list-learned-routes/list-advertised-routes/list-bgp-peer-status`, `az rest --method get`)
+plus public retail-price lookups. No peering, no association, no VM start, no BIRD access, no commit.
+
+---
+
+## 1. Live state after Poland cleanup — reconciled against the lab manifest
+
+Captured read-only 2026-08-05 (post-cleanup). 50 top-level resources; `polandcentral` = 0.
+
+### 1.1 Reusable resources — exact, verified
+
+| Resource | Type | Region | Verified live value |
+|---|---|---|---|
+| `vnet-hub1` | VNet | swedencentral | `10.10.0.0/16`; subnets `GatewaySubnet 10.10.0.0/27`, `RouteServerSubnet 10.10.0.64/27`, `snet-nva 10.10.1.0/27` (NSG `nsg-nva-hub1`), `snet-endpoint 10.10.2.0/27` (**empty — no NIC**) |
+| `vnet-hub2` | VNet | switzerlandnorth | `10.20.0.0/16`; `GatewaySubnet 10.20.0.0/27`, `RouteServerSubnet 10.20.0.64/27`, `snet-nva 10.20.1.0/27`, `snet-endpoint 10.20.2.0/27` (**empty**) |
+| `vnet-spoke-a` / `vnet-spoke-b` | VNet | sweden / switzerland | `10.11.0.0/24` / `10.21.0.0/24` |
+| `vnet-onprem` | VNet | norwayeast | `10.40.0.0/16` — adjacent, read-only |
+| `ars-hub1` | Route Server (`virtualHubs`) | swedencentral | `Succeeded`, SKU **Standard**, ASN 65515, instance IPs **10.10.0.68 / 10.10.0.69**, `allowBranchToBranchTraffic=true`, `hubRoutingPreference=ExpressRoute` |
+| `ars-hub2` | Route Server | switzerlandnorth | `Succeeded`, Standard, 65515, **10.20.0.68 / 10.20.0.69**, same flags |
+| `ars-hub1/bgpConnections/peer-nva1` | ARS BGP peering | — | `peerAsn 65001`, `peerIp 10.10.1.4`, `Succeeded`; `routingConfiguration` contains **only** `vnetRoutes` — **no `inboundRouteMap`, no `outboundRouteMap`** |
+| `ars-hub2/bgpConnections/peer-nva2` | ARS BGP peering | — | `peerAsn 65002`, `peerIp 10.20.1.4`, `Succeeded`; same shape |
+| `rm-hub1-activate` / `rm-hub2-activate` | ARS route maps | — | `Succeeded`; `associatedInboundConnections: []`, `associatedOutboundConnections: []`; **one rule** `rule-activate-synthetic` = match `routePrefix Equals ["192.0.2.0/24"]` → action `Add asPath ["64496"]` → `Terminate` |
+| `vpngw-hub1` / `vpngw-hub2` / `vpngw-onprem` | VPN GW | sweden / switzerland / norway | AS 65515 / 65515 / 65000; active-active (2 PIPs each) |
+| `conn-hub1-to-onprem`, `conn-onprem-to-hub1`, `conn-hub2-to-onprem`, `conn-onprem-to-hub2` | `Microsoft.Network/connections` | — | all `connectionType=Vnet2Vnet`, `IKEv2`, `enableBgp=true`, `connectionStatus=Connected`, 4 tunnels each `Connected`, `routingConfiguration: {}` |
+| `vm-nva1` / `vm-nva2` | VM (BIRD NVA) | sweden / switzerland | `10.10.1.4` / `10.20.1.4`; NIC `enableIPForwarding=true` both; **`Standard_B2ts_v2`**; **VM deallocated** |
+| `vm-hub1-ep` / `vm-hub2-ep` / `vm-onprem-ep` | VM | — | spoke-a / spoke-b / on-prem resident; `Standard_B2ts_v2`; **all deallocated** |
+| `rt-spoke-a` / `rt-spoke-b` | Route table | — | single route `0.0.0.0/0 → 10.10.1.4` / `→ 10.20.1.4`, `VirtualAppliance`, no BGP override |
+| `nsg-nva-hub1` / `nsg-nva-hub2` | NSG | — | 100 allow TCP/179 from `10.10.0.0/16` (resp. `10.20.0.0/16`); 105 allow TCP/179 from `10.30.0.0/24` (**now dead — Poland deleted**); 110 allow ICMP from `10.0.0.0/8`; 120 allow TCP/22 from `10.0.0.0/8`; 4000 deny-all |
+
+### 1.2 Current connections / peerings
+
+| Object | State |
+|---|---|
+| `vnet-hub1/peer-hub1-to-spoke-a` | `Connected` / `FullyInSync`; vna=T, fwd=T, **gwt=T**, urg=F |
+| `vnet-hub2/peer-hub2-to-spoke-b` | `Connected` / `FullyInSync`; vna=T, fwd=T, **gwt=T**, urg=F |
+| **`vnet-hub1`↔`vnet-hub2`** | **Does not exist.** Zero hub↔hub peering objects — U1's premise confirmed live |
+| 4 VPN connections | all `Connected`, all 4 tunnels each `Connected` |
+
+### 1.3 Live BGP / route state — **the bed is quiescent, not steady-state**
+
+| Instrument | Live value | Interpretation |
+|---|---|---|
+| `ars-hub1 peer-nva1` learned **and** advertised | `{"RouteServiceRole_IN_0": [], "RouteServiceRole_IN_1": []}` | ARS↔NVA1 session **down** (NVA deallocated) |
+| `vpngw-hub1`/`vpngw-hub2` BGP peers | `10.40.0.4/.5` (AS 65000) **Connected**, routesReceived **1**; `10.10.0.68/.69` (ARS) **Connecting** | hub↔on-prem eBGP healthy; ARS↔gateway not established |
+| `vpngw-onprem` BGP peers | hub gateway peers **Connected**, routesReceived **0** | on-prem learns **nothing** from either hub |
+| `vpngw-hub1 list-advertised-routes --peer 10.40.0.4` | **empty** | hub1 currently advertises **zero** prefixes to on-prem |
+| `vpngw-onprem list-learned-routes` | only `10.40.0.0/16` + `/32` BGP-peer host routes | no `10.10.0.0/16`, no `10.20.0.0/16`, no spokes |
+| Spoke egress | `rt-spoke-*` still points `0/0` at a deallocated NVA | spoke default route is **black-holed today** |
+
+**Conclusion:** every TP-HH PASS criterion that reads "ARS learned/advertised set byte-comparable"
+or "BIRD session uptime unbroken" is **unevaluable in the current state**. U0 is a hard
+prerequisite for U1–U3, not an optional convenience.
+
+### 1.4 NVA / BIRD state — captured evidence only, live check **PENDING**
+
+VMs are deallocated; `az vm run-command` cannot run and this task may not start them. Last captured
+state (`show-output/inherited/current-state-2026-08-04/02-nva1-bird-post-delta3.txt`, and the
+source lab's `deploy/*-cloud-init.yaml` + `show-output/deploy/*`, `show-output/delta3-bird/*`):
+
+- **BIRD 2.0.8**, protocols `device1`, `direct1`, `kernel1`, `static1`, `ars_hub1_0/1` (or
+  `ars_hub2_0/1`), `ars_poland_0/1` — all `Established` at capture; 16 routes / 10 networks.
+- **Route-refresh capability: NOT captured.** No `birdc show protocols all` output exists in either
+  lab; only `birdc show protocols` (short form) was ever taken, which does not print the
+  session capability list. **Documentary basis only:** BIRD 2.x enables RFC 2918 route refresh
+  (`enable route refresh`) by default and neither cloud-init disables it, so a *soft* refresh is
+  expected. **This must be verified live post-U0 before U1 is executed** — it is the single
+  determinant of whether U1 is a soft-refresh or a hard-reset event.
+- **BIRD config is hand-edited on the OS disks and is NOT in version control.** Beyond cloud-init:
+  a `protocol static` block (`0.0.0.0/0 via 10.10.1.1` / `10.20.1.1`, plus RouteServerSubnet `/27`
+  routes), a modified `kernel` filter, and NVA2's Δ3 prepend filter were added post-deploy via
+  `run-command`. Deallocate/start preserves the OS disk, so these survive.
+- **Stale Poland peers.** Both bird.conf files still define `ars_poland_0`/`ars_poland_1` toward
+  `10.30.0.4` / `10.30.0.5` with `multihop 4`. Those targets, their VNet and the peerings are
+  **deleted**. On restart these two protocols will sit in `Connect`/`Active` **permanently** on each
+  NVA. Harmless, but it means the post-U0 state is **not** byte-comparable to any inherited capture.
+- **Consequent prefix-set change.** `10.30.0.0/24`, `10.30.0.0/27`, `10.31.0.0/24`, `10.32.0.0/24`
+  will **never reappear**. The Δ2 evidence signature `65002-65002-65002` at `ars-hub2` is therefore
+  **permanently gone** and cannot be used as a "must not move" control. Every TP-HH criterion that
+  references it must be rewritten against a fresh post-U0 baseline.
+
+### 1.5 Manifest reconciliation — corrections required
+
+| Manifest statement | Live truth |
+|---|---|
+| "Reused SKUs … `Standard_B2als_v2`/`B2s_v2` NVAs" | All five VMs are **`Standard_B2ts_v2`** |
+| "`rm-hub1-activate`, `rm-hub2-activate` — **inert**" | They are **unassociated**, and *functionally* inert, but **not empty**: each carries an AS-Path `Add ["64496"]` action gated on an unmatchable `Equals 192.0.2.0/24` |
+| T2a "match `192.0.2.0/24` Equals … via `routingConfiguration.inboundRouteMap` … **PATCH**" | Property path correct; **verb is wrong** — `Microsoft.Network/virtualHubs/bgpConnections` defines no PATCH operation. Use **PUT** with the full body (`peerAsn` + `peerIp` + `routingConfiguration`) |
+| T2b apply/rollback URI `…/virtualHubRouteTables/rm-hub1-activate` | **Wrong resource type.** Correct: `…/virtualHubs/ars-hub1/routeMaps/rm-hub1-activate` |
+| T2/T2a' "Δ2 evidence at `ars-hub2` (`65002-65002-65002`) must not move" | Control **no longer exists** (set-C deleted). Criterion must be re-anchored |
+| T1 probe `vm-nva1`↔`vm-nva2` | Correct — and the **only** valid probe: both `snet-endpoint` subnets are still empty, and `vm-hub1-ep`/`vm-hub2-ep` are spoke-resident |
+| Cost "≈$84/day" | Superseded: **≈$66–73/day** post-Poland (source lab estimate) |
+
+### 1.6 Missing prerequisites
+
+| # | Prerequisite | Blocks |
+|---|---|---|
+| P1 | `vm-nva1`/`vm-nva2` deallocated → no BIRD, no ARS BGP, no ping probe | U1, U2, U3 evidence |
+| P2 | Route-refresh capability never captured (`show protocols all` missing) | U1 risk classification |
+| P3 | No fresh baseline exists post-cleanup / post-deallocation | U1, U2, U3 diffs |
+| P4 | Association write path unproven (see §3, U2) | U2, G4 |
+| P5 | `Az.Network` ≥ 8.0.0 presence unverified on the operator host | U2 fallback, U4 probe |
+| P6 | `run-command` on `vm-nva1` previously recorded as stuck | all BIRD reads |
+| P7 | **No second on-prem site exists** (`onprem2`/`vpngw-onprem2` not deployed) | the bow-tie itself — see §2 |
+| P8 | BIRD config not in version control; no captured copy of the *current* on-disk `bird.conf` | any rollback of T4/U5 |
+
+---
+
+## 2. What Stage 1 can prove now — proxy versus full bow-tie
+
+**The bow-tie (US10) is not testable in the current topology.** A bow-tie is *two* on-premises
+sites, each with regional affinity to its nearest hub plus a cross-region backup path. The bed has
+**one** on-prem site (`vnet-onprem`, norwayeast, AS 65000) **dual-homed to both hubs**. With a single
+site there is no "nearest hub per site" to prefer and no second site to fail over on behalf of.
+
+> **Regional affinity cannot be proven without a second on-premises site and gateway. Stated
+> plainly: Stage 1 as currently scoped delivers a bounded proxy, not the bow-tie.**
+
+| | Bounded proxy — testable NOW | Full bow-tie — NOT testable |
+|---|---|---|
+| Topology | 1 site × 2 hubs (dual-homed) | 2 sites × 2 hubs (affinity + cross-region backup) |
+| Affinity claim | **Path preference** at `vpngw-onprem` between two equal-cost hub paths | **Site-to-nearest-hub affinity**, per site |
+| Failover claim | Bounded: what survives when one hub path drops, for one site | Per-site failover onto the *other* region's hub |
+| Instruments | AS-PATH length / best-path at `vpngw-onprem`; ARS learned sets; NIC effective routes | The above **×2 sites**, plus per-site convergence and symmetry |
+| Missing resources | none | `vnet-onprem2` (`10.50.0.0/16`), `vpngw-onprem2` (`VpnGw1AZ`, AS 65003), S-C connection pair, 1 probe VM |
+| Governance | Stage 1, existing gates | **Stage 2 / TP-SQ**, gates G1–G4, fresh cost approval (G3) |
+
+**Bounded proxy test definition (what U0–U3 actually deliver).**
+*"Single-site dual-homed hub-preference proxy."* Scope: (a) hub↔hub native peering carriage and
+**non**-carriage (U1); (b) that an ARS route map can be associated on a hub-local ARS↔NVA peering at
+all (U2); (c) that a hub-local inbound route map changes exactly one prefix's BGP attributes and
+nothing else (U3). It does **not** claim regional affinity, does **not** claim per-site failover, and
+must never be written up as "bow-tie validated". Any bow-tie verdict stays `not determined`.
+
+**Cost of closing the gap:** `VpnGw1AZ` alone is **$0.21/hr = ~$5.04/day** in swedencentral (retail,
+USD, 2026-08-05) before the second VNet, PIPs, connections and probe VM. That is Stage-2 / G3
+territory and is **not** requested here.
+
+---
+
+## 3. Approval units U0 → U5
+
+Ordered by rising risk. Each unit is independently approvable and independently reversible.
+Placeholders: `<RG>` = `rg-dual-hub-hubless-region-ars-lab3d001`, `<SUBSCRIPTION_ID>` set by
+`az account set` at execution time. API version `2024-10-01` throughout. All bodies are read from
+files (`--body "@<path>.json"`) — inline JSON fails on Windows PowerShell (`UnsupportedMediaType`).
+
+### U0 — Power on the exact test VMs
+
+| Field | Value |
+|---|---|
+| **Resources changed** | `vm-nva1` (swedencentral), `vm-nva2` (switzerlandnorth) — **power state only**. `vm-hub1-ep`, `vm-hub2-ep`, `vm-onprem-ep` stay deallocated |
+| **Commands** | `az vm start -g <RG> -n vm-nva1` · `az vm start -g <RG> -n vm-nva2` |
+| **Timing** | 1–3 min boot each (parallelisable); BIRD is `systemctl enable`d and autostarts; ARS BGP re-establishes ~30–90 s after boot; **wait 10 min** before capturing the fresh baseline |
+| **Cost delta** | `vm-nva1` $0.0108/hr + `vm-nva2` $0.0132/hr = **+$0.024/hr = +$0.58/day** (retail USD, Linux, 2026-08-05). Disks and PIPs are already billed today and do not change |
+| **Routing effect — NOT a no-op** | BIRD re-originates `0.0.0.0/0` (static via subnet GW) and the RouteServerSubnet `/27` into `ars-hub1`/`ars-hub2` → hub VNet effective routes regain `0/0 → 10.10.1.4` / `→ 10.20.1.4`; hub gateways resume advertising to `vpngw-onprem`; the spoke `0/0 → NVA` UDRs stop black-holing |
+| **Expected non-effects** | No Poland/set-C prefix returns (deleted). `ars_poland_0/1` stay down forever on both NVAs. No resource created or deleted. No config change |
+| **Blast radius** | `vnet-hub1` + `vnet-hub2` effective route tables and the hub→on-prem advertisement set. Nothing outside the shared RG |
+| **PASS** | Both VMs `VM running`; `birdc show protocols all` returns on both (records the **route-refresh capability**, closing P2); `ars-hub1 peer-nva1` and `ars-hub2 peer-nva2` learned sets non-empty; all 4 VPN connections still `Connected` |
+| **FAIL** | Either VM fails to boot; BIRD not running; `run-command` unusable on `vm-nva1` (P6 recurs) → stop, do not proceed to U1 |
+| **Rollback** | `az vm deallocate -g <RG> -n vm-nva1` / `-n vm-nva2` — 2–5 min, returns to today's exact quiescent state. Fully reversible |
+| **Evidence** | `show-output/new/u0-vm-start/` — `00-pre-vm-powerstates.json`, `01-post-vm-powerstates.json`, `02-nva1-bird-protocols-all.txt`, `02-nva2-bird-protocols-all.txt`, `03-post-ars-hub1-peer-nva1-learned.json`, `03-post-ars-hub2-peer-nva2-learned.json`, `04-post-vpngw-{hub1,hub2,onprem}-learned.json`, `05-post-connections.json` — **this becomes the fresh baseline for U1** |
+
+### U1 — Native hub1↔hub2 global VNet peering baseline (scenario T1)
+
+| Field | Value |
+|---|---|
+| **Resources created — exactly two** | `vnet-hub1/virtualNetworkPeerings/peer-hub1-to-hub2` → remote `vnet-hub2`; `vnet-hub2/virtualNetworkPeerings/peer-hub2-to-hub1` → remote `vnet-hub1` |
+| **Flags — both objects** | `allowVirtualNetworkAccess=true`, `allowForwardedTraffic=true`, `allowGatewayTransit=false`, `useRemoteGateways=false` |
+| **Commands** | `az network vnet peering create -g <RG> --vnet-name vnet-hub1 -n peer-hub1-to-hub2 --remote-vnet vnet-hub2 --allow-vnet-access true --allow-forwarded-traffic true --allow-gateway-transit false --use-remote-gateways false` (mirror for hub2) |
+| **Timing** | 30–90 s per object; both `Connected`/`FullyInSync` within ~2 min; route convergence measured at 30/60/120/180 s |
+| **Cost delta** | **$0/hr.** Global VNet peering data transfer only: **$0.04/GB egress + $0.04/GB ingress** (swedencentral retail, 2026-08-05). A continuous ICMP probe is < 1 MB → **≈ $0.00** |
+| **BGP-reset risk** | Adding a peering to a VNet that hosts a Route Server triggers an ARS **route refresh** to its NVA peers. With BIRD 2.0.8's default RFC 2918 support this should be a **soft** refresh (no session reset). **Gate: do not execute U1 until U0's `show protocols all` has confirmed route-refresh capability.** If it is absent, reclassify U1 as a hard-reset maintenance window |
+| **Expected non-effects (primary evidence)** | `10.11.0.0/24` and `10.21.0.0/24` do **not** cross · ARS-learned prefixes do **not** cross · `10.40.0.0/16` does **not** cross · `vpngw-onprem` learned set unchanged · exactly **one** new `GlobalVNetPeering` entry per hub NIC effective route table (remote hub `/16`), nothing else |
+| **PASS** | Both peerings `Connected`+`FullyInSync` with the four flags exactly as specified; `10.10.1.4 ↔ 10.20.1.4` ICMP 0 % loss both directions; ARS + gateway learned/advertised sets byte-identical to the U0 baseline; BIRD session uptime unbroken on both NVAs |
+| **FAIL** | Any ARS or gateway route-set change; a BGP hard reset; `10.20.0.0/16` appearing in `vpngw-hub1`'s advertisements to on-prem (or the mirror); any pre-existing flow perturbed |
+| **Blast radius** | `vnet-hub1` + `vnet-hub2` effective routes only. No gateway object, no connection, no on-prem, no spoke resource is touched |
+| **Rollback** | `az network vnet peering delete -g <RG> --vnet-name vnet-hub1 -n peer-hub1-to-hub2` (mirror for hub2) — 30–60 s each; second maintenance window; re-capture and diff. Fully reversible; the delete triggers the same route-refresh event as the create |
+| **Evidence** | `show-output/new/t1-hub-peering/` per `validation.md` L1–L6/L8 |
+
+### U2 — Inert route-map association, `ars-hub1`↔`peer-nva1` only (scenario T2a)
+
+Deliberately narrowed to **one side**. The `ars-hub2` mirror (T2a′) is a *separate* approval after
+hub1 passes — halving the blast radius of a first-ever association attempt.
+
+**Exact API / resource semantics (established read-only, 2026-08-05):**
+
+1. The association property lives on the **connection**, not on the map:
+   `Microsoft.Network/virtualHubs/ars-hub1/bgpConnections/peer-nva1` →
+   `properties.routingConfiguration.inboundRouteMap.id`.
+2. `routeMaps/*.properties.associatedInboundConnections` is a **read-only composite** — live GET
+   returns `[]` on both maps, and the current `Az.Network` reference for `New-AzRouteMap` /
+   `Update-AzRouteMap` (azps-16.2) exposes **no** `-InboundConnection` / `-OutboundConnection`
+   parameter, contradicting the how-to article's prose. The how-to's own PowerShell **Example 2**
+   sets `InboundRouteMap` inside a **connection's** `RoutingConfiguration`. **This confirms the
+   lab's Δ3 finding as correct** and it must not be regressed.
+3. **Verb = `PUT`, not `PATCH`.** `Microsoft.Network/virtualHubs/bgpConnections` defines no PATCH
+   operation; a PATCH is expected to return HTTP 405. The PUT body must carry the full property set
+   (`peerAsn`, `peerIp`, `routingConfiguration`) or the peering is recreated with defaults.
+4. **Documented fallback:** ARS blade → *route maps* → **Apply route maps** is the only
+   Microsoft-documented association surface. If the PUT is rejected, record the verbatim error and
+   enumerate that blade before concluding anything.
+
+**Which map — verified answer to the "new map vs existing" question.**
+Neither `rm-hub1-activate` nor `rm-hub2-activate` is empty. Each holds `rule-activate-synthetic`
+(`Equals 192.0.2.0/24` → `Add asPath ["64496"]` → `Terminate`), created purely to trigger the
+irreversible route-map-tier upgrade on 2026-08-05T10:36:38+02:00. Associating it *would* be
+functionally inert — RFC 5737 TEST-NET-1 under `Equals` cannot match any lab prefix — but **U3 would
+then have to mutate that rule set**, destroying the provenance of the tier-activation artefact.
+
+> **Recommendation: create a dedicated temporary map `rm-hub1-tmp-assoc`** with an identical
+> unmatchable rule, associate that, and delete it at rollback. Cost: **$0** — the route-map tier
+> surcharge is per-Route-Server, already sunk and irreversible, and **the 30-minute first-map
+> upgrade does not repeat** (it already happened on `ars-hub1`). `rm-hub1-activate` stays
+> byte-identical and keeps its documented purpose.
+
+| Field | Value |
+|---|---|
+| **Resources changed** | **Create** `ars-hub1/routeMaps/rm-hub1-tmp-assoc` (1 object). **Update** `ars-hub1/bgpConnections/peer-nva1` (1 object, association property only). `rm-hub1-activate` untouched. `ars-hub2` untouched |
+| **Timing** | Map create 1–3 min; association PUT 1–3 min. **No 30-minute upgrade** |
+| **Cost delta** | **$0** |
+| **Maintenance risk** | The association may trigger a route refresh or a session reset on `peer-nva1`. Run a continuous ICMP probe `10.10.1.4 → 10.20.1.4` spanning the operation — which requires **U1 to be in place** (both `snet-endpoint` subnets are empty and the endpoint VMs are spoke-resident, so there is no other in-hub probe target) |
+| **PASS** | `rm-hub1-tmp-assoc` and `peer-nva1` both `provisioningState=Succeeded`; GET on `peer-nva1` shows `routingConfiguration.inboundRouteMap.id`; BIRD `ars_hub1_0/1` uptime unbroken; `ars-hub1` learned set from `peer-nva1` attribute-identical to the U1 baseline; `ars-hub2` byte-identical; zero ping loss |
+| **PASS-with-note** | Association succeeds but a session resets and recovers → record the outage duration verbatim and reclassify the change as "requires maintenance window" |
+| **FAIL** | Association rejected → **record the exact HTTP status and error code verbatim**; this closes gate **G4** either way. Or: routing changes despite an unmatchable map |
+| **Blast radius** | `ars-hub1`↔NVA1 control plane only. If the session resets, `vnet-hub1` loses ARS-injected routes for the reset duration; `rt-spoke-a`'s static `0/0 → 10.10.1.4` is a UDR and is unaffected |
+| **Rollback** | PUT `peer-nva1` back **without** `inboundRouteMap` (or with `inboundRouteMap: null`), then `DELETE …/routeMaps/rm-hub1-tmp-assoc`. 2–5 min. Fully reversible |
+| **Evidence** | `show-output/new/t2-routemap-assoc/` — request body, verbatim response, pre/post learned sets, BIRD uptime, continuous ping |
+
+### U3 — Real local route-map behaviour test (scenario T2b) — only if U2 PASSes
+
+**Choosing a harmless target.** After the Poland cleanup, NVA1's advertisement set to `ars-hub1`
+reduces to `0.0.0.0/0` (BIRD static), `10.10.0.64/27` (RouteServerSubnet static) and the connected
+`10.10.1.0/27`. `10.31.0.0/24` / `10.32.0.0/24` are gone.
+
+| Candidate | Verdict |
+|---|---|
+| `0.0.0.0/0` | ⛔ **Forbidden.** It is the spoke UDR next-hop semantics and the source lab's DEF-001 evidence |
+| `10.10.0.0/16`, `10.11.0.0/24` | ⛔ Route maps cannot modify the VNet address space Azure Route Server advertises (Learn, *Considerations and limitations*) |
+| `10.10.1.0/27` | ⚠️ The NVA's own subnet — carries the NVA data path |
+| **`10.10.0.64/27`** | ✅ **Chosen.** The RouteServerSubnet prefix that NVA1 re-originates as a static. No workload forwards on it (ARS instance reachability is platform-managed, not BGP-derived), it is never advertised to on-prem, and it exists only inside `vnet-hub1` |
+
+| Field | Value |
+|---|---|
+| **Change** | Update `rm-hub1-tmp-assoc` rules to: match `routePrefix Equals ["10.10.0.64/27"]` → action `Add asPath ["64496","64496"]` → `Terminate`. **One rule, one prefix, one attribute.** ASN 64496 = RFC 5398 documentation ASN — valid for ARS prepend (private and Azure-reserved ASNs are forbidden) |
+| **Softer alternative** | If even that is judged too close to the ARS control plane, substitute the action `Community Add ["64496:100"]` on the same prefix — a pure tag that cannot influence any best-path decision |
+| **Timing** | Rule update 1–3 min; re-advertisement observable within seconds, bounded by the 180 s ARS hold |
+| **Cost delta** | **$0** |
+| **Expected evidence** | `az network routeserver peering list-learned-routes -g <RG> --routeserver ars-hub1 -n peer-nva1` shows `10.10.0.64/27` with `asPath = "64496-64496-65001"` on **both** `RouteServiceRole_IN_0` and `_IN_1`; **every other prefix byte-identical** to the U2 capture; `vpngw-hub1` learned set changes only in the same single prefix's AS-PATH; `vpngw-onprem` learned set **unchanged** (this prefix was never advertised to on-prem); `ars-hub2` unchanged |
+| **PASS** | Exactly the matched prefix carries the two extra leading ASNs; nothing else moves |
+| **FAIL** | Any non-matching prefix altered; `0.0.0.0/0` altered anywhere; map or peering `provisioningState != Succeeded`; any BIRD reset; any ping loss |
+| **Blast radius** | One prefix's AS-PATH inside `vnet-hub1`'s ARS RIB |
+| **Rollback** | PUT `rm-hub1-tmp-assoc` back to the unmatchable `192.0.2.0/24` rule (returns to the U2 state), or dissociate and delete the map (returns to the U1 state). 2–5 min |
+| **Evidence** | `show-output/new/t2-routemap-assoc/1x-*` per `validation.md` |
+
+### U4 — Local VPN-gateway connection attachment (scenario T5) — separately gated, **probably not testable**
+
+Learn states route maps apply to *"the route server's connection to the VPN gateway in the same
+virtual network."* The live resource model does **not** expose such an object:
+
+1. `ars-hub1` (`Microsoft.Network/virtualHubs`) has **no** connection children other than
+   `bgpConnections/peer-nva1` and `routeMaps/rm-hub1-activate`. There is no
+   `hubVirtualNetworkConnections`, no `vpnConnections`, no ARS↔gateway connection resource.
+2. The only connection objects in the RG are four `Microsoft.Network/connections` — the
+   **gateway-to-gateway** `vpngw-hub*`↔`vpngw-onprem` S2S pairs. Their type is
+   `VirtualNetworkGatewayConnection`, whose schema has **no** `inboundRouteMap` / `outboundRouteMap`
+   member; live GET returns `routingConfiguration: {}` on all four. A `virtualHubs/routeMaps`
+   reference to them would be a cross-provider association with no exposed write path.
+3. Those four connections carry the source lab's **certified S1/S2/S3 evidence**. This is the one
+   scenario in the whole program that can damage another lab's results.
+
+> **Recommendation: U4 is approved, if at all, as a read-only enumeration probe.**
+> **Step 1 (zero-write):** open the Azure portal → `ars-hub1` → *route maps* → **Apply route maps**
+> and record verbatim every connection listed; run `Get-Module -ListAvailable Az.Network` and record
+> the version (closing P5). **Step 2 (write)** is proposed only if Step 1 reveals an eligible
+> same-VNet gateway-connection entry, and only under its own approval.
+> If Step 1 shows no such entry, record *"RM-C/RM-D unverifiable in this bed — no addressable
+> ARS↔VPN-gateway connection resource exists"* and close **G4** on U2's result alone.
+
+Cost $0. Step-2 rollback (if it ever runs): set the dropdown back to **None** in the same blade, or
+PUT the association back to `null`; then re-verify all four connections are `Connected` and
+byte-comparable.
+
+### U5 — Dynamic NVA↔NVA BGP underlay / encapsulation (scenario T3) — **not preapproved**
+
+**Precise trigger — U5 fires only if the bow-tie failover contract *requires* at least one of:**
+
+1. automatic propagation of remote-region prefixes into the local hub and its spokes, with **no**
+   operator action; **or**
+2. automatic **withdrawal** of those prefixes within the BGP hold window when the remote side fails;
+   **or**
+3. AS-PATH / community-based preference that **survives the regional boundary**.
+
+If the contract instead accepts **bounded** failover — remote-region prefixes are not carried and a
+cross-region path is not restored automatically — then **U5 is not run, and the non-execution is the
+deliverable** (US11's decision-threshold table is the written justification).
+
+**Hard prerequisites discovered live — these must be on the table before any U5 approval:**
+
+- **NSG mutation on both NVA subnets.** `nsg-nva-hub1` allows TCP/179 only from `10.10.0.0/16`;
+  `nsg-nva-hub2` only from `10.20.0.0/16`; rule 4000 denies the rest. An eBGP session
+  `10.10.1.4 ↔ 10.20.1.4` requires a **new allow rule on each NSG** — a mutation of the source lab's
+  certified security posture, not an additive delta of this lab.
+- **BIRD mutation on both NVAs**, with a deny-by-default prefix policy applied **before** the session
+  comes up (`design.md` §6). BIRD config is hand-edited and **not** in version control (**P8**) — the
+  current on-disk `bird.conf` must be captured to `show-output/` first or rollback has no reference.
+- **Encapsulation** only if remote prefixes are redistributed into the local Route Server
+  (self-next-hop recursion, `azure/route-server/multiregion`). Any real tunnel endpoint requires a
+  fresh cost approval.
+
+**Not preapproved. Not scheduled. No body, no command, no script block is written for it.**
+
+---
+
+## 4. Recommended approval tranche
+
+> **Approve U0 + U1 only. Nothing else.**
+
+| Why | |
+|---|---|
+| U0 is **mandatory, not optional** | Every Stage-1 PASS criterion reads against ARS learned sets and BIRD uptime. With both NVAs deallocated those instruments return empty. Without U0 there is no evidence, only assertions |
+| U1 is the **cheapest high-value unit** | Its headline result is a *non*-effect ("nothing crossed the peering"), it creates exactly two free objects, and it is deletable in under two minutes |
+| U0+U1 close two prerequisites | P2 (route-refresh capability) and P3 (fresh baseline) — both of which U2 and U3 depend on |
+| U2 needs a data-plane probe that only U1 provides | Both `snet-endpoint` subnets are empty; `10.10.1.4 ↔ 10.20.1.4` is the only in-hub probe pair, and it needs the peering |
+
+**Tranche totals:** cost **+$0.58/day** while the two NVAs run, plus **≈$0.00** peering data
+transfer. Wall clock **≈45–60 min** including the 10-minute settle and both capture passes. Full
+rollback **< 10 min** (delete 2 peerings, deallocate 2 VMs).
+
+**Hold for a second window:** U2 (single-sided, hub1 only) → then T2a′ on hub2 → then U3.
+**Bundle at zero risk:** U4 **Step 1 only** (portal enumeration + `Az.Network` version) — no write.
+**Do not request:** U5.
+
+**Explicit non-recommendation:** do not approve U2 and U1 in the same window. U2's PASS criteria are
+defined as "byte-identical to the U1 post-change baseline"; that baseline cannot exist until U1 has
+settled and been captured.
+
+---
+
+## 5. Unresolved prerequisites carried forward
+
+| # | Item | Owner | Resolves at |
+|---|---|---|---|
+| P2 | BIRD route-refresh capability never captured — `show protocols all` missing from all evidence | Niobe | U0 |
+| P3 | No post-cleanup fresh baseline | Niobe | U0 |
+| P4 | Association write path unproven (PUT-on-bgpConnection vs portal blade) | Tank | U2 |
+| P5 | `Az.Network` version on the operator host unknown | Tank | U4 Step 1 |
+| P6 | `run-command` reliability on `vm-nva1` | Tank | U0 |
+| P7 | **No second on-prem site** → bow-tie / regional affinity unprovable | Morpheus + Jose (G3) | Stage 2 only |
+| P8 | BIRD config not in version control; no capture of the current on-disk `bird.conf` | Tank | before any T4 / U5 |
+| P9 | Δ2 control signature `65002-65002-65002` permanently gone with set-C — every criterion citing it must be re-anchored to a fresh baseline | Trinity (done in this pass) / Niobe | U0 |
+| P10 | Manifest SKU row says `B2als_v2`/`B2s_v2`; live is `Standard_B2ts_v2` | Trinity (corrected in this pass) | — |
+
+---
+
+## 6. Files updated by this pass (docs only, no Azure mutation, no commit)
+
+- `labs/dual-hub-interconnect-ars-route-policy/README.md` — Phase-4 approval-unit summary + recommended tranche
+- `.../manifest.md` — live-state reconciliation, SKU + route-map-content corrections, U0–U5 ledger, proxy-vs-bow-tie statement
+- `.../design.md` — new §8a: live-state addendum, association write-path semantics, U0–U5 mapping
+- `.../validation.md` — U0 evidence set, re-anchored T1/T2 criteria, Δ2-control retirement note
+- `.../deploy-log.md` — Phase-4 approval-unit ledger (all PENDING APPROVAL), G4 note
+- `.../scripts/apply.ps1`, `.../scripts/rollback.ps1` — U0–U3 blocks, PUT-not-PATCH correction, corrected route-map URIs; **still fully commented out and gated**
+- `.../scripts/bodies/*.json` — corrected bodies + new `routemap-tmp-assoc-*` and `bgpconn-restore-*` placeholders
+
+# Trinity decision inbox — Storage endpoint policy blocker analysis
+
+**Date:** 2026-08-05T19:45:00+02:00
+**Lab:** `storage-endpoint-path-equivalence`
+
+Live inspection corrects the initial blocker attribution. The enforcing control is management-group Azure Policy assignment `MCAPSGovDeployPolicies`, definition `StorageAccount_PublicNetwork_Modify`, effect `modify`. It replaces Storage `publicNetworkAccess` with `Disabled` on create/update unless the account is secured by a Network Security Perimeter or organizationally excluded.
+
+The later `DefenderForStorageSecurityOperator` writes added Defender data-scanner access and provisioned Defender/Event Grid integration; Resource Change History shows no public-access delta from that actor.
+
+Selected-networks mode is not viable because it still requires `publicNetworkAccess=Enabled`. NSP changes the authorization model and is not a drop-in experiment. Another PaaS service requires new resources and a redesign.
+
+Recommendation: no local tag/policy bypass. Request a security-owner-created exemption, maximum 12 hours, scoped to the target and decoy accounts; preserve OAuth-only/private-container/NSG controls; restore `Disabled` immediately after testing. Also obtain approval to restore the target account's current resource-level Defender override to subscription inheritance. No cleanup was run; tests remain blocked.
+
+Full analysis: `labs/storage-endpoint-path-equivalence/blocker-analysis.md`.
+
+# Phase-4 approval summary — U1.5 remediation, U2 re-scoped, U3 re-designed
+
+**Author:** Trinity (Azure Network SME) · **Date:** 2026-08-06 · **For:** Jose Moreno
+**Lab:** `labs/dual-hub-interconnect-ars-route-policy` (TP-HH, Stage 1)
+**Status of this document:** **request for approval.** Nothing in it has been executed. No Azure
+resource, NVA, route map or association was mutated in the session that produced it; all live
+inspection was read-only (`az account show`, `az rest GET`, `list-learned-routes`, `az vm list -d`).
+No commit was made.
+
+**Supersedes, in part:** `trinity-bowtie-activation-plan.md` §3 — specifically the U2 body shape,
+the U3 target prefix, and the tranche recommendation. Everything else in that document stands.
+
+---
+
+## 0. Why this document exists
+
+U0 and U1 executed and PASSED on 2026-08-06. In doing so, Tank's evidence surfaced **`TANK-001`**:
+both NVAs still carry retired Poland BIRD state, and one piece of it — a stray static
+`10.30.0.0/27` — is genuinely re-originated into both Route Servers. Chasing that finding down
+invalidated a second, quieter assumption: the prefix U3 was going to modify, `10.10.0.64/27`, is
+**never learned by ARS at all**. Had U3 run as written, it would have returned `Succeeded` and
+proven nothing, while reading as a PASS.
+
+This document defines the fix (U1.5), corrects U2, re-designs U3, and states the sequencing.
+
+---
+
+## 1. U1.5 — remove retired Poland BIRD state from both NVAs
+
+### 1.1 What is wrong
+
+`export_to_hub_ars` / `export_to_hub2_ars` filter by **AS-PATH** (`bgp_path.delete(65515)`), **not
+by prefix**. Every `protocol static` route therefore leaks into the local Route Server by
+construction. One of those statics is the retired `10.30.0.0/27`.
+
+It is **contained** — absent from ARS's advertised-back set, from `vpngw-hub1`/`vpngw-hub2`, and
+from `vpngw-onprem`; visible only in each NVA's own NIC effective routes within its own hub VNet.
+It is not an outage. It *is* undocumented state that would pollute every byte-comparison U2 and U3
+depend on.
+
+### 1.2 Exact changes
+
+Quoted from the captured configs (`show-output/new/u0-u1/post-u0/02-nva{1,2}-bird-conf.txt`), using
+BIRD's **actual configured protocol names** — nothing here is guessed.
+
+**`vm-nva1` (10.10.1.4, AS 65001, swedencentral) — 4 removals:**
+
+| # | Statement | Route effect |
+|---|---|---|
+| 1 | `route 10.30.0.0/27 via 10.10.1.1;` inside `protocol static` (`static1`) | **the only one** — withdraws `10.30.0.0/27` from `ars-hub1` |
+| 2 | `protocol bgp ars_poland_0 { … neighbor 10.30.0.4 as 65515; multihop 4; … }` | none — dead, `Connect` since boot |
+| 3 | `protocol bgp ars_poland_1 { … neighbor 10.30.0.5 as 65515; multihop 4; … }` | none — dead, `Connect` since boot |
+| 4 | `filter export_to_poland_ars { … }` | none — unreferenced once 2 and 3 are gone |
+
+**`vm-nva2` (10.20.1.4, AS 65002, switzerlandnorth) — 5 removals:**
+
+| # | Statement | Route effect |
+|---|---|---|
+| 1 | `route 10.30.0.0/27 via 10.20.1.1;` inside `protocol static` (`static1`) | **the only one** — withdraws `10.30.0.0/27` from `ars-hub2` |
+| 2 | `protocol bgp ars_poland_0 { … neighbor 10.30.0.4 … }` | none |
+| 3 | `protocol bgp ars_poland_1 { … neighbor 10.30.0.5 … }` | none |
+| 4 | `filter export_to_poland_ars { if net = 0.0.0.0/0 then { bgp_path.prepend(65002); bgp_path.prepend(65002); } accept; }` | none — unreferenced |
+| 5 | the clause `if net ~ [ 10.31.0.0/24, 10.32.0.0/24 ] then { bgp_path.prepend(65002); bgp_path.prepend(65002); }` **inside** `filter export_to_hub2_ars` | **provably none** — this is the retired Δ2 `65002-65002-65002` signature; neither prefix exists in `master4`, so re-evaluating the filter emits zero updates |
+
+**Never touched:** `route 0.0.0.0/0` (the spoke UDR target), `route 10.10.0.64/27` /
+`10.20.0.64/27`, `bgp_path.delete(65515)` in either export filter, `protocol device` / `direct` /
+`kernel`, and `ars_hub1_0/1` / `ars_hub2_0/1`.
+
+### 1.3 Method
+
+Per NVA, in order. **`vm-nva1` first, fully verified, and only then `vm-nva2`** — one hub's Route
+Server at risk at a time, and the second NVA acts as an unchanged control while the first is judged.
+
+1. **Backup.** `cp -p /etc/bird/bird.conf /etc/bird/bird.conf.pre-u15.$(date +%Y%m%dT%H%M%S)`, then
+   `sha256sum` both the live file and the backup into evidence.
+2. **Stage.** Write the new config to `/etc/bird/bird.conf.u15`. **Never edit the live file in
+   place** — a half-written live file plus any restart is an outage.
+3. **Validate — blocking gate.** Both must pass before anything is applied:
+   `sudo bird -p -c /etc/bird/bird.conf.u15` (parse-only, does not touch the daemon) **and**
+   `sudo birdc configure check "/etc/bird/bird.conf.u15"` (running daemon parses without applying).
+   Any error → stop, discard the staged file, no change made.
+4. **Apply.** `cp -p` the staged file over `/etc/bird/bird.conf`, then **`sudo birdc configure`**.
+5. **Prove.** Capture all eight layers below.
+
+**Reload semantics — this is the safety-critical choice:**
+
+| Verb | Behaviour | Use |
+|---|---|---|
+| `birdc configure` | Reconfigures unchanged protocols **in place**. `ars_hub*_0/1` sessions do **not** flap; `static1` withdraws only the removed route; the `ars_poland_*` protocols are shut down and removed | ✅ **required verb** |
+| `birdc configure soft` | Does not re-apply filters to already-accepted routes | ❌ not used — we need re-evaluation |
+| `birdc configure undo` | One-command revert to the previous config; valid only until the next `configure` | ✅ fast rollback path |
+| `systemctl restart bird` | Full daemon restart — every session torn down, **both spokes' `0.0.0.0/0` black-holes** for the duration | ⛔ **forbidden**, last resort only, recorded as a deviation |
+
+`protocol kernel` exports only `[RTS_BGP, RTS_DEVICE]`, so these statics never reached the Linux
+FIB: removing them has **no data-plane effect on the NVA itself**.
+
+### 1.4 Expected result and proof
+
+**Exactly one prefix moves: `10.30.0.0/27`, withdrawn from both instances of both Route Servers.**
+
+| Layer | Proof |
+|---|---|
+| NVA (L3) | `ars_poland_*` gone from `birdc show protocols all`; `ars_hub*_0/1` still `Established` with **unchanged `Since`** — the no-flap proof; `10.30.0.0/27` gone from `birdc show route all`, `0.0.0.0/0` and the local `/27` still present |
+| ARS (L2) | `10.30.0.0/27` gone from `list-learned-routes` on **both** `RouteServiceRole_IN_0` and `_IN_1`; `0.0.0.0/0` unchanged; the `10.40.0.0/16` boomerang on `_IN_1` unchanged; **advertised set byte-identical** |
+| Gateway (L1) | `vpngw-hub1`/`vpngw-hub2` advertised-to-on-prem sets **byte-identical** — non-regression, not removal: the prefix never reached them |
+| On-prem (L1) | `vpngw-onprem` learned routes **byte-identical**; all four VPN connections `Connected`, 4 tunnels each, throughout |
+| NIC (L4) | The `10.30.0.0/27` `VirtualNetworkGateway` entry disappears from each NVA's effective routes — **the single cleanest proof**; the U1 `VNetGlobalPeering` entry unchanged |
+| Data plane (L6) | `vm-nva1 ↔ vm-nva2` ICMP: 0% loss spanning both reloads |
+
+Evidence directory and expected file list: `show-output/new/u15-bird-cleanup/README.md`.
+
+### 1.5 Rollback
+
+**Triggers (any one):** an `ars_hub*` session not `Established`; `0.0.0.0/0` missing from an ARS
+learned set at T+60 s; **any** prefix other than `10.30.0.0/27` moving; any gateway or on-prem set
+changing; any VPN connection leaving `Connected`; non-zero NVA↔NVA ICMP loss; BIRD failing to
+reload; or the operator losing confidence for any reason not on this list.
+
+**Exact rollback:** `sudo birdc configure undo` (fast, valid until the next `configure`) — or,
+durably, `sudo cp -p /etc/bird/bird.conf.pre-u15.$STAMP /etc/bird/bird.conf` → `sudo bird -p -c
+/etc/bird/bird.conf` → `sudo birdc configure`. A third source now exists in version control:
+`nva-config/bird-nva{1,2}.as-found-2026-08-06.conf`. **Under 2 minutes per NVA.** Rollback is
+complete only when `10.30.0.0/27` is **present again** on both ARS instances — back to the *known*
+state, stale prefix and all.
+
+### 1.6 Durable outcome
+
+`nva-config/` now holds as-found snapshots, U1.5 targets, the U3a snippet and the full contract.
+After U1.5, `bird-nva{1,2}.u15-target.conf` are authoritative. The standing "BIRD is hand-edited on
+the OS disks and is not in version control" gap is closed.
+
+---
+
+## 2. U2 — inert association, re-evaluated against the real API model
+
+### 2.1 Live state, read 2026-08-06
+
+`GET .../virtualHubs/ars-hub1/bgpConnections/peer-nva1?api-version=2024-10-01` returns
+`peerAsn: 65001`, `peerIp: 10.10.1.4`, `provisioningState: Succeeded`, and:
+
+```json
+"routingConfiguration": {
+  "vnetRoutes": {
+    "staticRoutes": [],
+    "staticRoutesConfig": { "propagateStaticRoutes": true, "vnetLocalRouteOverrideCriteria": "Contains" }
+  }
+}
+```
+
+There is **no** `inboundRouteMap` today. `ars-hub1` has exactly one route map, `rm-hub1-activate`
+(match `192.0.2.0/24` → `Add asPath ["64496"]` → `Terminate`), with
+`associatedInbound/OutboundConnections: []`.
+
+### 2.2 The temporary map, and why its prefix changed
+
+`rm-hub1-tmp-assoc`, one rule, match `routePrefix Equals ["203.0.113.0/24"]` (RFC 5737 TEST-NET-3),
+action `Add asPath ["64496"]`, `Terminate`.
+
+**Changed from `192.0.2.0/24`.** That is already `rm-hub1-activate`'s match prefix; two coexisting
+maps on the same Route Server keyed on the same prefix would make any observed — or absent — effect
+ambiguous about which artefact caused it. `203.0.113.0/24` was verified absent from `ars-hub1`'s
+learned and advertised sets, from `vm-nva1`'s BIRD `master4`, and from `vpngw-onprem`'s learned
+routes. Under `Equals`, **the association is inert by construction** — which is the entire point:
+*the association is the experiment; it must have no route effect.*
+
+### 2.3 PUT body preservation — mandatory
+
+`Microsoft.Network/virtualHubs/bgpConnections` defines **no PATCH** operation (a PATCH is expected
+to return HTTP 405). `PUT` replaces `properties` **wholesale: anything omitted is lost.**
+
+The previous placeholder bodies omitted `vnetRoutes` entirely. They would have silently reset
+`propagateStaticRoutes` and `vnetLocalRouteOverrideCriteria` to service defaults — a real
+routing-behaviour change U2 has no mandate to make, and one that no U2 criterion would have caught.
+Logged as **`TRIN-001`**.
+
+**The body is derived, never authored:**
+
+1. `GET` the connection; save the response verbatim as `00-pre-peer-nva1-GET.json` — this file is
+   both the evidence and the rollback source.
+2. Take `response.properties` **exactly as returned**.
+3. Delete **only** the read-only member `provisioningState`.
+4. Add `routingConfiguration.inboundRouteMap.id`.
+5. Send `{"properties": <that object>}`. No `id`, `name`, `type` or `etag` in the body.
+6. Send the GET's `etag` as `If-Match`, so a concurrent change fails the write rather than being
+   silently overwritten.
+7. Body from file (`az rest --body "@path.json"`) — inline JSON fails on Windows PowerShell.
+
+`04-post-peer-nva1-GET.json` **must** show `vnetRoutes` and `staticRoutesConfig` unchanged. If it
+does not, U2 is a **FAIL** and rolls back, regardless of what the route sets show.
+
+### 2.4 Criteria
+
+- **PASS:** `provisioningState: Succeeded`; `ars-hub1` learned **and** advertised sets byte-identical
+  to the post-U1.5 baseline **B1**; `vnetRoutes`/`staticRoutesConfig` intact; all four VPN
+  connections `Connected`; zero ping loss.
+- **PASS-with-note:** as above but the BGP session reset — record the **measured** duration; the
+  change is then reclassified as "requires a maintenance window".
+- **FAIL:** the API rejects the write (record the error code verbatim — that also closes gate **G4**),
+  any route moves despite an inert map, or `vnetRoutes` comes back altered.
+- **Rollback:** PUT the saved pre-U2 body back (minus `provisioningState`, without
+  `inboundRouteMap`), then `DELETE rm-hub1-tmp-assoc`. `rm-hub1-activate` and all of `ars-hub2` are
+  never touched. **2–5 min.**
+
+Route maps for Azure Route Server remain a **preview** feature — the result is a preview
+observation, not a GA guarantee.
+
+---
+
+## 3. U3 — safe-prefix decision
+
+### 3.1 The old target is dead
+
+`10.10.0.64/27` is in `vm-nva1`'s `bird.conf` and is exported through `export_to_hub_ars` identically
+to every other static — including the `10.30.0.0/27` that *is* learned. Yet it **never appears** in
+`ars-hub1`'s learned set, on either instance, with no error surfaced. Azure Route Server silently
+rejects a route matching its own RouteServerSubnet. An inbound map keyed on it **could never match**.
+Logged as **`TANK-001a`**. ⛔ **Withdrawn as a test target.**
+
+### 3.2 No already-advertised prefix is a safe substitute
+
+| Prefix | Why not |
+|---|---|
+| `0.0.0.0/0` | Spoke UDR target; modifying it risks the `DEF-001` failure mode |
+| `10.40.0.0/16` | On-prem prefix; and it is learned on `RouteServiceRole_IN_1` only, so any diff would be instance-asymmetric and unfalsifiable |
+| `10.30.0.0/27` | Removed by U1.5; must not be resurrected to serve as a target |
+| `10.10.0.0/16`, `10.11.0.0/24` | Route maps cannot modify the VNet address space ARS advertises |
+
+### 3.3 Decision — create a harmless prefix, then modify it
+
+**U3 splits into two units.**
+
+**U3a — inject.** On `vm-nva1` only, add
+`protocol static u3_doc_test { ipv4; route 198.51.100.0/24 blackhole; }`, apply with
+`birdc configure`, settle 10 min, capture baseline **B3**.
+
+- `198.51.100.0/24` is RFC 5737 **TEST-NET-2**: globally non-routable, absent from every live
+  surface in this bed, and deliberately distinct from `192.0.2.0/24` (`rm-hub1-activate`) and
+  `203.0.113.0/24` (U2) — so no piece of evidence is ever ambiguous about its cause.
+- `blackhole`, **not** `via <gw>`: the route is BGP-visible but can never carry traffic.
+- **U3a's own PASS includes proving containment:** present at both `ars-hub1` instances with AS-PATH
+  `65001`; **absent** from `vpngw-hub1`/`vpngw-hub2` advertised routes and from `vpngw-onprem`'s
+  learned routes.
+- Rollback: remove the block + `birdc configure` (or `birdc configure undo`) — <2 min.
+
+**U3b — modify.** Update `rm-hub1-tmp-assoc` (already associated by U2) to match
+`198.51.100.0/24` → `Add asPath ["64496","64496"]` → `Terminate`. Expected observed AS-PATH:
+**`64496-64496-65001`** on both ARS instances, with every other prefix byte-identical to B3.
+
+**ASN validity.** `64496` is the RFC 5398 2-byte documentation ASN — not private
+(`64512`–`65534`), not on Azure's reserved list (`8074`, `8075`, `12076`, `65515`,
+`65517`–`65520`). Microsoft's own prepend walkthrough uses `64511` from the same block. Route maps
+accept 2-byte ASNs only. **Never** substitute `65001`/`65002`/`65000`/`65515`.
+
+**Rollback order matters: U3b before U3a.** Revert the map to the inert `203.0.113.0/24` rule
+(→ U2 state), then remove the BIRD block (→ U1.5 state).
+
+### 3.4 The honest caveat — declared before the run, not after
+
+It is **not established** whether `az network routeserver peering list-learned-routes` reports
+AS-PATH *after* inbound route-map processing or *as received on the wire*. If the map reports
+`Succeeded` but neither the CLI nor the portal Route Map dashboard shows `64496-64496-65001`, the
+correct outcome is **INCONCLUSIVE — tooling visibility, not FAIL**. U2 already stands as the
+association proof. **Retrying against a production prefix to force visibility is forbidden.**
+
+A softer alternative with the same risk and a smaller blast radius: `Add` community `64496:100`
+instead of AS-Path — a pure tag that cannot influence best-path selection.
+
+**Can a harmless U3 be guaranteed?** Yes, for U3a (a non-routable documentation prefix, blackholed,
+in a closed lab with no MSEE and no public routing) and for U3b's *safety*. What cannot be
+guaranteed is U3b's **observability**. U3 is therefore **unblocked but conditionally conclusive** —
+approve it knowing INCONCLUSIVE is a legitimate, pre-declared outcome.
+
+---
+
+## 4. Tranche and window recommendation
+
+> **Approve U1.5 + U2 as ONE tranche, executed in TWO separate maintenance windows.**
+
+**Why one tranche.** Both are **$0**. Their blast radii do not overlap — U1.5 touches no Azure
+object at all, U2 touches no NVA. Both are fully reversible in minutes, with rollback artefacts
+already in version control. One approval avoids a second round-trip for what is one prerequisite
+plus one experiment.
+
+**Why not one window.** U1.5's purpose is to **change** the ARS learned-route set. U2's headline
+PASS criterion is that the learned-route set **did not change**. Combined, a diff could be
+attributed to either unit and neither result would be falsifiable.
+
+| # | Window | Unit | Baseline at end |
+|---|---|---|---|
+| 0 | — | *(done)* U0 + U1 | **B0** = `show-output/new/u0-u1/post-u1/` |
+| 1 | **A** | **U1.5** — `vm-nva1`, verify, then `vm-nva2`; settle ~20 min | **B1** = `show-output/new/u15-bird-cleanup/` |
+| 2 | **B** | **U2** — diffed strictly against **B1**, never B0 | **B2** = `show-output/new/t2-routemap-assoc/` |
+| 3 | separate approval | **U3a**, settle 10 min | **B3** = `show-output/new/u3a-doc-prefix/` |
+| 4 | same window as U3a | **U3b**, then rolled back | — |
+
+### Timing and cost
+
+| Unit | Wall clock | Cost delta |
+|---|---|---|
+| U1.5 | 25–40 min (dominated by `az vm run-command invoke` latency, 1.5–3 min/call) | **$0** |
+| U2 | 20–30 min | **$0** |
+| U3a + U3b | 30–45 min | **$0** |
+
+Run-rate is **unchanged** at the existing **+$0.58/day** for the two running NVAs. No new billable
+object is created by any of these units. **Regions/resources touched:** RG
+`rg-dual-hub-hubless-region-ars-lab3d001` — `vm-nva1` (swedencentral) and `vm-nva2`
+(switzerlandnorth) for U1.5; `ars-hub1` + `peer-nva1` (swedencentral) for U2; `vm-nva1` + `ars-hub1`
+for U3. `ars-hub2`, both hub gateways, `vpngw-onprem`, all four VPN connections, all spokes and
+`rm-hub1-activate` are **never touched**.
+
+### Risks
+
+| # | Risk | Likelihood | Mitigation |
+|---|---|---|---|
+| R1 | `birdc configure` unexpectedly flaps an `ars_hub*` session | Low — BIRD reconfigures unchanged protocols in place | `Since` captured before and after; rollback trigger; `configure undo` |
+| R2 | Operator reflex reaches for `systemctl restart bird` | Low, high impact — both spokes' `0.0.0.0/0` black-hole | Explicitly forbidden in the contract, the scripts and this document |
+| R3 | Something other than `10.30.0.0/27` moves | Low | Eight-layer before/after capture; any other movement is an immediate rollback trigger |
+| R4 | U2's PUT drops `vnetRoutes`/`staticRoutesConfig` | **Was near-certain** with the old bodies | Derive-from-GET rule; `If-Match`; post-GET verification is a FAIL criterion |
+| R5 | First-ever association resets the ARS↔NVA session | Unknown | Continuous ping; `Since` timestamps; PASS-with-note only if the duration is **measured** |
+| R6 | U3b's change is not observable in tooling | Moderate | Pre-declared **INCONCLUSIVE** outcome; no retry on production prefixes |
+| R7 | `198.51.100.0/24` propagates further than expected | Low | Containment is part of U3a's own PASS; spoke propagation is **unverified by design** (endpoint VMs stay deallocated) and must be recorded as such, never claimed |
+| R8 | Route maps are **preview** | Certain | Every route-map result is written up as a preview observation |
+
+### Do not approve in this tranche
+
+**U3a/U3b** (separate approval, after U2 passes) · **U4 Step 2** (shared hub↔on-prem gateway blast
+radius) · **U5** (would require NSG mutation on both NVA subnets). **U4 Step 1** is read-only and
+may be bundled with either window at zero risk.
+
+---
+
+## 5. What changed in the repository (documentation only)
+
+Created: `nva-config/` (as-found configs ×2, U1.5 targets ×2, U3a snippet, contract README);
+`show-output/new/u15-bird-cleanup/README.md`; `show-output/new/u3a-doc-prefix/README.md`.
+
+Updated: `manifest.md` (U1.5 row, U3a/U3b split, prefix-selection table rewritten, PUT-preservation
+section, new tranche recommendation, delta ledger, cost table, approval gate); `design.md`
+(§8a(d-correction)); `validation.md` (new §U1.5, T2 rewritten, T2b rewritten); `README.md` (Phase-4
+table + tranche callout); `deploy-log.md` (ledger rows); `lessons-learned.md` (`TANK-001`
+remediation, new `TANK-001a` and `TRIN-001`); `scripts/apply.ps1` and `scripts/rollback.ps1`
+(`U15`, `U3a`, corrected `T2a`/`T2b` — **all Azure calls remain commented out**); all six
+`scripts/bodies/*.json`.
+
+**No live system was changed. No commit was made.**
