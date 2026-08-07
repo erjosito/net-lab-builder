@@ -1,0 +1,10 @@
+# Command: az network routeserver peering list -g rg-dual-hub-hubless-region-ars-lab3d001 --routeserver ars-hub1/ars-hub2/ars-poland -o json
+# Timestamp: 2026-08-03T17:55:00+02:00
+{
+  "ars-hub1": [{"name":"peer-nva1","peerAsn":65001,"peerIp":"10.10.1.4","provisioningState":"Succeeded"}],
+  "ars-hub2": [{"name":"peer-nva2","peerAsn":65002,"peerIp":"10.20.1.4","provisioningState":"Succeeded"}],
+  "ars-poland": [
+    {"name":"peer-nva1","peerAsn":65001,"peerIp":"10.10.1.4","provisioningState":"Succeeded"},
+    {"name":"peer-nva2","peerAsn":65002,"peerIp":"10.20.1.4","provisioningState":"Succeeded"}
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "allowForwardedTraffic": true,
+  "allowGatewayTransit": false,
+  "allowVirtualNetworkAccess": true,
+  "doNotVerifyRemoteGateways": false,
+  "etag": "W/\"daf52c82-c249-42fa-ab68-5e6ca8d7d014\"",
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworks/vnet-hub1/virtualNetworkPeerings/peer-hub1-to-hub2",
+  "name": "peer-hub1-to-hub2",
+  "peerCompleteVnets": true,
+  "peeringState": "Connected",
+  "peeringSyncLevel": "FullyInSync",
+  "provisioningState": "Succeeded",
+  "remoteAddressSpace": {
+    "addressPrefixes": [
+      "10.20.0.0/16"
+    ]
+  },
+  "remoteVirtualNetwork": {
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworks/vnet-hub2",
+    "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+  },
+  "remoteVirtualNetworkAddressSpace": {
+    "addressPrefixes": [
+      "10.20.0.0/16"
+    ]
+  },
+  "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+  "resourceGuid": "88bdec7b-e58e-02fd-070a-50ef632a4a9c",
+  "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+  "useRemoteGateways": false
+}

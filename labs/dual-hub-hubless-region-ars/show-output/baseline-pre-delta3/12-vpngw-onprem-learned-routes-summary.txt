@@ -1,0 +1,21 @@
+# Command: az network vnet-gateway list-learned-routes -g rg-dual-hub-hubless-region-ars-lab3d001 -n vpngw-onprem -o json
+# Timestamp: 2026-08-03T17:58:00+02:00
+# S1 + S5 KEY EVIDENCE — DELTA-2 AS-PATH COMPARISON:
+#
+# 10.31.0.0/24 (set-C1 spoke, VM present):
+#   via hub1: AS-PATH "65515-65001"           (2 ASNs) nextHop 10.10.0.4 / 10.10.0.5
+#   via hub2: AS-PATH "65515-65002-65002-65002" (4 ASNs) nextHop 10.20.0.4 / 10.20.0.5
+#   WINNER: hub1 (shorter AS-PATH) → Δ2 PROVEN
+#
+# 10.32.0.0/24 (set-C2 spoke, NO VM):
+#   via hub1: AS-PATH "65515-65001"           (2 ASNs) nextHop 10.10.0.4 / 10.10.0.5
+#   via hub2: AS-PATH "65515-65002-65002-65002" (4 ASNs) nextHop 10.20.0.4 / 10.20.0.5
+#   WINNER: hub1 → S5 PROVEN (prefix reachable on-prem, both paths, no VM needed)
+#
+# 10.30.0.0/24 (ARS VNet):
+#   via hub1: AS-PATH "65515-65001"
+#   via hub2: AS-PATH "65515-65002"           (equal after ARS native advertisement)
+#
+# 10.10.0.0/16 / 10.11.0.0/24: AS-PATH "65515" (hub1 VNet)
+# 10.20.0.0/16 / 10.21.0.0/24: AS-PATH "65515" (hub2 VNet)
+# 10.40.0.0/16: local Network

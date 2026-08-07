@@ -1,0 +1,62 @@
+Enable succeeded: 
+[stdout]
+BIRD 2.0.8 ready.
+Table master4:
+0.0.0.0/0            unicast [static1 07:12:08.673] * (200)
+	via 10.10.1.1 on eth0
+	Type: static univ
+10.11.0.0/24         unicast [ars_hub1_0 07:12:12.314 from 10.10.0.68] * (100/?) [AS65515i]
+	via 10.10.1.1 on eth0
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.10.0.68
+	BGP.local_pref: 100
+	BGP.community: (65518,65518)
+                     unicast [ars_hub1_1 07:12:13.060 from 10.10.0.69] (100/?) [AS65515i]
+	via 10.10.1.1 on eth0
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.10.0.69
+	BGP.local_pref: 100
+	BGP.community: (65518,65518)
+10.10.0.64/27        unicast [static1 07:12:08.673] * (200)
+	via 10.10.1.1 on eth0
+	Type: static univ
+10.10.0.0/16         unicast [ars_hub1_0 07:12:12.314 from 10.10.0.68] * (100/?) [AS65515i]
+	via 10.10.1.1 on eth0
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.10.0.68
+	BGP.local_pref: 100
+                     unicast [ars_hub1_1 07:12:13.060 from 10.10.0.69] (100/?) [AS65515i]
+	via 10.10.1.1 on eth0
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.10.0.69
+	BGP.local_pref: 100
+10.10.1.0/27         unicast [direct1 07:12:08.673] * (240)
+	dev eth0
+	Type: device univ
+10.40.0.0/16         unicast [ars_hub1_0 07:12:12.314 from 10.10.0.68] * (100/?) [AS65000i]
+	via 10.10.1.1 on eth0
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515 65000
+	BGP.next_hop: 10.10.0.68
+	BGP.local_pref: 100
+	BGP.community: (65517,65517)
+                     unicast [ars_hub1_1 07:12:13.060 from 10.10.0.69] (100/?) [AS65000i]
+	via 10.10.1.1 on eth0
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515 65000
+	BGP.next_hop: 10.10.0.69
+	BGP.local_pref: 100
+	BGP.community: (65517,65517)
+
+[stderr]
+

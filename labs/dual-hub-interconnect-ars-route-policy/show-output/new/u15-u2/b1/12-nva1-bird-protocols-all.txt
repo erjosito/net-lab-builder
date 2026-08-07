@@ -1,0 +1,111 @@
+Enable succeeded: 
+[stdout]
+  0        ---        ---        ---          0
+
+kernel1    Kernel     master4    up     07:12:08.673  
+  Channel ipv4
+    State:          UP
+    Table:          master4
+    Preference:     10
+    Input filter:   (unnamed)
+    Output filter:  (unnamed)
+    Routes:         0 imported, 4 exported, 0 preferred
+    Route change stats:     received   rejected   filtered    ignored   accepted
+      Import updates:              0          0          0          0          0
+      Import withdraws:            0          0        ---          0          0
+      Export updates:             11          0          6        ---          5
+      Export withdraws:            1        ---        ---        ---          0
+
+static1    Static     master4    up     07:12:08.673  
+  Channel ipv4
+    State:          UP
+    Table:          master4
+    Preference:     200
+    Input filter:   ACCEPT
+    Output filter:  REJECT
+    Routes:         2 imported, 0 exported, 2 preferred
+    Route change stats:     received   rejected   filtered    ignored   accepted
+      Import updates:              3          0          0          0          3
+      Import withdraws:            1          0        ---          0          1
+      Export updates:              0          0          0        ---          0
+      Export withdraws:            0        ---        ---        ---          0
+
+ars_hub1_0 BGP        ---        up     07:12:12.272  Established   
+  BGP state:          Established
+    Neighbor address: 10.10.0.68
+    Neighbor AS:      65515
+    Local AS:         65001
+    Neighbor ID:      10.10.0.68
+    Local capabilities
+      Multiprotocol
+        AF announced: ipv4
+      Route refresh
+      Graceful restart
+      4-octet AS numbers
+      Enhanced refresh
+      Long-lived graceful restart
+    Neighbor capabilities
+      Multiprotocol
+        AF announced: ipv4 ipv6
+      Route refresh
+      4-octet AS numbers
+    Session:          external multihop AS4
+    Source address:   10.10.1.4
+    Hold timer:       145.437/180
+    Keepalive timer:  20.461/60
+  Channel ipv4
+    State:          UP
+    Table:          master4
+    Preference:     100
+    Input filter:   ACCEPT
+    Output filter:  export_to_hub_ars
+    Routes:         3 imported, 3 exported, 3 preferred
+    Route change stats:     received   rejected   filtered    ignored   accepted
+      Import updates:              3          0          0          0          3
+      Import withdraws:            0          0        ---          0          0
+      Export updates:              7          3          0        ---          4
+      Export withdraws:            1        ---        ---        ---          1
+    BGP Next hop:   10.10.1.4
+    IGP IPv4 table: master4
+
+ars_hub1_1 BGP        ---        up     07:12:13.010  Established   
+  BGP state:          Established
+    Neighbor address: 10.10.0.69
+    Neighbor AS:      65515
+    Local AS:         65001
+    Neighbor ID:      10.10.0.69
+    Local capabilities
+      Multiprotocol
+        AF announced: ipv4
+      Route refresh
+      Graceful restart
+      4-octet AS numbers
+      Enhanced refresh
+      Long-lived graceful restart
+    Neighbor capabilities
+      Multiprotocol
+        AF announced: ipv4 ipv6
+      Route refresh
+      4-octet AS numbers
+    Session:          external multihop AS4
+    Source address:   10.10.1.4
+    Hold timer:       141.557/180
+    Keepalive timer:  16.296/60
+  Channel ipv4
+    State:          UP
+    Table:          master4
+    Preference:     100
+    Input filter:   ACCEPT
+    Output filter:  export_to_hub_ars
+    Routes:         3 imported, 6 exported, 0 preferred
+    Route change stats:     received   rejected   filtered    ignored   accepted
+      Import updates:              3          0          0          0          3
+      Import withdraws:            0          0        ---          0          0
+      Export updates:              7          0          0        ---          7
+      Export withdraws:            1        ---        ---        ---          1
+    BGP Next hop:   10.10.1.4
+    IGP IPv4 table: master4
+
+
+[stderr]
+

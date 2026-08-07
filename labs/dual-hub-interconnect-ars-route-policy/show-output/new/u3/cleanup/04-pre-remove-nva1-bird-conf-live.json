@@ -1,0 +1,10 @@
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\n# NVA1 -- ASN 65001 -- swedencentral\nrouter id 10.10.1.4;\n\nprotocol device { }\n\nprotocol direct {\n  ipv4 { import all; };\n}\n\nprotocol kernel {\n  ipv4 {\n    import where net = 0.0.0.0/0;\n    export where source ~ [RTS_BGP, RTS_DEVICE];\n  };\n}\n\n# Delta-1: strip AS 65515 before advertising to the local hub ARS.\n# Without the strip, hub ARS (ASN 65515) discards these routes as an AS-PATH loop.\nfilter export_to_hub_ars {\n  bgp_path.delete(65515);\n  accept;\n}\n\n# --- hub1 ARS sessions (local, multihop 2) ---------------------------------------------------\n# ARS hub1 instance IPs: 10.10.0.68, 10.10.0.69 (RouteServerSubnet 10.10.0.64/27)\nprotocol static {\n  ipv4;\n  route 10.10.0.64/27 via 10.10.1.1;\n  route 0.0.0.0/0 via 10.10.1.1;\n}\n\nprotocol bgp ars_hub1_0 {\n  local 10.10.1.4 as 65001;\n  neighbor 10.10.0.68 as 65515;\n  multihop 2;\n  ipv4 {\n    import all;\n    export filter export_to_hub_ars;\n  };\n}\n\nprotocol bgp ars_hub1_1 {\n  local 10.10.1.4 as 65001;\n  neighbor 10.10.0.69 as 65515;\n  multihop 2;\n  ipv4 {\n    import all;\n    export filter export_to_hub_ars;\n  };\n}\n\n# --- Poland ARS sessions: REMOVED 2026-08-06 by U1.5 ------------------------------------------\n# ars_poland_0 (10.30.0.4) and ars_poland_1 (10.30.0.5), their multihop-4 config, the\n# export_to_poland_ars filter, and the 10.30.0.0/27 static were deleted here. Their peers and\n# the entire Poland VNet were removed on 2026-08-05 (29/29 objects). Do not reinstate.\n\n# U3a temporary documentation test prefix -- RFC 5737 TEST-NET-2. REMOVE AT U3 ROLLBACK.\nprotocol static u3_doc_test {\n  ipv4;\n  route 198.51.100.0/24 blackhole;\n}\n[stderr]\n"
+    }
+  ]
+}

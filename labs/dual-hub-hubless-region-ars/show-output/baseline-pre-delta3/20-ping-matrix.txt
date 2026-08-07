@@ -1,0 +1,25 @@
+# Commands: az vm run-command invoke --command-id RunShellScript --scripts "ping -c 3 <dst>"
+# Timestamp: 2026-08-03T18:01:00+02:00
+#
+# PING MATRIX — PRE-DELTA-3 BASELINE
+#
+# Source          Destination     IP            Result    Loss%  Notes
+# --------------- --------------- ------------- --------- ------ ----------------------------------
+# vm-c1-ep        vm-onprem-ep    10.40.1.4     PASS      0%     c1→onprem via 0/0→ECMP NVA1/NVA2
+# vm-onprem-ep    vm-c1-ep        10.31.0.4     PASS      0%     onprem→c1 via vpngw-onprem→hub1
+# vm-hub1-ep      vm-onprem-ep    10.40.1.4     PASS      0%     hub1→onprem via UDR→NVA1→VPN GW
+# vm-hub1-ep      vm-c1-ep        10.31.0.4     FAIL      100%   SEE DEFECT BELOW
+# vm-onprem-ep    10.32.0.0       10.32.0.0     FAIL      100%   EXPECTED: no VM in spoke-c2
+#
+# *** DEFECT CAPTURED (not to be fixed in baseline) ***
+# hub1-ep → c1-ep FAILS (100% loss).
+# Root cause analysis:
+#   Forward path: hub1-ep → NVA1 (UDR 0/0) → Poland spoke-c1 (VNetGlobalPeering on NVA1 NIC) ✓
+#   Return path (ECMP): c1-ep 0/0 ECMP [NVA1 10.10.1.4, NVA2 10.20.1.4]
+#     - If return via NVA1: NVA1 knows 10.11.0.0/24 (VNetPeering) → PASS
+#     - If return via NVA2: NVA2 has no route to spoke-a 10.11.0.0/24 (different region/hub) → DROP
+#   ECMP = ~50% packet loss on return → intermittent/full loss in 3-packet test.
+#   BLOCKER FOR HUB-SPOKE CROSS-PATH: Δ3 will break ECMP at c1-ep (NVA1 preferred) → fix expected.
+#
+# onprem-ep → 10.32.0.0 (spoke-c2, no VM): FAIL as designed — S5 proves CONTROL-PLANE reachability
+#   only (prefix in ARS/VPN GW RIB). Data-plane to nonexistent VM = expected drop.

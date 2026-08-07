@@ -209,3 +209,74 @@ Produce the standard 4-diagram set for lab #4 (`dual-hub-hubless-region-ars`) ah
 ---
 
 📌 2026-08-05T13:43:07.691+02:00 — Scribe merge pass: US10 wording-fix brief recorded in decisions.md; no lab/design file staging occurred.
+
+---
+
+📌 2026-08-05T11:10:29+02:00 — **Inline Mermaid diagrams for US01–US12 (route-map user stories)**
+
+- **Trigger:** Jose Moreno via Niobe — "Adding mermaid diagrams to the user stories would improve
+  readability." Niobe had approved US01–US12 and explicitly authorised inline Mermaid authoring.
+- **Artifact:** `labs/dual-hub-hubless-region-ars/route-map-user-stories.md` (v5.1, owner Morpheus).
+  Sole file changed. No Azure, IaC, README, manifest or live-resource change. No git commit.
+- **Delivered:** 19 fenced ```mermaid blocks covering all 17 stable diagram IDs in the §3 index.
+  Every story US01–US12 has at least one rendered diagram. Coverage: US01–US09 one block each;
+  US10 three (generic normal + generic F1/F4 failure under one anchor, plus the VPN lab analogue);
+  US11 three (native peering / direct workloads / static NVA transit); US12 four (normal, two
+  failover figures under one anchor, plus the VPN-square lab analogue).
+- **Placement:** each block sits immediately after its story's generic reference topology and before
+  the detailed mechanism analysis, per the task. Lab-analogue blocks sit at the head of their own
+  "current lab" subsection.
+- **Per-block furniture:** `<a id="...">` anchor using the index's stable ID, a bold figure caption,
+  one concise *What to look for* sentence, and a `%% diagram-id:` comment inside the fence so the ID
+  survives copy/paste out of the markdown.
+- **Visual grammar (uniform across all 19):** `-->` native connectivity / ordinary forwarding,
+  `-.->` control-plane adjacency (BGP) and labelled conditional/backup paths, `==>` primary active
+  data path, `-.-` dotted un-arrowed attachment for policy and annotation nodes (never a forwarding
+  hop). Azure Route Server appears only on dashed control-plane and dotted policy edges — verified
+  mechanically: zero `ars*` node occurrences on any `==>` or `-->` edge across all blocks.
+  Shared `classDef` palette: `azure`, `onprem`, `nva`, `policy`, `blocked`, `note`.
+- **Overlay terminology (§0.1) honoured:** global VNet peering drawn as underlay/native
+  connectivity; NVA-to-NVA BGP drawn as a control-plane adjacency, never as encapsulation;
+  GRE/IPsec/VXLAN drawn only where the story requires encapsulation, on a separate labelled edge.
+- **Story-specific constraints honoured:** US01 default non-overlay path with the overlay as a greyed
+  conditional variant; US06 keeps the desired per-peering attachment *and* the explicit missing-Azure-
+  attachment boundary so it does not read as supported; US10 uses both approved IDs, shows no
+  association as proven, keeps Route Server off every data hop, and excludes `0.0.0.0/0` and set-C
+  from the overlay import/export; US11 uses all three retained IDs and does not imply hub peering
+  propagates spoke prefixes; US12 uses `flowchart TB` with four quadrant subgraphs, explicit
+  S-A/S-B/S-C/S-D side labels, diagonals present only as a `NOT PRESENT — by design` annotation node
+  (no diagonal edges drawn), B2 marked hub-address-space-only under variant N, the failure figure
+  showing three surviving sides and stating that full outcome C needs dynamic prefix carriage and
+  withdrawal, and Global Reach confined to S-D/B1.
+- **Two approved specs required splitting into two fences under a single anchor**, to stay readable
+  and near the ~15-node budget without shrinking labels: `US10-bow-tie-generic-er` (normal / failure)
+  and `US12-square-hybrid-failover` (S-A lost / S-D lost). Both splits are sanctioned by the specs'
+  own "normal + failure inset" and "a second, smaller figure" language, and both preserve the
+  one-anchor-per-index-ID invariant. `US12-square-hybrid-normal` is a deliberate 16-node exception:
+  splitting the square would destroy the figure's core assertion.
+- **Grammar reconciliation recorded:** the US12 spec text says "BGP control plane = `-->`, tunnel =
+  `-.->`", which inverts this task's global grammar. I followed the **task's** grammar for
+  cross-diagram consistency and stated the mapping explicitly in the US12 `Legend` subgraph. The
+  load-bearing US12 constraint (no Route Server on a thick edge) is preserved either way.
+- **Validation:** every distinct block extracted and rendered with the already-installed
+  `@mermaid-js/mermaid-cli` from the local npx cache (no new tooling installed; the validator was
+  first proven meaningful by confirming it exits 1 on deliberately broken syntax). Result **19/19
+  PASS**, re-run after the table/index edits — still 19/19. Mechanical checks: 19 open fences / 19
+  close fences / 0 unterminated; 17 anchors, exactly one per index ID; every US01–US12 has >= 1
+  block; heading count and the 12 story headings unchanged; US06's blocked framing, the
+  scenario-retention policy and the retained US10 scenarios all still present.
+- **Index/table updates (task items 10):** front summary table `Diagram IDs` cells converted from
+  plain code spans to anchor links; §3 diagram index IDs linked to their anchors and a new `Status`
+  column added reading **Embedded and validated** with the block count. No other table field touched.
+- **Not touched:** architecture, feasibility claims, applicability classifications, story intent,
+  validation plans, current-lab deltas, costs, citations, Azure/IaC, README, manifest, live
+  resources. No git commit.
+- Decision recorded at `.squad/decisions/inbox/oracle-user-story-mermaid.md`.
+## 2026-08-05 — Storage endpoint path-equivalence diagram draft
+
+- Created `labs/storage-endpoint-path-equivalence/diagrams/01-topology.drawio`.
+- Created `labs/storage-endpoint-path-equivalence/diagrams/02-experiment-comparison.drawio`.
+- Created `labs/storage-endpoint-path-equivalence/diagrams/03-performance-methodology.mmd`.
+- Used official Azure/draw.io icons with native proportions fitted into uniform 64×64 visual footprints.
+- Kept customer-observable facts separate from a deliberately unconnected, opaque Microsoft-underlay band; no physical-route equivalence is implied.
+- Live-value placeholders remain for run suffix, target account, VM private IP, NAT public IP, and per-run public Storage IP.

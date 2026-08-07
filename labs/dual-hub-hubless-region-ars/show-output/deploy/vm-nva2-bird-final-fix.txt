@@ -1,0 +1,42 @@
+Enable succeeded: 
+[stdout]
+=== Updated kernel protocol ===
+protocol kernel {
+  ipv4 {
+    import where net = 0.0.0.0/0;
+    export all;
+  };
+}
+
+# 1+2 combined export filter for hub2 ARS sessions
+# Strips 65515 (loop prevention) AND prepends 650022 for set-C prefixes
+=== Kernel routes ===
+default via 10.20.1.1 dev eth0 proto dhcp src 10.20.1.4 metric 100 
+unreachable 10.20.0.0/16 proto bird metric 32 
+10.20.1.0/27 dev eth0 proto bird scope link metric 32 
+10.20.1.0/27 dev eth0 proto kernel scope link src 10.20.1.4 metric 100 
+10.20.1.1 dev eth0 proto dhcp scope link src 10.20.1.4 metric 100 
+unreachable 10.21.0.0/24 proto bird metric 32 
+unreachable 10.30.0.0/24 proto bird metric 32 
+unreachable 10.31.0.0/24 proto bird metric 32 
+unreachable 10.32.0.0/24 proto bird metric 32 
+168.63.129.16 via 10.20.1.1 dev eth0 proto dhcp src 10.20.1.4 metric 100 
+169.254.169.254 via 10.20.1.1 dev eth0 proto dhcp src 10.20.1.4 metric 100 
+=== BIRD protocols ===
+BIRD 2.0.8 ready.
+Name       Proto      Table      State  Since         Info
+device1    Device     ---        up     16:41:56.188  
+direct1    Direct     ---        up     16:41:56.188  
+kernel1    Kernel     master4    up     16:41:56.188  
+ars_hub2_0 BGP        ---        start  16:41:56.188  Active        Socket: No route to host
+ars_hub2_1 BGP        ---        up     16:41:57.881  Established   
+ars_poland_0 BGP        ---        up     16:41:58.434  Established   
+ars_poland_1 BGP        ---        start  16:41:56.188  Active        Socket: No route to host
+=== BIRD route count ===
+BIRD 2.0.8 ready.
+6 of 6 routes for 6 networks in table master4
+0 of 0 routes for 0 networks in table master6
+Total: 6 of 6 routes for 6 networks in 2 tables
+
+[stderr]
+

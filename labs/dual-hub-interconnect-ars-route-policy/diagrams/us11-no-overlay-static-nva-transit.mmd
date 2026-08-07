@@ -1,0 +1,43 @@
+%% Extracted verbatim (Tank, TP-HH extraction, 2026-08-05) from:
+%%   ../../dual-hub-hubless-region-ars/route-map-user-stories.md#US11-no-overlay-static-nva-transit
+%% Canonical source: the .md anchor above. This file is a byte-for-byte copy of the fenced
+%% Mermaid block, including the diagram-id comment and classDef grammar. Do not hand-edit
+%% this file independently of the source block -- if the story figure changes, re-extract.
+%% Status label preserved: "to be demonstrated, not supported-by-claim" (variant C, unproven).
+%% diagram-id: US11-no-overlay-static-nva-transit
+flowchart LR
+  subgraph R1["Region R1 -- hub-1 10.1.0.0/16"]
+    spoke_1a["spoke-1a 10.1.16.0/24"]
+    nva_1["nva-1 10.1.1.4"]
+    hub_1["hub-1 VNet"]
+    ars_1["ars-1"]
+  end
+  subgraph R2["Region R2 -- hub-2 10.2.0.0/16"]
+    hub_2["hub-2 VNet"]
+    nva_2["nva-2 10.2.1.4"]
+    spoke_2a["spoke-2a 10.2.16.0/24"]
+    ars_2["ars-2"]
+  end
+  UDR1["spoke-1a subnet UDR<br>0.0.0.0/0 to nva-1"]
+  UDR2["nva-1 subnet UDR<br>10.2.16.0/24 to VirtualAppliance 10.2.1.4<br>mirrored on the R2 side"]
+  RULES["no encapsulation: the packet is forwarded natively, headers unchanged<br>a spoke UDR may never point at the remote NVA -- peering is not transitive<br>static: every new remote spoke is a route-table edit in the other region<br>status: to be demonstrated in the target subscription"]
+
+  spoke_1a ==>|"hop 1"| nva_1
+  nva_1 ==>|"hop 2"| hub_1
+  hub_1 ==>|"underlay: native peering, no encapsulation"| hub_2
+  hub_2 ==>|"hop 4"| nva_2
+  nva_2 ==>|"hop 5"| spoke_2a
+  ars_1 -.->|"ARS to NVA BGP, not involved in this path"| nva_1
+  ars_2 -.->|"ARS to NVA BGP, not involved in this path"| nva_2
+  UDR1 -.- spoke_1a
+  UDR2 -.- nva_1
+  RULES -.- hub_2
+
+  classDef azure fill:#E6F2FB,stroke:#0F6CBD,color:#062A47
+  classDef nva fill:#EFE6F7,stroke:#5C2D91,color:#331A52
+  classDef policy fill:#DFF6DD,stroke:#107C10,color:#0B3D0B
+  classDef note fill:#F3F2F1,stroke:#8A8886,color:#2B2B2B
+  class spoke_1a,spoke_2a,hub_1,hub_2,ars_1,ars_2 azure
+  class nva_1,nva_2 nva
+  class UDR1,UDR2 policy
+  class RULES note

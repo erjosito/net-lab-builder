@@ -1,0 +1,1 @@
+Evidence for T5 (local VPN-gateway connection route-map attachment, optional/unverified) goes here, only if separately approved after T2a passes — see ../../validation.md#t5--local-vpn-gateway-connection-route-map-attachment.

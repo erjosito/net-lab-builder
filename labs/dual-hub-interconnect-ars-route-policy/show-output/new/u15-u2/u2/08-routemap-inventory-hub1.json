@@ -1,0 +1,88 @@
+{
+  "value": [
+    {
+      "etag": "W/\"975b9262-c1e2-4dda-b05b-624edcff61a3\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualHubs/ars-hub1/routeMaps/rm-hub1-activate",
+      "name": "rm-hub1-activate",
+      "properties": {
+        "associatedInboundConnections": [],
+        "associatedOutboundConnections": [],
+        "provisioningState": "Succeeded",
+        "rules": [
+          {
+            "actions": [
+              {
+                "parameters": [
+                  {
+                    "asPath": [
+                      "64496"
+                    ],
+                    "community": [],
+                    "routePrefix": []
+                  }
+                ],
+                "type": "Add"
+              }
+            ],
+            "matchCriteria": [
+              {
+                "asPath": [],
+                "community": [],
+                "matchCondition": "Equals",
+                "routePrefix": [
+                  "192.0.2.0/24"
+                ]
+              }
+            ],
+            "name": "rule-activate-synthetic",
+            "nextStepIfMatched": "Terminate"
+          }
+        ]
+      },
+      "type": "Microsoft.Network/virtualHubs/routeMaps"
+    },
+    {
+      "etag": "W/\"975b9262-c1e2-4dda-b05b-624edcff61a3\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualHubs/ars-hub1/routeMaps/rm-hub1-tmp-assoc",
+      "name": "rm-hub1-tmp-assoc",
+      "properties": {
+        "associatedInboundConnections": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualHubs/ars-hub1/bgpConnections/peer-nva1"
+        ],
+        "associatedOutboundConnections": [],
+        "provisioningState": "Succeeded",
+        "rules": [
+          {
+            "actions": [
+              {
+                "parameters": [
+                  {
+                    "asPath": [
+                      "64496"
+                    ],
+                    "community": [],
+                    "routePrefix": []
+                  }
+                ],
+                "type": "Add"
+              }
+            ],
+            "matchCriteria": [
+              {
+                "asPath": [],
+                "community": [],
+                "matchCondition": "Equals",
+                "routePrefix": [
+                  "203.0.113.0/24"
+                ]
+              }
+            ],
+            "name": "rule-tmp-inert",
+            "nextStepIfMatched": "Terminate"
+          }
+        ]
+      },
+      "type": "Microsoft.Network/virtualHubs/routeMaps"
+    }
+  ]
+}

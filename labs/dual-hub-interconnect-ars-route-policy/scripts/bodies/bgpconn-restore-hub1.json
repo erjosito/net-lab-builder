@@ -1,0 +1,19 @@
+{
+  "_comment": "PLACEHOLDER - not a real request body. Approval unit U2 ROLLBACK Step 1: restore Microsoft.Network/virtualHubs/ars-hub1/bgpConnections/peer-nva1 to its pre-U2 shape. PUT, api-version 2024-10-01 - there is no PATCH operation on this type, and there is no 'null' form for the association: dissociation is expressed by OMITTING routingConfiguration.inboundRouteMap from a full PUT body. After this returns Succeeded, rollback.ps1 Step 2 deletes rm-hub1-tmp-assoc. rm-hub1-activate and rm-hub2-activate are never touched.",
+  "_MANDATORY_body_preservation_2026-08-06": "The rollback body must be the SAVED PRE-U2 GET, not this file. U2 Step 0 saves show-output/new/t2-routemap-assoc/00-pre-peer-nva1-GET.json; the rollback body is that file's properties object with provisioningState deleted and nothing else changed. Sending a hand-written body risks dropping members that the pre-U2 state actually had. This file reproduces the live 2026-08-06 read-only capture and exists so the correct shape is documented in version control even if the evidence file is lost.",
+  "_live_2026-08-06": "GET ars-hub1/bgpConnections/peer-nva1 returned properties = { peerAsn: 65001, peerIp: '10.10.1.4', provisioningState: 'Succeeded', routingConfiguration: { vnetRoutes: { staticRoutes: [], staticRoutesConfig: { propagateStaticRoutes: true, vnetLocalRouteOverrideCriteria: 'Contains' } } } }. NOTE staticRoutesConfig: an earlier version of this placeholder omitted it, which would have silently reset propagateStaticRoutes / vnetLocalRouteOverrideCriteria on rollback. Corrected by Trinity 2026-08-06.",
+  "_expected_post_rollback": "GET peer-nva1 byte-comparable to 00-pre-peer-nva1-GET.json apart from etag; BGP session Established with an UNCHANGED Since timestamp on the NVA side; ars-hub1 learned/advertised sets byte-identical to the post-U1.5 baseline.",
+  "properties": {
+    "peerAsn": 65001,
+    "peerIp": "10.10.1.4",
+    "routingConfiguration": {
+      "vnetRoutes": {
+        "staticRoutes": [],
+        "staticRoutesConfig": {
+          "propagateStaticRoutes": true,
+          "vnetLocalRouteOverrideCriteria": "Contains"
+        }
+      }
+    }
+  }
+}

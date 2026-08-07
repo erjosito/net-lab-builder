@@ -1,0 +1,27 @@
+# ==== PROVENANCE (added by Tank, TP-HH extraction, 2026-08-05) ====
+# Source (original, unchanged, still present): labs/dual-hub-hubless-region-ars/show-output/baseline-pre-delta3/03-vpngw-hub1-bgp-peers.json
+# Original capture context: Pre-Delta3 baseline capture, 2026-08-03 (~17:55-17:59 UTC+02:00)
+# Capturing agent: Niobe (Validation Engineer)
+# Status: Inherited; not recaptured for TP-HH
+# Sanitization: scanned 2026-08-05 by Tank for subscription/tenant IDs, secrets, keys, tokens -- none found
+# ====================================================================
+# Command: az network vnet-gateway list-bgp-peer-status -g rg-dual-hub-hubless-region-ars-lab3d001 -n vpngw-hub1 -o json
+# Timestamp: 2026-08-03T17:56:00+02:00
+# All subscriptionIDs redacted
+{
+  "value": [
+    {"asn":65000,"connectedDuration":"01:10:41","localAddress":"10.10.0.5","neighbor":"10.40.0.5","routesReceived":1,"state":"Connected"},
+    {"asn":65000,"connectedDuration":"01:10:39","localAddress":"10.10.0.5","neighbor":"10.40.0.4","routesReceived":1,"state":"Connected"},
+    {"asn":65515,"localAddress":"10.10.0.5","neighbor":"10.10.0.5","routesReceived":0,"state":"Unknown"},
+    {"asn":65515,"connectedDuration":"01:11:48","localAddress":"10.10.0.5","neighbor":"10.10.0.4","routesReceived":3,"state":"Connected"},
+    {"asn":65515,"connectedDuration":"01:11:54","localAddress":"10.10.0.5","neighbor":"10.10.0.68","routesReceived":5,"state":"Connected"},
+    {"asn":65515,"connectedDuration":"01:11:53","localAddress":"10.10.0.5","neighbor":"10.10.0.69","routesReceived":5,"state":"Connected"},
+    {"asn":65000,"connectedDuration":"01:10:31","localAddress":"10.10.0.4","neighbor":"10.40.0.5","routesReceived":1,"state":"Connected"},
+    {"asn":65000,"connectedDuration":"01:10:31","localAddress":"10.10.0.4","neighbor":"10.40.0.4","routesReceived":1,"state":"Connected"},
+    {"asn":65515,"connectedDuration":"01:11:48","localAddress":"10.10.0.4","neighbor":"10.10.0.5","routesReceived":3,"state":"Connected"},
+    {"asn":65515,"localAddress":"10.10.0.4","neighbor":"10.10.0.4","routesReceived":0,"state":"Unknown"},
+    {"asn":65515,"connectedDuration":"01:11:48","localAddress":"10.10.0.4","neighbor":"10.10.0.68","routesReceived":6,"state":"Connected"},
+    {"asn":65515,"connectedDuration":"01:11:48","localAddress":"10.10.0.4","neighbor":"10.10.0.69","routesReceived":6,"state":"Connected"}
+  ]
+}
+# NOTE: Unknown state on self-peer (10.x.x.x/10.x.x.x) is normal AA behaviour — each GW instance skips self.

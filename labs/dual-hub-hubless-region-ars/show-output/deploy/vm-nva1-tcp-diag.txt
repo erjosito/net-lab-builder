@@ -1,0 +1,33 @@
+Enable succeeded: 
+[stdout]
+=== TCP connectivity test ===
+Connection to 10.10.0.68 179 port [tcp/bgp] succeeded!
+PORT_OPEN
+Connection to 10.10.0.69 179 port [tcp/bgp] succeeded!
+PORT_OPEN
+=== Traceroute to ARS hub1 ===
+/var/lib/waagent/run-command/download/13/script.sh: line 6: traceroute: command not found
+=== BIRD log last 20 lines ===
+Aug 03 16:19:33 vm-nva1 systemd[1]: Stopping BIRD Internet Routing Daemon...
+Aug 03 16:19:33 vm-nva1 systemd[1]: bird.service: Deactivated successfully.
+Aug 03 16:19:33 vm-nva1 systemd[1]: Stopped BIRD Internet Routing Daemon.
+Aug 03 16:19:33 vm-nva1 systemd[1]: Starting BIRD Internet Routing Daemon...
+Aug 03 16:19:33 vm-nva1 systemd[1]: Started BIRD Internet Routing Daemon.
+Aug 03 16:19:33 vm-nva1 bird[11518]: Started
+Aug 03 16:19:34 vm-nva1 bird[11518]: Next hop address 10.30.0.5 resolvable through recursive route for 10.30.0.0/24
+Aug 03 16:19:34 vm-nva1 bird[11518]: Next hop address 10.30.0.5 resolvable through recursive route for 10.30.0.0/24
+Aug 03 16:21:20 vm-nva1 bird[11518]: Shutting down
+Aug 03 16:21:20 vm-nva1 systemd[1]: Stopping BIRD Internet Routing Daemon...
+Aug 03 16:21:20 vm-nva1 bird[11518]: Shutdown completed
+Aug 03 16:21:20 vm-nva1 systemd[1]: bird.service: Deactivated successfully.
+Aug 03 16:21:20 vm-nva1 systemd[1]: Stopped BIRD Internet Routing Daemon.
+Aug 03 16:21:20 vm-nva1 systemd[1]: Starting BIRD Internet Routing Daemon...
+Aug 03 16:21:20 vm-nva1 systemd[1]: Started BIRD Internet Routing Daemon.
+Aug 03 16:21:20 vm-nva1 bird[12020]: Started
+Aug 03 16:23:06 vm-nva1 bird[12020]: Disabling protocol ars_hub1_0
+Aug 03 16:23:06 vm-nva1 bird[12020]: Disabling protocol ars_hub1_1
+Aug 03 16:23:08 vm-nva1 bird[12020]: Enabling protocol ars_hub1_0
+Aug 03 16:23:08 vm-nva1 bird[12020]: Enabling protocol ars_hub1_1
+
+[stderr]
+

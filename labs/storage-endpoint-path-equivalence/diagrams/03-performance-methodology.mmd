@@ -1,0 +1,37 @@
+---
+title: Performance equivalence methodology
+---
+flowchart LR
+    A["Correctness gates pass<br/>DNS + destination + effective route + source/authorization"] --> B["Restore common benchmark state<br/>same VM, identity, FQDN, account, blob, bytes, client"]
+    B --> C["10 randomized complete blocks<br/>5 in window A + 5 in window B<br/>windows separated by at least 30 min"]
+    C --> D["Seeded balanced mode order per block<br/>interleave Public, Service Endpoint, Private Endpoint"]
+    D --> E["For each mode: wait for provisioning<br/>flush DNS and sockets<br/>capture endpoint state"]
+    E --> F["Warm-up<br/>30 seconds or 20 requests"]
+    F --> G["Seeded randomized cells<br/>concurrency 1, 8, 32<br/>64 KiB and 8 MiB<br/>fresh and reused connections"]
+    G --> H["Measure block aggregates<br/>latency median/p95 · throughput · jitter<br/>errors · TCP retransmit proportion"]
+    H --> I{"Invalid block?<br/>CPU >80%, credits depleted,<br/>throttling, destination drift,<br/>or transition incomplete"}
+    I -->|Yes| J["Discard and repeat the full block<br/>never repeat one mode alone"]
+    J --> C
+    I -->|No| K["Pair block aggregates<br/>Public↔SE · Public↔PE · SE↔PE"]
+    K --> L["Cluster bootstrap by block<br/>10,000 resamples<br/>report 95% confidence intervals"]
+    L --> M["TOST at α=.05<br/>90% CI must be wholly inside<br/>each predeclared equivalence margin"]
+    M --> N{"All primary margins pass<br/>and correctness gates pass?"}
+    N -->|Yes| O["Conditionally equivalent<br/>for this pair, cell, region, and time"]
+    N -->|No, CI crosses margin| P["Inconclusive"]
+    N -->|No, outside margin| Q["Not equivalent"]
+
+    R["Equivalence margins<br/>Median latency and throughput: 0.90–1.10<br/>p95 latency: 0.85–1.15<br/>Jitter: 0.80–1.20 and ≤2 ms absolute<br/>Error rate: ≤0.5 percentage points absolute<br/>Retransmits: ≤0.2 percentage points absolute"] -.-> M
+    S["Interpretation guardrail<br/>Performance equivalence does not establish<br/>identical Microsoft physical paths"] -.-> O
+
+    classDef setup fill:#e7f0fb,stroke:#6c8ebf,color:#222
+    classDef run fill:#fff2cc,stroke:#d6b656,color:#222
+    classDef analysis fill:#e1d5e7,stroke:#9673a6,color:#222
+    classDef decision fill:#f5f5f5,stroke:#666,color:#222
+    classDef pass fill:#d5e8d4,stroke:#82b366,color:#222
+    classDef fail fill:#f8cecc,stroke:#b85450,color:#222
+    class A,B setup
+    class C,D,E,F,G,H,J run
+    class K,L,M,R,S analysis
+    class I,N decision
+    class O pass
+    class P,Q fail

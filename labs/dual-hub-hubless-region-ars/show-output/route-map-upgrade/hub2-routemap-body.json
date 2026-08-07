@@ -1,0 +1,26 @@
+{
+  "properties": {
+    "rules": [
+      {
+        "name": "rule-activate-synthetic",
+        "matchCriteria": [
+          {
+            "matchCondition": "Equals",
+            "routePrefix": ["192.0.2.0/24"]
+          }
+        ],
+        "actions": [
+          {
+            "type": "Add",
+            "parameters": [
+              {
+                "asPath": ["64496"]
+              }
+            ]
+          }
+        ],
+        "nextStepIfMatched": "Terminate"
+      }
+    ]
+  }
+}

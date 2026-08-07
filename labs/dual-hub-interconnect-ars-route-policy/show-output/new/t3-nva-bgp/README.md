@@ -1,0 +1,1 @@
+Evidence for T3 (dynamic inter-hub NVA BGP/tunnel variant, conditional) goes here, only if the scenario is actually run — see ../../validation.md#t3--dynamic-inter-hub-nva-bgptunnel-variant. Non-execution is itself a valid deliverable; if not run, this directory stays empty except this file.

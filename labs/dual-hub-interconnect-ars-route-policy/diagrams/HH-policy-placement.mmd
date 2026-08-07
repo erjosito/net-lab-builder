@@ -1,0 +1,35 @@
+%% New diagram authored for TP-HH (Tank, 2026-08-05). Not extracted from route-map-user-stories.md.
+%% Optional companion figure for T4: one identical routing intent, two possible control points
+%% (ARS inbound route map vs BIRD import/export filter on the NVA), and the one map-inexpressible
+%% case (ASN 65515 pre-policy drop) marked explicitly. No Poland / set-C element appears.
+%% diagram-id: HH-policy-placement
+flowchart LR
+  subgraph H1["vnet-hub1 10.10.0.0/16 -- swedencentral"]
+    ars_hub1["ars-hub1"]
+    vm_nva1["vm-nva1 10.10.1.4, AS 65001"]
+  end
+
+  INTENT["one identical intent:<br>AS-Path Add [64496, 64496] on one named<br>prefix learned from vm-nva1 (T2b)"]
+  MAP_POINT["control point (a): ARS inbound route map<br>on ars-hub1 to peer-nva1<br>GUI/API observability, ARM-auditable"]
+  BIRD_POINT["control point (b): BIRD import/export filter<br>on vm-nva1 bird.conf<br>version-controlled, portable, no ARS preview dependency"]
+  LOOP_NOTE["load-bearing negative result:<br>a route map CANNOT strip ASN 65515 and cannot<br>rescue a route already discarded -- ARS applies<br>loop prevention BEFORE inbound policy runs<br>this case is MAP-INEXPRESSIBLE; BIRD is the only valid control point"]
+  RESULT["both control points produce the same RIB outcome<br>for the map-expressible intent (AS-Path Add case)<br>-- comparison is measured, not asserted"]
+
+  INTENT -.-> MAP_POINT
+  INTENT -.-> BIRD_POINT
+  ars_hub1 -.->|"RM-A: inbound route map, T2b"| vm_nva1
+  MAP_POINT -.- ars_hub1
+  BIRD_POINT -.- vm_nva1
+  LOOP_NOTE -.- ars_hub1
+  RESULT -.- vm_nva1
+
+  classDef azure fill:#E6F2FB,stroke:#0F6CBD,color:#062A47
+  classDef nva fill:#EFE6F7,stroke:#5C2D91,color:#331A52
+  classDef policy fill:#DFF6DD,stroke:#107C10,color:#0B3D0B
+  classDef blocked fill:#FDE7E9,stroke:#A4262C,color:#5E1116
+  classDef note fill:#F3F2F1,stroke:#8A8886,color:#2B2B2B
+  class ars_hub1 azure
+  class vm_nva1 nva
+  class MAP_POINT,BIRD_POINT policy
+  class LOOP_NOTE blocked
+  class INTENT,RESULT note

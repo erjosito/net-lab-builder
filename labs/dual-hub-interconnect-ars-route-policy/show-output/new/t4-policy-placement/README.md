@@ -1,0 +1,1 @@
+Evidence for T4 (policy placement: ARS route map vs NVA BIRD policy) goes here, including the comparison table and the 65515 map-inexpressible record — see ../../validation.md#t4--policy-placement-ars-route-map-vs-nva-bird-policy.

@@ -1,0 +1,85 @@
+WARNING: Unable to encode the output with cp1252 encoding. Unsupported characters are discarded.
+Enable succeeded: 
+[stdout]
+# NVA1  ASN 65001  swedencentral
+router id 10.10.1.4;
+
+protocol device { }
+
+protocol direct {
+  ipv4 { import all; };
+}
+
+protocol kernel {
+  ipv4 {
+    import where net = 0.0.0.0/0;
+    export where source ~ [RTS_BGP, RTS_DEVICE];
+  };
+}
+
+# 1: strip AS 65515 before advertising to hub ARS
+# Rationale: routes from Poland ARS carry [65515,65001]; without strip,
+#            hub ARS (ASN 65515) drops them as loop.
+filter export_to_hub_ars {
+  bgp_path.delete(65515);
+  accept;
+}
+
+filter export_to_poland_ars {
+  accept;
+}
+
+#  hub1 ARS sessions (local, no multihop) 
+# ARS hub1 instance IPs: 10.10.0.68, 10.10.0.69 (from RouteServerSubnet 10.10.0.64/27)
+protocol static {
+  ipv4;
+  route 10.10.0.64/27 via 10.10.1.1;
+  route 10.30.0.0/27 via 10.10.1.1;
+  route 0.0.0.0/0 via 10.10.1.1;
+}
+
+protocol bgp ars_hub1_0 {
+  local 10.10.1.4 as 65001;
+  neighbor 10.10.0.68 as 65515;
+  multihop 2;
+  ipv4 {
+    import all;
+    export filter export_to_hub_ars;
+  };
+}
+
+protocol bgp ars_hub1_1 {
+  local 10.10.1.4 as 65001;
+  neighbor 10.10.0.69 as 65515;
+  multihop 2;
+  ipv4 {
+    import all;
+    export filter export_to_hub_ars;
+  };
+}
+
+#  Poland ARS sessions (multi-hop, global VNet peering traversal) 
+# ARS poland instance IPs: 10.30.0.4, 10.30.0.5 (from RouteServerSubnet 10.30.0.0/27)
+# multihop 4: NVA1 (swedencentral)  poland (global peering) 4 hops
+protocol bgp ars_poland_0 {
+  local 10.10.1.4 as 65001;
+  neighbor 10.30.0.4 as 65515;
+  multihop 4;
+  ipv4 {
+    import all;
+    export filter export_to_poland_ars;
+  };
+}
+
+protocol bgp ars_poland_1 {
+  local 10.10.1.4 as 65001;
+  neighbor 10.30.0.5 as 65515;
+  multihop 4;
+  ipv4 {
+    import all;
+    export filter export_to_poland_ars;
+  };
+}
+
+[stderr]
+

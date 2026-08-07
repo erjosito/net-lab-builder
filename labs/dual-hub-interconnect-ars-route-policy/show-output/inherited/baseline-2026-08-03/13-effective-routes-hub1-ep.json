@@ -1,0 +1,20 @@
+# ==== PROVENANCE (added by Tank, TP-HH extraction, 2026-08-05) ====
+# Source (original, unchanged, still present): labs/dual-hub-hubless-region-ars/show-output/baseline-pre-delta3/13-effective-routes-hub1-ep.json
+# Original capture context: Pre-Delta3 baseline capture, 2026-08-03 (~17:55-17:59 UTC+02:00)
+# Capturing agent: Niobe (Validation Engineer)
+# Status: Inherited; not recaptured for TP-HH
+# Sanitization: scanned 2026-08-05 by Tank for subscription/tenant IDs, secrets, keys, tokens -- none found
+# ====================================================================
+# Command: az network nic show-effective-route-table -g rg-dual-hub-hubless-region-ars-lab3d001 -n nic-vm-hub1-ep -o json
+# Timestamp: 2026-08-03T17:59:00+02:00
+{
+  "value": [
+    {"addressPrefix":["10.11.0.0/24"],"disableBgpRoutePropagation":true,"nextHopIpAddress":[],"nextHopType":"VnetLocal","source":"Default","state":"Active"},
+    {"addressPrefix":["10.10.0.0/16"],"disableBgpRoutePropagation":true,"nextHopIpAddress":[],"nextHopType":"VNetPeering","source":"Default","state":"Active"},
+    {"addressPrefix":["0.0.0.0/0"],"disableBgpRoutePropagation":true,"nextHopIpAddress":[],"nextHopType":"Internet","source":"Default","state":"Invalid"},
+    {"addressPrefix":["0.0.0.0/0"],"disableBgpRoutePropagation":true,"name":"default-to-nva1","nextHopIpAddress":["10.10.1.4"],"nextHopType":"VirtualAppliance","source":"User","state":"Active"}
+  ]
+}
+# NOTE: disableBgpRoutePropagation=true (UDR rt-spoke-a with GW-prop OFF).
+# Hub1-ep has NO BGP-injected routes — UDR only.
+# Default route 0/0 → 10.10.1.4 (NVA1) via UDR. No Poland spoke routes visible.

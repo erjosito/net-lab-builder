@@ -1,0 +1,30 @@
+Enable succeeded: 
+[stdout]
+=== Patched kernel section ===
+protocol kernel {
+  ipv4 {
+    import none;
+    export all;
+  };
+}
+
+=== Kernel routes ===
+default via 10.20.1.1 dev eth0 proto dhcp src 10.20.1.4 metric 100 
+10.20.1.0/27 dev eth0 proto bird scope link metric 32 
+10.20.1.0/27 dev eth0 proto kernel scope link src 10.20.1.4 metric 100 
+10.20.1.1 dev eth0 proto dhcp scope link src 10.20.1.4 metric 100 
+168.63.129.16 via 10.20.1.1 dev eth0 proto dhcp src 10.20.1.4 metric 100 
+169.254.169.254 via 10.20.1.1 dev eth0 proto dhcp src 10.20.1.4 metric 100 
+=== BIRD protocols ===
+BIRD 2.0.8 ready.
+Name       Proto      Table      State  Since         Info
+device1    Device     ---        up     16:22:02.939  
+direct1    Direct     ---        up     16:22:02.939  
+kernel1    Kernel     master4    up     16:22:02.939  
+ars_hub2_0 BGP        ---        start  16:22:02.939  Idle          
+ars_hub2_1 BGP        ---        start  16:22:02.939  Idle          
+ars_poland_0 BGP        ---        up     16:22:03.559  Established   
+ars_poland_1 BGP        ---        up     16:22:07.665  Established   
+
+[stderr]
+

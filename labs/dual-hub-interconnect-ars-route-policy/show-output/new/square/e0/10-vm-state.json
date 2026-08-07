@@ -1,0 +1,535 @@
+[
+  {
+    "etag": "\"12\"",
+    "fqdns": "",
+    "hardwareProfile": {
+      "vmSize": "Standard_B2ts_v2"
+    },
+    "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Compute/virtualMachines/vm-hub2-ep",
+    "location": "switzerlandnorth",
+    "macAddresses": "7C-ED-8D-44-B1-0A",
+    "name": "vm-hub2-ep",
+    "networkProfile": {
+      "networkInterfaces": [
+        {
+          "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/networkInterfaces/nic-vm-hub2-ep",
+          "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+        }
+      ]
+    },
+    "osProfile": {
+      "adminUsername": "labadmin",
+      "allowExtensionOperations": true,
+      "computerName": "vm-hub2-ep",
+      "linuxConfiguration": {
+        "disablePasswordAuthentication": true,
+        "patchSettings": {
+          "assessmentMode": "AutomaticByPlatform",
+          "automaticByPlatformSettings": {
+            "bypassPlatformSafetyChecksOnUserSchedule": true
+          },
+          "patchMode": "AutomaticByPlatform"
+        },
+        "provisionVMAgent": true,
+        "ssh": {
+          "publicKeys": [
+            {
+              "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/",
+              "path": "/home/labadmin/.ssh/authorized_keys"
+            }
+          ]
+        }
+      },
+      "requireGuestProvisionSignal": true,
+      "secrets": []
+    },
+    "powerState": "VM deallocated",
+    "privateIps": "10.21.0.4",
+    "provisioningState": "Succeeded",
+    "publicIps": "",
+    "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+    "resources": [
+      {
+        "autoUpgradeMinorVersion": true,
+        "forceUpdateTag": "e36f8969-68a3-4ea4-a9b9-65783a2af37d",
+        "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Compute/virtualMachines/vm-hub2-ep/extensions/MDE.Linux",
+        "location": "switzerlandnorth",
+        "name": "MDE.Linux",
+        "provisioningState": "Failed",
+        "publisher": "Microsoft.Azure.AzureDefenderForServers",
+        "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+        "settings": {
+          "autoUpdate": true,
+          "azureResourceId": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/RG-DUAL-HUB-HUBLESS-REGION-ARS-LAB3D001/providers/Microsoft.Compute/virtualMachines/vm-hub2-ep",
+          "forceReOnboarding": false,
+          "vNextEnabled": false
+        },
+        "typeHandlerVersion": "1.0",
+        "typePropertiesType": "MDE.Linux"
+      }
+    ],
+    "storageProfile": {
+      "dataDisks": [],
+      "diskControllerType": "SCSI",
+      "imageReference": {
+        "exactVersion": "22.04.202607140",
+        "offer": "0001-com-ubuntu-server-jammy",
+        "publisher": "Canonical",
+        "sku": "22_04-lts-gen2",
+        "version": "latest"
+      },
+      "osDisk": {
+        "caching": "ReadWrite",
+        "createOption": "FromImage",
+        "deleteOption": "Detach",
+        "managedDisk": {
+          "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/RG-DUAL-HUB-HUBLESS-REGION-ARS-LAB3D001/providers/Microsoft.Compute/disks/osdisk-vm-hub2-ep",
+          "resourceGroup": "RG-DUAL-HUB-HUBLESS-REGION-ARS-LAB3D001"
+        },
+        "name": "osdisk-vm-hub2-ep",
+        "osType": "Linux"
+      }
+    },
+    "tags": {
+      "correlation_id": "lab3d001",
+      "created_by": "copilot-lab",
+      "ephemeral": "true",
+      "lab": "true",
+      "lab_name": "dual-hub-hubless-region-ars",
+      "owner": "jose"
+    },
+    "timeCreated": "2026-08-03T14:40:06.3557889+00:00",
+    "type": "Microsoft.Compute/virtualMachines",
+    "vmId": "da6cc630-d0e3-43a8-bff3-7c1dca6a0779"
+  },
+  {
+    "etag": "\"18\"",
+    "fqdns": "",
+    "hardwareProfile": {
+      "vmSize": "Standard_B2ts_v2"
+    },
+    "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Compute/virtualMachines/vm-nva2",
+    "location": "switzerlandnorth",
+    "macAddresses": "7C-ED-8D-44-B1-36",
+    "name": "vm-nva2",
+    "networkProfile": {
+      "networkInterfaces": [
+        {
+          "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/networkInterfaces/nic-vm-nva2",
+          "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+        }
+      ]
+    },
+    "osProfile": {
+      "adminUsername": "labadmin",
+      "allowExtensionOperations": true,
+      "computerName": "vm-nva2",
+      "linuxConfiguration": {
+        "disablePasswordAuthentication": true,
+        "patchSettings": {
+          "assessmentMode": "AutomaticByPlatform",
+          "automaticByPlatformSettings": {
+            "bypassPlatformSafetyChecksOnUserSchedule": true
+          },
+          "patchMode": "AutomaticByPlatform"
+        },
+        "provisionVMAgent": true,
+        "ssh": {
+          "publicKeys": [
+            {
+              "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/",
+              "path": "/home/labadmin/.ssh/authorized_keys"
+            }
+          ]
+        }
+      },
+      "requireGuestProvisionSignal": true,
+      "secrets": []
+    },
+    "powerState": "VM deallocated",
+    "privateIps": "10.20.1.4",
+    "provisioningState": "Succeeded",
+    "publicIps": "",
+    "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+    "resources": [
+      {
+        "autoUpgradeMinorVersion": true,
+        "forceUpdateTag": "af39a3f9-7911-429c-8716-9739d771e172",
+        "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Compute/virtualMachines/vm-nva2/extensions/MDE.Linux",
+        "location": "switzerlandnorth",
+        "name": "MDE.Linux",
+        "provisioningState": "Succeeded",
+        "publisher": "Microsoft.Azure.AzureDefenderForServers",
+        "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+        "settings": {
+          "autoUpdate": true,
+          "azureResourceId": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/RG-DUAL-HUB-HUBLESS-REGION-ARS-LAB3D001/providers/Microsoft.Compute/virtualMachines/vm-nva2",
+          "forceReOnboarding": false,
+          "vNextEnabled": false
+        },
+        "typeHandlerVersion": "1.0",
+        "typePropertiesType": "MDE.Linux"
+      }
+    ],
+    "storageProfile": {
+      "dataDisks": [],
+      "diskControllerType": "SCSI",
+      "imageReference": {
+        "exactVersion": "22.04.202607140",
+        "offer": "0001-com-ubuntu-server-jammy",
+        "publisher": "Canonical",
+        "sku": "22_04-lts-gen2",
+        "version": "latest"
+      },
+      "osDisk": {
+        "caching": "ReadWrite",
+        "createOption": "FromImage",
+        "deleteOption": "Detach",
+        "managedDisk": {
+          "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/RG-DUAL-HUB-HUBLESS-REGION-ARS-LAB3D001/providers/Microsoft.Compute/disks/osdisk-vm-nva2",
+          "resourceGroup": "RG-DUAL-HUB-HUBLESS-REGION-ARS-LAB3D001"
+        },
+        "name": "osdisk-vm-nva2",
+        "osType": "Linux"
+      }
+    },
+    "tags": {
+      "correlation_id": "lab3d001",
+      "created_by": "copilot-lab",
+      "ephemeral": "true",
+      "lab": "true",
+      "lab_name": "dual-hub-hubless-region-ars",
+      "owner": "jose"
+    },
+    "timeCreated": "2026-08-03T14:40:06.6648623+00:00",
+    "type": "Microsoft.Compute/virtualMachines",
+    "vmId": "e7a8b358-6dff-478e-b876-b7deff6671e4"
+  },
+  {
+    "etag": "\"12\"",
+    "fqdns": "",
+    "hardwareProfile": {
+      "vmSize": "Standard_B2ts_v2"
+    },
+    "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Compute/virtualMachines/vm-onprem-ep",
+    "location": "norwayeast",
+    "macAddresses": "7C-ED-8D-F1-95-6E",
+    "name": "vm-onprem-ep",
+    "networkProfile": {
+      "networkInterfaces": [
+        {
+          "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/networkInterfaces/nic-vm-onprem-ep",
+          "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+        }
+      ]
+    },
+    "osProfile": {
+      "adminUsername": "labadmin",
+      "allowExtensionOperations": true,
+      "computerName": "vm-onprem-ep",
+      "linuxConfiguration": {
+        "disablePasswordAuthentication": true,
+        "patchSettings": {
+          "assessmentMode": "AutomaticByPlatform",
+          "automaticByPlatformSettings": {
+            "bypassPlatformSafetyChecksOnUserSchedule": true
+          },
+          "patchMode": "AutomaticByPlatform"
+        },
+        "provisionVMAgent": true,
+        "ssh": {
+          "publicKeys": [
+            {
+              "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/",
+              "path": "/home/labadmin/.ssh/authorized_keys"
+            }
+          ]
+        }
+      },
+      "requireGuestProvisionSignal": true,
+      "secrets": []
+    },
+    "powerState": "VM deallocated",
+    "privateIps": "10.40.1.4",
+    "provisioningState": "Succeeded",
+    "publicIps": "",
+    "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+    "resources": [
+      {
+        "autoUpgradeMinorVersion": true,
+        "forceUpdateTag": "c28f2ac3-de12-4ec4-8264-80a9d5830230",
+        "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Compute/virtualMachines/vm-onprem-ep/extensions/MDE.Linux",
+        "location": "norwayeast",
+        "name": "MDE.Linux",
+        "provisioningState": "Succeeded",
+        "publisher": "Microsoft.Azure.AzureDefenderForServers",
+        "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+        "settings": {
+          "autoUpdate": true,
+          "azureResourceId": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/RG-DUAL-HUB-HUBLESS-REGION-ARS-LAB3D001/providers/Microsoft.Compute/virtualMachines/vm-onprem-ep",
+          "forceReOnboarding": false,
+          "vNextEnabled": false
+        },
+        "typeHandlerVersion": "1.0",
+        "typePropertiesType": "MDE.Linux"
+      }
+    ],
+    "storageProfile": {
+      "dataDisks": [],
+      "diskControllerType": "SCSI",
+      "imageReference": {
+        "exactVersion": "22.04.202607140",
+        "offer": "0001-com-ubuntu-server-jammy",
+        "publisher": "Canonical",
+        "sku": "22_04-lts-gen2",
+        "version": "latest"
+      },
+      "osDisk": {
+        "caching": "ReadWrite",
+        "createOption": "FromImage",
+        "deleteOption": "Detach",
+        "managedDisk": {
+          "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/RG-DUAL-HUB-HUBLESS-REGION-ARS-LAB3D001/providers/Microsoft.Compute/disks/osdisk-vm-onprem-ep",
+          "resourceGroup": "RG-DUAL-HUB-HUBLESS-REGION-ARS-LAB3D001"
+        },
+        "name": "osdisk-vm-onprem-ep",
+        "osType": "Linux"
+      }
+    },
+    "tags": {
+      "correlation_id": "lab3d001",
+      "created_by": "copilot-lab",
+      "ephemeral": "true",
+      "lab": "true",
+      "lab_name": "dual-hub-hubless-region-ars",
+      "owner": "jose"
+    },
+    "timeCreated": "2026-08-03T14:40:04.2319717+00:00",
+    "type": "Microsoft.Compute/virtualMachines",
+    "vmId": "732435f2-0562-4d7c-a8da-ca73bf6a8b9a"
+  },
+  {
+    "etag": "\"12\"",
+    "fqdns": "",
+    "hardwareProfile": {
+      "vmSize": "Standard_B2ts_v2"
+    },
+    "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Compute/virtualMachines/vm-hub1-ep",
+    "location": "swedencentral",
+    "macAddresses": "70-A8-A5-79-63-79",
+    "name": "vm-hub1-ep",
+    "networkProfile": {
+      "networkInterfaces": [
+        {
+          "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/networkInterfaces/nic-vm-hub1-ep",
+          "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+        }
+      ]
+    },
+    "osProfile": {
+      "adminUsername": "labadmin",
+      "allowExtensionOperations": true,
+      "computerName": "vm-hub1-ep",
+      "linuxConfiguration": {
+        "disablePasswordAuthentication": true,
+        "enableVMAgentPlatformUpdates": true,
+        "patchSettings": {
+          "assessmentMode": "AutomaticByPlatform",
+          "automaticByPlatformSettings": {
+            "bypassPlatformSafetyChecksOnUserSchedule": true
+          },
+          "patchMode": "AutomaticByPlatform"
+        },
+        "provisionVMAgent": true,
+        "ssh": {
+          "publicKeys": [
+            {
+              "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/",
+              "path": "/home/labadmin/.ssh/authorized_keys"
+            }
+          ]
+        }
+      },
+      "requireGuestProvisionSignal": true,
+      "secrets": []
+    },
+    "powerState": "VM deallocated",
+    "privateIps": "10.11.0.4",
+    "provisioningState": "Succeeded",
+    "publicIps": "",
+    "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+    "resources": [
+      {
+        "autoUpgradeMinorVersion": true,
+        "forceUpdateTag": "9dfb65e8-5cd1-40e5-b4cf-4ceb3061fe69",
+        "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Compute/virtualMachines/vm-hub1-ep/extensions/MDE.Linux",
+        "location": "swedencentral",
+        "name": "MDE.Linux",
+        "provisioningState": "Failed",
+        "publisher": "Microsoft.Azure.AzureDefenderForServers",
+        "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+        "settings": {
+          "autoUpdate": true,
+          "azureResourceId": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/RG-DUAL-HUB-HUBLESS-REGION-ARS-LAB3D001/providers/Microsoft.Compute/virtualMachines/vm-hub1-ep",
+          "forceReOnboarding": false,
+          "vNextEnabled": false
+        },
+        "typeHandlerVersion": "1.0",
+        "typePropertiesType": "MDE.Linux"
+      }
+    ],
+    "storageProfile": {
+      "dataDisks": [],
+      "diskControllerType": "SCSI",
+      "imageReference": {
+        "exactVersion": "22.04.202607140",
+        "offer": "0001-com-ubuntu-server-jammy",
+        "publisher": "Canonical",
+        "sku": "22_04-lts-gen2",
+        "version": "latest"
+      },
+      "osDisk": {
+        "caching": "ReadWrite",
+        "createOption": "FromImage",
+        "deleteOption": "Detach",
+        "managedDisk": {
+          "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/RG-DUAL-HUB-HUBLESS-REGION-ARS-LAB3D001/providers/Microsoft.Compute/disks/osdisk-vm-hub1-ep",
+          "resourceGroup": "RG-DUAL-HUB-HUBLESS-REGION-ARS-LAB3D001"
+        },
+        "name": "osdisk-vm-hub1-ep",
+        "osType": "Linux"
+      }
+    },
+    "tags": {
+      "correlation_id": "lab3d001",
+      "created_by": "copilot-lab",
+      "ephemeral": "true",
+      "lab": "true",
+      "lab_name": "dual-hub-hubless-region-ars",
+      "owner": "jose"
+    },
+    "timeCreated": "2026-08-03T14:40:06.1938201+00:00",
+    "type": "Microsoft.Compute/virtualMachines",
+    "vmId": "fb8328a2-c501-4452-aced-a44e41745f36"
+  },
+  {
+    "diagnosticsProfile": {
+      "bootDiagnostics": {
+        "enabled": true
+      }
+    },
+    "etag": "\"24\"",
+    "fqdns": "",
+    "hardwareProfile": {
+      "vmSize": "Standard_B2ts_v2"
+    },
+    "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Compute/virtualMachines/vm-nva1",
+    "location": "swedencentral",
+    "macAddresses": "7C-1E-52-3F-65-52",
+    "name": "vm-nva1",
+    "networkProfile": {
+      "networkInterfaces": [
+        {
+          "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/networkInterfaces/nic-vm-nva1",
+          "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+        }
+      ]
+    },
+    "osProfile": {
+      "adminUsername": "labadmin",
+      "allowExtensionOperations": true,
+      "computerName": "vm-nva1",
+      "linuxConfiguration": {
+        "disablePasswordAuthentication": true,
+        "enableVMAgentPlatformUpdates": true,
+        "patchSettings": {
+          "assessmentMode": "AutomaticByPlatform",
+          "automaticByPlatformSettings": {
+            "bypassPlatformSafetyChecksOnUserSchedule": true
+          },
+          "patchMode": "AutomaticByPlatform"
+        },
+        "provisionVMAgent": true,
+        "ssh": {
+          "publicKeys": [
+            {
+              "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/",
+              "path": "/home/labadmin/.ssh/authorized_keys"
+            }
+          ]
+        }
+      },
+      "requireGuestProvisionSignal": true,
+      "secrets": []
+    },
+    "powerState": "VM deallocated",
+    "privateIps": "10.10.1.4",
+    "provisioningState": "Succeeded",
+    "publicIps": "",
+    "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+    "resources": [
+      {
+        "autoUpgradeMinorVersion": true,
+        "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Compute/virtualMachines/vm-nva1/extensions/enablevmAccess",
+        "location": "swedencentral",
+        "name": "enablevmAccess",
+        "provisioningState": "Succeeded",
+        "publisher": "Microsoft.OSTCExtensions",
+        "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+        "typeHandlerVersion": "1.5",
+        "typePropertiesType": "VMAccessForLinux"
+      },
+      {
+        "autoUpgradeMinorVersion": true,
+        "forceUpdateTag": "f8a2a28a-1381-4aec-8174-75072112e166",
+        "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Compute/virtualMachines/vm-nva1/extensions/MDE.Linux",
+        "location": "swedencentral",
+        "name": "MDE.Linux",
+        "provisioningState": "Succeeded",
+        "publisher": "Microsoft.Azure.AzureDefenderForServers",
+        "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+        "settings": {
+          "autoUpdate": true,
+          "azureResourceId": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/RG-DUAL-HUB-HUBLESS-REGION-ARS-LAB3D001/providers/Microsoft.Compute/virtualMachines/vm-nva1",
+          "forceReOnboarding": false,
+          "vNextEnabled": false
+        },
+        "typeHandlerVersion": "1.0",
+        "typePropertiesType": "MDE.Linux"
+      }
+    ],
+    "storageProfile": {
+      "dataDisks": [],
+      "diskControllerType": "SCSI",
+      "imageReference": {
+        "exactVersion": "22.04.202607140",
+        "offer": "0001-com-ubuntu-server-jammy",
+        "publisher": "Canonical",
+        "sku": "22_04-lts-gen2",
+        "version": "latest"
+      },
+      "osDisk": {
+        "caching": "ReadWrite",
+        "createOption": "FromImage",
+        "deleteOption": "Detach",
+        "managedDisk": {
+          "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/RG-DUAL-HUB-HUBLESS-REGION-ARS-LAB3D001/providers/Microsoft.Compute/disks/osdisk-vm-nva1",
+          "resourceGroup": "RG-DUAL-HUB-HUBLESS-REGION-ARS-LAB3D001"
+        },
+        "name": "osdisk-vm-nva1",
+        "osType": "Linux"
+      }
+    },
+    "tags": {
+      "correlation_id": "lab3d001",
+      "created_by": "copilot-lab",
+      "ephemeral": "true",
+      "lab": "true",
+      "lab_name": "dual-hub-hubless-region-ars",
+      "owner": "jose"
+    },
+    "timeCreated": "2026-08-03T14:40:08.1702711+00:00",
+    "type": "Microsoft.Compute/virtualMachines",
+    "vmId": "cc81577f-b025-4e4c-bcd3-0338b76e44dc"
+  }
+]

@@ -1,0 +1,229 @@
+{
+  "error": null,
+  "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Resources/deployments/square-onprem2-validate",
+  "name": "square-onprem2-validate",
+  "properties": {
+    "correlationId": "59c0bbc4-99bc-4c0f-b93c-f059fdd860a6",
+    "debugSetting": null,
+    "dependencies": [
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/networkSecurityGroups/nsg-ep-onprem2",
+            "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+            "resourceName": "nsg-ep-onprem2",
+            "resourceType": "Microsoft.Network/networkSecurityGroups"
+          }
+        ],
+        "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworks/vnet-onprem2",
+        "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+        "resourceName": "vnet-onprem2",
+        "resourceType": "Microsoft.Network/virtualNetworks"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworks/vnet-onprem2",
+            "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+            "resourceName": "vnet-onprem2",
+            "resourceType": "Microsoft.Network/virtualNetworks"
+          }
+        ],
+        "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-onprem2",
+        "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+        "resourceName": "vpngw-onprem2",
+        "resourceType": "Microsoft.Network/virtualNetworkGateways"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworks/vnet-onprem2",
+            "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+            "resourceName": "vnet-onprem2",
+            "resourceType": "Microsoft.Network/virtualNetworks"
+          }
+        ],
+        "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/networkInterfaces/nic-vm-onprem2-ep",
+        "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+        "resourceName": "nic-vm-onprem2-ep",
+        "resourceType": "Microsoft.Network/networkInterfaces"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/networkInterfaces/nic-vm-onprem2-ep",
+            "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+            "resourceName": "nic-vm-onprem2-ep",
+            "resourceType": "Microsoft.Network/networkInterfaces"
+          }
+        ],
+        "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Compute/virtualMachines/vm-onprem2-ep",
+        "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+        "resourceName": "vm-onprem2-ep",
+        "resourceType": "Microsoft.Compute/virtualMachines"
+      }
+    ],
+    "diagnostics": null,
+    "duration": "PT0S",
+    "error": null,
+    "extensions": [],
+    "mode": "Incremental",
+    "onErrorDeployment": null,
+    "outputResources": null,
+    "outputs": null,
+    "parameters": {
+      "adminUsername": {
+        "type": "String",
+        "value": "labadmin"
+      },
+      "vmSize": {
+        "type": "String",
+        "value": "Standard_B2ts_v2"
+      },
+      "vmSshPublicKey": {
+        "type": "String",
+        "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/"
+      }
+    },
+    "parametersLink": null,
+    "providers": [
+      {
+        "id": null,
+        "namespace": "Microsoft.Network",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              "polandcentral"
+            ],
+            "properties": null,
+            "resourceType": "networkSecurityGroups",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              "polandcentral"
+            ],
+            "properties": null,
+            "resourceType": "virtualNetworks",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              "polandcentral"
+            ],
+            "properties": null,
+            "resourceType": "virtualNetworkGateways",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              "polandcentral"
+            ],
+            "properties": null,
+            "resourceType": "networkInterfaces",
+            "zoneMappings": null
+          }
+        ]
+      },
+      {
+        "id": null,
+        "namespace": "Microsoft.Compute",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              "polandcentral"
+            ],
+            "properties": null,
+            "resourceType": "virtualMachines",
+            "zoneMappings": null
+          }
+        ]
+      }
+    ],
+    "provisioningState": "Succeeded",
+    "templateHash": "6673500013294102406",
+    "templateLink": null,
+    "timestamp": "2026-08-07T06:18:43.563433+00:00",
+    "validatedResources": [
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Compute/virtualMachines/vm-onprem2-ep",
+        "identifiers": null,
+        "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/networkInterfaces/nic-vm-onprem2-ep",
+        "identifiers": null,
+        "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/networkSecurityGroups/nsg-ep-onprem2",
+        "identifiers": null,
+        "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-onprem2",
+        "identifiers": null,
+        "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworks/vnet-onprem2",
+        "identifiers": null,
+        "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+        "resourceType": null
+      }
+    ],
+    "validationLevel": null
+  },
+  "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+  "type": "Microsoft.Resources/deployments"
+}

@@ -1,0 +1,20 @@
+# Command: az network routeserver peering list-learned-routes -g rg-dual-hub-hubless-region-ars-lab3d001 --routeserver ars-hub1 -n peer-nva1 -o json
+# Timestamp: 2026-08-03T17:57:00+02:00
+# DELTA-1 NOTE: AS-PATH "65001" only (not "65001-65515") confirms Δ1 loop-strip working.
+{
+  "RouteServiceRole_IN_0": [
+    {"asPath":"65001","localAddress":"10.10.0.68","network":"0.0.0.0/0","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.10.0.68","network":"10.30.0.0/24","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.10.0.68","network":"10.31.0.0/24","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.10.0.68","network":"10.32.0.0/24","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.10.0.68","network":"10.30.0.0/27","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768}
+  ],
+  "RouteServiceRole_IN_1": [
+    {"asPath":"65001","localAddress":"10.10.0.69","network":"0.0.0.0/0","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.10.0.69","network":"10.30.0.0/27","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.10.0.69","network":"10.30.0.0/24","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.10.0.69","network":"10.31.0.0/24","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.10.0.69","network":"10.32.0.0/24","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001-65000","localAddress":"10.10.0.69","network":"10.40.0.0/16","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768}
+  ]
+}

@@ -1,0 +1,39 @@
+S2/S3 FAULT INJECTION AND RECOVERY — 2026-08-04
+===============================================
+
+S2 (Hub1 Outage)
+T0 (PSK corrupt start): 09:17:04
+NVA1 BIRD stopped:      09:19:30
+T1 (c1-ep=NVA2):        09:20:09
+Delta T0->T1:           185s (incl ~82s API call overhead)
+Delta BIRD-stop->conv:   39s
+PASS criteria check:
+  c1-ep 0/0 = 10.20.1.4 (NVA2 only):   PASS
+  ars-poland/nva1 routes = 0:            PASS
+  ars-poland/nva2 0/0 = 65002-65002-65002: PASS
+  onprem 10.31/24 hub2-only:             PASS
+  c1->onprem ping 0% loss via hub2:      PASS
+  Convergence from BIRD-stop <= 180s:    PASS (39s)
+  Convergence from T0 <= 240s:           PASS (185s)
+
+S3 (Hub1 Recovery)
+T0_S3 (recovery start): 09:25:29
+NVA1 BIRD started:      09:28:21
+T1_S3 (c1-ep=NVA1):     09:28:45
+Delta T0_S3->T1:        196s (incl ~120s API call overhead)
+Delta BIRD-start->conv:  24s
+PASS criteria check:
+  c1-ep 0/0 = 10.10.1.4 (NVA1 only):    PASS
+  ars-poland/nva1 0/0 = 65001:           PASS
+  ars-poland/nva2 0/0 = 65002-65002-65002: PASS (Delta3 preserved)
+  onprem hub1=65515-65001 preferred:     PASS
+  hub1-ep -> c1-ep 0% loss:             PASS (DEF-001 remains resolved)
+  Convergence from BIRD-start <= 90s:    PASS (24s)
+  All 4 VPN connections Connected:       PASS
+  NVA1 4/4 BIRD sessions Established:   PASS
+
+DEVIATION:
+  KV platform-secrets-1138 inaccessible from local machine (public network disabled).
+  S3 used fresh matching PSK on both connection sides instead of exact original.
+  Tunnel re-established with matching PSK on both sides - functionally equivalent.
+  PSK values: never logged, never printed.

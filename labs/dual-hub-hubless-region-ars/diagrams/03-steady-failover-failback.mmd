@@ -1,0 +1,63 @@
+%%{init: {'theme': 'default'}}%%
+flowchart TD
+
+    subgraph S1["S1 — Steady State  (all 10/10 BGP up)"]
+        direction LR
+        SC1["Set-C1/C2\n10.31-32.0.0/24"]
+        ARSP1["ARS Poland\nbest-path = NVA1\n(Δ3: NVA1 wins AS-PATH)"]
+        HUB1A["NVA1 → ARS hub1\n→ VPN GW hub1"]
+        HUB1B["NVA2 → ARS hub2\n→ VPN GW hub2"]
+        OP1["on-prem\nAS 65000"]
+        SC1   -->|"effective route 0/0 → NVA1_IP"| ARSP1
+        ARSP1 -->|"AS-PATH [65515,65001]"| HUB1A
+        ARSP1 -->|"AS-PATH [65515,65002,65002,65002]"| HUB1B
+        HUB1A -->|"PREFERRED"| OP1
+        HUB1B -->|"STANDBY  (longer AS-PATH)"| OP1
+    end
+
+    subgraph S2["S2 — Hub1 Outage  (wrong PSK + NVA1 bird stopped)"]
+        direction LR
+        SC2["Set-C1/C2\n10.31-32.0.0/24"]
+        ARSP2["ARS Poland\nbest-path flips → NVA2\n(NVA1 BGP withdrawn)"]
+        HUB2B["NVA2 → ARS hub2\n→ VPN GW hub2"]
+        OP2["on-prem\nAS 65000"]
+        FAULT["Fault injection:\nwrong PSK on both hub1-onprem\nconnections + vpn-connection reset\nsystemctl stop bird on NVA1"]
+        SC2   -->|"0/0 flips → NVA2_IP\n(convergence 30-180 s)"| ARSP2
+        ARSP2 -->|"AS-PATH [65515,65002]"| HUB2B
+        HUB2B -->|"ONLY available path"| OP2
+        FAULT  -.->|"triggers"| ARSP2
+    end
+
+    subgraph S3["S3 — Hub1 Recovery  (PSK restored + NVA1 bird started)"]
+        direction LR
+        SC3["Set-C1/C2\n10.31-32.0.0/24"]
+        ARSP3["ARS Poland\nbest-path reverts → NVA1\n(Δ3 re-asserts preference)"]
+        HUB3A["NVA1 → ARS hub1\n→ VPN GW hub1"]
+        OP3["on-prem\nAS 65000"]
+        RESTORE["Recovery:\nrestore PSKs + vpn-connection reset\nsystemctl start bird on NVA1"]
+        SC3    -->|"0/0 reverts → NVA1_IP\n(convergence 30-90 s)"| ARSP3
+        ARSP3  -->|"AS-PATH [65515,65001] RESTORED"| HUB3A
+        HUB3A  -->|"PREFERRED again"| OP3
+        RESTORE -.->|"triggers"| ARSP3
+    end
+
+    S1 -->|"fault injection"| S2
+    S2 -->|"recovery"| S3
+
+    style SC1    fill:#DFF6DD,stroke:#107C10,color:#000000
+    style ARSP1  fill:#DFF6DD,stroke:#107C10,color:#000000
+    style HUB1A  fill:#CFE4FA,stroke:#0078D4,color:#000000
+    style HUB1B  fill:#E8DAEF,stroke:#5C2D91,color:#000000
+    style OP1    fill:#FFF4CE,stroke:#F7630C,color:#000000
+
+    style SC2    fill:#DFF6DD,stroke:#107C10,color:#000000
+    style ARSP2  fill:#DFF6DD,stroke:#107C10,color:#000000
+    style HUB2B  fill:#E8DAEF,stroke:#5C2D91,color:#000000
+    style OP2    fill:#FFF4CE,stroke:#F7630C,color:#000000
+    style FAULT  fill:#FDE7E9,stroke:#D13438,color:#000000
+
+    style SC3    fill:#DFF6DD,stroke:#107C10,color:#000000
+    style ARSP3  fill:#DFF6DD,stroke:#107C10,color:#000000
+    style HUB3A  fill:#CFE4FA,stroke:#0078D4,color:#000000
+    style OP3    fill:#FFF4CE,stroke:#F7630C,color:#000000
+    style RESTORE fill:#DFF6DD,stroke:#107C10,color:#000000

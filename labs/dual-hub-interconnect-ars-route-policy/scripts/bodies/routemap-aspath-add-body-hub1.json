@@ -1,0 +1,31 @@
+{
+  "_comment": "PLACEHOLDER - not a real request body. T2b real modification, approval unit U3b. FULL PUT body for Microsoft.Network/virtualHubs/ars-hub1/routeMaps/rm-hub1-tmp-assoc, api-version 2024-10-01 - the resource type is virtualHubs/<ars>/routeMaps, NOT virtualHubRouteTables. Runs only after U1.5, U2 and U3a have all PASSED.",
+  "_TARGET_PREFIX_CHANGED_2026-08-06": "198.51.100.0/24 (RFC 5737 TEST-NET-2). THIS SUPERSEDES 10.10.0.64/27, which is now INVALID as a U3 target. Reason (finding TANK-001, evidence show-output/new/u0-u1/post-u0/04-post-ars-hub1-peer-nva1-learned.json, re-confirmed live read-only 2026-08-06): 10.10.0.64/27 is present in vm-nva1's bird.conf and is exported to ars-hub1 exactly like every other static, but it NEVER APPEARS in ars-hub1's learned-routes set - Azure Route Server silently rejects a route matching its own RouteServerSubnet. A route map applied inbound on ars-hub1/peer-nva1 can only act on routes ARS actually learns, so a map keyed on 10.10.0.64/27 could never match and U3 would have proven nothing while appearing to run.",
+  "_why_a_new_prefix_was_needed": "After U1.5 the only prefixes ars-hub1 learns from peer-nva1 are 0.0.0.0/0 (FORBIDDEN target - rt-spoke-a UDR semantics, DEF-001 evidence) and 10.40.0.0/16 (FORBIDDEN - the on-prem prefix, and it appears on RouteServiceRole_IN_1 only, so a before/after diff would be instance-asymmetric and unfalsifiable). 10.30.0.0/27 is removed by U1.5 and must never be resurrected as a test target. Therefore U3a first injects a harmless documentation prefix on vm-nva1 (nva-config/bird-nva1.u3a-doctest.snippet.conf: protocol static u3_doc_test { route 198.51.100.0/24 blackhole; }), U3a proves ars-hub1 learns it with asPath '65001' on BOTH instances, and only then does this body run.",
+  "_asn_validity_2026-08-06": "64496 = RFC 5398 2-byte documentation ASN. NOT private (64512-65534) and NOT on Azure's reserved-for-prepending list (public 8074/8075/12076; private 65515/65517/65518/65519/65520) per https://learn.microsoft.com/azure/route-server/route-maps-about#considerations-and-limitations. Route maps support 2-byte ASNs only. Azure's own prepend walkthrough (route-maps-scenario-prepend-routes) uses 64511, from the same documentation block. Private ASNs must NOT be used for prepending.",
+  "_expected_evidence": "AS-PATH on 198.51.100.0/24 changes from '65001' to '64496-64496-65001' at BOTH ars-hub1 instances; every other prefix byte-identical to the post-U3a baseline. EVIDENCE-FIDELITY RISK, stated up front: it is not established that az network routeserver peering list-learned-routes reports post-inbound-map attributes rather than as-received ones. If the modification cannot be observed on any available surface (CLI learned-routes plus the portal Route Map dashboard), the result is INCONCLUSIVE, not FAIL, and is recorded as such - U2 still stands as the association proof.",
+  "_softer_alternative": "If AS-PATH modification is judged too close to best-path behaviour, replace the action with { \"type\": \"Add\", \"parameters\": [ { \"community\": [\"64496:100\"] } ] } on the same prefix - a pure tag that cannot influence best-path selection.",
+  "_rollback": "PUT bodies/routemap-tmp-assoc-hub1.json to return the map to its inert 203.0.113.0/24 rule (= U2 state). To go all the way back, then run the U2 rollback, then remove the u3_doc_test block from bird.conf and birdc configure.",
+  "properties": {
+    "rules": [
+      {
+        "name": "add-64496-x2",
+        "matchCriteria": [
+          {
+            "matchCondition": "Equals",
+            "routePrefix": ["198.51.100.0/24"]
+          }
+        ],
+        "actions": [
+          {
+            "type": "Add",
+            "parameters": [
+              { "asPath": ["64496", "64496"] }
+            ]
+          }
+        ],
+        "nextStepIfMatched": "Terminate"
+      }
+    ]
+  }
+}

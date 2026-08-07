@@ -1,0 +1,91 @@
+Enable succeeded: 
+[stdout]
+=== Patched bird.conf ===
+# NVA2  ASN 65002  switzerlandnorth
+router id 10.20.1.4;
+
+protocol device { }
+
+protocol direct {
+  ipv4 { import all; };
+}
+
+protocol kernel {
+  ipv4 {
+    import none;
+    export all;
+  };
+}
+
+# 1+2 combined export filter for hub2 ARS sessions
+# Strips 65515 (loop prevention) AND prepends 650022 for set-C prefixes
+filter export_to_hub2_ars {
+  bgp_path.delete(65515);
+  if net ~ [ 10.31.0.0/24, 10.32.0.0/24 ] then {
+    bgp_path.prepend(65002);
+    bgp_path.prepend(65002);
+  }
+  accept;
+}
+
+filter export_to_poland_ars {
+  accept;
+}
+
+#  hub2 ARS sessions (local, no multihop) 
+# ARS hub2 instance IPs: 10.20.0.68, 10.20.0.69 (from RouteServerSubnet 10.20.0.64/27)
+protocol bgp ars_hub2_0 {
+  local 10.20.1.4 as 65002;
+  neighbor 10.20.0.68 as 65515;
+  ipv4 {
+    import all;
+    export filter export_to_hub2_ars;
+  };
+}
+
+protocol bgp ars_hub2_1 {
+  local 10.20.1.4 as 65002;
+  neighbor 10.20.0.69 as 65515;
+  ipv4 {
+    import all;
+    export filter export_to_hub2_ars;
+  };
+}
+
+#  Poland ARS sessions (multi-hop, global VNet peering traversal) 
+# ARS poland instance IPs: 10.30.0.4, 10.30.0.5 (from RouteServerSubnet 10.30.0.0/27)
+protocol bgp ars_poland_0 {
+  local 10.20.1.4 as 65002;
+  neighbor 10.30.0.4 as 65515;
+  multihop 4;
+  ipv4 {
+    import all;
+    export filter export_to_poland_ars;
+  };
+}
+
+protocol bgp ars_poland_1 {
+  local 10.20.1.4 as 65002;
+  neighbor 10.30.0.5 as 65515;
+  multihop 4;
+  ipv4 {
+    import all;
+    export filter export_to_poland_ars;
+  };
+}
+=== Restarting BIRD ===
+=== BIRD protocols ===
+BIRD 2.0.8 ready.
+Name       Proto      Table      State  Since         Info
+device1    Device     ---        up     16:30:18.005  
+direct1    Direct     ---        up     16:30:18.005  
+kernel1    Kernel     master4    up     16:30:18.005  
+ars_hub2_0 BGP        ---        start  16:30:18.005  Idle          
+ars_hub2_1 BGP        ---        start  16:30:18.005  Idle          
+ars_poland_0 BGP        ---        start  16:30:18.005  Active        Socket: No route to host
+ars_poland_1 BGP        ---        up     16:30:22.430  Established   
+=== Listening ports ===
+LISTEN 0      8            0.0.0.0:179       0.0.0.0:*    users:(("bird",pid=11205,fd=8))          
+
+[stderr]
+

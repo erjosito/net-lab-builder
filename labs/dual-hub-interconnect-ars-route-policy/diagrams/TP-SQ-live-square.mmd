@@ -1,0 +1,15 @@
+flowchart LR
+  DC1["DC1<br/>vnet-onprem 10.40.0.0/16<br/>Norway East · ASN 65000"]
+  H1["Hub1<br/>vnet-hub1 10.10.0.0/16<br/>Sweden Central · ASN 65515"]
+  H2["Hub2<br/>vnet-hub2 10.20.0.0/16<br/>Switzerland North · ASN 65515"]
+  DC2["DC2<br/>vnet-onprem2 10.50.0.0/16<br/>Poland Central · ASN 65003"]
+
+  DC1 <-->|"S-A · VNet-to-VNet VPN + BGP"| H1
+  H1 <-->|"S-B · Global VNet peering"| H2
+  H2 <-->|"S-C · VNet-to-VNet VPN + BGP"| DC2
+  DC2 <-->|"S-D · VNet-to-VNet VPN + BGP (DCI)"| DC1
+
+  classDef hub fill:#e6f2fb,stroke:#0f6cbd,color:#062a47
+  classDef site fill:#fff4ce,stroke:#b26b00,color:#4a2c00
+  class H1,H2 hub
+  class DC1,DC2 site

@@ -1,0 +1,29 @@
+%%{init: {'theme': 'default'}}%%
+flowchart TD
+    START(["Cleanup triggered\ncorr_id known"])
+
+    START --> RG["az group delete --yes\n--name rg-dual-hub-hubless-region-ars-corrID\n\nDeletes all tagged resources in one call:\n3x VPN GW  ·  3x ARS  ·  6x VM\n4x VPN conn  ·  9x Std PIP\nall peerings  ·  NICs  ·  OS disks\nRouteServerSubnets  ·  VNets"]
+
+    RG --> KV1["az keyvault secret delete\n--vault-name platform-secrets-1138\n--name psk-hub1-onprem"]
+
+    RG --> KV2["az keyvault secret delete\n--vault-name platform-secrets-1138\n--name psk-hub2-onprem"]
+
+    KV1 --> PG1["az keyvault secret purge\n--vault-name platform-secrets-1138\n--name psk-hub1-onprem"]
+
+    KV2 --> PG2["az keyvault secret purge\n--vault-name platform-secrets-1138\n--name psk-hub2-onprem"]
+
+    PG1 --> DONE(["Cleanup complete\nNo shared infra touched\nplatform-secrets-1138 KV preserved"])
+    PG2 --> DONE
+
+    NOTE["Notes:\n- No LNG objects (V2V model) — no extra cleanup\n- ARS PIPs released with RG delete\n- No cross-provider dependencies\n- No inter-lab shared VNets\n- SSH pubkeys (vm-ssh-pub-*) pre-existing, not deleted"]
+
+    DONE -.->|"verify"| NOTE
+
+    style START fill:#DFF6DD,stroke:#107C10,color:#000000
+    style RG    fill:#FFF4CE,stroke:#F7630C,color:#000000
+    style KV1   fill:#CFE4FA,stroke:#0078D4,color:#000000
+    style KV2   fill:#CFE4FA,stroke:#0078D4,color:#000000
+    style PG1   fill:#CFE4FA,stroke:#0078D4,color:#000000
+    style PG2   fill:#CFE4FA,stroke:#0078D4,color:#000000
+    style DONE  fill:#DFF6DD,stroke:#107C10,color:#000000
+    style NOTE  fill:#F3F2F1,stroke:#495057,color:#000000

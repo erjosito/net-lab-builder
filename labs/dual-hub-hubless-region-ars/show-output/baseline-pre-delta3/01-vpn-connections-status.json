@@ -1,0 +1,10 @@
+# Command: az network vpn-connection list -g rg-dual-hub-hubless-region-ars-lab3d001 --query "[].{name:name,state:connectionStatus,bgp:enableBgp,prov:provisioningState}" -o json
+# Timestamp: 2026-08-03T17:55:00+02:00 (live capture)
+# NOTE: state=null means API returned null for connectionStatus; deploy evidence shows Connected for all 4.
+[
+  {"name":"conn-hub2-to-onprem","state":null,"bgp":true,"prov":"Succeeded"},
+  {"name":"conn-onprem-to-hub1","state":null,"bgp":true,"prov":"Succeeded"},
+  {"name":"conn-onprem-to-hub2","state":null,"bgp":true,"prov":"Succeeded"},
+  {"name":"conn-hub1-to-onprem","state":null,"bgp":true,"prov":"Succeeded"}
+]
+# Deploy-time evidence (show-output/deploy/vpn-connections-status.json) confirms all 4 Connected.

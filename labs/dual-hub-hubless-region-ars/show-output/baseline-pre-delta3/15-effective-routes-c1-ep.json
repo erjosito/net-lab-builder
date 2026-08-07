@@ -1,0 +1,17 @@
+# Command: az network nic show-effective-route-table -g rg-dual-hub-hubless-region-ars-lab3d001 -n nic-vm-c1-ep -o json
+# Source: show-output/deploy/vm-c1-ep-effective-routes.json (deploy-time; no config change since)
+# Timestamp: 2026-08-03 ~16:50 UTC (deploy)
+{
+  "value": [
+    {"addressPrefix":["10.31.0.0/24"],"disableBgpRoutePropagation":false,"nextHopIpAddress":[],"nextHopType":"VnetLocal","source":"Default","state":"Active"},
+    {"addressPrefix":["10.30.0.0/24"],"disableBgpRoutePropagation":false,"nextHopIpAddress":[],"nextHopType":"VNetPeering","source":"Default","state":"Active"},
+    {"addressPrefix":["0.0.0.0/0"],"disableBgpRoutePropagation":false,"nextHopIpAddress":["10.10.1.4","10.20.1.4"],"nextHopType":"VirtualNetworkGateway","source":"VirtualNetworkGateway","state":"Active"},
+    {"addressPrefix":["10.10.0.0/16"],"disableBgpRoutePropagation":false,"nextHopIpAddress":[],"nextHopType":"VNetGlobalPeering","source":"Default","state":"Active"},
+    {"addressPrefix":["10.20.0.0/16"],"disableBgpRoutePropagation":false,"nextHopIpAddress":[],"nextHopType":"VNetGlobalPeering","source":"Default","state":"Active"}
+  ]
+}
+# *** CRITICAL PRE-DELTA-3 FINDING ***
+# 0.0.0.0/0 nextHopIpAddress: ["10.10.1.4","10.20.1.4"] = ECMP NVA1 + NVA2
+# ARS injects EQUAL-COST 0/0 from both NVA1 (AS 65001) and NVA2 (AS 65002).
+# No route-map → equal AS-PATH length (both "65001" and "65002" = 1 hop after Δ1 strip).
+# Δ3 will prepend 65002×2 on ars-poland inbound from NVA2 → break ECMP → NVA1 preferred.

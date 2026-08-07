@@ -1,0 +1,256 @@
+[
+  {
+    "authenticationType": "PSK",
+    "connectionMode": "Default",
+    "connectionProtocol": "IKEv2",
+    "connectionType": "Vnet2Vnet",
+    "dpdTimeoutSeconds": 0,
+    "egressBytesTransferred": 0,
+    "enableBgp": true,
+    "enablePrivateLinkFastPath": false,
+    "etag": "W/\"2faf347f-b721-46a9-8971-03ef7e5ee066\"",
+    "expressRouteGatewayBypass": false,
+    "gatewayCustomBgpIpAddresses": [],
+    "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/connections/conn-hub2-to-onprem2",
+    "ingressBytesTransferred": 0,
+    "ipsecPolicies": [],
+    "location": "switzerlandnorth",
+    "name": "conn-hub2-to-onprem2",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+    "resourceGuid": "76929a3c-bd94-4d51-b4a7-cb2b359305f7",
+    "routingWeight": 0,
+    "tags": {
+      "created_by": "copilot-lab",
+      "lab": "true",
+      "run_id": "lab3d001",
+      "scenario": "TP-SQ",
+      "side": "S-C"
+    },
+    "trafficSelectorPolicies": [],
+    "tunnelProperties": [],
+    "type": "Microsoft.Network/connections",
+    "useLocalAzureIpAddress": false,
+    "usePolicyBasedTrafficSelectors": false,
+    "virtualNetworkGateway1": {
+      "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-hub2",
+      "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+    },
+    "virtualNetworkGateway2": {
+      "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-onprem2",
+      "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+    }
+  },
+  {
+    "authenticationType": "PSK",
+    "connectionMode": "Default",
+    "connectionProtocol": "IKEv2",
+    "connectionType": "Vnet2Vnet",
+    "dpdTimeoutSeconds": 0,
+    "egressBytesTransferred": 0,
+    "enableBgp": true,
+    "enablePrivateLinkFastPath": false,
+    "etag": "W/\"d422c8ea-94ca-41e1-8524-c111f6dc255c\"",
+    "expressRouteGatewayBypass": false,
+    "gatewayCustomBgpIpAddresses": [],
+    "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/connections/conn-onprem-to-hub1",
+    "ingressBytesTransferred": 0,
+    "ipsecPolicies": [],
+    "location": "norwayeast",
+    "name": "conn-onprem-to-hub1",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+    "resourceGuid": "16aed020-9a02-42a9-bfa2-11562543ea86",
+    "routingWeight": 0,
+    "tags": {
+      "correlation_id": "lab3d001",
+      "created_by": "copilot-lab",
+      "ephemeral": "true",
+      "lab": "true",
+      "lab_name": "dual-hub-hubless-region-ars",
+      "owner": "jose"
+    },
+    "trafficSelectorPolicies": [],
+    "tunnelProperties": [],
+    "type": "Microsoft.Network/connections",
+    "useLocalAzureIpAddress": false,
+    "usePolicyBasedTrafficSelectors": false,
+    "virtualNetworkGateway1": {
+      "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-onprem",
+      "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+    },
+    "virtualNetworkGateway2": {
+      "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-hub1",
+      "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+    }
+  },
+  {
+    "authenticationType": "PSK",
+    "connectionMode": "Default",
+    "connectionProtocol": "IKEv2",
+    "connectionType": "Vnet2Vnet",
+    "dpdTimeoutSeconds": 0,
+    "egressBytesTransferred": 0,
+    "enableBgp": true,
+    "enablePrivateLinkFastPath": false,
+    "etag": "W/\"d0275aa9-6de8-4ad3-87fa-005685c57110\"",
+    "expressRouteGatewayBypass": false,
+    "gatewayCustomBgpIpAddresses": [],
+    "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/connections/conn-onprem-to-onprem2",
+    "ingressBytesTransferred": 0,
+    "ipsecPolicies": [],
+    "location": "norwayeast",
+    "name": "conn-onprem-to-onprem2",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+    "resourceGuid": "54de6f33-9603-4d81-bc16-66cb3e3a896c",
+    "routingWeight": 0,
+    "tags": {
+      "created_by": "copilot-lab",
+      "lab": "true",
+      "run_id": "lab3d001",
+      "scenario": "TP-SQ",
+      "side": "S-D"
+    },
+    "trafficSelectorPolicies": [],
+    "tunnelProperties": [],
+    "type": "Microsoft.Network/connections",
+    "useLocalAzureIpAddress": false,
+    "usePolicyBasedTrafficSelectors": false,
+    "virtualNetworkGateway1": {
+      "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-onprem",
+      "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+    },
+    "virtualNetworkGateway2": {
+      "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-onprem2",
+      "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+    }
+  },
+  {
+    "authenticationType": "PSK",
+    "connectionMode": "Default",
+    "connectionProtocol": "IKEv2",
+    "connectionType": "Vnet2Vnet",
+    "dpdTimeoutSeconds": 0,
+    "egressBytesTransferred": 0,
+    "enableBgp": true,
+    "enablePrivateLinkFastPath": false,
+    "etag": "W/\"6b89f1f4-658d-4c23-85ad-46ea752d8bad\"",
+    "expressRouteGatewayBypass": false,
+    "gatewayCustomBgpIpAddresses": [],
+    "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/connections/conn-hub1-to-onprem",
+    "ingressBytesTransferred": 0,
+    "ipsecPolicies": [],
+    "location": "swedencentral",
+    "name": "conn-hub1-to-onprem",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+    "resourceGuid": "c20b668b-668e-42c0-a7cd-4fa6bec2ab49",
+    "routingWeight": 0,
+    "tags": {
+      "correlation_id": "lab3d001",
+      "created_by": "copilot-lab",
+      "ephemeral": "true",
+      "lab": "true",
+      "lab_name": "dual-hub-hubless-region-ars",
+      "owner": "jose"
+    },
+    "trafficSelectorPolicies": [],
+    "tunnelProperties": [],
+    "type": "Microsoft.Network/connections",
+    "useLocalAzureIpAddress": false,
+    "usePolicyBasedTrafficSelectors": false,
+    "virtualNetworkGateway1": {
+      "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-hub1",
+      "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+    },
+    "virtualNetworkGateway2": {
+      "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-onprem",
+      "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+    }
+  },
+  {
+    "authenticationType": "PSK",
+    "connectionMode": "Default",
+    "connectionProtocol": "IKEv2",
+    "connectionType": "Vnet2Vnet",
+    "dpdTimeoutSeconds": 0,
+    "egressBytesTransferred": 0,
+    "enableBgp": true,
+    "enablePrivateLinkFastPath": false,
+    "etag": "W/\"3148571a-d010-4954-be26-80879bf30425\"",
+    "expressRouteGatewayBypass": false,
+    "gatewayCustomBgpIpAddresses": [],
+    "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/connections/conn-onprem2-to-hub2",
+    "ingressBytesTransferred": 0,
+    "ipsecPolicies": [],
+    "location": "polandcentral",
+    "name": "conn-onprem2-to-hub2",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+    "resourceGuid": "dec699a7-6758-4ef6-80d0-4293d6810df2",
+    "routingWeight": 0,
+    "tags": {
+      "created_by": "copilot-lab",
+      "lab": "true",
+      "run_id": "lab3d001",
+      "scenario": "TP-SQ",
+      "side": "S-C"
+    },
+    "trafficSelectorPolicies": [],
+    "tunnelProperties": [],
+    "type": "Microsoft.Network/connections",
+    "useLocalAzureIpAddress": false,
+    "usePolicyBasedTrafficSelectors": false,
+    "virtualNetworkGateway1": {
+      "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-onprem2",
+      "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+    },
+    "virtualNetworkGateway2": {
+      "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-hub2",
+      "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+    }
+  },
+  {
+    "authenticationType": "PSK",
+    "connectionMode": "Default",
+    "connectionProtocol": "IKEv2",
+    "connectionType": "Vnet2Vnet",
+    "dpdTimeoutSeconds": 0,
+    "egressBytesTransferred": 0,
+    "enableBgp": true,
+    "enablePrivateLinkFastPath": false,
+    "etag": "W/\"1ac4ae29-3697-4fa5-b47a-066247de10aa\"",
+    "expressRouteGatewayBypass": false,
+    "gatewayCustomBgpIpAddresses": [],
+    "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/connections/conn-onprem2-to-onprem",
+    "ingressBytesTransferred": 0,
+    "ipsecPolicies": [],
+    "location": "polandcentral",
+    "name": "conn-onprem2-to-onprem",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+    "resourceGuid": "1307caba-41d9-48a7-8bb0-6286993de277",
+    "routingWeight": 0,
+    "tags": {
+      "created_by": "copilot-lab",
+      "lab": "true",
+      "run_id": "lab3d001",
+      "scenario": "TP-SQ",
+      "side": "S-D"
+    },
+    "trafficSelectorPolicies": [],
+    "tunnelProperties": [],
+    "type": "Microsoft.Network/connections",
+    "useLocalAzureIpAddress": false,
+    "usePolicyBasedTrafficSelectors": false,
+    "virtualNetworkGateway1": {
+      "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-onprem2",
+      "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+    },
+    "virtualNetworkGateway2": {
+      "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-onprem",
+      "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+    }
+  }
+]

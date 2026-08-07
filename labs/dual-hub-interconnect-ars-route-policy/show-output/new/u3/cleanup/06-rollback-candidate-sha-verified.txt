@@ -1,0 +1,8 @@
+STAMP=$(date -u +%Y%m%dT%H%M%SZ); cp /etc/bird/bird.conf /etc/bird/bird.conf.pre-rollback.$STAMP; cp /etc/bird/bird.conf.pre-u3a.20260806T184410Z /etc/bird/bird.conf.rollback-candidate; sha256sum /etc/bird/bird.conf.pre-u3a.20260806T184410Z /etc/bird/bird.conf.rollback-candidate
+
+Result:
+f7605d5f6c7eb703ff07c941abb756874cc30006130c1d46a5f450a14db2b8d5  /etc/bird/bird.conf.pre-u3a.20260806T184410Z
+f7605d5f6c7eb703ff07c941abb756874cc30006130c1d46a5f450a14db2b8d5  /etc/bird/bird.conf.rollback-candidate
+-rw-r--r--   1 root root 1604 Aug  6 20:32 bird.conf.pre-rollback.20260806T203234Z
+-rw-r-----   1 root root 1441 Aug  6 20:32 bird.conf.rollback-candidate
+SHA-256 MATCH: rollback-candidate == pre-u3a backup (byte-identical to pre-U3a config)

@@ -1,0 +1,9 @@
+# dig CNAME/A/AAAA
+<TRANSLATOR_ACCOUNT>.cognitiveservices.azure.com.	900 IN CNAME <TRANSLATOR_ACCOUNT>.privatelink.cognitiveservices.azure.com.
+<TRANSLATOR_ACCOUNT>.cognitiveservices.azure.com.	899 IN CNAME <TRANSLATOR_ACCOUNT>.privatelink.cognitiveservices.azure.com.
+<TRANSLATOR_ACCOUNT>.privatelink.cognitiveservices.azure.com. 10 IN A 10.61.2.4
+<TRANSLATOR_ACCOUNT>.cognitiveservices.azure.com.	899 IN CNAME <TRANSLATOR_ACCOUNT>.privatelink.cognitiveservices.azure.com.
+# getent
+10.61.2.4       STREAM <TRANSLATOR_ACCOUNT>.privatelink.cognitiveservices.azure.com
+10.61.2.4       DGRAM  
+10.61.2.4       RAW

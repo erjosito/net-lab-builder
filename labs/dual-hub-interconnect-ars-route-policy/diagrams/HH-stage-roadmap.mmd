@@ -1,0 +1,74 @@
+%% New diagram authored for TP-HH / TP-SQ sequencing (Morpheus, 2026-08-05).
+%% Not extracted from route-map-user-stories.md. It is a ROADMAP, not a topology:
+%% no address space, no ASN, no data-plane or control-plane edge semantics are implied.
+%% Stage 1 = TP-HH bow-tie / regional-affinity test program, composed from US10 + US11.
+%% Stage 2 = TP-SQ, the US12 square-hybrid FEASIBILITY STUDY - a retained evaluation
+%% candidate, never a recommendation. It cannot start until gates G1-G4 all pass.
+%% diagram-id: HH-stage-roadmap
+flowchart TD
+  subgraph S1["Stage 1 -- TP-HH: bow-tie / regional affinity -- US10 + US11"]
+    direction TB
+    T1["T1 no-overlay native global-peering baseline<br/>US11 variant A -- additive"]
+    T2["T2a inert route-map association gate<br/>then T2b real AS-Path modification<br/>US10 E-1 / RM-A, RM-B"]
+    T4["T4 policy placement<br/>ARS route map vs NVA BIRD"]
+    T3["T3 dynamic NVA-to-NVA BGP variant<br/>CONDITIONAL -- non-execution is a valid deliverable"]
+    T5["T5 VPN gateway connection attachment<br/>OPTIONAL -- separately approved"]
+    RB["Stage-1 rollback to certified baseline<br/>byte-comparable diff vs source lab certification"]
+    T1 --> T2 --> T4 --> T3 --> T5 --> RB
+  end
+
+  subgraph GATE["Stage-2 activation gates -- ALL must pass, none may be waived"]
+    direction TB
+    G1["G1 Stage 1 complete and rolled back<br/>baseline re-certified"]
+    G2["G2 Poland cleanup status KNOWN and recorded<br/>status only -- explicitly NOT a dependency"]
+    G3["G3 fresh cost / resource / deletion approval<br/>~95 USD per day floor vs ~84 USD per day now"]
+    G4["G4 exact route-map attachment behaviour known<br/>from T2a and T5 -- succeeded or verbatim error code"]
+    G1 --> G2 --> G3 --> G4
+  end
+
+  subgraph S2["Stage 2 -- TP-SQ: US12 square-hybrid feasibility study -- EVALUATION CANDIDATE"]
+    direction TB
+    Q1["Q1 additive build<br/>onprem2 site plus S-C pair plus S-D DCI pair plus S-B peering"]
+    Q2["Q2 diagonal removal<br/>delete hub2-to-onprem1 pair -- the disruptive step"]
+    Q3["Q3 steady-state square<br/>outcome A, B1, B2 hub address space only"]
+    Q4["Q4 bounded failover<br/>S-A loss -- outcome C expected NOT delivered under variant N"]
+    Q5["Q5 failback and restoration equality<br/>attribute-identical tables"]
+    Q6["Q6 operational complexity scorecard<br/>8 dimensions scored from Q1-Q5 evidence"]
+    Q1 --> Q2 --> Q3 --> Q4 --> Q5 --> Q6
+  end
+
+  VD{"Evidence-based verdict for the square"}
+  V1["Recommended"]
+  V2["Conditionally viable"]
+  V3["Technically feasible but<br/>operationally unattractive"]
+  V4["Platform-blocked"]
+  KEEP["Retained either way -- repository rule:<br/>every design is documented with an evidence-based verdict"]
+
+  DVAR["Stage-2 variant D -- dynamic S-B<br/>ONLY if full failover requires automatic<br/>prefix carriage and withdrawal<br/>separate approval, separate cost"]
+
+  RB --> G1
+  G4 --> Q1
+  Q4 -.->|"outcome C claimed and required"| DVAR
+  DVAR -.-> Q5
+  Q6 --> VD
+  VD --> V1
+  VD --> V2
+  VD --> V3
+  VD --> V4
+  V1 --> KEEP
+  V2 --> KEEP
+  V3 --> KEEP
+  V4 --> KEEP
+
+  classDef stage1 fill:#E6F2FB,stroke:#0F6CBD,color:#062A47
+  classDef gate fill:#FFF4CE,stroke:#B26B00,color:#4A2C00
+  classDef stage2 fill:#EFE6F7,stroke:#5C2D91,color:#331A52
+  classDef cond fill:#F3F2F1,stroke:#8A8886,color:#2B2B2B
+  classDef verdict fill:#DFF6DD,stroke:#107C10,color:#0B3D0B
+  classDef blocked fill:#FDE7E9,stroke:#A4262C,color:#5E1116
+  class T1,T2,T4,RB stage1
+  class T3,T5,DVAR cond
+  class G1,G2,G3,G4 gate
+  class Q1,Q2,Q3,Q4,Q5,Q6 stage2
+  class VD,V1,V2,V3,KEEP verdict
+  class V4 blocked

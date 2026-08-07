@@ -1,0 +1,10 @@
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\ndefault via 10.10.1.1 dev eth0 proto dhcp src 10.10.1.4 metric 100 \n10.10.0.0/16 via 10.10.1.1 dev eth0 proto bird metric 32 \n10.10.1.0/27 dev eth0 proto bird scope link metric 32 \n10.10.1.0/27 dev eth0 proto kernel scope link src 10.10.1.4 metric 100 \n10.10.1.1 dev eth0 proto dhcp scope link src 10.10.1.4 metric 100 \n10.11.0.0/24 via 10.10.1.1 dev eth0 proto bird metric 32 \n10.40.0.0/16 via 10.10.1.1 dev eth0 proto bird metric 32 \n10.50.0.0/16 via 10.10.1.1 dev eth0 proto bird metric 32 \n168.63.129.16 via 10.10.1.1 dev eth0 proto dhcp src 10.10.1.4 metric 100 \n169.254.169.254 via 10.10.1.1 dev eth0 proto dhcp src 10.10.1.4 metric 100 \n0:\tfrom all lookup local\n32766:\tfrom all lookup main\n32767:\tfrom all lookup default\nnet.ipv4.ip_forward = 1\nChain FORWARD (policy ACCEPT 0 packets, 0 bytes)\n pkts bytes target     prot opt in     out     source               destination         \n10.11.0.4 via 10.10.1.1 dev eth0 src 10.10.1.4 uid 0 \n    cache \n10.21.0.4 via 10.10.1.1 dev eth0 src 10.10.1.4 uid 0 \n    cache \n10.40.1.4 via 10.10.1.1 dev eth0 src 10.10.1.4 uid 0 \n    cache \n10.50.1.4 via 10.10.1.1 dev eth0 src 10.10.1.4 uid 0 \n    cache \n\n[stderr]\n+ ip route\n+ ip rule\n+ sysctl net.ipv4.ip_forward\n+ sudo iptables -L FORWARD -v -n\n+ ip route get 10.11.0.4\n+ ip route get 10.21.0.4\n+ ip route get 10.40.1.4\n+ ip route get 10.50.1.4\n"
+    }
+  ]
+}

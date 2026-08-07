@@ -1,0 +1,34 @@
+[
+  {
+    "enableBgp": true,
+    "gateway1": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-hub2",
+    "gateway2": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-onprem",
+    "name": "conn-hub2-to-onprem",
+    "status": null,
+    "type": "Vnet2Vnet"
+  },
+  {
+    "enableBgp": true,
+    "gateway1": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-onprem",
+    "gateway2": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-hub1",
+    "name": "conn-onprem-to-hub1",
+    "status": null,
+    "type": "Vnet2Vnet"
+  },
+  {
+    "enableBgp": true,
+    "gateway1": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-onprem",
+    "gateway2": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-hub2",
+    "name": "conn-onprem-to-hub2",
+    "status": null,
+    "type": "Vnet2Vnet"
+  },
+  {
+    "enableBgp": true,
+    "gateway1": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-hub1",
+    "gateway2": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworkGateways/vpngw-onprem",
+    "name": "conn-hub1-to-onprem",
+    "status": null,
+    "type": "Vnet2Vnet"
+  }
+]

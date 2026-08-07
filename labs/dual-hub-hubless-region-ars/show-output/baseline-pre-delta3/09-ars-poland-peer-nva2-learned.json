@@ -1,0 +1,17 @@
+# Command: az network routeserver peering list-learned-routes -g rg-dual-hub-hubless-region-ars-lab3d001 --routeserver ars-poland -n peer-nva2 -o json
+# Timestamp: 2026-08-03T17:57:00+02:00
+# DELTA-1 NOTE: AS-PATH "65002" — 65515 stripped by NVA2 export filter.
+# PRE-DELTA-3: ars-poland sees EQUAL-COST 0/0 from both NVA1 (65001) and NVA2 (65002).
+# No route-map applied → ECMP. Δ3 would prepend 65002×2 here to make NVA1 preferred.
+{
+  "RouteServiceRole_IN_0": [
+    {"asPath":"65002","localAddress":"10.30.0.5","network":"0.0.0.0/0","nextHop":"10.20.1.4","origin":"EBgp","sourcePeer":"10.20.1.4","weight":32768},
+    {"asPath":"65002","localAddress":"10.30.0.5","network":"10.20.0.64/27","nextHop":"10.20.1.4","origin":"EBgp","sourcePeer":"10.20.1.4","weight":32768},
+    {"asPath":"65002","localAddress":"10.30.0.5","network":"10.20.1.0/27","nextHop":"10.20.1.4","origin":"EBgp","sourcePeer":"10.20.1.4","weight":32768}
+  ],
+  "RouteServiceRole_IN_1": [
+    {"asPath":"65002","localAddress":"10.30.0.4","network":"0.0.0.0/0","nextHop":"10.20.1.4","origin":"EBgp","sourcePeer":"10.20.1.4","weight":32768},
+    {"asPath":"65002","localAddress":"10.30.0.4","network":"10.20.1.0/27","nextHop":"10.20.1.4","origin":"EBgp","sourcePeer":"10.20.1.4","weight":32768},
+    {"asPath":"65002","localAddress":"10.30.0.4","network":"10.20.0.64/27","nextHop":"10.20.1.4","origin":"EBgp","sourcePeer":"10.20.1.4","weight":32768}
+  ]
+}

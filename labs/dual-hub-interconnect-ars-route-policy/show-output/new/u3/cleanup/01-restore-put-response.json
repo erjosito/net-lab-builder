@@ -1,0 +1,43 @@
+{
+  "etag": "W/\"5d29ee61-ddc1-4650-a8e6-990a9640b32a\"",
+  "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualHubs/ars-hub1/routeMaps/rm-hub1-tmp-assoc",
+  "name": "rm-hub1-tmp-assoc",
+  "properties": {
+    "associatedInboundConnections": [
+      "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualHubs/ars-hub1/bgpConnections/peer-nva1"
+    ],
+    "associatedOutboundConnections": [],
+    "provisioningState": "Updating",
+    "rules": [
+      {
+        "actions": [
+          {
+            "parameters": [
+              {
+                "asPath": [
+                  "64496"
+                ],
+                "community": [],
+                "routePrefix": []
+              }
+            ],
+            "type": "Add"
+          }
+        ],
+        "matchCriteria": [
+          {
+            "asPath": [],
+            "community": [],
+            "matchCondition": "Equals",
+            "routePrefix": [
+              "203.0.113.0/24"
+            ]
+          }
+        ],
+        "name": "rule-tmp-inert",
+        "nextStepIfMatched": "Terminate"
+      }
+    ]
+  },
+  "type": "Microsoft.Network/virtualHubs/routeMaps"
+}

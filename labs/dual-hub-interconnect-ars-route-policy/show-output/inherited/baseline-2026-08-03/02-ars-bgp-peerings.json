@@ -1,0 +1,18 @@
+# ==== PROVENANCE (added by Tank, TP-HH extraction, 2026-08-05) ====
+# Source (original, unchanged, still present): labs/dual-hub-hubless-region-ars/show-output/baseline-pre-delta3/02-ars-bgp-peerings.json
+# Original capture context: Pre-Delta3 baseline capture, 2026-08-03 (~17:55-17:59 UTC+02:00)
+# Capturing agent: Niobe (Validation Engineer)
+# Status: Inherited; not recaptured for TP-HH
+# Sanitization: scanned 2026-08-05 by Tank for subscription/tenant IDs, secrets, keys, tokens -- none found
+# Note: The ars-poland rows in this file are context only -- out of TP-HH scope (Poland/set-C excluded). Only ars-hub1/ars-hub2 rows are in scope.
+# ====================================================================
+# Command: az network routeserver peering list -g rg-dual-hub-hubless-region-ars-lab3d001 --routeserver ars-hub1/ars-hub2/ars-poland -o json
+# Timestamp: 2026-08-03T17:55:00+02:00
+{
+  "ars-hub1": [{"name":"peer-nva1","peerAsn":65001,"peerIp":"10.10.1.4","provisioningState":"Succeeded"}],
+  "ars-hub2": [{"name":"peer-nva2","peerAsn":65002,"peerIp":"10.20.1.4","provisioningState":"Succeeded"}],
+  "ars-poland": [
+    {"name":"peer-nva1","peerAsn":65001,"peerIp":"10.10.1.4","provisioningState":"Succeeded"},
+    {"name":"peer-nva2","peerAsn":65002,"peerIp":"10.20.1.4","provisioningState":"Succeeded"}
+  ]
+}

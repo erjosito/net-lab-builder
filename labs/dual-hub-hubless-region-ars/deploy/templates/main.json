@@ -1,0 +1,3569 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.40.2.10011",
+      "templateHash": "16930910238381993748"
+    }
+  },
+  "parameters": {
+    "correlationId": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique correlation ID for tagging and RG name suffix"
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "defaultValue": "labadmin",
+      "metadata": {
+        "description": "VM admin username"
+      }
+    },
+    "vmSshPublicKey": {
+      "type": "string",
+      "metadata": {
+        "description": "SSH public key value for all VMs"
+      }
+    },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_B2ts_v2",
+      "metadata": {
+        "description": "VM size — preflight confirmed Standard_B2ts_v2 in all 4 regions"
+      }
+    },
+    "pskHub1Onprem": {
+      "type": "securestring",
+      "metadata": {
+        "description": "PSK for hub1↔onprem VPN connections"
+      }
+    },
+    "pskHub2Onprem": {
+      "type": "securestring",
+      "metadata": {
+        "description": "PSK for hub2↔onprem VPN connections"
+      }
+    },
+    "nva1CloudInit": {
+      "type": "string",
+      "metadata": {
+        "description": "Base64-encoded cloud-init for NVA1 (BIRD ASN 65001)"
+      }
+    },
+    "nva2CloudInit": {
+      "type": "string",
+      "metadata": {
+        "description": "Base64-encoded cloud-init for NVA2 (BIRD ASN 65002)"
+      }
+    }
+  },
+  "variables": {
+    "locHub1": "swedencentral",
+    "locHub2": "switzerlandnorth",
+    "locPoland": "polandcentral",
+    "locOnprem": "norwayeast",
+    "tags": {
+      "lab": "true",
+      "created_by": "copilot-lab",
+      "lab_name": "dual-hub-hubless-region-ars",
+      "owner": "jose",
+      "ephemeral": "true",
+      "correlation_id": "[parameters('correlationId')]"
+    },
+    "epNsgRules": [
+      {
+        "name": "allow-icmp-inbound",
+        "properties": {
+          "priority": 100,
+          "direction": "Inbound",
+          "access": "Allow",
+          "protocol": "Icmp",
+          "sourceAddressPrefix": "10.0.0.0/8",
+          "sourcePortRange": "*",
+          "destinationAddressPrefix": "*",
+          "destinationPortRange": "*"
+        }
+      },
+      {
+        "name": "allow-ssh-inbound",
+        "properties": {
+          "priority": 110,
+          "direction": "Inbound",
+          "access": "Allow",
+          "protocol": "Tcp",
+          "sourceAddressPrefix": "10.0.0.0/8",
+          "sourcePortRange": "*",
+          "destinationAddressPrefix": "*",
+          "destinationPortRange": "22"
+        }
+      },
+      {
+        "name": "deny-other-inbound",
+        "properties": {
+          "priority": 4000,
+          "direction": "Inbound",
+          "access": "Deny",
+          "protocol": "*",
+          "sourceAddressPrefix": "*",
+          "sourcePortRange": "*",
+          "destinationAddressPrefix": "*",
+          "destinationPortRange": "*"
+        }
+      }
+    ]
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2023-09-01",
+      "name": "pip-gw-hub1-a",
+      "location": "[variables('locHub1')]",
+      "tags": "[variables('tags')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "zones": [
+        "1",
+        "2",
+        "3"
+      ],
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2023-09-01",
+      "name": "pip-gw-hub1-b",
+      "location": "[variables('locHub1')]",
+      "tags": "[variables('tags')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "zones": [
+        "1",
+        "2",
+        "3"
+      ],
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2023-09-01",
+      "name": "pip-gw-hub2-a",
+      "location": "[variables('locHub2')]",
+      "tags": "[variables('tags')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "zones": [
+        "1",
+        "2",
+        "3"
+      ],
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2023-09-01",
+      "name": "pip-gw-hub2-b",
+      "location": "[variables('locHub2')]",
+      "tags": "[variables('tags')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "zones": [
+        "1",
+        "2",
+        "3"
+      ],
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2023-09-01",
+      "name": "pip-gw-onprem-a",
+      "location": "[variables('locOnprem')]",
+      "tags": "[variables('tags')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "zones": [
+        "1",
+        "2",
+        "3"
+      ],
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2023-09-01",
+      "name": "pip-gw-onprem-b",
+      "location": "[variables('locOnprem')]",
+      "tags": "[variables('tags')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "zones": [
+        "1",
+        "2",
+        "3"
+      ],
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2023-09-01",
+      "name": "pip-ars-hub1",
+      "location": "[variables('locHub1')]",
+      "tags": "[variables('tags')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2023-09-01",
+      "name": "pip-ars-hub2",
+      "location": "[variables('locHub2')]",
+      "tags": "[variables('tags')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2023-09-01",
+      "name": "pip-ars-poland",
+      "location": "[variables('locPoland')]",
+      "tags": "[variables('tags')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2023-09-01",
+      "name": "nsg-nva-hub1",
+      "location": "[variables('locHub1')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "allow-bgp-inbound",
+            "properties": {
+              "priority": 100,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "sourceAddressPrefix": "10.10.0.0/16",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "179"
+            }
+          },
+          {
+            "name": "allow-bgp-multihop-inbound",
+            "properties": {
+              "priority": 105,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "sourceAddressPrefix": "10.30.0.0/24",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "179"
+            }
+          },
+          {
+            "name": "allow-icmp-inbound",
+            "properties": {
+              "priority": 110,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Icmp",
+              "sourceAddressPrefix": "10.0.0.0/8",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "allow-ssh-inbound",
+            "properties": {
+              "priority": 120,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "sourceAddressPrefix": "10.0.0.0/8",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "22"
+            }
+          },
+          {
+            "name": "deny-other-inbound",
+            "properties": {
+              "priority": 4000,
+              "direction": "Inbound",
+              "access": "Deny",
+              "protocol": "*",
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2023-09-01",
+      "name": "nsg-nva-hub2",
+      "location": "[variables('locHub2')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "allow-bgp-inbound",
+            "properties": {
+              "priority": 100,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "sourceAddressPrefix": "10.20.0.0/16",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "179"
+            }
+          },
+          {
+            "name": "allow-bgp-multihop-inbound",
+            "properties": {
+              "priority": 105,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "sourceAddressPrefix": "10.30.0.0/24",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "179"
+            }
+          },
+          {
+            "name": "allow-icmp-inbound",
+            "properties": {
+              "priority": 110,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Icmp",
+              "sourceAddressPrefix": "10.0.0.0/8",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "allow-ssh-inbound",
+            "properties": {
+              "priority": 120,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "sourceAddressPrefix": "10.0.0.0/8",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "22"
+            }
+          },
+          {
+            "name": "deny-other-inbound",
+            "properties": {
+              "priority": 4000,
+              "direction": "Inbound",
+              "access": "Deny",
+              "protocol": "*",
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2023-09-01",
+      "name": "nsg-ep-general",
+      "location": "[variables('locHub1')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "allow-icmp-inbound",
+            "properties": {
+              "priority": 100,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Icmp",
+              "sourceAddressPrefix": "10.0.0.0/8",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "allow-ssh-inbound",
+            "properties": {
+              "priority": 110,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "sourceAddressPrefix": "10.0.0.0/8",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "22"
+            }
+          },
+          {
+            "name": "deny-other-inbound",
+            "properties": {
+              "priority": 4000,
+              "direction": "Inbound",
+              "access": "Deny",
+              "protocol": "*",
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2023-09-01",
+      "name": "nsg-ep-hub2",
+      "location": "[variables('locHub2')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "securityRules": "[variables('epNsgRules')]"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2023-09-01",
+      "name": "nsg-ep-poland",
+      "location": "[variables('locPoland')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "securityRules": "[variables('epNsgRules')]"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2023-09-01",
+      "name": "nsg-ep-onprem",
+      "location": "[variables('locOnprem')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "securityRules": "[variables('epNsgRules')]"
+      }
+    },
+    {
+      "type": "Microsoft.Network/routeTables",
+      "apiVersion": "2023-09-01",
+      "name": "rt-spoke-a",
+      "location": "[variables('locHub1')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "disableBgpRoutePropagation": true,
+        "routes": [
+          {
+            "name": "default-to-nva1",
+            "properties": {
+              "addressPrefix": "0.0.0.0/0",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "10.10.1.4"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/routeTables",
+      "apiVersion": "2023-09-01",
+      "name": "rt-spoke-b",
+      "location": "[variables('locHub2')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "disableBgpRoutePropagation": true,
+        "routes": [
+          {
+            "name": "default-to-nva2",
+            "properties": {
+              "addressPrefix": "0.0.0.0/0",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "10.20.1.4"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2023-09-01",
+      "name": "vnet-hub1",
+      "location": "[variables('locHub1')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.10.0.0/16"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "GatewaySubnet",
+            "properties": {
+              "addressPrefix": "10.10.0.0/27"
+            }
+          },
+          {
+            "name": "RouteServerSubnet",
+            "properties": {
+              "addressPrefix": "10.10.0.64/27"
+            }
+          },
+          {
+            "name": "snet-nva",
+            "properties": {
+              "addressPrefix": "10.10.1.0/27",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-nva-hub1')]"
+              }
+            }
+          },
+          {
+            "name": "snet-endpoint",
+            "properties": {
+              "addressPrefix": "10.10.2.0/27",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-ep-general')]"
+              }
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-ep-general')]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-nva-hub1')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2023-09-01",
+      "name": "vnet-hub2",
+      "location": "[variables('locHub2')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.20.0.0/16"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "GatewaySubnet",
+            "properties": {
+              "addressPrefix": "10.20.0.0/27"
+            }
+          },
+          {
+            "name": "RouteServerSubnet",
+            "properties": {
+              "addressPrefix": "10.20.0.64/27"
+            }
+          },
+          {
+            "name": "snet-nva",
+            "properties": {
+              "addressPrefix": "10.20.1.0/27",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-nva-hub2')]"
+              }
+            }
+          },
+          {
+            "name": "snet-endpoint",
+            "properties": {
+              "addressPrefix": "10.20.2.0/27",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-ep-hub2')]"
+              }
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-ep-hub2')]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-nva-hub2')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2023-09-01",
+      "name": "vnet-poland-ars",
+      "location": "[variables('locPoland')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.30.0.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "RouteServerSubnet",
+            "properties": {
+              "addressPrefix": "10.30.0.0/27"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2023-09-01",
+      "name": "vnet-onprem",
+      "location": "[variables('locOnprem')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.40.0.0/16"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "GatewaySubnet",
+            "properties": {
+              "addressPrefix": "10.40.0.0/27"
+            }
+          },
+          {
+            "name": "snet-endpoint",
+            "properties": {
+              "addressPrefix": "10.40.1.0/27",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-ep-onprem')]"
+              }
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-ep-onprem')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2023-09-01",
+      "name": "vnet-spoke-a",
+      "location": "[variables('locHub1')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.11.0.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "snet-workload",
+            "properties": {
+              "addressPrefix": "10.11.0.0/25",
+              "routeTable": {
+                "id": "[resourceId('Microsoft.Network/routeTables', 'rt-spoke-a')]"
+              },
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-ep-general')]"
+              }
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-ep-general')]",
+        "[resourceId('Microsoft.Network/routeTables', 'rt-spoke-a')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2023-09-01",
+      "name": "vnet-spoke-b",
+      "location": "[variables('locHub2')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.21.0.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "snet-workload",
+            "properties": {
+              "addressPrefix": "10.21.0.0/25",
+              "routeTable": {
+                "id": "[resourceId('Microsoft.Network/routeTables', 'rt-spoke-b')]"
+              },
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-ep-hub2')]"
+              }
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-ep-hub2')]",
+        "[resourceId('Microsoft.Network/routeTables', 'rt-spoke-b')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2023-09-01",
+      "name": "vnet-spoke-c1",
+      "location": "[variables('locPoland')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.31.0.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "snet-workload",
+            "properties": {
+              "addressPrefix": "10.31.0.0/25",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-ep-poland')]"
+              }
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-ep-poland')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2023-09-01",
+      "name": "vnet-spoke-c2",
+      "location": "[variables('locPoland')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.32.0.0/24"
+          ]
+        },
+        "subnets": []
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-hub1', 'peer-hub1-to-spoke-a')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-a')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": true,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub1')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-a')]",
+        "[resourceId('Microsoft.Resources/deployments', 'vpngw-hub1-deploy')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-spoke-a', 'peer-spoke-a-to-hub1')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub1')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": true
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub1')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-a')]",
+        "[resourceId('Microsoft.Resources/deployments', 'vpngw-hub1-deploy')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-hub2', 'peer-hub2-to-spoke-b')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-b')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": true,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub2')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-b')]",
+        "[resourceId('Microsoft.Resources/deployments', 'vpngw-hub2-deploy')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-spoke-b', 'peer-spoke-b-to-hub2')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub2')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": true
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub2')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-b')]",
+        "[resourceId('Microsoft.Resources/deployments', 'vpngw-hub2-deploy')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-poland-ars', 'peer-poland-to-spoke-c1')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c1')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": true,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'ars-poland-deploy')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-poland-ars')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c1')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-spoke-c1', 'peer-spoke-c1-to-poland')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-poland-ars')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": true
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'ars-poland-deploy')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-poland-ars')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c1')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-poland-ars', 'peer-poland-to-spoke-c2')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c2')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": true,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'ars-poland-deploy')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-poland-ars')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c2')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-spoke-c2', 'peer-spoke-c2-to-poland')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-poland-ars')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": true
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'ars-poland-deploy')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-poland-ars')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c2')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-spoke-c1', 'peer-spoke-c1-to-hub1')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub1')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub1')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c1')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-hub1', 'peer-hub1-to-spoke-c1')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c1')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub1')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c1')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-spoke-c1', 'peer-spoke-c1-to-hub2')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub2')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub2')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c1')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-hub2', 'peer-hub2-to-spoke-c1')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c1')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub2')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c1')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-spoke-c2', 'peer-spoke-c2-to-hub1')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub1')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub1')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c2')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-hub1', 'peer-hub1-to-spoke-c2')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c2')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub1')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c2')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-spoke-c2', 'peer-spoke-c2-to-hub2')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub2')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub2')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c2')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-hub2', 'peer-hub2-to-spoke-c2')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c2')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub2')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c2')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-poland-ars', 'peer-poland-to-hub1')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub1')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub1')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-poland-ars')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-hub1', 'peer-hub1-to-poland')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-poland-ars')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub1')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-poland-ars')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-poland-ars', 'peer-poland-to-hub2')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub2')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub2')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-poland-ars')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', 'vnet-hub2', 'peer-hub2-to-poland')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-poland-ars')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub2')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-poland-ars')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/connections",
+      "apiVersion": "2023-09-01",
+      "name": "conn-hub1-to-onprem",
+      "location": "[variables('locHub1')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "connectionType": "Vnet2Vnet",
+        "virtualNetworkGateway1": {
+          "id": "[reference(resourceId('Microsoft.Resources/deployments', 'vpngw-hub1-deploy'), '2025-04-01').outputs.id.value]",
+          "properties": {}
+        },
+        "virtualNetworkGateway2": {
+          "id": "[reference(resourceId('Microsoft.Resources/deployments', 'vpngw-onprem-deploy'), '2025-04-01').outputs.id.value]",
+          "properties": {}
+        },
+        "sharedKey": "[parameters('pskHub1Onprem')]",
+        "enableBgp": true,
+        "connectionMode": "Default",
+        "routingWeight": 0
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'vpngw-hub1-deploy')]",
+        "[resourceId('Microsoft.Resources/deployments', 'vpngw-onprem-deploy')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/connections",
+      "apiVersion": "2023-09-01",
+      "name": "conn-onprem-to-hub1",
+      "location": "[variables('locOnprem')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "connectionType": "Vnet2Vnet",
+        "virtualNetworkGateway1": {
+          "id": "[reference(resourceId('Microsoft.Resources/deployments', 'vpngw-onprem-deploy'), '2025-04-01').outputs.id.value]",
+          "properties": {}
+        },
+        "virtualNetworkGateway2": {
+          "id": "[reference(resourceId('Microsoft.Resources/deployments', 'vpngw-hub1-deploy'), '2025-04-01').outputs.id.value]",
+          "properties": {}
+        },
+        "sharedKey": "[parameters('pskHub1Onprem')]",
+        "enableBgp": true,
+        "connectionMode": "Default",
+        "routingWeight": 0
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'vpngw-hub1-deploy')]",
+        "[resourceId('Microsoft.Resources/deployments', 'vpngw-onprem-deploy')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/connections",
+      "apiVersion": "2023-09-01",
+      "name": "conn-hub2-to-onprem",
+      "location": "[variables('locHub2')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "connectionType": "Vnet2Vnet",
+        "virtualNetworkGateway1": {
+          "id": "[reference(resourceId('Microsoft.Resources/deployments', 'vpngw-hub2-deploy'), '2025-04-01').outputs.id.value]",
+          "properties": {}
+        },
+        "virtualNetworkGateway2": {
+          "id": "[reference(resourceId('Microsoft.Resources/deployments', 'vpngw-onprem-deploy'), '2025-04-01').outputs.id.value]",
+          "properties": {}
+        },
+        "sharedKey": "[parameters('pskHub2Onprem')]",
+        "enableBgp": true,
+        "connectionMode": "Default",
+        "routingWeight": 0
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'vpngw-hub2-deploy')]",
+        "[resourceId('Microsoft.Resources/deployments', 'vpngw-onprem-deploy')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/connections",
+      "apiVersion": "2023-09-01",
+      "name": "conn-onprem-to-hub2",
+      "location": "[variables('locOnprem')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "connectionType": "Vnet2Vnet",
+        "virtualNetworkGateway1": {
+          "id": "[reference(resourceId('Microsoft.Resources/deployments', 'vpngw-onprem-deploy'), '2025-04-01').outputs.id.value]",
+          "properties": {}
+        },
+        "virtualNetworkGateway2": {
+          "id": "[reference(resourceId('Microsoft.Resources/deployments', 'vpngw-hub2-deploy'), '2025-04-01').outputs.id.value]",
+          "properties": {}
+        },
+        "sharedKey": "[parameters('pskHub2Onprem')]",
+        "enableBgp": true,
+        "connectionMode": "Default",
+        "routingWeight": 0
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'vpngw-hub2-deploy')]",
+        "[resourceId('Microsoft.Resources/deployments', 'vpngw-onprem-deploy')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "vpngw-hub1-deploy",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "vpngw-hub1"
+          },
+          "location": {
+            "value": "[variables('locHub1')]"
+          },
+          "tags": {
+            "value": "[variables('tags')]"
+          },
+          "gatewaySubnetId": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-hub1', 'GatewaySubnet')]"
+          },
+          "pip1Id": {
+            "value": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-gw-hub1-a')]"
+          },
+          "pip2Id": {
+            "value": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-gw-hub1-b')]"
+          },
+          "asn": {
+            "value": 65515
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.40.2.10011",
+              "templateHash": "17550286979537263422"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Gateway name"
+              }
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure region"
+              }
+            },
+            "tags": {
+              "type": "object"
+            },
+            "gatewaySubnetId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of GatewaySubnet"
+              }
+            },
+            "pip1Id": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of first public IP (active instance)"
+              }
+            },
+            "pip2Id": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of second public IP (standby instance)"
+              }
+            },
+            "asn": {
+              "type": "int",
+              "metadata": {
+                "description": "BGP ASN"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualNetworkGateways",
+              "apiVersion": "2023-09-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "sku": {
+                  "name": "VpnGw1AZ",
+                  "tier": "VpnGw1AZ"
+                },
+                "gatewayType": "Vpn",
+                "vpnType": "RouteBased",
+                "enableBgp": true,
+                "activeActive": true,
+                "bgpSettings": {
+                  "asn": "[parameters('asn')]"
+                },
+                "ipConfigurations": [
+                  {
+                    "name": "ipconfig1",
+                    "properties": {
+                      "publicIPAddress": {
+                        "id": "[parameters('pip1Id')]"
+                      },
+                      "subnet": {
+                        "id": "[parameters('gatewaySubnetId')]"
+                      },
+                      "privateIPAllocationMethod": "Dynamic"
+                    }
+                  },
+                  {
+                    "name": "ipconfig2",
+                    "properties": {
+                      "publicIPAddress": {
+                        "id": "[parameters('pip2Id')]"
+                      },
+                      "subnet": {
+                        "id": "[parameters('gatewaySubnetId')]"
+                      },
+                      "privateIPAllocationMethod": "Dynamic"
+                    }
+                  }
+                ],
+                "vpnGatewayGeneration": "Generation1"
+              }
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "value": "[parameters('name')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-gw-hub1-a')]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-gw-hub1-b')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub1')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "vpngw-hub2-deploy",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "vpngw-hub2"
+          },
+          "location": {
+            "value": "[variables('locHub2')]"
+          },
+          "tags": {
+            "value": "[variables('tags')]"
+          },
+          "gatewaySubnetId": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-hub2', 'GatewaySubnet')]"
+          },
+          "pip1Id": {
+            "value": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-gw-hub2-a')]"
+          },
+          "pip2Id": {
+            "value": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-gw-hub2-b')]"
+          },
+          "asn": {
+            "value": 65515
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.40.2.10011",
+              "templateHash": "17550286979537263422"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Gateway name"
+              }
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure region"
+              }
+            },
+            "tags": {
+              "type": "object"
+            },
+            "gatewaySubnetId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of GatewaySubnet"
+              }
+            },
+            "pip1Id": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of first public IP (active instance)"
+              }
+            },
+            "pip2Id": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of second public IP (standby instance)"
+              }
+            },
+            "asn": {
+              "type": "int",
+              "metadata": {
+                "description": "BGP ASN"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualNetworkGateways",
+              "apiVersion": "2023-09-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "sku": {
+                  "name": "VpnGw1AZ",
+                  "tier": "VpnGw1AZ"
+                },
+                "gatewayType": "Vpn",
+                "vpnType": "RouteBased",
+                "enableBgp": true,
+                "activeActive": true,
+                "bgpSettings": {
+                  "asn": "[parameters('asn')]"
+                },
+                "ipConfigurations": [
+                  {
+                    "name": "ipconfig1",
+                    "properties": {
+                      "publicIPAddress": {
+                        "id": "[parameters('pip1Id')]"
+                      },
+                      "subnet": {
+                        "id": "[parameters('gatewaySubnetId')]"
+                      },
+                      "privateIPAllocationMethod": "Dynamic"
+                    }
+                  },
+                  {
+                    "name": "ipconfig2",
+                    "properties": {
+                      "publicIPAddress": {
+                        "id": "[parameters('pip2Id')]"
+                      },
+                      "subnet": {
+                        "id": "[parameters('gatewaySubnetId')]"
+                      },
+                      "privateIPAllocationMethod": "Dynamic"
+                    }
+                  }
+                ],
+                "vpnGatewayGeneration": "Generation1"
+              }
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "value": "[parameters('name')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-gw-hub2-a')]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-gw-hub2-b')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub2')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "vpngw-onprem-deploy",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "vpngw-onprem"
+          },
+          "location": {
+            "value": "[variables('locOnprem')]"
+          },
+          "tags": {
+            "value": "[variables('tags')]"
+          },
+          "gatewaySubnetId": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-onprem', 'GatewaySubnet')]"
+          },
+          "pip1Id": {
+            "value": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-gw-onprem-a')]"
+          },
+          "pip2Id": {
+            "value": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-gw-onprem-b')]"
+          },
+          "asn": {
+            "value": 65000
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.40.2.10011",
+              "templateHash": "17550286979537263422"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Gateway name"
+              }
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure region"
+              }
+            },
+            "tags": {
+              "type": "object"
+            },
+            "gatewaySubnetId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of GatewaySubnet"
+              }
+            },
+            "pip1Id": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of first public IP (active instance)"
+              }
+            },
+            "pip2Id": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of second public IP (standby instance)"
+              }
+            },
+            "asn": {
+              "type": "int",
+              "metadata": {
+                "description": "BGP ASN"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualNetworkGateways",
+              "apiVersion": "2023-09-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "sku": {
+                  "name": "VpnGw1AZ",
+                  "tier": "VpnGw1AZ"
+                },
+                "gatewayType": "Vpn",
+                "vpnType": "RouteBased",
+                "enableBgp": true,
+                "activeActive": true,
+                "bgpSettings": {
+                  "asn": "[parameters('asn')]"
+                },
+                "ipConfigurations": [
+                  {
+                    "name": "ipconfig1",
+                    "properties": {
+                      "publicIPAddress": {
+                        "id": "[parameters('pip1Id')]"
+                      },
+                      "subnet": {
+                        "id": "[parameters('gatewaySubnetId')]"
+                      },
+                      "privateIPAllocationMethod": "Dynamic"
+                    }
+                  },
+                  {
+                    "name": "ipconfig2",
+                    "properties": {
+                      "publicIPAddress": {
+                        "id": "[parameters('pip2Id')]"
+                      },
+                      "subnet": {
+                        "id": "[parameters('gatewaySubnetId')]"
+                      },
+                      "privateIPAllocationMethod": "Dynamic"
+                    }
+                  }
+                ],
+                "vpnGatewayGeneration": "Generation1"
+              }
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "value": "[parameters('name')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-gw-onprem-a')]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-gw-onprem-b')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-onprem')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "ars-hub1-deploy",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "ars-hub1"
+          },
+          "location": {
+            "value": "[variables('locHub1')]"
+          },
+          "tags": {
+            "value": "[variables('tags')]"
+          },
+          "subnetId": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-hub1', 'RouteServerSubnet')]"
+          },
+          "pipId": {
+            "value": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-ars-hub1')]"
+          },
+          "allowBranchToBranchTraffic": {
+            "value": true
+          },
+          "peerName1": {
+            "value": "peer-nva1"
+          },
+          "peerIp1": {
+            "value": "10.10.1.4"
+          },
+          "peerAsn1": {
+            "value": 65001
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.40.2.10011",
+              "templateHash": "2653108837633590009"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Route Server name"
+              }
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "subnetId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of RouteServerSubnet (≥/27, no NSG/UDR)"
+              }
+            },
+            "pipId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of Standard PIP (mandatory for SDN management plane)"
+              }
+            },
+            "allowBranchToBranchTraffic": {
+              "type": "bool",
+              "metadata": {
+                "description": "Enable branch-to-branch: true for hubs with VPN GW, false for Poland (ARS-only)"
+              }
+            },
+            "peerName1": {
+              "type": "string",
+              "metadata": {
+                "description": "NVA peer name (e.g. peer-nva1)"
+              }
+            },
+            "peerIp1": {
+              "type": "string",
+              "metadata": {
+                "description": "NVA IP address for peer 1"
+              }
+            },
+            "peerAsn1": {
+              "type": "int",
+              "metadata": {
+                "description": "NVA ASN for peer 1"
+              }
+            },
+            "peerName2": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "NVA peer name for second NVA (empty string = skip)"
+              }
+            },
+            "peerIp2": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "NVA IP address for peer 2 (if peerName2 set)"
+              }
+            },
+            "peerAsn2": {
+              "type": "int",
+              "defaultValue": 0,
+              "metadata": {
+                "description": "NVA ASN for peer 2 (if peerName2 set)"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualHubs",
+              "apiVersion": "2023-09-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "sku": "Standard",
+                "allowBranchToBranchTraffic": "[parameters('allowBranchToBranchTraffic')]"
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualHubs/ipConfigurations",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('name'), 'ipconfigRouteServer')]",
+              "properties": {
+                "publicIPAddress": {
+                  "id": "[parameters('pipId')]"
+                },
+                "subnet": {
+                  "id": "[parameters('subnetId')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('name'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/virtualHubs/bgpConnections",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('name'), parameters('peerName1'))]",
+              "properties": {
+                "peerIp": "[parameters('peerIp1')]",
+                "peerAsn": "[parameters('peerAsn1')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('name'))]",
+                "[resourceId('Microsoft.Network/virtualHubs/ipConfigurations', parameters('name'), 'ipconfigRouteServer')]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('peerName2')))]",
+              "type": "Microsoft.Network/virtualHubs/bgpConnections",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('name'), if(not(empty(parameters('peerName2'))), parameters('peerName2'), 'placeholder'))]",
+              "properties": {
+                "peerIp": "[parameters('peerIp2')]",
+                "peerAsn": "[parameters('peerAsn2')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('name'))]",
+                "[resourceId('Microsoft.Network/virtualHubs/ipConfigurations', parameters('name'), 'ipconfigRouteServer')]"
+              ]
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Network/virtualHubs', parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "value": "[parameters('name')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-ars-hub1')]",
+        "[resourceId('Microsoft.Resources/deployments', 'vm-nva1-deploy')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub1')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "ars-hub2-deploy",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "ars-hub2"
+          },
+          "location": {
+            "value": "[variables('locHub2')]"
+          },
+          "tags": {
+            "value": "[variables('tags')]"
+          },
+          "subnetId": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-hub2', 'RouteServerSubnet')]"
+          },
+          "pipId": {
+            "value": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-ars-hub2')]"
+          },
+          "allowBranchToBranchTraffic": {
+            "value": true
+          },
+          "peerName1": {
+            "value": "peer-nva2"
+          },
+          "peerIp1": {
+            "value": "10.20.1.4"
+          },
+          "peerAsn1": {
+            "value": 65002
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.40.2.10011",
+              "templateHash": "2653108837633590009"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Route Server name"
+              }
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "subnetId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of RouteServerSubnet (≥/27, no NSG/UDR)"
+              }
+            },
+            "pipId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of Standard PIP (mandatory for SDN management plane)"
+              }
+            },
+            "allowBranchToBranchTraffic": {
+              "type": "bool",
+              "metadata": {
+                "description": "Enable branch-to-branch: true for hubs with VPN GW, false for Poland (ARS-only)"
+              }
+            },
+            "peerName1": {
+              "type": "string",
+              "metadata": {
+                "description": "NVA peer name (e.g. peer-nva1)"
+              }
+            },
+            "peerIp1": {
+              "type": "string",
+              "metadata": {
+                "description": "NVA IP address for peer 1"
+              }
+            },
+            "peerAsn1": {
+              "type": "int",
+              "metadata": {
+                "description": "NVA ASN for peer 1"
+              }
+            },
+            "peerName2": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "NVA peer name for second NVA (empty string = skip)"
+              }
+            },
+            "peerIp2": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "NVA IP address for peer 2 (if peerName2 set)"
+              }
+            },
+            "peerAsn2": {
+              "type": "int",
+              "defaultValue": 0,
+              "metadata": {
+                "description": "NVA ASN for peer 2 (if peerName2 set)"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualHubs",
+              "apiVersion": "2023-09-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "sku": "Standard",
+                "allowBranchToBranchTraffic": "[parameters('allowBranchToBranchTraffic')]"
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualHubs/ipConfigurations",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('name'), 'ipconfigRouteServer')]",
+              "properties": {
+                "publicIPAddress": {
+                  "id": "[parameters('pipId')]"
+                },
+                "subnet": {
+                  "id": "[parameters('subnetId')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('name'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/virtualHubs/bgpConnections",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('name'), parameters('peerName1'))]",
+              "properties": {
+                "peerIp": "[parameters('peerIp1')]",
+                "peerAsn": "[parameters('peerAsn1')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('name'))]",
+                "[resourceId('Microsoft.Network/virtualHubs/ipConfigurations', parameters('name'), 'ipconfigRouteServer')]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('peerName2')))]",
+              "type": "Microsoft.Network/virtualHubs/bgpConnections",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('name'), if(not(empty(parameters('peerName2'))), parameters('peerName2'), 'placeholder'))]",
+              "properties": {
+                "peerIp": "[parameters('peerIp2')]",
+                "peerAsn": "[parameters('peerAsn2')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('name'))]",
+                "[resourceId('Microsoft.Network/virtualHubs/ipConfigurations', parameters('name'), 'ipconfigRouteServer')]"
+              ]
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Network/virtualHubs', parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "value": "[parameters('name')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-ars-hub2')]",
+        "[resourceId('Microsoft.Resources/deployments', 'vm-nva2-deploy')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub2')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "ars-poland-deploy",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "ars-poland"
+          },
+          "location": {
+            "value": "[variables('locPoland')]"
+          },
+          "tags": {
+            "value": "[variables('tags')]"
+          },
+          "subnetId": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-poland-ars', 'RouteServerSubnet')]"
+          },
+          "pipId": {
+            "value": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-ars-poland')]"
+          },
+          "allowBranchToBranchTraffic": {
+            "value": false
+          },
+          "peerName1": {
+            "value": "peer-nva1"
+          },
+          "peerIp1": {
+            "value": "10.10.1.4"
+          },
+          "peerAsn1": {
+            "value": 65001
+          },
+          "peerName2": {
+            "value": "peer-nva2"
+          },
+          "peerIp2": {
+            "value": "10.20.1.4"
+          },
+          "peerAsn2": {
+            "value": 65002
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.40.2.10011",
+              "templateHash": "2653108837633590009"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Route Server name"
+              }
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "subnetId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of RouteServerSubnet (≥/27, no NSG/UDR)"
+              }
+            },
+            "pipId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of Standard PIP (mandatory for SDN management plane)"
+              }
+            },
+            "allowBranchToBranchTraffic": {
+              "type": "bool",
+              "metadata": {
+                "description": "Enable branch-to-branch: true for hubs with VPN GW, false for Poland (ARS-only)"
+              }
+            },
+            "peerName1": {
+              "type": "string",
+              "metadata": {
+                "description": "NVA peer name (e.g. peer-nva1)"
+              }
+            },
+            "peerIp1": {
+              "type": "string",
+              "metadata": {
+                "description": "NVA IP address for peer 1"
+              }
+            },
+            "peerAsn1": {
+              "type": "int",
+              "metadata": {
+                "description": "NVA ASN for peer 1"
+              }
+            },
+            "peerName2": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "NVA peer name for second NVA (empty string = skip)"
+              }
+            },
+            "peerIp2": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "NVA IP address for peer 2 (if peerName2 set)"
+              }
+            },
+            "peerAsn2": {
+              "type": "int",
+              "defaultValue": 0,
+              "metadata": {
+                "description": "NVA ASN for peer 2 (if peerName2 set)"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualHubs",
+              "apiVersion": "2023-09-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "sku": "Standard",
+                "allowBranchToBranchTraffic": "[parameters('allowBranchToBranchTraffic')]"
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualHubs/ipConfigurations",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('name'), 'ipconfigRouteServer')]",
+              "properties": {
+                "publicIPAddress": {
+                  "id": "[parameters('pipId')]"
+                },
+                "subnet": {
+                  "id": "[parameters('subnetId')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('name'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/virtualHubs/bgpConnections",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('name'), parameters('peerName1'))]",
+              "properties": {
+                "peerIp": "[parameters('peerIp1')]",
+                "peerAsn": "[parameters('peerAsn1')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('name'))]",
+                "[resourceId('Microsoft.Network/virtualHubs/ipConfigurations', parameters('name'), 'ipconfigRouteServer')]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('peerName2')))]",
+              "type": "Microsoft.Network/virtualHubs/bgpConnections",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('name'), if(not(empty(parameters('peerName2'))), parameters('peerName2'), 'placeholder'))]",
+              "properties": {
+                "peerIp": "[parameters('peerIp2')]",
+                "peerAsn": "[parameters('peerAsn2')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('name'))]",
+                "[resourceId('Microsoft.Network/virtualHubs/ipConfigurations', parameters('name'), 'ipconfigRouteServer')]"
+              ]
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Network/virtualHubs', parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "value": "[parameters('name')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-ars-poland')]",
+        "[resourceId('Microsoft.Resources/deployments', 'vm-nva1-deploy')]",
+        "[resourceId('Microsoft.Resources/deployments', 'vm-nva2-deploy')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-poland-ars')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "vm-nva1-deploy",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "vm-nva1"
+          },
+          "location": {
+            "value": "[variables('locHub1')]"
+          },
+          "tags": {
+            "value": "[variables('tags')]"
+          },
+          "subnetId": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-hub1', 'snet-nva')]"
+          },
+          "privateIpAddress": {
+            "value": "10.10.1.4"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "sshPublicKey": {
+            "value": "[parameters('vmSshPublicKey')]"
+          },
+          "vmSize": {
+            "value": "[parameters('vmSize')]"
+          },
+          "enableIpForwarding": {
+            "value": true
+          },
+          "customData": {
+            "value": "[parameters('nva1CloudInit')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.40.2.10011",
+              "templateHash": "5419318923293885450"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "VM name"
+              }
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "subnetId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of subnet"
+              }
+            },
+            "privateIpAddress": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Static private IP (empty = dynamic)"
+              }
+            },
+            "adminUsername": {
+              "type": "string"
+            },
+            "sshPublicKey": {
+              "type": "string",
+              "metadata": {
+                "description": "SSH public key value (not path)"
+              }
+            },
+            "vmSize": {
+              "type": "string",
+              "defaultValue": "Standard_B2ts_v2",
+              "metadata": {
+                "description": "VM size — B2ts_v2 preferred, B2ls_v2 fallback"
+              }
+            },
+            "enableIpForwarding": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Enable IP forwarding on NIC (NVAs only)"
+              }
+            },
+            "customData": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Base64-encoded cloud-init custom data (NVAs only)"
+              }
+            }
+          },
+          "variables": {
+            "nicName": "[format('nic-{0}', parameters('name'))]",
+            "osDiskName": "[format('osdisk-{0}', parameters('name'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/networkInterfaces",
+              "apiVersion": "2023-09-01",
+              "name": "[variables('nicName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "enableIPForwarding": "[parameters('enableIpForwarding')]",
+                "ipConfigurations": [
+                  {
+                    "name": "ipconfig1",
+                    "properties": {
+                      "subnet": {
+                        "id": "[parameters('subnetId')]"
+                      },
+                      "privateIPAllocationMethod": "[if(empty(parameters('privateIpAddress')), 'Dynamic', 'Static')]",
+                      "privateIPAddress": "[if(empty(parameters('privateIpAddress')), null(), parameters('privateIpAddress'))]"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Compute/virtualMachines",
+              "apiVersion": "2023-09-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "hardwareProfile": {
+                  "vmSize": "[parameters('vmSize')]"
+                },
+                "storageProfile": {
+                  "osDisk": {
+                    "name": "[variables('osDiskName')]",
+                    "createOption": "FromImage",
+                    "managedDisk": {
+                      "storageAccountType": "StandardSSD_LRS"
+                    }
+                  },
+                  "imageReference": {
+                    "publisher": "Canonical",
+                    "offer": "0001-com-ubuntu-server-jammy",
+                    "sku": "22_04-lts-gen2",
+                    "version": "latest"
+                  }
+                },
+                "osProfile": {
+                  "computerName": "[parameters('name')]",
+                  "adminUsername": "[parameters('adminUsername')]",
+                  "customData": "[if(empty(parameters('customData')), null(), parameters('customData'))]",
+                  "linuxConfiguration": {
+                    "disablePasswordAuthentication": true,
+                    "ssh": {
+                      "publicKeys": [
+                        {
+                          "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]",
+                          "keyData": "[parameters('sshPublicKey')]"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "networkProfile": {
+                  "networkInterfaces": [
+                    {
+                      "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]"
+            },
+            "nicId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+            },
+            "privateIp": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.Network/networkInterfaces', variables('nicName')), '2023-09-01').ipConfigurations[0].properties.privateIPAddress]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub1')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "vm-nva2-deploy",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "vm-nva2"
+          },
+          "location": {
+            "value": "[variables('locHub2')]"
+          },
+          "tags": {
+            "value": "[variables('tags')]"
+          },
+          "subnetId": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-hub2', 'snet-nva')]"
+          },
+          "privateIpAddress": {
+            "value": "10.20.1.4"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "sshPublicKey": {
+            "value": "[parameters('vmSshPublicKey')]"
+          },
+          "vmSize": {
+            "value": "[parameters('vmSize')]"
+          },
+          "enableIpForwarding": {
+            "value": true
+          },
+          "customData": {
+            "value": "[parameters('nva2CloudInit')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.40.2.10011",
+              "templateHash": "5419318923293885450"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "VM name"
+              }
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "subnetId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of subnet"
+              }
+            },
+            "privateIpAddress": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Static private IP (empty = dynamic)"
+              }
+            },
+            "adminUsername": {
+              "type": "string"
+            },
+            "sshPublicKey": {
+              "type": "string",
+              "metadata": {
+                "description": "SSH public key value (not path)"
+              }
+            },
+            "vmSize": {
+              "type": "string",
+              "defaultValue": "Standard_B2ts_v2",
+              "metadata": {
+                "description": "VM size — B2ts_v2 preferred, B2ls_v2 fallback"
+              }
+            },
+            "enableIpForwarding": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Enable IP forwarding on NIC (NVAs only)"
+              }
+            },
+            "customData": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Base64-encoded cloud-init custom data (NVAs only)"
+              }
+            }
+          },
+          "variables": {
+            "nicName": "[format('nic-{0}', parameters('name'))]",
+            "osDiskName": "[format('osdisk-{0}', parameters('name'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/networkInterfaces",
+              "apiVersion": "2023-09-01",
+              "name": "[variables('nicName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "enableIPForwarding": "[parameters('enableIpForwarding')]",
+                "ipConfigurations": [
+                  {
+                    "name": "ipconfig1",
+                    "properties": {
+                      "subnet": {
+                        "id": "[parameters('subnetId')]"
+                      },
+                      "privateIPAllocationMethod": "[if(empty(parameters('privateIpAddress')), 'Dynamic', 'Static')]",
+                      "privateIPAddress": "[if(empty(parameters('privateIpAddress')), null(), parameters('privateIpAddress'))]"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Compute/virtualMachines",
+              "apiVersion": "2023-09-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "hardwareProfile": {
+                  "vmSize": "[parameters('vmSize')]"
+                },
+                "storageProfile": {
+                  "osDisk": {
+                    "name": "[variables('osDiskName')]",
+                    "createOption": "FromImage",
+                    "managedDisk": {
+                      "storageAccountType": "StandardSSD_LRS"
+                    }
+                  },
+                  "imageReference": {
+                    "publisher": "Canonical",
+                    "offer": "0001-com-ubuntu-server-jammy",
+                    "sku": "22_04-lts-gen2",
+                    "version": "latest"
+                  }
+                },
+                "osProfile": {
+                  "computerName": "[parameters('name')]",
+                  "adminUsername": "[parameters('adminUsername')]",
+                  "customData": "[if(empty(parameters('customData')), null(), parameters('customData'))]",
+                  "linuxConfiguration": {
+                    "disablePasswordAuthentication": true,
+                    "ssh": {
+                      "publicKeys": [
+                        {
+                          "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]",
+                          "keyData": "[parameters('sshPublicKey')]"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "networkProfile": {
+                  "networkInterfaces": [
+                    {
+                      "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]"
+            },
+            "nicId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+            },
+            "privateIp": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.Network/networkInterfaces', variables('nicName')), '2023-09-01').ipConfigurations[0].properties.privateIPAddress]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-hub2')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "vm-hub1-ep-deploy",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "vm-hub1-ep"
+          },
+          "location": {
+            "value": "[variables('locHub1')]"
+          },
+          "tags": {
+            "value": "[variables('tags')]"
+          },
+          "subnetId": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-spoke-a', 'snet-workload')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "sshPublicKey": {
+            "value": "[parameters('vmSshPublicKey')]"
+          },
+          "vmSize": {
+            "value": "[parameters('vmSize')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.40.2.10011",
+              "templateHash": "5419318923293885450"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "VM name"
+              }
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "subnetId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of subnet"
+              }
+            },
+            "privateIpAddress": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Static private IP (empty = dynamic)"
+              }
+            },
+            "adminUsername": {
+              "type": "string"
+            },
+            "sshPublicKey": {
+              "type": "string",
+              "metadata": {
+                "description": "SSH public key value (not path)"
+              }
+            },
+            "vmSize": {
+              "type": "string",
+              "defaultValue": "Standard_B2ts_v2",
+              "metadata": {
+                "description": "VM size — B2ts_v2 preferred, B2ls_v2 fallback"
+              }
+            },
+            "enableIpForwarding": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Enable IP forwarding on NIC (NVAs only)"
+              }
+            },
+            "customData": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Base64-encoded cloud-init custom data (NVAs only)"
+              }
+            }
+          },
+          "variables": {
+            "nicName": "[format('nic-{0}', parameters('name'))]",
+            "osDiskName": "[format('osdisk-{0}', parameters('name'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/networkInterfaces",
+              "apiVersion": "2023-09-01",
+              "name": "[variables('nicName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "enableIPForwarding": "[parameters('enableIpForwarding')]",
+                "ipConfigurations": [
+                  {
+                    "name": "ipconfig1",
+                    "properties": {
+                      "subnet": {
+                        "id": "[parameters('subnetId')]"
+                      },
+                      "privateIPAllocationMethod": "[if(empty(parameters('privateIpAddress')), 'Dynamic', 'Static')]",
+                      "privateIPAddress": "[if(empty(parameters('privateIpAddress')), null(), parameters('privateIpAddress'))]"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Compute/virtualMachines",
+              "apiVersion": "2023-09-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "hardwareProfile": {
+                  "vmSize": "[parameters('vmSize')]"
+                },
+                "storageProfile": {
+                  "osDisk": {
+                    "name": "[variables('osDiskName')]",
+                    "createOption": "FromImage",
+                    "managedDisk": {
+                      "storageAccountType": "StandardSSD_LRS"
+                    }
+                  },
+                  "imageReference": {
+                    "publisher": "Canonical",
+                    "offer": "0001-com-ubuntu-server-jammy",
+                    "sku": "22_04-lts-gen2",
+                    "version": "latest"
+                  }
+                },
+                "osProfile": {
+                  "computerName": "[parameters('name')]",
+                  "adminUsername": "[parameters('adminUsername')]",
+                  "customData": "[if(empty(parameters('customData')), null(), parameters('customData'))]",
+                  "linuxConfiguration": {
+                    "disablePasswordAuthentication": true,
+                    "ssh": {
+                      "publicKeys": [
+                        {
+                          "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]",
+                          "keyData": "[parameters('sshPublicKey')]"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "networkProfile": {
+                  "networkInterfaces": [
+                    {
+                      "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]"
+            },
+            "nicId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+            },
+            "privateIp": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.Network/networkInterfaces', variables('nicName')), '2023-09-01').ipConfigurations[0].properties.privateIPAddress]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-a')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "vm-hub2-ep-deploy",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "vm-hub2-ep"
+          },
+          "location": {
+            "value": "[variables('locHub2')]"
+          },
+          "tags": {
+            "value": "[variables('tags')]"
+          },
+          "subnetId": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-spoke-b', 'snet-workload')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "sshPublicKey": {
+            "value": "[parameters('vmSshPublicKey')]"
+          },
+          "vmSize": {
+            "value": "[parameters('vmSize')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.40.2.10011",
+              "templateHash": "5419318923293885450"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "VM name"
+              }
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "subnetId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of subnet"
+              }
+            },
+            "privateIpAddress": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Static private IP (empty = dynamic)"
+              }
+            },
+            "adminUsername": {
+              "type": "string"
+            },
+            "sshPublicKey": {
+              "type": "string",
+              "metadata": {
+                "description": "SSH public key value (not path)"
+              }
+            },
+            "vmSize": {
+              "type": "string",
+              "defaultValue": "Standard_B2ts_v2",
+              "metadata": {
+                "description": "VM size — B2ts_v2 preferred, B2ls_v2 fallback"
+              }
+            },
+            "enableIpForwarding": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Enable IP forwarding on NIC (NVAs only)"
+              }
+            },
+            "customData": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Base64-encoded cloud-init custom data (NVAs only)"
+              }
+            }
+          },
+          "variables": {
+            "nicName": "[format('nic-{0}', parameters('name'))]",
+            "osDiskName": "[format('osdisk-{0}', parameters('name'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/networkInterfaces",
+              "apiVersion": "2023-09-01",
+              "name": "[variables('nicName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "enableIPForwarding": "[parameters('enableIpForwarding')]",
+                "ipConfigurations": [
+                  {
+                    "name": "ipconfig1",
+                    "properties": {
+                      "subnet": {
+                        "id": "[parameters('subnetId')]"
+                      },
+                      "privateIPAllocationMethod": "[if(empty(parameters('privateIpAddress')), 'Dynamic', 'Static')]",
+                      "privateIPAddress": "[if(empty(parameters('privateIpAddress')), null(), parameters('privateIpAddress'))]"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Compute/virtualMachines",
+              "apiVersion": "2023-09-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "hardwareProfile": {
+                  "vmSize": "[parameters('vmSize')]"
+                },
+                "storageProfile": {
+                  "osDisk": {
+                    "name": "[variables('osDiskName')]",
+                    "createOption": "FromImage",
+                    "managedDisk": {
+                      "storageAccountType": "StandardSSD_LRS"
+                    }
+                  },
+                  "imageReference": {
+                    "publisher": "Canonical",
+                    "offer": "0001-com-ubuntu-server-jammy",
+                    "sku": "22_04-lts-gen2",
+                    "version": "latest"
+                  }
+                },
+                "osProfile": {
+                  "computerName": "[parameters('name')]",
+                  "adminUsername": "[parameters('adminUsername')]",
+                  "customData": "[if(empty(parameters('customData')), null(), parameters('customData'))]",
+                  "linuxConfiguration": {
+                    "disablePasswordAuthentication": true,
+                    "ssh": {
+                      "publicKeys": [
+                        {
+                          "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]",
+                          "keyData": "[parameters('sshPublicKey')]"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "networkProfile": {
+                  "networkInterfaces": [
+                    {
+                      "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]"
+            },
+            "nicId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+            },
+            "privateIp": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.Network/networkInterfaces', variables('nicName')), '2023-09-01').ipConfigurations[0].properties.privateIPAddress]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-b')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "vm-c1-ep-deploy",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "vm-c1-ep"
+          },
+          "location": {
+            "value": "[variables('locPoland')]"
+          },
+          "tags": {
+            "value": "[variables('tags')]"
+          },
+          "subnetId": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-spoke-c1', 'snet-workload')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "sshPublicKey": {
+            "value": "[parameters('vmSshPublicKey')]"
+          },
+          "vmSize": {
+            "value": "[parameters('vmSize')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.40.2.10011",
+              "templateHash": "5419318923293885450"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "VM name"
+              }
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "subnetId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of subnet"
+              }
+            },
+            "privateIpAddress": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Static private IP (empty = dynamic)"
+              }
+            },
+            "adminUsername": {
+              "type": "string"
+            },
+            "sshPublicKey": {
+              "type": "string",
+              "metadata": {
+                "description": "SSH public key value (not path)"
+              }
+            },
+            "vmSize": {
+              "type": "string",
+              "defaultValue": "Standard_B2ts_v2",
+              "metadata": {
+                "description": "VM size — B2ts_v2 preferred, B2ls_v2 fallback"
+              }
+            },
+            "enableIpForwarding": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Enable IP forwarding on NIC (NVAs only)"
+              }
+            },
+            "customData": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Base64-encoded cloud-init custom data (NVAs only)"
+              }
+            }
+          },
+          "variables": {
+            "nicName": "[format('nic-{0}', parameters('name'))]",
+            "osDiskName": "[format('osdisk-{0}', parameters('name'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/networkInterfaces",
+              "apiVersion": "2023-09-01",
+              "name": "[variables('nicName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "enableIPForwarding": "[parameters('enableIpForwarding')]",
+                "ipConfigurations": [
+                  {
+                    "name": "ipconfig1",
+                    "properties": {
+                      "subnet": {
+                        "id": "[parameters('subnetId')]"
+                      },
+                      "privateIPAllocationMethod": "[if(empty(parameters('privateIpAddress')), 'Dynamic', 'Static')]",
+                      "privateIPAddress": "[if(empty(parameters('privateIpAddress')), null(), parameters('privateIpAddress'))]"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Compute/virtualMachines",
+              "apiVersion": "2023-09-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "hardwareProfile": {
+                  "vmSize": "[parameters('vmSize')]"
+                },
+                "storageProfile": {
+                  "osDisk": {
+                    "name": "[variables('osDiskName')]",
+                    "createOption": "FromImage",
+                    "managedDisk": {
+                      "storageAccountType": "StandardSSD_LRS"
+                    }
+                  },
+                  "imageReference": {
+                    "publisher": "Canonical",
+                    "offer": "0001-com-ubuntu-server-jammy",
+                    "sku": "22_04-lts-gen2",
+                    "version": "latest"
+                  }
+                },
+                "osProfile": {
+                  "computerName": "[parameters('name')]",
+                  "adminUsername": "[parameters('adminUsername')]",
+                  "customData": "[if(empty(parameters('customData')), null(), parameters('customData'))]",
+                  "linuxConfiguration": {
+                    "disablePasswordAuthentication": true,
+                    "ssh": {
+                      "publicKeys": [
+                        {
+                          "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]",
+                          "keyData": "[parameters('sshPublicKey')]"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "networkProfile": {
+                  "networkInterfaces": [
+                    {
+                      "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]"
+            },
+            "nicId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+            },
+            "privateIp": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.Network/networkInterfaces', variables('nicName')), '2023-09-01').ipConfigurations[0].properties.privateIPAddress]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-c1')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "vm-onprem-ep-deploy",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "vm-onprem-ep"
+          },
+          "location": {
+            "value": "[variables('locOnprem')]"
+          },
+          "tags": {
+            "value": "[variables('tags')]"
+          },
+          "subnetId": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-onprem', 'snet-endpoint')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "sshPublicKey": {
+            "value": "[parameters('vmSshPublicKey')]"
+          },
+          "vmSize": {
+            "value": "[parameters('vmSize')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.40.2.10011",
+              "templateHash": "5419318923293885450"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "VM name"
+              }
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "subnetId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of subnet"
+              }
+            },
+            "privateIpAddress": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Static private IP (empty = dynamic)"
+              }
+            },
+            "adminUsername": {
+              "type": "string"
+            },
+            "sshPublicKey": {
+              "type": "string",
+              "metadata": {
+                "description": "SSH public key value (not path)"
+              }
+            },
+            "vmSize": {
+              "type": "string",
+              "defaultValue": "Standard_B2ts_v2",
+              "metadata": {
+                "description": "VM size — B2ts_v2 preferred, B2ls_v2 fallback"
+              }
+            },
+            "enableIpForwarding": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Enable IP forwarding on NIC (NVAs only)"
+              }
+            },
+            "customData": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Base64-encoded cloud-init custom data (NVAs only)"
+              }
+            }
+          },
+          "variables": {
+            "nicName": "[format('nic-{0}', parameters('name'))]",
+            "osDiskName": "[format('osdisk-{0}', parameters('name'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/networkInterfaces",
+              "apiVersion": "2023-09-01",
+              "name": "[variables('nicName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "enableIPForwarding": "[parameters('enableIpForwarding')]",
+                "ipConfigurations": [
+                  {
+                    "name": "ipconfig1",
+                    "properties": {
+                      "subnet": {
+                        "id": "[parameters('subnetId')]"
+                      },
+                      "privateIPAllocationMethod": "[if(empty(parameters('privateIpAddress')), 'Dynamic', 'Static')]",
+                      "privateIPAddress": "[if(empty(parameters('privateIpAddress')), null(), parameters('privateIpAddress'))]"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Compute/virtualMachines",
+              "apiVersion": "2023-09-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "hardwareProfile": {
+                  "vmSize": "[parameters('vmSize')]"
+                },
+                "storageProfile": {
+                  "osDisk": {
+                    "name": "[variables('osDiskName')]",
+                    "createOption": "FromImage",
+                    "managedDisk": {
+                      "storageAccountType": "StandardSSD_LRS"
+                    }
+                  },
+                  "imageReference": {
+                    "publisher": "Canonical",
+                    "offer": "0001-com-ubuntu-server-jammy",
+                    "sku": "22_04-lts-gen2",
+                    "version": "latest"
+                  }
+                },
+                "osProfile": {
+                  "computerName": "[parameters('name')]",
+                  "adminUsername": "[parameters('adminUsername')]",
+                  "customData": "[if(empty(parameters('customData')), null(), parameters('customData'))]",
+                  "linuxConfiguration": {
+                    "disablePasswordAuthentication": true,
+                    "ssh": {
+                      "publicKeys": [
+                        {
+                          "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]",
+                          "keyData": "[parameters('sshPublicKey')]"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "networkProfile": {
+                  "networkInterfaces": [
+                    {
+                      "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]"
+            },
+            "nicId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+            },
+            "privateIp": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.Network/networkInterfaces', variables('nicName')), '2023-09-01').ipConfigurations[0].properties.privateIPAddress]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-onprem')]"
+      ]
+    }
+  ],
+  "outputs": {
+    "rgName": {
+      "type": "string",
+      "value": "[resourceGroup().name]"
+    },
+    "nva1Ip": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vm-nva1-deploy'), '2025-04-01').outputs.privateIp.value]"
+    },
+    "nva2Ip": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vm-nva2-deploy'), '2025-04-01').outputs.privateIp.value]"
+    },
+    "arsHub1Id": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'ars-hub1-deploy'), '2025-04-01').outputs.id.value]"
+    },
+    "arsHub2Id": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'ars-hub2-deploy'), '2025-04-01').outputs.id.value]"
+    },
+    "arsPolandId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'ars-poland-deploy'), '2025-04-01').outputs.id.value]"
+    },
+    "vpngwHub1Id": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vpngw-hub1-deploy'), '2025-04-01').outputs.id.value]"
+    },
+    "vpngwHub2Id": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vpngw-hub2-deploy'), '2025-04-01').outputs.id.value]"
+    },
+    "vpngwOnpremId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vpngw-onprem-deploy'), '2025-04-01').outputs.id.value]"
+    }
+  }
+}

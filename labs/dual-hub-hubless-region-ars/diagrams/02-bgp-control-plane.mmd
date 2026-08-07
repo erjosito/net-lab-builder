@@ -1,0 +1,46 @@
+%%{init: {'theme': 'default', 'flowchart': {'curve': 'basis'}}}%%
+flowchart TD
+    subgraph SC["hub1 · swedencentral  (10.10.0.0/16)"]
+        NVA1["NVA1\nAS 65001\n10.10.1.0/27"]
+        ARSH1["ARS hub1\nAS 65515 · b2b on\n10.10.0.64/27"]
+        GWSC["VPN GW hub1\nAS 65515 · AA\n10.10.0.0/27"]
+    end
+
+    subgraph SN["hub2 · switzerlandnorth  (10.20.0.0/16)"]
+        NVA2["NVA2\nAS 65002\n10.20.1.0/27"]
+        ARSH2["ARS hub2\nAS 65515 · b2b on\n10.20.0.64/27"]
+        GWSN["VPN GW hub2\nAS 65515 · AA\n10.20.0.0/27"]
+    end
+
+    subgraph PC["hubless · polandcentral  (10.30.0.0/24)"]
+        ARSP["ARS Poland\nAS 65515 · b2b off\n10.30.0.0/27"]
+        DELTA["Policy split\nΔ1: NVAs strip 65515 before re-advert\nΔ2: NVA2 prepend x2 toward hub2 ARS\nΔ3: inbound route-map PREVIEW on Poland ARS"]
+    end
+
+    subgraph NE["on-prem sim · norwayeast  (10.40.0.0/16)"]
+        GWNE["VPN GW on-prem\nAS 65000 · AA\n10.40.0.0/27"]
+    end
+
+    NVA1 <-->|"iBGP · local"| ARSH1
+    ARSH1 <-->|"iBGP coexistence"| GWSC
+    NVA2 <-->|"iBGP · local"| ARSH2
+    ARSH2 <-->|"iBGP coexistence"| GWSN
+
+    NVA1 <-->|"multi-hop eBGP\nacross direct global peering\nΔ1 strip-65515 applied"| ARSP
+    NVA2 <-->|"multi-hop eBGP\nacross direct global peering\nΔ1+Δ2+Δ3 applied"| ARSP
+
+    ARSP <-->|"no-transit peering\nBGP underlay only\nAllowFwdTraffic=true"| ARSH1
+    ARSP <-->|"no-transit peering\nBGP underlay only\nAllowFwdTraffic=true"| ARSH2
+
+    GWSC <-->|"V2V connection pair x2\neBGP AS 65515 <-> 65000\npsk-hub1-onprem"| GWNE
+    GWSN <-->|"V2V connection pair x2\neBGP AS 65515 <-> 65000\npsk-hub2-onprem"| GWNE
+
+    style NVA1  fill:#CFE4FA,stroke:#0078D4,color:#000000
+    style ARSH1 fill:#CFE4FA,stroke:#0078D4,color:#000000
+    style GWSC  fill:#CFE4FA,stroke:#0078D4,color:#000000
+    style NVA2  fill:#E8DAEF,stroke:#5C2D91,color:#000000
+    style ARSH2 fill:#E8DAEF,stroke:#5C2D91,color:#000000
+    style GWSN  fill:#E8DAEF,stroke:#5C2D91,color:#000000
+    style ARSP  fill:#DFF6DD,stroke:#107C10,color:#000000
+    style DELTA fill:#FFF4CE,stroke:#F7630C,color:#000000
+    style GWNE  fill:#FFF4CE,stroke:#F7630C,color:#000000

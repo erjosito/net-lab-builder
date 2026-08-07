@@ -1,0 +1,10 @@
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\ndefault via 10.50.1.1 dev eth0 proto dhcp src 10.50.1.4 metric 100 \n10.50.1.0/27 dev eth0 proto kernel scope link src 10.50.1.4 metric 100 \n10.50.1.1 dev eth0 proto dhcp scope link src 10.50.1.4 metric 100 \n168.63.129.16 via 10.50.1.1 dev eth0 proto dhcp src 10.50.1.4 metric 100 \n169.254.169.254 via 10.50.1.1 dev eth0 proto dhcp src 10.50.1.4 metric 100 \nPING 10.40.1.4 (10.40.1.4) 56(84) bytes of data.\n64 bytes from 10.40.1.4: icmp_seq=1 ttl=64 time=27.7 ms\n64 bytes from 10.40.1.4: icmp_seq=2 ttl=64 time=26.8 ms\n64 bytes from 10.40.1.4: icmp_seq=3 ttl=64 time=28.1 ms\n64 bytes from 10.40.1.4: icmp_seq=4 ttl=64 time=29.0 ms\n\n--- 10.40.1.4 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3005ms\nrtt min/avg/max/mdev = 26.836/27.906/29.021/0.786 ms\nPING 10.20.1.4 (10.20.1.4) 56(84) bytes of data.\n\n--- 10.20.1.4 ping statistics ---\n4 packets transmitted, 0 received, 100% packet loss, time 3058ms\n\nPING 10.10.1.4 (10.10.1.4) 56(84) bytes of data.\n\n--- 10.10.1.4 ping statistics ---\n4 packets transmitted, 0 received, 100% packet loss, time 3054ms\n\n\n[stderr]\n+ ip route\n+ ping -c 4 -W 2 10.40.1.4\n+ ping -c 4 -W 2 10.20.1.4\n+ ping -c 4 -W 2 10.10.1.4\n"
+    }
+  ]
+}

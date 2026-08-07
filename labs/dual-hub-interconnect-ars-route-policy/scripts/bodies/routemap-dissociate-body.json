@@ -1,0 +1,10 @@
+{
+  "_comment": "PLACEHOLDER — not a real request body. RETAINED FOR SCENARIO T5 (unit U4 Step 2) ONLY, and its usability is UNPROVEN. It must NOT be used to dissociate a bgpConnection: on Microsoft.Network/virtualHubs/<ars>/bgpConnections/<peer> the reversal is a full PUT that simply OMITS routingConfiguration.inboundRouteMap — there is no 'null' form to set, and there is no PATCH operation on that type. Use bgpconn-restore-hub1.json instead. For T5 the target connection resource type and ID form are unknown: the live bed exposes only Microsoft.Network/connections (VirtualNetworkGatewayConnection), whose schema has no inboundRouteMap/outboundRouteMap member and whose live routingConfiguration is {}. This body may therefore never be sendable at all. U4 Step 1 (read-only) decides.",
+  "properties": {
+    "routingConfiguration": {
+      "inboundRouteMap": null,
+      "outboundRouteMap": null
+    }
+  }
+}
+

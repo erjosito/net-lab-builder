@@ -1,0 +1,21 @@
+# dig CNAME/A/AAAA
+<TRANSLATOR_ACCOUNT>.cognitiveservices.azure.com.	900 IN CNAME <TRANSLATOR_ACCOUNT>.privatelink.cognitiveservices.azure.com.
+<TRANSLATOR_ACCOUNT>.cognitiveservices.azure.com.	899 IN CNAME <TRANSLATOR_ACCOUNT>.privatelink.cognitiveservices.azure.com.
+<TRANSLATOR_ACCOUNT>.privatelink.cognitiveservices.azure.com. 389	IN CNAME swedencentral.api.cognitive.microsoft.com.
+swedencentral.api.cognitive.microsoft.com. 16 IN CNAME cognitivesecprod.trafficmanager.net.
+cognitivesecprod.trafficmanager.net. 1 IN CNAME	cognitivesecprod.azure-api.net.
+cognitivesecprod.azure-api.net.	439 IN	CNAME	apimgmttm3fdvxtkk0bbypi5oyqnvf2nptsx6let1bydjmwbev.trafficmanager.net.
+apimgmttm3fdvxtkk0bbypi5oyqnvf2nptsx6let1bydjmwbev.trafficmanager.net. 174 IN CNAME cognitivesecprod-swedencentral-01.regional.azure-api.net.
+cognitivesecprod-swedencentral-01.regional.azure-api.net. 439 IN CNAME apic3f04266f00c4e79bdbae11b7df99222gdjsxjejy7s8uy26wapru.swedencentral.cloudapp.azure.com.
+apic3f04266f00c4e79bdbae11b7df99222gdjsxjejy7s8uy26wapru.swedencentral.cloudapp.azure.com. 7 IN	A <PUBLIC_IP>
+<TRANSLATOR_ACCOUNT>.cognitiveservices.azure.com.	899 IN CNAME <TRANSLATOR_ACCOUNT>.privatelink.cognitiveservices.azure.com.
+<TRANSLATOR_ACCOUNT>.privatelink.cognitiveservices.azure.com. 389	IN CNAME swedencentral.api.cognitive.microsoft.com.
+swedencentral.api.cognitive.microsoft.com. 1 IN	CNAME cognitivesecprod.trafficmanager.net.
+cognitivesecprod.trafficmanager.net. 1 IN CNAME	cognitivesecprod.azure-api.net.
+cognitivesecprod.azure-api.net.	1 IN	CNAME	apimgmttm3fdvxtkk0bbypi5oyqnvf2nptsx6let1bydjmwbev.trafficmanager.net.
+apimgmttm3fdvxtkk0bbypi5oyqnvf2nptsx6let1bydjmwbev.trafficmanager.net. 1 IN CNAME cognitivesecprod-swedencentral-01.regional.azure-api.net.
+cognitivesecprod-swedencentral-01.regional.azure-api.net. 1 IN CNAME apic3f04266f00c4e79bdbae11b7df99222gdjsxjejy7s8uy26wapru.swedencentral.cloudapp.azure.com.
+# getent
+<PUBLIC_IP>    STREAM apic3f04266f00c4e79bdbae11b7df99222gdjsxjejy7s8uy26wapru.swedencentral.cloudapp.azure.com
+<PUBLIC_IP>    DGRAM  
+<PUBLIC_IP>    RAW

@@ -1,0 +1,13 @@
+# Command: az network nic show-effective-route-table -g rg-dual-hub-hubless-region-ars-lab3d001 -n nic-vm-onprem-ep -o json
+# Timestamp: 2026-08-03T17:59:00+02:00
+# Key routes (VirtualNetworkGateway source = BGP-propagated from vpngw-onprem):
+# 10.40.0.0/16  VnetLocal
+# 10.11.0.0/24  → GW (ECMP 10.40.0.4/10.40.0.5)
+# 10.21.0.0/24  → GW (ECMP 10.40.0.4/10.40.0.5)
+# 10.31.0.0/24  → GW (ECMP 10.40.0.4/10.40.0.5) -- set-C1, VM present
+# 10.32.0.0/24  → GW (ECMP 10.40.0.4/10.40.0.5) -- set-C2, NO VM (S5 control-plane route)
+# 10.10.0.0/16  → GW (hub1 supernet)
+# 10.20.0.0/16  → GW (hub2 supernet)
+# 10.30.0.0/24  → GW (Poland ARS VNet)
+# 10.30.0.0/27  → GW (Poland RouteServerSubnet)
+# 0.0.0.0/0     → Internet (Default, Active -- on-prem has direct Internet)

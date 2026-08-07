@@ -1,0 +1,11 @@
+# Command: az network vnet-gateway list-learned-routes -g rg-dual-hub-hubless-region-ars-lab3d001 -n vpngw-hub1 -o json
+# Timestamp: 2026-08-03T17:58:00+02:00
+# Key extracts from full output:
+# 10.40.0.0/16  EBgp  65000           via 10.40.0.4 / 10.40.0.5 (on-prem connected)
+# 0.0.0.0/0     IBgp  65001           via 10.10.1.4 (NVA1 via ARS)
+# 10.31.0.0/24  IBgp  65001           via 10.10.1.4 (NVA1 via ARS -- set-C1 spoke)
+# 10.32.0.0/24  IBgp  65001           via 10.10.1.4 (NVA1 via ARS -- set-C2 spoke, no VM)
+# 10.30.0.0/24  IBgp  65001           via 10.10.1.4 (ARS subnet)
+# 10.30.0.0/27  IBgp  65001           via 10.10.1.4 (ARS RouteServerSubnet)
+# All source: IBgp from ARS instances 10.10.0.68 / 10.10.0.69
+# AS-PATH for spoke prefixes: "65001" only (Δ1 confirmed -- 65515 stripped)

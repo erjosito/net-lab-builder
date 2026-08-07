@@ -1,0 +1,95 @@
+[
+  {
+    "location": "switzerlandnorth",
+    "name": "vnet-hub2",
+    "prefixes": [
+      "10.20.0.0/16"
+    ],
+    "subnets": [
+      {
+        "name": "GatewaySubnet",
+        "prefix": "10.20.0.0/27"
+      },
+      {
+        "name": "RouteServerSubnet",
+        "prefix": "10.20.0.64/27"
+      },
+      {
+        "name": "snet-nva",
+        "prefix": "10.20.1.0/27"
+      },
+      {
+        "name": "snet-endpoint",
+        "prefix": "10.20.2.0/27"
+      }
+    ]
+  },
+  {
+    "location": "switzerlandnorth",
+    "name": "vnet-spoke-b",
+    "prefixes": [
+      "10.21.0.0/24"
+    ],
+    "subnets": [
+      {
+        "name": "snet-workload",
+        "prefix": "10.21.0.0/25"
+      }
+    ]
+  },
+  {
+    "location": "norwayeast",
+    "name": "vnet-onprem",
+    "prefixes": [
+      "10.40.0.0/16"
+    ],
+    "subnets": [
+      {
+        "name": "GatewaySubnet",
+        "prefix": "10.40.0.0/27"
+      },
+      {
+        "name": "snet-endpoint",
+        "prefix": "10.40.1.0/27"
+      }
+    ]
+  },
+  {
+    "location": "swedencentral",
+    "name": "vnet-hub1",
+    "prefixes": [
+      "10.10.0.0/16"
+    ],
+    "subnets": [
+      {
+        "name": "GatewaySubnet",
+        "prefix": "10.10.0.0/27"
+      },
+      {
+        "name": "RouteServerSubnet",
+        "prefix": "10.10.0.64/27"
+      },
+      {
+        "name": "snet-nva",
+        "prefix": "10.10.1.0/27"
+      },
+      {
+        "name": "snet-endpoint",
+        "prefix": "10.10.2.0/27"
+      }
+    ]
+  },
+  {
+    "location": "swedencentral",
+    "name": "vnet-spoke-a",
+    "prefixes": [
+      "10.11.0.0/24"
+    ],
+    "subnets": [
+      {
+        "name": "snet-workload",
+        "prefix": "10.11.0.0/25"
+      }
+    ]
+  }
+]

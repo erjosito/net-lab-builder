@@ -1,0 +1,64 @@
+[
+  {
+    "allowForwardedTraffic": true,
+    "allowGatewayTransit": true,
+    "allowVirtualNetworkAccess": true,
+    "doNotVerifyRemoteGateways": true,
+    "etag": "W/\"bb45d8a6-1219-4634-8e8a-d83774f2291a\"",
+    "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworks/vnet-hub2/virtualNetworkPeerings/peer-hub2-to-spoke-b",
+    "name": "peer-hub2-to-spoke-b",
+    "peerCompleteVnets": true,
+    "peeringState": "Connected",
+    "peeringSyncLevel": "FullyInSync",
+    "provisioningState": "Succeeded",
+    "remoteAddressSpace": {
+      "addressPrefixes": [
+        "10.21.0.0/24"
+      ]
+    },
+    "remoteVirtualNetwork": {
+      "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworks/vnet-spoke-b",
+      "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+    },
+    "remoteVirtualNetworkAddressSpace": {
+      "addressPrefixes": [
+        "10.21.0.0/24"
+      ]
+    },
+    "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+    "resourceGuid": "8cff752a-21ae-0f0d-2d9e-448364065bdd",
+    "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+    "useRemoteGateways": false
+  },
+  {
+    "allowForwardedTraffic": true,
+    "allowGatewayTransit": false,
+    "allowVirtualNetworkAccess": true,
+    "doNotVerifyRemoteGateways": false,
+    "etag": "W/\"bb45d8a6-1219-4634-8e8a-d83774f2291a\"",
+    "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworks/vnet-hub2/virtualNetworkPeerings/peer-hub2-to-hub1",
+    "name": "peer-hub2-to-hub1",
+    "peerCompleteVnets": true,
+    "peeringState": "Connected",
+    "peeringSyncLevel": "FullyInSync",
+    "provisioningState": "Succeeded",
+    "remoteAddressSpace": {
+      "addressPrefixes": [
+        "10.10.0.0/16"
+      ]
+    },
+    "remoteVirtualNetwork": {
+      "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualNetworks/vnet-hub1",
+      "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001"
+    },
+    "remoteVirtualNetworkAddressSpace": {
+      "addressPrefixes": [
+        "10.10.0.0/16"
+      ]
+    },
+    "resourceGroup": "rg-dual-hub-hubless-region-ars-lab3d001",
+    "resourceGuid": "88bdec7b-e58e-02fd-070a-50ef632a4a9c",
+    "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+    "useRemoteGateways": false
+  }
+]

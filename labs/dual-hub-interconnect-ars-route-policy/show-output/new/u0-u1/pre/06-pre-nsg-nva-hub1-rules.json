@@ -1,0 +1,47 @@
+[
+  {
+    "access": "Allow",
+    "destinationPortRange": "179",
+    "direction": "Inbound",
+    "name": "allow-bgp-inbound",
+    "priority": 100,
+    "protocol": "Tcp",
+    "sourceAddressPrefix": "10.10.0.0/16"
+  },
+  {
+    "access": "Allow",
+    "destinationPortRange": "179",
+    "direction": "Inbound",
+    "name": "allow-bgp-multihop-inbound",
+    "priority": 105,
+    "protocol": "Tcp",
+    "sourceAddressPrefix": "10.30.0.0/24"
+  },
+  {
+    "access": "Allow",
+    "destinationPortRange": "*",
+    "direction": "Inbound",
+    "name": "allow-icmp-inbound",
+    "priority": 110,
+    "protocol": "Icmp",
+    "sourceAddressPrefix": "10.0.0.0/8"
+  },
+  {
+    "access": "Allow",
+    "destinationPortRange": "22",
+    "direction": "Inbound",
+    "name": "allow-ssh-inbound",
+    "priority": 120,
+    "protocol": "Tcp",
+    "sourceAddressPrefix": "10.0.0.0/8"
+  },
+  {
+    "access": "Deny",
+    "destinationPortRange": "*",
+    "direction": "Inbound",
+    "name": "deny-other-inbound",
+    "priority": 4000,
+    "protocol": "*",
+    "sourceAddressPrefix": "*"
+  }
+]

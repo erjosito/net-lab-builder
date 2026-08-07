@@ -1,0 +1,10 @@
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\ndefault via 10.40.1.1 dev eth0 proto dhcp src 10.40.1.4 metric 100 \n10.40.1.0/27 dev eth0 proto kernel scope link src 10.40.1.4 metric 100 \n10.40.1.1 dev eth0 proto dhcp scope link src 10.40.1.4 metric 100 \n168.63.129.16 via 10.40.1.1 dev eth0 proto dhcp src 10.40.1.4 metric 100 \n169.254.169.254 via 10.40.1.1 dev eth0 proto dhcp src 10.40.1.4 metric 100 \nTARGET=10.11.0.4\nPING 10.11.0.4 (10.11.0.4) 56(84) bytes of data.\n\n--- 10.11.0.4 ping statistics ---\n5 packets transmitted, 0 received, 100% packet loss, time 4085ms\n\nTARGET=10.21.0.4\nPING 10.21.0.4 (10.21.0.4) 56(84) bytes of data.\n\n--- 10.21.0.4 ping statistics ---\n5 packets transmitted, 0 received, 100% packet loss, time 4078ms\n\nTARGET=10.50.1.4\nPING 10.50.1.4 (10.50.1.4) 56(84) bytes of data.\n64 bytes from 10.50.1.4: icmp_seq=1 ttl=64 time=27.8 ms\n64 bytes from 10.50.1.4: icmp_seq=2 ttl=64 time=27.1 ms\n64 bytes from 10.50.1.4: icmp_seq=3 ttl=64 time=28.6 ms\n64 bytes from 10.50.1.4: icmp_seq=4 ttl=64 time=26.8 ms\n64 bytes from 10.50.1.4: icmp_seq=5 ttl=64 time=30.1 ms\n\n--- 10.50.1.4 ping statistics ---\n5 packets transmitted, 5 received, 0% packet loss, time 4007ms\nrtt min/avg/max/mdev = 26.843/28.087/30.121/1.176 ms\n\n[stderr]\n+ ip route\n+ echo TARGET=10.11.0.4\n+ ping -c 5 -W 2 10.11.0.4\n+ echo TARGET=10.21.0.4\n+ ping -c 5 -W 2 10.21.0.4\n+ echo TARGET=10.50.1.4\n+ ping -c 5 -W 2 10.50.1.4\n"
+    }
+  ]
+}

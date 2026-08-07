@@ -1,0 +1,26 @@
+{
+  "properties": {
+    "rules": [
+      {
+        "name": "rule-prepend-0-0-64496x2",
+        "matchCriteria": [
+          {
+            "matchCondition": "Equals",
+            "routePrefix": ["0.0.0.0/0"]
+          }
+        ],
+        "actions": [
+          {
+            "type": "Add",
+            "parameters": [
+              {
+                "asPath": ["64496", "64496"]
+              }
+            ]
+          }
+        ],
+        "nextStepIfMatched": "Terminate"
+      }
+    ]
+  }
+}

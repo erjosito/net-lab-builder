@@ -1,0 +1,1 @@
+Evidence for T2 (hub-local ARS<->NVA route-map association, T2a inert gate + T2b real modification) goes here — see ../../validation.md#t2--hub-local-arsnva-route-map-association-and-route-modification. Gated: schedule only after Jose's maintenance-window approval.

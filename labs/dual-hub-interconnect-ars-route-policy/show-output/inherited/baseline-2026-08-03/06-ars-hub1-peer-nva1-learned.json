@@ -1,0 +1,27 @@
+# ==== PROVENANCE (added by Tank, TP-HH extraction, 2026-08-05) ====
+# Source (original, unchanged, still present): labs/dual-hub-hubless-region-ars/show-output/baseline-pre-delta3/06-ars-hub1-peer-nva1-learned.json
+# Original capture context: Pre-Delta3 baseline capture, 2026-08-03 (~17:55-17:59 UTC+02:00)
+# Capturing agent: Niobe (Validation Engineer)
+# Status: Inherited; not recaptured for TP-HH
+# Sanitization: scanned 2026-08-05 by Tank for subscription/tenant IDs, secrets, keys, tokens -- none found
+# ====================================================================
+# Command: az network routeserver peering list-learned-routes -g rg-dual-hub-hubless-region-ars-lab3d001 --routeserver ars-hub1 -n peer-nva1 -o json
+# Timestamp: 2026-08-03T17:57:00+02:00
+# DELTA-1 NOTE: AS-PATH "65001" only (not "65001-65515") confirms Δ1 loop-strip working.
+{
+  "RouteServiceRole_IN_0": [
+    {"asPath":"65001","localAddress":"10.10.0.68","network":"0.0.0.0/0","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.10.0.68","network":"10.30.0.0/24","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.10.0.68","network":"10.31.0.0/24","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.10.0.68","network":"10.32.0.0/24","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.10.0.68","network":"10.30.0.0/27","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768}
+  ],
+  "RouteServiceRole_IN_1": [
+    {"asPath":"65001","localAddress":"10.10.0.69","network":"0.0.0.0/0","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.10.0.69","network":"10.30.0.0/27","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.10.0.69","network":"10.30.0.0/24","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.10.0.69","network":"10.31.0.0/24","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.10.0.69","network":"10.32.0.0/24","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001-65000","localAddress":"10.10.0.69","network":"10.40.0.0/16","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768}
+  ]
+}

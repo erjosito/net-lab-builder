@@ -1,0 +1,33 @@
+# ==== PROVENANCE (added by Tank, TP-HH extraction, 2026-08-05) ====
+# Source (original, unchanged, still present): labs/dual-hub-hubless-region-ars/show-output/route-map-upgrade/hub1-routemap-body.json
+# Original capture context: Hub ARS route-map tier activation, 2026-08-05T10:35-11:03 UTC+02:00 (ars-hub1/ars-hub2 first-use upgrade)
+# Capturing agent: Tank (IaC Engineer)
+# Status: Inherited; not recaptured for TP-HH
+# Sanitization: scanned 2026-08-05 by Tank for subscription/tenant IDs, secrets, keys, tokens -- none found
+# ====================================================================
+{
+  "properties": {
+    "rules": [
+      {
+        "name": "rule-activate-synthetic",
+        "matchCriteria": [
+          {
+            "matchCondition": "Equals",
+            "routePrefix": ["192.0.2.0/24"]
+          }
+        ],
+        "actions": [
+          {
+            "type": "Add",
+            "parameters": [
+              {
+                "asPath": ["64496"]
+              }
+            ]
+          }
+        ],
+        "nextStepIfMatched": "Terminate"
+      }
+    ]
+  }
+}

@@ -8,6 +8,15 @@
 
 **📌 SUMMARIZATION NOTE (2026-07-31):** This file has grown to ~19KB. Pre-Phase 3 learnings archived in `history-archive.md`. Active learnings (Phase 3 Gates A, B, C validation) retained below.
 
+## Learnings (2026-08-06 — Translator endpoint path equivalence)
+
+- Completed 10 interleaved blocks across public, `Microsoft.CognitiveServices` service endpoint, and Private Endpoint: 2,400 measured + 1,200 warm-up requests, concurrency 1, fresh/reused HTTPS, zero measured errors/timeouts.
+- R1 public, R3 restricted-subnet authorization, and R4 private endpoint passed. R2 and R5 are inconclusive because Azure Run Command stalled while returning the forced-public control output; ordinary requests and state/route/DNS subchecks passed.
+- All performance pairs are overall inconclusive: latency/throughput often met individual margins, but jitter and TCP retransmission-proxy CIs did not. This is not proof of difference.
+- VM `ProvisioningState/updating` required ARM redeploy before measurement. A later Run Command stall was not allowed to contaminate or trigger replacement benchmark values.
+- Final safe public baseline restored; VM deallocated; resources retained.
+- Evidence: `labs/storage-endpoint-path-equivalence/raw-output/sepath-validation-20260806T133000Z/`.
+
 ## Learnings (2026-07-31T11:45:00+02:00)
 
 **Phase 3 Gate C — FULL PASS / BUG NOT REPRODUCED — vwan-routemap-summarization**
@@ -264,9 +273,38 @@ Ran a full live audit of `routemap-test-rg` on 2026-07-30 to answer "are we in P
 
 **Designs studied section** — Three rows (Path A ER Direct, Path B Megaport fallback, Path C IPsec VPN) with verdicts TBD; evidence links pending; A is "recommended if S1–S2 pass", B is "not recommended per Jose gate", C is "teaching-only (mechanism differs)". This follows rule #30: every design enumerated by Morpheus gets documented.
 
-**Reuse from vwan-dual-er-symmetric** — Assertion table structure (# | Assertion | Command | Expected | Evidence), three-layer checklist pattern, sanitization checklist, post-deploy validation order, BGP peer-status check pattern. Adapted for simpler topology (no MCR, no vHub REST layers) and dual-stack MSEE-only (no GCP multi-region cross-traffic).
+**Reuse from vwan-dual-er-symmetric** — Assertion table structure (# | Assertion | Command | Expected | Evidence), three-layer checklist pattern, sanitization checklist, post-deploy validation order, BGP peer-status check pattern. Adapted for simpler topology (no MCR, no vHub REST layers) and dual-stack MSEE-only (no GCP multi-region cross-traffic).
 
 
 ---
 
 📌 Team update (2026-07-31T11:01:11Z): **Phase 3 Gates A, B, C FULL PASS — Complete Testing Arc**. Gate A (firewall deploy, RI OFF): 6/6 summaries on both NVAs, 0 /24 leaks, BGP Established. Gate B (RI hub-eu1): 6/6 summaries intact, BGP transparent (session timestamps unchanged from Gate A). Gate C (RI hub-eu2, both hubs now RI-ON): 6/6 summaries survive, BGP stable across all three gates. Missing-summary bug NOT reproduced under sequential stable-state enablement. Root-cause analysis (Trinity): RI operates on data-plane forwarding table; summarize-out operates on BGP advertisement set — orthogonal planes. Gate D concurrent-churn variant designed (dormant) to test race between RI policy-install and VPN connection rekey. Evidence: show-output/23–52. Decisions merged: tank-ri-eu1-enable, tank-ri-eu2-enable, niobe-gate-a/b/c, link-megaport-kv-retrieval, trinity-gate-c-analysis. Next: Jose direction on Gate D concurrent-churn variant.
+
+## 2026-08-06 — Read-only verification of Tank's U1.5 + U2 (dual-hub-interconnect-ars-route-policy)
+
+**Verdict: PARTIAL** — technical execution is a full pass; the documentation/ledger phase was never
+completed (Tank's final response was lost). Nothing in Azure or on the NVAs is unfinished or risky.
+
+- **U1.5 confirmed live** on both NVAs: no `ars_poland_0/1`, no `export_to_poland_ars`, no
+  `route 10.30.0.0/27`, and no nva2 `10.31/10.32` prepend clause in `/etc/bird/bird.conf`. Local hub
+  ARS sessions Established with `Since` byte-identical to the pre-change captures (07:12:12.272 /
+  07:12:13.010 on nva1; 07:12:17.496 / 07:12:20.643 on nva2) — **no flap at any point**. `10.30.0.0/27`
+  gone from both ARS learned sets and both NIC effective-route tables. 9 routes / 6 networks on both.
+  Host backups `bird.conf.pre-u15.*` present; syntax-gate and apply evidence complete.
+- **U2 confirmed live:** `rm-hub1-tmp-assoc` (match `203.0.113.0/24` → Add asPath 64496 → Terminate)
+  associated inbound on `ars-hub1/peer-nva1`; `vnetRoutes.staticRoutes: []`,
+  `propagateStaticRoutes: true`, `vnetLocalRouteOverrideCriteria: Contains` all preserved;
+  `rm-hub1-activate` and all of `ars-hub2` untouched; 4/4 VPN connections `Connected`.
+  **Association left ACTIVE — no rollback.** I re-computed the B1→B2 delta myself: 0 differences
+  across all 9 comparable capture files.
+- **API-version trap (new learning):** `GET .../bgpConnections/<name>?api-version=2024-05-01`
+  silently omits `routingConfiguration` entirely — the association looks absent. Use **2024-10-01 or
+  later** to read or verify an ARS route-map association.
+- **Sanitization CLEAN** (0 raw subscription/tenant IDs, 81 `<SUBSCRIPTION_ID>` placeholders).
+  **No U3/U4/U5 activity.** No commit made (HEAD still `3a137f4`).
+- **Remaining gap = docs only:** `deploy-log.md` (no U1.5/U2 rows, both still "PENDING APPROVAL",
+  G4 still OPEN despite U2 satisfying its closing condition), `validation.md` (both "NOT RUN"),
+  `README.md`/`manifest.md` banners, Tank history, and a missing `tank-u15-u2-execution.md` inbox note.
+  Minimum recovery: **Tank, docs-only** — do **not** re-run U1.5 or U2.
+
+📌 Decision inbox written: `.squad/decisions/inbox/niobe-u15-u2-verification.md`

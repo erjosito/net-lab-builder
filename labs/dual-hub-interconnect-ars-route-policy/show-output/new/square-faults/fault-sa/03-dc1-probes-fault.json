@@ -1,0 +1,10 @@
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\nPING 10.50.1.4 (10.50.1.4) 56(84) bytes of data.\n64 bytes from 10.50.1.4: icmp_seq=1 ttl=64 time=27.1 ms\n64 bytes from 10.50.1.4: icmp_seq=2 ttl=64 time=27.3 ms\n64 bytes from 10.50.1.4: icmp_seq=3 ttl=64 time=26.7 ms\n64 bytes from 10.50.1.4: icmp_seq=4 ttl=64 time=30.8 ms\n64 bytes from 10.50.1.4: icmp_seq=5 ttl=64 time=26.8 ms\n\n--- 10.50.1.4 ping statistics ---\n5 packets transmitted, 5 received, 0% packet loss, time 4006ms\nrtt min/avg/max/mdev = 26.684/27.754/30.827/1.552 ms\nPING 10.21.0.4 (10.21.0.4) 56(84) bytes of data.\n\n--- 10.21.0.4 ping statistics ---\n5 packets transmitted, 0 received, 100% packet loss, time 4089ms\n\n\n[stderr]\n+ ping -c 5 -W 2 10.50.1.4\n+ ping -c 5 -W 2 10.21.0.4\n"
+    }
+  ]
+}

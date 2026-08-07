@@ -1,5 +1,86 @@
 # Project Context
 
+## 2026-08-06 — dual-hub-interconnect-ars-route-policy U1.5 + U2 EXECUTED (docs-only recovery)
+
+- U1.5 and U2 were technically executed live in a prior turn whose final response/docs write-up was
+  lost. Niobe independently verified the live Azure/NVA state as **COMPLETE PASS** (read-only,
+  2026-08-06) — `.squad/decisions/inbox/niobe-u15-u2-verification.md`. This entry documents a
+  **docs-only recovery**: no Azure CLI/REST command, VM run-command, BIRD command, route-map
+  operation, peering mutation, or commit was (re-)run in this pass. Only markdown files and this
+  history entry were written.
+- **U1.5 result: PASS on both NVAs.** Graceful `birdc configure` on `vm-nva1` (2026-08-06T14:12:35Z)
+  then `vm-nva2` (14:46:26Z) removed the retired Poland state — `route 10.30.0.0/27`,
+  `protocol bgp ars_poland_0`/`_1`, `filter export_to_poland_ars` on both NVAs, plus the dead
+  `10.31.0.0/24`/`10.32.0.0/24` prepend clause in `export_to_hub2_ars` on `vm-nva2` only.
+  `systemctl restart bird` was never invoked. Exactly `10.30.0.0/27` was withdrawn from both
+  instances of both Route Servers; `ars_hub1_0/1`/`ars_hub2_0/1` BGP `Since` timestamps are
+  unchanged (no flap); gateway and on-prem learned/advertised sets are byte-identical; config gates
+  (`bird -p -c`, `configure check`) passed before every apply. `nva-config/bird-nva{1,2}.u15-target.conf`
+  are now the authoritative configs, matching the live hosts byte-for-byte.
+- **U2 result: PASS.** Created `ars-hub1/routeMaps/rm-hub1-tmp-assoc` (rule matches
+  `203.0.113.0/24`, an absent prefix) and associated it inbound on
+  `ars-hub1/bgpConnections/peer-nva1` via a byte-preserving `PUT` (body derived from a fresh GET,
+  `If-Match` etag; `vnetRoutes`/`staticRoutesConfig` preserved). PUT issued 15:52:35Z, `Succeeded`
+  ~16:01:43Z. No route effect: B1→B2 diff across all 9 comparable capture files is zero
+  (independently re-computed by Niobe). Hub2 and `rm-hub1-activate` untouched; all 4 VPN connections
+  `Connected`; the association is **left ACTIVE** (not rolled back), which is required for U3a/U3b.
+  **API trap:** `api-version=2024-05-01` omits `routingConfiguration` from the response and would
+  make the association look absent — `2024-10-01`+ was used throughout.
+- **Gate G4 CLOSED** — U2 produced `Succeeded` with the working body, satisfying G4's exact
+  documented condition. **G1 and G3 remain OPEN** (Stage 1 not rolled back; fresh cost/deletion
+  approval not requested). **U3–U5 remain not run/not approved**; U4's gateway-connection
+  attachment remains separately unverified and is not implied by G4's closure.
+- Run-rate unchanged: ≈$66–73/day plus the already-accounted-for +$0.58/day NVA compute increment
+  from U0; no new route-map surcharge (the hub tier upgrade was already sunk).
+- Docs updated (this pass): `deploy-log.md` (change log rows, approval-unit ledger, G1/G4 gate
+  rows), `validation.md` (§U1.5, §T2a/U2 results), `README.md` (status banner, Phase-4 table,
+  T1–T5 status table, Quick Links), `manifest.md` (approval-unit table, approval gate ledger, T2a
+  narrative), `design.md` (execution addendum after §8a(d-correction)), `lessons-learned.md`
+  (`TANK-001` remediation confirmed executed, `TRIN-001` confirmed applied + API-version trap
+  noted). No git commit made, per instruction.
+- Decision inbox written: `.squad/decisions/inbox/tank-u15-u2-execution.md`, referencing Niobe's
+  independent verification. Next approval gate: **U3a/U3b**.
+
+## 2026-08-05 — storage-endpoint-path-equivalence Translator redesign deployed
+
+- Implemented the explicitly approved Azure AI Translator F0 redesign in the existing `rg-storage-sepath-0805175837` lab bed.
+- Reused the VM/disk/NIC, VNet/subnets, NAT Gateway/PIP, NSG, Log Analytics workspace, flow-log Storage account, and VNet flow log.
+- Deleted only the approved blocked experiment resources: target/decoy Storage accounts, Blob PE/NIC, Blob private DNS artifacts, and Storage service endpoint policy.
+- Deployed Translator F0 with local auth disabled, VM `Cognitive Services User` RBAC, diagnostics, replacement PE at `10.61.2.4`, and `privatelink.cognitiveservices.azure.com`.
+- Replaced the Storage NSG destination with `CognitiveServicesFrontend` and added idempotent Public/ServiceEndpoint/Restricted/Private/PrivateOnly state transitions.
+- Installed a keyless managed-identity probe on the VM. HTTP 200 smoke validation passed for public, service-endpoint, restricted-subnet, and private modes. No full benchmark was run.
+- Restored the R1 public baseline and deallocated the VM. Niobe is unblocked. Cleanup was not run.
+- Sanitized evidence: `labs/storage-endpoint-path-equivalence/raw-output/sepath-20260805-175837/11-translator-redesign-deployment.json` and `12-translator-redesign-inventory.json`.
+
+## 2026-08-06 — dual-hub-interconnect-ars-route-policy U0 + conditional U1 EXECUTED
+
+- Executed the approved (Jose Moreno) activation `U0 + conditional U1`, strictly scoped: started `vm-nva1` + `vm-nva2` only (U0), validated the U1 hard gate (BIRD route-refresh capability, both ARS peerings Established), and — gate PASSED — created exactly `peer-hub1-to-hub2` / `peer-hub2-to-hub1` (U1) with the exact required flags (`vna=T, fwd=T, gwt=F, urg=F`).
+- **U0 result: PASS-with-note.** Both VMs `VM running`; `ars_hub1_0/1`/`ars_hub2_0/1` Established; route-refresh capability confirmed both sides both hubs; all 4 VPN connections Connected; `ars_poland_0/1` in `Connect` as expected. New finding `TANK-001`: both NVAs' hand-edited `bird.conf` (not in version control) re-originate a stale `10.30.0.0/27` (Poland-shaped) static route into ARS — confirmed contained (absent from ARS advertised-back, `vpngw-hub1/2`, and `vpngw-onprem` learned routes) and non-blocking, but it corrects the manifest's assumption that NVA1 "re-originates `10.10.0.64/27`" (that prefix does not actually appear in ARS's learned-routes set).
+- **U1 (T1) result: PASS.** Both peerings `Connected`/`FullyInSync`, stable at a T+~20min re-check. `vm-nva1` (10.10.1.4) ↔ `vm-nva2` (10.20.1.4): 0% ICMP loss both directions post-peering (100% pre-peering). Non-transitivity proven via byte-identical pre/post diffs on ARS learned/advertised (both hubs), `vpngw-hub1` advertised-to-onprem, `vpngw-onprem` learned, and VPN connection statuses. Each NVA NIC gained exactly one new `VNetGlobalPeering` route (remote hub `/16`) and nothing else. Confirmed no route-map association exists (T2/U2 untouched).
+- Strict scope discipline maintained: no U2–U5, no route-map/BIRD edit, no other VM touched, no VPN connection change, no deletion, no git commit. No rollback triggered — both VMs and both peerings remain live as the approved end-state.
+- Cost/timing: +$0.58/day (U0, VM compute) while running; ≈$0.00 incremental data cost (U1); ≈75 min wall clock end-to-end (dominated by `az vm run-command invoke` latency, ~1.5–3+ min per BIRD query); the underlying Azure operations (VM start, peering create) each completed under 3 min.
+- Evidence: `labs/dual-hub-interconnect-ars-route-policy/show-output/new/u0-u1/{pre,post-u0,pre-u1,post-u1}/`, one command per file, sanitized (grep-verified zero raw subscription/tenant IDs).
+- Docs updated: `validation.md` (§U0/§T1 actual results), `deploy-log.md` (change log, approval-unit ledger, G1 partial-progress note — not claiming full bow-tie), `README.md` (status + Phase-4 table), `design.md` (§8a(c)-correction on the stale-route finding), `lessons-learned.md` (`TANK-001` stale-route finding, `TANK-002` run-command backgrounding limitation, `TANK-003` `az group list --query` parsing quirk), and source lab `dual-hub-hubless-region-ars/deploy-log.md` (VM power-state update note, ownership-contract-respecting).
+- Two minor tooling findings for future reference: `az vm run-command invoke` does not properly detach `nohup ... &` background processes (worked around with blocking ping tests instead of a continuous probe); `az group list --query "[?contains(...)]" -o tsv` fails to parse on this Windows setup (worked around with `-o table | Select-String`).
+- Next approval gate: **U2/T2a** (inert route-map association on `ars-hub1`/`peer-nva1` only, dedicated `rm-hub1-tmp-assoc`) — remains unapproved, not executed. Recommend Trinity/Morpheus review the `TANK-001` correction to the manifest's `10.10.0.64/27` assumption before U2/T2b is planned.
+- Decision inbox written: `.squad/decisions/inbox/tank-u0-u1-execution.md`. No git commit made, per instruction.
+
+## 2026-08-06 — storage-endpoint-path-equivalence redesign hold
+
+- Issued an idempotent deallocation request only for `vm-client` in `rg-storage-sepath-0805175837`; it was already deallocated and remained verified as `VM deallocated` / provisioning `Succeeded`.
+- Preserved the OS disk, NIC, VM configuration, all other resources, and all security controls.
+- Recorded sanitized evidence in `labs/storage-endpoint-path-equivalence/raw-output/sepath-20260805-175837/vm-client-deallocate-20260806T070053Z.json` and updated `deployment.md`.
+- Remaining notable cost sources: NAT Gateway/Public IP, Private Endpoint, managed disk, storage accounts, Log Analytics/flow logs, and potential Defender for Storage charges.
+
+## 2026-08-05 — storage-endpoint-path-equivalence Phase 4
+
+- Implemented Bicep + PowerShell deploy/cleanup tooling under `labs/storage-endpoint-path-equivalence/deploy/`.
+- Reconfirmed `Standard_B2ts_v2` in `swedencentral`: catalog PASS and live `az vm create --validate` PASS; temporary preflight RG removed.
+- ARM deployment `sepath-0805175837` in `rg-storage-sepath-0805175837` succeeded. VM running; PE Approved; diagnostics and VNet flow log enabled; NSG attached after cloud-init bootstrap.
+- Material runtime blocker: Defender for Storage security automation forces both experiment accounts to `publicNetworkAccess=Disabled`. CLI and REST writes could not retain `Enabled`; activity logs identify `StorageAccounts/securityOperators/DefenderForStorageSecurityOperator`.
+- Stopped before blob upload and experimental state transitions. SE off, endpoint policy detached, private DNS unlinked. No cleanup. Niobe blocked pending exemption or redesign.
+- Sanitized evidence: `labs/storage-endpoint-path-equivalence/raw-output/sepath-20260805-175837/`; status/resume commands: `deployment.md`.
+
 - **Owner:** Jose Moreno
 - **Project:** net-lab-builder — build, document, and tear down ephemeral Azure Networking labs
 - **Stack:** Bicep, Terraform, Azure CLI, PowerShell; Megaport API; Azure Key Vault (secret fetch via z keyvault secret show)
@@ -417,3 +498,153 @@ the Δ2 and S2/S3 evidence in its direct-adjacency form) · S4 rollback sequence
 ---
 
 📌 2026-08-05T13:43:07.691+02:00 — Scribe merge pass: US10 revision brief recorded in decisions.md; no lab/design file staging occurred.
+
+---
+
+## TP-HH two-region extraction build (2026-08-05T16:00)
+
+Executed Morpheus's approved US10+US11 extraction contract plus Jose's broader full-build task:
+created `labs/dual-hub-interconnect-ars-route-policy/` as a documentation-only test-program
+composition of Sweden Central + Switzerland North retained stories. Zero Azure commands executed,
+zero live resources touched, nothing committed.
+
+**Built:** 6 core artifacts (README/manifest/design/validation/lessons-learned/deploy-log), 5 `.mmd`
+diagrams (3 extracted verbatim + 2 authored, all validated via cached `mmdc`, no new installs), 25
+inherited evidence files (copied with provenance headers, originals untouched — verified via
+`git status`), paired gated `apply.ps1`/`rollback.ps1` skeletons (no live `az` commands, all
+commented out) + 4 placeholder request-body JSONs, 5 `show-output/new/` scenario placeholders, and
+one additive cross-link line in the source lab's README (only edit to the source lab).
+
+**Key fix:** `[CmdletBinding(SupportsShouldProcess = $true)]` auto-injects `-WhatIf`/`-Confirm`;
+a custom `[switch]$Confirm` param collides with it at **runtime only** (static `Parser::ParseFile`
+does not catch it) — renamed the custom approval gate to `-ApprovalConfirmed` in both scripts and
+re-tested all 4 gate cases (wrong RG / placeholder subscription / missing approval / all-gates-pass)
+functionally, not just via syntax check.
+
+**Validation:** full sanitization scan (0 subscription/tenant IDs; secret-pattern hits are
+descriptive-only, no real values; poland/set-C/10.30-32 hits are all exclusion/contrast/deny-filter
+notes or factual unmodified BGP evidence content, none in diagram nodes); 55/55 relative links
+resolve; 25/25 evidence files carry provenance headers; no bicep/ARM/parameters copied; no migration
+gaps (all 25 files in Morpheus's file-action table found and copied).
+
+📌 Decision inbox written: `.squad/decisions/inbox/tank-two-region-extraction.md`
+
+---
+
+## Poland cleanup deletion preview — DRY RUN ONLY — 2026-08-05T16:00
+
+Jose authorized *investigating and previewing* removal of Poland Central resources from the shared
+live RG `rg-dual-hub-hubless-region-ars-lab3d001`. Task was explicit: dry-run only, no mutation.
+Executed **zero** delete/update/stop/resize/disassociate/deallocate commands — only `show`, `list`,
+and `az rest --method GET` (read-only) against the live subscription. No commit made.
+
+**Live inventory confirmed (read-only):** 61 top-level ARM objects, 20 VNet peerings, 3 ARS with 3
+BGP peerings + 2 route-map objects total — cross-checked against `manifest.md`, `main.bicep`, and
+`deploy-log.md`. Everything matched expected scope with two flagged discrepancies: (1) no Poland
+route table exists (manifest's "2 Route Tables" are `rt-spoke-a`/`rt-spoke-b` only — set-C uses
+ARS-injected `0.0.0.0/0`, no UDR); (2) `ars-poland` currently shows **zero** live route-map child
+objects via ARM REST (`routeMaps?api-version=2024-10-01`), while `.squad/agents/tank/history.md`'s
+own B3 note claims the route-map surcharge already applies to all 3 ARS including poland — carried
+into the cost estimate as an unresolved uncertainty (±$6/day), not silently resolved either way.
+
+**Delete-list scope (29 objects, none deleted):** `ars-poland` + its 2 BGP peerings; `vnet-poland-ars`
+/ `vnet-spoke-c1` / `vnet-spoke-c2` + their 10 own peerings (auto-removed with the VNet); `vm-c1-ep`
++ NIC + disk + 2 extensions (auto-removed with the VM); `pip-ars-poland`; `nsg-ep-poland`; and the 6
+Poland-facing peerings living on the **preserved** `vnet-hub1`/`vnet-hub2` VNets
+(`peer-hub1-to-poland`, `peer-hub1-to-spoke-c1`, `peer-hub1-to-spoke-c2`, `peer-hub2-to-poland`,
+`peer-hub2-to-spoke-c1`, `peer-hub2-to-spoke-c2`) — the exact nested/dependent case the task flagged.
+Confirmed via live peering list that `ars-hub1`/`ars-hub2` BGP connections never reference Poland
+(each has exactly 1 peering, to its own local NVA only) — so no hub1/hub2 Route Server, VPN gateway,
+NVA, or set-A/set-B spoke needed touching.
+
+**Ordering correction found from live evidence, not assumption:** `nsg-ep-poland` is **subnet-**
+associated to `vnet-spoke-c1/snet-workload`, not NIC-associated (`nic-vm-c1-ep`'s `networkSecurityGroup`
+field is `null`). This means the NSG delete must come **after** the VNet delete, not before it as a
+generic "NSG-then-VNet" template would assume — Azure blocks NSG deletion while a subnet association
+exists. Documented explicitly in the deletion-order stage table with the evidence citation.
+
+**Cost estimate (approximate, MEDIUM/LOW confidence):** Poland's share of the current ≈$84/day
+run-rate is ≈$11.51-17.51/day (ARS 1/3 share + PIP + VM compute/disk shares, ± the unresolved
+route-map surcharge above) — roughly a 14-21% reduction, ≈$345-525/month. Explicitly not claimed as
+precise; per-unit shares are lab-wide totals divided by count, not independently retail-priced.
+
+**Artifacts:** `labs/dual-hub-hubless-region-ars/cleanup-poland-dry-run.md` (full delete list,
+preserve list, dependency order, impact, rollback reality, cost estimate, hard confirmation gate);
+9 sanitized read-only captures under `labs/dual-hub-hubless-region-ars/show-output/
+cleanup-poland-dry-run/` (one command per file, provenance headers, subscription ID redacted
+everywhere); one-line planned-cleanup callout added to both the source lab README and the two-region
+lab README (ownership clarity only — no resource marked deleted).
+
+**Validation no mutation occurred:** pre/post `az resource list` counts identical (61, same type
+breakdown); pre/post peering counts on `vnet-hub1` and `vnet-poland-ars` identical (4 each); `git
+diff --stat` shows only the two README edits plus new untracked files (the dry-run doc, its
+show-output captures, this history entry, the decision inbox) — no existing IaC, manifest,
+deploy-log, or evidence file modified. No commit.
+
+📌 Decision inbox written: `.squad/decisions/inbox/tank-poland-cleanup-preview.md`
+
+## Poland cleanup EXECUTED — 2026-08-05T~19:15+02:00
+
+Structured confirmation ("Confirm deletion of the exact 29-object dry-run list" against
+`cleanup-poland-dry-run.md`, for `rg-dual-hub-hubless-region-ars-lab3d001`) received and honored.
+Executed the exact §2 delete list from the dry-run, Stages 1→4b, no reordering beyond what the
+dry-run itself already documented. **Result: 29/29 objects deleted, zero failures, zero retries.**
+
+- Stage 1: 6 remote-side peerings on `vnet-hub1`/`vnet-hub2` pointing at Poland — all exit 0.
+- Stage 2: `peer-nva1`/`peer-nva2` (ars-poland BGP peerings), then `ars-poland` itself — all exit 0;
+  the Route Server delete took ~25 min (longer than manifest's ~10 min estimate; documented, not a
+  scope deviation).
+- Stage 3: `vm-c1-ep` (+2 auto-removed extensions), `nic-vm-c1-ep`, `osdisk-vm-c1-ep`,
+  `pip-ars-poland` — all exit 0. `vm-c1-ep` (and, discovered live, all 5 other preserved VMs) were
+  already `deallocated` at task start — a pre-existing lab-wide condition, documented as a
+  non-blocking deviation (Stage-0 ping/effective-route-table captures could not run).
+- Stage 4/4b: `vnet-spoke-c1`, `vnet-spoke-c2`, `vnet-poland-ars` (+10 auto-removed nested
+  peerings), then `nsg-ep-poland` after the VNets (subnet-associated, not NIC-associated, per the
+  dry-run's live-evidence ordering correction) — all exit 0.
+
+**Post-delete verification (all matched expectation exactly):** resource count 61→50; region
+breakdown swedencentral=20/switzerlandnorth=19/norwayeast=11/polandcentral=0; `vnet-hub1` and
+`vnet-hub2` each retain exactly their one non-Poland peering; `ars-hub1`/`ars-hub2` (2 remain) each
+keep their unchanged 1 BGP peering + 1 inert route map (`rm-hub1-activate`/`rm-hub2-activate`); 3
+VPN gateways `Succeeded`; 4/4 VPN connections `Connected`; 5 VMs/NICs/disks remain (matching the
+expected set); 5 NSGs (was 6); RG present, `Succeeded`, tags unchanged. Duration ≈65 min end-to-end
+(dominated by the ARS delete).
+
+**Hard safety rules honored throughout:** RG never targeted; no wildcard/recursive/tag-wide/
+location-wide command issued (every command named one resource with `-g/-n` or parent flags); all 6
+remote-side peerings were the exact named objects from the approved list; hub1/hub2 Route Servers +
+inert route maps, both NVAs, VPN gateways, set-A/set-B spokes, on-prem resources, and the shared RG
+were all preserved and independently re-verified healthy post-delete.
+
+**Docs updated (source lab):** `cleanup-poland-dry-run.md` (status → Executed, §10 appended with the
+full executed-result record; §0-§9 preserved unedited as the original proposal), `README.md`
+("Planned cleanup" callout → "Poland Central retirement — EXECUTED"), `deploy-log.md` (new dated
+"Poland Central Cleanup — EXECUTED" section), `lessons-learned.md` (update note on the ARS cost
+lesson — surcharge now moot, deletion not recreation), `validation.md` (new top note: S4/S5 now
+permanently non-repeatable in this bed; historical results preserved unchanged, not rewritten).
+`manifest.md` intentionally **not** edited — its Resource Inventory/Cleanup Sequence/Cost sections
+were flagged in the dry-run as a follow-up for a Morpheus/Trinity pass, out of this task's scope.
+
+**Docs updated (two-region `dual-hub-interconnect-ars-route-policy` lab):** `README.md` (Poland
+scope note → retired/deleted; cost callout → ≈$66-73/day post-retirement; G2 gate marked satisfied
+in prose and in the Mermaid diagram node; G3 gate's "$84/day now" comparator corrected), `deploy-log.md`
+(G2 stage-gate row → `CLOSED`, dated, evidenced; G3 row's run-rate comparator corrected). This lab's
+own scenarios (T1-T5) were never dependent on Poland and remain unaffected — confirmed by the
+post-delete verification.
+
+**Revised run-rate:** ≈$66-73/day (down from ≈$84/day), unchanged from the dry-run's own §7 estimate
+— the deletion executed exactly as previewed, so no re-derivation was needed. The previously
+unresolved `ars-poland` route-map-surcharge uncertainty is now moot (the resource no longer exists).
+
+**Evidence:** `labs/dual-hub-hubless-region-ars/show-output/cleanup-poland-execution/` — `pre/`
+(4 baseline capture files), `01`-`04` (one file per stage, command + result), `post/05` (full
+post-delete verification). All sanitized (`<SUBSCRIPTION_ID>` pattern maintained; grep-verified zero
+raw subscription/tenant IDs in any new file).
+
+**Stage-2 gate G2 (two-region lab):** can be marked **satisfied/CLOSED** — Poland cleanup status is
+now known and recorded (executed), which is all G2 requires; G1/G3/G4 remain open and are unaffected
+by this task.
+
+No git commit made, per instruction.
+
+📌 Decision inbox written: `.squad/decisions/inbox/tank-poland-cleanup-executed.md`

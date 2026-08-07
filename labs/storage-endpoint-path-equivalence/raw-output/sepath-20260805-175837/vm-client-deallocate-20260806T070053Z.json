@@ -1,0 +1,145 @@
+{
+  "action": "Deallocated vm-client only; no resource deletion or security-control change performed.",
+  "resourceGroup": "rg-storage-sepath-0805175837",
+  "startedUtc": "2026-08-06T06:59:51.2744942Z",
+  "completedUtc": "2026-08-06T07:00:53.2298826Z",
+  "before": {
+    "name": "vm-client",
+    "powerState": "VM deallocated",
+    "provisioningState": "Succeeded"
+  },
+  "after": {
+    "name": "vm-client",
+    "powerState": "VM deallocated",
+    "provisioningState": "Succeeded"
+  },
+  "remainingResources": [
+    {
+      "kind": null,
+      "name": "privatelink.blob.core.windows.net",
+      "sku": null,
+      "type": "Microsoft.Network/privateDnsZones"
+    },
+    {
+      "kind": null,
+      "name": "log-sepath",
+      "sku": null,
+      "type": "Microsoft.OperationalInsights/workspaces"
+    },
+    {
+      "kind": null,
+      "name": "nsg-client",
+      "sku": null,
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "kind": "StorageV2",
+      "name": "stsepatht0805175837",
+      "sku": "Standard_LRS",
+      "type": "Microsoft.Storage/storageAccounts"
+    },
+    {
+      "kind": "StorageV2",
+      "name": "stsepathd0805175837",
+      "sku": "Standard_LRS",
+      "type": "Microsoft.Storage/storageAccounts"
+    },
+    {
+      "kind": null,
+      "name": "pip-nat",
+      "sku": "Standard",
+      "type": "Microsoft.Network/publicIPAddresses"
+    },
+    {
+      "kind": "StorageV2",
+      "name": "stsepathf0805175837",
+      "sku": "Standard_LRS",
+      "type": "Microsoft.Storage/storageAccounts"
+    },
+    {
+      "kind": null,
+      "name": "nat-client",
+      "sku": "Standard",
+      "type": "Microsoft.Network/natGateways"
+    },
+    {
+      "kind": null,
+      "name": "vnet-endpoint-path",
+      "sku": null,
+      "type": "Microsoft.Network/virtualNetworks"
+    },
+    {
+      "kind": null,
+      "name": "nic-client",
+      "sku": null,
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "kind": null,
+      "name": "sep-target-only",
+      "sku": null,
+      "type": "Microsoft.Network/serviceEndpointPolicies"
+    },
+    {
+      "kind": null,
+      "name": "vm-client",
+      "sku": null,
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "kind": null,
+      "name": "disk-vm-client-os",
+      "sku": "Standard_LRS",
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "kind": null,
+      "name": "NWTA-e722d638-f97c-47e2-86c0-f903fb3SKJHM",
+      "sku": null,
+      "type": "Microsoft.Insights/dataCollectionEndpoints"
+    },
+    {
+      "kind": null,
+      "name": "NWTA-<REDACTED_GUID>VLHGS0",
+      "sku": null,
+      "type": "Microsoft.Insights/dataCollectionRules"
+    },
+    {
+      "kind": null,
+      "name": "stsepathf0805175837-<REDACTED_GUID>",
+      "sku": null,
+      "type": "Microsoft.EventGrid/systemTopics"
+    },
+    {
+      "kind": null,
+      "name": "stsepathd0805175837-<REDACTED_GUID>",
+      "sku": null,
+      "type": "Microsoft.EventGrid/systemTopics"
+    },
+    {
+      "kind": null,
+      "name": "pe-target-blob",
+      "sku": null,
+      "type": "Microsoft.Network/privateEndpoints"
+    },
+    {
+      "kind": null,
+      "name": "nic-pe-target-blob",
+      "sku": null,
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "kind": null,
+      "name": "vm-client/MDE.Linux",
+      "sku": null,
+      "type": "Microsoft.Compute/virtualMachines/extensions"
+    },
+    {
+      "kind": null,
+      "name": "vnet-endpoint-path-snet-private-endpoint-nsg-swedencentral",
+      "sku": null,
+      "type": "Microsoft.Network/networkSecurityGroups"
+    }
+  ]
+}
+

@@ -1,0 +1,35 @@
+Enable succeeded: 
+[stdout]
+=== Hub BGP protocols in conf ===
+protocol bgp ars_hub2_0 {
+  local 10.20.1.4 as 65002;
+  neighbor 10.20.0.68 as 65515;
+  multihop 2;
+  ipv4 {
+    import all;
+    export filter export_to_hub2_ars;
+  };
+}
+--
+protocol bgp ars_hub2_1 {
+  local 10.20.1.4 as 65002;
+  neighbor 10.20.0.69 as 65515;
+  multihop 2;
+  ipv4 {
+    import all;
+    export filter export_to_hub2_ars;
+  };
+}
+=== BIRD protocols ===
+BIRD 2.0.8 ready.
+Name       Proto      Table      State  Since         Info
+device1    Device     ---        up     16:33:16.734  
+direct1    Direct     ---        up     16:33:16.734  
+kernel1    Kernel     master4    up     16:33:16.734  
+ars_hub2_0 BGP        ---        start  16:33:16.734  Active        Socket: No route to host
+ars_hub2_1 BGP        ---        up     16:33:18.107  Established   
+ars_poland_0 BGP        ---        start  16:33:16.734  Active        Socket: No route to host
+ars_poland_1 BGP        ---        up     16:33:17.945  Established   
+
+[stderr]
+

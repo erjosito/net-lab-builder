@@ -1,0 +1,73 @@
+[
+  {
+    "id": "/subscriptions/<GUID>/resourcegroups/<RESOURCE_GROUP>/providers/microsoft.cognitiveservices/accounts/<TRANSLATOR_ACCOUNT>/providers/microsoft.insights/diagnosticSettings/diag-translator-to-log",
+    "logs": [
+      {
+        "categoryGroup": "allLogs",
+        "enabled": true,
+        "retentionPolicy": {
+          "days": 0,
+          "enabled": false
+        }
+      },
+      {
+        "categoryGroup": "Audit",
+        "enabled": false,
+        "retentionPolicy": {
+          "days": 0,
+          "enabled": false
+        }
+      }
+    ],
+    "metrics": [
+      {
+        "category": "AllMetrics",
+        "enabled": true,
+        "retentionPolicy": {
+          "days": 0,
+          "enabled": false
+        }
+      }
+    ],
+    "name": "diag-translator-to-log",
+    "resourceGroup": "<RESOURCE_GROUP>",
+    "type": "Microsoft.Insights/diagnosticSettings",
+    "workspaceId": "/subscriptions/<GUID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.OperationalInsights/workspaces/log-sepath"
+  },
+  {
+    "id": "/subscriptions/<GUID>/resourcegroups/<RESOURCE_GROUP>/providers/microsoft.cognitiveservices/accounts/<TRANSLATOR_ACCOUNT>/providers/microsoft.insights/diagnosticSettings/SetByMCAPSGovPolicy_AzTB_Wave_17",
+    "logs": [
+      {
+        "categoryGroup": "allLogs",
+        "enabled": true,
+        "retentionPolicy": {
+          "days": 0,
+          "enabled": false
+        }
+      },
+      {
+        "categoryGroup": "Audit",
+        "enabled": false,
+        "retentionPolicy": {
+          "days": 0,
+          "enabled": false
+        }
+      }
+    ],
+    "metrics": [
+      {
+        "category": "AllMetrics",
+        "enabled": true,
+        "retentionPolicy": {
+          "days": 0,
+          "enabled": false
+        }
+      }
+    ],
+    "name": "SetByMCAPSGovPolicy_AzTB_Wave_17",
+    "resourceGroup": "<RESOURCE_GROUP>",
+    "storageAccountId": "/subscriptions/<GUID>/resourceGroups/mcapsgovernance/providers/Microsoft.Storage/storageAccounts/mcaps804a4ac80929c93c",
+    "type": "Microsoft.Insights/diagnosticSettings"
+  }
+]
+

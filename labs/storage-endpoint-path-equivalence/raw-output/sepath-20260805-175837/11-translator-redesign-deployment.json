@@ -1,0 +1,60 @@
+{
+  "observedAt": "2026-08-05T17:52:19.278+02:00",
+  "deployment": "Succeeded",
+  "translator": {
+    "name": "<TRANSLATOR_ACCOUNT>",
+    "publicNetworkAccess": "Enabled",
+    "vnetRuleCount": 0,
+    "kind": "TextTranslation",
+    "disableLocalAuth": true,
+    "sku": "F0",
+    "defaultAction": "Allow"
+  },
+  "privateEndpoint": {
+    "vnetLinkCount": 0,
+    "ip": "10.61.2.4",
+    "name": "pe-translator",
+    "connectionState": "Approved",
+    "dnsZone": "privatelink.cognitiveservices.azure.com"
+  },
+  "subnet": {
+    "serviceEndpoints": [],
+    "endpointPolicyCount": 0
+  },
+  "diagnostics": {
+    "vnetFlowLogEnabled": true,
+    "workspace": "<LOG_ANALYTICS_WORKSPACE>",
+    "translator": "diag-translator-to-log",
+    "allLogsEnabled": true,
+    "allMetricsEnabled": true
+  },
+  "validation": {
+    "credentialsExposed": false,
+    "restrictedSubnetCall": "HTTP 200",
+    "serviceEndpointCall": "HTTP 200",
+    "privateCall": "HTTP 200",
+    "publicCall": "HTTP 200"
+  },
+  "vm": {
+    "harness": "/opt/sepath/translator_probe.py",
+    "powerState": "VM deallocated",
+    "name": "vm-client"
+  },
+  "deleted": [
+    "blocked target Storage account",
+    "blocked decoy Storage account",
+    "Blob private endpoint/NIC",
+    "Blob private DNS zone/zone group",
+    "Storage service endpoint policy"
+  ],
+  "retained": [
+    "flow-log Storage account",
+    "VNet flow log",
+    "Log Analytics workspace",
+    "VM/disk/NIC",
+    "VNet/subnets",
+    "NAT Gateway/public IP",
+    "NSG"
+  ],
+  "cleanupPerformed": false
+}

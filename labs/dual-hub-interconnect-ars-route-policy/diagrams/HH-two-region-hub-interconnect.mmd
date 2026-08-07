@@ -1,0 +1,68 @@
+%% New diagram authored for TP-HH (Tank, 2026-08-05). Not extracted from route-map-user-stories.md.
+%% Shows the current-lab two-region hub interconnect: native global peering (Lane A / T1) and
+%% conditional NVA-to-NVA eBGP + encapsulation (Lane D / T3) as MUTUALLY EXCLUSIVE alternatives,
+%% drawn side by side, never simultaneously active. Route Servers are control-plane only and never
+%% sit on a thick (data-plane) edge. No Poland / set-C / vnet-onprem2 / ER / MSEE element appears.
+%% vnet-onprem is drawn greyed as adjacent/shared/read-only evidence, owned by the source lab.
+%% diagram-id: HH-two-region-hub-interconnect
+flowchart LR
+  subgraph SA["vnet-spoke-a 10.11.0.0/24 -- swedencentral"]
+    vm_hub1_ep["vm-hub1-ep"]
+  end
+  subgraph H1["vnet-hub1 10.10.0.0/16 -- swedencentral"]
+    vpngw_hub1["vpngw-hub1, AS 65515"]
+    ars_hub1["ars-hub1"]
+    vm_nva1["vm-nva1 10.10.1.4, AS 65001"]
+  end
+  subgraph H2["vnet-hub2 10.20.0.0/16 -- switzerlandnorth"]
+    vpngw_hub2["vpngw-hub2, AS 65515"]
+    ars_hub2["ars-hub2"]
+    vm_nva2["vm-nva2 10.20.1.4, AS 65002"]
+  end
+  subgraph SB["vnet-spoke-b 10.21.0.0/24 -- switzerlandnorth"]
+    vm_hub2_ep["vm-hub2-ep"]
+  end
+  subgraph OP["vnet-onprem 10.40.0.0/16 -- norwayeast -- shared / adjacent -- read-only, owned by dual-hub-hubless-region-ars"]
+    vpngw_onprem["vpngw-onprem, AS 65000"]
+  end
+
+  LANE_A["Lane A -- native global peering (T1)<br>hub1 to hub2 GlobalVNetPeering<br>hub address space only -- no BGP, no encapsulation<br>mutually exclusive with Lane D -- never both active"]
+  LANE_D["Lane D -- NVA-to-NVA eBGP + conditional encapsulation (T3)<br>65001 to 65002 eBGP over the Lane-A underlay<br>encapsulation added ONLY if remote prefixes are<br>redistributed into the local Route Server (self-next-hop recursion)<br>run only if withdrawal/attribute claim justifies it -- else NOT RUN"]
+  LOOP1["ars-hub1: drops routes containing 65515<br>before inbound policy runs -- no route map can repair it"]
+  LOOP2["ars-hub2: drops routes containing 65515<br>before inbound policy runs -- no route map can repair it"]
+  REFRESH["hub1<->hub2 peering create/delete triggers an ARS route refresh<br>toward peered NVAs -- soft if BIRD supports RFC 2918, else HARD reset<br>-- treat every such change as a maintenance window"]
+
+  vm_hub1_ep -->|"VNet peering"| H1
+  vm_hub2_ep -->|"VNet peering"| H2
+  vpngw_hub1 ==>|"existing IPsec/BGP -- out of TP-HH change scope"| vpngw_onprem
+  vpngw_hub2 ==>|"existing IPsec/BGP -- out of TP-HH change scope"| vpngw_onprem
+
+  H1 ==>|"Lane A: GlobalVNetPeering underlay -- thick solid, native forwarding, no BGP"| H2
+  vm_nva1 -.->|"Lane D: eBGP 65001 to 65002 -- thin dotted, control plane over the Lane-A underlay"| vm_nva2
+  vm_nva1 -.->|"Lane D: conditional IPsec/VXLAN encapsulation -- greyed dashed, only if redistributed into ARS"| vm_nva2
+
+  ars_hub1 -.->|"RM-A: BGP, map-eligible (D2), association untested (T2)"| vm_nva1
+  ars_hub2 -.->|"RM-B: BGP, map-eligible (D2), association untested (T2)"| vm_nva2
+  ars_hub1 -.->|"RM-C: attachment unverified (T5)"| vpngw_hub1
+  ars_hub2 -.->|"RM-D: attachment unverified (T5)"| vpngw_hub2
+
+  LANE_A -.- H1
+  LANE_D -.- vm_nva1
+  LOOP1 -.- ars_hub1
+  LOOP2 -.- ars_hub2
+  REFRESH -.- H1
+
+  classDef azure fill:#E6F2FB,stroke:#0F6CBD,color:#062A47
+  classDef nva fill:#EFE6F7,stroke:#5C2D91,color:#331A52
+  classDef shared fill:#F3F2F1,stroke:#8A8886,color:#605E5C
+  classDef laneA fill:#DFF6DD,stroke:#107C10,color:#0B3D0B
+  classDef laneD fill:#FFF4CE,stroke:#835C00,color:#4A3200
+  classDef blocked fill:#FDE7E9,stroke:#A4262C,color:#5E1116
+  classDef note fill:#F3F2F1,stroke:#8A8886,color:#2B2B2B
+  class ars_hub1,ars_hub2,vpngw_hub1,vpngw_hub2,vm_hub1_ep,vm_hub2_ep azure
+  class vm_nva1,vm_nva2 nva
+  class vpngw_onprem shared
+  class LANE_A laneA
+  class LANE_D laneD
+  class LOOP1,LOOP2 blocked
+  class REFRESH note

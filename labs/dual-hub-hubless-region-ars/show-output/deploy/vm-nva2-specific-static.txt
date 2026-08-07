@@ -1,0 +1,124 @@
+Enable succeeded: 
+[stdout]
+ars_poland_0 BGP        ---        up     16:50:29.375  Established   
+ars_poland_1 BGP        ---        up     16:50:28.587  Established   
+=== Route for 10.20.0.68 ===
+BIRD 2.0.8 ready.
+Table master4:
+10.20.0.64/27        unicast [static1 16:50:24.443] * (200)
+	via 10.20.1.1 on eth0
+=== All routes ===
+BIRD 2.0.8 ready.
+Table master4:
+0.0.0.0/0            unicast [static1 16:50:24.443] * (200)
+	via 10.20.1.1 on eth0
+	Type: static univ
+10.30.0.0/27         unicast [static1 16:50:24.443] * (200)
+	via 10.20.1.1 on eth0
+	Type: static univ
+10.30.0.0/24         unicast [ars_poland_0 16:50:29.401 from 10.30.0.4] * (100/?) [AS65515i]
+	via 10.20.1.1 on eth0
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.30.0.4
+	BGP.local_pref: 100
+                     unicast [ars_poland_1 16:50:28.612 from 10.30.0.5] (100/?) [AS65515i]
+	via 10.20.1.1 on eth0
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.30.0.5
+	BGP.local_pref: 100
+10.20.0.64/27        unicast [static1 16:50:24.443] * (200)
+	via 10.20.1.1 on eth0
+	Type: static univ
+10.20.0.0/16         unicast [ars_hub2_0 16:50:25.539 from 10.20.0.68] * (100/?) [AS65515i]
+	via 10.20.1.1 on eth0
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.20.0.68
+	BGP.local_pref: 100
+                     unicast [ars_hub2_1 16:50:24.802 from 10.20.0.69] (100/?) [AS65515i]
+	via 10.20.1.1 on eth0
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.20.0.69
+	BGP.local_pref: 100
+10.20.1.0/27         unicast [direct1 16:50:24.444] * (240)
+	dev eth0
+	Type: device univ
+10.31.0.0/24         unicast [ars_poland_0 16:50:29.401 from 10.30.0.4] * (100/?) [AS65515i]
+	via 10.20.1.1 on eth0
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.30.0.4
+	BGP.local_pref: 100
+                     unicast [ars_poland_1 16:50:28.612 from 10.30.0.5] (100/?) [AS65515i]
+	via 10.20.1.1 on eth0
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.30.0.5
+	BGP.local_pref: 100
+10.21.0.0/24         unicast [ars_hub2_0 16:50:25.539 from 10.20.0.68] * (100/?) [AS65515i]
+	via 10.20.1.1 on eth0
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.20.0.68
+	BGP.local_pref: 100
+                     unicast [ars_hub2_1 16:50:24.802 from 10.20.0.69] (100/?) [AS65515i]
+	via 10.20.1.1 on eth0
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.20.0.69
+	BGP.local_pref: 100
+10.40.0.0/16         unicast [ars_hub2_0 16:50:25.540 from 10.20.0.68] * (100/?) [AS65000i]
+	via 10.20.1.1 on eth0
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515 65000
+	BGP.next_hop: 10.20.0.68
+	BGP.local_pref: 100
+                     unicast [ars_hub2_1 16:50:24.802 from 10.20.0.69] (100/?) [AS65000i]
+	via 10.20.1.1 on eth0
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515 65000
+	BGP.next_hop: 10.20.0.69
+	BGP.local_pref: 100
+10.32.0.0/24         unicast [ars_poland_0 16:50:29.401 from 10.30.0.4] * (100/?) [AS65515i]
+	via 10.20.1.1 on eth0
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.30.0.4
+	BGP.local_pref: 100
+                     unicast [ars_poland_1 16:50:28.612 from 10.30.0.5] (100/?) [AS65515i]
+	via 10.20.1.1 on eth0
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.30.0.5
+	BGP.local_pref: 100
+=== Kernel routes ===
+default via 10.20.1.1 dev eth0 proto dhcp src 10.20.1.4 metric 100 
+10.20.0.0/16 via 10.20.1.1 dev eth0 proto bird metric 32 
+10.20.1.0/27 dev eth0 proto bird scope link metric 32 
+10.20.1.0/27 dev eth0 proto kernel scope link src 10.20.1.4 metric 100 
+10.20.1.1 dev eth0 proto dhcp scope link src 10.20.1.4 metric 100 
+10.21.0.0/24 via 10.20.1.1 dev eth0 proto bird metric 32 
+10.30.0.0/24 via 10.20.1.1 dev eth0 proto bird metric 32 
+10.31.0.0/24 via 10.20.1.1 dev eth0 proto bird metric 32 
+10.32.0.0/24 via 10.20.1.1 dev eth0 proto bird metric 32 
+10.40.0.0/16 via 10.20.1.1 dev eth0 proto bird metric 32 
+168.63.129.16 via 10.20.1.1 dev eth0 proto dhcp src 10.20.1.4 metric 100 
+169.254.169.254 via 10.20.1.1 dev eth0 proto dhcp src 10.20.1.4 metric 100 
+
+[stderr]
+

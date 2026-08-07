@@ -1,0 +1,46 @@
+Enable succeeded: 
+[stdout]
+BIRD 2.0.8 ready.
+Table master4:
+10.11.0.0/24         unreachable [ars_hub1_0 16:37:51.924 from 10.10.0.68] * (100) [AS65515i]
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.10.0.68
+	BGP.local_pref: 100
+10.30.0.0/24         unreachable [ars_poland_1 16:37:41.882 from 10.30.0.5] * (100) [AS65515i]
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.30.0.5
+	BGP.local_pref: 100
+10.10.0.0/16         unreachable [ars_hub1_0 16:37:51.924 from 10.10.0.68] * (100) [AS65515i]
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.10.0.68
+	BGP.local_pref: 100
+10.31.0.0/24         unreachable [ars_poland_1 16:37:41.882 from 10.30.0.5] * (100) [AS65515i]
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.30.0.5
+	BGP.local_pref: 100
+10.10.1.0/27         unicast [direct1 16:32:35.174] * (240)
+	dev eth0
+	Type: device univ
+10.40.0.0/16         unreachable [ars_hub1_0 16:37:51.924 from 10.10.0.68] * (100) [AS65000i]
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515 65000
+	BGP.next_hop: 10.10.0.68
+	BGP.local_pref: 100
+10.32.0.0/24         unreachable [ars_poland_1 16:37:41.882 from 10.30.0.5] * (100) [AS65515i]
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 10.30.0.5
+	BGP.local_pref: 100
+
+[stderr]
+

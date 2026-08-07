@@ -1,0 +1,113 @@
+# ==== PROVENANCE (added by Tank, TP-HH extraction, 2026-08-05) ====
+# Source (original, unchanged, still present): labs/dual-hub-hubless-region-ars/show-output/delta3-bird/02-post-ars-hub2-peer-nva2-learned.json
+# Original capture context: Delta3 BIRD implementation (NVA2 export-filter prepend), 2026-08-04 08:30 UTC+02:00 -- reflects the current post-Delta3 live-bed state
+# Capturing agent: Tank (IaC Engineer)
+# Status: Inherited; not recaptured for TP-HH
+# Sanitization: scanned 2026-08-05 by Tank for subscription/tenant IDs, secrets, keys, tokens -- none found
+# Note: The live bed is post-Delta3, not pre-Delta3; this file (not the 2026-08-03 baseline) is the current-state reference for T1/T2 fresh-baseline comparison.
+# ====================================================================
+{
+  "RouteServiceRole_IN_0": [
+    {
+      "asPath": "65002",
+      "localAddress": "10.20.0.68",
+      "network": "0.0.0.0/0",
+      "nextHop": "10.20.1.4",
+      "origin": "EBgp",
+      "sourcePeer": "10.20.1.4",
+      "weight": 32768
+    },
+    {
+      "asPath": "65002",
+      "localAddress": "10.20.0.68",
+      "network": "10.30.0.0/27",
+      "nextHop": "10.20.1.4",
+      "origin": "EBgp",
+      "sourcePeer": "10.20.1.4",
+      "weight": 32768
+    },
+    {
+      "asPath": "65002",
+      "localAddress": "10.20.0.68",
+      "network": "10.30.0.0/24",
+      "nextHop": "10.20.1.4",
+      "origin": "EBgp",
+      "sourcePeer": "10.20.1.4",
+      "weight": 32768
+    },
+    {
+      "asPath": "65002-65002-65002",
+      "localAddress": "10.20.0.68",
+      "network": "10.31.0.0/24",
+      "nextHop": "10.20.1.4",
+      "origin": "EBgp",
+      "sourcePeer": "10.20.1.4",
+      "weight": 32768
+    },
+    {
+      "asPath": "65002-65002-65002",
+      "localAddress": "10.20.0.68",
+      "network": "10.32.0.0/24",
+      "nextHop": "10.20.1.4",
+      "origin": "EBgp",
+      "sourcePeer": "10.20.1.4",
+      "weight": 32768
+    }
+  ],
+  "RouteServiceRole_IN_1": [
+    {
+      "asPath": "65002",
+      "localAddress": "10.20.0.69",
+      "network": "0.0.0.0/0",
+      "nextHop": "10.20.1.4",
+      "origin": "EBgp",
+      "sourcePeer": "10.20.1.4",
+      "weight": 32768
+    },
+    {
+      "asPath": "65002",
+      "localAddress": "10.20.0.69",
+      "network": "10.30.0.0/27",
+      "nextHop": "10.20.1.4",
+      "origin": "EBgp",
+      "sourcePeer": "10.20.1.4",
+      "weight": 32768
+    },
+    {
+      "asPath": "65002",
+      "localAddress": "10.20.0.69",
+      "network": "10.30.0.0/24",
+      "nextHop": "10.20.1.4",
+      "origin": "EBgp",
+      "sourcePeer": "10.20.1.4",
+      "weight": 32768
+    },
+    {
+      "asPath": "65002-65002-65002",
+      "localAddress": "10.20.0.69",
+      "network": "10.31.0.0/24",
+      "nextHop": "10.20.1.4",
+      "origin": "EBgp",
+      "sourcePeer": "10.20.1.4",
+      "weight": 32768
+    },
+    {
+      "asPath": "65002-65002-65002",
+      "localAddress": "10.20.0.69",
+      "network": "10.32.0.0/24",
+      "nextHop": "10.20.1.4",
+      "origin": "EBgp",
+      "sourcePeer": "10.20.1.4",
+      "weight": 32768
+    },
+    {
+      "asPath": "65002-65000",
+      "localAddress": "10.20.0.69",
+      "network": "10.40.0.0/16",
+      "nextHop": "10.20.1.4",
+      "origin": "EBgp",
+      "sourcePeer": "10.20.1.4",
+      "weight": 32768
+    }
+  ]
+}

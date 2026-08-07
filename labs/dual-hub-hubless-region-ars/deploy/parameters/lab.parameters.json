@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "correlationId": {
+      "value": "__CORRELATION_ID__"
+    },
+    "adminUsername": {
+      "value": "labadmin"
+    },
+    "vmSize": {
+      "value": "Standard_B2ts_v2"
+    },
+    "vmSshPublicKey": {
+      "value": "__SSH_PUB_KEY__"
+    },
+    "nva1CloudInit": {
+      "value": "__NVA1_CLOUD_INIT_B64__"
+    },
+    "nva2CloudInit": {
+      "value": "__NVA2_CLOUD_INIT_B64__"
+    }
+  }
+}

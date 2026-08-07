@@ -1,0 +1,49 @@
+{
+  "rg": "rg-dual-hub-hubless-region-ars-lab3d001",
+  "hub2-learned-routes-note": "RouteServiceRole_IN_0/IN_1 both empty — same reason",
+  "vpnConnections": [
+    {
+      "name": "conn-hub1-to-onprem",
+      "connectionStatus": "Connected"
+    },
+    {
+      "name": "conn-onprem-to-hub1",
+      "connectionStatus": "Connected"
+    },
+    {
+      "name": "conn-hub2-to-onprem",
+      "connectionStatus": "Connected"
+    },
+    {
+      "name": "conn-onprem-to-hub2",
+      "connectionStatus": "Connected"
+    }
+  ],
+  "ars-hub1": {
+    "peerings": [
+      {
+        "name": "peer-nva1",
+        "peerAsn": 65001,
+        "provisioningState": "Succeeded",
+        "peerIp": "10.10.1.4"
+      }
+    ],
+    "provisioningState": "Succeeded",
+    "existingRouteMaps": []
+  },
+  "subscription": "<SUBSCRIPTION_ID>",
+  "ars-hub2": {
+    "peerings": [
+      {
+        "name": "peer-nva2",
+        "peerAsn": 65002,
+        "provisioningState": "Succeeded",
+        "peerIp": "10.20.1.4"
+      }
+    ],
+    "provisioningState": "Succeeded",
+    "existingRouteMaps": []
+  },
+  "timestamp": "2026-08-05T10:29:12+02:00",
+  "hub1-learned-routes-note": "RouteServiceRole_IN_0/IN_1 both empty — BIRD sessions idle between scenarios; peering provisioningState=Succeeded"
+}

@@ -1,0 +1,1 @@
+Evidence for T1 (native global-peering baseline) goes here: fresh pre/post captures for L1 (gateway), L2 (ARS), L3 (BIRD), L4 (effective routes), L6 (ping matrix), L8 (timing) — see ../../validation.md#t1--no-overlay-native-global-peering-baseline.

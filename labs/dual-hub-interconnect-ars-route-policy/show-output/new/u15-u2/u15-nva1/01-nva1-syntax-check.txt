@@ -1,0 +1,20 @@
+=== bird -p -c /etc/bird/bird.conf.u15 (parse-only, first attempt) ===
+EXIT_CODE_PARSE=0   (no output on stdout = valid, per bird -p semantics)
+
+=== birdc configure check "/etc/bird/bird.conf.u15" ===
+NOTE: birdc requires the ENTIRE command as a single quoted argument to its own grammar
+(the filename literal must be quoted as BIRD's CLI wants), i.e.
+  sudo birdc 'configure check "/etc/bird/bird.conf.u15"'
+Two earlier invocations that passed "configure", "check", "<path>" as separate shell words
+(quotes stripped by bash before reaching birdc) failed with:
+  BIRD 2.0.8 ready.
+  syntax error, unexpected '/', expecting END or TEXT
+This is a shell-quoting artifact, not a config error -- bird -p -c (independent parser,
+does not touch the daemon) had already returned exit 0 with zero output on the identical
+staged file. Corrected invocation result:
+
+BIRD 2.0.8 ready.
+Reading configuration from /etc/bird/bird.conf.u15
+Configuration OK
+
+BOTH BLOCKING GATES PASS. Proceeding to apply (birdc configure).

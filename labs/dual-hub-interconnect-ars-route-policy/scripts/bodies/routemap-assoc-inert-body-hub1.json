@@ -1,0 +1,22 @@
+{
+  "_comment": "PLACEHOLDER - not a real request body. Approval unit U2 (scenario T2a), hub1 ONLY. FULL PUT body for Microsoft.Network/virtualHubs/ars-hub1/bgpConnections/peer-nva1, api-version 2024-10-01. VERB IS PUT, NOT PATCH - this child resource type defines no PATCH operation (expect HTTP 405). The association is written HERE, on the connection - never to routeMaps/*.associatedInboundConnections, which is a read-only composite. Fill <SUBSCRIPTION_ID>/<RESOURCE_GROUP> at execution time only, after Jose's maintenance-window approval (manifest.md Approval gate).",
+  "_MANDATORY_body_preservation_2026-08-06": "DO NOT SEND THIS FILE AS-IS. It is a shape reference. This resource type has NO PATCH verb, so the PUT body REPLACES properties wholesale: anything omitted is LOST. Build the real body at execution time as: (1) GET https://management.azure.com/subscriptions/<SUB>/resourceGroups/<RG>/providers/Microsoft.Network/virtualHubs/ars-hub1/bgpConnections/peer-nva1?api-version=2024-10-01 and SAVE the response verbatim to show-output/new/t2-routemap-assoc/00-pre-peer-nva1-GET.json; (2) take response.properties EXACTLY as returned; (3) DELETE only the read-only member properties.provisioningState; (4) ADD properties.routingConfiguration.inboundRouteMap.id; (5) send {\"properties\": <that object>}. Do NOT include id, name, type or etag in the body. RECOMMENDED: pass the GET's etag as an If-Match header (az rest --headers \"If-Match=<etag>\") so a concurrent change fails the write instead of silently overwriting it.",
+  "_what_must_not_be_lost": "The live GET on 2026-08-06 returned properties.routingConfiguration.vnetRoutes = { staticRoutes: [], staticRoutesConfig: { propagateStaticRoutes: true, vnetLocalRouteOverrideCriteria: \"Contains\" } }. The PREVIOUS version of this placeholder omitted vnetRoutes entirely; sending that would have dropped staticRoutesConfig, silently changing propagateStaticRoutes and vnetLocalRouteOverrideCriteria to whatever the service defaults to. peerAsn (65001) and peerIp (10.10.1.4) are equally mandatory - omitting them recreates the peering with defaults. The body below reproduces the 2026-08-06 live shape IN FULL and is still only a reference: re-GET at execution time, because the live shape may have changed.",
+  "_inertness": "rm-hub1-tmp-assoc's only rule matches RFC 5737 TEST-NET-3 (203.0.113.0/24) under Equals, which no prefix in this bed can ever match - that, and only that, is what makes this association inert. The association itself must have NO intended route effect. PASS = association provisioningState Succeeded AND ars-hub1's learned/advertised sets byte-identical to the post-U1.5 baseline.",
+  "properties": {
+    "peerAsn": 65001,
+    "peerIp": "10.10.1.4",
+    "routingConfiguration": {
+      "vnetRoutes": {
+        "staticRoutes": [],
+        "staticRoutesConfig": {
+          "propagateStaticRoutes": true,
+          "vnetLocalRouteOverrideCriteria": "Contains"
+        }
+      },
+      "inboundRouteMap": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.Network/virtualHubs/ars-hub1/routeMaps/rm-hub1-tmp-assoc"
+      }
+    }
+  }
+}

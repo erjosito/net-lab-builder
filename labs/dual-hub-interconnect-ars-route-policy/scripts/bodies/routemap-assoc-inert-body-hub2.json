@@ -1,0 +1,20 @@
+{
+  "_comment": "PLACEHOLDER - not a real request body. Scenario T2a' (the ars-hub2 MIRROR). This is NOT part of approval unit U2 - U2 is hub1 only, deliberately, to halve the blast radius of the first-ever association in this lab family. T2a' requires its own separate approval after hub1 has PASSED. FULL PUT body for Microsoft.Network/virtualHubs/ars-hub2/bgpConnections/peer-nva2, api-version 2024-10-01; PUT, not PATCH; peerAsn AND peerIp are mandatory. The referenced map rm-hub2-tmp-assoc must be created first (mirror of routemap-tmp-assoc-hub1.json under ars-hub2, same 203.0.113.0/24 inert rule); rm-hub2-activate is deliberately NOT reused.",
+  "_MANDATORY_body_preservation_2026-08-06": "DO NOT SEND AS-IS. Same rule as hub1: GET Microsoft.Network/virtualHubs/ars-hub2/bgpConnections/peer-nva2 first, save it verbatim as evidence, take response.properties, delete only provisioningState, add routingConfiguration.inboundRouteMap.id, send {\"properties\": <that object>}. Never omit vnetRoutes or its staticRoutesConfig - PUT replaces properties wholesale and anything omitted is lost. Use If-Match with the GET's etag. The vnetRoutes block below mirrors hub1's live 2026-08-06 shape and is a REFERENCE ONLY: ars-hub2/peer-nva2 was not separately re-GET in that read-only pass, so it MUST be read at execution time before any write.",
+  "properties": {
+    "peerAsn": 65002,
+    "peerIp": "10.20.1.4",
+    "routingConfiguration": {
+      "vnetRoutes": {
+        "staticRoutes": [],
+        "staticRoutesConfig": {
+          "propagateStaticRoutes": true,
+          "vnetLocalRouteOverrideCriteria": "Contains"
+        }
+      },
+      "inboundRouteMap": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.Network/virtualHubs/ars-hub2/routeMaps/rm-hub2-tmp-assoc"
+      }
+    }
+  }
+}

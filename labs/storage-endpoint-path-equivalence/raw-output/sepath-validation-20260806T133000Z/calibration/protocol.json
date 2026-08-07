@@ -1,0 +1,22 @@
+{
+  "service_sku": "Translator F0",
+  "concurrency": 1,
+  "predeclared_before_execution": true,
+  "primary_detection_rule": "95% bootstrap CI lower bound for paired p50 delta must exceed max(control noise floor, 10% p50 equivalence margin, 5 ms), and point estimate must be 20-30 ms.",
+  "expected_detectable_p50_shift_ms": [
+    20,
+    30
+  ],
+  "pacing_seconds": 0.5,
+  "backend_and_request_held_constant": true,
+  "warmup_requests_per_arm": 20,
+  "blocks": 10,
+  "injected_delay_ms": 25.0,
+  "interpretation_guardrail": "Calibration proves measurement sensitivity only; it cannot establish path identity.",
+  "schema": "sepath.translator.calibration.protocol.v1",
+  "mode": "ordinary public endpoint",
+  "arm_order": "control→injected in odd blocks; injected→control in even blocks",
+  "variant": "reused HTTPS connection",
+  "measured_requests_per_arm": 40,
+  "region": "swedencentral"
+}

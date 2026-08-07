@@ -1,0 +1,18 @@
+# ==== PROVENANCE (added by Tank, TP-HH extraction, 2026-08-05) ====
+# Source (original, unchanged, still present): labs/dual-hub-hubless-region-ars/show-output/baseline-pre-delta3/11-vpngw-hub2-learned-routes-summary.txt
+# Original capture context: Pre-Delta3 baseline capture, 2026-08-03 (~17:55-17:59 UTC+02:00)
+# Capturing agent: Niobe (Validation Engineer)
+# Status: Inherited; not recaptured for TP-HH
+# Sanitization: scanned 2026-08-05 by Tank for subscription/tenant IDs, secrets, keys, tokens -- none found
+# ====================================================================
+# Command: az network vnet-gateway list-learned-routes -g rg-dual-hub-hubless-region-ars-lab3d001 -n vpngw-hub2 -o json
+# Timestamp: 2026-08-03T17:58:00+02:00
+# Key extracts:
+# 10.40.0.0/16  EBgp  65000           via 10.40.0.4 / 10.40.0.5
+# 0.0.0.0/0     IBgp  65002           via 10.20.1.4 (NVA2)
+# 10.30.0.0/24  IBgp  65002           via 10.20.1.4
+# 10.30.0.0/27  IBgp  65002           via 10.20.1.4
+# 10.31.0.0/24  IBgp  65002-65002-65002  via 10.20.1.4 (Δ2 prepend active!)
+# 10.32.0.0/24  IBgp  65002-65002-65002  via 10.20.1.4 (Δ2 prepend active!)
+# Source: ARS instances 10.20.0.68 / 10.20.0.69
+# DELTA-2 CONFIRMED: set-C spoke prefixes carry ×2 extra prepend (3 ASNs total) when viewed from hub2.

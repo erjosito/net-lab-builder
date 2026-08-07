@@ -1,0 +1,54 @@
+Enable succeeded: 
+[stdout]
+=== BIRD protocols all ars_hub1_0 ===
+BIRD 2.0.8 ready.
+Name       Proto      Table      State  Since         Info
+ars_hub1_0 BGP        ---        start  16:23:08.580  Idle          
+  BGP state:          Idle
+    Neighbor address: 10.10.0.68
+    Neighbor AS:      65515
+    Local AS:         65001
+  Channel ipv4
+    State:          DOWN
+    Table:          master4
+    Preference:     100
+    Input filter:   REJECT
+    Output filter:  export_to_hub_ars
+
+=== BIRD protocols all ars_hub1_1 ===
+BIRD 2.0.8 ready.
+Name       Proto      Table      State  Since         Info
+ars_hub1_1 BGP        ---        start  16:23:08.582  Idle          
+  BGP state:          Idle
+    Neighbor address: 10.10.0.69
+    Neighbor AS:      65515
+    Local AS:         65001
+  Channel ipv4
+    State:          DOWN
+    Table:          master4
+    Preference:     100
+    Input filter:   REJECT
+    Output filter:  export_to_hub_ars
+
+=== BIRD journal last 30 ===
+Aug 03 16:21:20 vm-nva1 bird[11518]: Shutting down
+Aug 03 16:21:20 vm-nva1 systemd[1]: Stopping BIRD Internet Routing Daemon...
+Aug 03 16:21:20 vm-nva1 bird[11518]: Shutdown completed
+Aug 03 16:21:20 vm-nva1 systemd[1]: bird.service: Deactivated successfully.
+Aug 03 16:21:20 vm-nva1 systemd[1]: Stopped BIRD Internet Routing Daemon.
+Aug 03 16:21:20 vm-nva1 systemd[1]: Starting BIRD Internet Routing Daemon...
+Aug 03 16:21:20 vm-nva1 systemd[1]: Started BIRD Internet Routing Daemon.
+Aug 03 16:21:20 vm-nva1 bird[12020]: Started
+Aug 03 16:23:06 vm-nva1 bird[12020]: Disabling protocol ars_hub1_0
+Aug 03 16:23:06 vm-nva1 bird[12020]: Disabling protocol ars_hub1_1
+Aug 03 16:23:08 vm-nva1 bird[12020]: Enabling protocol ars_hub1_0
+Aug 03 16:23:08 vm-nva1 bird[12020]: Enabling protocol ars_hub1_1
+=== BIRD show route ===
+BIRD 2.0.8 ready.
+Table master4:
+10.10.1.0/27         unicast [direct1 16:21:20.158] * (240)
+	dev eth0
+	Type: device univ
+
+[stderr]
+

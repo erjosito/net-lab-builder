@@ -1,0 +1,59 @@
+Enable succeeded: 
+[stdout]
+BACKUP
+PATCH
+PATCH_OK
+PATCH_EXIT=0
+VERIFY
+filter export_to_poland_ars {
+  if net = 0.0.0.0/0 then {
+    bgp_path.prepend(65002);
+    bgp_path.prepend(65002);
+  }
+  accept;
+}
+
+#  hub2 ARS sessions (local, no multihop) 
+--
+    export filter export_to_poland_ars;
+  };
+}
+
+protocol bgp ars_poland_1 {
+  local 10.20.1.4 as 65002;
+  neighbor 10.30.0.5 as 65515;
+  multihop 4;
+  ipv4 {
+--
+    export filter export_to_poland_ars;
+  };
+}
+SYNTAX
+BIRD 2.0.8 ready.
+Reading configuration from /etc/bird/bird.conf
+Configuration OK
+SYNTAX_EXIT=0
+RECONFIGURE
+BIRD 2.0.8 ready.
+Reading configuration from /etc/bird/bird.conf
+Reconfigured
+SESSIONS
+BIRD 2.0.8 ready.
+Name       Proto      Table      State  Since         Info
+device1    Device     ---        up     06:38:25.354  
+direct1    Direct     ---        up     06:38:25.354  
+kernel1    Kernel     master4    up     06:38:25.354  
+static1    Static     master4    up     06:38:25.354  
+ars_hub2_0 BGP        ---        up     06:38:28.359  Established   
+ars_hub2_1 BGP        ---        up     06:38:28.698  Established   
+ars_poland_0 BGP        ---        up     06:38:25.575  Established   
+ars_poland_1 BGP        ---        up     06:38:26.422  Established   
+ROUTES
+BIRD 2.0.8 ready.
+16 of 16 routes for 10 networks in table master4
+0 of 0 routes for 0 networks in table master6
+Total: 16 of 16 routes for 10 networks in 2 tables
+DONE
+
+[stderr]
+

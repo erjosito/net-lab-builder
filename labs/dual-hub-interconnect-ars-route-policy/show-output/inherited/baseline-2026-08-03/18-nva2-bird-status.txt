@@ -1,0 +1,45 @@
+# ==== PROVENANCE (added by Tank, TP-HH extraction, 2026-08-05) ====
+# Source (original, unchanged, still present): labs/dual-hub-hubless-region-ars/show-output/baseline-pre-delta3/18-nva2-bird-status.txt
+# Original capture context: Pre-Delta3 baseline capture, 2026-08-03 (~17:55-17:59 UTC+02:00)
+# Capturing agent: Niobe (Validation Engineer)
+# Status: Inherited; not recaptured for TP-HH
+# Sanitization: scanned 2026-08-05 by Tank for subscription/tenant IDs, secrets, keys, tokens -- none found
+# ====================================================================
+# Command: az vm run-command invoke -g rg-dual-hub-hubless-region-ars-lab3d001 -n vm-nva2 --command-id RunShellScript --scripts "birdc show protocols; echo =ROUTES=; birdc show route all" -o json
+# Timestamp: 2026-08-03T18:00:00+02:00 (live capture)
+BIRD 2.0.8 ready.
+Name       Proto      Table      State  Since         Info
+device1    Device     ---        up     16:50:24.443
+direct1    Direct     ---        up     16:50:24.443
+kernel1    Kernel     master4    up     16:50:24.443
+static1    Static     master4    up     16:50:24.443
+ars_hub2_0 BGP        ---        up     16:50:25.538  Established
+ars_hub2_1 BGP        ---        up     16:50:24.801  Established
+ars_poland_0 BGP      ---        up     16:50:29.375  Established
+ars_poland_1 BGP      ---        up     16:50:28.587  Established
+
+=ROUTES=
+BIRD 2.0.8 ready.
+Table master4:
+0.0.0.0/0            unicast [static1 16:50:24.443] * (200)
+	via 10.20.1.1 on eth0
+10.30.0.0/27         unicast [static1 16:50:24.443] * (200)
+	via 10.20.1.1 on eth0
+10.30.0.0/24         unicast [ars_poland_0 16:50:29.401 from 10.30.0.4] * (100/?) [AS65515i]
+	BGP.as_path: 65515  BGP.next_hop: 10.30.0.4
+10.20.0.64/27        unicast [static1 16:50:24.443] * (200)
+	via 10.20.1.1 on eth0
+10.20.0.0/16         unicast [ars_hub2_0 16:50:25.539 from 10.20.0.68] * (100/?) [AS65515i]
+	BGP.as_path: 65515  BGP.next_hop: 10.20.0.68
+10.20.1.0/27         unicast [direct1 16:50:24.444] * (240)  dev eth0
+10.31.0.0/24         unicast [ars_poland_0 16:50:29.401 from 10.30.0.4] * (100/?) [AS65515i]
+	BGP.as_path: 65515  BGP.next_hop: 10.30.0.4
+10.21.0.0/24         unicast [ars_hub2_0 16:50:25.539 from 10.20.0.68] * (100/?) [AS65515i]
+	BGP.as_path: 65515  BGP.next_hop: 10.20.0.68
+10.40.0.0/16         unicast [ars_hub2_0 16:50:25.540 from 10.20.0.68] * (100/?) [AS65000i]
+	BGP.as_path: 65515 65000  BGP.next_hop: 10.20.0.68
+10.32.0.0/24         unicast [ars_poland_0 16:50:29.401 from 10.30.0.4] * (100/?) [AS65515i]
+	BGP.as_path: 65515  BGP.next_hop: 10.30.0.4
+# NOTE: NVA2 BIRD RIB shows 65515 on Poland routes (ars_poland_0/1) -- this is the RIB view.
+# NVA2 strips 65515 in export filter before advertising to ars_poland (Δ1).
+# Routes advertised OUT to ars_poland will show "65002" only (confirmed in file 09).

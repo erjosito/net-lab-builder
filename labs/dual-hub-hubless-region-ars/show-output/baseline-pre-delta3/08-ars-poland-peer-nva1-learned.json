@@ -1,0 +1,16 @@
+# Command: az network routeserver peering list-learned-routes -g rg-dual-hub-hubless-region-ars-lab3d001 --routeserver ars-poland -n peer-nva1 -o json
+# Timestamp: 2026-08-03T17:57:00+02:00
+# DELTA-1 NOTE: AS-PATH is "65001" — 65515 has been stripped by NVA1 export filter before re-advertising.
+# This is exactly the expected Δ1 behaviour: prevents ARS loop-drop of 65515-originated routes.
+{
+  "RouteServiceRole_IN_0": [
+    {"asPath":"65001","localAddress":"10.30.0.5","network":"0.0.0.0/0","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.30.0.5","network":"10.10.1.0/27","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.30.0.5","network":"10.10.0.64/27","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768}
+  ],
+  "RouteServiceRole_IN_1": [
+    {"asPath":"65001","localAddress":"10.30.0.4","network":"0.0.0.0/0","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.30.0.4","network":"10.10.0.64/27","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768},
+    {"asPath":"65001","localAddress":"10.30.0.4","network":"10.10.1.0/27","nextHop":"10.10.1.4","origin":"EBgp","sourcePeer":"10.10.1.4","weight":32768}
+  ]
+}

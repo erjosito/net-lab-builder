@@ -1,0 +1,21 @@
+# Command: az vm run-command invoke -g rg-dual-hub-hubless-region-ars-lab3d001 -n vm-nva1 --command-id RunShellScript --scripts "birdc show protocols; echo ---ROUTES---; birdc show route all"
+# Source: show-output/deploy/vm-nva1-final-state.txt (deploy-time ~16:49 UTC; BIRD not restarted since)
+# NOTE: run-command extension on vm-nva1 is stuck (prior long-running command not yet cleared).
+# Deploy state is the last confirmed good state. BGP sessions confirmed Connected by ARS peering API.
+BIRD 2.0.8 ready.
+Name       Proto      Table      State  Since         Info
+device1    Device     ---        up     16:49:14.247
+direct1    Direct     ---        up     16:49:14.247
+kernel1    Kernel     master4    up     16:49:14.247
+static1    Static     master4    up     16:49:14.247
+ars_hub1_0 BGP        ---        up     16:49:19.361  Established
+ars_hub1_1 BGP        ---        up     16:49:16.086  Established
+ars_poland_0 BGP      ---        up     16:49:14.595  Established
+ars_poland_1 BGP      ---        up     16:49:18.847  Established
+---ROUTES---
+BIRD 2.0.8 ready.
+16 of 16 routes for 10 networks in table master4
+0 of 0 routes for 0 networks in table master6
+Total: 16 of 16 routes for 10 networks in 2 tables
+# ARS hub1 peering API confirms NVA1 peer-nva1 provisioningState=Succeeded (live check 17:57).
+# vpngw-hub1 BGP peer status confirms ARS instance neighbors Connected routesReceived=5/6 (live check).

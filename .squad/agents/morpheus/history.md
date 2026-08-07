@@ -205,3 +205,77 @@
 ---
 
 📌 2026-08-05T13:43:07.691+02:00 — Scribe merge pass: storage-endpoint-path-equivalence decision brief recorded in decisions.md; lab-card stays unstaged; Phase 4 remains closed.
+
+---
+
+📌 2026-08-05 — Extraction contract for a two-region hub-to-hub ARS route-policy lab (US10 + US11), no redeployment.
+
+**The ask.** Jose: *"Could we merge US10 and US11 in a new lab? This one was about adding regions, but we wouldn't need region 3 (Poland) for the ARS route map functionality test... just to move the required assets to a new directory in the labs folder"*. Design-only task: slug, composition decision, scenarios, asset plan. No Azure change, no commits, no lab file edited. Output: `.squad/decisions/inbox/morpheus-us10-us11-extraction.md`.
+
+**Slug names the design, not the history.** `dual-hub-interconnect-ars-route-policy` — "Dual-Hub Interconnect and Route Server Route-Map Policy (two regions)". Rejected `third-region-*` (describes the framing Jose abandoned), `us10-us11-merged` (encodes story IDs into a path that breaks on renumbering), `hub-to-hub-overlay` (pre-judges the exact question one scenario exists to answer). Directory slugs should survive the catalogue changing underneath them.
+
+**"Merge" resolved as a test-program composition, not a merged story.** US10 and US11 stay in the canonical catalogue, unchanged, with their stable IDs, dispositions and diagram IDs; the new lab defines a five-scenario program that cites them. The decisive argument is not tidiness — it is that the two stories carry *incompatible dispositions* (US11 Accepted/`additive`, US10 Conditional/`disruptive activation`), so a merged story must collapse to the stricter one and would silently re-gate US11's cheap GA baseline. Second argument: US12 already exists precisely because two designs can share a picture and differ in what they are judged on; merging US10+US11 would contradict that precedent inside the same document. Third: the scenario-retention policy makes catalogue subtraction a governance violation, and a merge is a subtraction of two rows. General rule worth keeping — **compose at the test-program layer, never by editing the story catalogue**.
+
+**Scenarios: the baseline's evidence is a set of non-effects.** T1 (native hub↔hub global peering) passes when nothing moves — ARS and gateway RIBs byte-comparable, BIRD uptime unbroken. Two traps I wrote in explicitly: the probe *must* be `vm-nva1` 10.10.1.4 ↔ `vm-nva2` 10.20.1.4 because the `*-ep` VMs live in spoke VNets and a spoke prefix does not cross a hub↔hub peering; and the absence of spoke/ARS-learned/gateway-learned prefixes is the expected result, not a failed transitivity test. T2 is the first-ever route-map **association** in this lab and stays gated: inert TEST-NET map first, real AS-path modification only after. T3 (dynamic NVA BGP/tunnel) is conditional and runs *only* if withdrawal or attribute requirements are actually claimed — non-execution is itself a valid deliverable. T4 compares route map vs BIRD placement and exists mainly to record the map-inexpressible case: ARS drops a 65515-bearing route *before* inbound policy runs, so the Δ1 strip lives on the NVA permanently. T5 (gateway-connection attachment) stays last, optional, separately approved, and labelled unverified.
+
+**Copy, never move — and the reason is provenance, not caution.** Jose said "move". A literal move breaks a *certified* evidence chain: `lessons-learned.md`, `validation.md` and `deploy-log.md` cite `show-output/**` inline, and Niobe signed the lab off on 2026-08-04. Splitting US10/US11 out of `route-map-user-stories.md` would leave ten dangling anchors. And the evidence is shared-bed evidence — the same live resources back both labs, so a capture is only interpretable while it stays attached to the lab that took it. Plan: extract two-region generic prose and the three US11 Mermaid blocks, copy hub-scoped baselines into `show-output/inherited/` with provenance headers, reference everything mixed-scope, and add exactly one additive line to the original README.
+
+**The three US10 diagrams that must NOT be copied.** `US10-bow-tie-generic-er` (both blocks) is a four-corner ExpressRoute bed with two DCs, two circuits and MSEE AS 12076 — copying it into a two-region VPN lab would assert an ER scope that does not exist. `US10-bow-tie-lab-vpn-analogue` contains `ars-poland`, set-C, `vnet-onprem2` and the S3 deleted-connection annotation — i.e. exactly the excluded scope. One genuinely new figure is needed instead: `HH-two-region-hub-interconnect`, with the hub↔hub side drawn as **two mutually exclusive lanes** (native peering vs NVA BGP + conditional encapsulation), never both at once.
+
+**IaC is the trap with the worst blast radius.** `main.bicep` / `main.json` / `deploy.ps1` describe the full four-region bed. Copied into the new lab they become a template that, if ever run, redeploys a live lab and re-creates Poland. So: reference only, and the new `deploy/` holds nothing but additive change scripts each paired with its rollback, under a README line stating *"This directory contains no deployment code."*
+
+**Sanitization came out clean by construction, and I still made it a check.** Nine files in the original lab carry `/subscriptions/<GUID>` — six under `delta3/`, two under `deploy/`, one under `s2-failover/`. None is on the copy list, because all nine are Poland/failed-Δ3/full-resource-dump artifacts, which are excluded on scope grounds anyway. Scope hygiene and secret hygiene pointed the same way here; I still wrote the scan into the checklist rather than trusting the coincidence.
+
+**Ownership stays put, and the cost line matters.** The live RG, the cleanup sequence and the Phase-8 gate remain with the original lab; the new lab may roll back only its own deltas. The cost statement I insisted on: the three ARS route-map surcharges (~$6/day each, irreversible) are **already** charged to the original lab, so the new lab's own delta is effectively zero — restating ~$84/day as the new lab's cost would double-count the same bed and would make a future approval gate meaningless.
+
+**Handoff.** Tank first (skeleton, `.mmd` extraction, evidence copies with provenance headers, change+rollback scripts, checklist), then Trinity (`design.md`), Niobe (`validation.md`, `README.md`), Oracle (the new diagram), me (`manifest.md` + the Phase-4 wording for T2/T3/T5). Four cheap questions for Jose: confirm the slug before cross-links exist, confirm copy-not-move, confirm T2 may be scheduled as a maintenance window on the shared bed, and decide whether an additive `US13` composition pointer is wanted at all.
+
+---
+
+📌 2026-08-05T16:16+02:00 — Phase-0 refresh and pre-deployment manifest completed for `storage-endpoint-path-equivalence`.
+
+**Phase 0.** Re-ran the canonical `swedencentral` cost ladder: `Standard_B1ls` and `Standard_B1s` remained catalog misses; `Standard_B2ts_v2` passed both catalog and live `az vm create --validate`. Only exact tagged RG `rg-preflight-sepath-20260805-161627` was used, and deletion was verified. No sensitive IDs were retained.
+
+**Manifest.** Added `labs/storage-endpoint-path-equivalence/manifest.md` (13,769 bytes, under the 15 KB cap). It inventories the complete Azure topology, dependencies, tags, safe firewall/endpoint transitions, five executable correctness scenarios, separate correctness/performance evidence, sanitized report/blog handoffs, cleanup ordering, and the closed Phase-4 gate.
+
+**Performance contract.** Predeclared public/SE/PE paired comparisons across concurrency 1/8/32, 64-KiB and 8-MiB payloads, fresh/reused connections, ten randomized balanced Latin-square blocks across two time windows, warm-up, interleaving, invalidation rules, block-level bootstrap confidence intervals, and TOST equivalence margins. Any conclusion is conditional performance equivalence, never Microsoft physical-path identity.
+
+**Reviewer notes incorporated.** Same-region `CallerIpAddress` is supporting rather than sole authority; request IDs cannot be read from encrypted TLS PCAP; endpoint-policy drops may have no Storage resource log; firewall transitions enable SE before deny-by-default enforcement; `show-next-hop` is corroborative and must not be over-read.
+
+**Gate.** No billable lab resources, Megaport/ExpressRoute objects, or IaC were created. Tank remains blocked until Jose explicitly approves Phase 4.
+
+---
+
+📌 2026-08-05T18:05+02:00 — Two-stage roadmap added to `labs/dual-hub-interconnect-ars-route-policy`: bow-tie first (TP-HH), square second (TP-SQ / US12), gated.
+
+**The ask.** After the bow-tie/regional-affinity program, evaluate the square. Jose expects he would probably not recommend it — and asked for **evidence of feasibility and technical complexity rather than a prejudgement**. That distinction is the whole design of this pass: an expectation is recorded as an expectation, never as a verdict.
+
+**Sequencing, and why it is not arbitrary.** Stage 1 (TP-HH: T1 no-overlay baseline, T2a/T2b route-map association gate, T4 policy placement, T3 dynamic variant only where justified, T5 only if approved) answers the three facts Stage 2 depends on: whether an ARS route-map **association** is possible on a live hub connection and at what operational cost; what a native hub↔hub peering actually carries — which *is* US12's default S-B mechanism; and whether the gateway-connection attachment point exists at all. Running the square first would spend a disruptive topology change and ~$95+/day to learn what a $0/day additive test answers. Stage 1 is not "complete" until it is **rolled back** — the restored certified baseline is Stage 2's reference state, and Stage 2 may not inherit a still-attached peering or a still-associated map.
+
+**Square kept as candidate, with a verdict ladder instead of an opinion.** Four verdicts, each with the evidence that chooses it: `Recommended`, `Conditionally viable`, `Technically feasible but operationally unattractive`, `Platform-blocked`. Rule #30 governs: every design is documented with an evidence-based verdict and none is deleted for an unfavourable one. The third verdict is the one this study most likely needs, and it only exists honestly if it carries an explicit "no feasibility criterion failed" statement — otherwise readers will file it as a technical rejection, which would be a different and false result.
+
+**Feasibility separated from desirability — the load-bearing structure.** F1–F7 decide packets: reachability with A/B1/B2/B3 reported separately, failover **against the contract written before the fault**, failback with no operator action, symmetry by two-ended capture and counters (never traceroute), convergence per direction at 30/60/120/180 s, restoration attribute-identical to E0, and no collateral damage to set-C / the two `ars-poland` `0/0` copies / the Δ2 path. An 8-dimension scorecard decides operations: resource count, routing domains, policy locations, failure dependencies, operational procedures, observability points, convergence behaviour, cost — scored only from counted artefacts. A failed criterion is failed on that criterion and never softened into a complexity score.
+
+**One subtlety worth keeping.** Under variant N, "outcome C not delivered" is a **PASS** when it was predicted — and a flow that *survives unexpectedly* is a **FAIL**, because the contract, not the topology, is what is under test. That is the sentence that makes the bounded-failover contract real rather than decorative.
+
+**Activation contract written, not executed.** Exact deltas from the restored baseline: DC1↔Hub1 reused, Hub1↔Hub2 added (T1's delta re-created), Hub2↔DC2 added, DC1↔DC2 added, **no diagonals**; the single disruptive step is deleting `conn-hub2-to-onprem`/`conn-onprem-to-hub2` and nothing else; A0–A11 activation with E0–E6 checkpoints and a 9-step rollback whose step 6 — recreating that pair with a fresh matching PSK (DEV-001) — is the highest-risk act in the whole program because it restores *another lab's* certified evidence path. Poland: region reuse is not resource reuse — `vnet-onprem2` is new, `ars-poland`/set-C stay control-only, and the `polandcentral` placement is not load-bearing.
+
+**Gates G1–G4, all OPEN, tracked in `deploy-log.md`.** Stage 1 complete and rolled back · Poland cleanup status **known and recorded, explicitly not a dependency** (unknown blocks; still-deployed does not) · a **fresh** cost/resource/**deletion** approval with nothing carried forward · and the exact route-map attachment behaviour from T2a/T5, as a working body or a verbatim error code.
+
+**Diagram.** New `diagrams/HH-stage-roadmap.mmd` — a roadmap, deliberately carrying no address space or ASN so it cannot be misread as topology. Validated with the cached `@mermaid-js/mermaid-cli` (no new tooling installed); the README-embedded copy was extracted and validated independently and rendered byte-identically. Temp SVGs removed.
+
+**Boundaries held.** No Azure change, no IaC, no test run, no deletion, no commit. US10/US11/US12 keep their stable IDs, dispositions and text — cross-linked, never copied. Brief at `.squad/decisions/inbox/morpheus-bowtie-square-sequence.md` with six open approval points for Jose.
+
+---
+
+📌 2026-08-06 — Policy-preserving PaaS redesign selected Azure AI Translator F0 for `storage-endpoint-path-equivalence`.
+
+**Selection.** Azure AI Translator (`Microsoft.CognitiveServices/accounts`, `TextTranslation`, F0) is the cheapest viable replacement. It supports a public custom endpoint, classic `Microsoft.CognitiveServices` service endpoint/subnet rule, and Private Endpoint against the same FQDN. The VM uses managed identity and `Cognitive Services User`; local keys remain disabled.
+
+**Live governance evidence.** Root management-group assignments are enforced in `Default` mode. Storage, SQL, Key Vault, and Cosmos DB each have an active `modify` definition that forces public access off, so all were rejected. Cognitive Services has only local-auth disablement and policy-deployed diagnostics; no active policy forces its public endpoint off. Sweden Central reports unrestricted Translator F0/S1 SKUs. Event Hubs Standard is viable but costs US$0.03/hour plus PE; Service Bus Premium and other host-based alternatives cost more.
+
+**Delta.** Reuse the VM/VNet/NAT/NSG/Log Analytics/flow-log bed. After a new Phase 4 approval, remove two experimental Storage accounts and Storage-specific endpoint artifacts; add one F0 Translator account and replace the existing Blob PE/DNS path with the Translator PE/DNS path. The steady-state fixed delta versus the live lab is approximately US$0/hour because one US$0.01/hour PE replaces another. No paid fallback is authorized.
+
+**Evidence scope changed deliberately.** Keep public, SE route, subnet authorization, PE, and forced-public negative-control scenarios. Drop the Storage-only endpoint-policy decoy. F0 throttling and AI processing latency make the former high-concurrency/large-payload performance protocol invalid; correctness is primary and only low-rate small-body latency observations remain.
+
+**Gate.** Wrote `labs/storage-endpoint-path-equivalence/redesign.md` and `.squad/decisions/inbox/morpheus-storage-sepath-paas-redesign.md`. No Azure resource was deployed, changed, exempted, or deleted.

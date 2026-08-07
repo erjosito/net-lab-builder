@@ -1,0 +1,355 @@
+# Dual-Hub Interconnect and Route Server Route-Map Policy
+
+## Current live state — square ready for manual review
+
+**Deployed 2026-08-07.** The live resource group now implements the US12 variant-N square:
+
+```text
+DC1 vnet-onprem (Norway East, AS 65000)
+  ↕ S-A
+Hub1 vnet-hub1 (Sweden Central, AS 65515)
+  ↔ S-B global VNet peering
+Hub2 vnet-hub2 (Switzerland North, AS 65515)
+  ↕ S-C
+DC2 vnet-onprem2 (Poland Central, AS 65003)
+  ↔ S-D VNet-to-VNet VPN/BGP ↔ DC1
+```
+
+There are **no diagonal hybrid connections**: `conn-hub2-to-onprem` and
+`conn-onprem-to-hub2` were deleted, and no DC2↔Hub1 connection was created. All six remaining VPN
+connection objects are `Connected`; both hub peerings are `Connected`; all six lab VMs are running;
+both NVA↔Route Server BGP pairs are established. The temporary U3 route-map association was removed,
+while the inert tier-activation maps remain.
+
+Manual-review evidence is under [`show-output/new/square/`](./show-output/new/square/), and the
+deployed topology source is [`deploy/square-onprem2.bicep`](./deploy/square-onprem2.bicep).
+No cleanup has been run.
+
+**Reachability and fault testing completed 2026-08-07:** see
+[`square-reachability-and-faults.md`](./square-reachability-and-faults.md). Both requested spoke
+service objectives are unsupported by native variant N; all injected faults were restored.
+
+## ⚠️ Shared live resources — reused, not created
+
+> Every Azure resource this lab exercises was deployed by, is documented by, and remains owned by
+> [`labs/dual-hub-hubless-region-ars`](../dual-hub-hubless-region-ars/README.md) (resource group
+> `rg-dual-hub-hubless-region-ars-lab3d001`, deployed 2026-08-03, certified 2026-08-04). This lab
+> creates **no** long-lived resource and holds **no** deployment code.
+>
+> **Cost.** The running cost of the bed was ≈ $84/day at this lab's creation (2026-08-05T16:00), including
+> three irreversible Azure Route Server route-map-tier surcharges — see the source lab's
+> `deploy-log.md` §"Hub ARS Route-Map Upgrade". **Poland Central was retired the same day** (source
+> lab's `cleanup-poland-dry-run.md` §10), lowering the shared bed's run-rate to an estimated
+> **≈ $66-73/day** (source lab's revised estimate — see its `cleanup-poland-dry-run.md` §7). This
+> lab's own cost delta remains effectively **$0/day**: a VNet peering carries no hourly charge, and
+> only inter-region data transfer is billed. Any scenario that would create a billable resource
+> (T3's tunnel endpoints, if ever built) requires a fresh, explicit cost approval from Jose Moreno
+> before execution.
+>
+> **Cleanup authority.** Teardown of the shared bed is governed **solely** by
+> `../dual-hub-hubless-region-ars/manifest.md` §6 (Cleanup Sequence) and Jose's Phase-8 approval gate.
+> This lab may only roll back its **own** additive deltas (the hub↔hub peering pair, any route-map
+> association, any NVA BGP/tunnel configuration) and must leave the original lab's certified state
+> byte-comparable to its pre-change baseline. Ownership transfers to this lab only if a decision
+> recorded in `.squad/decisions.md` says so explicitly; until then, the original lab is the single
+> source of truth for inventory, cost and cleanup.
+>
+> **Status: U0, U1 (T1), U1.5 and T2a/U2 executed and PASSED on 2026-08-06** — `vm-nva1`/`vm-nva2` are
+> running with retired Poland BIRD state removed, the two hub↔hub global peerings exist, and
+> `rm-hub1-tmp-assoc` is associated inbound on `ars-hub1`/`peer-nva1` (left active); see
+> `deploy-log.md` §Change log and §Phase-4 approval-unit ledger, and
+> `.squad/decisions/inbox/niobe-u15-u2-verification.md` for Niobe's independent live verification.
+> T2b–T5 (U3–U5) remain **not run**; no other script under `scripts/` has been executed (all
+> remain gated skeletons — see §Deploy below).
+
+## Overview
+
+Two regional hubs (`swedencentral` / `switzerlandnorth`), their Route Servers and NVAs: what native
+hub-to-hub peering does and does not carry, whether an ARS route map can actually be **associated**
+on a local hub connection, and where routing policy should live — NVA/BIRD or ARS route map.
+
+This is a **test-program composition `TP-HH`** of two retained user stories, **not** a merged or
+renumbered story. `US10-bow-tie-dual-site-regional-affinity` and
+`US11-hub-to-hub-without-nva-overlay` remain unchanged, with their stable IDs and dispositions
+intact, in the canonical catalogue:
+
+- [US10 — Bow-tie dual-site regional affinity with cross-region backup](../dual-hub-hubless-region-ars/route-map-user-stories.md#us10--bow-tie-dual-site-regional-affinity-with-cross-region-backup)
+- [US11 — Cross-region reachability without an NVA-to-NVA overlay](../dual-hub-hubless-region-ars/route-map-user-stories.md#us11--cross-region-reachability-without-an-nva-to-nva-overlay)
+
+**Stage 2 (`TP-SQ`)** is the [US12](../dual-hub-hubless-region-ars/route-map-user-stories.md#us12--square-hybrid-connectivity-regional-dc-to-hub-attachment-with-no-diagonals)
+square-hybrid feasibility study — same composition principle: US12 stays canonical in the catalogue
+and this lab is a consumer of it. See §Two-stage roadmap below.
+
+See [`.squad/decisions/inbox/morpheus-us10-us11-extraction.md`](../../.squad/decisions/inbox/morpheus-us10-us11-extraction.md)
+for the full extraction contract this lab implements.
+
+## Regions in scope
+
+- `swedencentral` (hub1) and `switzerlandnorth` (hub2) — **in scope**.
+- `norwayeast` (`vnet-onprem`) — **adjacent, shared and read-only**. Referenced only where the hub
+  gateway advertisement effects are observable; never claimed as new-lab scope.
+- `polandcentral` (`ars-poland`, set-C spokes `10.31.0.0/24` / `10.32.0.0/24`) — **out of scope
+  entirely, and now deleted from Azure.** Any mention of Poland/set-C in this lab's files is an
+  explicit exclusion or contrast note, never a topology dependency. Poland Central was **retired on
+  2026-08-05** per the approved 29-object list in
+  [`../dual-hub-hubless-region-ars/cleanup-poland-dry-run.md`](../dual-hub-hubless-region-ars/cleanup-poland-dry-run.md)
+  (§10 records the executed result); since this lab never depended on Poland, the retirement has
+  **no effect** on TP-HH's T1-T5 scenarios — they were never able to reference Poland resources and
+  still cannot. **Stage 2 does not change this:** US12's second site (`vnet-onprem2`, `10.50.0.0/16`)
+  would be a *new* VNet with a *new* gateway, and the `polandcentral` placement is a region choice
+  inherited from the catalogue — **no Poland resource is reused (none remain to reuse)**, and
+  the region is not load-bearing (see [design.md §9.3](./design.md)).
+
+## Quick Links
+
+- [manifest.md](./manifest.md) — reused-resource ledger, delta ledger, TP-HH scenario summary, **Stage-2 gates + verdict ladder**, cost
+- [design.md](./design.md) — §1–§8 two-region topology, peering flags, D2/D6 eligibility tables, T3 prefix policy · **§9–§13 Stage-2 activation contract, constraints, complexity scorecard, feasibility-vs-desirability criteria**
+- [validation.md](./validation.md) — per-scenario evidence plan; **U0/U1/U1.5/U2 executed and PASSED**, T2b–T5 not run yet + **Stage-2 E0–E6 checkpoints and verdict worksheet**
+- [lessons-learned.md](./lessons-learned.md) — inherited findings by reference, **plus TP-HH's own findings (`TANK-001`, `TANK-001a`, `TRIN-001`, `TANK-002`)**, **Stage-2 constraints carried forward**
+- [deploy-log.md](./deploy-log.md) — pre-existing bed pointer, **TP-HH change log (U0/U1/U1.5/U2 executed and PASSED)**, **stage gate ledger (G2 CLOSED, G4 CLOSED, G1/G3 OPEN)**
+- [diagrams/](./diagrams/) — extracted US11 figures, the `HH-two-region-hub-interconnect` figure, and the **`HH-stage-roadmap`** two-stage roadmap
+- [show-output/inherited/](./show-output/inherited/) — copied hub1/hub2 evidence, provenance-headed
+- **Source lab (owner of all live resources):** [`../dual-hub-hubless-region-ars/`](../dual-hub-hubless-region-ars/README.md)
+
+## Two-stage roadmap
+
+This lab runs in **two stages, in order**. Stage 2 does not begin until Stage 1 is complete **and
+rolled back**.
+
+| | Stage 1 — `TP-HH` | Stage 2 — `TP-SQ` |
+|---|---|---|
+| **What** | Bow-tie / regional-affinity test program, composed from **US10 + US11** — including the no-overlay baseline (T1) and the dynamic variant (T3) *only where justified* | **US12 square-hybrid feasibility study** — four sides, no diagonals |
+| **Status** | Written, gated per scenario, **not yet run** | Written as an **activation contract only**, **not executed, not approved** |
+| **Ends with** | Full rollback to the source lab's certified baseline, diffed byte-comparable | An evidence-based verdict on the square, whichever way it falls |
+| **Detail** | [manifest.md](./manifest.md) §TP-HH · [design.md](./design.md) §1–§8 · [validation.md](./validation.md) T1–T5 | [manifest.md](./manifest.md) §Stage 2 · [design.md](./design.md) §9–§13 · [validation.md](./validation.md) E0–E6 / Q1–Q6 |
+
+**The square is an evaluation candidate, not a recommendation.** It is studied because the
+repository rule is that *every design is documented with an evidence-based verdict, and no design is
+deleted because its verdict was unfavourable* (`.squad/routing.md` rule #30). The expectation that
+the square will probably not be recommended is **not** a verdict and may not be written as one.
+
+Four possible verdicts, and the evidence that chooses each:
+
+| Verdict | Chosen when | Evidence required |
+|---|---|---|
+| ✅ **Recommended** | All feasibility criteria F1–F7 pass and no complexity dimension scores 4–5 | Full E0–E6 set; scorecard filled from counted artefacts; bounded-failover contract written *before* the fault and matched by the instruments |
+| ⚠️ **Conditionally viable** | F1–F7 pass but a dimension scores 4–5, or the outcome set is sufficient only under stated conditions | The above, plus each condition written as a testable statement traced to its evidence |
+| 📚 **Technically feasible but operationally unattractive** | **Every** packet-level criterion passes and the burden still exceeds the benefit | The above, plus an explicit "no feasibility criterion failed" statement and the named complexity dimensions carrying the verdict |
+| ⛔ **Platform-blocked** | A required behaviour is not offered by the platform | Verbatim API error or documented platform property **with its exact scope** — a same-gateway limitation may not be generalised to the square |
+
+**Feasibility and desirability are separate verdicts.** F1–F7 (technical reachability · failover ·
+failback · symmetry · convergence · route restoration · no collateral damage) decide whether the
+packets arrive. The 8-dimension complexity scorecard (resource count · routing domains · policy
+locations · failure dependencies · operational procedures · observability points · convergence
+behaviour · cost) decides whether it is worth operating. Both are defined in
+[design.md §12–§13](./design.md) and are reported separately even when they disagree.
+
+**Stage 2 cannot start until all four gates pass** (manifest §Stage 2, [design.md §11](./design.md)):
+**G1** Stage 1 complete and rolled back to the certified baseline · **G2** Poland cleanup status
+*known and recorded* — status only, explicitly **not** a dependency (satisfied: Poland Central was
+**executed/retired** 2026-08-05, see source lab's `cleanup-poland-dry-run.md` §10) · **G3** a **fresh**
+cost / resource / **deletion** approval from Jose, with no prior approval or waiver carrying forward ·
+**G4** the exact route-map attachment behaviour from Stage 1 known, as a success body or a verbatim
+error code.
+
+Stage 2's topology delta from the Stage-1 restored baseline is exactly four sides — **DC1↔Hub1
+(reused) · Hub1↔Hub2 (added) · Hub2↔DC2 (added) · DC1↔DC2 (added)** — with **no diagonals** ever
+created, `onprem2` and its VPN gateway added **only when approved**, and **no Poland resource
+reused**: `vnet-onprem2` is a new VNet in a new address space, and `ars-poland` / set-C stay out of
+scope as control captures that must not move. S-B is **no-overlay bounded (variant N) first**; the
+dynamic variant is admissible only if full failover genuinely requires automatic prefix carriage and
+withdrawal.
+
+Canonical story, cross-linked rather than copied:
+[US12 — Square hybrid connectivity: regional DC-to-hub attachment with no diagonals](../dual-hub-hubless-region-ars/route-map-user-stories.md#us12--square-hybrid-connectivity-regional-dc-to-hub-attachment-with-no-diagonals)
+(`US12-square-hybrid-connectivity`). US10, US11 and US12 all remain in the catalogue with their
+stable IDs and dispositions unchanged.
+
+**Roadmap** — source: [`diagrams/HH-stage-roadmap.mmd`](./diagrams/HH-stage-roadmap.mmd)
+(validated with the cached `@mermaid-js/mermaid-cli`, 2026-08-05).
+
+```mermaid
+flowchart TD
+  subgraph S1["Stage 1 -- TP-HH: bow-tie / regional affinity -- US10 + US11"]
+    direction TB
+    T1["T1 no-overlay native global-peering baseline<br/>US11 variant A -- additive"]
+    T2["T2a inert route-map association gate<br/>then T2b real AS-Path modification<br/>US10 E-1 / RM-A, RM-B"]
+    T4["T4 policy placement<br/>ARS route map vs NVA BIRD"]
+    T3["T3 dynamic NVA-to-NVA BGP variant<br/>CONDITIONAL -- non-execution is a valid deliverable"]
+    T5["T5 VPN gateway connection attachment<br/>OPTIONAL -- separately approved"]
+    RB["Stage-1 rollback to certified baseline<br/>byte-comparable diff vs source lab certification"]
+    T1 --> T2 --> T4 --> T3 --> T5 --> RB
+  end
+
+  subgraph GATE["Stage-2 activation gates -- ALL must pass, none may be waived"]
+    direction TB
+    G1["G1 Stage 1 complete and rolled back<br/>baseline re-certified"]
+    G2["G2 Poland cleanup status KNOWN and recorded<br/>SATISFIED: executed/retired 2026-08-05<br/>status only -- explicitly NOT a dependency"]
+    G3["G3 fresh cost / resource / deletion approval<br/>~95 USD per day floor vs ~66-73 USD per day now (post-Poland-retirement)"]
+    G4["G4 exact route-map attachment behaviour known<br/>from T2a and T5 -- succeeded or verbatim error code"]
+    G1 --> G2 --> G3 --> G4
+  end
+
+  subgraph S2["Stage 2 -- TP-SQ: US12 square-hybrid feasibility study -- EVALUATION CANDIDATE"]
+    direction TB
+    Q1["Q1 additive build<br/>onprem2 site plus S-C pair plus S-D DCI pair plus S-B peering"]
+    Q2["Q2 diagonal removal<br/>delete hub2-to-onprem1 pair -- the disruptive step"]
+    Q3["Q3 steady-state square<br/>outcome A, B1, B2 hub address space only"]
+    Q4["Q4 bounded failover<br/>S-A loss -- outcome C expected NOT delivered under variant N"]
+    Q5["Q5 failback and restoration equality<br/>attribute-identical tables"]
+    Q6["Q6 operational complexity scorecard<br/>8 dimensions scored from Q1-Q5 evidence"]
+    Q1 --> Q2 --> Q3 --> Q4 --> Q5 --> Q6
+  end
+
+  VD{"Evidence-based verdict for the square"}
+  V1["Recommended"]
+  V2["Conditionally viable"]
+  V3["Technically feasible but<br/>operationally unattractive"]
+  V4["Platform-blocked"]
+  KEEP["Retained either way -- repository rule:<br/>every design is documented with an evidence-based verdict"]
+
+  DVAR["Stage-2 variant D -- dynamic S-B<br/>ONLY if full failover requires automatic<br/>prefix carriage and withdrawal<br/>separate approval, separate cost"]
+
+  RB --> G1
+  G4 --> Q1
+  Q4 -.->|"outcome C claimed and required"| DVAR
+  DVAR -.-> Q5
+  Q6 --> VD
+  VD --> V1
+  VD --> V2
+  VD --> V3
+  VD --> V4
+  V1 --> KEEP
+  V2 --> KEEP
+  V3 --> KEEP
+  V4 --> KEEP
+
+  classDef stage1 fill:#E6F2FB,stroke:#0F6CBD,color:#062A47
+  classDef gate fill:#FFF4CE,stroke:#B26B00,color:#4A2C00
+  classDef stage2 fill:#EFE6F7,stroke:#5C2D91,color:#331A52
+  classDef cond fill:#F3F2F1,stroke:#8A8886,color:#2B2B2B
+  classDef verdict fill:#DFF6DD,stroke:#107C10,color:#0B3D0B
+  classDef blocked fill:#FDE7E9,stroke:#A4262C,color:#5E1116
+  class T1,T2,T4,RB stage1
+  class T3,T5,DVAR cond
+  class G1,G2,G3,G4 gate
+  class Q1,Q2,Q3,Q4,Q5,Q6 stage2
+  class VD,V1,V2,V3,KEEP verdict
+  class V4 blocked
+```
+
+## Phase-4 activation plan — approval units (Stage 1, 2026-08-05)
+
+**U0, U1, U1.5 and U2 executed and PASSED on 2026-08-06** (approved by Jose Moreno; U1.5/U2
+independently verified live by Niobe, read-only — see
+`.squad/decisions/inbox/niobe-u15-u2-verification.md`) — see `deploy-log.md` §Phase-4
+approval-unit ledger and `validation.md` §U0/§T1/§U1.5/§T2a-U2 for full results. U3–U5 remain **not
+approved, not executed**. Both NVAs are now `VM running` with retired Poland BIRD state removed,
+the two hub peerings exist, and `rm-hub1-tmp-assoc` is associated inbound on `ars-hub1`/`peer-nva1`
+— all as the approved live end-state of these units; they have **not** been rolled back.
+
+| Unit | What it does | Cost delta | Timing | Rollback |
+|---|---|---|---|---|
+| **U0** | `az vm start` on **`vm-nva1` + `vm-nva2` only**; capture the fresh post-cleanup baseline incl. BIRD route-refresh capability | **+$0.58/day** while running | 1–3 min boot each + 10 min settle | `az vm deallocate` ×2, 2–5 min — **EXECUTED 2026-08-06, PASS-with-note, not rolled back (live)** |
+| **U1** | Create exactly two peering objects `peer-hub1-to-hub2` / `peer-hub2-to-hub1` (vna=T, fwd=T, gwt=F, urg=F) | $0/hr; ≈$0.00 data | 30–90 s each, ≤2 min to `FullyInSync` | Delete both peerings, 30–60 s each — **EXECUTED 2026-08-06, PASS, not rolled back (live)** |
+| **U1.5** | **New prerequisite (`TANK-001`).** Remove retired Poland BIRD state from both NVAs: `route 10.30.0.0/27`, `protocol bgp ars_poland_0/1`, `filter export_to_poland_ars`, and (nva2) the dead `10.31/10.32` prepend clause. Graceful `birdc configure` only — **never `systemctl restart bird`**. No Azure object touched | **$0** | ~25–40 min (`vm-nva1` first, then `vm-nva2`) | `birdc configure undo` or restore `bird.conf.pre-u15.<STAMP>`; version-controlled copies in `nva-config/` — **<2 min per NVA** — **EXECUTED 2026-08-06, PASS on both NVAs, not rolled back (live, no trigger met)** |
+| **U2** | Create `rm-hub1-tmp-assoc` (match **`203.0.113.0/24`**) + associate it inbound on **`ars-hub1`/`peer-nva1` only** (`PUT`, not PATCH; body **derived from a fresh GET**, preserving `vnetRoutes`/`staticRoutesConfig`) | $0 | 1–3 min per call, ~20–30 min end to end | PUT the saved pre-U2 GET back without the map, delete the temp map — **EXECUTED 2026-08-06, PASS, association LEFT ACTIVE (not rolled back — required precondition for U3a/U3b)** |
+| **U3a** | Inject the RFC 5737 TEST-NET-2 documentation prefix **`198.51.100.0/24`** as a `blackhole` static into `vm-nva1`'s BIRD, so U3b has a real but harmless target | $0 | 5–10 min + 10 min settle | Remove the block, `birdc configure` — <2 min |
+| **U3b** | Real map behaviour: `Add asPath [64496,64496]` on **`198.51.100.0/24`** only. *(The former target `10.10.0.64/27` is invalid — ARS silently rejects a route matching its own RouteServerSubnet, so it is never learned.)* | $0 | 1–3 min | Revert the rule, or dissociate; then roll back U3a |
+| **U4** | **Step 1 read-only** portal/`Az.Network` probe. Step 2 (write) may be **untestable** — no ARS↔VPN-gateway connection object exists in this model | $0 | minutes | Step 2 only: association back to `None` |
+| **U5** | Dynamic NVA↔NVA BGP underlay — **not preapproved, not requested** | — | — | — |
+
+> **U1.5 + U2 tranche — executed 2026-08-06 (approved by Jose Moreno).** Both **$0**, non-overlapping
+> blast radii (U1.5 NVA/BIRD-side, U2 ARM/ARS-side), independently reversible in minutes.
+> **Window A = U1.5** (`vm-nva1`, verified, then `vm-nva2`) → settled ~20 min → baseline **B1**
+> (`show-output/new/u15-u2/b1/`); **Window B = U2** → baseline **B2**
+> (`show-output/new/u15-u2/b2/`). Both PASSED; **no rollback trigger was met on either unit** — the
+> U2 association is **left active**, which is required for U3a/U3b. Independently verified live by
+> Niobe (read-only), 2026-08-06 —
+> [`.squad/decisions/inbox/niobe-u15-u2-verification.md`](../../.squad/decisions/inbox/niobe-u15-u2-verification.md).
+> **Next approval gate: U3a/U3b.**
+
+> **Recommended first tranche (U0 + U1) — executed 2026-08-06.** Actual: **+$0.58/day**, **~75 min**
+> wall clock (dominated by `run-command` latency and deliberate convergence spacing, not the
+> resource operations themselves, which each completed in under 3 min), **rollback not exercised**
+> (no trigger condition met). One documented note: both NVAs' BIRD config re-originates a stale
+> `10.30.0.0/27` (Poland-shaped) prefix into ARS — contained, does not reach on-prem, see
+> `validation.md` §U0 and `lessons-learned.md`. This is finding **`TANK-001`**, remediated by
+> the U1.5 + U2 tranche above (both PASSED 2026-08-06). **Next approval gate: U3a/U3b.**
+> Full plan:
+> [`.squad/decisions/inbox/trinity-bowtie-activation-plan.md`](../../.squad/decisions/inbox/trinity-bowtie-activation-plan.md);
+> refinement:
+> [`.squad/decisions/inbox/trinity-u15-u2-refinement.md`](../../.squad/decisions/inbox/trinity-u15-u2-refinement.md).
+
+**Scope honesty — proxy, not bow-tie.** Stage 1 delivers a **single-site dual-homed hub-preference
+proxy**. The real bow-tie needs *two* on-premises sites; this bed has one (`vnet-onprem`, AS 65000)
+dual-homed to both hubs. **Regional affinity cannot be proven without a second on-prem
+site/gateway** (`vnet-onprem2` + `vpngw-onprem2` ≈ **$5.04/day**, Stage 2 / gate G3). No Stage-1
+result may be written up as "bow-tie validated".
+
+## Test program TP-HH — scenarios T1–T5 (Stage 1)
+
+Execution order: **U0 → T1 (U1) → U1.5 (BIRD cleanup) → T2a (U2) → U3a → T2b (U3b) → T4 →
+(T3/U5 only if required) → (T5/U4 only if approved)**.
+
+| # | Scenario | Derives from | Status |
+|---|---|---|---|
+| U0 | NVA power-on + fresh post-cleanup baseline | prerequisite | **EXECUTED 2026-08-06 — PASS-with-note** (see `validation.md` §U0) |
+| T1 | No-overlay native global-peering baseline | US11 variant A | **EXECUTED 2026-08-06 — PASS** (see `validation.md` §T1) |
+| U1.5 | Remove retired Poland BIRD state (prerequisite, `TANK-001`) | prerequisite for T2/U2 | **EXECUTED 2026-08-06 — PASS on both NVAs** (see `validation.md` §U1.5) |
+| T2 | Hub-local ARS↔NVA route-map association (T2a inert gate, T2b real change) | US10 E-1 / RM-A, RM-B | **T2a/U2 EXECUTED 2026-08-06 — PASS** (association left active; closes gate G4) — T2b (U3a/U3b) not run (see `validation.md` §T2/U2) |
+| T3 | Dynamic inter-hub NVA BGP/tunnel variant | US10 (conditional) | Not run — **conditional; may be "not run" as the deliverable** |
+| T4 | Policy placement: ARS route map vs NVA BIRD policy | US09 + US10 | Not run |
+| T5 | Local VPN-gateway connection route-map attachment | US10 E-2 / RM-C, RM-D | Not run — **optional, may be unverifiable, separately approval-gated; U4 gateway attachment remains unverified** |
+
+Full scenario detail (user intent, prerequisites, exact pass/fail, evidence files, rollback
+ownership) is in [manifest.md](./manifest.md) and [validation.md](./validation.md).
+
+## Designs studied
+
+**Stage 1 — TP-HH**
+
+- [US10 — Bow-tie dual-site regional affinity](../dual-hub-hubless-region-ars/route-map-user-stories.md#us10--bow-tie-dual-site-regional-affinity-with-cross-region-backup) — overlay required-or-not, RM-A…RM-X eligibility table
+- [US11 — Cross-region reachability without an NVA-to-NVA overlay](../dual-hub-hubless-region-ars/route-map-user-stories.md#us11--cross-region-reachability-without-an-nva-to-nva-overlay) — variants A/B/C, decision-threshold table
+- `.squad/decisions.md` **D2** — ARS route-map eligibility (same-VNet constraint) and **D6** —
+  BIRD vs route-map placement rule (reproduced in [design.md](./design.md))
+- [Azure Route Server documentation](https://learn.microsoft.com/en-us/azure/route-server/)
+
+**Stage 2 — TP-SQ** *(candidate status only — no verdict may be recorded before evidence exists)*
+
+- [US12 square, S-B **variant N** (no-overlay, bounded)](../dual-hub-hubless-region-ars/route-map-user-stories.md#us12--square-hybrid-connectivity-regional-dc-to-hub-attachment-with-no-diagonals) — **evaluation candidate, default**; verdict pending E0–E6
+- US12 square, S-B **variant D** (dynamic NVA↔NVA + conditional encapsulation) — **evaluation candidate, conditional**; admissible only if full failover requires automatic prefix carriage/withdrawal
+- US12 square **with the diagonal added** (dual-homed sites) — retained alternative, out of TP-SQ scope; named so the square is not compared against nothing
+- **Global Reach as S-B** — ⛔ platform-blocked by definition and untestable in this bed (no ER circuit); retained as a documented error to avoid: Global Reach is an S-D/B1 site interconnect and carries no prefix between hubs
+
+*Retention rule: every design above stays documented whatever its verdict —
+`.squad/routing.md` rule #30.*
+
+## Deploy
+
+**This directory contains no deployment code.** The resources under test already exist and are
+owned by `labs/dual-hub-hubless-region-ars`. `scripts/apply.ps1` and `scripts/rollback.ps1` are
+paired, delta-only, idempotent-by-design skeletons that refuse to execute until the operator
+supplies the target resource group, subscription context and confirms the maintenance window.
+**Every Azure call in both scripts is commented out** and stays that way until the corresponding
+approval unit is granted; the `-Scenario` switch accepts `U0`/`T1`/`T2a`/`T2b`/`T3`/`T5`. See
+[design.md](./design.md) §7 for the maintenance-window / BGP-reset protocol these scripts must
+honor, and §8a for the corrected association write path (`PUT` on the **bgpConnection**, not a
+write to the route map).
+
+## Sanitization
+
+No subscription IDs, tenant IDs, PSKs, SSH keys, or Key Vault secret names/values appear anywhere in
+this directory (verified 2026-08-05, see §9 of the extraction contract). Resource names are
+genericized to the existing lab's convention (`ars-hub1`, `vpngw-onprem`, etc.).
+
+## Next steps
+
+1. Review [manifest.md](./manifest.md) for the reused-resource ledger and TP-HH scenario summary.
+2. Review [design.md](./design.md) §1–§8 for the two-region routing design and the T3 prefix policy.
+3. Follow [validation.md](./validation.md) for the per-scenario evidence plan once execution is approved.
+4. Any scenario execution (T2 onward) requires an explicit approval gate — see manifest.md §Approval gate.
+5. **Stage 2 is not a next step.** It becomes reviewable only after Stage 1 has run *and been rolled
+   back*, and only once gates G1–G4 are all closed in [deploy-log.md](./deploy-log.md) §Stage gate
+   ledger. Until then, [design.md §9–§13](./design.md) is a contract to be read, not a plan to be
+   executed.

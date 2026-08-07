@@ -1,0 +1,38 @@
+%% Extracted verbatim (Tank, TP-HH extraction, 2026-08-05) from:
+%%   ../../dual-hub-hubless-region-ars/route-map-user-stories.md#US11-no-overlay-direct-workloads
+%% Canonical source: the .md anchor above. This file is a byte-for-byte copy of the fenced
+%% Mermaid block, including the diagram-id comment and classDef grammar. Do not hand-edit
+%% this file independently of the source block -- if the story figure changes, re-extract.
+%% diagram-id: US11-no-overlay-direct-workloads
+flowchart LR
+  subgraph R1["Region R1 -- hub-1 10.1.0.0/16"]
+    hub_1["hub-1 VNet"]
+    nva_1["nva-1 -- bypassed by this flow"]
+    ars_1["ars-1"]
+    spoke_1a["spoke-1a 10.1.16.0/24"]
+    spoke_1b["spoke-1b 10.1.17.0/24"]
+  end
+  subgraph R2["Region R2 -- hub-2 10.2.0.0/16"]
+    hub_2["hub-2 VNet"]
+    nva_2["nva-2 -- bypassed by this flow"]
+    ars_2["ars-2"]
+    spoke_2a["spoke-2a 10.2.16.0/24"]
+    spoke_2b["spoke-2b 10.2.17.0/24"]
+  end
+  RT["spoke-1a effective routes<br>0.0.0.0/0 to nva-1, from a UDR<br>10.2.16.0/24 via GlobalVNetPeering or ConnectedGroup<br>longest match wins: this flow is NOT inspected"]
+
+  spoke_1a -->|"VNet peering"| hub_1
+  spoke_1b -->|"VNet peering"| hub_1
+  spoke_2a -->|"VNet peering"| hub_2
+  spoke_2b -->|"VNet peering"| hub_2
+  spoke_1a ==>|"GlobalVNetPeering direct, or AVNM ConnectedGroup -- neither hub is traversed"| spoke_2a
+  ars_1 -.->|"ARS to NVA BGP, unchanged by this variant"| nva_1
+  ars_2 -.->|"ARS to NVA BGP, unchanged by this variant"| nva_2
+  RT -.- spoke_1a
+
+  classDef azure fill:#E6F2FB,stroke:#0F6CBD,color:#062A47
+  classDef nva fill:#EFE6F7,stroke:#5C2D91,color:#331A52
+  classDef note fill:#F3F2F1,stroke:#8A8886,color:#2B2B2B
+  class hub_1,hub_2,spoke_1a,spoke_1b,spoke_2a,spoke_2b,ars_1,ars_2 azure
+  class nva_1,nva_2 nva
+  class RT note

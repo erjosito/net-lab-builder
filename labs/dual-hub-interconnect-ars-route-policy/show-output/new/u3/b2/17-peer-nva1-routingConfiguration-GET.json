@@ -1,0 +1,23 @@
+{
+  "etag": "W/\"975b9262-c1e2-4dda-b05b-624edcff61a3\"",
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualHubs/ars-hub1/bgpConnections/peer-nva1",
+  "name": "peer-nva1",
+  "properties": {
+    "peerAsn": 65001,
+    "peerIp": "10.10.1.4",
+    "provisioningState": "Succeeded",
+    "routingConfiguration": {
+      "inboundRouteMap": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-hubless-region-ars-lab3d001/providers/Microsoft.Network/virtualHubs/ars-hub1/routeMaps/rm-hub1-tmp-assoc"
+      },
+      "vnetRoutes": {
+        "staticRoutes": [],
+        "staticRoutesConfig": {
+          "propagateStaticRoutes": true,
+          "vnetLocalRouteOverrideCriteria": "Contains"
+        }
+      }
+    }
+  },
+  "type": "Microsoft.Network/virtualHubs/bgpConnections"
+}

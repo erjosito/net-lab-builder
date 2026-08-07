@@ -1,0 +1,28 @@
+{
+  "_comment": "PLACEHOLDER - not a real request body. Approval unit U2 (scenario T2a) Step 1: create the DEDICATED TEMPORARY route map. PUT to Microsoft.Network/virtualHubs/ars-hub1/routeMaps/rm-hub1-tmp-assoc, api-version 2024-10-01. WHY A TEMPORARY MAP: rm-hub1-activate is NOT empty - it carries rule-activate-synthetic and is the source lab's tier-activation artefact, whose provenance must stay byte-identical; U3 would otherwise have to mutate it. A dedicated map costs $0, does NOT re-trigger the ~30-minute first-route-map ARS upgrade (already completed on both hubs 2026-08-05T10:36), and is deletable at rollback.",
+  "_prefix_choice_2026-08-06": "TEST-NET-3 203.0.113.0/24 (RFC 5737), matchCondition Equals. CHANGED FROM 192.0.2.0/24 by Trinity 2026-08-06. Reason: 192.0.2.0/24 (TEST-NET-1) is already the match prefix of rm-hub1-activate's rule-activate-synthetic. Using the same prefix in two coexisting maps on the same Route Server makes any observed - or absent - effect ambiguous about which artefact caused it. A distinct TEST-NET block removes that ambiguity. Verified absent from every live surface on 2026-08-06 (read-only): ars-hub1 learned from peer-nva1 = {0.0.0.0/0, 10.30.0.0/27, 10.40.0.0/16}; ars-hub1 advertised = {10.10.0.0/16, 10.11.0.0/24, 10.40.0.0/16}; vm-nva1 BIRD master4 = {0.0.0.0/0, 10.11.0.0/24, 10.30.0.0/27, 10.10.0.64/27, 10.10.0.0/16, 10.10.1.0/27, 10.40.0.0/16}; vpngw-onprem learned = 10.40.0.0/16 + BGP peer /32s. Nothing is inside 203.0.113.0/24, so this rule can never match and the U2 association is INERT BY CONSTRUCTION. TEST-NET-2 198.51.100.0/24 is reserved for U3's live documentation prefix and must not be used here.",
+  "_asn_validity_2026-08-06": "64496 is the RFC 5398 2-byte documentation ASN. It is NOT private (private = 64512-65534) and is NOT on Azure's reserved-for-prepending list (public 8074, 8075, 12076; private 65515, 65517, 65518, 65519, 65520) per https://learn.microsoft.com/azure/route-server/route-maps-about#considerations-and-limitations. Route maps support 2-byte ASNs only. Azure's own prepend walkthrough uses 64511, from the same documentation block. This action never executes in U2 anyway, because the rule cannot match.",
+  "_rollback_role": "This same body is the U3 rollback target: rollback.ps1 -Scenario T2b restores rm-hub1-tmp-assoc to exactly this inert state.",
+  "properties": {
+    "rules": [
+      {
+        "name": "rule-tmp-inert",
+        "matchCriteria": [
+          {
+            "matchCondition": "Equals",
+            "routePrefix": ["203.0.113.0/24"]
+          }
+        ],
+        "actions": [
+          {
+            "type": "Add",
+            "parameters": [
+              { "asPath": ["64496"] }
+            ]
+          }
+        ],
+        "nextStepIfMatched": "Terminate"
+      }
+    ]
+  }
+}

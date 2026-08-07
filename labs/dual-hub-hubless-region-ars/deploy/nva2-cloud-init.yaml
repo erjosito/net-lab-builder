@@ -1,0 +1,109 @@
+#cloud-config
+# NVA2 — switzerlandnorth, ASN 65002, IP 10.20.1.4
+# BGP peers: ars-hub2 (10.20.0.68/69, local), ars-poland (10.30.0.4/5, multihop 4)
+# Δ1: strip 65515 on export to hub2 ARS
+# Δ2: prepend 65002×2 for 10.31.0.0/24 + 10.32.0.0/24 toward hub2 ARS
+#     Effect: on-prem sees set-C via hub1 [65515,65001] vs hub2 [65515,65002,65002,65002]
+#             → hub1 preferred (shorter AS path)
+# Δ3: prepend 65002×2 for 0.0.0.0/0 toward ars-poland (both instances)
+#     Effect: ars-poland best-path for 0/0 = NVA1 [65001] vs NVA2 [65002,65002,65002]
+#             → NVA1 preferred → c1-ep 0/0 → NVA1 only → DEF-001 resolved
+#     NOTE: ARS route-map not used (HubBgpConnectionFromSpokeVnetCannotReferenceRouteMap
+#     constraint for cross-VNet BGP peers). BIRD-side prepend achieves same functional result.
+
+package_update: true
+packages:
+  - bird2
+  - jq
+
+write_files:
+  - path: /etc/bird/bird.conf
+    owner: root:root
+    permissions: '0644'
+    content: |
+      # NVA2 — ASN 65002 — switzerlandnorth
+      router id 10.20.1.4;
+
+      protocol device { }
+
+      protocol direct {
+        ipv4 { import all; };
+      }
+
+      protocol kernel {
+        ipv4 {
+          import all;
+          export all;
+        };
+        learn;
+      }
+
+      # Δ1+Δ2 combined export filter for hub2 ARS sessions
+      # Strips 65515 (loop prevention) AND prepends 65002×2 for set-C prefixes
+      filter export_to_hub2_ars {
+        bgp_path.delete(65515);
+        if net ~ [ 10.31.0.0/24, 10.32.0.0/24 ] then {
+          bgp_path.prepend(65002);
+          bgp_path.prepend(65002);
+        }
+        accept;
+      }
+
+      filter export_to_poland_ars {
+        # Δ3: prepend ASN 65002 ×2 for 0/0 only — ars-poland best-path = NVA1 [65001] vs NVA2 [65002,65002,65002]
+        if net = 0.0.0.0/0 then {
+          bgp_path.prepend(65002);
+          bgp_path.prepend(65002);
+        }
+        accept;
+      }
+
+      # ── hub2 ARS sessions (local, no multihop) ───────────────────────────────
+      # ARS hub2 instance IPs: 10.20.0.68, 10.20.0.69 (from RouteServerSubnet 10.20.0.64/27)
+      protocol bgp ars_hub2_0 {
+        local 10.20.1.4 as 65002;
+        neighbor 10.20.0.68 as 65515;
+        ipv4 {
+          import all;
+          export filter export_to_hub2_ars;
+        };
+      }
+
+      protocol bgp ars_hub2_1 {
+        local 10.20.1.4 as 65002;
+        neighbor 10.20.0.69 as 65515;
+        ipv4 {
+          import all;
+          export filter export_to_hub2_ars;
+        };
+      }
+
+      # ── Poland ARS sessions (multi-hop, global VNet peering traversal) ────────
+      # ARS poland instance IPs: 10.30.0.4, 10.30.0.5 (from RouteServerSubnet 10.30.0.0/27)
+      protocol bgp ars_poland_0 {
+        local 10.20.1.4 as 65002;
+        neighbor 10.30.0.4 as 65515;
+        multihop 4;
+        ipv4 {
+          import all;
+          export filter export_to_poland_ars;
+        };
+      }
+
+      protocol bgp ars_poland_1 {
+        local 10.20.1.4 as 65002;
+        neighbor 10.30.0.5 as 65515;
+        multihop 4;
+        ipv4 {
+          import all;
+          export filter export_to_poland_ars;
+        };
+      }
+
+runcmd:
+  - sysctl -w net.ipv4.ip_forward=1
+  - echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+  - systemctl enable bird
+  - systemctl start bird
+  - sleep 5
+  - birdc show protocols

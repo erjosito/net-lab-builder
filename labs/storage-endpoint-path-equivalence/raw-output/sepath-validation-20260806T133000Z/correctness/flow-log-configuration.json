@@ -1,0 +1,41 @@
+{
+  "enabled": true,
+  "enabledFilteringCriteria": "",
+  "etag": "W/\"<GUID>\"",
+  "flowAnalyticsConfiguration": {
+    "networkWatcherFlowAnalyticsConfiguration": {
+      "enabled": true,
+      "trafficAnalyticsInterval": 10,
+      "workspaceId": "<GUID>",
+      "workspaceRegion": "swedencentral",
+      "workspaceResourceId": "/subscriptions/<GUID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.OperationalInsights/workspaces/log-sepath"
+    }
+  },
+  "format": {
+    "type": "JSON",
+    "version": 2
+  },
+  "id": "/subscriptions/<GUID>/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_swedencentral/flowLogs/flow-vnet-endpoint-path",
+  "location": "swedencentral",
+  "name": "flow-vnet-endpoint-path",
+  "provisioningState": "Succeeded",
+  "recordTypes": "",
+  "resourceGroup": "NetworkWatcherRG",
+  "retentionPolicy": {
+    "days": 0,
+    "enabled": false
+  },
+  "storageId": "/subscriptions/<GUID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.Storage/storageAccounts/<FLOW_STORAGE>",
+  "tags": {
+    "correlation_id": "sepath-20260805-175837",
+    "created_by": "copilot-lab",
+    "ephemeral": "true",
+    "lab": "true",
+    "lab_name": "storage-endpoint-path-equivalence",
+    "owner": "jose"
+  },
+  "targetResourceGuid": "<GUID>",
+  "targetResourceId": "/subscriptions/<GUID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.Network/virtualNetworks/vnet-endpoint-path",
+  "type": "Microsoft.Network/networkWatchers/flowLogs"
+}
+

@@ -1,0 +1,18 @@
+# Command: az network vnet-gateway list-bgp-peer-status -g rg-dual-hub-hubless-region-ars-lab3d001 -n vpngw-hub2 -o json
+# Timestamp: 2026-08-03T17:56:00+02:00
+{
+  "value": [
+    {"asn":65000,"connectedDuration":"01:11:25","localAddress":"10.20.0.4","neighbor":"10.40.0.5","routesReceived":1,"state":"Connected"},
+    {"asn":65000,"connectedDuration":"01:11:26","localAddress":"10.20.0.4","neighbor":"10.40.0.4","routesReceived":1,"state":"Connected"},
+    {"asn":65515,"localAddress":"10.20.0.4","neighbor":"10.20.0.4","routesReceived":0,"state":"Unknown"},
+    {"asn":65515,"connectedDuration":"01:12:28","localAddress":"10.20.0.4","neighbor":"10.20.0.5","routesReceived":3,"state":"Connected"},
+    {"asn":65515,"connectedDuration":"01:12:27","localAddress":"10.20.0.4","neighbor":"10.20.0.68","routesReceived":5,"state":"Connected"},
+    {"asn":65515,"connectedDuration":"01:12:27","localAddress":"10.20.0.4","neighbor":"10.20.0.69","routesReceived":5,"state":"Connected"},
+    {"asn":65000,"connectedDuration":"01:11:22","localAddress":"10.20.0.5","neighbor":"10.40.0.5","routesReceived":1,"state":"Connected"},
+    {"asn":65000,"connectedDuration":"01:11:22","localAddress":"10.20.0.5","neighbor":"10.40.0.4","routesReceived":1,"state":"Connected"},
+    {"asn":65515,"connectedDuration":"01:12:28","localAddress":"10.20.0.5","neighbor":"10.20.0.4","routesReceived":3,"state":"Connected"},
+    {"asn":65515,"localAddress":"10.20.0.5","neighbor":"10.20.0.5","routesReceived":0,"state":"Unknown"},
+    {"asn":65515,"connectedDuration":"01:12:34","localAddress":"10.20.0.5","neighbor":"10.20.0.68","routesReceived":6,"state":"Connected"},
+    {"asn":65515,"connectedDuration":"01:12:34","localAddress":"10.20.0.5","neighbor":"10.20.0.69","routesReceived":6,"state":"Connected"}
+  ]
+}

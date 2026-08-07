@@ -1,0 +1,27 @@
+# ==== PROVENANCE (added by Tank, TP-HH extraction, 2026-08-05) ====
+# Source (original, unchanged, still present): labs/dual-hub-hubless-region-ars/show-output/delta3-bird/02-nva1-bird-post-delta3.txt
+# Original capture context: Delta3 BIRD implementation (NVA2 export-filter prepend), 2026-08-04 08:30 UTC+02:00 -- reflects the current post-Delta3 live-bed state
+# Capturing agent: Tank (IaC Engineer)
+# Status: Inherited; not recaptured for TP-HH
+# Sanitization: scanned 2026-08-05 by Tank for subscription/tenant IDs, secrets, keys, tokens -- none found
+# Note: The live bed is post-Delta3, not pre-Delta3; this file (not the 2026-08-03 baseline) is the current-state reference for T1/T2 fresh-baseline comparison.
+# ====================================================================
+Enable succeeded: 
+[stdout]
+BIRD 2.0.8 ready.
+Name       Proto      Table      State  Since         Info
+device1    Device     ---        up     06:38:15.955  
+direct1    Direct     ---        up     06:38:15.955  
+kernel1    Kernel     master4    up     06:38:15.955  
+static1    Static     master4    up     06:38:15.955  
+ars_hub1_0 BGP        ---        up     06:38:20.653  Established   
+ars_hub1_1 BGP        ---        up     06:38:17.891  Established   
+ars_poland_0 BGP        ---        up     06:38:20.616  Established   
+ars_poland_1 BGP        ---        up     06:38:16.527  Established   
+BIRD 2.0.8 ready.
+16 of 16 routes for 10 networks in table master4
+0 of 0 routes for 0 networks in table master6
+Total: 16 of 16 routes for 10 networks in 2 tables
+
+[stderr]
+

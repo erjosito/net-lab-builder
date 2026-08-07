@@ -1,0 +1,36 @@
+{
+  "observedAtUtc": "2026-08-05T17:40:00Z",
+  "rootCause": {
+    "controlType": "Azure Policy modify effect",
+    "assignmentName": "MCAPSGovDeployPolicies",
+    "assignmentDisplayName": "MCAPSGov Deploy and Modify Policies",
+    "assignmentScope": "management-group",
+    "enforcementMode": "Default",
+    "definitionName": "StorageAccount_PublicNetwork_Modify",
+    "definitionDisplayName": "SFI - Disable public network access on Storage accounts (excluding NSP configured resources)",
+    "operation": "addOrReplace publicNetworkAccess with Disabled",
+    "exemptionFound": false
+  },
+  "timingUtc": {
+    "storageCreationCompletedApproximately": "2026-08-05T16:04:54Z",
+    "firstObservedPolicyCompliance": "2026-08-05T16:29:50Z",
+    "defenderOperatorWrites": [
+      "2026-08-05T16:43:47Z",
+      "2026-08-05T16:43:51Z"
+    ]
+  },
+  "defenderFinding": {
+    "actor": "StorageAccounts/securityOperators/DefenderForStorageSecurityOperator",
+    "publicAccessEnforcer": false,
+    "observedChange": "Added Microsoft.Security data-scanner resource access rule",
+    "note": "The Defender activity occurred after policy enforcement and did not change publicNetworkAccess."
+  },
+  "currentState": {
+    "targetPublicNetworkAccess": "Disabled",
+    "decoyPublicNetworkAccess": "Disabled",
+    "serviceEndpointAttached": false,
+    "serviceEndpointPolicyAttached": false,
+    "privateDnsLinked": false,
+    "cleanupPerformed": false
+  }
+}

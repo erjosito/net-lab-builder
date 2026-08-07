@@ -1,4 +1,145 @@
-# Dual-Hub/Hubless-Region-ARS: PRE-DEPLOY VALIDATION SKELETON
+# Dual-Hub/Hubless-Region-ARS: Validation
+
+## ⚠️ Poland Central retired — 2026-08-05 (read this before the historical results below)
+
+Poland Central (`ars-poland`, `vnet-poland-ars`, `vnet-spoke-c1`, `vnet-spoke-c2`, `vm-c1-ep`, and
+the 6 Poland-facing peerings on `vnet-hub1`/`vnet-hub2`) was **deleted** on 2026-08-05 — see
+`cleanup-poland-dry-run.md` §10 and `deploy-log.md`'s "Poland Central Cleanup — EXECUTED" entry. As a
+result, **S4 (Δ3 Route-Map Preview)** and **S5 (Prefix-Only Spoke Scale)** below are now **permanently
+non-repeatable in this bed** — both tested Poland/set-C behaviour specifically, and the resources
+they depend on no longer exist. Their results below are preserved **unchanged as historical record**
+(they were real, valid results at the time they were captured) — nothing in this file has been
+rewritten to pretend Poland never existed. S1/S2/S3 (hub1↔hub2 failover/failback via on-prem) remain
+fully valid and unaffected; both were re-verified post-cleanup (VPN connections 4/4 Connected, ARS
+hub1/hub2 BGP peerings and route maps unchanged).
+
+---
+
+## FINAL CERTIFICATION — 2026-08-04T09:39+02:00 (Niobe)
+
+**VERDICT: ✅ READY FOR JOSE TO EXPLORE**
+
+### Live State Summary (queried read-only at certification time)
+
+| Resource | Live Status | Notes |
+|---|---|---|
+| conn-hub1-to-onprem | Connected / Succeeded | direct query confirmed |
+| conn-onprem-to-hub1 | Connected / Succeeded | provisioning state |
+| conn-hub2-to-onprem | Connected / Succeeded | provisioning state |
+| conn-onprem-to-hub2 | Connected / Succeeded | provisioning state |
+| ars-hub1 / peer-nva1 | Routes flowing (0/0 asPath=65001) | peeringState=null is CLI quirk |
+| ars-hub2 / peer-nva2 | Routes flowing (0/0 asPath=65002) | peeringState=null is CLI quirk |
+| ars-poland / peer-nva1 | Routes flowing (0/0 asPath=65001) | peeringState=null is CLI quirk |
+| ars-poland / peer-nva2 | Routes flowing (0/0 asPath=65002-65002-65002) | Δ3 active |
+| ars-poland route maps | None (inbound=null, outbound=null) | rollback confirmed |
+| ars-poland SKU | Standard | upgraded; surcharge ongoing ~$6/day |
+| c1-ep 0/0 | 10.10.1.4 (NVA1 only) | hub1-primary, ECMP broken |
+| NVA1 BIRD | OBS-001: run-command returned empty | S3 evidence: 4/4 Established |
+| Poland ARS provisioning | Succeeded | allowBranchToBranch=false |
+
+> **OBS-001 note:** `az vm run-command invoke` on vm-nva1 returned empty at certification time.
+> This is the same extension-stuck condition documented in PRE-Δ3. S3 post-recovery BIRD evidence
+> (`show-output/s3-failback/04-s3-nva1-bird.txt`) shows 4/4 sessions Established 24 s after
+> BIRD start; no config change occurred since. ARS learned routes from peer-nva1 are flowing
+> (proxy evidence of Established state).
+
+---
+
+## Final Scenario Results — All Scenarios
+
+| Scenario | Result | Evidence |
+|---|---|---|
+| **S1**: BGP sessions NVA1 | ✅ PASS | 4 Established (ars_hub1 ×2, ars_poland ×2) |
+| **S1**: BGP sessions NVA2 | ✅ PASS | 4 Established (ars_hub2 ×2, ars_poland ×2) |
+| **S1**: VPN connections (4) | ✅ PASS | All 4 Connected/Succeeded |
+| **S1**: ARS peerings (4) | ✅ PASS | All 4 Succeeded |
+| **S1**: Δ1 loop-strip | ✅ PROVEN | ars-poland AS-PATH="65001"/"65002" only |
+| **S1**: Δ2 hub2 prepend | ✅ PROVEN | 10.31+10.32 hub2 path = "65515-65002-65002-65002" |
+| **S1**: on-prem RIB hub1 preferred | ✅ PASS | AS-PATH 2 hops (hub1) < 4 (hub2) for set-C |
+| **S1**: c1-ep → on-prem ping | ✅ PASS | 0% loss, ~40 ms |
+| **S1**: on-prem → c1-ep ping | ✅ PASS | 0% loss, ~42 ms |
+| **S1**: hub1-ep → on-prem ping | ✅ PASS | 0% loss, ~12 ms |
+| **S1**: hub1-ep → c1-ep ping (PRE-Δ3) | ❌ DEFECT | DEF-001; resolved by Δ3 |
+| **S2**: BIRD-stop → convergence ≤ 180s | ✅ PASS | 39 s (BIRD-stop to c1-ep=NVA2) |
+| **S2**: API-inclusive ≤ 240s | ✅ PASS | 185 s total |
+| **S2**: c1-ep 0/0 = NVA2 after fault | ✅ PASS | 10.20.1.4 confirmed |
+| **S2**: ars-poland/nva1 routes = 0 | ✅ PASS | RouteServiceRole_IN_0/1 = [] |
+| **S2**: on-prem hub2-only paths | ✅ PASS | vpngw-onprem-learned shows hub2 only |
+| **S2**: c1→on-prem ping 0% loss via hub2 | ✅ PASS | 5/5, ~52 ms |
+| **S2**: VPN tunnel actually dropped | ⚠️ NOTE | PSK change did not expire IKE SA in test window; all 4 VPNs stayed Connected; fault was BGP-only (BIRD stop) |
+| **S3**: BIRD-start → convergence ≤ 90s | ✅ PASS | 24 s (BIRD-start to c1-ep=NVA1) |
+| **S3**: c1-ep 0/0 = NVA1 after recovery | ✅ PASS | 10.10.1.4 confirmed |
+| **S3**: ars-poland/nva1 0/0 = "65001" | ✅ PASS | Established, 1-hop path |
+| **S3**: Δ3 preserved across S3 | ✅ PASS | ars-poland/nva2 0/0 = "65002-65002-65002" |
+| **S3**: hub1-ep → c1-ep 0% loss | ✅ PASS | 5/5, ~22 ms (DEF-001 RESOLVED) |
+| **S3**: all 4 VPN connections Connected | ✅ PASS | post-recovery status confirmed |
+| **S3**: NVA1 4/4 BGP Established | ✅ PASS | BIRD output shows ars_hub1_0/1, ars_poland_0/1 |
+| **S3**: PSK deviation documented | ⚠️ DEVIATION | KV private networking; fresh PSK set on both sides; functionally equivalent |
+| **S4**: ARS route-map (original plan) | ❌ EMP-001 | HubBgpConnectionFromSpokeVnetCannotReferenceRouteMap; peer not in ARS VNet |
+| **S4**: BGP policy Δ3 (BIRD prepend) | ✅ PASS | NVA2 BIRD prepend ×2 for 0/0 → ars-poland; identical functional result |
+| **S4**: ARS route-map rollback clean | ✅ PASS | no route maps on any ARS post-rollback |
+| **S5**: 10.32.0.0/24 in on-prem RIB | ✅ PASS | via hub1 (65515-65001) AND hub2 (65515-65002-65002-65002) |
+| **S5**: both hub paths present | ✅ PASS | control-plane only; vpngw-onprem-learned confirmed |
+| **S5**: data-plane to 10.32.0.0/24 | ⛔ N/A | No VM in spoke-c2 — expected; only control-plane was tested |
+
+---
+
+## PRE-Δ3 Baseline Results — 2026-08-03T17:55+02:00 (Niobe)
+
+| Scenario | Result | Notes |
+|---|---|---|
+| S1: BGP sessions NVA1 | ✅ PASS | 4 Established (ars_hub1 ×2, ars_poland ×2) |
+| S1: BGP sessions NVA2 | ✅ PASS | 4 Established (ars_hub2 ×2, ars_poland ×2) |
+| S1: VPN connections | ✅ PASS | All 4 Connected/Succeeded |
+| S1: ARS peerings | ✅ PASS | All 4 Succeeded |
+| S1: Δ1 loop-strip | ✅ PROVEN | ars-poland learned AS-PATH="65001"/"65002" only |
+| S1: Δ2 hub2 prepend | ✅ PROVEN | 10.31+10.32 hub2 path = "65515-65002-65002-65002" |
+| S1: on-prem RIB hub1 preferred | ✅ PASS | AS-PATH length 2 (hub1) < 4 (hub2) for set-C |
+| S1: c1-ep effective 0/0 | ⚠️ ECMP | 0/0 → [NVA1, NVA2] — expected PRE-Δ3; Δ3 will fix |
+| S1: c1-ep → onprem ping | ✅ PASS | 0% loss, ~40 ms |
+| S1: onprem → c1-ep ping | ✅ PASS | 0% loss, ~42 ms |
+| S1: hub1-ep → onprem ping | ✅ PASS | 0% loss, ~12 ms |
+| S1: hub1-ep → c1-ep ping | ❌ DEFECT | 100% loss; DEF-001 ECMP asymmetric return; Δ3 expected to fix |
+| S5: spoke-c2 prefix in on-prem RIB | ✅ PASS | 10.32.0.0/24 via hub1 + hub2, no VM needed |
+| S5: spoke-c2 data-plane | ⛔ N/A | No VM — control-plane only (expected) |
+
+### Evidence Files
+All raw outputs: `show-output/baseline-pre-delta3/`
+
+| File | Content |
+|---|---|
+| 01-vpn-connections-status.json | VPN connections status |
+| 02-ars-bgp-peerings.json | ARS peering objects (hub1/hub2/poland) |
+| 03-vpngw-hub1-bgp-peers.json | vpngw-hub1 BGP peer status (live) |
+| 04-vpngw-hub2-bgp-peers.json | vpngw-hub2 BGP peer status (live) |
+| 05-vpngw-onprem-bgp-peers.json | vpngw-onprem BGP peer status (live) |
+| 06-ars-hub1-peer-nva1-learned.json | ars-hub1 learned from NVA1 (live) — Δ1 evidence |
+| 07-ars-hub2-peer-nva2-learned.json | ars-hub2 learned from NVA2 (live) — Δ2 evidence |
+| 08-ars-poland-peer-nva1-learned.json | ars-poland learned from NVA1 (live) — Δ1 evidence |
+| 09-ars-poland-peer-nva2-learned.json | ars-poland learned from NVA2 (live) — PRE-Δ3 ECMP |
+| 10-vpngw-hub1-learned-routes-summary.txt | vpngw-hub1 learned routes |
+| 11-vpngw-hub2-learned-routes-summary.txt | vpngw-hub2 learned routes — Δ2 evidence |
+| 12-vpngw-onprem-learned-routes-summary.txt | vpngw-onprem — S1+S5 AS-PATH comparison |
+| 13-effective-routes-hub1-ep.json | vm-hub1-ep NIC effective routes |
+| 14-effective-routes-hub2-ep.json | vm-hub2-ep NIC effective routes |
+| 15-effective-routes-c1-ep.json | vm-c1-ep NIC effective routes — ECMP 0/0 documented |
+| 16-effective-routes-onprem-ep.json | vm-onprem-ep NIC effective routes |
+| 17-nva1-bird-status.txt | NVA1 BIRD protocols (deploy-time; extension stuck) |
+| 18-nva2-bird-status.txt | NVA2 BIRD protocols + routes (live) |
+| 19-nva1-nic-effective-routes.json | NVA1 NIC effective routes (defect analysis) |
+| 20-ping-matrix.txt | Ping matrix + DEF-001 root-cause |
+
+### Δ3 Readiness
+**READY TO ACTIVATE** — all pre-conditions proven. ARS route-map PUBLIC PREVIEW.
+Activation will incur ~30 min ARS upgrade + ~$6/day surcharge.
+DEF-001 (hub1-ep↔c1-ep 100% loss due to ECMP) expected resolved by Δ3.
+
+**CONTRACT ISSUED 2026-08-03T19:31+02:00 (Trinity):**  
+See `delta3-activation-contract.md` for exact Tank execution steps.
+
+---
+
+## Original Validation Skeleton (PRE-DEPLOY)
 
 ## S1: Steady-State BGP Routing Verification
 

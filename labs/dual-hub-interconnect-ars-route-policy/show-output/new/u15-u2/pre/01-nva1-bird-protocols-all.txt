@@ -1,0 +1,121 @@
+Enable succeeded: 
+[stdout]
+07:12:08.673  
+  Channel ipv4
+    State:          UP
+    Table:          master4
+    Preference:     200
+    Input filter:   ACCEPT
+    Output filter:  REJECT
+    Routes:         3 imported, 0 exported, 3 preferred
+    Route change stats:     received   rejected   filtered    ignored   accepted
+      Import updates:              3          0          0          0          3
+      Import withdraws:            0          0        ---          0          0
+      Export updates:              0          0          0        ---          0
+      Export withdraws:            0        ---        ---        ---          0
+
+ars_hub1_0 BGP        ---        up     07:12:12.272  Established   
+  BGP state:          Established
+    Neighbor address: 10.10.0.68
+    Neighbor AS:      65515
+    Local AS:         65001
+    Neighbor ID:      10.10.0.68
+    Local capabilities
+      Multiprotocol
+        AF announced: ipv4
+      Route refresh
+      Graceful restart
+      4-octet AS numbers
+      Enhanced refresh
+      Long-lived graceful restart
+    Neighbor capabilities
+      Multiprotocol
+        AF announced: ipv4 ipv6
+      Route refresh
+      4-octet AS numbers
+    Session:          external multihop AS4
+    Source address:   10.10.1.4
+    Hold timer:       158.656/180
+    Keepalive timer:  42.772/60
+  Channel ipv4
+    State:          UP
+    Table:          master4
+    Preference:     100
+    Input filter:   ACCEPT
+    Output filter:  export_to_hub_ars
+    Routes:         3 imported, 4 exported, 3 preferred
+    Route change stats:     received   rejected   filtered    ignored   accepted
+      Import updates:              3          0          0          0          3
+      Import withdraws:            0          0        ---          0          0
+      Export updates:              7          3          0        ---          4
+      Export withdraws:            0        ---        ---        ---          0
+    BGP Next hop:   10.10.1.4
+    IGP IPv4 table: master4
+
+ars_hub1_1 BGP        ---        up     07:12:13.010  Established   
+  BGP state:          Established
+    Neighbor address: 10.10.0.69
+    Neighbor AS:      65515
+    Local AS:         65001
+    Neighbor ID:      10.10.0.69
+    Local capabilities
+      Multiprotocol
+        AF announced: ipv4
+      Route refresh
+      Graceful restart
+      4-octet AS numbers
+      Enhanced refresh
+      Long-lived graceful restart
+    Neighbor capabilities
+      Multiprotocol
+        AF announced: ipv4 ipv6
+      Route refresh
+      4-octet AS numbers
+    Session:          external multihop AS4
+    Source address:   10.10.1.4
+    Hold timer:       145.090/180
+    Keepalive timer:  6.721/60
+  Channel ipv4
+    State:          UP
+    Table:          master4
+    Preference:     100
+    Input filter:   ACCEPT
+    Output filter:  export_to_hub_ars
+    Routes:         3 imported, 7 exported, 0 preferred
+    Route change stats:     received   rejected   filtered    ignored   accepted
+      Import updates:              3          0          0          0          3
+      Import withdraws:            0          0        ---          0          0
+      Export updates:              7          0          0        ---          7
+      Export withdraws:            0        ---        ---        ---          0
+    BGP Next hop:   10.10.1.4
+    IGP IPv4 table: master4
+
+ars_poland_0 BGP        ---        start  07:12:08.673  Connect       
+  BGP state:          Connect
+    Neighbor address: 10.30.0.4
+    Neighbor AS:      65515
+    Local AS:         65001
+  Channel ipv4
+    State:          DOWN
+    Table:          master4
+    Preference:     100
+    Input filter:   ACCEPT
+    Output filter:  export_to_poland_ars
+    IGP IPv4 table: master4
+
+ars_poland_1 BGP        ---        start  07:12:08.673  Connect       
+  BGP state:          Connect
+    Neighbor address: 10.30.0.5
+    Neighbor AS:      65515
+    Local AS:         65001
+  Channel ipv4
+    State:          DOWN
+    Table:          master4
+    Preference:     100
+    Input filter:   ACCEPT
+    Output filter:  export_to_poland_ars
+    IGP IPv4 table: master4
+
+
+[stderr]
+
