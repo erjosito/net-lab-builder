@@ -4,6 +4,13 @@
 **Scope:** Read-only inspection plus failed validation requests. No live connection, peering, route-map
 association, or BIRD configuration was changed.
 
+> **2026-08-08 resolution:** The two simulated-site Azure gateways were replaced by Ubuntu 24.04
+> StrongSwan/BIRD routers. The resulting LNG-backed `IPsec` connections export ARS-learned routes
+> successfully. `rm-hub2-activate` was associated as the outbound map on
+> `conn-hub2-to-router-dc2`; the connection remained `Connected`, both active-active BGP sessions
+> remained established, and all tested paths passed. The original findings below remain the
+> authoritative explanation of the rejected `Vnet2Vnet` design.
+
 ## Executive result
 
 The three symptoms do not share one missing setting:
@@ -130,5 +137,4 @@ For the least ambiguous test:
 4. Keep NVAs local to their Route Servers. Use an explicit NVA overlay or dedicated transit-VNet
    BGP relays for cross-hub policy.
 
-That redesign requires a separately approved deployment/change window because it creates or
-replaces connectivity resources and can interrupt the live square.
+That redesign was approved and completed on 2026-08-08. Deployment sources are under `deploy/`.

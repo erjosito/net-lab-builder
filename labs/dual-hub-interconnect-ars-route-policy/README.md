@@ -1,61 +1,73 @@
 # Dual-Hub Interconnect and Route Server Route-Map Policy
 
-## Current live state — square ready for manual review
+## Current live state — Linux-site square ready for manual review
 
-**Deployed 2026-08-07.** The live resource group now implements the US12 variant-N square:
+**Rebuilt 2026-08-08.** The simulated on-premises Azure VPN gateways were removed and replaced by
+Ubuntu 24.04 routers following the
+[`azure-nvas/ubuntu2404`](https://github.com/erjosito/azure-nvas/tree/main/ubuntu2404) XFRM,
+StrongSwan, and BIRD pattern:
 
 ```text
-DC1 vnet-onprem (Norway East, AS 65000)
-  ↕ S-A
+DC1 vm-router-dc1 (Norway East, AS 65000)
+  ↕ LNG/IPsec+BGP, two active-active hub tunnels
 Hub1 vnet-hub1 (Sweden Central, AS 65515)
   ↔ S-B global VNet peering
 Hub2 vnet-hub2 (Switzerland North, AS 65515)
-  ↕ S-C
-DC2 vnet-onprem2 (Poland Central, AS 65003)
-  ↔ S-D VNet-to-VNet VPN/BGP ↔ DC1
+  ↕ LNG/IPsec+BGP, two active-active hub tunnels
+DC2 vm-router-dc2 (Poland Central, AS 65003)
+  ↔ direct XFRM IPsec/eBGP DCI ↔ DC1
 ```
 
-There are **no diagonal hybrid connections**: `conn-hub2-to-onprem` and
-`conn-onprem-to-hub2` were deleted, and no DC2↔Hub1 connection was created. All six remaining VPN
-connection objects are `Connected`; both hub peerings are `Connected`; all six lab VMs are running;
-both NVA↔Route Server BGP pairs are established. The temporary U3 route-map association was removed,
-while the inert tier-activation maps remain.
+The former `vpngw-onprem` and `vpngw-onprem2` gateways, their public IPs, and every `Vnet2Vnet`
+connection are deleted. `conn-hub1-to-router-dc1` and `conn-hub2-to-router-dc2` are `IPsec`
+connections backed by LNGs. Both expose two established IKE SAs and two established eBGP sessions
+because the hub gateways are active-active. The Linux routers also have an established DCI IKE SA
+and eBGP session.
 
-Manual-review evidence is under [`show-output/new/square/`](./show-output/new/square/), and the
-deployed topology source is [`deploy/square-onprem2.bicep`](./deploy/square-onprem2.bicep).
-No cleanup has been run.
+Both sites learn local and remote hub/spoke prefixes. Every tested normal-state path passes:
+DC1↔DC2, spoke A↔spoke B, and each site↔each spoke. Because Azure drops a one-arm router's forwarded
+packet before delivery to a local endpoint when the packet retains a non-local source, each site
+router applies narrowly scoped SNAT only for traffic entering its own `10.40.0.0/16` or
+`10.50.0.0/16`; tunnel and BGP addressing are unchanged.
 
-**Reachability and fault testing completed 2026-08-07:** see
-[`square-reachability-and-faults.md`](./square-reachability-and-faults.md). Both requested spoke
-service objectives are unsupported by native variant N; all injected faults were restored.
+`conn-hub2-to-router-dc2` now has `rm-hub2-activate` associated as its outbound Route Server map
+through `properties.routingConfiguration.outboundRouteMap`. The inert map matched no live prefix;
+the connection remained `Connected`, both BGP sessions stayed established, and all tested paths
+continued to pass. This confirms that the earlier association failure was specific to
+`Vnet2Vnet`, not to VPN connections generally.
 
-**Route Server limitation investigation completed 2026-08-07:** see
+Deployment sources are
+[`deploy/linux-site-routers.bicep`](./deploy/linux-site-routers.bicep),
+[`deploy/cloud-init-linux-site-router.yaml`](./deploy/cloud-init-linux-site-router.yaml), and
+[`deploy/deploy-linux-site-routers.ps1`](./deploy/deploy-linux-site-routers.ps1). Historical
+gateway-square and fault evidence remains under [`show-output/new/square/`](./show-output/new/square/);
+the replacement certification is in [`validation.md`](./validation.md).
+
+**Original Route Server limitation investigation:** see
 [`ars-peer-route-map-vpn-investigation.md`](./ars-peer-route-map-vpn-investigation.md). Cross-VNet
 NVA peers require the remote VNet to consume the Route Server, route maps reject this lab's
-`Vnet2Vnet` connections, and the simulated-site gateways export no Azure routes over those
-connections.
+former `Vnet2Vnet` connections, and the former simulated-site gateways exported no Azure routes.
 
-## ⚠️ Shared live resources — reused, not created
+## ⚠️ Shared base with a lab-owned Linux-router delta
 
-> Every Azure resource this lab exercises was deployed by, is documented by, and remains owned by
-> [`labs/dual-hub-hubless-region-ars`](../dual-hub-hubless-region-ars/README.md) (resource group
-> `rg-dual-hub-hubless-region-ars-lab3d001`, deployed 2026-08-03, certified 2026-08-04). This lab
-> creates **no** long-lived resource and holds **no** deployment code.
+> The hubs, Route Servers, NVAs, spokes, and endpoint VMs are inherited from
+> [`labs/dual-hub-hubless-region-ars`](../dual-hub-hubless-region-ars/README.md). This lab now adds
+> and owns the Linux-site resources listed below, with deployment code under `deploy/`.
 >
 > **Cost.** The running cost of the bed was ≈ $84/day at this lab's creation (2026-08-05T16:00), including
 > three irreversible Azure Route Server route-map-tier surcharges — see the source lab's
 > `deploy-log.md` §"Hub ARS Route-Map Upgrade". **Poland Central was retired the same day** (source
 > lab's `cleanup-poland-dry-run.md` §10), lowering the shared bed's run-rate to an estimated
 > **≈ $66-73/day** (source lab's revised estimate — see its `cleanup-poland-dry-run.md` §7). This
-> lab's own cost delta remains effectively **$0/day**: a VNet peering carries no hourly charge, and
-> only inter-region data transfer is billed. Any scenario that would create a billable resource
-> (T3's tunnel endpoints, if ever built) requires a fresh, explicit cost approval from Jose Moreno
-> before execution.
+> current delta includes two `Standard_B2ts_v2` VMs, two Standard public IPs, and data transfer.
+> The two retired `VpnGw1AZ` site gateways and their four public IPs no longer accrue charges, so
+> the replacement is materially cheaper than the Azure-gateway site simulation.
 >
 > **Cleanup authority.** Teardown of the shared bed is governed **solely** by
 > `../dual-hub-hubless-region-ars/manifest.md` §6 (Cleanup Sequence) and Jose's Phase-8 approval gate.
-> This lab may only roll back its **own** additive deltas (the hub↔hub peering pair, any route-map
-> association, any NVA BGP/tunnel configuration) and must leave the original lab's certified state
+> This lab now owns the two Linux router VMs, NICs, public IPs, NSGs, router subnets, endpoint route
+> tables, LNGs, S2S connections, DCI configuration, and the hub2 connection route-map association.
+> It must leave the original lab's remaining certified hub/Route Server/NVA/spoke state
 > byte-comparable to its pre-change baseline. Ownership transfers to this lab only if a decision
 > recorded in `.squad/decisions.md` says so explicitly; until then, the original lab is the single
 > source of truth for inventory, cost and cleanup.
@@ -92,19 +104,12 @@ for the full extraction contract this lab implements.
 ## Regions in scope
 
 - `swedencentral` (hub1) and `switzerlandnorth` (hub2) — **in scope**.
-- `norwayeast` (`vnet-onprem`) — **adjacent, shared and read-only**. Referenced only where the hub
-  gateway advertisement effects are observable; never claimed as new-lab scope.
-- `polandcentral` (`ars-poland`, set-C spokes `10.31.0.0/24` / `10.32.0.0/24`) — **out of scope
-  entirely, and now deleted from Azure.** Any mention of Poland/set-C in this lab's files is an
-  explicit exclusion or contrast note, never a topology dependency. Poland Central was **retired on
-  2026-08-05** per the approved 29-object list in
+- `norwayeast` (`vnet-onprem`) — DC1, now hosting `vm-router-dc1`.
+- `polandcentral` — DC2 uses `vnet-onprem2` and `vm-router-dc2`. The older `ars-poland` and set-C
+  spokes `10.31.0.0/24` / `10.32.0.0/24` remain deleted and are not reused. Those resources were
+  retired on 2026-08-05 per the approved 29-object list in
   [`../dual-hub-hubless-region-ars/cleanup-poland-dry-run.md`](../dual-hub-hubless-region-ars/cleanup-poland-dry-run.md)
-  (§10 records the executed result); since this lab never depended on Poland, the retirement has
-  **no effect** on TP-HH's T1-T5 scenarios — they were never able to reference Poland resources and
-  still cannot. **Stage 2 does not change this:** US12's second site (`vnet-onprem2`, `10.50.0.0/16`)
-  would be a *new* VNet with a *new* gateway, and the `polandcentral` placement is a region choice
-  inherited from the catalogue — **no Poland resource is reused (none remain to reuse)**, and
-  the region is not load-bearing (see [design.md §9.3](./design.md)).
+  (§10 records the executed result).
 
 ## Quick Links
 
@@ -287,11 +292,10 @@ the two hub peerings exist, and `rm-hub1-tmp-assoc` is associated inbound on `ar
 > refinement:
 > [`.squad/decisions/inbox/trinity-u15-u2-refinement.md`](../../.squad/decisions/inbox/trinity-u15-u2-refinement.md).
 
-**Scope honesty — proxy, not bow-tie.** Stage 1 delivers a **single-site dual-homed hub-preference
-proxy**. The real bow-tie needs *two* on-premises sites; this bed has one (`vnet-onprem`, AS 65000)
-dual-homed to both hubs. **Regional affinity cannot be proven without a second on-prem
-site/gateway** (`vnet-onprem2` + `vpngw-onprem2` ≈ **$5.04/day**, Stage 2 / gate G3). No Stage-1
-result may be written up as "bow-tie validated".
+**Historical Stage-1 scope note.** Stage 1 originally delivered a single-site proxy. Stage 2 later
+added DC2, and the 2026-08-08 replacement converted both sites to Linux routers. The current live
+bed therefore has two sites, but its new Linux-router certification must not be confused with the
+earlier Stage-1 result.
 
 ## Test program TP-HH — scenarios T1–T5 (Stage 1)
 
@@ -306,7 +310,7 @@ Execution order: **U0 → T1 (U1) → U1.5 (BIRD cleanup) → T2a (U2) → U3a �
 | T2 | Hub-local ARS↔NVA route-map association (T2a inert gate, T2b real change) | US10 E-1 / RM-A, RM-B | **T2a/U2 EXECUTED 2026-08-06 — PASS** (association left active; closes gate G4) — T2b (U3a/U3b) not run (see `validation.md` §T2/U2) |
 | T3 | Dynamic inter-hub NVA BGP/tunnel variant | US10 (conditional) | Not run — **conditional; may be "not run" as the deliverable** |
 | T4 | Policy placement: ARS route map vs NVA BIRD policy | US09 + US10 | Not run |
-| T5 | Local VPN-gateway connection route-map attachment | US10 E-2 / RM-C, RM-D | Not run — **optional, may be unverifiable, separately approval-gated; U4 gateway attachment remains unverified** |
+| T5 | Local VPN-gateway connection route-map attachment | US10 E-2 / RM-C, RM-D | **EXECUTED 2026-08-08 — PASS on LNG-backed `IPsec`; `Vnet2Vnet` remains unsupported** |
 
 Full scenario detail (user intent, prerequisites, exact pass/fail, evidence files, rollback
 ownership) is in [manifest.md](./manifest.md) and [validation.md](./validation.md).

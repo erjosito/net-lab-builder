@@ -1,5 +1,25 @@
 # validation.md — Stage 1 `TP-HH` (T1–T5) + Stage 2 `TP-SQ` (E0–E6): Dual-Hub Interconnect and Route Server Route-Map Policy
 
+## Linux-site replacement certification — 2026-08-08
+
+The two simulated-site Azure VPN gateways and all `Vnet2Vnet` objects were retired. DC1 and DC2 now
+use Ubuntu 24.04 StrongSwan/BIRD routers with a direct Linux DCI.
+
+| Check | Result |
+|---|---|
+| Hub S2S objects | PASS — `conn-hub1-to-router-dc1` and `conn-hub2-to-router-dc2` are `IPsec`, `Succeeded`, and `Connected` |
+| Active-active IPsec | PASS — each Linux router has two established hub IKE/child SAs with packet counters increasing |
+| Hub BGP | PASS — two eBGP sessions per site established; Hub1 receives `10.40.0.0/16` and `10.50.0.0/16`, Hub2 receives both prefixes |
+| DCI | PASS — StrongSwan XFRM SA and eBGP 65000↔65003 established |
+| ARS route export | PASS — DC1 learns `10.10.0.0/16`, `10.11.0.0/24`, and NVA1 routes; DC2 learns `10.20.0.0/16`, `10.21.0.0/24`, and NVA2 routes |
+| Endpoint routes | PASS — each site endpoint has `10.0.0.0/8` UDR to its local Linux router |
+| Normal reachability | PASS — DC1↔DC2, spoke A↔spoke B, and each site↔each spoke all returned 0% loss |
+| Local delivery | PASS with design note — destination-site SNAT is required on the one-arm Linux routers for forwarded traffic delivered into their local Azure VNet |
+| VPN route-map association | PASS — `rm-hub2-activate` associated to `conn-hub2-to-router-dc2` as `outboundRouteMap`; provisioning returned `Succeeded`, connection remained `Connected`, BGP stayed established, and reachability remained intact |
+
+The prior sections below describe the historical Azure-gateway square and its failures. They remain
+as evidence of why the Linux-site replacement was necessary.
+
 ## TP-SQ deployed-state certification — 2026-08-07
 
 **Variant N is deployed and ready for manual review.** U3 completed with an INCONCLUSIVE
@@ -41,7 +61,7 @@ Full analysis: [`square-reachability-and-faults.md`](./square-reachability-and-f
 | Why does the portal show only the NVA for route-map association? | The deployed VPN edges are `Vnet2Vnet`; the API rejected `routingConfiguration` with `InvalidRoutingConfigurationForConnectionType`. |
 | Does branch-to-branch reach the hub gateways? | Yes — each hub gateway learns NVA-originated routes through its local Route Server. |
 | Why do the site gateways receive no Azure routes? | Both hub gateways advertise an empty set toward their `Vnet2Vnet` BGP peers. The Azure-gateway site analogue does not reproduce external S2S router export behavior. |
-| Live mutation | None — all validation PUTs failed before changing a resource. |
+| Live mutation | Historical result: none. Superseded 2026-08-08 by successful association on the replacement `IPsec` connection. |
 
 Full analysis: [`ars-peer-route-map-vpn-investigation.md`](./ars-peer-route-map-vpn-investigation.md).
 
@@ -482,7 +502,15 @@ the 65515 case is demonstrated (not asserted) as map-inexpressible.
 
 ## T5 — Local VPN-gateway connection route-map attachment
 
-**Status: NOT RUN. Optional. Unverified. Runs only after T2a passes, and only with separate explicit approval.**
+**Status: EXECUTED 2026-08-08. PASS on the replacement LNG-backed `IPsec` connection.**
+
+`rm-hub2-activate` was associated as
+`conn-hub2-to-router-dc2.properties.routingConfiguration.outboundRouteMap` through API
+`2024-10-01`. The inert rule matches only `192.0.2.0/24`, which is absent from the live route set.
+The PUT reached `Succeeded`; the connection remained `Connected`; both BGP sessions remained
+established; DC2 retained Hub2 and Spoke B routes; and the post-change reachability matrix passed.
+
+The planning text below is retained to show why the original `Vnet2Vnet` bed could not execute T5.
 
 **Phase-4 split (U4).** **Step 1 is read-only and may be bundled with U0/U1 at zero write risk:**
 enumerate the ARS → *route maps* → **Apply route maps** blade verbatim and record

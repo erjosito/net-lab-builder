@@ -1,0 +1,23 @@
+#cloud-config
+package_update: true
+packages:
+  - bird2
+  - strongswan
+  - strongswan-swanctl
+write_files:
+  - path: /etc/sysctl.d/90-site-router.conf
+    permissions: '0644'
+    content: |
+      net.ipv4.ip_forward=1
+      net.ipv4.conf.all.accept_redirects=0
+      net.ipv4.conf.all.send_redirects=0
+      net.ipv4.conf.default.accept_redirects=0
+      net.ipv4.conf.default.send_redirects=0
+  - path: /etc/ssh/sshd_config.d/99-lab-port.conf
+    permissions: '0644'
+    content: |
+      Port 2222
+runcmd:
+  - sysctl --system
+  - systemctl restart ssh
+  - systemctl enable bird
