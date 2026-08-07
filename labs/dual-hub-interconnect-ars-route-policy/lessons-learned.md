@@ -55,12 +55,15 @@ these mechanisms, it re-derives or re-verifies the result under its own scenario
 | `SQ-007` — broad NVA export caused route feedback | Deleting ASN 65515 and accepting every imported route reflected site prefixes back to Route Server, producing shorter iBGP copies at the gateway and TTL loops. NVA export must be deny-by-default. |
 | `SQ-008` — Route Server spoke injection requires a shorter supernet | Equal or longer advertisements than the VNet address space were not propagated. Bounded `/23` summaries were accepted by Route Server, matching Microsoft documentation, but the gateway still did not advertise them to the simulated sites. |
 | `SQ-009` — PSK fault injection needs an explicit connection reset | Updating one directional connection's PSK did not immediately guarantee a clean fault. Calling the REST `resetconnection` operation forced renegotiation; restoration used a fresh matching key on both directional objects. |
+| `SQ-010` — cross-VNet NVA peering requires remote Route Server consumption | Route Server supports an NVA in a directly peered VNet, but the remote VNet must enable **Use remote gateway or Route Server** and the upgraded API requires an explicit `hubVirtualNetworkConnection`. A VNet that already owns a VPN gateway cannot enable that setting, so NVA1 and NVA2 cannot consume the opposite hub's Route Server in this topology. |
+| `SQ-011` — Route Server route maps reject `Vnet2Vnet` connections | The portal omitted the square's VPN objects because they are `Microsoft.Network/connections` with `connectionType=Vnet2Vnet`. A direct API attempt returned `InvalidRoutingConfigurationForConnectionType`; route-map-capable VPN connectivity must use supported S2S `IPsec` connection objects. |
+| `SQ-012` — branch-to-branch learning and VPN export are separate gates | The hub gateways demonstrably learn NVA routes through Route Server, but advertise an empty set to the simulated-site `Vnet2Vnet` peers. The missing site routes are therefore not caused by disabled branch-to-branch or a failed ARS-to-gateway exchange. |
 
 The following inherited constraints still govern any later failover experiment:
 
 | Constraint carried forward | Where it bites in the square | Source |
 |---|---|---|
-| D2 same-VNet route-map eligibility (`EMP-001`) | Only hub-local attachment points are map-eligible; nothing site-side or cross-region is | `.squad/decisions.md` → D2; design.md §3, §10.2 L1 |
+| D2 locality (`EMP-001`) — superseded by SQ-010 | The old “same-VNet only” conclusion was too broad. Directly peered-VNet NVAs are supported, but require remote Route Server consumption and an explicit `hubVirtualNetworkConnection`; that prerequisite is incompatible with the two gateway-owning hub VNets in this lab. | `ars-peer-route-map-vpn-investigation.md` |
 | ARS loop prevention runs **before** inbound policy | A map cannot rescue a 65515-carrying route; the NVA-side strip is permanent | design.md §5, §10.2 L2 |
 | `az rest` inline-body failure on Windows PowerShell | Every Stage-2 route-map / BGP-connection body must be written to `scripts/bodies/*.json` and referenced with `@file` | Tank history 2026-08-05; design.md §11 |
 | `peeringState=null` CLI quirk | Stage-2 readiness checks must key on `provisioningState` | source lab `lessons-learned.md` |

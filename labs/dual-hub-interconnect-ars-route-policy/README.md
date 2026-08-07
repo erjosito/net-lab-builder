@@ -29,6 +29,12 @@ No cleanup has been run.
 [`square-reachability-and-faults.md`](./square-reachability-and-faults.md). Both requested spoke
 service objectives are unsupported by native variant N; all injected faults were restored.
 
+**Route Server limitation investigation completed 2026-08-07:** see
+[`ars-peer-route-map-vpn-investigation.md`](./ars-peer-route-map-vpn-investigation.md). Cross-VNet
+NVA peers require the remote VNet to consume the Route Server, route maps reject this lab's
+`Vnet2Vnet` connections, and the simulated-site gateways export no Azure routes over those
+connections.
+
 ## ⚠️ Shared live resources — reused, not created
 
 > Every Azure resource this lab exercises was deployed by, is documented by, and remains owned by
@@ -56,7 +62,7 @@ service objectives are unsupported by native variant N; all injected faults were
 >
 > **Status: U0, U1 (T1), U1.5 and T2a/U2 executed and PASSED on 2026-08-06** — `vm-nva1`/`vm-nva2` are
 > running with retired Poland BIRD state removed, the two hub↔hub global peerings exist, and
-> `rm-hub1-tmp-assoc` is associated inbound on `ars-hub1`/`peer-nva1` (left active); see
+> `rm-hub1-tmp-assoc` was tested inbound on `ars-hub1`/`peer-nva1` and later dissociated; see
 > `deploy-log.md` §Change log and §Phase-4 approval-unit ledger, and
 > `.squad/decisions/inbox/niobe-u15-u2-verification.md` for Niobe's independent live verification.
 > T2b–T5 (U3–U5) remain **not run**; no other script under `scripts/` has been executed (all

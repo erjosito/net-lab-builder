@@ -3,8 +3,8 @@
 ## TP-SQ deployed-state certification — 2026-08-07
 
 **Variant N is deployed and ready for manual review.** U3 completed with an INCONCLUSIVE
-attribute-observability verdict and was rolled back before TP-SQ. No failure/failback scenario has
-been run.
+attribute-observability verdict and was rolled back before TP-SQ. The requested S-A and S-D faults
+were subsequently run and fully restored.
 
 | Check | Result |
 |---|---|
@@ -16,7 +16,7 @@ been run.
 | DC1↔DC2 DCI | PASS — bidirectional ICMP, 0% loss, approximately 27–30 ms |
 | Hub1↔Hub2 | PASS — NVA1↔NVA2 bidirectional ICMP, 0% loss, approximately 30–35 ms |
 | Site endpoint→hub VNet | **Not delivered under variant N** — both site endpoints received 100% loss to both NVA addresses; effective routes contain the remote site prefix but not a usable hub VNet prefix |
-| Failure/failback | NOT RUN — intentionally left for manual review |
+| Failure/failback | COMPLETE — S-A and S-D faults were injected, measured, and restored |
 
 Evidence: `show-output/new/square/{e0,preflight,deployment,e1,baseline-cleanup,e2,final}/`.
 
@@ -32,6 +32,18 @@ Evidence: `show-output/new/square/{e0,preflight,deployment,e1,baseline-cleanup,e
 | Restoration | PASS — all six connection objects `Connected`; DC1↔DC2 restored to 0% loss |
 
 Full analysis: [`square-reachability-and-faults.md`](./square-reachability-and-faults.md).
+
+## Route Server peer, route-map, and VPN export investigation — 2026-08-07
+
+| Question | Result |
+|---|---|
+| Can ARS1 peer with NVA2 in Hub2? | Capability exists for directly peered VNets, but Hub2 must enable `useRemoteGateways` toward Hub1. That is impossible while Hub2 owns `vpngw-hub2`. |
+| Why does the portal show only the NVA for route-map association? | The deployed VPN edges are `Vnet2Vnet`; the API rejected `routingConfiguration` with `InvalidRoutingConfigurationForConnectionType`. |
+| Does branch-to-branch reach the hub gateways? | Yes — each hub gateway learns NVA-originated routes through its local Route Server. |
+| Why do the site gateways receive no Azure routes? | Both hub gateways advertise an empty set toward their `Vnet2Vnet` BGP peers. The Azure-gateway site analogue does not reproduce external S2S router export behavior. |
+| Live mutation | None — all validation PUTs failed before changing a resource. |
+
+Full analysis: [`ars-peer-route-map-vpn-investigation.md`](./ars-peer-route-map-vpn-investigation.md).
 
 **Status: U0, T1/U1, U1.5 and T2a/U2 executed and PASSED on 2026-08-06, approved by Jose Moreno.**
 U1.5 and T2a/U2 were independently verified live (read-only) by Niobe on 2026-08-06 —
