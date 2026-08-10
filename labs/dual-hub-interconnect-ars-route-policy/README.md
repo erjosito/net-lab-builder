@@ -1,6 +1,48 @@
 # Dual-Hub Interconnect and Route Server Route-Map Policy
 
-## Current live state — Linux-site square ready for manual review
+## Current live state — reconciled 2026-08-10
+
+All eight lab VMs are running. The two hub Route Servers, active-active VPN gateways, VNet
+peerings, LNG-backed IPsec connections, and route-map resources remain deployed.
+
+Four Standard NAT gateways now provide explicit outbound access where the effective default route
+is `Internet` and no other outbound method existed:
+
+| NAT gateway | Associated subnet |
+|---|---|
+| `nat-hub1` | `vnet-hub1/snet-nva` |
+| `nat-hub2` | `vnet-hub2/snet-nva` |
+| `nat-dc1` | `vnet-onprem/snet-endpoint` |
+| `nat-dc2` | `vnet-onprem2/snet-endpoint` |
+
+The spoke workload subnets retain their existing `0.0.0.0/0` UDRs to the local NVA, so a NAT
+gateway on those subnets would not be selected. The DC router subnets already use instance public
+IPs. Gateway, Route Server, and empty subnets were not modified.
+
+Live egress checks returned the matching NAT public IP from both NVAs and both DC endpoint VMs.
+The two spoke endpoint checks timed out before reaching their NVAs, consistent with the separate
+forwarding issue described below rather than a NAT Gateway association problem.
+
+After the router VMs rebooted, their XFRM interfaces and routes returned through
+`xfrm-routes.service`, but StrongSwan had no loaded connections because the deployment had run
+`swanctl --load-all` only interactively. Both routers now have an enabled
+`lab-swanctl-config.service` that loads `/etc/swanctl/swanctl.conf` after StrongSwan and the XFRM
+service. The live post-fix state is:
+
+- both Azure VPN connections report `Connected`;
+- both active-active hub SAs are installed on each site router;
+- the DC1-DC2 DCI SA is installed on both routers;
+- all six BIRD sessions (`hub0`, `hub1`, and `dci` on each router) are `Established`;
+- each Azure VPN gateway reports both external BGP peers `Connected` with two received routes.
+
+The 2026-08-08 endpoint reachability certification is not the current endpoint state. On
+2026-08-10, both endpoints reached their local router but not remote-site or spoke addresses.
+Their effective `10.0.0.0/8` UDRs, router IP forwarding, router OS routes, and tunnel/BGP state are
+present, while a DC1 router capture saw no forwarded endpoint packets. The router subnet NSGs have
+no explicit transit rule beyond the default `VirtualNetwork` rule. This separate forwarding issue
+was recorded but deliberately not changed while the lab was under active manual use.
+
+## 2026-08-08 certification baseline
 
 **Rebuilt 2026-08-08.** The simulated on-premises Azure VPN gateways were removed and replaced by
 Ubuntu 24.04 routers following the

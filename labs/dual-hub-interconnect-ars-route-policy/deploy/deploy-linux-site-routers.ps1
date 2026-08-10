@@ -413,11 +413,30 @@ RemainAfterExit=yes
 WantedBy=multi-user.target
 '@
     Send-RemoteText -Address $PublicIp -Path '/etc/systemd/system/xfrm-routes.service' -Content $unit
+    $swanctlUnit = @'
+[Unit]
+Description=Load lab swanctl connections after StrongSwan starts
+After=network-online.target xfrm-routes.service strongswan-starter.service
+Wants=network-online.target
+Requires=xfrm-routes.service strongswan-starter.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/swanctl --load-all
+RemainAfterExit=yes
+Restart=on-failure
+RestartSec=2s
+
+[Install]
+WantedBy=multi-user.target
+'@
+    Send-RemoteText -Address $PublicIp -Path '/etc/systemd/system/lab-swanctl-config.service' `
+        -Content $swanctlUnit
     Invoke-Remote -Address $PublicIp -Command @'
 sudo chmod 700 /usr/local/sbin/configure-xfrm.sh &&
 sudo systemctl daemon-reload &&
 sudo systemctl enable --now xfrm-routes.service &&
-sudo swanctl --load-all &&
+sudo systemctl enable --now lab-swanctl-config.service &&
 sudo systemctl restart bird
 '@
 }
