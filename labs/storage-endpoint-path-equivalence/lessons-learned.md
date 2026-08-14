@@ -12,7 +12,15 @@ DNS, actual destination, Azure effective routes, account/subnet authorization, P
 
 The first VM start remained in `ProvisioningState/updating`, and Run Command could not execute. A normal deallocate/start retry did not clear it. A direct ARM redeploy request restored `ProvisioningState/Succeeded`; no topology or benchmark result was changed. The recovery is environmental/configuration-related and occurred before measurements.
 
-Run Command later stalled again while collecting the R2 and R5 forced-public controls. Repeating the operation would have required another approximately 60–70 minute VM redeploy and risked the completed benchmark. The safe baseline was restored and the VM deallocated. Those two scenario verdicts are therefore inconclusive; benchmark values were not altered or substituted.
+Run Command later stalled again while collecting the R2 and R5 forced-public
+controls. A subsequent ARM redeploy also remained stuck in `Updating`. Recovery
+therefore used only already deployed resources: the existing NAT public IP was
+temporarily attached to the VM NIC, SSH was source-restricted, and the same
+endpoint FQDN/SNI/Host/body/managed-identity semantics were exercised directly.
+R2 returned HTTP 200; R5 returned HTTP 403 on the forced-public address and HTTP
+200 on the private address. The public IP, NAT association, NSG, account ACL,
+service endpoint, and private-DNS state were then restored to the original safe
+public baseline before deallocation.
 
 ## Performance interpretation
 
@@ -29,6 +37,11 @@ different question from endpoint equivalence: whether the measurement pipeline c
 detect a shift larger than its own noise and predeclared margin. The delay must be
 inside the timed interval, balanced in order, and removed afterward. It must not be
 described as a network-path emulator.
+
+The completed calibration detected a 23.29 ms paired p50 shift (95% bootstrap CI
+22.08–24.48 ms) from the predeclared 25 ms injection, across 800 measured
+requests with zero errors/timeouts. This validates sensitivity at that scale,
+not endpoint equivalence or physical-path identity.
 
 ## Nearby-region extension boundary
 

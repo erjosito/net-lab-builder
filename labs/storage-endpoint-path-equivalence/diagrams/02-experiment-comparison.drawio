@@ -1,81 +1,34 @@
 <mxfile host="app.diagrams.net">
-  <diagram name="mode-comparison" id="sepath-comparison">
+  <diagram name="mode-comparison" id="sepath-translator-comparison">
     <mxGraphModel dx="1700" dy="1000" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1000" math="0" adaptiveColors="auto" background="#ffffff">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
-        <mxCell id="title" value="Three endpoint modes — compare customer-observable facts, not Microsoft physical routes" style="text;html=1;fontSize=18;fontStyle=1;align=left;" vertex="1" parent="1">
-          <mxGeometry x="40" y="20" width="1350" height="35" as="geometry"/>
-        </mxCell>
-        <mxCell id="shared" value="Held constant: vm-client · target account/blob · OAuth identity · FQDN/SNI · request bytes · region · client version" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e7f0fb;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="40" y="65" width="1480" height="42" as="geometry"/>
-        </mxCell>
-        <mxCell id="m1" value="1 — Ordinary public endpoint" style="swimlane;startSize=34;html=1;fillColor=#f3fbf1;strokeColor=#82b366;fontStyle=1;fontSize=13;" vertex="1" parent="1">
-          <mxGeometry x="40" y="130" width="470" height="570" as="geometry"/>
-        </mxCell>
-        <mxCell id="m2" value="2 — Public endpoint + Microsoft.Storage service endpoint" style="swimlane;startSize=34;html=1;fillColor=#fff9e6;strokeColor=#d6b656;fontStyle=1;fontSize=13;" vertex="1" parent="1">
-          <mxGeometry x="540" y="130" width="470" height="570" as="geometry"/>
-        </mxCell>
-        <mxCell id="m3" value="3 — Private endpoint + private DNS" style="swimlane;startSize=34;html=1;fillColor=#f7f0fa;strokeColor=#9673a6;fontStyle=1;fontSize=13;" vertex="1" parent="1">
-          <mxGeometry x="1040" y="130" width="480" height="570" as="geometry"/>
-        </mxCell>
-        <mxCell id="vm1" value="vm-client" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/compute/Virtual_Machine.svg;" vertex="1" parent="m1">
-          <mxGeometry x="45" y="54" width="64" height="59" as="geometry"/>
-        </mxCell>
-        <mxCell id="st1" value="&lt;TARGET_STORAGE&gt;" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/storage/Storage_Accounts.svg;" vertex="1" parent="m1">
-          <mxGeometry x="350" y="58" width="64" height="51" as="geometry"/>
-        </mxCell>
-        <mxCell id="facts1" value="&lt;b&gt;Customer-observable facts&lt;/b&gt;&lt;br&gt;DNS: public A/AAAA chain&lt;br&gt;Destination: &lt;PUBLIC_STORAGE_IP_PER_RUN&gt; (public)&lt;br&gt;Effective next hop: not VirtualNetworkServiceEndpoint&lt;br&gt;Source identity: NAT/public or platform-reported; supporting evidence&lt;br&gt;Request: expected success" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="m1">
-          <mxGeometry x="35" y="180" width="400" height="185" as="geometry"/>
-        </mxCell>
-        <mxCell id="switch1" value="SE OFF · private DNS link OFF" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11;" vertex="1" parent="m1">
-          <mxGeometry x="105" y="395" width="260" height="48" as="geometry"/>
-        </mxCell>
-        <mxCell id="e1" value="HTTPS / public destination" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2e7d32;strokeWidth=3;fontSize=10;" edge="1" source="vm1" target="st1" parent="m1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="vm2" value="same vm-client" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/compute/Virtual_Machine.svg;" vertex="1" parent="m2">
-          <mxGeometry x="45" y="54" width="64" height="59" as="geometry"/>
-        </mxCell>
-        <mxCell id="st2" value="same &lt;TARGET_STORAGE&gt;" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/storage/Storage_Accounts.svg;" vertex="1" parent="m2">
-          <mxGeometry x="350" y="58" width="64" height="51" as="geometry"/>
-        </mxCell>
-        <mxCell id="facts2" value="&lt;b&gt;Customer-observable facts&lt;/b&gt;&lt;br&gt;DNS: same public chain&lt;br&gt;Destination: same pinned public IP as paired run&lt;br&gt;Effective next hop: VirtualNetworkServiceEndpoint&lt;br&gt;Source identity: VNet/private identity may be service-observed; supporting evidence&lt;br&gt;Request: expected success" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="m2">
-          <mxGeometry x="35" y="180" width="400" height="185" as="geometry"/>
-        </mxCell>
-        <mxCell id="switch2" value="SE ON · private DNS link OFF" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=11;" vertex="1" parent="m2">
-          <mxGeometry x="105" y="395" width="260" height="48" as="geometry"/>
-        </mxCell>
-        <mxCell id="e2" value="HTTPS / same public destination" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#d79b00;strokeWidth=3;fontSize=10;dashed=1;" edge="1" source="vm2" target="st2" parent="m2">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="vm3" value="same vm-client" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/compute/Virtual_Machine.svg;" vertex="1" parent="m3">
-          <mxGeometry x="35" y="54" width="64" height="59" as="geometry"/>
-        </mxCell>
-        <mxCell id="pe3" value="pe-target-blob&#xa;10.61.2.4" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/networking/Private_Endpoint.svg;" vertex="1" parent="m3">
-          <mxGeometry x="208" y="54" width="64" height="59" as="geometry"/>
-        </mxCell>
-        <mxCell id="st3" value="same &lt;TARGET_STORAGE&gt;" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/storage/Storage_Accounts.svg;" vertex="1" parent="m3">
-          <mxGeometry x="376" y="58" width="64" height="51" as="geometry"/>
-        </mxCell>
-        <mxCell id="facts3" value="&lt;b&gt;Customer-observable facts&lt;/b&gt;&lt;br&gt;DNS: public FQDN → privatelink CNAME → 10.61.2.4&lt;br&gt;Destination: private RFC1918 address&lt;br&gt;Effective next hop: VNet-local, not service endpoint&lt;br&gt;Source identity: private/VNet context&lt;br&gt;Request: expected success through approved PE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="m3">
-          <mxGeometry x="40" y="180" width="400" height="185" as="geometry"/>
-        </mxCell>
-        <mxCell id="switch3" value="SE OFF for benchmark · private DNS link ON" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11;" vertex="1" parent="m3">
-          <mxGeometry x="105" y="395" width="270" height="48" as="geometry"/>
-        </mxCell>
-        <mxCell id="e3a" value="HTTPS / 10.61.2.4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#9673a6;strokeWidth=3;fontSize=10;" edge="1" source="vm3" target="pe3" parent="m3">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e3b" value="Private Link" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#9673a6;strokeWidth=2;fontSize=10;" edge="1" source="pe3" target="st3" parent="m3">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="underlay" value="UNOBSERVABLE MICROSOFT PHYSICAL UNDERLAY — OUT OF SCOPE" style="swimlane;startSize=32;html=1;fillColor=#eeeeee;strokeColor=#666666;dashed=1;fontStyle=1;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="40" y="735" width="1480" height="145" as="geometry"/>
-        </mxCell>
-        <mxCell id="underlay-note" value="No physical routers, links, hops, or route geometry are shown. Similar performance or shared “Microsoft backbone” wording does not establish identical routes. Conclusions are limited to observable endpoint behavior and conditional performance equivalence." style="text;whiteSpace=wrap;html=1;align=center;fontSize=12;fontStyle=2;fontColor=#444444;" vertex="1" parent="underlay">
-          <mxGeometry x="100" y="50" width="1280" height="65" as="geometry"/>
-        </mxCell>
+        <mxCell id="title" value="Three Translator access modes — customer-observable routing differences" style="text;html=1;fontSize=18;fontStyle=1;align=left;" vertex="1" parent="1"><mxGeometry x="40" y="20" width="1400" height="35" as="geometry"/></mxCell>
+        <mxCell id="shared" value="Held constant: vm-client · managed identity · custom Translator FQDN/SNI · F0 account/backend · fixed JSON request (19 input characters) · Sweden Central · client version" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e7f0fb;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1"><mxGeometry x="40" y="65" width="1480" height="44" as="geometry"/></mxCell>
+        <mxCell id="m1" value="1 — Ordinary public endpoint" style="swimlane;startSize=34;html=1;fillColor=#f3fbf1;strokeColor=#82b366;fontStyle=1;fontSize=13;" vertex="1" parent="1"><mxGeometry x="40" y="130" width="470" height="590" as="geometry"/></mxCell>
+        <mxCell id="m2" value="2 — Public endpoint + Microsoft.CognitiveServices service endpoint" style="swimlane;startSize=34;html=1;fillColor=#fff9e6;strokeColor=#d6b656;fontStyle=1;fontSize=13;" vertex="1" parent="1"><mxGeometry x="540" y="130" width="470" height="590" as="geometry"/></mxCell>
+        <mxCell id="m3" value="3 — Private endpoint + private DNS" style="swimlane;startSize=34;html=1;fillColor=#f7f0fa;strokeColor=#9673a6;fontStyle=1;fontSize=13;" vertex="1" parent="1"><mxGeometry x="1040" y="130" width="480" height="590" as="geometry"/></mxCell>
+        <mxCell id="vm1" value="vm-client" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/compute/Virtual_Machine.svg;" vertex="1" parent="m1"><mxGeometry x="45" y="54" width="64" height="58" as="geometry"/></mxCell>
+        <mxCell id="tr1" value="Translator F0" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/ai_machine_learning/Translator_Text.svg;" vertex="1" parent="m1"><mxGeometry x="350" y="52" width="64" height="64" as="geometry"/></mxCell>
+        <mxCell id="facts1" value="&lt;b&gt;Authoritative observable facts&lt;/b&gt;&lt;br&gt;DNS/destination: public address (sanitized)&lt;br&gt;Effective route: no matching service-endpoint route&lt;br&gt;Account: public access allowed&lt;br&gt;Authenticated request: HTTP 200&lt;br&gt;&lt;br&gt;&lt;b&gt;Correctness: PASS&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="m1"><mxGeometry x="35" y="180" width="400" height="190" as="geometry"/></mxCell>
+        <mxCell id="switch1" value="SE OFF · private DNS link OFF" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11;" vertex="1" parent="m1"><mxGeometry x="105" y="400" width="260" height="48" as="geometry"/></mxCell>
+        <mxCell id="e1" value="HTTPS / public destination" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2e7d32;strokeWidth=3;fontSize=10;" edge="1" source="vm1" target="tr1" parent="m1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="vm2" value="same vm-client" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/compute/Virtual_Machine.svg;" vertex="1" parent="m2"><mxGeometry x="45" y="54" width="64" height="58" as="geometry"/></mxCell>
+        <mxCell id="tr2" value="same Translator F0" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/ai_machine_learning/Translator_Text.svg;" vertex="1" parent="m2"><mxGeometry x="350" y="52" width="64" height="64" as="geometry"/></mxCell>
+        <mxCell id="facts2" value="&lt;b&gt;Authoritative observable facts&lt;/b&gt;&lt;br&gt;DNS/destination: same public address&lt;br&gt;Effective route: VirtualNetworkServiceEndpoint&lt;br&gt;Subnet rule authorizes vm-client subnet&lt;br&gt;Authenticated pinned-public request: HTTP 200&lt;br&gt;&lt;br&gt;&lt;b&gt;Correctness: PASS&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="m2"><mxGeometry x="35" y="180" width="400" height="190" as="geometry"/></mxCell>
+        <mxCell id="switch2" value="SE ON · private DNS link OFF" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=11;" vertex="1" parent="m2"><mxGeometry x="105" y="400" width="260" height="48" as="geometry"/></mxCell>
+        <mxCell id="e2" value="HTTPS / same public destination" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#d79b00;strokeWidth=3;fontSize=10;dashed=1;" edge="1" source="vm2" target="tr2" parent="m2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="vm3" value="same vm-client" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/compute/Virtual_Machine.svg;" vertex="1" parent="m3"><mxGeometry x="35" y="54" width="64" height="58" as="geometry"/></mxCell>
+        <mxCell id="pe3" value="pe-translator&#xa;10.61.2.4" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/networking/Private_Endpoint.svg;" vertex="1" parent="m3"><mxGeometry x="208" y="54" width="64" height="59" as="geometry"/></mxCell>
+        <mxCell id="tr3" value="same Translator F0" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/ai_machine_learning/Translator_Text.svg;" vertex="1" parent="m3"><mxGeometry x="376" y="52" width="64" height="64" as="geometry"/></mxCell>
+        <mxCell id="facts3" value="&lt;b&gt;Authoritative observable facts&lt;/b&gt;&lt;br&gt;DNS: custom FQDN → privatelink → 10.61.2.4&lt;br&gt;Destination: private address&lt;br&gt;Effective route: VNet-local InterfaceEndpoint&lt;br&gt;Approved PE; authenticated request: HTTP 200&lt;br&gt;Private-only forced-public control: HTTP 403&lt;br&gt;&lt;b&gt;Correctness: PASS&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="m3"><mxGeometry x="40" y="180" width="400" height="190" as="geometry"/></mxCell>
+        <mxCell id="switch3" value="SE OFF · private DNS link ON" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11;" vertex="1" parent="m3"><mxGeometry x="105" y="400" width="270" height="48" as="geometry"/></mxCell>
+        <mxCell id="e3a" value="HTTPS / 10.61.2.4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#9673a6;strokeWidth=3;fontSize=10;" edge="1" source="vm3" target="pe3" parent="m3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3b" value="Private Link" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#9673a6;strokeWidth=2;fontSize=10;" edge="1" source="pe3" target="tr3" parent="m3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="source-note" value="Service diagnostics may not expose the network source field. DNS, destination, effective route, subnet authorization, PE state, and HTTP result are the authoritative customer-visible evidence." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e7f0fb;strokeColor=#6c8ebf;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="745" width="1480" height="55" as="geometry"/></mxCell>
+        <mxCell id="underlay" value="UNOBSERVABLE MICROSOFT PHYSICAL UNDERLAY — OUT OF SCOPE" style="swimlane;startSize=32;html=1;fillColor=#eeeeee;strokeColor=#666666;dashed=1;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="40" y="825" width="1480" height="115" as="geometry"/></mxCell>
+        <mxCell id="underlay-note" value="No physical routers, links, hops, or route geometry are shown. Correctness and similar performance do not establish identical physical paths." style="text;whiteSpace=wrap;html=1;align=center;fontSize=12;fontStyle=2;fontColor=#444444;" vertex="1" parent="underlay"><mxGeometry x="120" y="45" width="1240" height="45" as="geometry"/></mxCell>
       </root>
     </mxGraphModel>
   </diagram>

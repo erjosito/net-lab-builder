@@ -1,0 +1,41 @@
+---
+title: Translator endpoint performance — headline result
+---
+flowchart TB
+    S["2,400 measured requests + 1,200 warm-ups<br/>10 interleaved blocks · zero measured errors/timeouts"]
+
+    subgraph Fresh["Fresh HTTPS connection — geometric mean of block aggregates"]
+      FP["Public<br/>p50 64.22 ms<br/>p95 158.22 ms<br/>1.639 requests/s"]
+      FS["Service endpoint<br/>p50 60.50 ms<br/>p95 165.40 ms<br/>1.704 requests/s"]
+      FE["Private endpoint<br/>p50 71.44 ms<br/>p95 161.49 ms<br/>1.669 requests/s"]
+    end
+
+    subgraph Reused["Reused HTTPS connection — geometric mean of block aggregates"]
+      RP["Public<br/>p50 35.44 ms<br/>p95 46.67 ms<br/>1.855 requests/s"]
+      RS["Service endpoint<br/>p50 34.81 ms<br/>p95 45.96 ms<br/>1.858 requests/s"]
+      RE["Private endpoint<br/>p50 35.25 ms<br/>p95 45.32 ms<br/>1.857 requests/s"]
+    end
+
+    V["Concise verdict<br/>Many p50, p95, and throughput comparisons met their individual margins.<br/><b>All six overall pair verdicts: INCONCLUSIVE</b><br/>Jitter and sparse retransmission-proxy uncertainty prevented full equivalence.<br/>This is not proof that modes differ."]
+
+    C["Positive-control calibration<br/>25 ms delay injected inside the timed interval<br/>Observed paired p50 shift: 23.29 ms<br/>95% CI: 22.08-24.48 ms<br/><b>SENSITIVITY PASS</b>"]
+
+    G["Guardrail<br/>Calibration validates detection at this scale only.<br/>It does not emulate or prove an Azure physical path."]
+
+    S --> Fresh
+    S --> Reused
+    Fresh --> V
+    Reused --> V
+    V --> C
+    C --> G
+
+    classDef headline fill:#e7f0fb,stroke:#6c8ebf,color:#222
+    classDef metric fill:#ffffff,stroke:#0078d4,color:#222
+    classDef verdict fill:#fff2cc,stroke:#d6b656,color:#222
+    classDef pass fill:#d5e8d4,stroke:#82b366,color:#222
+    classDef guard fill:#f5f5f5,stroke:#666,color:#222
+    class S headline
+    class FP,FS,FE,RP,RS,RE metric
+    class V verdict
+    class C pass
+    class G guard

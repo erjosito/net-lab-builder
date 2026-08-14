@@ -1,37 +1,37 @@
 ---
-title: Performance equivalence methodology
+title: Translator F0 performance-equivalence methodology
 ---
 flowchart LR
-    A["Correctness gates pass<br/>DNS + destination + effective route + source/authorization"] --> B["Restore common benchmark state<br/>same VM, identity, FQDN, account, blob, bytes, client"]
-    B --> C["10 randomized complete blocks<br/>5 in window A + 5 in window B<br/>windows separated by at least 30 min"]
-    C --> D["Seeded balanced mode order per block<br/>interleave Public, Service Endpoint, Private Endpoint"]
-    D --> E["For each mode: wait for provisioning<br/>flush DNS and sockets<br/>capture endpoint state"]
-    E --> F["Warm-up<br/>30 seconds or 20 requests"]
-    F --> G["Seeded randomized cells<br/>concurrency 1, 8, 32<br/>64 KiB and 8 MiB<br/>fresh and reused connections"]
-    G --> H["Measure block aggregates<br/>latency median/p95 · throughput · jitter<br/>errors · TCP retransmit proportion"]
-    H --> I{"Invalid block?<br/>CPU >80%, credits depleted,<br/>throttling, destination drift,<br/>or transition incomplete"}
-    I -->|Yes| J["Discard and repeat the full block<br/>never repeat one mode alone"]
+    A["Correctness gates pass<br/>DNS + destination + effective route + authorization + HTTP result"] --> B["Hold constant<br/>same VM, identity, custom FQDN, F0 account/backend<br/>fixed JSON request: 19 input characters"]
+    B --> C["10 interleaved blocks<br/>5 in window A + 5 in window B<br/>windows separated by 30 minutes"]
+    C --> D["Balanced mode order per block<br/>Public · Service Endpoint · Private Endpoint"]
+    D --> E["At each boundary<br/>converge state · flush DNS/sockets<br/>capture route and endpoint state"]
+    E --> F["Per mode and connection variant<br/>20 warm-up + 40 measured requests<br/>concurrency 1 · pacing 0.5 s"]
+    F --> G["Variants<br/>fresh HTTPS connection<br/>reused HTTPS connection"]
+    G --> H["Block aggregates<br/>p50 · p95 · jitter<br/>successful requests/s · input bytes/s<br/>errors · retransmission proxy"]
+    H --> I{"Invalid block?<br/>CPU over 80%, credits depleted,<br/>throttling, destination drift,<br/>or transition incomplete"}
+    I -->|Yes| J["Repeat the full block<br/>never one mode alone"]
     J --> C
-    I -->|No| K["Pair block aggregates<br/>Public↔SE · Public↔PE · SE↔PE"]
-    K --> L["Cluster bootstrap by block<br/>10,000 resamples<br/>report 95% confidence intervals"]
-    L --> M["TOST at α=.05<br/>90% CI must be wholly inside<br/>each predeclared equivalence margin"]
-    M --> N{"All primary margins pass<br/>and correctness gates pass?"}
-    N -->|Yes| O["Conditionally equivalent<br/>for this pair, cell, region, and time"]
-    N -->|No, CI crosses margin| P["Inconclusive"]
-    N -->|No, outside margin| Q["Not equivalent"]
+    I -->|No| K["Pair block aggregates<br/>Public-SE · Public-PE · SE-PE"]
+    K --> L["10,000 cluster-bootstrap resamples by block<br/>95% confidence intervals"]
+    L --> M{"All predeclared primary margins established?"}
+    M -->|Yes| N["Conditionally equivalent<br/>for this run, region, request, and time"]
+    M -->|CI crosses a margin| O["Inconclusive"]
+    M -->|Interval establishes outside margin| P["Not equivalent"]
 
-    R["Equivalence margins<br/>Median latency and throughput: 0.90–1.10<br/>p95 latency: 0.85–1.15<br/>Jitter: 0.80–1.20 and ≤2 ms absolute<br/>Error rate: ≤0.5 percentage points absolute<br/>Retransmits: ≤0.2 percentage points absolute"] -.-> M
-    S["Interpretation guardrail<br/>Performance equivalence does not establish<br/>identical Microsoft physical paths"] -.-> O
+    Q["Margins<br/>p50 + requests/s: ratio 0.90-1.10<br/>p95: 0.85-1.15<br/>jitter: 0.80-1.20 and absolute difference at most 2 ms<br/>errors: absolute difference at most 0.5 pp<br/>retransmission proxy: absolute difference at most 0.2 pp"] -.-> L
+    R["F0 quota guard<br/>Concurrency 1 · small fixed request<br/>low-rate protocol within free-tier allowance"] -.-> F
+    S["Interpretation guardrail<br/>Translator processing latency can dominate a small path delta<br/>equivalence may remain inconclusive<br/>no physical-path identity claim"] -.-> O
 
     classDef setup fill:#e7f0fb,stroke:#6c8ebf,color:#222
     classDef run fill:#fff2cc,stroke:#d6b656,color:#222
     classDef analysis fill:#e1d5e7,stroke:#9673a6,color:#222
     classDef decision fill:#f5f5f5,stroke:#666,color:#222
     classDef pass fill:#d5e8d4,stroke:#82b366,color:#222
-    classDef fail fill:#f8cecc,stroke:#b85450,color:#222
+    classDef caution fill:#f8cecc,stroke:#b85450,color:#222
     class A,B setup
-    class C,D,E,F,G,H,J run
-    class K,L,M,R,S analysis
-    class I,N decision
-    class O pass
-    class P,Q fail
+    class C,D,E,F,G,H,J,R run
+    class K,L,Q,S analysis
+    class I,M decision
+    class N pass
+    class O,P caution

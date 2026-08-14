@@ -14,10 +14,10 @@ Performance used ten interleaved endpoint-order blocks, split into two five-bloc
 | Scenario | Required observation | Verdict | Evidence |
 |---|---|---|---|
 | R1 Public | Public DNS/destination, no matching service-endpoint route, authenticated HTTP 200 | **PASS** | `raw-output/sepath-validation-20260806T133000Z/correctness/R1-public/` |
-| R2 Service endpoint | Public destination retained; matching effective route becomes `VirtualNetworkServiceEndpoint`; ordinary and pinned requests succeed | **INCONCLUSIVE** — ordinary request and route passed; pinned-control output was lost to a Run Command failure | `raw-output/sepath-validation-20260806T133000Z/correctness/R2-service-endpoint/` |
+| R2 Service endpoint | Public destination retained; matching effective route becomes `VirtualNetworkServiceEndpoint`; ordinary and pinned requests succeed | **PASS** — recovery preserved the endpoint FQDN/SNI/Host and pinned the public destination; authenticated HTTP 200 returned from the public address | `raw-output/sepath-validation-20260806T133000Z/correctness/R2-service-endpoint/pinned-public-request-recovery.json` |
 | R3 Restricted subnet | Allowed subnet succeeds; removing only its rule makes the same principal/request fail; rule restored | **PASS** — HTTP 200 then HTTP 403 | `raw-output/sepath-validation-20260806T133000Z/correctness/R3-restricted-subnet/` |
 | R4 Private endpoint | Same FQDN resolves to `10.61.2.4`; VNet-local `InterfaceEndpoint` route; approved PE; HTTP 200 | **PASS** | `raw-output/sepath-validation-20260806T133000Z/correctness/R4-private-endpoint/` |
-| R5 Private only | Forced-public request fails while ordinary private-DNS request succeeds | **INCONCLUSIVE** — private request passed with public access disabled; forced-public output was lost to a Run Command failure | `raw-output/sepath-validation-20260806T133000Z/correctness/R5-private-only/` |
+| R5 Private only | Forced-public request fails while ordinary private-DNS request succeeds | **PASS** — authenticated forced-public request returned HTTP 403 while the otherwise identical private-DNS request returned HTTP 200 from `10.61.2.4` | `raw-output/sepath-validation-20260806T133000Z/correctness/R5-private-only/*-recovery.json` |
 
 ## Evidence inventory
 
@@ -67,7 +67,17 @@ execution:
 This is a measurement-system positive control. It does not simulate an Azure
 network path and cannot support a path-identity claim.
 
-Calibration result: pending live-run analysis.
+Calibration completed without changing the predeclared protocol: **800 measured
+requests** plus 400 warm-ups across ten paired blocks, with zero errors or
+timeouts. The mean paired p50 shift was **23.29 ms** (95% bootstrap CI
+**22.08–24.48 ms**). The control p50 was 36.16 ms, the observed noise floor was
+2.70 ms, and the predeclared detection floor was therefore 5 ms. The CI lower
+bound exceeded that floor and the point estimate remained within 20–30 ms:
+**sensitivity detected / PASS**.
+
+Machine-readable result:
+`raw-output/sepath-validation-20260806T133000Z/calibration/calibration-analysis.json`.
+Re-running `analyze_calibration.py` reproduces it byte-for-byte.
 
 ## Optional nearby-region extension — not deployed
 

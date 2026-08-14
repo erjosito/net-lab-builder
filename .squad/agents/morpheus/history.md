@@ -279,3 +279,27 @@
 **Evidence scope changed deliberately.** Keep public, SE route, subnet authorization, PE, and forced-public negative-control scenarios. Drop the Storage-only endpoint-policy decoy. F0 throttling and AI processing latency make the former high-concurrency/large-payload performance protocol invalid; correctness is primary and only low-rate small-body latency observations remain.
 
 **Gate.** Wrote `labs/storage-endpoint-path-equivalence/redesign.md` and `.squad/decisions/inbox/morpheus-storage-sepath-paas-redesign.md`. No Azure resource was deployed, changed, exempted, or deleted.
+
+---
+
+📌 2026-08-14 — New lab planned: `foundry-agent-reserved-prefix-reachability`. Stage-1 card locked at `labs/foundry-agent-reserved-prefix-reachability/manifest.md`. Decision filed at `.squad/decisions/inbox/morpheus-foundry-reserved-prefix-lab.md`. Phase 0 preflight and Phase 4 approval not yet requested.
+
+**The question.** Foundry Agent Service (VNet injection) explicitly prohibits `172.30.0.0/16` in the Foundry VNet address space and any **peered** VNet address space. The published documentation (Microsoft Learn, 2026-08-14) does NOT extend the restriction to non-peered remote networks learned through VPN or ExpressRoute. The lab tests whether an on-premises network that legitimately owns `172.30.0.0/16`, connected via a BGP-enabled S2S VPN, can be reached by agent tool calls originating from the Foundry data proxy.
+
+**Hypothesis.** H₁: the restriction is a deployment-time address-space declaration check only; VPN-learned BGP routes for `172.30.100.0/24` are treated identically to any other remote prefix. H₀ (null): the platform enforces a runtime block on the reserved prefix beyond address-space declarations. Outcome is **unknown**; the lab produces binary evidence.
+
+**Topology.** Clean Foundry VNet `192.168.0.0/16` (swedencentral) with GatewaySubnet/AgentSubnet/PESubnet; on-prem simulator VNet `172.30.0.0/16` (norwayeast) connected via VPN S2S BGP. vpngw-onprem (AS 65020) advertises `172.30.100.0/24` (reserved-prefix test) and `10.200.100.0/24` (control). VPN GW route propagation injects both into AgentSubnet effective routes. A prompt agent with an OpenAPI function tool calls `https://172.30.100.4/api/echo` (nginx/python on vm-onprem-server). No peering carries `172.30.x.x`.
+
+**Negative controls.** NC-1: attempt to create Foundry VNet with `172.30.0.0/16` address space — expect ARM validation reject. NC-2: attempt to peer a `172.30.0.0/16` VNet to vnet-foundry after Foundry is healthy — expect peering or Foundry health failure. Both confirm the documented deployment-time boundary.
+
+**Why VPN over ExpressRoute.** VpnGw1 ≈ $4.56/day per GW vs. ER GW + circuit ≥ $47/day. VPN BGP propagates identical effective-route entries. ER deferred as Design D3.
+
+**Why Class C for Foundry VNet.** Class A partially unsupported; Class B `172.30/172.31` explicitly reserved. Class C (`192.168.0.0/16`) is universally supported and has no ambiguity with the restriction.
+
+**Cost.** ≈ $18.64/day baseline (two VpnGw1 non-AA, one connection, five private endpoints, AI Search S1, Cosmos DB Serverless, two B2ts_v2 VMs) — within the $50/day guardrail (rule #7). No cost-gate exception required. Actual run cost ≈ $5–8 for a 4–5h session.
+
+**Evidence taxonomy.** Route plane: `az network vnet-gateway list-learned-routes` + `az network nic show-effective-route-table`. TCP: `tcpdump` on vm-onprem-server (did a SYN arrive?). HTTP: agent run JSON tool call result. Agent semantic: `az ai agent run show` response body + tool call `success` flag. Platform diagnostic: data proxy 5xx logs in Log Analytics. Decision matrix: five (S3, S4) × (SYN/no-SYN) × (agent success/failure) outcomes mapped to interpretations.
+
+**Phase 0 blockers.** Foundry Agent Service availability in swedencentral; gpt-4o-mini quota; B2ts_v2 + VpnGw1 SKU availability; live price confirmation. Preflight must complete before Phase 4 approval request.
+
+**Key Foundry architecture learnings (from deep-dive research).** The delegated AgentSubnet is a standard Azure Container Apps environment subnet; the Foundry deep-dive confirms outbound agent traffic leaves through the subnet's effective route table. The restriction is stated as "address spaces of your VNET and peered VNETs" — address spaces are statically declared objects, not BGP-learned entries. The data proxy handles all tool calls; Hosted agents also get a dedicated NIC per Micro VM. A /24 AgentSubnet is recommended; /26 for 50 concurrent sessions. Azure DNS Private Resolver is optional for DNS plane (S5); not required for the primary data-plane hypothesis (S4). Private DNS zones for `privatelink.cognitiveservices.azure.com`, `privatelink.openai.azure.com`, `privatelink.services.ai.azure.com`, `privatelink.search.windows.net`, `privatelink.documents.azure.com`, `privatelink.blob.core.windows.net` must be linked to vnet-foundry.

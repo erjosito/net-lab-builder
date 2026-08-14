@@ -1,78 +1,33 @@
 <mxfile host="app.diagrams.net">
-  <diagram name="topology" id="sepath-topology">
+  <diagram name="topology" id="sepath-translator-topology">
     <mxGraphModel dx="1500" dy="900" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" adaptiveColors="auto" background="#ffffff">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
-        <mxCell id="title" value="Storage endpoint path-equivalence lab — switchable single-client topology" style="text;html=1;fontSize=18;fontStyle=1;align=left;" vertex="1" parent="1">
-          <mxGeometry x="40" y="20" width="1100" height="35" as="geometry"/>
-        </mxCell>
-        <mxCell id="subtitle" value="Region: swedencentral  |  RG: rg-storage-sepath-&lt;RUN&gt;  |  One VM, FQDN, identity, account, blob, and request method reused sequentially" style="text;html=1;fontSize=11;fontColor=#555555;align=left;" vertex="1" parent="1">
-          <mxGeometry x="40" y="55" width="1250" height="30" as="geometry"/>
-        </mxCell>
-        <mxCell id="azure" value="Microsoft Azure — customer-visible configuration" style="swimlane;startSize=30;html=1;fillColor=#f2f7fc;strokeColor=#0078d4;fontStyle=1;fontSize=13;" vertex="1" parent="1">
-          <mxGeometry x="40" y="100" width="1160" height="570" as="geometry"/>
-        </mxCell>
-        <mxCell id="vnet" value="vnet-endpoint-path  |  10.61.0.0/16" style="swimlane;startSize=30;html=1;fillColor=#e8f5e9;strokeColor=#2e7d32;fontStyle=1;" vertex="1" parent="azure">
-          <mxGeometry x="30" y="50" width="660" height="430" as="geometry"/>
-        </mxCell>
-        <mxCell id="vnet-icon" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=default;aspect=fixed;image=https://icons.diagrams.net/assets/azure/1/Virtual_Network_vNET.svg;" vertex="1" parent="vnet">
-          <mxGeometry x="575" y="2" width="64" height="37" as="geometry"/>
-        </mxCell>
-        <mxCell id="client-subnet" value="snet-client  |  10.61.1.0/24" style="swimlane;startSize=26;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="vnet">
-          <mxGeometry x="25" y="55" width="290" height="315" as="geometry"/>
-        </mxCell>
-        <mxCell id="vm" value="vm-client&#xa;Ubuntu 22.04 / B2ts_v2&#xa;IP: &lt;VM_PRIVATE_IP&gt;" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/compute/Virtual_Machine.svg;" vertex="1" parent="client-subnet">
-          <mxGeometry x="113" y="50" width="64" height="59" as="geometry"/>
-        </mxCell>
-        <mxCell id="identity-note" value="System identity + Blob Data Reader&#xa;No VM public IP; Run Command management" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e7f0fb;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="client-subnet">
-          <mxGeometry x="35" y="155" width="220" height="55" as="geometry"/>
-        </mxCell>
-        <mxCell id="se-switch" value="Mode switch&#xa;Microsoft.Storage service endpoint&#xa;OFF for public/PE · ON for SE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;fontStyle=1;" vertex="1" parent="client-subnet">
-          <mxGeometry x="35" y="230" width="220" height="62" as="geometry"/>
-        </mxCell>
-        <mxCell id="pe-subnet" value="snet-private-endpoint  |  10.61.2.0/24" style="swimlane;startSize=26;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontStyle=1;" vertex="1" parent="vnet">
-          <mxGeometry x="345" y="55" width="285" height="315" as="geometry"/>
-        </mxCell>
-        <mxCell id="pe" value="pe-target-blob&#xa;10.61.2.4" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/networking/Private_Endpoint.svg;" vertex="1" parent="pe-subnet">
-          <mxGeometry x="111" y="52" width="64" height="59" as="geometry"/>
-        </mxCell>
-        <mxCell id="dns" value="Private DNS zone&#xa;privatelink.blob.core.windows.net&#xa;VNet link is the PE mode switch" style="image;sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/mscae/DNS_Private_Zones.svg;" vertex="1" parent="pe-subnet">
-          <mxGeometry x="111" y="173" width="64" height="64" as="geometry"/>
-        </mxCell>
-        <mxCell id="nat" value="NAT Gateway&#xa;pip-nat: &lt;NAT_PUBLIC_IP&gt;&#xa;stable public-control egress" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/networking/NAT.svg;" vertex="1" parent="azure">
-          <mxGeometry x="745" y="115" width="64" height="64" as="geometry"/>
-        </mxCell>
-        <mxCell id="storage" value="Target Storage account&#xa;&lt;TARGET_STORAGE&gt;&#xa;Blob FQDN unchanged across modes" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/storage/Storage_Accounts.svg;" vertex="1" parent="azure">
-          <mxGeometry x="930" y="260" width="64" height="51" as="geometry"/>
-        </mxCell>
-        <mxCell id="public-dns-note" value="Public / service-endpoint modes&#xa;DNS A result: &lt;PUBLIC_STORAGE_IP_PER_RUN&gt;&#xa;Destination remains public" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="azure">
-          <mxGeometry x="735" y="275" width="175" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="telemetry" value="Evidence: DNS chain · tcpdump destination · NIC effective routes · StorageBlobLogs source identity/status · endpoint state" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="azure">
-          <mxGeometry x="725" y="410" width="390" height="58" as="geometry"/>
-        </mxCell>
-        <mxCell id="e-vm-nat" value="Mode 1: ordinary public endpoint" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2e7d32;strokeWidth=2;fontSize=10;" edge="1" source="vm" target="nat" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e-nat-storage" value="public IP destination" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2e7d32;strokeWidth=2;fontSize=10;" edge="1" source="nat" target="storage" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e-vm-storage-se" value="Mode 2: public IP + VirtualNetworkServiceEndpoint next hop" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#d79b00;strokeWidth=3;fontSize=10;dashed=1;" edge="1" source="se-switch" target="storage" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e-vm-pe" value="Mode 3: private DNS resolves 10.61.2.4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#9673a6;strokeWidth=3;fontSize=10;" edge="1" source="vm" target="pe" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e-pe-storage" value="Private Link connection" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#9673a6;strokeWidth=2;fontSize=10;" edge="1" source="pe" target="storage" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="opaque" value="Microsoft physical underlay — intentionally not depicted" style="swimlane;startSize=28;html=1;fillColor=#eeeeee;strokeColor=#666666;dashed=1;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="700" width="1160" height="115" as="geometry"/>
-        </mxCell>
-        <mxCell id="opaque-note" value="The experiment observes DNS, destination IP class, Azure effective next-hop classification, and service-observed source identity. It cannot observe routers, links, hops, or prove identical/different Microsoft physical routes." style="text;whiteSpace=wrap;html=1;align=center;fontSize=12;fontStyle=2;fontColor=#444444;" vertex="1" parent="opaque">
-          <mxGeometry x="70" y="38" width="1020" height="55" as="geometry"/>
-        </mxCell>
+        <mxCell id="title" value="Translator endpoint path-equivalence lab — switchable single-client topology" style="text;html=1;fontSize=18;fontStyle=1;align=left;" vertex="1" parent="1"><mxGeometry x="40" y="20" width="1200" height="35" as="geometry"/></mxCell>
+        <mxCell id="subtitle" value="Region: Sweden Central  |  Sanitized resource names  |  Same VM, identity, custom FQDN, Translator F0 account, and 19-character request across modes" style="text;html=1;fontSize=11;fontColor=#555555;align=left;" vertex="1" parent="1"><mxGeometry x="40" y="55" width="1400" height="30" as="geometry"/></mxCell>
+        <mxCell id="azure" value="Microsoft Azure — deployed customer-visible configuration" style="swimlane;startSize=30;html=1;fillColor=#f2f7fc;strokeColor=#0078d4;fontStyle=1;fontSize=13;" vertex="1" parent="1"><mxGeometry x="40" y="100" width="1300" height="590" as="geometry"/></mxCell>
+        <mxCell id="vnet" value="vnet-endpoint-path  |  10.61.0.0/16" style="swimlane;startSize=30;html=1;fillColor=#e8f5e9;strokeColor=#2e7d32;fontStyle=1;" vertex="1" parent="azure"><mxGeometry x="30" y="50" width="680" height="450" as="geometry"/></mxCell>
+        <mxCell id="vnet-icon" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=default;aspect=fixed;image=https://icons.diagrams.net/assets/azure/1/Virtual_Network_vNET.svg;" vertex="1" parent="vnet"><mxGeometry x="585" y="4" width="64" height="37" as="geometry"/></mxCell>
+        <mxCell id="client-subnet" value="snet-client  |  10.61.1.0/24" style="swimlane;startSize=26;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="vnet"><mxGeometry x="25" y="58" width="300" height="330" as="geometry"/></mxCell>
+        <mxCell id="vm" value="vm-client&#xa;Ubuntu 22.04 / B2ts_v2&#xa;10.61.1.4" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/compute/Virtual_Machine.svg;" vertex="1" parent="client-subnet"><mxGeometry x="118" y="48" width="64" height="58" as="geometry"/></mxCell>
+        <mxCell id="identity-note" value="System identity + Cognitive Services User&#xa;Managed-identity bearer token; local keys disabled" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e7f0fb;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="client-subnet"><mxGeometry x="35" y="150" width="230" height="58" as="geometry"/></mxCell>
+        <mxCell id="se-switch" value="Mode switch&#xa;Microsoft.CognitiveServices endpoint&#xa;OFF for public/PE · ON for SE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;fontStyle=1;" vertex="1" parent="client-subnet"><mxGeometry x="35" y="230" width="230" height="65" as="geometry"/></mxCell>
+        <mxCell id="pe-subnet" value="snet-private-endpoint  |  10.61.2.0/24" style="swimlane;startSize=26;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontStyle=1;" vertex="1" parent="vnet"><mxGeometry x="350" y="58" width="300" height="330" as="geometry"/></mxCell>
+        <mxCell id="pe" value="pe-translator&#xa;10.61.2.4" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/networking/Private_Endpoint.svg;" vertex="1" parent="pe-subnet"><mxGeometry x="118" y="50" width="64" height="59" as="geometry"/></mxCell>
+        <mxCell id="dns" value="Private DNS zone&#xa;privatelink.cognitiveservices.azure.com&#xa;VNet link ON only for private mode" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/mscae/DNS_Private_Zones.svg;" vertex="1" parent="pe-subnet"><mxGeometry x="118" y="180" width="64" height="64" as="geometry"/></mxCell>
+        <mxCell id="nat" value="NAT Gateway&#xa;sanitized public address&#xa;public-mode egress" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/networking/NAT.svg;" vertex="1" parent="azure"><mxGeometry x="775" y="115" width="64" height="64" as="geometry"/></mxCell>
+        <mxCell id="translator" value="Azure AI Translator&#xa;TextTranslation F0&#xa;sanitized account name&#xa;Custom FQDN unchanged" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=#ffffff;image=https://app.diagrams.net/img/lib/azure2/ai_machine_learning/Translator_Text.svg;" vertex="1" parent="azure"><mxGeometry x="1050" y="250" width="64" height="64" as="geometry"/></mxCell>
+        <mxCell id="public-dns-note" value="Public + service-endpoint modes&#xa;DNS/destination remain public&#xa;address sanitized" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="azure"><mxGeometry x="785" y="270" width="205" height="76" as="geometry"/></mxCell>
+        <mxCell id="telemetry" value="Authoritative evidence: DNS · TLS peer/destination · NIC effective route · subnet/account authorization · PE state · authenticated HTTP result&#xa;Translator diagnostics corroborate; source field may be absent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="azure"><mxGeometry x="760" y="410" width="470" height="72" as="geometry"/></mxCell>
+        <mxCell id="legend" value="Paths: green = public via NAT  |  amber dashed = service endpoint to public destination  |  purple = private endpoint" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0078d4;fontSize=10;" vertex="1" parent="azure"><mxGeometry x="760" y="500" width="470" height="48" as="geometry"/></mxCell>
+        <mxCell id="e-vm-nat" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2e7d32;strokeWidth=2;" edge="1" source="vm" target="nat" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e-nat-translator" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2e7d32;strokeWidth=2;" edge="1" source="nat" target="translator" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e-vm-translator-se" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#d79b00;strokeWidth=3;dashed=1;" edge="1" source="se-switch" target="translator" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e-vm-pe" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#9673a6;strokeWidth=3;" edge="1" source="vm" target="pe" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e-pe-translator" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#9673a6;strokeWidth=2;" edge="1" source="pe" target="translator" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="opaque" value="Microsoft physical underlay — intentionally not depicted" style="swimlane;startSize=28;html=1;fillColor=#eeeeee;strokeColor=#666666;dashed=1;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="40" y="720" width="1300" height="115" as="geometry"/></mxCell>
+        <mxCell id="opaque-note" value="The experiment establishes customer-observable routing and authorization differences. It does not observe routers, links, or hops and cannot prove identical or different Microsoft physical paths." style="text;whiteSpace=wrap;html=1;align=center;fontSize=12;fontStyle=2;fontColor=#444444;" vertex="1" parent="opaque"><mxGeometry x="100" y="40" width="1100" height="50" as="geometry"/></mxCell>
       </root>
     </mxGraphModel>
   </diagram>

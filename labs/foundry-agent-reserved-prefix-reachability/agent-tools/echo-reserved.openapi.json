@@ -1,0 +1,64 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Foundry reserved-prefix primary echo",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://172.30.100.4"
+    }
+  ],
+  "paths": {
+    "/api/echo": {
+      "get": {
+        "operationId": "echoReserved",
+        "description": "Call the remote endpoint inside the reserved 172.30.0.0/16 prefix.",
+        "parameters": [
+          {
+            "name": "msg",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Echo response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "echo": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "server_ip": {
+                      "type": "string",
+                      "description": "Private IP address of the VM that handled the request."
+                    },
+                    "request_url": {
+                      "type": "string",
+                      "description": "URL received by the API, including path and query string."
+                    },
+                    "ts": {
+                      "type": "string"
+                    },
+                    "src_ip": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+#cloud-config
+# vm-diag — diagnostic / jump VM in vnet-foundry MgmtSubnet
+# Role   : Effective-route verification, connectivity probes, DNS testing
+# IP     : 192.168.2.4 (static, MgmtSubnet 192.168.2.0/27)
+# Ubuntu 22.04 LTS Gen2 · Standard_B2ts_v2 · No PIP
+# Access : Azure Run Command (az vm run-command invoke) — no public IP needed
+#
+# Key diagnostic commands (reference for Niobe):
+#   Effective routes (proxy for AgentSubnet — agent NIC not directly accessible):
+#     az network nic show-effective-route-table -g <rg> -n nic-vm-diag
+#
+#   Ping on-prem echo:
+#     ping -c3 172.30.100.4
+#     ping -c3 10.200.100.4
+#
+#   HTTP probe (simulates agent tool call):
+#     curl -s "http://172.30.100.4/api/echo?msg=diag-probe"
+#     curl -s "http://10.200.100.4/api/echo?msg=diag-ctrl"
+#
+#   DNS (when resolver deployed):
+#     dig echo.onprem.lab @<dns-inbound-ep-ip>
+#     nslookup echo.onprem.lab <dns-inbound-ep-ip>
+
+packages:
+  - curl
+  - dnsutils
+  - iputils-ping
+  - tcpdump
+  - net-tools
+  - traceroute
+  - nmap
+  - jq
+  - iproute2
+
+runcmd:
+  # Confirm all tools installed
+  - curl --version
+  - dig -v 2>&1 | head -1
+  - tcpdump --version 2>&1 | head -1
+
+final_message: "vm-diag ready. Use Azure Run Command to execute diagnostic probes."

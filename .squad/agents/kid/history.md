@@ -104,3 +104,31 @@ wording changes.
 ---
 
 📌 2026-08-05T13:43:07.691+02:00 — Scribe merge pass: US01–US10 intent-reframing brief recorded in decisions.md; no lab/design file staging occurred.
+
+---
+
+### 2026-08-08: Draft complete — Translator endpoint performance equivalence
+
+**Lab:** `storage-endpoint-path-equivalence`  
+**Artifact:** `labs/storage-endpoint-path-equivalence/blog.md`  
+**Headline:** Public, service-endpoint, and private-endpoint access showed many equivalent latency/throughput dimensions, but overall equivalence remained inconclusive; persistent HTTPS connection reuse had the clearest performance effect.
+
+Drafted the publication-ready post from the final correctness, benchmark, and sensitivity-calibration evidence. The post reports 2,400 measured benchmark requests, 1,200 warm-ups, all R1–R5 correctness gates passing, and the 25 ms positive control detecting a 23.29 ms p50 shift (95% CI 22.08–24.48 ms). It explicitly separates observable DNS/destination/effective-route differences from the unobservable Microsoft physical underlay and avoids treating inconclusive equivalence as proof of difference.
+
+Editorial and sanitization review passed for the post text and linked final analysis artifacts. No GitHub publication occurred. Publication remains blocked only on Oracle applying `diagram-replacement-handoff.md` to the three stable diagram filenames and validating that the Storage-era labels/workload are gone.
+
+---
+
+### 2026-08-08: Published for review — endpoint performance equivalence
+
+Oracle delivered four validated Translator PNGs. Embedded them in the source
+`blog.md`, then published the post, diagrams, and a minimal sanitized reproduction
+bundle to `erjosito/azure-networking-blog` on branch
+`post/storage-endpoint-path-equivalence`, commit `1921b0d`. Opened public PR #1:
+`https://github.com/erjosito/azure-networking-blog/pull/1`.
+
+Recomputed all six headline metric rows from 60 block aggregates, verified 14/18
+latency/throughput equivalence verdicts, and verified the 23.29 ms positive-control
+shift with 95% CI 22.08–24.48 ms. Relative-link, Python compile, stale-label,
+Azure-accuracy, and public-sanitization checks passed. Raw per-request captures and
+Azure control-plane dumps were intentionally excluded. No Azure cleanup occurred.

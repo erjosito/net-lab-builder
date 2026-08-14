@@ -8,6 +8,22 @@
 
 **📌 SUMMARIZATION NOTE (2026-07-31):** This file has grown to ~19KB. Pre-Phase 3 learnings archived in `history-archive.md`. Active learnings (Phase 3 Gates A, B, C validation) retained below.
 
+## Learnings (2026-08-08 — Translator calibration and correctness recovery)
+
+- Completed the immutable 25 ms positive-control protocol: 800 measured + 400
+  warm-up requests, zero errors/timeouts, paired p50 shift 23.29 ms, 95%
+  bootstrap CI 22.08–24.48 ms; sensitivity **PASS**.
+- Recovered R2 over a pinned public destination with unchanged FQDN/SNI/Host and
+  managed-identity request semantics: HTTP 200. R2 is **PASS**.
+- Recovered R5: forced public returned HTTP 403 while ordinary private DNS
+  returned HTTP 200 from `10.61.2.4`. R5 is **PASS**.
+- Run Command and ARM redeploy remained unreliable. Used a temporary,
+  source-restricted SSH path through the already deployed public IP; created no
+  billable infrastructure and restored the original NAT/NSG topology afterward.
+- Final state: safe public baseline, VM deallocated, RG retained, no cleanup.
+- Kid is unblocked, subject to retaining the performance-equivalence, flow-log,
+  and physical-path-identity limitations.
+
 ## Learnings (2026-08-06 — Translator endpoint path equivalence)
 
 - Completed 10 interleaved blocks across public, `Microsoft.CognitiveServices` service endpoint, and Private Endpoint: 2,400 measured + 1,200 warm-up requests, concurrency 1, fresh/reused HTTPS, zero measured errors/timeouts.

@@ -8,7 +8,11 @@ Results apply only to the observed time, `swedencentral`, Translator F0, the dep
 
 ## Correctness
 
-R1, R3, and R4 passed. R2 and R5 are inconclusive only because the two forced-public command outputs were lost when Azure Run Command stalled; their ordinary request, route, DNS, authorization, public-access, and private-request subchecks completed as expected.
+All five correctness scenarios passed. Focused SSH recovery replaced the two
+outputs lost during Azure Run Command stalls: R2's authenticated,
+SNI/Host-preserving public pin returned HTTP 200, and R5's equivalent forced
+public request returned HTTP 403 while ordinary private DNS returned HTTP 200
+from `10.61.2.4`.
 
 ## Performance protocol
 
@@ -61,10 +65,19 @@ Machine-readable CIs and verdicts: `raw-output/sepath-validation-20260806T133000
 A zero-cost calibration held the deployed region, service account/backend,
 request, identity, VM, public endpoint state, and reused-connection client constant.
 It alternated control and a predeclared 25 ms delay inserted inside the measured
-timer. Result pending completion of the calibration run.
+timer. Across **800 measured requests** and 400 warm-ups, the paired p50 shift
+was **23.29 ms** with a 95% bootstrap CI of **22.08–24.48 ms**. There were zero
+errors/timeouts. The CI lower bound exceeded the 5 ms detection floor and the
+point estimate was inside the predeclared 20–30 ms range, so the sensitivity
+verdict is **PASS**.
 
 The calibration only tests whether this harness can detect a known perturbation.
 It does not identify, emulate, or prove an Azure physical path.
+
+Remaining measurement limits are unchanged: overall performance equivalence is
+inconclusive because jitter and the sparse retransmission proxy did not meet
+their margins; the legacy flow-log query table was absent; physical path
+identity is not established.
 
 ## Optional nearby-region comparison
 

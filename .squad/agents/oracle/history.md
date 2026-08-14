@@ -280,3 +280,12 @@ Produce the standard 4-diagram set for lab #4 (`dual-hub-hubless-region-ars`) ah
 - Used official Azure/draw.io icons with native proportions fitted into uniform 64×64 visual footprints.
 - Kept customer-observable facts separate from a deliberately unconnected, opaque Microsoft-underlay band; no physical-route equivalence is implied.
 - Live-value placeholders remain for run suffix, target account, VM private IP, NAT public IP, and per-run public Storage IP.
+
+## 2026-08-08 — Translator endpoint diagram replacement finalized
+
+- Replaced the superseded Storage visuals under `labs/storage-endpoint-path-equivalence/diagrams/` with the deployed Azure AI Translator F0 design in Sweden Central.
+- Final set covers the switchable topology, all three access modes and customer-observable route differences, the F0-safe performance method, headline measurements, the overall inconclusive verdict, and the 25 ms positive-control PASS (23.29 ms; 95% CI 22.08–24.48 ms).
+- Used verified official Azure VM, VNet, NAT Gateway, Private Endpoint, Private DNS, and Translator icons. Icons retain native aspect ratios within uniform 64 px footprints.
+- Exported public PNGs with the installed draw.io desktop CLI and cached Mermaid CLI. Both draw.io files parse as XML; both Mermaid sources render successfully.
+- Removed Storage/blob/service-endpoint placeholders and sensitive live names/public addresses. Retained only documented private topology addresses needed to explain the deployed paths.
+- Decision handoff: `.squad/decisions/inbox/oracle-translator-diagram-replacement.md`.

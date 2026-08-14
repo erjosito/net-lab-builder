@@ -1,6 +1,6 @@
 # Deployment — `storage-endpoint-path-equivalence`
 
-**Status:** TRANSLATOR REDESIGN DEPLOYED · VALIDATION COMPLETE WITH TWO EVIDENCE GAPS · VM DEALLOCATED  
+**Status:** TRANSLATOR REDESIGN DEPLOYED · VALIDATION AND CALIBRATION COMPLETE · VM DEALLOCATED
 **Recorded:** 2026-08-05T17:52:19.278+02:00  
 **Run:** `sepath-20260805-175837` · **Region:** `swedencentral`
 
@@ -10,11 +10,11 @@ and VNet flow log were retained. The two blocked experiment Storage accounts and
 their Blob PE/DNS and Storage endpoint-policy artifacts were deleted. No cleanup of
 the lab was performed.
 
-Niobe completed the live run on 2026-08-06. R1, R3, and R4 passed; R2 and R5 are
-inconclusive because Azure Run Command lost the forced-public control outputs.
-The 2,400-request performance program completed without measured request errors;
-all overall equivalence verdicts are inconclusive. See `validation.md` and
-`results.md`.
+Niobe completed the live run on 2026-08-06 and focused recovery on 2026-08-08.
+R1–R5 passed. The 2,400-request performance program completed without measured
+request errors; all overall equivalence verdicts remain inconclusive. The
+predeclared 25 ms sensitivity calibration passed with a 23.29 ms paired p50
+shift (95% CI 22.08–24.48 ms). See `validation.md` and `results.md`.
 
 ## Live resource state
 

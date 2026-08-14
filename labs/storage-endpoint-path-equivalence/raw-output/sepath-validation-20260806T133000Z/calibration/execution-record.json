@@ -1,0 +1,20 @@
+{
+  "schema": "sepath.translator.calibration.execution.v1",
+  "protocol_file": "protocol.json",
+  "protocol_changed_after_data": false,
+  "execution_path": "SSH through existing deployment public IP after Azure Run Command and ARM redeploy remained stalled",
+  "new_billable_infrastructure": false,
+  "request_harness": "/opt/sepath/translator_benchmark.py",
+  "blocks": 10,
+  "measured_requests": 800,
+  "warmup_requests": 400,
+  "network_capture_files": [
+    "network-during-calibration-routes.json",
+    "network-during-calibration-nsg.json"
+  ],
+  "analysis_file": "calibration-analysis.json",
+  "safe_public_baseline_restored": true,
+  "original_nat_topology_restored": true,
+  "vm_final_power_state": "PowerState/deallocated",
+  "azure_resource_cleanup_performed": false
+}
