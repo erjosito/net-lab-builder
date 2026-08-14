@@ -60,7 +60,7 @@ No peering carries `172.30.x.x` — only the VPN route-plane does.
 |----|------|---------|
 | S1 | Deployment negative control — local | Expect ARM reject when Foundry VNet address space = `172.30.0.0/16` |
 | S2 | Deployment negative control — peered VNet | Expect peering/Foundry validation reject for peered `172.30.0.0/16` |
-| S3 | Control — non-reserved remote prefix via VPN | Agent reaches `10.200.100.0/24` — establishes baseline reachability |
+| S3 | Control — non-reserved remote prefix via VPN | **PASS:** Foundry reached `10.200.100.4`; source observed as `192.168.0.49` in AgentSubnet |
 | S4 | **Primary** — reserved prefix via VPN | Agent reaches (or fails to reach) host `172.30.100.4` through learned route `172.30.0.0/16` — **unknown outcome** |
 | S5 | DNS plane — on-prem hostname resolution | Agent resolves `echo.onprem.lab` to `172.30.100.4` via forwarded DNS |
 
@@ -82,6 +82,7 @@ No peering carries `172.30.x.x` — only the VPN route-plane does.
 | `deploy/` | Validated Bicep plus deployment and cleanup scripts |
 | `portal-foundry-setup.md` | Manual Foundry portal handoff after infrastructure deployment |
 | `agent-tools/` | Complete OpenAPI documents for the control and reserved-prefix probes |
+| `results.md` | Confirmed results, evidence, lessons learned, and remaining open questions |
 
 ## References
 
