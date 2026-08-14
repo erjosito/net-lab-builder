@@ -40,7 +40,9 @@ AgentSubnet is delegated to `Microsoft.App/environments`. Azure Container Apps i
 
 ### 2.6 Non-blocking observation: TLS as a high-probability confounder
 
-Manifest §5 notes TLS certificate validation as a potential confounder. The data proxy makes outbound HTTPS calls on behalf of the agent tool. Whether it validates the server TLS certificate is undocumented. **Recommendation: use HTTP (port 80) as the primary test endpoint** for initial lab runs to eliminate TLS as a variable entirely. If HTTP succeeds, a follow-up run with HTTPS determines TLS enforcement. Certificate validation failure ≠ route-plane block; these must be distinguished by error type.
+Manifest §5 identified TLS certificate validation as a potential confounder. The completed test used HTTPS
+with the lab's self-signed certificates, and both calls succeeded. This resolves the confounder for this
+specific run, but does not establish a documented Foundry trust-store contract.
 
 ---
 
@@ -322,7 +324,7 @@ For a **prompt agent**, the traffic path is:
 
 The deep-dive confirms: "Prompt agents use the single-tenant data proxy for all outbound connectivity." The data proxy "handles outbound connectivity for your agents. Each project gets its own isolated data proxy instance. All tool calls route through the data proxy."
 
-**The probe is legitimate:** The OpenAPI function tool call (`echoReserved` to `http://172.30.100.4/api/echo`) is executed by the data proxy from within AgentSubnet (`192.168.0.0/24`). The network egress originates **inside the delegated subnet, using the VNet's effective route table.** This is precisely the correct origin point to test whether `172.30.0.0/16` VPN-learned routes are usable by the agent's outbound path.
+**The probe is legitimate:** The OpenAPI function tool call (`echoReserved` to `https://172.30.100.4/api/echo`) is executed by the data proxy from within AgentSubnet (`192.168.0.0/24`). The network egress originates **inside the delegated subnet, using the VNet's effective route table.** This is precisely the correct origin point to test whether `172.30.0.0/16` VPN-learned routes are usable by the agent's outbound path.
 
 This is distinct from a client-side request to the Foundry endpoint: vm-diag in MgmtSubnet tests the hybrid
 path but not the managed data-proxy path. **The tool call, not the client request, is the correct probe origin.**
@@ -432,7 +434,7 @@ The following items are **not known at design time** and may not be known until 
 | ID | Unknown | Impact |
 |----|---------|--------|
 | U1 | **Primary hypothesis outcome** — does Foundry data proxy apply a runtime ACL on `172.30.0.0/16`? | S4 outcome is binary and unknown; do not assume H₁ |
-| U2 | **Data proxy TLS enforcement** — does the platform validate server certificates on outbound tool calls? | May require HTTP fallback to isolate route-plane from TLS |
+| U2 | **Data proxy TLS enforcement** | Resolved for this run: both self-signed HTTPS endpoints succeeded; broader support contract remains undocumented |
 | U3 | **Data proxy source IP** — is the source IP in `192.168.0.0/24` or does the platform SNAT to an unknown IP range? | Affects return-path analysis; capture from tcpdump |
 | U4 | **NC-1 / NC-2 enforcement mechanism** — is the reserved-range check at ARM validation time, Foundry RP time, or health-check time? | Determines error message and evidence type for S1/S2 |
 | U5 | **Container Apps NSG compatibility with AgentSubnet** — exact platform-managed rules applied by delegation | May supersede or supplement the NSG rules in §7 |
@@ -466,7 +468,7 @@ The following corrections are applied to the manifest by Trinity. Morpheus's car
 | C3 | §3 DNS Architecture | DNS Private Resolver requires two dedicated /28 subnets (DNSInboundSubnet, DNSOutboundSubnet); cannot share PESubnet | **Blocking if S5 in scope** |
 | C4 | §3 Route Tables | Add explicit "gateway route propagation ENABLED" requirement to vnet-onprem WorkloadSubnet and CtrlSubnet | Non-blocking but operationally required |
 | C5 | §3 NSGs | AgentSubnet NSG must include Container Apps platform requirements; manifest is under-specified | Non-blocking at design time; verify at deploy time |
-| C6 | §5 Agent Workload | Use HTTP (port 80) as primary test protocol to eliminate TLS as confounder; HTTPS as follow-up only | Non-blocking but methodologically important |
+| C6 | §5 Agent Workload | TLS was treated as a potential confounder; final HTTPS calls succeeded with the lab self-signed certificates | Resolved for this run |
 
 ---
 

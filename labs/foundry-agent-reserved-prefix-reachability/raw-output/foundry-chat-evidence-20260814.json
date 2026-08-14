@@ -1,0 +1,42 @@
+{
+  "captured_at": "2026-08-14",
+  "project": "proj-default",
+  "control": {
+    "tool": "echo_control_echoControl",
+    "status": "completed",
+    "arguments": {
+      "msg": "probe-control"
+    },
+    "response": {
+      "echo": "probe-control",
+      "label": "ctrl",
+      "server_ip": "10.200.100.4",
+      "request_url": "https://10.200.100.4/api/echo?msg=probe-control",
+      "ts": "2026-08-14T11:48:24.166776Z",
+      "src_ip": "192.168.0.49"
+    },
+    "target_journal": "192.168.0.49 GET /api/echo?msg=probe-control HTTP/1.1 200"
+  },
+  "reserved": {
+    "tool": "echo_reserved_echoReserved",
+    "status": "completed",
+    "arguments": {
+      "msg": "probe-reserved"
+    },
+    "response": {
+      "echo": "probe-reserved",
+      "label": "echo",
+      "server_ip": "172.30.100.4",
+      "request_url": "https://172.30.100.4/api/echo?msg=probe-reserved",
+      "ts": "2026-08-14T11:48:55.249150Z",
+      "src_ip": "192.168.0.49"
+    },
+    "target_journal": "192.168.0.49 GET /api/echo?msg=probe-reserved HTTP/1.1 200"
+  },
+  "additional_observation": {
+    "reserved_call_ts": "2026-08-14T11:43:33.457792Z",
+    "src_ip": "192.168.0.239",
+    "meaning": "The data-proxy source address is allocated from AgentSubnet and is not stable per call."
+  },
+  "conclusion": "Both the non-reserved control prefix and VPN-learned 172.30.0.0/16 reserved prefix were reachable from the Foundry prompt-agent data proxy."
+}

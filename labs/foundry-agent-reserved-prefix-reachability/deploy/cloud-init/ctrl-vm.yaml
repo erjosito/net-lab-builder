@@ -12,8 +12,7 @@
 # This identity-except-label design means S3 vs S4 comparison isolates
 # the destination IP prefix as the sole independent variable.
 #
-# TLS WARNING: treat the self-signed certificate as untrusted by the managed
-# Foundry data proxy. Use port 80 for S3.
+# TLS NOTE: Foundry successfully invoked the self-signed HTTPS endpoint during S3.
 
 packages:
   - nginx
@@ -103,11 +102,10 @@ write_files:
       [Install]
       WantedBy=multi-user.target
 
-  # ── nginx HTTPS site (self-signed — TLS experiment only) ────────────────────
+  # ── nginx HTTPS site (self-signed; validated by Foundry during S3) ──────────
   - path: /etc/nginx/sites-available/echo-https
     content: |
-      # HTTPS reverse proxy — SELF-SIGNED CERT — TLS experiment only.
-      # Use port 80 for the primary control test (S3).
+      # HTTPS reverse proxy used by the validated Foundry control call.
       server {
           listen 443 ssl;
           server_name _;
@@ -145,6 +143,6 @@ runcmd:
 
 final_message: |
   vm-onprem-ctrl ready.
-  HTTP echo  : http://10.200.100.4/api/echo?msg=test   (use for S3)
-  HTTPS echo : https://10.200.100.4/api/echo?msg=test  (self-signed; TLS experiment only)
-  tcpdump    : run via Azure Run Command — tcpdump -i eth0 -n port 80
+  HTTP echo  : http://10.200.100.4/api/echo?msg=test
+  HTTPS echo : https://10.200.100.4/api/echo?msg=test  (validated Foundry endpoint)
+  tcpdump    : run via Azure Run Command — tcpdump -i eth0 -n port 443

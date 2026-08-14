@@ -61,7 +61,7 @@ No peering carries `172.30.x.x` — only the VPN route-plane does.
 | S1 | Deployment negative control — local | Expect ARM reject when Foundry VNet address space = `172.30.0.0/16` |
 | S2 | Deployment negative control — peered VNet | Expect peering/Foundry validation reject for peered `172.30.0.0/16` |
 | S3 | Control — non-reserved remote prefix via VPN | **PASS:** Foundry reached `10.200.100.4`; source observed as `192.168.0.49` in AgentSubnet |
-| S4 | **Primary** — reserved prefix via VPN | Agent reaches (or fails to reach) host `172.30.100.4` through learned route `172.30.0.0/16` — **unknown outcome** |
+| S4 | **Primary** — reserved prefix via VPN | **PASS:** Foundry reached `172.30.100.4` through learned route `172.30.0.0/16` |
 | S5 | DNS plane — on-prem hostname resolution | Agent resolves `echo.onprem.lab` to `172.30.100.4` via forwarded DNS |
 
 ## Designs Studied

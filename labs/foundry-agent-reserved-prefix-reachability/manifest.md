@@ -111,7 +111,7 @@ propagates the same routes; platform sees identical effective-route entries. Exp
 | vm-diag | vnet-foundry / MgmtSubnet | `192.168.2.4` | Diagnostic VM; no PIP; access via Azure Run Command |
 
 vm-onprem-echo runs:
-- **Python echo service** (HTTP, port 80 primary; nginx provides HTTPS on port 443): `GET /api/echo?msg=X` → `{"echo":"X","label":"echo","server_ip":"172.30.100.4","request_url":"http://172.30.100.4/api/echo?msg=X","ts":"…","src_ip":"<remote_addr>"}`.
+- **Python echo service** (nginx provides the tested HTTPS listener on port 443): `GET /api/echo?msg=X` → `{"echo":"X","label":"echo","server_ip":"172.30.100.4","request_url":"https://172.30.100.4/api/echo?msg=X","ts":"…","src_ip":"<remote_addr>"}`.
 - **dnsmasq**: responds to `echo.onprem.lab` → `172.30.100.4`; `echo-ctrl.onprem.lab` → `10.200.100.4`.
 
 vm-onprem-ctrl runs:
@@ -219,10 +219,10 @@ Wave 8  Verify: vpngw-foundry learned routes show 172.30.0.0/16 + 10.200.100.0/2
 
 **Tools:** Use the complete OpenAPI documents under `agent-tools/`:
 
-- `echo-control.openapi.json` → `http://10.200.100.4`
-- `echo-reserved.openapi.json` → `http://172.30.100.4`
+- `echo-control.openapi.json` → `https://10.200.100.4`
+- `echo-reserved.openapi.json` → `https://172.30.100.4`
 
-Both target VMs also expose self-signed HTTPS for a follow-up experiment. Microsoft Learn doesn't document
+Both target VMs expose self-signed HTTPS. Microsoft Learn doesn't document
 a supported custom-CA trust path for the managed data proxy, so HTTP is the primary route-plane test. If the
 portal rejects HTTP tool servers, use a private DNS hostname with a publicly trusted certificate.
 
@@ -294,7 +294,7 @@ shows `success=true` in agent run details.
 **Evidence:** Agent run JSON (tool call result + HTTP status) · effective routes on `nic-vm-diag` ·
 `az network vnet-gateway list-learned-routes`.
 
-### S4 — Primary: Reserved Prefix via VPN (⚠️ unknown outcome)
+### S4 — Primary: Reserved Prefix via VPN (**validated PASS on 2026-08-14**)
 **Setup:** Same as S3 (S3 must PASS first); `172.30.0.0/16` is advertised via BGP; vm-diag confirms
 `172.30.100.4` is reachable via ping.  
 **Probe:** Agent run with `echo-onprem` tool → `msg=probe-reserved`.  
@@ -343,7 +343,7 @@ hypothesis (S4) does not depend on S5.
 | Ambiguity | Impact | Mitigation |
 |-----------|--------|-----------|
 | Managed data-proxy NIC isn't customer-inspectable | Direct effective-route evidence is unavailable | Correlate gateway learned routes, vm-diag effective routes, and target packet capture |
-| Data proxy may enforce TLS certificate validation | Tool call fails even if route is correct | Use HTTP fallback; capture error message to distinguish TLS vs route failure |
+| Data proxy may enforce TLS certificate validation | Tool call fails even if route is correct | Resolved for this run: both self-signed HTTPS endpoints returned HTTP 200 |
 | Foundry data proxy may SNAT to an IP outside `192.168.0.0/16` | tcpdump on target shows unexpected source IP | Capture actual SYN source IP in tcpdump as evidence |
 | VPN BGP may not propagate `172.30.0.0/16` into vnet-foundry | S4 fails for routing reasons unrelated to platform ACL | Verify gateway learned routes and vm-diag effective routes before S4 |
 | Foundry platform may have an undocumented runtime filter for reserved prefixes | S4 fails while S3 passes | Correlate target packet capture, gateway routes, and agent error before attributing the failure |
@@ -369,7 +369,7 @@ hypothesis (S4) does not depend on S5.
 |------|-----------|-----------|
 | Foundry Agent Service not available in swedencentral | Medium | Phase-0 preflight; fallback to eastus2 |
 | AgentSubnet delegation blocks NSG + route propagation | Medium | Use `az network nic show-effective-route-table` to verify before running agent |
-| TLS validation failure masking route-plane result | High | Use HTTP fallback endpoint; distinguish error types explicitly |
+| TLS validation failure masking route-plane result | Resolved for this run | Both self-signed HTTPS endpoint calls completed successfully |
 | gpt-4o-mini quota not available | Low | Fallback to gpt-35-turbo |
 | DNS Private Resolver not available in swedencentral | Low | S5 deferred; DNS resolver is optional |
 | Target configuration drift | Low | Keep two single-NIC targets configuration-identical except response label |

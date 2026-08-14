@@ -175,24 +175,16 @@ In the prompt agent definition, add two **OpenAPI tools** using anonymous authen
 | S3 control | `agent-tools/echo-control.openapi.json` |
 | S4 reserved-prefix probe | `agent-tools/echo-reserved.openapi.json` |
 
-Upload or paste each complete OpenAPI document. They use HTTP on port 80 so certificate trust isn't part of
-the route experiment. If the portal rejects an HTTP server URL, don't switch to the self-signed endpoint; use
-a private DNS hostname with a certificate issued by a publicly trusted CA.
+Upload or paste each complete OpenAPI document. The validated definitions use HTTPS on port 443.
 
 ---
 
 ## ⚠️ TLS / Certificate Note
 
 The on-premises VMs (`vm-onprem-echo`, `vm-onprem-ctrl`) expose HTTPS on port 443 using self-signed
-certificates. Microsoft Learn doesn't document a supported way to add a private CA to the managed Foundry
-data proxy trust store. Therefore, assume these certificates aren't trusted and could fail before an HTTP
-request is sent. That would confound the route-plane experiment.
-
-Use port 80 for the primary route test. The HTTPS endpoint is only a follow-up diagnostic. For a valid HTTPS
-route test, use a private hostname with a publicly trusted certificate; a private CA is suitable only if a
-supported Foundry trust-store integration is confirmed.
-
-Do **not** interpret a TLS failure on port 443 as evidence of a route-plane block.
+certificates. Both endpoints were successfully invoked by Foundry on 2026-08-14. This is useful lab evidence,
+but Microsoft Learn doesn't document it as a trust-store guarantee. Production endpoints should still use a
+certificate and hostname that meet the organization's supported TLS policy.
 
 ---
 
@@ -229,7 +221,7 @@ az network nic show-effective-route-table -g <rg> -n nic-vm-diag -o table
 ```
 Call the echo-control tool with message "probe-control". Report the full response verbatim.
 ```
-Expected: `{"echo":"probe-control","label":"ctrl","server_ip":"10.200.100.4","request_url":"http://10.200.100.4/api/echo?msg=probe-control","ts":"…","src_ip":"…"}`
+Expected: `{"echo":"probe-control","label":"ctrl","server_ip":"10.200.100.4","request_url":"https://10.200.100.4/api/echo?msg=probe-control","ts":"…","src_ip":"…"}`
 
 **S4 (primary — reserved prefix):**
 ```
@@ -239,7 +231,7 @@ Outcome unknown. Capture the full response or error message.
 
 **Evidence to collect for each run:**
 - Agent run JSON (tool call result, HTTP status, success/failure)
-- `tcpdump -i eth0 -n port 80` output from the target VM (via Run Command) — did a TCP SYN arrive?
+- `tcpdump -i eth0 -n port 443` output from the target VM (via Run Command) — did a TCP SYN arrive?
 - Effective routes on `nic-vm-diag` confirming `172.30.0.0/16` is present
 
 ---

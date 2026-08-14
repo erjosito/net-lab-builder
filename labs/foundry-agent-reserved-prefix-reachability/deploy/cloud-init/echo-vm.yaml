@@ -5,14 +5,13 @@
 # Ubuntu 22.04 LTS Gen2 · Standard_B2ts_v2
 #
 # Services:
-#   echo-http.service — Python HTTP echo on port 80 (primary; use this for S4/S3)
-#   nginx             — HTTPS reverse proxy on port 443 (self-signed cert, TLS experiment only)
+#   echo-http.service — Python HTTP echo backend on port 80
+#   nginx             — Tested Foundry HTTPS endpoint on port 443 (self-signed certificate)
 #   dnsmasq           — DNS responder on 172.30.100.4:53 for onprem.lab zone (S5)
 #
-# TLS WARNING (portal-foundry-setup.md §5):
-#   The port-443 endpoint uses a self-signed certificate. The Foundry documentation
-#   does not describe a way to add a custom CA to the managed data proxy, so treat
-#   this certificate as untrusted. Use port 80 for the primary route experiment.
+# TLS NOTE:
+#   Foundry successfully invoked this self-signed HTTPS endpoint during the lab.
+#   This observation is not a production trust-store recommendation.
 
 packages:
   - nginx
@@ -103,12 +102,10 @@ write_files:
       [Install]
       WantedBy=multi-user.target
 
-  # ── nginx HTTPS site (self-signed — TLS experiment only, NOT for S4) ────────
+  # ── nginx HTTPS site (self-signed; validated by Foundry during S4) ──────────
   - path: /etc/nginx/sites-available/echo-https
     content: |
-      # HTTPS reverse proxy — SELF-SIGNED CERT — for TLS experiment only.
-      # Treat the self-signed certificate as untrusted by the managed data proxy.
-      # Use port 80 (echo-http.service) for the primary route test (S4).
+      # HTTPS reverse proxy used by the validated Foundry tool call.
       server {
           listen 443 ssl;
           server_name _;
@@ -175,7 +172,7 @@ runcmd:
 
 final_message: |
   vm-onprem-echo ready.
-  HTTP echo  : http://172.30.100.4/api/echo?msg=test   (use for S3/S4)
-  HTTPS echo : https://172.30.100.4/api/echo?msg=test  (self-signed; TLS experiment only)
+  HTTP echo  : http://172.30.100.4/api/echo?msg=test
+  HTTPS echo : https://172.30.100.4/api/echo?msg=test  (validated Foundry endpoint)
   DNS        : dnsmasq on 172.30.100.4:53 (echo.onprem.lab, echo-ctrl.onprem.lab)
-  tcpdump    : run via Azure Run Command — tcpdump -i eth0 -n port 80 or port 53
+  tcpdump    : run via Azure Run Command — tcpdump -i eth0 -n port 443 or port 53

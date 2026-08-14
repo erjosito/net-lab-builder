@@ -4,27 +4,47 @@
 
 | Scenario | Status | Evidence |
 |----------|--------|----------|
-| S3 — non-reserved control prefix | **Pass** | Foundry called `http://10.200.100.4/api/echo?msg=probe-control` successfully. |
-| S4 — reserved `172.30.0.0/16` prefix | **Not run** | The primary lab question remains open. |
-| S5 — forwarded on-premises DNS | **Not run** | Optional follow-up after S4. |
+| S3 — non-reserved control prefix | **Pass** | Foundry called `https://10.200.100.4/api/echo?msg=probe-control` successfully. |
+| S4 — reserved `172.30.0.0/16` prefix | **Pass** | Foundry called `https://172.30.100.4/api/echo?msg=probe-reserved` successfully. |
+| S5 — forwarded on-premises DNS | **Not run** | Optional DNS-specific follow-up; not required for the routing conclusion. |
 
-## Confirmed S3 Evidence
+## Confirmed Chat and Target Evidence
 
-On 2026-08-14, the control VM recorded:
+The final Foundry chat returned these completed OpenAPI tool outputs:
 
-```text
-192.168.0.49 "GET /api/echo?msg=probe-control HTTP/1.1" 200
+```json
+{
+  "control": {
+    "server_ip": "10.200.100.4",
+    "request_url": "https://10.200.100.4/api/echo?msg=probe-control",
+    "src_ip": "192.168.0.49"
+  },
+  "reserved": {
+    "server_ip": "172.30.100.4",
+    "request_url": "https://172.30.100.4/api/echo?msg=probe-reserved",
+    "src_ip": "192.168.0.49"
+  }
+}
 ```
 
-The source address `192.168.0.49` belongs to the delegated `AgentSubnet`. This confirms that the
-prompt agent's OpenAPI call traversed the single-tenant data proxy in the customer VNet, followed
-the VPN/BGP path to `10.200.100.0/24`, and returned successfully.
+The corresponding VM journals recorded HTTP 200 requests from `192.168.0.49`. An earlier successful
+reserved-prefix call used `192.168.0.239`, showing that the data-proxy source IP can change within
+AgentSubnet.
+
+The full distilled evidence is stored in
+`raw-output/foundry-chat-evidence-20260814.json`.
+
+## Conclusion
+
+In this tested configuration, Foundry's prohibition on assigning `172.30.0.0/16` to the Foundry VNet
+or a peered VNet did **not** prevent a prompt agent from reaching that prefix when it existed behind a
+VPN/BGP-learned route. Both the control and reserved-prefix endpoints completed successfully.
 
 ## Lessons Learned
 
-1. **A prompt-agent OpenAPI call can use a VPN-learned route.** The S3 call reached an address
-   outside the Foundry VNet through Azure VPN Gateway and BGP, with a source address from the
-   delegated subnet.
+1. **A prompt-agent OpenAPI call can use VPN/BGP-learned routes, including the tested reserved
+   prefix.** The data proxy reached both `10.200.100.4` and `172.30.100.4` with source addresses from
+   the delegated subnet.
 2. **Keep the tool set deterministic during network experiments.** With the web-search tool also
    enabled, the agent produced an error instead of reliably invoking the control API. Removing the
    unrelated tool allowed the same OpenAPI call to succeed. Use a dedicated agent or strict tool
@@ -32,14 +52,10 @@ the VPN/BGP path to `10.200.100.0/24`, and returned successfully.
 3. **Instrument both sides of the request.** The echo response now reports `server_ip`,
    `request_url`, and `src_ip`. Together with the VM journal, these fields identify the selected
    endpoint, the URL used by Foundry, and the observed data-proxy source.
-4. **Plain HTTP worked in this lab configuration.** Foundry accepted and invoked the private
-   `http://10.200.100.4` OpenAPI endpoint. Treat this as an observed lab behavior, not a general
-   security recommendation or guarantee for every Foundry experience.
+4. **The self-signed HTTPS endpoints worked in this lab configuration.** Foundry invoked both
+   `https://` IP-address endpoints successfully despite their self-signed certificates. Treat this
+   as observed behavior, not a documented trust-store contract or production recommendation.
 5. **Use separate single-NIC targets for comparative routing tests.** This keeps the control and
    reserved-prefix return paths symmetric and avoids Linux policy-routing ambiguity.
-
-## Open Question
-
-S3 proves the Foundry data proxy can traverse the VPN path. It does **not** prove that the reserved
-`172.30.0.0/16` route is accepted at runtime. S4 must call `172.30.100.4` and correlate the agent
-result with the target VM journal or packet capture before drawing that conclusion.
+6. **Allow the delegated subnet, not a single observed source IP.** Successful calls used both
+   `192.168.0.49` and `192.168.0.239`; NSGs should permit the required traffic from AgentSubnet.
