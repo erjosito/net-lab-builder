@@ -1,3 +1,5 @@
+**Archived entries:** see \history-archive.md\
+
 # Project Context
 
 - **Owner:** Jose Moreno
@@ -324,3 +326,4 @@ completed (Tank's final response was lost). Nothing in Azure or on the NVAs is u
   Minimum recovery: **Tank, docs-only** — do **not** re-run U1.5 or U2.
 
 📌 Decision inbox written: `.squad/decisions/inbox/niobe-u15-u2-verification.md`
+

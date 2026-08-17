@@ -1,3 +1,5 @@
+**Archived entries:** see \history-archive.md\
+
 # Project Context
 
 ## 2026-08-06 — dual-hub-interconnect-ars-route-policy U1.5 + U2 EXECUTED (docs-only recovery)
@@ -40,6 +42,12 @@
   noted). No git commit made, per instruction.
 - Decision inbox written: `.squad/decisions/inbox/tank-u15-u2-execution.md`, referencing Niobe's
   independent verification. Next approval gate: **U3a/U3b**.
+
+
+📌 2026-08-17T11:53:31.285+02:00 — **Team update (dual-hub-interconnect-ars-route-policy + foundry-agent-reserved-prefix-reachability): AFD JWT lab design and Foundry network corrections finalized.**
+- **AFD Edge Actions JWT Validation Lab (Morpheus):** Design locked; AFD Standard + App Service F1 + Entra ID confirmed. **Key open:** Crypto API availability in Hyperlight sandbox — no current sample, must probe at runtime (Phase 6 pre-task). All 6 canonical test scenarios documented (S1–S6). Phase 3 manifest approval pending Jose's decision on signature-verification necessity.
+- **Foundry Reserved-Prefix Reachability Lab (Trinity/Morpheus):** Network design complete. Blocking corrections applied — VpnGw1→VpnGw1AZ, dual-NIC→two-VM design, DNS subnet dedicated. Cost within guardrail. Manifest ready for Jose's Phase 0 preflight + Phase 4 approval.
+- **Airborne labs:** Storage Endpoint Blog (Kid) ready for public merge; Translator diagram refresh (Oracle) complete; vwan-routemap-summarization (Niobe) validation complete with Megaport fully decommissioned. — *Decided by Morpheus, Trinity; Updates from distributed team decisions*
 
 ## 2026-08-05 — storage-endpoint-path-equivalence Translator redesign deployed
 
@@ -497,6 +505,7 @@ the Δ2 and S2/S3 evidence in its direct-adjacency form) · S4 rollback sequence
 
 ---
 
+
 📌 2026-08-05T13:43:07.691+02:00 — Scribe merge pass: US10 revision brief recorded in decisions.md; no lab/design file staging occurred.
 
 ---
@@ -648,3 +657,4 @@ by this task.
 No git commit made, per instruction.
 
 📌 Decision inbox written: `.squad/decisions/inbox/tank-poland-cleanup-executed.md`
+

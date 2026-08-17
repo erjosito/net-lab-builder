@@ -1,3 +1,5 @@
+**Archived entries:** see \history-archive.md\
+
 # Project Context
 
 - **Owner:** Jose Moreno
@@ -8,82 +10,24 @@
 
 ## Learnings
 
+
+📌 2026-08-17 — Edge Actions JWT lab design (design-only, pre-manifest). Key findings for reuse:
+
+**Edge Actions JS API surface (confirmed from sample repo README + request-rejection sample).**  
+`event.request.headers` (lowercase keys), `event.response.response_code` (only 401/403/200 valid), `event.context` (AFD server variables incl. `country_code`, `now`), `event.origin_data[]`, `event.origin.id`. `console.log()` → `EdgeActionConsoleLog` table. No documented `crypto`/`SubtleCrypto`/`atob`/`btoa` — treat as unknown until empirically tested.
+
+**No JWT sample in EdgeActionsSamples as of 2026-08-17.** Only: a-b-experimentation, header-add, origin-select, request-rejection, url-rewrite. The JWT validation use case in the docs is aspirational/listed but not yet sample-backed.
+
+**Fail-open is the headline risk for JWT labs.** If Edge Action execution > 10ms, AFD sends the request through WITHOUT processing. RS256 signature verification in pure JS is likely > 10ms. This makes the lab's S6 (fail-open timeout test) possibly the most important scenario — it either validates the sandbox has native crypto (fast path) or proves the security gap.
+
+**App Service F1 is the ideal echo origin for Edge Actions labs.** Free, public HTTPS, returns headers as JSON, zero deploy complexity. Proves origin bypass when a request arrives that should have been blocked.
+
+**AFD Standard is sufficient for Edge Actions.** Premium adds WAF managed rules + private link, neither needed for JWT validation testing.
+
+**Phase 0 VM preflight is inapplicable for PaaS-only topologies.** Always document this explicitly in the lab card; it prevents checklist confusion.
+
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
 
-📌 2026-05-28 — Project initialized. Charter integrated with azure-lab skill canonical methodology. Two approval gates enforced (post-manifest, pre-cleanup) per routing rule #12. No A-series / B-series workload VMs; diagnostic plumbing may use Standard_B1s. Cost-first region selection.
-
----
-
-📌 Team update (2026-05-29): Phase 3.5 governance close — Kid cast (blog-writer 📝), lab #1 blog published, Tank cleanup complete (19/19 resources), squad v0.9.5. Inbox swept (13 decisions → decisions.md).
-
----
-
-📌 2026-06-15 — Lab #2 scoped: `vwan-dual-er-symmetric`. Manifest written at `labs/vwan-dual-er-symmetric/manifest.md`; decision filed at `.squad/decisions/inbox/morpheus-vwan-dual-er-symmetric-manifest.md`. Awaiting Jose's gate #12 #1 approval.
-
-**Symmetry design rationale.** Three independent levers stacked so symmetry is structurally — not policy-dependently — enforced:
-1. `er_bow_tie=no` keeps each ER GW connected to exactly one circuit, so each hub advertises only its own region's spoke prefixes outbound to its own circuit. Egress direction symmetric by topology.
-2. Two separate GCP VPCs (one per region), no inter-VPC peering, no shared Cloud Router. Each VPC's prefix reaches Azure via exactly one MCR → one circuit → one hub. Ingress direction symmetric by topology.
-3. `ri_policy=private` on both hubs ensures every spoke flow passes through its hub's AzFW; cross-region spoke↔spoke transits both hub firewalls in opposite order, still symmetric per 5-tuple.
-
-**Why I ruled out the alternatives.**
-- **Global Reach (GR):** would bypass both Azure hubs entirely (circuit-to-circuit at MSEE). Irrelevant to a firewall-symmetry lab and a $70-100/month-per-circuit-pair cost adder for nothing. Documented decline; reference script line 41 / function lines 2337-2342 was the trigger to evaluate.
-- **ER bow-tie:** standard ER HA pattern (Region A's spokes still reach on-prem if Circuit1 fails). But it creates a second BGP path per prefix into each hub → Azure best-path may flip → return packets land on wrong hub → stateful drop. This is the failure mode S4 captures; turning bow-tie ON is the controlled break.
-- **`ri_policy=both`:** adds internet-egress symmetry as a *second* topic in the same lab. Internet-egress symmetry is its own problem (NAT IP affinity, SNAT, public-route propagation). Decided one topic per lab; defer internet-egress to a follow-up.
-- **Single secured hub + single routed hub** (cost-reduction variant): saves ~$30/day but kills S2 (Spoke3 ↔ GCP-B traffic has no Hub2 firewall to count hits on) and S3 (cross-region flow only sees one firewall). Documented in §6 as a not-recommended cost-cut.
-
-**Region / SKU surprises.** None — both `swedencentral` and `northeurope` had `Standard_B2als_v2` in catalog with no restrictions for the caller's subscription (probe 2026-06-15). Earlier-probe gotcha: when I asked for `[?name=='Standard_B2als_v2']` in northeurope, the targeted query returned empty even though `--size Standard_B2` enumeration showed it present — Azure CLI list-skus appears to return inconsistent results between the two query shapes intermittently (lots of `WARNING: Incomplete download`). Lesson: always use `--size <prefix>` filter when probing a specific SKU; the unfiltered query is fragile in northeurope.
-
-**Cost.** Lab #2 lands at ~$135/day (+$15–25 over lab #1) — formally flagged above $50/day per rule #7; full approval-package in manifest §9 surfaces this clearly. AzFW Standard in two hubs is the single biggest line ($60/day) and is non-negotiable for what the lab is trying to teach.
-
-**Megaport MCR-market lesson from lab #1 carried forward.** Lab #1 deployed an MCR in Frankfurt FR5 despite ordering against the Madrid ER PoP. The design therefore does not pin MCR markets — Tank/Megaport pick at order time and Niobe records actuals. ER peering location (Stockholm + Amsterdam preferred; Frankfurt + Dublin fallback) is what we lock.
-
-**Process learning.** First lab where I structured the manifest around a single design constraint (symmetry) rather than a feature exploration (BGP behaviour). The constraint forced clearer failure-mode definition (S4 is the lab's reason for existing); the success-only scenarios (S1, S2, S3) are essentially the "control" against which S4's drop is meaningful. Recommend this pattern for future labs where the headline is "this is the wrong way it usually breaks."
-
----
-
-📌 Team update (2026-06-15): Design C directive captured. morpheus-vwan-dual-er-symmetric-manifest.md filed, Design C specification (trinity-4 §3.1-§3.7) complete + 4 gate questions documented in decisions.md. Phase 1 manifest design fan-out complete; Design B asymmetric routing proof 🔴 documented (niobe-4). All subordinate phases (Trinity spec, Tank Phase 1A IaC, niobe validation planning) unblocked pending Jose's Megaport + Q1-Q4 gate answers.
-
----
-
-📌 2026-06-15 — Lab #3 scoped: `msee-hairpin-hns-vwan-ipv6`. Lab card at `labs/msee-hairpin-hns-vwan-ipv6/lab-card.md`. Awaiting Jose's A/B/C gate before Stage 2.
-
-**MSEE hairpinning mechanics (researched for lab #3).** MSEE hairpinning between two Azure environments works as follows: ER GW A advertises its VNet/spoke prefixes to the MSEE over the Azure-side BGP session on Circuit 1. MSEE reflects those routes to Circuit 2's Azure-side session (ER GW B). No customer-side (on-prem) BGP session on the ER Direct port is required for this Azure-to-Azure path. Customer-side BGP only matters if a physical on-prem device needs to learn routes. **This is the technical basis for Path A (ER Direct without a customer-side router) being viable.**
-
-**ER GW settings for MSEE hairpinning.** Three non-default settings must be configured:
-1. HnS ER GW: `allowVirtualWanTraffic=true` — enables the GW to receive routes from vWAN via MSEE
-2. HnS ER GW: `allowRemoteVnetTraffic=true` — enables route propagation from remote peered VNets
-3. vWAN ER GW: `allowNonVirtualWanTraffic=true` — enables the vWAN ER GW to accept routes from non-vWAN networks via MSEE. These are silent-fail settings — hairpin will not work without them, and Azure gives no obvious error.
-
-**IPv6 ER private peering.** IPv6 requires a separate BGP session on the same ER circuit private peering. Must configure: IPv6 primary /126 and secondary /126 peering subnets, and the ER GW's VNet must be dual-stack. ULA (`fd00::/8`) is sufficient for Azure-to-Azure labs with no real on-prem.
-
-**ER Direct + no on-prem router — viability.** Zero ER Direct ports provisioned in Jose's subscription today. Provisioning a new 10 Gbps port ($47/day) + 2 sub-circuits is viable and provisions in minutes (vs. Megaport partner weeks). Cost exceeds $50/day flag ($65–75/day) but 6h total runtime caps bill at ~$18.
-
-**Single-region constraint.** MSEE hairpinning is only possible if both ER circuits connect to the **same MSEE** (same peering location). Single-region (`swedencentral` → Stockholm ER PoP) enforces this structurally. Multi-region design would require Global Reach to route between MSEEs — a different (and more expensive) mechanism.
-
-**KV inventory (lab #3).** Vault `platform-secrets-1138` confirmed: `default-password`, `megaport-api-key`, `megaport-api-secret`. Only `default-password` needed for Path A (no Megaport). Password auth applies (no `vm-admin-ssh-public-key`).
-
----
-
-📌 2026-06-15 — Lab #3 Stage 2 manifest complete: `labs/msee-hairpin-hns-vwan-ipv6/manifest.md`. Awaiting Phase 4 deploy gate from Jose.
-
-**Resource count:** 29 (28 named + 1 RG). Long pole: ER GW pair in parallel (~20-45 min). Total deploy: ~45-60 min.
-
-**ER Direct port sub-circuit pattern.** Both ER circuits are sub-circuits on the same 10 Gbps ER Direct port (`azurerm_express_route_circuit` with `express_route_port_id`). VLAN tags must be unique per circuit (100 for HnS, 200 for vWAN). The port encapsulation is QinQ. This is different from provider circuits which don't require explicit VLAN tagging in Terraform.
-
-**IPv4+IPv6 peering on same circuit resource.** `azurerm_express_route_circuit_peering` supports IPv6 via the `ipv6` block within the same resource — it is NOT a separate Terraform resource. The IPv6 primary/secondary peering subnets (/126) and the IPv4 primary/secondary (/30) are both configured in one `azurerm_express_route_circuit_peering` resource.
-
-**azurerm GW toggle coverage risk.** `allow_virtual_wan_traffic` and `allow_remote_vnet_traffic` on `azurerm_virtual_network_gateway`, and `allow_non_virtual_wan_traffic` on `azurerm_express_route_gateway`, may need azapi fallback if not exposed in current azurerm provider version. Tank should verify before writing IaC. These are silent-fail properties — hairpin works superficially until route propagation is traced and fails.
-
-**Deploy sequence note.** vHub ER GW (`azurerm_express_route_gateway`) requires the vHub to exist first (hard `depends_on`); vHub requires vWAN to exist first. The parallel chains in Step 5-6 must respect this ordering. HnS ER GW and vHub ER GW can provision in parallel since they have independent `depends_on` trees.
-
-**Cleanup blockers documented.** ER circuit delete blocks if any `azurerm_virtual_network_gateway_connection` or `azurerm_express_route_connection` references it. ER Direct port delete blocks if any circuit references it. These are the two most common cleanup-order failures; they're now in the manifest §3 cleanup sequence.
-
-
-📌 Team update (2026-06-15T23:52:53+02:00): **ER Direct 45-day free port window** — Jose directive captured and filed to decisions.md. Azure ER Direct ports include a 45-day free provisioning window (covers cross-connect installation lead-time). For labs <45 days, port cost is \\\. Lab #3 Path A cost estimate corrected from ~\/day to ~\-35/day (well within \/day guardrail). Morpheus owns cost guardrail (routing rule #7) + Phase 4 cost gate; must factor the 45-day free window into every ER Direct cost estimate going forward. Trinity to backfill this fact into the Azure Networking vault during Phase 3.4.
-
-
-
----
 
 📌 2026-08-03 — Lab #3 scoped: `dual-hub-hubless-region-ars`. Stage-1 lab card locked at `labs/dual-hub-hubless-region-ars/manifest.md` (~6.8 KB — mild overrun on the ≤5 KB budget because the mandated content list this time was atypically dense: mechanism, scope in/out, four regions with resource counts, address plan, subnet plan, ASN plan, 10 BGP sessions, full peering + UDR + route-policy split, connection-model decision with justification, secrets flow, five pass/fail scenarios, deployment duration, defensible daily cost breakdown, cleanup boundary, four `## Designs studied` entries, six MS Learn URLs, and lock statement). This is a **new Stage-1 card, not a revision of the rejected initial review** (`morpheus-dual-hub-design-review.md` from 2026-08-03T11:16 stays untouched); the user-approved design pivoted the topology after Trinity's before-DR reviewer pass and the four subsequent locked-intent corrections in this session's prompt.
 
@@ -108,6 +52,7 @@
 
 ---
 
+
 📌 2026-08-05 — Route-map user stories v2: topology-independent rewrite (`labs/dual-hub-hubless-region-ars/route-map-user-stories.md`).
 
 **What changed.** The v1 artifact was rejected for framing: it treated the caller's illustrative prompt as a literal spec and used the deployed lab as the only topology in which each scenario could exist. v2 inverts that. Every user story now opens on a clean generic reference topology chosen to demonstrate that story, and the live lab appears only in a per-story `Current lab` applicability line plus the §2 matrix. Nine stories: US01 inter-hub selective prefix exchange · US02 primary/backup hybrid egress with matching return path · US03 dynamic default-route injection · US04 inbound on-prem prefix admission · US05 outbound workload-prefix hygiene · US06 per-tenant/per-spoke-group policy · US07 route aggregation for scale · US08 BGP community tagging · US09 NVA-side versus ARS-side policy placement and migration.
@@ -126,6 +71,7 @@
 
 
 ---
+
 
 📌 2026-08-05 — US10 added to `labs/dual-hub-hubless-region-ars/route-map-user-stories.md` (v3): bow-tie / dual-site regional affinity.
 
@@ -149,6 +95,7 @@
 
 ---
 
+
 📌 2026-08-05 — v4 of `labs/dual-hub-hubless-region-ars/route-map-user-stories.md`: overlay audit (Task A) + US11 no-overlay story (Task B).
 
 **The user question that drove it.** Jose: *"Some of the user stories include an overlay between NVA1 and NVA2. If an overlay is really required, please explain why, since it adds significant complexity as compared to non-overlay topologies. That might be another User Story, hub-to-hub without an overlay?"* Both halves were correct. The document was using "overlay" as a single word for three different things, and the no-overlay design genuinely was a missing story rather than a footnote.
@@ -169,6 +116,7 @@
 
 
 ---
+
 
 📌 2026-08-05 — v5 of `labs/dual-hub-hubless-region-ars/route-map-user-stories.md`: US12 square hybrid connectivity + front-page story index.
 
@@ -194,6 +142,7 @@
 
 ---
 
+
 📌 2026-08-05T13:43:07.691+02:00 — Stage-1 card locked for `storage-endpoint-path-equivalence`.
 
 **Interpretation.** A Storage service endpoint is not a private interface or DNS endpoint: DNS and destination stay public, while Azure installs a `VirtualNetworkServiceEndpoint` route and Storage observes the client's private/VNet identity. A private endpoint changes the same FQDN to a VNet NIC/private destination. Therefore the defensible lab claim is about observable DNS, route, destination, source identity, and authorization deltas — never identical Microsoft physical underlay.
@@ -204,9 +153,11 @@
 
 ---
 
+
 📌 2026-08-05T13:43:07.691+02:00 — Scribe merge pass: storage-endpoint-path-equivalence decision brief recorded in decisions.md; lab-card stays unstaged; Phase 4 remains closed.
 
 ---
+
 
 📌 2026-08-05 — Extraction contract for a two-region hub-to-hub ARS route-policy lab (US10 + US11), no redeployment.
 
@@ -232,6 +183,7 @@
 
 ---
 
+
 📌 2026-08-05T16:16+02:00 — Phase-0 refresh and pre-deployment manifest completed for `storage-endpoint-path-equivalence`.
 
 **Phase 0.** Re-ran the canonical `swedencentral` cost ladder: `Standard_B1ls` and `Standard_B1s` remained catalog misses; `Standard_B2ts_v2` passed both catalog and live `az vm create --validate`. Only exact tagged RG `rg-preflight-sepath-20260805-161627` was used, and deletion was verified. No sensitive IDs were retained.
@@ -245,6 +197,7 @@
 **Gate.** No billable lab resources, Megaport/ExpressRoute objects, or IaC were created. Tank remains blocked until Jose explicitly approves Phase 4.
 
 ---
+
 
 📌 2026-08-05T18:05+02:00 — Two-stage roadmap added to `labs/dual-hub-interconnect-ars-route-policy`: bow-tie first (TP-HH), square second (TP-SQ / US12), gated.
 
@@ -268,6 +221,7 @@
 
 ---
 
+
 📌 2026-08-06 — Policy-preserving PaaS redesign selected Azure AI Translator F0 for `storage-endpoint-path-equivalence`.
 
 **Selection.** Azure AI Translator (`Microsoft.CognitiveServices/accounts`, `TextTranslation`, F0) is the cheapest viable replacement. It supports a public custom endpoint, classic `Microsoft.CognitiveServices` service endpoint/subnet rule, and Private Endpoint against the same FQDN. The VM uses managed identity and `Cognitive Services User`; local keys remain disabled.
@@ -281,6 +235,7 @@
 **Gate.** Wrote `labs/storage-endpoint-path-equivalence/redesign.md` and `.squad/decisions/inbox/morpheus-storage-sepath-paas-redesign.md`. No Azure resource was deployed, changed, exempted, or deleted.
 
 ---
+
 
 📌 2026-08-14 — New lab planned: `foundry-agent-reserved-prefix-reachability`. Stage-1 card locked at `labs/foundry-agent-reserved-prefix-reachability/manifest.md`. Decision filed at `.squad/decisions/inbox/morpheus-foundry-reserved-prefix-lab.md`. Phase 0 preflight and Phase 4 approval not yet requested.
 
@@ -303,3 +258,4 @@
 **Phase 0 blockers.** Foundry Agent Service availability in swedencentral; gpt-4o-mini quota; B2ts_v2 + VpnGw1 SKU availability; live price confirmation. Preflight must complete before Phase 4 approval request.
 
 **Key Foundry architecture learnings (from deep-dive research).** The delegated AgentSubnet is a standard Azure Container Apps environment subnet; the Foundry deep-dive confirms outbound agent traffic leaves through the subnet's effective route table. The restriction is stated as "address spaces of your VNET and peered VNETs" — address spaces are statically declared objects, not BGP-learned entries. The data proxy handles all tool calls; Hosted agents also get a dedicated NIC per Micro VM. A /24 AgentSubnet is recommended; /26 for 50 concurrent sessions. Azure DNS Private Resolver is optional for DNS plane (S5); not required for the primary data-plane hypothesis (S4). Private DNS zones for `privatelink.cognitiveservices.azure.com`, `privatelink.openai.azure.com`, `privatelink.services.ai.azure.com`, `privatelink.search.windows.net`, `privatelink.documents.azure.com`, `privatelink.blob.core.windows.net` must be linked to vnet-foundry.
+

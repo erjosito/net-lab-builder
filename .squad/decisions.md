@@ -6008,3 +6008,396 @@ remediation, new `TANK-001a` and `TRIN-001`); `scripts/apply.ps1` and `scripts/r
 `scripts/bodies/*.json`.
 
 **No live system was changed. No commit was made.**
+
+
+---
+
+# Kid decision inbox — endpoint performance-equivalence blog
+
+**Date:** 2026-08-08  
+**Lab:** `storage-endpoint-path-equivalence`  
+**Status:** Published to a public review branch; PR merge pending
+
+## Editorial decision
+
+The headline is the application question: whether public, service-endpoint, and private-endpoint access deliver equivalent performance—not whether Microsoft exposes identical physical paths.
+
+The post reports that 14 of 18 pairwise latency/throughput dimensions met their predeclared margins, while every overall endpoint-pair verdict remained statistically inconclusive because jitter and TCP-retransmission-proxy confidence intervals crossed their margins. This is explicitly framed as failure to establish overall equivalence, not proof of a performance difference.
+
+The main operational finding is persistent HTTPS reuse: approximately 35 ms p50 across modes versus 60–71 ms with fresh connections. The 25 ms positive control passed with a 23.29 ms p50 shift and 95% CI 22.08–24.48 ms.
+
+## Artifact and gate
+
+- Draft: `labs/storage-endpoint-path-equivalence/blog.md`
+- Editorial/statistical/Azure-accuracy review: PASS
+- Public sanitization review: PASS
+- Diagrams: four Translator PNGs embedded; Oracle validation passed
+- Public repository: `https://github.com/erjosito/azure-networking-blog`
+- Branch: `post/storage-endpoint-path-equivalence`
+- Commit: `1921b0d`
+- Pull request: `https://github.com/erjosito/azure-networking-blog/pull/1`
+- Remaining step: merge PR #1 after repository review
+ # Decision: AFD Edge Actions JWT Validation Lab Architecture
+
+**Filed by:** Morpheus  
+**Date:** 2026-08-17  
+**Status:** Design-only — awaiting Jose's go/no-go to progress to Phase 3 (manifest)
+
+---
+
+## Decision: AFD Standard (not Premium) is sufficient for this lab
+
+**Context:** Both AFD Standard and Premium support Edge Actions. Premium adds WAF managed rulesets (OWASP DRS), private link origins, and enhanced analytics — none of which are needed to test JWT validation at the edge.
+
+**Choice:** AFD **Standard** profile.
+
+**Rationale:** $35/month vs $330/month for Premium. The WAF-before-Edge-Action ordering is still testable on Standard using a WAF custom rule policy (WAF custom rules are available on both tiers). For this lab, no WAF policy is required at all.
+
+---
+
+## Decision: App Service (F1 free) as origin echo app
+
+**Context:** The lab needs a minimal, observable origin that proves whether a request reached the backend and what headers it carried. Options: App Service, Container Apps (consumption), Azure Functions (consumption), static web app.
+
+**Choice:** **Azure App Service F1 (free tier)** hosting a simple header-echo app (e.g., `http-echo` or a 5-line Node.js/Python app that returns `JSON.stringify(req.headers)`).
+
+**Rationale:**  
+- F1 is free — zero marginal cost for a 4-6 hour lab.  
+- Publicly accessible HTTPS endpoint, trivially registered as AFD origin.  
+- Origin logs (App Service HTTP access logs) confirm whether requests bypassed Edge Action.  
+- No containers, no orchestration overhead.
+
+**Constraint:** F1 has 60 CPU-minutes/day — sufficient for low-volume JWT lab tests.
+
+---
+
+## Decision: Entra ID only as identity provider — no second IdP
+
+**Context:** JWT validation needs an issuer. Options: Entra ID, a self-hosted OIDC server, Auth0, etc.
+
+**Choice:** **Entra ID** app registration with client credentials flow.
+
+**Rationale:**  
+- Tokens issued via `az account get-access-token` or `curl` to `/oauth2/v2.0/token` with `client_id`/`client_secret` — zero infra.  
+- Custom claims (`roles`, `groups`, app roles) can be added to the token via app manifest.  
+- A second IdP (e.g., to test cross-IdP issuer mismatch) is useful only if we want to prove the Edge Action rejects tokens from the wrong issuer — but this can be simulated by simply editing the `iss` claim in a tampered token. No second IdP needed.
+
+---
+
+## Critical Preview Unknown: Crypto API availability in Hyperlight sandbox
+
+**Context:** JWT signature verification (RS256/HS256) requires a crypto primitive. The Edge Action Hyperlight sandbox JS runtime is undocumented with respect to available Web APIs. The sample repo (`Azure/EdgeActionsSamples`) as of 2026-08-17 contains **no JWT validation sample** (only: request-rejection, header-add, origin-select, a-b-experimentation, url-rewrite).
+
+**Risk:** If `crypto.subtle` / `SubtleCrypto` / `atob` / `btoa` are not available, signature verification must be done with a pure-JS HMAC implementation (complex, possibly > 10ms for RS256). The lab must empirically determine which APIs are available before building the validation code.
+
+**Implication for lab design:** The lab should probe available globals first (console.log all `typeof crypto`, `typeof atob`, `typeof btoa`, `typeof TextDecoder` in a diagnostic Edge Action). This is a Phase 6 pre-task, not an obstacle to deploying the rest of the lab.
+
+---
+
+## Decision: 6 canonical test scenarios (in priority order)
+
+1. **S1 — Missing token** → 401 from Edge Action
+2. **S2 — Valid token** → 200, request reaches origin, origin echo confirms `X-Validated-Sub` header
+3. **S3 — Expired token** → 401 (pure timestamp check, no crypto needed)
+4. **S4 — Tampered token** (payload base64 replaced, signature no longer matches) → 401 if crypto available; 200 (fail-open) if signature check is skipped — this is a **key finding** either way
+5. **S5 — Wrong audience/issuer** → 401 (pure claim string check, no crypto)
+6. **S6 — Fail-open timeout** → deploy a "slow" version of the Edge Action with a deliberate busy-loop; request must reach origin with `edgeActionsStatusCode` absent or 503, proving fail-open behavior
+
+Claims-based authZ (S7, optional): add an `app_roles` claim to the Entra ID app; Edge Action checks `roles` array and returns 403 for insufficient role.
+
+---
+
+## Phase 0 VM preflight: INAPPLICABLE
+
+This lab contains no virtual machines. The origin is App Service F1. Phase 0 VM SKU preflight does not apply.
+
+---
+
+## Estimated cost
+
+| Resource | SKU | Est. cost (6h) |
+|---|---|---|
+| AFD Standard profile | Standard | ~$0.10 (prorated) |
+| AFD data transfer | <1 GB | <$0.10 |
+| App Service | F1 (free) | $0 |
+| Log Analytics workspace | Pay-as-you-go, <1 MB logs | <$0.01 |
+| Entra ID app registration | Free | $0 |
+| **Total** | | **< $1** |
+
+Edge Actions invocations: ~100 test requests × $0.000015/invocation = $0.0015.
+
+---
+
+## One design choice Jose should make next
+
+**Confirm whether signature verification is a hard requirement or whether claim-only validation (iss, aud, exp, nbf) is acceptable for this preview lab.**  
+
+If hard: the lab must first probe available JS APIs in the sandbox (spend ~30 min), then decide on HS256 (shared secret, feasible in 10ms) vs RS256 (RSA public key math, likely > 10ms in pure JS — forces fail-open, which itself becomes S6).  
+If soft: the lab can proceed to manifest immediately; signature verification is deferred to a follow-up lab once the sandbox API surface is documented.
+ # Decision: Foundry Reserved-Prefix Reachability Lab — Stage-1 Plan
+
+**Filed by:** Morpheus  
+**Date:** 2026-08-14  
+**Lab folder:** `labs/foundry-agent-reserved-prefix-reachability/`  
+**Status:** Planning locked; Phase 0 preflight and Phase 4 approval pending Jose's request.
+
+---
+
+## Decision Statement
+
+A new lab has been planned to test whether Foundry Agent Service (VNet-injected prompt agent) can originate
+data-plane tool calls to an on-premises network that advertises `172.30.0.0/16` via BGP over a Site-to-Site VPN,
+without placing that prefix in the Foundry VNet address space or any peered VNet.
+
+The Microsoft Learn documentation (2026-08-14) prohibits `172.30.0.0/16` in the Foundry VNet and peered VNets,
+but is silent on non-peered remote prefixes learned through VPN/ExpressRoute. The lab treats the outcome as unknown
+and produces binary evidence against a well-formed hypothesis.
+
+---
+
+## Key Design Choices and Rationale
+
+### VPN over ExpressRoute
+VPN GW VpnGw1 (non-AA) costs ≈ $4.56/day per GW vs. ER GW + circuit ≥ $47/day. Both propagate the same BGP
+routes into VNet effective-route tables. ExpressRoute would not change the observable platform behavior for this
+hypothesis. Defer ER to a follow-up lab if VPN results are inconclusive.
+
+### Foundry VNet uses Class C (`192.168.0.0/16`)
+Avoids any ambiguity with the Class A partial-region restriction or the Class B `172.30/172.31` exclusions.
+Class C is universally supported for Foundry VNet injection.
+
+### VPN GW placed directly in Foundry VNet (not a hub)
+A separate hub VNet would add a peering relationship, which could introduce an additional address-space
+validation surface. The simplest topology that isolates the route-plane variable uses the GatewaySubnet directly
+in vnet-foundry.
+
+### Prompt agent (not Hosted agent)
+No ACR, no container image, no Micro VM IP allocation complexity. Removes the hosted-agent IP-consumption
+confounder from the hypothesis test. ACR is included in the resource list for completeness but not required.
+
+### On-prem VNet owns `172.30.0.0/16` as declared address space
+Identical to a real enterprise network that cannot be renumbered. The address space is not visible to Foundry
+platform via peering — only via VPN BGP route advertisement. This is the precise gap in the documented restriction.
+
+---
+
+## Hypothesis (formal)
+
+**H₁ (alternative — not yet confirmed):** The Foundry platform's `172.30.0.0/16` restriction is a deployment-time
+address-space validation scoped to VNet address-space declarations and VNet peering objects. A BGP-learned route
+for `172.30.100.0/24` via a VPN S2S tunnel is treated identically to any other remote prefix and is reachable
+by the agent data proxy.
+
+**H₀ (null):** The platform enforces a runtime block on the reserved prefix beyond address-space declarations,
+making `172.30.100.0/24` unreachable even via VPN.
+
+---
+
+## Cost Impact
+
+Estimated $18–23/day (below $50/day guardrail). Actual run cost ≈ $5–8 for a 4–5h session.  
+No cost-guardrail exception required.
+
+---
+
+## Phase-0 Blockers (must be resolved before approval)
+
+1. Foundry Agent Service availability in swedencentral.
+2. Azure OpenAI gpt-4o-mini availability in swedencentral.
+3. Standard_B2ts_v2 + VpnGw1 SKU availability in swedencentral and norwayeast.
+4. Live price confirmation.
+
+---
+
+## Team Relevance
+
+- **Tank:** No IaC work until Jose approves and Phase-0 is complete.
+- **Niobe:** Validation matrix and evidence collection plan will be derived from `manifest.md §8` when the lab reaches Phase 5.
+- **Trinity:** Topology diagram from address plan in `manifest.md §2` when the lab is approved.
+- **Oracle:** Lab card summary can be published to the lab index when Phase-0 is complete.
+
+---
+
+## Source of Truth
+
+`labs/foundry-agent-reserved-prefix-reachability/manifest.md` — full Stage-1 lab card.
+ # Niobe verdict — Translator endpoint path equivalence
+
+**Date:** 2026-08-08  
+**Run:** `sepath-validation-20260806T133000Z`
+
+## Decision
+
+Accept the performance run as complete and unmodified: 10 paired/interleaved blocks, 2,400 measured requests, 1,200 warm-up requests, zero measured errors/timeouts. No endpoint pair established equivalence across every predeclared primary metric; all overall verdicts are **inconclusive**, not proof of difference.
+
+Correctness: **R1–R5 all pass**. Focused recovery preserved the endpoint
+FQDN/SNI/Host and authenticated request semantics. R2's pinned-public control
+returned HTTP 200. With public access disabled, R5's forced-public control
+returned HTTP 403 while the private-DNS control returned HTTP 200.
+
+The predeclared 25 ms sensitivity calibration also passes: 800 measured requests,
+zero errors/timeouts, mean paired p50 shift 23.29 ms, 95% bootstrap CI
+22.08–24.48 ms. This is measurement sensitivity only, not physical-path proof.
+
+## Handoffs
+
+- **Oracle:** unblocked by `diagram-replacement-handoff.md`; existing diagrams remain Oracle-owned and Storage-stale.
+- **Kid:** unblocked to write. Retain the overall performance-equivalence
+  inconclusive verdict, missing legacy flow-log table, and “no physical-path
+  identity” limitation. The former R2/R5 evidence gap is closed.
+- **Tank:** no cleanup. Safe public baseline restored; VM deallocated; all resources retained.
+ # Oracle decision inbox — Translator diagram replacement complete
+
+**Date:** 2026-08-08  
+**Lab:** `storage-endpoint-path-equivalence`  
+**Owner:** Oracle
+
+## Decision
+
+The lab's public visual set now depicts the deployed Azure AI Translator
+`TextTranslation` F0 experiment in Sweden Central. The former Storage design is
+retired from every diagram source and export.
+
+The canonical embed artifacts are:
+
+- `labs/storage-endpoint-path-equivalence/diagrams/01-topology.png`
+- `labs/storage-endpoint-path-equivalence/diagrams/02-experiment-comparison.png`
+- `labs/storage-endpoint-path-equivalence/diagrams/03-performance-methodology.png`
+- `labs/storage-endpoint-path-equivalence/diagrams/04-results-verdict.png`
+
+Editable sources sit beside each PNG (`.drawio` for 01–02, `.mmd` for 03–04).
+
+## Locked interpretation
+
+- R1–R5 correctness passed.
+- Public and service-endpoint modes retain a public destination; the service
+  endpoint changes the effective route to `VirtualNetworkServiceEndpoint`.
+- Private mode resolves the unchanged custom FQDN to `10.61.2.4` and uses the
+  VNet-local `InterfaceEndpoint` route.
+- Many p50, p95, and throughput comparisons met individual margins, but all six
+  overall pair verdicts remain **inconclusive** because jitter and the sparse TCP
+  retransmission proxy did not establish equivalence.
+- The 25 ms injected positive control produced a 23.29 ms paired p50 shift
+  (95% CI 22.08–24.48 ms): **PASS**. It validates measurement sensitivity only,
+  not Azure physical-path identity.
+
+## Validation
+
+Both draw.io sources are well-formed XML. Both Mermaid sources rendered with the
+cached Mermaid CLI. All four PNG exports were produced. A case-insensitive scan
+found no Storage/blob labels, Storage placeholders, or `Microsoft.Storage`
+references in the final diagram directory.
+
+No Azure resource or deployed state was changed.
+ # Trinity Decision Inbox — foundry-agent-reserved-prefix-reachability Network Design
+**Trinity · 2026-08-14T08:30+02:00**  
+**For: Jose Moreno**  
+**Status:** Design complete; corrections applied to manifest.md; design.md created. Awaiting Jose direction.
+
+---
+
+## What Was Done
+
+Reviewed Morpheus's locked Stage-1 manifest for structural networking correctness. Authored
+`labs/foundry-agent-reserved-prefix-reachability/design.md` as the authoritative networking specification.
+Applied three surgical blocking corrections to manifest.md.
+
+No IaC authored. No Azure resources created. Phase 0 preflight and Phase 4 approval gates unchanged.
+
+---
+
+## Blocking Corrections Applied (manifest.md)
+
+### C1 — VpnGw1 SKU Retired
+
+The manifest specified `VpnGw1 (non-AA)`. Azure blocked new VpnGw1–VpnGw5 creation effective 2025-11-01
+(`NonAzSkusNotAllowedForVPNGateway`). This is the same root cause found in the dual-hub lab (Trinity history
+2026-08-03). **Corrected to VpnGw1AZ.** Cost delta: $0.96/day. Lab remains within $50/day guardrail
+(baseline ≈ $19.60/day; with DNS resolver ≈ $24.40/day).
+
+### C2 — Dual-NIC Confounder Eliminated
+
+The original design placed a primary NIC (`172.30.100.4`) and secondary NIC (`10.200.100.4`) on a single VM.
+The S3 vs S4 comparison requires that the *destination prefix* is the only intended variable. On a Linux VM with
+two NICs, return traffic for connections arriving at the secondary IP defaults through the primary NIC's gateway
+unless OS policy routing (`ip rule add from 10.200.100.4 table N`) is explicitly configured. This is a confounder:
+S3 could fail for return-path reasons unrelated to the platform reservation.
+
+**Replaced with two single-NIC VMs:**
+- `vm-onprem-echo` at `172.30.100.4` (WorkloadSubnet) — primary test target (S4, S5)
+- `vm-onprem-ctrl` at `10.200.100.4` (CtrlSubnet) — control target (S3)
+
+Each VM has one NIC, one default gateway, deterministic symmetric return path. Identical nginx config.
+Cost delta: +$0.27/day (one additional B2ts_v2).
+
+**Jose: this is a structural correctness fix. If you prefer a cost-optimized single-VM approach, policy routing
+must be explicitly implemented and documented, and the evidence set must include confirmation that `ip rule` is
+active before running S3/S4. I recommend the two-VM design.**
+
+### C3 — DNS Private Resolver Subnet Gap
+
+The manifest placed the DNS Private Resolver inbound endpoint in PESubnet, which already hosts private endpoints.
+DNS Private Resolver inbound and outbound endpoints require **dedicated subnets** with
+`Microsoft.Network/dnsResolvers` delegation. Sharing PESubnet causes deployment failure.
+
+**Added to vnet-foundry subnet plan (applies only if S5 is in scope):**
+- `DNSInboundSubnet`: `192.168.3.0/28`
+- `DNSOutboundSubnet`: `192.168.3.16/28`
+
+---
+
+## Non-Blocking Gaps (documented in design.md; no manifest edit required)
+
+| ID | Gap | Resolution |
+|----|-----|-----------|
+| C4 | vnet-onprem subnets need gateway route propagation enabled (return path) | Documented in design.md §5.4; Tank must set this in IaC |
+| C5 | AgentSubnet NSG under-specified; Container Apps delegation imposes platform rules | Full NSG spec in design.md §7; verify at deploy time |
+| C6 | TLS confounder on outbound tool calls | Use HTTP (port 80) as primary test; HTTPS as follow-up |
+
+---
+
+## Key Design Decisions for Jose's Awareness
+
+1. **Probe origin is the data proxy in AgentSubnet** — the OpenAPI tool call is executed by the single-tenant
+   data proxy, which runs inside the delegated subnet. This is the correct origin to test the hypothesis. It is
+   NOT the client-side HTTP call to the Foundry endpoint. Confirmed from deep-dive (fetched 2026-08-14).
+
+2. **Limitation scope confirmed** — the Foundry VNet limitations page (fetched 2026-08-14) reads: "address spaces
+   of your VNET… and peered VNETs." VPN-learned routes are not mentioned. H₁ (no runtime block) is expected but
+   the outcome is explicitly unknown and must not be assumed.
+
+3. **What the lab proves and what it does not:**
+   - ✅ Proves: whether the data proxy applies a runtime ACL on `172.30.0.0/16` when the prefix arrives via VPN BGP
+   - ❌ Does not prove: ExpressRoute behavior (same effective-route mechanism, different physical path)
+   - ❌ Does not prove: physical on-premises CPE with NAT/IKE interop (this uses Azure VPN GW as "on-prem")
+   - ❌ Does not prove: hosted agent path (uses prompt agent; tool calls still traverse data proxy)
+
+4. **DNS chain for S5** is fully specified (design.md §9). It depends on DNS Private Resolver (C3) and S4
+   being unblocked. S5 does not independently test the reservation; it tests the DNS forwarding path.
+
+5. **Resiliency scope** — this is a single-path lab (one tunnel, one BGP session). Non-active-active VPN GW
+   is deliberate and appropriate for a binary hypothesis test. Do not infer production architecture from this lab.
+
+---
+
+## Files Written / Corrected
+
+| File | Action | Notes |
+|------|--------|-------|
+| `labs/foundry-agent-reserved-prefix-reachability/design.md` | **Created** | Authoritative network design; ~33 KB |
+| `labs/foundry-agent-reserved-prefix-reachability/manifest.md` | **Corrected** (4 surgical edits) | C1 VpnGw1AZ, C2 two-VM, C3 DNS subnet note, cost update |
+| `.squad/agents/trinity/history.md` | **Appended** | 2026-08-14 learning entry |
+| `.squad/decisions/inbox/trinity-foundry-reserved-prefix-design.md` | **Created** | This file |
+
+`README.md` was not modified — no structural networking errors; design.md is referenced from it via §Key Files.
+
+---
+
+## No Action Needed Unless Jose Directs Otherwise
+
+The design is complete. Next steps for this lab remain gated:
+1. Phase 0 preflight (Jose or Tank) — region/SKU/quota verification (deferred per manifest §12)
+2. Phase 4 approval from Jose Moreno (manifest §13 approval gate unchanged)
+3. IaC authoring by Tank (blocked on Phase 4)
+4. Diagnostic gate skeleton by Niobe (can proceed in parallel with IaC)
+
