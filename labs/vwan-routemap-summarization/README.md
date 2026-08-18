@@ -1,11 +1,146 @@
 # vwan-routemap-summarization
 
+**Status (Round 2): 🟢 LAB RUNNING — `routemap-test-rg` (swedencentral/westeurope). Billing active (2× ER gateways, 1× VPN gateway, Megaport MCR+2 VXCs). Tear down when done — see [Teardown](#round-1-teardown-status-2026-07-31).**
+
+This lab reproduces and investigates a customer-reported **Virtual WAN route-map summarization bug**:
+a `/16` summary route aggregated from **mixed-origin contributors** intermittently goes **missing**
+when advertised to a branch. **Round 2** re-runs the repro with Microsoft's engineering root-cause in
+hand (mixed-origin attribute inheritance + Branch-to-Branch disabled).
+
+---
+
+## Round 2 — mixed-origin attribute inheritance (2026-08-18)
+
+### Microsoft's root-cause statement (paraphrased)
+
+> The `10.x.0.0/16` summary is generated from multiple contributing `10.x` routes that have **different
+> route origins/attributes**. Some contributors are learned via **ExpressRoute** and carry **AS 12076**
+> (the MSEE ASN) in the AS-path; another contributor is on the **VNet/egress** path. During aggregation
+> the summary **may inherit the attributes of either contributor**. If it inherits the **VNet** attributes
+> it is advertised; if it inherits the **ExpressRoute/branch-learned** attributes it is treated as
+> **branch-derived** and **dropped because Branch-to-Branch (b2b) is disabled** — which is why the
+> advertisement appears inconsistent across recomputation cycles.
+>
+> **Recommended mitigation:** a higher-priority outbound route-map rule that **drops the ExpressRoute-learned
+> contributors by AS-path (12076)** *before* the summarization rule runs.
+
+### Headline results (Round 2)
+
+> **1. The MS-recommended mitigation is validated and works.** A higher-priority rule matching
+> `asPath Contains 12076 → Drop`, placed before the summarization rule, deterministically removes every
+> ER-learned contributor from the aggregation input. The summary can then only ever be built from the
+> VNet/egress contributor → it can never be classified as branch-derived → never dropped. ✅
+>
+> **2. Key finding — the summarization *method* determines exposure.** A route-map **`Replace route-prefix`**
+> action **re-originates** the aggregate with the **hub ASN (65515)**, discarding the ER contributor's
+> AS-path (12076). In our lab that aggregate is therefore **never** branch-derived and is advertised in
+> **every** case — both contributors, only-ER, b2b on, b2b off. We could **not** make a `Replace`-based
+> summary disappear. The customer's intermittent drop requires an **attribute-inheriting** summarization
+> path (the aggregate keeps the contributor AS-path); the MS mitigation is the correct fix for that path
+> and is also a sound belt-and-suspenders guard regardless.
+>
+> **3. Branch-to-Branch gates ER→VPN transit (confirmed).** With b2b **disabled** the ER-learned `/24`s
+> (AS 12076) never reach the VPN branch at all; with b2b **enabled** they arrive as
+> `65515 12076 133937`. This is the customer condition and the reason the observation point **must be a
+> VPN branch** — ER→ER transit is unconditionally blocked, so the second ER circuit (`er-eu2`) could never
+> show the b2b-governed behaviour.
+
+### Round 2 topology
+
+Two VWAN hubs, two ExpressRoute circuits in a **bow-tie** via a **Megaport MCR** that injects the
+"on-prem" ER prefixes as **free static routes** (the MSEE auto-prepends **AS 12076**, exactly reproducing
+the customer's branch-derived attribute — no Google Cloud needed). The observation branch is an **Azure VM
+NVA** (StrongSwan + BIRD) attached to `hub-eu1` over **IPsec + BGP**, i.e. a faithful VPN branch.
+
+```
+                 Megaport MCR (AS 133937)  —— static routes 10.0.1/2/3.0/24
+                   /  bow-tie VXCs (ER private peering, MSEE prepends AS 12076)  \
+                  /                                                               \
+        [ er-eu1 ] Frankfurt                                         [ er-eu2 ] Amsterdam
+                  \                                                               /
+     ┌─────────────\─────────────────────┐                 ┌──────────────────────┐
+     │   hub-eu1  (swedencentral)         │   bow-tie ER    │  hub-eu2 (westeurope) │
+     │   192.168.0.0/23   VWAN Standard   │═════════════════│  192.168.2.0/23       │
+     │   b2b = DISABLED (baseline)        │                 └──────────────────────┘
+     │                                    │
+     │   spoke-eu1  10.0.128.0/24 ────────┼──  VNet/egress contributor (AS 65515)
+     │   ER-learned 10.0.1/2/3.0/24 ──────┼──  branch contributor    (AS 12076)
+     │                                    │
+     │   route-map summarize-out (sum1):  │   match Contains 10.0.0.0/16 → Replace 10.0.0.0/16
+     │   vpngw-eu1  ASN 65515             │
+     └──────────────┬─────────────────────┘
+                    │ IPsec + BGP (xfrm41/42), connection cx-nva1
+            [ nva1 ] Azure VM  10.100.0.4  ASN 65001   (StrongSwan + BIRD2 — VPN branch observation)
+```
+
+The summary under test is **`10.0.0.0/16`**, aggregated from a **VNet contributor** (`10.0.128.0/24`,
+AS 65515) and three **ER-learned contributors** (`10.0.1/2/3.0/24`, AS `65515 12076 133937`).
+
+### Round 2 case matrix (observed at the VPN branch nva1)
+
+| # | Contributors in hub | b2b | Outbound route-map | `10.0.0.0/16` at branch | AS-path | Evidence |
+|---|---|---|---|---|---|---|
+| **A** | VNet + ER | OFF | `summarize-out` | ✅ present | `65515` (VNet-attributed) | [62](show-output/round2/62-vpnbranch-caseA-both-contributors-b2b-off.txt) |
+| **B** | ER only | OFF | `summarize-out` | ✅ present* | `65515` | [63](show-output/round2/63-vpnbranch-caseB-only-ER-b2b-off-cleanrecompute.txt) |
+| **D′** | ER only | ON | `summarize-out` | ✅ present | `65515` | [64](show-output/round2/64-vpnbranch-caseD-only-ER-b2b-on.txt) |
+| **Base** | VNet + ER | ON | *(none)* | n/a | VNet `65515`; ER `65515 12076 133937` | [65](show-output/round2/65-vpnbranch-mitigation-validation.txt) |
+| **Mit-drop** | VNet + ER | ON | `mitigation-drop` (drop 12076) | n/a | ER `/24`s **dropped**, VNet `/24` kept | [65](show-output/round2/65-vpnbranch-mitigation-validation.txt) |
+| **Mit-full** | VNet + ER | ON | `mitigation-full` (drop 12076 → summarize) | ✅ present | `65515` (VNet-only source) | [65](show-output/round2/65-vpnbranch-mitigation-validation.txt) |
+
+*\*Case B is the decisive one: with **only** ER contributors and b2b off, a `Replace`-based summary is
+**still advertised** as a hub-originated `65515` route (verified after a forced detach/re-attach
+recompute — fresh BGP timestamp). This is what proves `Replace` re-originates and is immune to the
+branch-derived drop.*
+
+### Mitigation, step by step
+
+`mitigation-full` route-map on the VPN connection outbound:
+
+| Order | Rule | Match | Action | `nextStepIfMatched` |
+|---|---|---|---|---|
+| 1 | `drop-er-12076` | `asPath Contains 12076` | **Drop** | `Terminate` |
+| 2 | `sum1` | `routePrefix Contains 10.0.0.0/16` | **Replace** → `10.0.0.0/16` | — |
+
+Result at the branch: `10.0.0.0/16` present (`65515`), all specifics gone — the summary is provably built
+from the VNet contributor alone, so it can never be branch-derived. Full before/after RIB capture in
+[show-output/round2/65](show-output/round2/65-vpnbranch-mitigation-validation.txt).
+
+### Round 2 resource inventory
+
+<details>
+<summary><strong>Round 2 deployed resources</strong> (click to expand)</summary>
+
+- **Resource group:** `routemap-test-rg` — VWAN `vwan-routemap2` (Standard, b2b currently **disabled**)
+
+| Resource | Name | Region |
+|---|---|---|
+| Virtual hubs | `hub-eu1` (192.168.0.0/23), `hub-eu2` (192.168.2.0/23) | swedencentral / westeurope |
+| ExpressRoute circuits | `er-eu1` (Frankfurt), `er-eu2` (Amsterdam) — Standard 50 Mbps | — |
+| ER gateways | `ergw-eu1`, `ergw-eu2` | swedencentral / westeurope |
+| ER connections (bow-tie) | `conn-eu1-er1`, `conn-eu1-er2`, `conn-eu2-er2`, `conn-eu2-er1` | — |
+| Spoke (VNet contributor) | `spoke-eu1` 10.0.128.0/24 + `spoke-eu1-conn` | swedencentral |
+| VPN gateway | `vpngw-eu1` (VpnGw1, ASN 65515) | swedencentral |
+| VPN site / connection | `site-nva1` (ASN 65001) / `cx-nva1` (IPsec+BGP) | — |
+| NVA (VPN branch) | `nva1` Ubuntu 22.04 B2ts_v2, 10.100.0.4, `nva-vnet` 10.100.0.0/24 | swedencentral |
+| Route-maps | `summarize-out` (sum1), `mitigation-drop`, `mitigation-full` | hub-eu1 |
+| **Megaport MCR** | `jomore-copilot-mcr-routemap2` (AS 133937, Frankfurt) + 2 VXCs | — |
+
+**On-prem simulation:** Megaport MCR **static routes** (`10.0.1/2/3.0/24`) — free, and sufficient because
+the MSEE injects **AS 12076** on any ER-private-peering prefix. No Google Cloud used.
+
+</details>
+
+---
+
+<details>
+<summary><strong>Round 1 — secured-hub / Routing-Intent investigation (2026-07, DECOMMISSIONED)</strong> (click to expand)</summary>
+
 **Status: ✅ LAB FULLY DECOMMISSIONED — no running resources, no billing (as of 2026-07-31)**
 
-This lab reproduces and investigates a customer-reported **Virtual WAN route-map bug**: on a secured
-vWAN hub with outbound **summarization** route-map rules applied to a VPN connection, one /16 or /17
-summary route intermittently goes **missing** after Routing Intent is enabled, in an **order-dependent**
-way (reordering the rules changes which summary is dropped).
+Round 1 investigated a different framing of the bug: on a secured vWAN hub with outbound
+**summarization** route-map rules on a VPN connection, one /16 or /17 summary intermittently went
+**missing** after Routing Intent was enabled, in an **order-dependent** way. It did **not** reproduce —
+see below. (Round 2 above supersedes it with Microsoft's mixed-origin root cause.)
 
 ### Headline result
 
@@ -250,7 +385,7 @@ Full step-by-step specification: [design-phase3.md § Gate C Result + Gate D Pro
 
 ---
 
-## Teardown status (2026-07-31)
+## Round 1 teardown status (2026-07-31)
 
 > Teardown sequence: ER connection → RI + AzFW → ER private peering → Megaport VXC/MCR (CANCEL_NOW) → Azure RG → GCP Interconnect.
 
@@ -274,3 +409,9 @@ every `jomore-copilot-*` product DECOMMISSIONED. No manual portal action was nee
 ---
 
 *Last updated: 2026-07-31 | Trinity (Azure Network SME)*
+
+</details>
+
+---
+
+*Round 2 last updated: 2026-08-18 | mixed-origin attribute-inheritance repro + mitigation validation.*

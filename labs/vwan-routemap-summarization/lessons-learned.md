@@ -196,3 +196,50 @@ interfere. Gate C confirmed both Succeeded with no cross-contamination. The `pre
 AS-path addition (ASNs 64496/64497/64498) is a hub-internal inbound operation; it does not appear
 in nva2's own BIRD RIB (nva2 only sees what hub-eu2 sends back to it, not how hub-eu2 manipulates
 inbound routes for inter-hub propagation).
+
+---
+
+# Round 2 lessons (2026-08-18) — mixed-origin attribute inheritance
+
+### `Replace route-prefix` route-maps RE-ORIGINATE the summary with the hub ASN
+
+The single most important finding. A VWAN route-map rule `match routePrefix Contains 10.0.0.0/16 ->
+Replace routePrefix 10.0.0.0/16` produces an aggregate that carries the **hub BGP ASN (65515)**, NOT
+the contributor's AS-path. Verified across every case — both contributors, only-ER contributors, b2b
+on, b2b off: the summary is always advertised as `65515`, never `12076`. Consequence: a `Replace`-based
+summary can never be classified as branch-derived and is **immune** to the branch-to-branch drop the
+customer hit. The customer's intermittent drop therefore requires an **attribute-inheriting**
+summarization path (aggregate keeps the contributor AS-path); reproduce that, not `Replace`, to see the
+flap. The MS mitigation (drop AS-12076 before summarize) is still the correct, deterministic fix.
+
+### VWAN caches the per-connection outbound advertisement — force a recompute
+
+Changing hub inputs (e.g. deleting a spoke/VNet contributor) does **not** reliably trigger the hub to
+recompute a connection's outbound advertisement when the route-map output prefix is unchanged. Symptom:
+`birdc show route all` shows the summary with an **unchanged timestamp** even after the input changed,
+and `birdc reload in all` (route-refresh) does not help because the hub re-sends the same cached
+Adj-RIB-Out. **Fix:** detach the outbound route-map from the connection (PUT routingConfiguration without
+`outboundRouteMap`, wait Succeeded), then re-attach it. That forces a clean recompute — confirmed by a
+fresh BGP timestamp on the branch. Do this between every case or your results are stale.
+
+### The observation branch MUST be a VPN branch, not a second ER circuit
+
+ER→ER transit in VWAN is **unconditionally blocked** regardless of b2b, so a second ER circuit
+(`er-eu2`) can only ever show the VNet-attributed aggregate — it can never exhibit the b2b-governed
+branch-derived behaviour. Only an ER→VPN path is gated by branch-to-branch. Deploy an Azure VM NVA
+(StrongSwan + BIRD) as a VPN branch and observe there.
+
+### Free on-prem ER prefixes via MCR static routes (no Google Cloud)
+
+Static routes on the Megaport MCR, advertised over the ER private peering, arrive in the hub with
+**AS 12076** auto-prepended by the MSEE (path `65515 12076 133937`, community `65517:65517`). That is
+exactly the "branch-derived" attribute the repro needs — GCP VPCs add nothing and cost money.
+
+### VWAN route-map create/update is slow; connection route-map only via `az rest`
+
+Route-map create/update LROs can sit in `Updating` for many minutes — poll `provisioningState`, don't
+panic-delete. The Azure CLI `az network vpn-gateway connection` has **no** `--outbound-route-map` flag;
+set it by PUTting the connection sub-resource with `az rest` (api-version 2023-09-01), adding
+`properties.routingConfiguration.outboundRouteMap.id`. Rules JSON for `az network vhub route-map create
+--rules @file` must be a JSON **array** (PowerShell `ConvertTo-Json` collapses a single-element array to
+an object — write the array literally).

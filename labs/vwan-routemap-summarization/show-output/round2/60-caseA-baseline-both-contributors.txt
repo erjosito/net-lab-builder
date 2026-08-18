@@ -1,0 +1,26 @@
+# Round 2 repro — mixed-origin summary attribute inheritance
+# Topology: 2 hubs, 2 ER circuits (bow-tie) via Megaport MCR (static routes), b2b DISABLED
+# Summary under test: 10.0.0.0/16 ; contributors: 10.0.1/2/3.0/24 (ER/AS12076) + 10.0.128.0/24 (VNet)
+# Captured: 2026-08-18T10:26:46.5911715+02:00
+
+## Case A - both contributors present, b2b DISABLED, summarize-out on conn-eu1-er2
+
+### er-eu1 MSEE route table (source side) - 10.0.* :
+
+network       locPrf path
+-------       ------ ----
+10.0.1.0/24   100    133937 ?
+10.0.2.0/24   100    133937 ?
+10.0.3.0/24   100    133937 ?
+10.0.128.0/24 100    65515
+
+
+### er-eu2 MSEE route table (observation side, advertised toward MCR) - 10.0.* :
+
+network     locPrf path
+-------     ------ ----
+10.0.0.0/16 100    65515
+10.0.0.0/16 100    65515
+
+
+RESULT: 10.0.0.0/16 PRESENT with AS-path 65515 (VNet/hub attributes, no 12076) => aggregate inherited VNet-origin attrs => advertised OK (the 'works' case).

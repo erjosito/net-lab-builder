@@ -1,0 +1,28 @@
+================================================================================
+ROUND 2 — VPN BRANCH OBSERVATION — CASE D' (b2b ENABLED)
+Only ER-learned contributors, b2b ENABLED, summarize-out applied
+================================================================================
+Setup: only ER-learned 10.0.1/2/3.0/24 (AS 12076) in hub, VNet contributor
+removed, b2b ENABLED. Route-map detached+reattached for clean recompute.
+
+RESULT: 10.0.0.0/16 PRESENT (fresh, 10:06:49), AS path 65515 — still NOT 12076.
+Individual ER /24s not visible (collapsed by the Replace action).
+
+INTERPRETATION: even when ER routes are valid inputs under b2b=enabled, the
+Replace action still re-originates the aggregate with the hub ASN (65515). This
+confirms Case B's conclusion: Replace-based summarization never carries the ER
+attributes, so b2b state does not change the summary's presence. (The test that
+was impossible on er-eu2 because ER->ER transit is unconditionally blocked.)
+
+--------------------------------------------------------------------------------
+birdc show route all  (10.0.0.0/16)
+--------------------------------------------------------------------------------
+10.0.0.0/16          unicast [vpngw0 10:06:49.631] ! (100/?) [AS65515i]
+	via 192.168.0.14 on xfrm41
+	BGP.as_path: 65515
+                     unicast [vpngw1 10:06:49.632] (100/?) [AS65515i]
+	via 192.168.0.15 on xfrm42
+	BGP.as_path: 65515
+
+10.0.1.0/24 / 10.0.2.0/24 / 10.0.3.0/24 : Network not found (replaced by summary)
+================================================================================

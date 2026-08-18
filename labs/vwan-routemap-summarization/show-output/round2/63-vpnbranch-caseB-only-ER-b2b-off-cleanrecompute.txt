@@ -1,0 +1,33 @@
+================================================================================
+ROUND 2 — VPN BRANCH OBSERVATION — CASE B (decisive, clean recompute)
+Only ER-learned contributors (VNet contributor removed), b2b DISABLED
+================================================================================
+Setup: deleted spoke-eu1-conn (VNet contributor gone). Only ER-learned
+10.0.1/2/3.0/24 (AS 12076) remain in the hub. b2b OFF. summarize-out applied on
+cx-nva1. To defeat VWAN outbound-advertisement caching, the route-map was
+DETACHED then RE-ATTACHED to force a full recompute (fresh timestamp proves it).
+
+RESULT: 10.0.0.0/16 is PRESENT (fresh, timestamp 09:58:26), AS path 65515 — NOT
+12076. No individual 10.0.1/2/3.0/24 at the branch (b2b off blocks ER->VPN).
+
+KEY INTERPRETATION: the route-map "Replace route-prefix -> 10.0.0.0/16" action
+RE-ORIGINATES the aggregate as a hub route (AS 65515), discarding the ER
+contributor AS path (12076). Because the aggregate carries the hub ASN it is
+never classified as branch-derived, so b2b=disabled does NOT drop it. The
+Replace-based summarization is therefore immune to the customer's intermittent
+drop.
+
+--------------------------------------------------------------------------------
+birdc show route all  (10.0.0.0/16)  — after clean recompute
+--------------------------------------------------------------------------------
+10.0.0.0/16          unicast [vpngw0 09:58:26.486] ! (100/?) [AS65515i]
+	via 192.168.0.14 on xfrm41
+	BGP.as_path: 65515
+	BGP.next_hop: 192.168.0.14
+	BGP.local_pref: 100
+                     unicast [vpngw1 09:58:26.493] (100/?) [AS65515i]
+	via 192.168.0.15 on xfrm42
+	BGP.as_path: 65515
+
+10.0.1.0/24 / 10.0.2.0/24 / 10.0.3.0/24 : Network not found
+================================================================================

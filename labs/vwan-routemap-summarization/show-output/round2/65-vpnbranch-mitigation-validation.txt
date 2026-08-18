@@ -1,0 +1,56 @@
+================================================================================
+ROUND 2 — VPN BRANCH — b2b-ON BASELINE (no route-map)  +  MITIGATION VALIDATION
+================================================================================
+
+--------------------------------------------------------------------------------
+(1) PRE-MITIGATION BASELINE — b2b ON, BOTH contributors, NO route-map
+--------------------------------------------------------------------------------
+Proves branch-to-branch=enabled lets ER-learned routes transit to the VPN
+branch, and shows exactly which prefixes carry AS 12076.
+
+10.0.128.0/24   AS path 65515                       (VNet/egress contributor)
+10.0.1.0/24     AS path 65515 12076 133937  comm (65517,65517)   (ER-learned)
+10.0.2.0/24     AS path 65515 12076 133937  comm (65517,65517)   (ER-learned)
+10.0.3.0/24     AS path 65515 12076 133937  comm (65517,65517)   (ER-learned)
+10.0.0.0/16     Network not found (no summarization rule active)
+
+  65515  = VWAN hub BGP ASN (prepended on advertisement to the branch)
+  12076  = Azure MSEE ASN, auto-injected on ANY ER-private-peering prefix
+  133937 = Megaport MCR ASN (origin of the free static routes)
+
+--------------------------------------------------------------------------------
+(2) MITIGATION — DROP-ONLY rule (match asPath Contains "12076" -> Drop)
+    route-map "mitigation-drop", b2b ON, both contributors
+--------------------------------------------------------------------------------
+RESULT: the AS-path drop fires correctly.
+  10.0.128.0/24  PRESENT, AS path 65515        (VNet contributor survives)
+  10.0.1.0/24    Network not found  (dropped)
+  10.0.2.0/24    Network not found  (dropped)
+  10.0.3.0/24    Network not found  (dropped)
+
+--------------------------------------------------------------------------------
+(3) MITIGATION — FULL (MS-recommended): drop asPath 12076 THEN summarize
+    route-map "mitigation-full": rule1 drop-er-12076 (Terminate), rule2 sum1
+    b2b ON, both contributors
+--------------------------------------------------------------------------------
+RESULT: summary generated purely from the VNet contributor, guaranteed
+VNet-attributed.
+  10.0.0.0/16    PRESENT (fresh 10:27:38), AS path 65515
+  10.0.128.0/24  Network not found (collapsed into summary)
+  10.0.1/2/3.0/24 Network not found (dropped before summarization)
+
+  10.0.0.0/16          unicast [vpngw0 10:27:38.310] ! (100/?) [AS65515i]
+  	via 192.168.0.14 on xfrm41
+  	BGP.as_path: 65515
+                       unicast [vpngw1 10:27:38.323] (100/?) [AS65515i]
+  	via 192.168.0.15 on xfrm42
+  	BGP.as_path: 65515
+
+CONCLUSION: The MS-recommended higher-priority AS-path-12076 drop rule, placed
+before the summarization rule, deterministically removes every ER-learned
+contributor from the aggregation input. The summary can then only ever inherit
+VNet/egress attributes — eliminating any possibility of the aggregate being
+classified as branch-derived and dropped when b2b is disabled. This is sound,
+free (static MCR routes), and works belt-and-suspenders alongside the fact that
+a Replace-based summary already re-originates with the hub ASN.
+================================================================================

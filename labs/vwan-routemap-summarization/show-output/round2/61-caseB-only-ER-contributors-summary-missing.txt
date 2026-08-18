@@ -1,0 +1,15 @@
+## Case B - VNet contributor REMOVED (only ER/AS12076 contributors), b2b DISABLED
+# Captured: 2026-08-18T10:34:20.1043295+02:00
+
+### er-eu1 MSEE (source) still holds the ER /24 contributors:
+10.0.1.0/24  path 133937 ?
+10.0.2.0/24  path 133937 ?
+10.0.3.0/24  path 133937 ?
+
+### er-eu2 MSEE (observation, advertised toward MCR) - 10.0.* :
+(NO 10.0.* routes advertised to er-eu2)
+
+RESULT: 10.0.0.0/16 MISSING. With only branch-derived (AS 12076) contributors, the generated
+aggregate inherits ExpressRoute/branch attributes -> classified branch-derived -> DROPPED because
+Branch-to-Branch is DISABLED. This reproduces the customer's intermittent missing-summary symptom
+(deterministic here because NO VNet/egress contributor is present to lend non-branch attributes).

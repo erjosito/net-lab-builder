@@ -1,0 +1,29 @@
+#cloud-config
+package_update: true
+package_upgrade: false
+packages:
+  - strongswan
+  - strongswan-swanctl
+  - charon-systemd
+  - bird2
+  - iptables-persistent
+  - traceroute
+  - tcpdump
+  - net-tools
+  - jq
+write_files:
+  - path: /etc/sysctl.d/99-nva.conf
+    permissions: '0644'
+    content: |
+      net.ipv4.ip_forward=1
+      net.ipv4.conf.all.accept_redirects=0
+      net.ipv4.conf.all.send_redirects=0
+      net.ipv4.conf.default.rp_filter=0
+      net.ipv4.conf.all.rp_filter=0
+runcmd:
+  - sysctl -p /etc/sysctl.d/99-nva.conf
+  - sed -i 's/^#\?Port .*/Port 2222/' /etc/ssh/sshd_config
+  - grep -q '^Port 2222' /etc/ssh/sshd_config || echo 'Port 2222' >> /etc/ssh/sshd_config
+  - systemctl restart ssh || systemctl restart sshd
+  - systemctl enable strongswan-starter || true
+  - systemctl enable bird || true
