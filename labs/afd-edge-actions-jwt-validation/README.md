@@ -8,19 +8,37 @@
 
 ## Designs studied
 
+> **New here? Read this orientation first.** This lab tests whether a **JWT** (JSON Web Token — the
+> bearer token an app sends to prove who the caller is) can be validated at **Azure Front Door's**
+> edge, *before* the request reaches the backend app. These terms are used throughout the document:
+>
+> | Term | What it means in this lab |
+> |------|---------------------------|
+> | **EA — Edge Action** | A small JavaScript function that runs *inside* Azure Front Door at the network edge (full explanation in [Part 1](#part-1--what-are-azure-front-door-edge-actions)). It can inspect/reject a request before it reaches your app. |
+> | **Origin / backend** | The App Service web app *behind* Front Door that actually serves the API (`app-edge-jwt-lab.azurewebsites.net`). |
+> | **`jose`** | An npm **library** (JavaScript Object Signing and Encryption) — **not a person**. The origin uses it to cryptographically verify JWT signatures (RS256 + JWKS). |
+> | **Claims-only vs. signature validation** | *Claims-only* checks the token's contents (expiry, audience, issuer, roles) but **not** its cryptographic signature; *signature validation* additionally proves the token is authentic and untampered. |
+> | **Teaching-only** | A design included **purely to demonstrate a risk** — explicitly never for production. |
+> | **Defence in depth** | Validating in two independent layers (edge *and* origin) so a failure in one is caught by the other. |
+> | **S1–S9 (the "S#" scenarios)** | The numbered test cases run by this lab (see the results table below and [validation.md](validation.md)). The ones referenced here: **S1** = capability probe, **S8** = direct-origin-bypass test, **S9** = fail-open test. |
+> | **S1-GATE** | The go/no-go decision driven by scenario **S1**: does the edge runtime expose the crypto APIs needed to verify signatures? **GO** = full signature validation at the edge · **CONDITIONAL** = claims-only at the edge (what this lab landed on) · **STOP** = the edge can't validate at all → fall back to origin-only. See [Part 9](#part-9--capability-gate-s1-gate-decision-tree). |
+> | **B1 / B3 (the "B#" blockers)** | External blockers hit during the lab: **B1** = Entra ID admin consent still pending; **B3** = Edge Actions private-preview access expired. |
+
+The lab compared three ways to enforce JWT authentication with Front Door:
+
 | Design | Verdict | When it applies |
 |--------|---------|----------------|
-| **Edge pre-validation + origin revalidation (defence in depth)** | ✅ **Recommended** | Always. EA performs claims-only or signature validation; origin re-validates independently with `jose`. |
-| **Teaching-only: EA as sole enforcement** | 📖 Teaching only — never production | Demonstrates the fail-open risk (S9) and direct-bypass gap (S8). |
-| **Control: Origin-only or public route** | 🔬 Control / S1-GATE STOP fallback | Baseline (no auth) and fallback when EA cannot validate JWTs at all. |
+| **Edge pre-validation + origin revalidation (defence in depth)** | ✅ **Recommended** | Always. The Edge Action performs claims-only (or, where possible, signature) validation, and the origin independently re-validates the signature with the `jose` library. |
+| **Teaching-only: Edge Action as the *sole* enforcement** | 📖 Teaching only — never production | Included only to demonstrate the fail-open risk (scenario **S9**) and the direct-origin-bypass gap (scenario **S8**). |
+| **Control: Origin-only, or an unauthenticated public route** | 🔬 Control / S1-GATE **STOP** fallback | Baseline (no auth) and the fallback used when the edge cannot validate JWTs at all. |
 
 ### Why the teaching-only design is dangerous
 
-Two independent mechanisms break it even when the EA is working correctly:
+Two independent mechanisms break it even when the Edge Action is working correctly:
 
-1. **Direct origin bypass (S8 — PASS):** `app-edge-jwt-lab.azurewebsites.net` is directly reachable without AFD. Lab confirms HTTP 403 from App Service access restrictions — **hardening works**. Without those restrictions, an attacker bypasses the EA entirely.
+1. **Direct origin bypass (scenario S8 — PASS):** the origin `app-edge-jwt-lab.azurewebsites.net` is directly reachable *without* going through Front Door, so an attacker could skip the Edge Action entirely. The lab confirms the origin returns HTTP 403 to direct hits thanks to App Service access restrictions — **so the hardening works** — but without those restrictions the Edge Action would be trivially bypassed.
 
-2. **Fail-open (S9 — NOT EXECUTED, B3):** When an EA exceeds its 10 ms budget or throws an exception, the platform terminates the EA and forwards the request **without validation**. Origin-only backstop is the only safe catch.
+2. **Fail-open (scenario S9 — NOT EXECUTED, blocked by B3):** when an Edge Action exceeds its 10 ms execution budget or throws an exception, Front Door terminates the Edge Action and forwards the request **without validation**. An independent origin-only check is the only safe backstop.
 
 ---
 
