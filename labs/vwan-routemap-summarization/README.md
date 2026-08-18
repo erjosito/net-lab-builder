@@ -9,6 +9,58 @@ hand (mixed-origin attribute inheritance + Branch-to-Branch disabled).
 
 ---
 
+## Orientation for a first-time reader
+
+**What this is.** A self-contained Azure lab that reproduces a customer's Virtual WAN route-map
+summarization problem end-to-end, so the behaviour can be observed directly rather than inferred from
+production. Evidence is captured as numbered text files under `show-output/`. The investigation ran in
+two passes ("Rounds"), so expect two topologies in this document.
+
+**The problem in one paragraph.** A VWAN hub has an outbound **route-map** that **summarizes** a set of
+`/24`s into a single `10.0.0.0/16` and advertises that aggregate to a branch. The `/16` is built
+("aggregated") from several contributing `/24` routes that reach the hub with **different origins** —
+some learned over **ExpressRoute** (carrying the MSEE ASN **12076** in the AS-path), one from a
+directly-attached **VNet**. Microsoft's engineering team found the generated `/16` can **inherit the
+attributes of whichever contributor "wins"** during aggregation; if it inherits the ExpressRoute-origin
+attributes it is classified **branch-derived** and — because **Branch-to-Branch is disabled** — silently
+**dropped** instead of advertised. The customer saw the summary appear and disappear across route
+recomputations. This lab tries to trigger that race and validate Microsoft's proposed fix.
+
+**Two investigation rounds.** **Round 2** (the main section immediately below, **current**) works from
+Microsoft's mixed-origin root cause. **Round 1** (collapsed near the bottom, **superseded**) was an
+earlier Routing-Intent hypothesis that did not reproduce; it is kept for history only. Sections lower
+down titled *"Results at a glance (Round 1)"*, *"Topology (Round 1)"* and the 52-file evidence index
+describe **Round 1**.
+
+**Reading the AS-paths** (listed left = most recent hop). The ASNs you'll see:
+
+| ASN | Who | Role in the lab |
+|---|---|---|
+| **65515** | Azure VWAN hub router | The ASN every VWAN hub uses; a summary re-originated by the hub shows just `65515` |
+| **12076** | Microsoft ExpressRoute **MSEE** | Auto-prepended onto any prefix learned over ExpressRoute private peering — the "ExpressRoute origin" marker the bug keys on |
+| **133937** | Megaport **MCR** (cloud router) | Stands in for "on-prem": injects the contributing `/24`s as static routes over ExpressRoute |
+| **65001** | Branch **NVA** | The on-prem VPN device where we observe what the hub actually advertises |
+
+**Lab-specific vocabulary.**
+- **Contributor** — one of the more-specific `/24` routes the hub aggregates into the `/16` summary.
+- **Recompute cycle** — we force the hub to re-run aggregation from scratch by detaching and re-attaching
+  the `summarize-out` route-map on a connection; each cycle is a fresh chance for the race to fire.
+- **b2b (Branch-to-Branch)** — a VWAN-wide toggle. When **disabled** (the customer's condition), routes
+  the hub considers "branch-derived" are not re-advertised to other branches.
+- **MCR / VXC** — Megaport Cloud Router / Virtual Cross Connect: a low-cost way to stand up a *real*
+  ExpressRoute private peering that injects our test `/24`s (free static routes) and gets the real MSEE
+  `12076` prepend — reproducing the customer's ExpressRoute-origin contributors without an on-prem site.
+- **NVA / BIRD / StrongSwan** — the branch is an Azure Linux VM running BIRD (BGP) + StrongSwan (IPsec),
+  acting as an on-prem VPN site attached to the hub. `birdc show route` is our ground-truth of what the
+  branch received.
+- **MSEE route table** — the ExpressRoute Microsoft-edge route table (`az network express-route
+  list-route-tables`); a second, independent vantage point where we can watch the same summary to
+  cross-check the branch.
+- **bow-tie** — each ExpressRoute circuit is cross-connected to both hubs (best-practice ER redundancy);
+  not essential to the bug but matches the customer's design.
+
+---
+
 ## Round 2 — mixed-origin attribute inheritance (2026-08-18)
 
 ### Microsoft's root-cause statement (paraphrased)
@@ -107,10 +159,12 @@ AS 65515) and three **ER-learned contributors** (`10.0.1/2/3.0/24`, AS `65515 12
 | **Mit-drop** | VNet + ER | ON | `mitigation-drop` (drop 12076) | n/a | ER `/24`s **dropped**, VNet `/24` kept | [65](show-output/round2/65-vpnbranch-mitigation-validation.txt) |
 | **Mit-full** | VNet + ER | ON | `mitigation-full` (drop 12076 → summarize) | ✅ present | `65515` (VNet-only source) | [65](show-output/round2/65-vpnbranch-mitigation-validation.txt) |
 
-*\*Case B is the decisive one: with **only** ER contributors and b2b off, a `Replace`-based summary is
-**still advertised** as a hub-originated `65515` route (verified after a forced detach/re-attach
-recompute — fresh BGP timestamp). This is what proves `Replace` re-originates and is immune to the
-branch-derived drop.*
+*\*Case B: with **only** ER contributors and b2b off, the `Replace`-based summary was **still advertised**
+as a hub-originated `65515` route (verified after a forced detach/re-attach recompute — fresh BGP
+timestamp). This shows the summary is **re-originated by the hub**, but — see the caveat in finding #2
+above — it does **not** prove `Replace` is immune to the branch-derived drop. The branch classification
+is an internal flag that is **not visible** in the advertised `65515` AS-path, and a single observation
+cannot rule out the intermittent race; that is what the multi-run sampling harness (finding #2) addresses.*
 
 ### Mitigation, step by step
 
@@ -181,7 +235,7 @@ provisioning. That variant is designed but untested (Gate D, dormant). See
 
 ---
 
-## Results at a glance
+## Results at a glance (Round 1 — superseded)
 
 | Phase / Gate | What was tested | NVA / Hub | Outcome | Primary evidence |
 |---|---|---|---|---|
@@ -207,7 +261,7 @@ The 6 expected summaries: `10.0.0.0/16`, `10.1.0.0/16`, `10.2.0.0/16`, `10.3.0.0
 
 ---
 
-## Topology
+## Topology (Round 1 — superseded)
 
 Three-hub Virtual WAN: `hub-us` (westus2) sources routes from 12 spoke VNets. Two European
 secured hubs (`hub-eu1` swedencentral, `hub-eu2` westeurope) each carry Azure Firewall Standard
