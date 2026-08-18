@@ -342,3 +342,38 @@ for a race:
   `dash` (CRLF and newline/positional splitting → `Syntax error ... expecting "done"`). **Fix:**
   base64-encode the script in PowerShell and run `echo <b64> | base64 -d | bash`. Single-line `;`-joined
   scripts also mangle command substitutions — base64 is the only robust path.
+
+### Scaling onprem contributors on the MCR — the export-whitelist gotcha (2026-08-18)
+
+To raise the probability of the mixed-origin race (more ER-learned contributors → higher chance one is
+branch-classified and "wins" the aggregate's attributes), the onprem `/24` set advertised via the Megaport
+MCR was scaled from **3 to 63** (`10.0.1.0/24 … 10.0.63.0/24`, avoiding the VNet/egress contributor
+`10.0.128.0/24`) — a **63 : 1** ER : VNet ratio. Two independent changes are **both** required, or the
+new routes silently fail to appear at the Azure MSEE:
+
+1. **MCR static routes (`ipRoutes`)** — gives the MCR a route to advertise. Update path:
+   `PUT /v3/product/vxc/{vxcUid}` with body `{"aEndConfig": {"interfaces": [ <full interface> ]}}`. The
+   `aEndConfig` is a **full replacement** of the A-End interface, so you must re-send the *entire*
+   interface (`ipAddresses`, `vlan`, `ipMtu`, and the complete `bgpConnections` entry) alongside the
+   expanded `ipRoutes` — omitting `bgpConnections` would tear down the BGP session. Read the live values
+   from `get_product(vxc).resources.csp_connection[0].interfaces[0]` first and reconstruct faithfully.
+2. **BGP export prefix-filter-list (`exportWhitelist`)** — the er-eu1 BGP connection carries
+   `exportWhitelist: 7589`, a prefix list that **permits only the specific prefixes it lists**. It was
+   scoped to the original 3 `/24`s, so any new `ipRoutes` would be installed on the MCR but **filtered out
+   of the BGP advertisement** to Azure. Must be expanded in lockstep:
+   `PUT /v2/product/mcr2/{mcrUid}/prefixList/{id}` with the full `{description, addressFamily, entries:[{prefix,action}]}`
+   (also a full replacement of entries).
+
+**Verification (authoritative = Azure side, not Megaport):** after the update, Megaport's VXC
+`bgp_status` field read `0` (session down) for several minutes — but this field is **unreliable** (same
+class of issue as the empty looking-glass). The trustworthy check is the Azure MSEE route table:
+`az network express-route list-route-tables -g <rg> -n er-eu1 --path primary --peering-name AzurePrivatePeering -o json`
+showed **all 63** onprem `/24`s (AS-PATH `133937 ?`), and er-eu2 still showed a single clean `10.0.0.0/16`
+with no specifics leaking — i.e. summarization still works unchanged at 63 contributors. Always validate
+MCR route changes from Azure, not from the Megaport `bgp_status`/looking-glass.
+
+Helper scripts (session workspace): `mcr-expand-prefixlist.py`, `mcr-expand-iproutes.py`,
+`mcr-prefixlists.py`. The scaled sampling harness is `race-sample2.ps1` (adds per-iteration `/16`
+presence tracking at **both** the VPN branch and the er-eu2 ER MSEE; anomaly if the summary drops at
+either). Empirical results of the scaled run are recorded separately once complete
+(`show-output/round2/73-race-sampling-scaled-summary.md`).
