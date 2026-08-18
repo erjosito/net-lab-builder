@@ -235,6 +235,38 @@ The portal exposes Drop in two places, with different semantics (confirmed in th
   AS-Path**. This is the **only** way to drop by AS-Path/Community, and is exactly what the MS mitigation
   and our `mitigation-drop` route-map use (`match asPath Contains 12076 -> Drop`). It is terminal: dropped
   routes receive no further modification.
+
+### Multi-run sampling result — the recompute race did NOT reproduce at 3:1 (2026-08-18)
+
+To test Microsoft's *nondeterministic* root cause (the `/16` aggregate intermittently inheriting an
+ER/branch classification and being dropped under b2b-off), a single observation is insufficient — the
+mechanism is a race across recompute cycles. Harness `race-sample.ps1` was run **N=20**: each iteration
+forces a fresh hub aggregation (detach/reattach `summarize-out` on `cx-nva1`, ~203 s) then densely polls
+the onprem branch RIB (30 samples @ 3 s), and captures both ER MSEE route tables for input-consistency.
+
+**Result — negative (no repro):**
+
+| Metric | Value |
+|---|---|
+| Iterations | 20 / 20 |
+| Branch `10.0.0.0/16` present | **600 / 600 dense samples** (`branch_p_min = 1.0` every iteration) |
+| Branch drops / anomalies | **0 / 0** |
+| Branch AS-PATH / community | `65515` always / none (summarization strips both) |
+| MSEE contributor rows | 11, constant every cycle |
+| `er-eu2` MSEE `/16` vs branch `/16` | agreed every cycle (no flap); `er-eu1` MSEE never showed the `/16` (only the `/24`s) — expected, `summarize-out` is only on the er2 connection |
+
+At the current **3 ER-learned `/24` : 1 VNet/egress** contributor ratio, pure recompute cycling was
+**deterministic in this environment** — the summary was rebuilt and advertised on every fresh aggregation
+and never once inherited a branch classification. **"Couldn't reproduce" ≠ "`Replace` is immune"**: the
+branch-classification flag is internal and invisible in the (stripped) AS-PATH, so presence/absence of the
+`/16` is the only external signal, and it never went absent in 20 tries. **Next step to raise repro odds:**
+skew the ratio by expanding the onprem `/24` set (Megaport MCR `ipRoutes` on the er-eu1 VXC) so a
+branch-attributed contributor is more likely to "win" aggregation, then re-run the harness. The MS
+mitigation (`asPath Contains 12076 -> Drop` before summarize) is the correct deterministic fix regardless.
+
+Evidence: [`show-output/round2/71-race-sampling-summary.md`](show-output/round2/71-race-sampling-summary.md)
+· raw [`70-race-sampling-run.txt`](show-output/round2/70-race-sampling-run.txt) /
+[`70-race-sampling.csv`](show-output/round2/70-race-sampling.csv).
 - **`Modify` -> Route modifications -> Route-prefix, Action = Drop** (vs Replace). Drops only the
   specific **prefix values** listed in the modification, **prefix-only** (cannot match AS-Path/Community),
   and can be **combined** with other modifications on the remaining matched routes in the same rule
@@ -274,3 +306,39 @@ set it by PUTting the connection sub-resource with `az rest` (api-version 2023-0
 `properties.routingConfiguration.outboundRouteMap.id`. Rules JSON for `az network vhub route-map create
 --rules @file` must be a JSON **array** (PowerShell `ConvertTo-Json` collapses a single-element array to
 an object — write the array literally).
+
+### Testing mechanism correction — single snapshots cannot see a race; sample densely, many times
+
+The customer only saw the summary retired under **certain circumstances**, which points to a
+**nondeterministic / race condition** in how the aggregate inherits attributes across recompute cycles.
+Our earlier method took **one snapshot per case** and read the **advertised AS-PATH** — both are wrong
+for a race:
+
+- **The advertised AS-PATH is the wrong signal.** Summarization strips Community and AS-PATH
+  ([docs](https://learn.microsoft.com/en-us/azure/virtual-wan/route-maps-about)), so the branch always
+  sees `65515` regardless of the internal branch/VNet classification. The classification that drives the
+  branch-to-branch drop is an **internal "hidden flag"** — plausibly the inherited **BGP community**
+  (ER-learned contributors arrive tagged `65517:65517`; the VNet contributor does not). Even though that
+  community is stripped from the *advertised* summary, the hub's *internal* drop decision can still key
+  off it. So the only valid external signal is **presence vs. absence of the `/16` at the observation
+  point**, sampled across **many independent recompute events**.
+
+- **Corrected harness** (`files/race-sample.ps1`): for each of N iterations it (1) forces a genuine fresh
+  aggregation by **detaching then re-attaching** the outbound route-map on `cx-nva1` (each re-attach
+  re-runs the Replace/summarize against the current RIB — a fresh aggregation event, ~200 s/cycle), then
+  (2) **densely polls the branch on-box** via `birdc` (30 samples @ 3 s ≈ 90 s) to catch transient
+  retirements, capturing presence + AS-PATH + community each sample, and (3) snapshots **both MSEE route
+  tables** (`az network express-route list-route-tables`, primary+secondary) to prove the *input*
+  contributors stay constant while the *output* is sampled. Any iteration where the `/16` goes absent,
+  gains AS 12076, or shows a community is flagged as an anomaly.
+
+- **Two observation points for the same summary.** `hub-eu1` applies `summarize-out` on **two** outbound
+  connections: the VPN branch (`cx-nva1`) *and* the ER connection to the `er-eu2` circuit
+  (`conn-eu1-er2`). So `er-eu1`'s MSEE sees the specific `/24`s (no route-map on `conn-eu1-er1`) while
+  `er-eu2`'s MSEE sees `10.0.0.0/16` — a built-in **cross-point consistency check**: compare the `/16` at
+  the VPN branch against the `/16` at the `er-eu2` MSEE each cycle.
+
+- **`az vm run-command` + multi-line bash:** passing a multi-line script via `--scripts` corrupts under
+  `dash` (CRLF and newline/positional splitting → `Syntax error ... expecting "done"`). **Fix:**
+  base64-encode the script in PowerShell and run `echo <b64> | base64 -d | bash`. Single-line `;`-joined
+  scripts also mangle command substitutions — base64 is the only robust path.

@@ -46,11 +46,18 @@ hand (mixed-origin attribute inheritance + Branch-to-Branch disabled).
 > stripped AS-PATH — MS explicitly states a Replace-generated `/16` *can* be "treated as branch-derived
 > and then dropped". So the advertised AS-PATH is the **wrong signal**: it is always `65515` and can
 > never reveal the branch classification. The only valid signal is **presence vs. absence of the `/16`
-> at the branch across many recompute cycles**. We saw it present in every sampled cycle, but that is a
-> **small sample of a nondeterministic** behaviour — "couldn't reproduce" means "didn't hit a
-> branch-inheriting cycle", not "`Replace` is safe". The MS mitigation (drop AS-12076 before summarize)
-> is the correct deterministic fix regardless, because it removes the branch-attributed contributor from
-> the aggregation input entirely.
+> at the branch across many recompute cycles**. We built a multi-run sampling harness
+> ([`race-sample.ps1`](show-output/round2/71-race-sampling-summary.md)) that forces a fresh hub
+> aggregation each cycle (detach/reattach `summarize-out`) and densely polls the branch (30 samples/cycle).
+> Result of **N=20 cycles (600 dense samples): the `/16` was present in every single sample — 0 drops,
+> 0 anomalies**, MSEE inputs constant (11 contributor rows), branch/`er-eu2`-MSEE agreeing every cycle.
+> So at the current **3 ER : 1 VNet** contributor ratio, pure recompute is **deterministic in this
+> environment** and we did **not** reproduce the retirement. This is a **negative result, not proof
+> `Replace` is immune** — "couldn't reproduce" means "didn't hit a branch-inheriting cycle in 20 tries".
+> Next step to raise repro odds: skew the ER:VNet ratio by adding many more onprem `/24`s. The MS
+> mitigation (drop AS-12076 before summarize) is the correct deterministic fix regardless, because it
+> removes the branch-attributed contributor from the aggregation input entirely.
+> (Full evidence: [`71-race-sampling-summary.md`](show-output/round2/71-race-sampling-summary.md).)
 >
 > **3. Branch-to-Branch gates ER→VPN transit (confirmed).** With b2b **disabled** the ER-learned `/24`s
 > (AS 12076) never reach the VPN branch at all; with b2b **enabled** they arrive as
