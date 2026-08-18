@@ -1,5 +1,16 @@
 EdgeActionConsoleLog | where TimeGenerated >= ago(30m) | order by TimeGenerated asc
 
+> EVIDENCE SCOPE NOTE (added 2026-08-18T17:13 UTC+2):
+> This file captures EdgeActionConsoleLog from EA resource `eajwtvalidate` (Sessions 3–4,
+> timestamps 10:10–10:32 UTC). `eajwtvalidate3` replaced `eajwtvalidate` at ~12:45 UTC+2
+> (Session 5) but was created WITHOUT diagnostic settings. EA diagnostic settings do not
+> transfer when a resource is replaced. A new diagnostic setting was manually applied to
+> `eajwtvalidate3` at 2026-08-18T17:12:36 UTC+2. EdgeActionConsoleLog entries for Run 4
+> real-token tests (S7/S9 at 13:39 UTC+2) are NOT present in this file and are pending
+> ingestion post-correction. HTTP 200 responses remain the authoritative evidence for those
+> scenarios. New log entries will appear in LAW after ~3–10 min ingestion delay.
+>
+
 10:10:34  ref=20260818T101034Z-…  EA_REJECT code=401 reason=MISSING_TOKEN
 10:10:41  ref=20260818T101041Z-…  EA_REJECT code=401 reason=MISSING_TOKEN
 10:10:47  ref=20260818T101047Z-…  EA_REJECT code=401 reason=MISSING_TOKEN

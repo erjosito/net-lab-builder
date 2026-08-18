@@ -637,7 +637,7 @@ Two registrations created:
 
 **`app-edge-jwt-client`** (daemon client)
 - API permission: `app-edge-jwt-api / Lab.Admin` (Application permission)
-- Admin consent: required before token acquisition (currently **BLOCKED by B1**)
+- Admin consent: required before token acquisition — resolved in Session 5 via Graph `appRoleAssignments` API (see LL-015)
 - Client secret: held in `$env:CLIENT_SECRET` only; never written to any file
 
 ### 11.4 A2 — Edge Actions deployment
@@ -696,16 +696,20 @@ The full EA deployment lifecycle via REST:
    Always use AFD rule PUT to trigger attachment.
 ```
 
-### 11.6 Active resources (2026-08-18)
+### 11.6 Active resources (2026-08-18, corrected 17:12 UTC+2)
+
+> **EA replacement note:** `eajwtvalidate3` replaced `eajwtvalidate` in Session 5 due to broken `swapDefault` API. EA diagnostic settings **do not transfer** when a resource is replaced — `diag-eajwtvalidate` remained attached to the orphaned old EA only. A new diagnostic setting on `eajwtvalidate3` was manually applied at 2026-08-18T17:12:36 UTC+2. `EdgeActionConsoleLog` entries from `eajwtvalidate3` are pending ingestion; log evidence in `show-output/001-EdgeActionConsoleLog-30min.txt` originates from the prior `eajwtvalidate` sessions.
 
 | Resource | Name | State |
 |----------|------|-------|
-| Edge Action (JWT) | `eajwtvalidate` | provisioningState=Succeeded |
-| EA version (JWT) | `eajwtvalidate/v1` | isDefaultVersion=True, validationStatus=Succeeded |
-| EA diagnostics | `diag-eajwtvalidate` | UserLog + ServiceLog → law-edge-jwt-lab |
+| Edge Action (JWT, **active**) | `eajwtvalidate3` | provisioningState=Succeeded |
+| EA version (JWT, **active**) | `eajwtvalidate3/v1` | isDefaultVersion=True, validationStatus=Succeeded |
+| EA diagnostics (active EA) | manually applied 2026-08-18T17:12:36 | UserLog + ServiceLog → law-edge-jwt-lab (**pending ingestion**) |
+| Edge Action (JWT, orphaned) | `eajwtvalidate` | orphaned — dangling attachment, portal/Support needed |
+| EA diagnostics (orphaned) | `diag-eajwtvalidate` | On orphaned `eajwtvalidate` only |
 | Rule set (JWT) | `rsedgejwt` | provisioningState=Succeeded |
-| Rule (JWT) | `ruleprotected` | Succeeded; matchValues=["/protected", "/admin"] |
-| Edge Action (probe) | `eaprobe2` | Active but orphaned (dangling null attachment) |
+| Rule (JWT) | `ruleprotected` | Succeeded; matchValues=["/protected", "/admin"]; references `eajwtvalidate3` |
+| Edge Action (probe) | `eaprobe2` | Active (probe route `/debug/*`) |
 | EA orphaned | `eacapabilityprobe` | dangling null attachment, circular delete |
 
 ---
@@ -929,12 +933,14 @@ Real Entra token test (Run 4): `/protected` and `/admin` with Lab.Admin → **20
 
 | Table | Content | Collection |
 |-------|---------|-----------|
-| `EdgeActionConsoleLog` | `console.log()` from EA code | EA resource → diagnostic settings → LAW |
+| `EdgeActionConsoleLog` | `console.log()` from EA code | EA resource → **per-EA** diagnostic settings → LAW |
 | `AzureDiagnostics` (Category=FrontDoorAccessLog) | Every request processed by AFD | AFD profile → diagnostic settings → LAW |
 | `AppServiceHTTPLogs` | HTTP access log from App Service | App Service → diagnostic settings → LAW |
-| `EdgeActionServiceLog` | Platform-level EA service events | EA resource → diagnostic settings → LAW |
+| `EdgeActionServiceLog` | Platform-level EA service events | EA resource → **per-EA** diagnostic settings → LAW |
 
 > **Note:** `EdgeActionConsoleLog` is a **top-level table**, not a Category in `AzureDiagnostics`. Query as `EdgeActionConsoleLog | ...`, not `AzureDiagnostics | where Category == "EdgeActionConsoleLog"`.
+
+> **Critical:** EA diagnostic settings (`UserLog`, `ServiceLog`) are **per-EA-resource** and **do not transfer** when an EA resource is replaced. If you create a new EA (e.g., due to broken `swapDefault`), you must re-apply diagnostic settings to the new resource before any log evidence can be collected. The AFD profile `FrontDoorAccessLog` diagnostic setting is **separate** from EA resource settings and persists independently. Both must be present for full observability. See LL-020.
 
 ### 14.2 Key columns
 

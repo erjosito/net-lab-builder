@@ -11,11 +11,13 @@ Niobe · 2026-08-17/18
 ```
 evidence/          ← one .md per scenario (S1–S9)
 show-output/       ← numbered raw CLI/KQL output files
-  001-EdgeActionConsoleLog-30min.txt
+  001-EdgeActionConsoleLog-30min.txt   ← from eajwtvalidate (Runs 2–3, ~10:10–10:32 UTC)
   002-FrontDoorAccessLog-30min.txt
   003-HTTP-requests-evidence.txt
 screenshots/       ← best-effort portal screenshots
 ```
+
+> **Log evidence scope:** `001-EdgeActionConsoleLog-30min.txt` was captured from `eajwtvalidate` during Sessions 3–4 (before `eajwtvalidate3` was created). `eajwtvalidate3` had no diagnostic settings from creation (12:45 UTC+2) until manual correction at **2026-08-18T17:12:36 UTC+2**. `EdgeActionConsoleLog` entries from Run 4 (S7/S9 real-token tests at 13:39 UTC+2) are **pending ingestion** post-correction. HTTP 200 responses are the authoritative evidence for S7/S9 PASS; EA log corroboration will appear in LAW after ingestion completes.
 
 Sanitization: all committed files pass `tests/Confirm-Sanitization.ps1`. Zero raw subscription IDs, tenant IDs, full JWTs, or client secrets.
 
@@ -29,15 +31,15 @@ Sanitization: all committed files pass `tests/Confirm-Sanitization.ps1`. Zero ra
 | S2 | Missing token | 401 | **401** | `MISSING_TOKEN` | **NO** | Edge blocks | ✅ PASS |
 | S3a | Open routes (/health, /public) | 200 | **200** | no EA | YES | Expected | ✅ PASS |
 | S3b | Malformed token | 401 | **401** | `MALFORMED_HEADER` | NO | Edge blocks | ✅ PASS |
-| S3c | Valid Entra token → 200 | 200 | **200** | `CLAIMS_ONLY`+`ACCEPT` (EA); 200 (origin) | YES | Claims-only + origin RS256 | ✅ PASS |
+| S3c | Valid Entra token → 200 | 200 | **200** | expected `CLAIMS_ONLY`+`ACCEPT` — **log pending** (eajwtvalidate3 diag corrected 17:12) | YES | Claims-only + origin RS256 | ✅ PASS |
 | S4 | Expired token | 401 | **401** | `EXPIRED exp=…` | NO | Edge blocks | ✅ PASS |
 | S5a | Wrong audience | 401 | **401** | `AUD_FAIL got=…` | NO | Edge blocks | ✅ PASS |
 | S5b | Wrong issuer | 401 | **401** | `ISS_FAIL got=…` | NO | Edge blocks | ✅ PASS |
 | S6 | Tampered sig (CONDITIONAL) | EA pass, origin 401 | EA: 200 / origin: **401** | `CLAIMS_ONLY` + `ACCEPT` | YES | Origin RS256 enforces | ✅ PASS |
 | S7a | Missing role → /admin 403 | 403 | **403** | `ROLE_FAIL` | NO | Edge blocks | ✅ PASS |
-| S7b | Real Lab.Admin token → /protected 200 | 200 | **200** | `ACCEPT` (EA); 200 (origin) | YES | Full E2E: claims-only EA + origin RS256 | ✅ PASS |
+| S7b | Real Lab.Admin token → /protected 200 | 200 | **200** | expected `ACCEPT` — **log pending** (eajwtvalidate3 diag corrected 17:12) | YES | Full E2E: claims-only EA + origin RS256 | ✅ PASS |
 | S8 | Direct origin bypass | 403 | **403** | N/A (no AFD) | Blocked by ARM | Access restriction effective | ✅ PASS |
-| S9 | Real Lab.Admin token → /admin 200 | 200 | **200** | `ACCEPT` (EA); 200 (origin) | YES | Role + claims-only + origin RS256 | ✅ PASS |
+| S9 | Real Lab.Admin token → /admin 200 | 200 | **200** | expected `ACCEPT` — **log pending** (eajwtvalidate3 diag corrected 17:12) | YES | Role + claims-only + origin RS256 | ✅ PASS |
 
 **11/11 sub-scenarios PASS. All blockers resolved as of 2026-08-18T13:39 UTC+2.**
 **No critical findings (NIOBE-CRIT-001/002/003 all clear).**
@@ -170,7 +172,7 @@ Sanitization: all committed files pass `tests/Confirm-Sanitization.ps1`. Zero ra
 |-----------|----------|--------|---------|
 | `/admin` with real Lab.Admin Entra token → 200 | 200 | **200** | ✅ PASS |
 | `edge_jwt_status` header | `VALIDATED` | `VALIDATED` | ✅ PASS |
-| EA log: `ACCEPT` | Present | Present | ✅ PASS |
+| EA log: `ACCEPT` | Present | **pending ingestion** (eajwtvalidate3 diag corrected 17:12:36) | ⏳ PENDING LOG |
 | Origin returns `{"route":"admin","roles":["Lab.Admin"]}` | Present | Present | ✅ PASS |
 | NIOBE-CRIT-003 (/protected returns 200 on fail-open) | No trigger | Not tested (A4 not deployed) | ℹ️ TEACHING GAP |
 
@@ -186,9 +188,12 @@ Sanitization: all committed files pass `tests/Confirm-Sanitization.ps1`. Zero ra
 | X-Azure-Ref in every AFD response | YES | ✅ Confirmed |
 | /health returns 200 | YES | ✅ Confirmed |
 | AFD origin healthy | YES | ✅ Confirmed |
+| EA log evidence (S1–S7a) from `eajwtvalidate` | All reason codes confirmed | ✅ Captured in `show-output/001-EdgeActionConsoleLog-30min.txt` |
+| EA log evidence (S3c, S7b, S9) from `eajwtvalidate3` | Pending ingestion | ⏳ Diag corrected 17:12:36; entries expected in LAW after ~3–10 min |
+| AFD FrontDoorAccessLog (all scenarios) | Present | ✅ Confirmed (separate from EA diag setting) |
 | No raw subscription ID in committed files | ENFORCED | ✅ Sanitized |
 | No raw tenant ID in committed files | ENFORCED | ✅ Sanitized |
-| No full JWT (3-part) in committed files | ENFORCED | ✅ Sanitized |
+| No full JWT (3-part) in committed files | ENFORCED | ✅ Never written to disk |
 | No client secret in committed files | ENFORCED | ✅ Never written to disk |
 
 ---
@@ -201,8 +206,9 @@ Sanitization: all committed files pass `tests/Confirm-Sanitization.ps1`. Zero ra
 | LF-002 | `edgeActionsStatusCode_s = 200` means EA *executed* successfully. The 401/403 client-facing response is synthesised by EA code and does not separately appear in `httpStatusCode_d`. |
 | LF-003 | `httpStatusCode_d = None` in `FrontDoorAccessLog` when EA rejects before origin. Origin HTTP status is not logged when the EA handles the response. |
 | LF-004 | EA response body when EA returns 401/403 is AFD's default HTML error page — EA code only sets `event.response.response_code`. Custom body is not documented. |
-| LF-005 | `/edge-only` route is NOT attached to `eajwtvalidate` rule set (`ruleprotected` only matches `/protected` and `/admin`). Unauthenticated GET /edge-only returns 200 — teaching behaviour demonstrated already. |
+| LF-005 | `/edge-only` route is NOT attached to `eajwtvalidate3` rule set (`ruleprotected` only matches `/protected` and `/admin`). Unauthenticated GET /edge-only returns 200 — teaching behaviour demonstrated already. |
 | LF-006 | `validationStatus` appearing as `Succeeded` in GET response is premature (~15s). `addAttachment` requires ~17 min after `deployVersionCode`. |
+| LF-007 | EA diagnostic settings (`UserLog`, `ServiceLog`) are per-EA-resource and **do not transfer** when an EA resource is replaced. `eajwtvalidate3` was created without diagnostics; manually corrected 2026-08-18T17:12:36. `EdgeActionConsoleLog` entries from Run 4 (13:39 UTC+2) are absent from LAW and pending ingestion post-correction. See LL-020. |
 
 ---
 

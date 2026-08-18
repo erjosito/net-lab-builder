@@ -4,6 +4,49 @@ All times local (UTC+2). Subscription and tenant IDs redacted.
 
 ---
 
+## Session 7 — 2026-08-18T17:13 UTC+2 (Tank, Copilot — script fix)
+
+### Deploy-Lab.ps1 patched: automatic EA diagnostic settings
+
+| Time | Action | Result |
+|------|--------|--------|
+| 17:13 | Added `Set-EaDiagnosticSettings` helper function to `Deploy-Lab.ps1` | Idempotent, dynamic EA name, `UserLog`+`ServiceLog` |
+| 17:13 | Added call in A2 section immediately after EA resource creation | Before version/code/rule-set creation; `ShouldProcess`-gated |
+| 17:13 | Added A3 pattern comment at end of script | Future A3 EA deployments must call same function |
+| 17:13 | Updated `README.md` A2/A3 deployment sequence notes + troubleshooting row | Documents automatic diagnostic settings |
+| 17:13 | PowerShell syntax validation passed | 0 parse errors |
+
+**Confirmed categories** (read from live `eajwtvalidate3` settings added by Jose):
+- `UserLog` → `EdgeActionConsoleLog` table in LAW
+- `ServiceLog` → `EdgeActionServiceLog` table in LAW
+- Setting name: `ea-logs` (idempotent — re-run will update, not duplicate)
+- Metric category `Latency` exists but is left disabled (matches user's manual setting)
+
+**Files changed:**
+- `deploy/Deploy-Lab.ps1` — added `Set-EaDiagnosticSettings` function + A2 call site + A3 comment
+- `deploy/README.md` — A2/A3 sequence updated, troubleshooting row updated
+
+---
+
+## Session 6 — 2026-08-18T17:12 UTC+2 (Jose, manual correction)
+
+### Diagnostic settings gap: `eajwtvalidate3` had no UserLog/ServiceLog diagnostic setting
+
+| Time | Action | Result |
+|------|--------|--------|
+| 17:12:36 | Added diagnostic settings to `eajwtvalidate3` EA resource | `UserLog` + `ServiceLog` → `law-edge-jwt-lab` |
+
+**Root cause:** When `eajwtvalidate3` was created in Session 5 (12:45 UTC+2) as a replacement for the broken `eajwtvalidate`, the Deploy-Lab.ps1 `addEaDiagnostics` step was not re-run for the new resource. Diagnostic settings on Azure resources are **not transferred when a resource is replaced**. The setting `diag-eajwtvalidate` applied to the orphaned `eajwtvalidate` only.
+
+**Impact on evidence:**
+- All `EdgeActionConsoleLog` entries in `show-output/001-EdgeActionConsoleLog-30min.txt` (timestamps 10:10–10:32 UTC) originate from `eajwtvalidate` (Sessions 3–4). They confirm all reason codes (MISSING_TOKEN, MALFORMED_HEADER, EXPIRED, AUD_FAIL, ISS_FAIL, ROLE_FAIL) on the correct EA logic.
+- Run 4 real-token tests (S7/S9, 13:39 UTC+2) were executed against `eajwtvalidate3` which had **no diagnostic settings at that time** → no `EdgeActionConsoleLog` entries exist for those requests. HTTP 200 responses are the authoritative evidence for S7/S9 PASS.
+- New `EdgeActionConsoleLog` entries from `eajwtvalidate3` will appear **pending ingestion** after 17:12:36. Ingestion delay is 3–10 min.
+
+**Lesson:** See LL-020 in `lessons-learned.md`.
+
+---
+
 ## Session 5 — 2026-08-18T12:22–13:45 UTC+2 (Tank, Copilot)
 
 ### B1 Resolution, Audience Fix, S7/S9 Real-Token Validation ✅
@@ -39,6 +82,7 @@ All times local (UTC+2). Subscription and tenant IDs redacted.
 | `eajwtvalidate3/v1` | isDefaultVersion=True, validationStatus=Succeeded |
 | `ruleprotected` (updated) | Now references `eajwtvalidate3` instead of `eajwtvalidate` |
 | App Service Plan | Scaled F1 → B1 (CPU quota issue) |
+| ⚠️ `eajwtvalidate3` diagnostic setting | **NOT created in this session** — gap discovered 2026-08-18T17:12. EA diagnostic settings do not transfer when replacing an EA resource. `EdgeActionConsoleLog` from `eajwtvalidate3` was NOT routed to LAW during Run 4. Manually corrected in Session 6. |
 
 **Cost impact:** B1 App Service Plan ≈ $0.075/hr ≈ $1.80/day (up from ~$0 F1). Total estimate: ~$1.80/day (within lab guardrail).
 
@@ -80,7 +124,7 @@ All times local (UTC+2). Subscription and tenant IDs redacted.
 |----------|------|-------|
 | Edge Action | `eajwtvalidate` | provisioningState=Succeeded |
 | EA version | `eajwtvalidate/v1` | isDefaultVersion=True, validationStatus=Succeeded |
-| EA diagnostics | `diag-eajwtvalidate` | UserLog+ServiceLog → law-edge-jwt-lab |
+| EA diagnostics | `diag-eajwtvalidate` | UserLog+ServiceLog → law-edge-jwt-lab (**on `eajwtvalidate` only** — active EA at this time) |
 | Rule set | `rsedgejwt` | provisioningState=Succeeded |
 | Rule | `ruleprotected` | Succeeded; matchValues=["/protected","/admin"] |
 | Route | `rt-api` | ruleSets=[rsedgejwt]; provisioningState=Succeeded |

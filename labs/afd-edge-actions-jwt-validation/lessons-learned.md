@@ -209,6 +209,22 @@ Both the EA and origin must be updated when switching between v1 and v2 token ac
 
 **Reuse:** When scripting credential rotation, add at least a 60-second wait (with retry logic) between `az ad app credential reset` and the first token acquisition attempt.
 
+---
+
+### LL-020 — EA diagnostic settings do not transfer when an EA resource is replaced
+
+**Finding:** When `eajwtvalidate3` was created to replace the broken `eajwtvalidate` EA, no diagnostic settings were applied to the new resource. The `diag-eajwtvalidate` setting remained attached to the orphaned `eajwtvalidate` only. `EdgeActionConsoleLog` and `EdgeActionServiceLog` were not routed to LAW from `eajwtvalidate3` during Run 4 (13:39 UTC+2). The gap was discovered and manually corrected at **2026-08-18T17:12:36 UTC+2** by Jose.
+
+**Why this happens:** Azure Monitor diagnostic settings are properties of the specific resource instance, not the resource type or namespace. Creating a new EA resource (`eajwtvalidate3`) starts with no diagnostic settings, regardless of what the previous resource (`eajwtvalidate`) had configured.
+
+**Impact:** Any EA console log statements (`console.log(...)`) written during the gap period will never appear in LAW — they are lost, not buffered. HTTP-level evidence (response codes) is unaffected.
+
+**The two separate diagnostic settings required for full EA observability:**
+1. **EA resource** → `UserLog` + `ServiceLog` → LAW: required for `EdgeActionConsoleLog` (your `console.log()` output) and `EdgeActionServiceLog` (platform events). **Must be re-applied to every new EA resource.**
+2. **AFD profile** → `FrontDoorAccessLog` → LAW: required for `edgeActionsStatusCode_s`, `edgeActionsAgentType_s` per-request fields. **Persists independently of EA resource changes.**
+
+**Reuse:** After any EA resource replacement (whether due to broken swapDefault or code changes), immediately run the `addEaDiagnostics` step from `Deploy-Lab.ps1` against the new resource name. Add this as a required post-replacement checklist item. Include in deployment runbook: "When creating a replacement EA resource, apply diagnostic settings before running any validation tests."
+
 
 
 ### DESIGN-001 — JWT sample absent from EdgeActionsSamples repo (active gap)

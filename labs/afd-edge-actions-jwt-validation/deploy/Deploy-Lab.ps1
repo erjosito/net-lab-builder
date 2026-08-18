@@ -53,6 +53,36 @@ function ConvertTo-Base64File($path) {
     return [Convert]::ToBase64String($bytes)
 }
 
+# ─── Helper: create/update diagnostic settings on any Edge Action ─────────────
+# Idempotent: az monitor diagnostic-settings create upserts by name.
+# Always targets the active EA name (parameter); never hard-codes eajwtvalidate.
+# Categories confirmed from live eajwtvalidate3 settings (2026-08-18):
+#   UserLog  → EdgeActionConsoleLog table in LAW  (required for EA console.log)
+#   ServiceLog → EdgeActionServiceLog table in LAW (EA lifecycle/error events)
+# Note: diagnostic settings must be on the EA resource itself, NOT the AFD profile.
+function Set-EaDiagnosticSettings([string]$EaName, [string]$SubId, [string]$Rg, [string]$LawWsName) {
+    $eaResourceId = "/subscriptions/$SubId/resourceGroups/$Rg/providers/Microsoft.Cdn/EdgeActions/$EaName"
+    $lawId = (az monitor log-analytics workspace show `
+        --workspace-name $LawWsName `
+        --resource-group $Rg `
+        --query id -o tsv 2>&1)
+    if (-not $lawId -or $lawId -match '^ERROR') {
+        Write-Warning "[DIAG] Could not resolve LAW workspace '$LawWsName' in '$Rg': $lawId"
+        return
+    }
+    # JSON written inline — az monitor diagnostic-settings create handles its own quoting
+    # (no az rest @file workaround needed here; only az rest --body is affected on Windows)
+    $logsJson = '[{"category":"UserLog","enabled":true},{"category":"ServiceLog","enabled":true}]'
+    Write-Host "[DIAG] Upserting diagnostic settings 'ea-logs' on $EaName → $LawWsName"
+    az monitor diagnostic-settings create `
+        --resource $eaResourceId `
+        --name 'ea-logs' `
+        --workspace $lawId `
+        --logs $logsJson `
+        --output none 2>&1
+    Write-Host "[DIAG] 'ea-logs' (UserLog + ServiceLog) active on $EaName"
+}
+
 # ═══ PREFLIGHT ════════════════════════════════════════════════════════════════
 Write-Step 'PREFLIGHT'
 $acct = Assert-AzLogin
@@ -373,6 +403,11 @@ if ($PSCmdlet.ShouldProcess($eaName, 'Create Edge Action probe')) {
     Write-Host "[A2] EdgeAction $eaName created"
     Start-Sleep 10
 
+    # Attach diagnostic settings immediately after EA resource exists (idempotent)
+    if ($PSCmdlet.ShouldProcess($eaName, 'Create diagnostic settings')) {
+        Set-EaDiagnosticSettings $eaName $subscriptionId $ResourceGroup $LawName
+    }
+
     # Create v1 (default version) — isDefaultVersion MUST be string "True", not boolean
     @{ location = "global"; properties = @{ deploymentType = "zip"; isDefaultVersion = "True" } } | `
       ConvertTo-Json -Depth 5 | Set-Content "$buildDir\v1-create.json" -Encoding UTF8
@@ -498,3 +533,6 @@ Write-Host "`n[DONE] A0/A1/A2 complete. RunId=$RunId" -ForegroundColor Green
 Write-Host "[NEXT] Run S1 probe: query EdgeActionConsoleLog in Log Analytics after GET /debug/request"
 Write-Host "[NEXT] Update s1_gate_verdict in deployment-output.json"
 Write-Host "[NEXT] If GO/CONDITIONAL: run Deploy-Lab.ps1 -Stage A3A4 (separate call, Jose must re-approve)"
+Write-Host "[NEXT] A3 pattern: after creating the JWT EA resource, call:"
+Write-Host "         Set-EaDiagnosticSettings <eaName> `$subscriptionId `$ResourceGroup `$LawName"
+Write-Host "       The function is idempotent and targets any EA name dynamically."

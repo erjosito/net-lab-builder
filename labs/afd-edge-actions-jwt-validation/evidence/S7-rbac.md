@@ -44,9 +44,8 @@ Full E2E confirmed: client → AFD → EA (claims-only accept) → origin (jose 
 
 > **AUD note:** Entra v2 `client_credentials` with `accessTokenAcceptedVersion=2` issues tokens with `aud = bare GUID` (not `api://appId`). EA and origin updated accordingly. A token with `aud = api://...` would now fail AUD_FAIL. See LL-016.
 
-**Evidence source:** Tank `show-output/smoke-test-results.md` Run 4.
+> **EA log evidence:** `eajwtvalidate3` had no diagnostic setting from creation (12:45 UTC+2) until manual correction at 2026-08-18T17:12:36 UTC+2. `EdgeActionConsoleLog` entries for Run 4 are **pending ingestion** in LAW. HTTP 200 responses are the authoritative PASS evidence.
 
-## Verdict
-- S7a (no role → 403): PASS ✅
+**Evidence source:** Tank `show-output/smoke-test-results.md` Run 4.
 - S7b (Lab.User on /protected, EA accepts): PASS ✅
 - S7c (real Lab.Admin token, full E2E): PASS ✅ (Run 4, 2026-08-18T13:39 UTC+2)

@@ -39,6 +39,8 @@ Token: Entra v2 `client_credentials` from `app-edge-jwt-client` SP (Graph `appRo
 
 Active EA: `eajwtvalidate3/v1` (new EA resource, correct bare-GUID audience, `isDefaultVersion=True`).
 
+> **EA log evidence:** `eajwtvalidate3` had no diagnostic setting from creation (12:45 UTC+2) until manual correction at 2026-08-18T17:12:36 UTC+2. `EdgeActionConsoleLog` entries for this run are **pending ingestion** in LAW. HTTP 200 responses are the authoritative PASS evidence; expected EA log entries (`CLAIMS_ONLY`, `ACCEPT`) will appear post-correction.
+
 **Evidence source:** Tank `show-output/smoke-test-results.md` Run 4.
 
 ## Verdict

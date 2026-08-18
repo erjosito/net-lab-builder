@@ -74,6 +74,7 @@ A1  Entra ID: app-edge-jwt-api (API app + Lab.Admin role)
     CLIENT_SECRET → $env:CLIENT_SECRET only (never written to disk)
 
 A2  ea-capability-probe Edge Action → /debug/* route
+    Diagnostic settings `ea-logs` (UserLog + ServiceLog) created on EA immediately after resource creation
     AFD rule set rs-edge-probe created and attached to rt-api route
 
 S1-GATE
@@ -82,6 +83,7 @@ S1-GATE
 
 A3  (Conditional on S1-GATE GO/CONDITIONAL)
     ea-jwt-validate Edge Action → /edge-only, /protected, /admin routes
+    Diagnostic settings `ea-logs` (UserLog + ServiceLog) created on EA immediately after resource creation
     ea-execution-filter Edge Action version (execution filter: X-Test-Fail: 1)
 
 A4  Token acquisition + scenario smoke tests S2-S9
@@ -118,7 +120,7 @@ Run `.\Cleanup-Lab.ps1 -Confirmed` (with Jose's approval) to stop billing.
 | Issue | Check |
 |-------|-------|
 | App Service 403 on `/health` | Access restriction rule 100 may have wrong header; verify `az webapp config access-restriction show` |
-| EdgeActionConsoleLog empty after 10 min | Verify EA is attached to route; check `edgeActionsStatusCode` in FrontDoorAccessLog |
+| `EdgeActionConsoleLog` empty after 10 min | (1) Verify EA is attached to route; check `edgeActionsStatusCode` in FrontDoorAccessLog. (2) Confirm diagnostic settings `ea-logs` exist on the **EA resource** (not the AFD profile): `az monitor diagnostic-settings list --resource /subscriptions/.../providers/Microsoft.Cdn/EdgeActions/<name>` |
 | `InvokeEdgeAction` action not found in Rules Engine API | Try `2025-12-01-preview` API version in deploy script |
 | Admin consent fails | Verify `Application Administrator` role in Entra portal |
 | Code upload slow | Normal — portal docs say up to 10 min; wait and retry |

@@ -27,9 +27,9 @@ EA chain:
 5. Origin `jose` performs RS256/JWKS verification: fetches JWKS, verifies signature, confirms same claims
 6. Origin returns 200 with route context
 
-**Evidence source:** Tank `show-output/smoke-test-results.md` Run 4.
+> **EA log evidence:** `eajwtvalidate3` had no diagnostic setting from creation (12:45 UTC+2) until manual correction at 2026-08-18T17:12:36 UTC+2. `EdgeActionConsoleLog` entries for Run 4 are **pending ingestion** in LAW. HTTP 200 response is the authoritative PASS evidence.
 
-## Original fail-open design (teaching gap — not lab-blocking)
+**Evidence source:** Tank `show-output/smoke-test-results.md` Run 4. (teaching gap — not lab-blocking)
 
 The documented fail-open behaviour (edgeActionsStatusCode_s = 503 when EA times out or throws):
 - `/edge-only` + EA exception → 200 (no origin auth → access granted — dangerous teaching outcome)
