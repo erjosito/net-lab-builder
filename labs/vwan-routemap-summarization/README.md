@@ -31,16 +31,26 @@ hand (mixed-origin attribute inheritance + Branch-to-Branch disabled).
 > ER-learned contributor from the aggregation input. The summary can then only ever be built from the
 > VNet/egress contributor → it can never be classified as branch-derived → never dropped. ✅
 >
-> **2. Key finding — the summarization *method* determines exposure.** A route-map **`Replace route-prefix`**
-> action **re-originates** the aggregate with the **hub ASN (65515)**, discarding the ER contributor's
-> AS-path (12076). This is **documented behaviour**: per
-> [About Route-maps](https://learn.microsoft.com/en-us/azure/virtual-wan/route-maps-about),
+> **2. Key finding — and an important caveat on what we could observe.** A route-map **`Replace
+> route-prefix`** is the **only** way a VWAN route-map can summarize (there is no other aggregation
+> action), so the customer's summarization rule is necessarily a **`Replace`**. When it aggregates, the
+> hub **strips the BGP Community and AS-PATH** from the summary — documented behaviour, per
+> [About Route-maps](https://learn.microsoft.com/en-us/azure/virtual-wan/route-maps-about):
 > *"when using Route-maps to summarize a set of routes, the hub router strips the BGP Community and
-> AS-PATH attributes from those routes."* In our lab that aggregate is therefore **never** branch-derived
-> and is advertised in **every** case — both contributors, only-ER, b2b on, b2b off. We could **not** make
-> a `Replace`-based summary disappear. The customer's intermittent drop requires an **attribute-inheriting**
-> summarization path (the aggregate keeps the contributor AS-path); the MS mitigation is the correct fix
-> for that path and is also a sound belt-and-suspenders guard regardless.
+> AS-PATH attributes from those routes."* Consequently the summary we saw at the VPN branch **always**
+> carried the hub ASN `65515` and **never** `12076`, in every case (both contributors, only-ER, b2b on,
+> b2b off), and we **could not** make it disappear.
+> **Caveat — this does *not* prove `Replace` is immune.** The AS-PATH strip governs the **advertised**
+> attributes (the `65515` we observed). Microsoft's bug is about an **internal origin/branch
+> classification** the aggregate *inherits* during recomputation, which is **not visible** in that
+> stripped AS-PATH — MS explicitly states a Replace-generated `/16` *can* be "treated as branch-derived
+> and then dropped". So the advertised AS-PATH is the **wrong signal**: it is always `65515` and can
+> never reveal the branch classification. The only valid signal is **presence vs. absence of the `/16`
+> at the branch across many recompute cycles**. We saw it present in every sampled cycle, but that is a
+> **small sample of a nondeterministic** behaviour — "couldn't reproduce" means "didn't hit a
+> branch-inheriting cycle", not "`Replace` is safe". The MS mitigation (drop AS-12076 before summarize)
+> is the correct deterministic fix regardless, because it removes the branch-attributed contributor from
+> the aggregation input entirely.
 >
 > **3. Branch-to-Branch gates ER→VPN transit (confirmed).** With b2b **disabled** the ER-learned `/24`s
 > (AS 12076) never reach the VPN branch at all; with b2b **enabled** they arrive as

@@ -205,15 +205,24 @@ inbound routes for inter-hub propagation).
 
 The single most important finding. A VWAN route-map rule `match routePrefix Contains 10.0.0.0/16 ->
 Replace routePrefix 10.0.0.0/16` produces an aggregate that carries the **hub BGP ASN (65515)**, NOT
-the contributor's AS-path. Verified across every case — both contributors, only-ER contributors, b2b
-on, b2b off: the summary is always advertised as `65515`, never `12076`. This matches **documented
-behaviour**: per [About Route-maps](https://learn.microsoft.com/en-us/azure/virtual-wan/route-maps-about),
+the contributor's AS-path. **Replace is also the *only* way a route-map can summarize** (no other
+aggregation action exists), so a customer summarizing via route-map is necessarily using Replace.
+Verified across every case — both contributors, only-ER contributors, b2b on, b2b off: the summary is
+always advertised as `65515`, never `12076`. This matches **documented behaviour**: per
+[About Route-maps](https://learn.microsoft.com/en-us/azure/virtual-wan/route-maps-about),
 *"when using Route-maps to summarize a set of routes, the hub router strips the BGP Community and AS-PATH
-attributes from those routes"* (applies to both inbound and outbound). Consequence: a `Replace`-based
-summary can never be classified as branch-derived and is **immune** to the branch-to-branch drop the
-customer hit. The customer's intermittent drop therefore requires an **attribute-inheriting**
-summarization path (aggregate keeps the contributor AS-path); reproduce that, not `Replace`, to see the
-flap. The MS mitigation (drop AS-12076 before summarize) is still the correct, deterministic fix.
+attributes from those routes"* (applies to both inbound and outbound).
+
+**Caveat — this does NOT prove Replace is immune (correction to an earlier overclaim).** The AS-PATH
+strip governs the **advertised** attributes (the `65515` we saw). Microsoft's bug is about an **internal
+origin/branch classification** the aggregate *inherits* during recomputation, which is **not visible** in
+that stripped AS-PATH — MS explicitly states a Replace-generated `/16` *can* be "treated as branch-derived
+and then dropped". So the advertised AS-PATH is the **wrong observation signal**: it is always `65515`
+and can never reveal the branch classification. The only valid signal is **presence vs. absence of the
+`/16` at the VPN branch across many recompute cycles**. We saw it present in every sampled cycle, but
+that is a **small sample of a nondeterministic** behaviour — "couldn't reproduce" means "didn't hit a
+branch-inheriting cycle", not "Replace is safe". The MS mitigation (drop AS-12076 before summarize) is
+the correct deterministic fix regardless.
 
 ### Two different "Drop" controls in a route-map rule — they are NOT the same
 
