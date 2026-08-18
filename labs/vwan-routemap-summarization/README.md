@@ -33,11 +33,14 @@ hand (mixed-origin attribute inheritance + Branch-to-Branch disabled).
 >
 > **2. Key finding — the summarization *method* determines exposure.** A route-map **`Replace route-prefix`**
 > action **re-originates** the aggregate with the **hub ASN (65515)**, discarding the ER contributor's
-> AS-path (12076). In our lab that aggregate is therefore **never** branch-derived and is advertised in
-> **every** case — both contributors, only-ER, b2b on, b2b off. We could **not** make a `Replace`-based
-> summary disappear. The customer's intermittent drop requires an **attribute-inheriting** summarization
-> path (the aggregate keeps the contributor AS-path); the MS mitigation is the correct fix for that path
-> and is also a sound belt-and-suspenders guard regardless.
+> AS-path (12076). This is **documented behaviour**: per
+> [About Route-maps](https://learn.microsoft.com/en-us/azure/virtual-wan/route-maps-about),
+> *"when using Route-maps to summarize a set of routes, the hub router strips the BGP Community and
+> AS-PATH attributes from those routes."* In our lab that aggregate is therefore **never** branch-derived
+> and is advertised in **every** case — both contributors, only-ER, b2b on, b2b off. We could **not** make
+> a `Replace`-based summary disappear. The customer's intermittent drop requires an **attribute-inheriting**
+> summarization path (the aggregate keeps the contributor AS-path); the MS mitigation is the correct fix
+> for that path and is also a sound belt-and-suspenders guard regardless.
 >
 > **3. Branch-to-Branch gates ER→VPN transit (confirmed).** With b2b **disabled** the ER-learned `/24`s
 > (AS 12076) never reach the VPN branch at all; with b2b **enabled** they arrive as

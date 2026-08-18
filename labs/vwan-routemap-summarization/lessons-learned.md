@@ -206,11 +206,33 @@ inbound routes for inter-hub propagation).
 The single most important finding. A VWAN route-map rule `match routePrefix Contains 10.0.0.0/16 ->
 Replace routePrefix 10.0.0.0/16` produces an aggregate that carries the **hub BGP ASN (65515)**, NOT
 the contributor's AS-path. Verified across every case — both contributors, only-ER contributors, b2b
-on, b2b off: the summary is always advertised as `65515`, never `12076`. Consequence: a `Replace`-based
+on, b2b off: the summary is always advertised as `65515`, never `12076`. This matches **documented
+behaviour**: per [About Route-maps](https://learn.microsoft.com/en-us/azure/virtual-wan/route-maps-about),
+*"when using Route-maps to summarize a set of routes, the hub router strips the BGP Community and AS-PATH
+attributes from those routes"* (applies to both inbound and outbound). Consequence: a `Replace`-based
 summary can never be classified as branch-derived and is **immune** to the branch-to-branch drop the
 customer hit. The customer's intermittent drop therefore requires an **attribute-inheriting**
 summarization path (aggregate keeps the contributor AS-path); reproduce that, not `Replace`, to see the
 flap. The MS mitigation (drop AS-12076 before summarize) is still the correct, deterministic fix.
+
+### Two different "Drop" controls in a route-map rule — they are NOT the same
+
+The portal exposes Drop in two places, with different semantics (confirmed in the
+[route-maps-about](https://learn.microsoft.com/en-us/azure/virtual-wan/route-maps-about) "Actions" and
+"Route modifications" tables):
+
+- **Top-level `Action on matched routes` = Drop** (radio: Drop | Modify). Drops the **entire set**
+  chosen by the **match conditions** — and match conditions can be **Route-prefix, Community, or
+  AS-Path**. This is the **only** way to drop by AS-Path/Community, and is exactly what the MS mitigation
+  and our `mitigation-drop` route-map use (`match asPath Contains 12076 -> Drop`). It is terminal: dropped
+  routes receive no further modification.
+- **`Modify` -> Route modifications -> Route-prefix, Action = Drop** (vs Replace). Drops only the
+  specific **prefix values** listed in the modification, **prefix-only** (cannot match AS-Path/Community),
+  and can be **combined** with other modifications on the remaining matched routes in the same rule
+  (e.g. drop a couple of prefixes and summarize/prepend the rest).
+
+Takeaway: to drop ER-learned contributors by AS-Path 12076 you must use the **top-level Drop** with an
+AS-Path match — the route-modification Drop can't see AS-Path.
 
 ### VWAN caches the per-connection outbound advertisement — force a recompute
 
