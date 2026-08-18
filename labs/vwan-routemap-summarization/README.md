@@ -103,12 +103,14 @@ describe **Round 1**.
 > aggregation each cycle (detach/reattach `summarize-out`) and densely polls the branch (30 samples/cycle).
 > Result of **N=20 cycles (600 dense samples): the `/16` was present in every single sample — 0 drops,
 > 0 anomalies**, MSEE inputs constant (11 contributor rows), branch/`er-eu2`-MSEE agreeing every cycle.
-> So at the current **3 ER : 1 VNet** contributor ratio, pure recompute is **deterministic in this
-> environment** and we did **not** reproduce the retirement. This is a **negative result, not proof
+> So at the **3 ER : 1 VNet** contributor ratio used for that run, pure recompute is **deterministic in
+> this environment** and we did **not** reproduce the retirement. This is a **negative result, not proof
 > `Replace` is immune** — "couldn't reproduce" means "didn't hit a branch-inheriting cycle in 20 tries".
-> Next step to raise repro odds: skew the ER:VNet ratio by adding many more onprem `/24`s. The MS
-> mitigation (drop AS-12076 before summarize) is the correct deterministic fix regardless, because it
-> removes the branch-attributed contributor from the aggregation input entirely.
+> Next step to raise repro odds: skew the ER:VNet ratio by adding many more onprem `/24`s — **now done**:
+> the ER-learned set was scaled to **63 `/24`s (63 : 1)** and a second sampling run is in progress; its
+> result will be recorded here and in [`73-race-sampling-scaled-summary.md`](show-output/round2/73-race-sampling-scaled-summary.md).
+> The MS mitigation (drop AS-12076 before summarize) is the correct deterministic fix regardless, because
+> it removes the branch-attributed contributor from the aggregation input entirely.
 > (Full evidence: [`71-race-sampling-summary.md`](show-output/round2/71-race-sampling-summary.md).)
 >
 > **3. Branch-to-Branch gates ER→VPN transit (confirmed).** With b2b **disabled** the ER-learned `/24`s
@@ -122,10 +124,12 @@ describe **Round 1**.
 Two VWAN hubs, two ExpressRoute circuits in a **bow-tie** via a **Megaport MCR** that injects the
 "on-prem" ER prefixes as **free static routes** (the MSEE auto-prepends **AS 12076**, exactly reproducing
 the customer's branch-derived attribute — no Google Cloud needed). The observation branch is an **Azure VM
-NVA** (StrongSwan + BIRD) attached to `hub-eu1` over **IPsec + BGP**, i.e. a faithful VPN branch.
+NVA** (StrongSwan + BIRD) attached to `hub-eu1` over **IPsec + BGP**, i.e. a faithful VPN branch. The set
+of ER-learned contributors was later **scaled from 3 to 63 `/24`s** (`10.0.1.0/24 … 10.0.63.0/24`) to skew
+the ER : VNet ratio and raise the probability of the mixed-origin race — see finding #2 / the scaled run.
 
 ```
-                 Megaport MCR (AS 133937)  —— static routes 10.0.1/2/3.0/24
+                 Megaport MCR (AS 133937)  —— static routes 10.0.1.0/24 … 10.0.63.0/24  (63 /24s)
                    /  bow-tie VXCs (ER private peering, MSEE prepends AS 12076)  \
                   /                                                               \
         [ er-eu1 ] Frankfurt                                         [ er-eu2 ] Amsterdam
@@ -135,8 +139,8 @@ NVA** (StrongSwan + BIRD) attached to `hub-eu1` over **IPsec + BGP**, i.e. a fai
      │   192.168.0.0/23   VWAN Standard   │═════════════════│  192.168.2.0/23       │
      │   b2b = DISABLED (baseline)        │                 └──────────────────────┘
      │                                    │
-     │   spoke-eu1  10.0.128.0/24 ────────┼──  VNet/egress contributor (AS 65515)
-     │   ER-learned 10.0.1/2/3.0/24 ──────┼──  branch contributor    (AS 12076)
+     │   spoke-eu1  10.0.128.0/24 ────────┼──  VNet/egress contributor (AS 65515)  ×1
+     │   ER-learned 10.0.1…63.0/24 ───────┼──  branch contributors   (AS 12076)   ×63
      │                                    │
      │   route-map summarize-out (sum1):  │   match Contains 10.0.0.0/16 → Replace 10.0.0.0/16
      │   vpngw-eu1  ASN 65515             │
@@ -145,8 +149,10 @@ NVA** (StrongSwan + BIRD) attached to `hub-eu1` over **IPsec + BGP**, i.e. a fai
             [ nva1 ] Azure VM  10.100.0.4  ASN 65001   (StrongSwan + BIRD2 — VPN branch observation)
 ```
 
-The summary under test is **`10.0.0.0/16`**, aggregated from a **VNet contributor** (`10.0.128.0/24`,
-AS 65515) and three **ER-learned contributors** (`10.0.1/2/3.0/24`, AS `65515 12076 133937`).
+The summary under test is **`10.0.0.0/16`**, aggregated from **one VNet contributor** (`10.0.128.0/24`,
+AS 65515) and — after the scale-up — **63 ER-learned contributors** (`10.0.1.0/24 … 10.0.63.0/24`, AS
+`65515 12076 133937`). It began at 3 ER-learned `/24`s (`10.0.1/2/3.0/24`); the first sampling run (N=20)
+was at that **3 : 1** ratio, the scaled run at **63 : 1**.
 
 ### Round 2 case matrix (observed at the VPN branch nva1)
 
@@ -199,8 +205,11 @@ from the VNet contributor alone, so it can never be branch-derived. Full before/
 | Route-maps | `summarize-out` (sum1), `mitigation-drop`, `mitigation-full` | hub-eu1 |
 | **Megaport MCR** | `jomore-copilot-mcr-routemap2` (AS 133937, Frankfurt) + 2 VXCs | — |
 
-**On-prem simulation:** Megaport MCR **static routes** (`10.0.1/2/3.0/24`) — free, and sufficient because
-the MSEE injects **AS 12076** on any ER-private-peering prefix. No Google Cloud used.
+**On-prem simulation:** Megaport MCR **static routes** — free, and sufficient because the MSEE injects
+**AS 12076** on any ER-private-peering prefix. No Google Cloud used. Scaled from the initial 3 `/24`s
+(`10.0.1/2/3.0/24`) to **63 `/24`s** (`10.0.1.0/24 … 10.0.63.0/24`). Two MCR changes are required per
+route set: the VXC `ipRoutes` (so the MCR has the route) **and** the BGP export prefix-filter-list
+`7589` (an allow-list of exactly which prefixes the MCR advertises to Azure) — see `lessons-learned.md`.
 
 </details>
 
