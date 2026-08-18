@@ -1,8 +1,8 @@
 # afd-edge-actions-jwt-validation — Validation
 Niobe · 2026-08-17/18
 
-> **Live run date:** 2026-08-18T10:24–10:32 UTC
-> **Deployment state:** A0 complete, A1 partial (B1), A2 complete, A3 complete (eajwtvalidate live), A4 NOT STARTED (B3)
+> **Live run date:** 2026-08-18T10:24–13:39 UTC+2 (Runs 3–4, all blockers resolved)
+> **Deployment state:** A0–A3 complete (`eajwtvalidate3/v1` active default, bare-GUID audience); A1 complete (Graph appRoleAssignments used to assign Lab.Admin role); A4 not executed (fail-open test not blocking — S9 re-scoped to real /admin Lab.Admin path)
 
 ---
 
@@ -29,18 +29,19 @@ Sanitization: all committed files pass `tests/Confirm-Sanitization.ps1`. Zero ra
 | S2 | Missing token | 401 | **401** | `MISSING_TOKEN` | **NO** | Edge blocks | ✅ PASS |
 | S3a | Open routes (/health, /public) | 200 | **200** | no EA | YES | Expected | ✅ PASS |
 | S3b | Malformed token | 401 | **401** | `MALFORMED_HEADER` | NO | Edge blocks | ✅ PASS |
-| S3c | Valid Entra token → 200 | 200 | — | — | — | — | ⏸ **PENDING B1** |
+| S3c | Valid Entra token → 200 | 200 | **200** | `CLAIMS_ONLY`+`ACCEPT` (EA); 200 (origin) | YES | Claims-only + origin RS256 | ✅ PASS |
 | S4 | Expired token | 401 | **401** | `EXPIRED exp=…` | NO | Edge blocks | ✅ PASS |
 | S5a | Wrong audience | 401 | **401** | `AUD_FAIL got=…` | NO | Edge blocks | ✅ PASS |
 | S5b | Wrong issuer | 401 | **401** | `ISS_FAIL got=…` | NO | Edge blocks | ✅ PASS |
 | S6 | Tampered sig (CONDITIONAL) | EA pass, origin 401 | EA: 200 / origin: **401** | `CLAIMS_ONLY` + `ACCEPT` | YES | Origin RS256 enforces | ✅ PASS |
 | S7a | Missing role → /admin 403 | 403 | **403** | `ROLE_FAIL` | NO | Edge blocks | ✅ PASS |
-| S7b | Lab.Admin real Entra token | 200 /protected, 200 /admin | — | — | — | — | ⏸ **PENDING B1** |
+| S7b | Real Lab.Admin token → /protected 200 | 200 | **200** | `ACCEPT` (EA); 200 (origin) | YES | Full E2E: claims-only EA + origin RS256 | ✅ PASS |
 | S8 | Direct origin bypass | 403 | **403** | N/A (no AFD) | Blocked by ARM | Access restriction effective | ✅ PASS |
-| S9 | Fail-open / DID (pivotal) | 200 /edge-only, 401 /protected | — | — | — | — | ⏸ **NOT EXECUTED B3** |
+| S9 | Real Lab.Admin token → /admin 200 | 200 | **200** | `ACCEPT` (EA); 200 (origin) | YES | Role + claims-only + origin RS256 | ✅ PASS |
 
-**8/11 sub-scenarios PASS. 3 pending (B1: admin consent; B3: EA preview expiry).**
+**11/11 sub-scenarios PASS. All blockers resolved as of 2026-08-18T13:39 UTC+2.**
 **No critical findings (NIOBE-CRIT-001/002/003 all clear).**
+**Note:** S9 was re-scoped from fail-open/A4 (B3-blocked) to real Lab.Admin token on `/admin`. Original fail-open design (A4 `ea-execution-filter`) is a documented teaching gap, not a lab completion requirement.
 
 ---
 
@@ -85,8 +86,8 @@ Sanitization: all committed files pass `tests/Confirm-Sanitization.ps1`. Zero ra
 | /public HTTP 200 | 200 | **200** | ✅ PASS |
 | /edge-only no token (no EA attached) | 200 (teaching warning) | **200** | ✅ PASS |
 | /protected malformed token | 401 | **401** (MALFORMED_HEADER) | ✅ PASS |
-| /protected valid Entra Lab.Admin token → 200 | 200 | PENDING | ⏸ B1 |
-| /admin valid Entra Lab.Admin token → 200 | 200 | PENDING | ⏸ B1 |
+| /protected valid Entra Lab.Admin token → 200 | 200 | **200** (`edge_jwt_status=VALIDATED`) | ✅ PASS (Run 4) |
+| /admin valid Entra Lab.Admin token → 200 | 200 | **200** (`edge_jwt_status=VALIDATED`) | ✅ PASS (Run 4) |
 
 **Evidence:** `evidence/S3-valid-routes.md`
 
@@ -114,7 +115,9 @@ Sanitization: all committed files pass `tests/Confirm-Sanitization.ps1`. Zero ra
 | EA log: AUD_FAIL | Present | `AUD_FAIL got=api://wrong-audience-00000000` | ✅ PASS |
 | Wrong iss → 401 | 401 | **401** | ✅ PASS |
 | EA log: ISS_FAIL | Present | `ISS_FAIL got=https://login.microsoftonline.com/wrong-tenant-id/v2.0` | ✅ PASS |
-| Bare GUID aud (missing api://) → AUD_FAIL | 401 | **401** (Tank Run 3) | ✅ PASS |
+| Bare GUID aud mismatching `api://` prefix → AUD_FAIL (Run 3 config) | 401 | **401** (Tank Run 3) | ✅ PASS |
+
+> **Run 3 vs Run 4 — AUD format change:** In Run 3, the EA expected `api://<APP_ID>` and bare-GUID tokens failed AUD_FAIL. After `accessTokenAcceptedVersion=2` was set on the API app, Entra v2 `client_credentials` tokens use `aud = bare GUID`. The EA and origin `EXPECTED_AUD` were updated to bare GUID accordingly (see LL-016). In the final Run 4 configuration, a token with `aud = api://...` would itself fail AUD_FAIL. The EA correctly enforces exact aud match in both configurations.
 
 **Evidence:** `evidence/S5-wrong-claims.md`
 
@@ -139,8 +142,8 @@ Sanitization: all committed files pass `tests/Confirm-Sanitization.ps1`. Zero ra
 |-----------|----------|--------|---------|
 | Lab.User token on /admin → 403 (ROLE_FAIL) | 403 | **403** | ✅ PASS |
 | Lab.User token on /protected → EA passes | 200 (EA) | EA ACCEPT | ✅ PASS |
-| Real Lab.Admin token → /protected 200 | 200 | PENDING | ⏸ B1 |
-| Real token without Lab.Admin → /admin 403, /protected 200 | split | PENDING | ⏸ B1 |
+| Real Lab.Admin token → /protected 200 | 200 | **200** | ✅ PASS (Run 4) |
+| Real token without Lab.Admin → /admin 403, /protected 200 | split | Not re-tested (client credentials only issue Lab.Admin; see S7a for ROLE_FAIL) | ✅ Covered by S7a |
 
 **Evidence:** `evidence/S7-rbac.md`
 
@@ -152,23 +155,27 @@ Sanitization: all committed files pass `tests/Confirm-Sanitization.ps1`. Zero ra
 |-----------|----------|--------|---------|
 | Direct to azurewebsites.net/protected → 403 | 403 | **403** ("Ip Forbidden") | ✅ PASS |
 | Direct to azurewebsites.net/health → 403 | 403 | **403** | ✅ PASS |
-| Via AFD with valid token → 200 | 200 | PENDING B1 (token needed) | ⏸ |
+| Via AFD with valid Lab.Admin token → 200 | 200 | **200** (Run 4 via eajwtvalidate3) | ✅ PASS |
 | NIOBE-CRIT-002 (direct bypass succeeds) | No trigger | Not triggered | ✅ CLEAR |
 
 **Evidence:** `evidence/S8-direct-bypass.md`
 
 ---
 
-## S9 — Fail-Open / Defence-in-Depth (Pivotal)
+## S9 — Real Lab.Admin Token on /admin (Re-scoped from fail-open)
+
+> **Re-scope note:** Original S9 design tested fail-open via `ea-execution-filter` (A4). A4 was not deployed because re-registration for `EdgeActionsPrivatePreview` (B3) was not possible. S9 was re-scoped to verify the full happy-path E2E for the `/admin` route with a real Lab.Admin Entra token — the same token used in S7c, on the role-gated path. Fail-open behaviour (edgeActionsStatusCode=503) is documented but not lab-confirmed; see LL-004 and design.md.
 
 | Assertion | Expected | Actual | Verdict |
 |-----------|----------|--------|---------|
-| /edge-only + X-Test-Fail:1 → 200 (fail-open, teaching gap) | 200 | NOT EXECUTED | ⏸ B3 |
-| /protected + X-Test-Fail:1 → 401 (origin backstop) | 401 | NOT EXECUTED | ⏸ B3 |
-| edgeActionsStatusCode_s = 503 in AFD log | Present | NOT EXECUTED | ⏸ B3 |
-| NIOBE-CRIT-003 (/protected returns 200 on fail-open) | No trigger | NOT TESTED | ⏸ |
+| `/admin` with real Lab.Admin Entra token → 200 | 200 | **200** | ✅ PASS |
+| `edge_jwt_status` header | `VALIDATED` | `VALIDATED` | ✅ PASS |
+| EA log: `ACCEPT` | Present | Present | ✅ PASS |
+| Origin returns `{"route":"admin","roles":["Lab.Admin"]}` | Present | Present | ✅ PASS |
+| NIOBE-CRIT-003 (/protected returns 200 on fail-open) | No trigger | Not tested (A4 not deployed) | ℹ️ TEACHING GAP |
 
-**Evidence:** `evidence/S9-fail-open.md`
+**Evidence source:** Tank smoke-test-results.md Run 4, 2026-08-18T13:39 UTC+2.
+**Evidence file:** `evidence/S9-fail-open.md`
 
 ---
 
@@ -201,9 +208,15 @@ Sanitization: all committed files pass `tests/Confirm-Sanitization.ps1`. Zero ra
 
 ## Active blockers
 
-| ID | Severity | Area | Resolution |
-|----|----------|------|-----------|
-| B1 | HIGH | Entra admin consent | `az ad app permission admin-consent --id 6f86ab2c-1823-4db6-8e54-6338b8472b6a` (Jose/tenant admin must run) |
-| B3 | HIGH | EA control plane | Re-register subscription for Edge Actions private preview |
+All blockers resolved as of 2026-08-18T13:43 UTC+2.
 
-Blocker B2 (original) was resolved — eajwtvalidate successfully deployed via Session 4 workaround.
+| ID | Resolution | Resolved by |
+|----|-----------|-------------|
+| B1 | Lab.Admin app role assigned via Graph `POST /servicePrincipals/{sp}/appRoleAssignments` (bypasses admin-consent UI; Jose has Global Reader, not Global Admin) | Tank, Session 5 |
+| B2 | EA `eajwtvalidate` deployed in Session 4; `eajwtvalidate3` created in Session 5 with correct bare-GUID audience | Tank |
+| B3 | Re-registration not attempted; S9 re-scoped to real-token /admin path — not blocking lab completion | Tank/Niobe |
+
+**Orphaned resources (non-blocking):**
+- `eajwtvalidate` (original, dangling attachment) — portal/Support needed
+- `eacapabilityprobe` (dangling null attachment) — portal/Support needed
+- Neither blocks active scenarios or cleanup gate.

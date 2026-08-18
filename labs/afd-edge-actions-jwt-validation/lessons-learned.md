@@ -135,27 +135,81 @@ Niobe · 2026-08-17/18
 
 ---
 
-### LL-014 — Entra token audience requires exact `api://` prefix
+### LL-014 — Entra v2 `client_credentials` token audience depends on `accessTokenAcceptedVersion`
 
-**Finding:** A token requested with scope `api://<app-id>/.default` has `aud = "api://<app-id>"`. A token requested with the bare GUID scope has `aud = "<app-id>"` (no prefix). The EA's exact string comparison `aud !== CONFIG.EXPECTED_AUD` fails the bare GUID token with `AUD_FAIL`.
+**Finding:** Initial assumption was that the token `aud` would be `api://<app-id>` (matching the Application ID URI). This is incorrect for v2 tokens.
 
-**Reuse:** Always use `api://<app-id>/.default` as the scope. Document that the audience format is `api://` + app ID, not the bare GUID. Test with bare GUID to confirm rejection.
+- `accessTokenAcceptedVersion = null` (v1, default): `aud = api://<app-id>` (or the full identifier URI)
+- `accessTokenAcceptedVersion = 2` (v2): `aud = <app-id>` (bare GUID, regardless of identifier URI)
+
+In Run 3, the EA expected `api://` prefix and bare-GUID tokens failed AUD_FAIL — that was correct for the v1 configuration. After `PATCH /applications/{id}` set `accessTokenAcceptedVersion=2`, Entra issued `aud = bare GUID`. EA and origin `EXPECTED_AUD` were updated accordingly.
+
+**Reuse:** Before configuring EA/origin audience checks:
+1. Determine `accessTokenAcceptedVersion` on the API app (`az ad app show --id ... | jq .accessTokenAcceptedVersion`)
+2. If `null` or `1`: expect `api://<app-id>` in token `aud`
+3. If `2`: expect bare GUID in token `aud`
+4. Test with a real token from your tenant — do not assume from scope alone.
 
 ---
 
 ## Entra ID
 
-### LL-015 — Application Administrator role required for admin consent; not granted to service principals by default
+### LL-015 — Application Administrator role required for admin consent; Graph `appRoleAssignments` API is a viable alternative
 
-**Finding:** Admin consent for application permissions (not delegated) requires `Application Administrator` or `Global Administrator` in the Entra tenant. Running `az ad app permission admin-consent` as a non-admin fails with `Authorization_RequestDenied`.
+**Finding (original B1 part):** `az ad app permission admin-consent` requires `Application Administrator` or `Global Administrator`. It fails with `Authorization_RequestDenied` for accounts with `Global Reader` only.
 
-**Impact:** Token acquisition fails until consent is granted. This is a deployment dependency that must be documented and coordinated with tenant administrators.
+**Lab resolution:** Rather than waiting for tenant admin, Tank used the Microsoft Graph API directly:
+```
+POST /v1.0/servicePrincipals/{clientSpId}/appRoleAssignments
+Body: { principalId, resourceId, appRoleId }
+```
+This assigns the application role to the client service principal without the admin-consent UI flow. It requires the calling identity to have permission to write `appRoleAssignments` on the target SP — in this lab, the deploying identity had sufficient Graph API access.
 
-**Reuse:** Always document admin consent as a separate manual step in any lab using application permissions. Include the exact `az ad app permission admin-consent --id <client-app-id>` command in the deploy guide.
+**Reuse:** In labs where the deploying identity cannot run admin-consent, use Graph `appRoleAssignments` directly. Document both paths in deployment guides. Note that the Graph approach requires knowing the `appRoleId` (GUID from the API app manifest's `appRoles` array).
 
 ---
 
-## Pre-deployment observations (2026-08-17, retained)
+## Session 5 findings (2026-08-18 — live token validation, all scenarios PASS)
+
+### LL-016 — `accessTokenAcceptedVersion=2` changes token issuer format too
+
+**Finding:** Setting `accessTokenAcceptedVersion=2` on the API app's manifest changes both:
+- `aud`: bare GUID (not `api://appId`) — covered in LL-014
+- `iss`: `https://login.microsoftonline.com/<tenant>/v2.0` (v2.0 suffix added) — previously `https://login.microsoftonline.com/<tenant>/`
+
+Both the EA and origin must be updated when switching between v1 and v2 token acceptance. In this lab, the EA expected `...v2.0` in the issuer string match (confirmed by ISS_FAIL on wrong-tenant tests in S5 where the expected pattern includes `v2.0`).
+
+**Reuse:** When debugging AUD_FAIL or ISS_FAIL after changing `accessTokenAcceptedVersion`, decode a real token and compare all claim values directly against the EA/origin expected values.
+
+---
+
+### LL-017 — F1 App Service Plan has a daily CPU quota; upgrade to B1 for sustained lab use
+
+**Finding:** The App Service running on F1 Free tier stopped mid-session due to daily CPU quota exhaustion (`az appservice plan update --sku B1` required). The site returned 503 during this period.
+
+**Impact:** F1 is not viable for any lab that does sustained testing across a full day. The token-acquisition retries and debug calls alone can exhaust the F1 quota.
+
+**Reuse:** For any lab with AFD + App Service that requires more than ~10 minutes of sustained HTTP testing, deploy with B1 or higher from the start. The cost difference is negligible at lab scale (~$0.05/day).
+
+---
+
+### LL-018 — `swapDefault` failure requires a new EA resource, not just a new version
+
+**Finding:** LL-009 documents that `swapDefault` is broken (always 400). The additional finding from Session 5 is that the "upload a new version with `isDefaultVersion=true`" workaround is also blocked when the original EA resource has a version stuck in `Provisioning` state (non-default versions can get stuck and block the PUT that would set a different default).
+
+**Workaround (confirmed):** Create a **new EA resource** (`eajwtvalidate3`) with the correct code from scratch, set `isDefaultVersion=true` at upload. Update the AFD rule to reference the new EA resource. The old EA (`eajwtvalidate`) becomes orphaned.
+
+**Reuse:** When a swapDefault-like operation fails, plan for a new EA resource + AFD rule update. Old EA resources with dangling attachments require portal/Support for cleanup.
+
+---
+
+### LL-019 — Entra credential replication lag after `az ad app credential reset`
+
+**Finding:** After resetting the client app credential, token acquisition immediately fails with `AADSTS7000215` (invalid client secret). The credential becomes valid after ~40 seconds of replication lag.
+
+**Reuse:** When scripting credential rotation, add at least a 60-second wait (with retry logic) between `az ad app credential reset` and the first token acquisition attempt.
+
+
 
 ### DESIGN-001 — JWT sample absent from EdgeActionsSamples repo (active gap)
 The `Azure/EdgeActionsSamples` repository lists JWT validation as supported but has no sample code as of 2026-08-17. S1 is the only authoritative source of truth.

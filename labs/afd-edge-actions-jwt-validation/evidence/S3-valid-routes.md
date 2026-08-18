@@ -22,17 +22,26 @@ Niobe · 2026-08-18
 
 Token has only one part (no dots separating header.payload.signature). `parseJwtPart()` returns null → MALFORMED_HEADER.
 
-## S3c — Valid Real Entra Token (BLOCKED by B1)
+## S3c — Real Entra Token (PASS — Run 4, 2026-08-18T13:39 UTC+2)
 
-A valid `Lab.Admin` token from `app-edge-jwt-client` requires admin consent. **PENDING — B1**.
+Token: Entra v2 `client_credentials` from `app-edge-jwt-client` SP (Graph `appRoleAssignments` used to assign Lab.Admin without admin-consent UI).
 
-Expected:
-- `/protected`: HTTP 200, `EA_MODE=CLAIMS_ONLY`, `EA_ACCEPT`, origin returns `{"route":"protected","roles":["Lab.Admin"]}`
-- `/admin`: HTTP 200, same EA flow, origin returns `{"route":"admin","roles":["Lab.Admin"]}`
+- `iss`: `https://login.microsoftonline.com/<TENANT_REDACTED>/v2.0`
+- `aud`: `623405b7-b4ae-4121-91d2-197ad2424df0` (bare GUID — Entra v2 client_credentials with `accessTokenAcceptedVersion=2`)
+- `roles`: `["Lab.Admin"]`
 
-Tank smoke tests confirm EA passes correctly-formed tokens: `EA_ACCEPT path=/protected roles=["Lab.Admin"]` visible at 10:31 UTC.
+> **AUD format note:** After `accessTokenAcceptedVersion=2` was set on the API app, Entra v2 client_credentials tokens use `aud = bare GUID` (not `api://` prefix). EA `eajwtvalidate3/v1` and origin `server.js` `EXPECTED_AUD` were updated accordingly. See LL-016.
+
+| Path | HTTP Status | `edge_jwt_status` | EA Log | Origin response |
+|------|-------------|-------------------|--------|-----------------|
+| `/protected` | **200** | `VALIDATED` | `CLAIMS_ONLY`, `ACCEPT` | `{"route":"protected","sub":"cf2ff0a3-<REDACTED>","roles":["Lab.Admin"]}` |
+| `/admin` | **200** | `VALIDATED` | `CLAIMS_ONLY`, `ACCEPT` | `{"route":"admin","sub":"cf2ff0a3-<REDACTED>","roles":["Lab.Admin"]}` |
+
+Active EA: `eajwtvalidate3/v1` (new EA resource, correct bare-GUID audience, `isDefaultVersion=True`).
+
+**Evidence source:** Tank `show-output/smoke-test-results.md` Run 4.
 
 ## Verdict
 - S3a routes: PASS ✅
 - S3b malformed: PASS ✅
-- S3c valid Entra token: **PENDING (B1)** ⏸
+- S3c valid Entra token: PASS ✅ (Run 4, 2026-08-18T13:39 UTC+2)

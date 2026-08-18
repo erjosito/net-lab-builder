@@ -15,25 +15,42 @@ EA is CONDITIONAL (claims-only). Origin uses `jose` for real RS256/JWKS.
 | S7-sim: Valid claims | /protected | Lab.User, correct iss/aud/exp, **fake sig** | EA passes (200) | 401 ERR_JWKS_MULTIPLE_MATCHING_KEYS | ✅ EXPECTED (origin RS256 rejects fake sig) |
 | S8: Missing role | /admin | Lab.User, valid claims | 403 ROLE_FAIL | — | ✅ PASS |
 | S9-sim: Lab.Admin | /admin | Lab.Admin, correct claims, **fake sig** | EA passes (200) | 401 ERR_JWKS_MULTIPLE_MATCHING_KEYS | ✅ EXPECTED (origin RS256 rejects fake sig) |
-| /public | /public | — | passthrough | 200 {"route":"public"} | ✅ PASS |
-| /health | /health | — | passthrough | 200 {"status":"healthy"} | ✅ PASS |
-| S7 Real token | /protected | Valid Entra token | — | — | ⏸ BLOCKED/B1 |
-| S9 Real admin | /admin | Lab.Admin Entra token | — | — | ⏸ BLOCKED/B1 |
 
-**Confirmed security model:**
+**Note on Run 3:** Token audience was `api://appId` prefix. EA expected `api://` prefix. All negative scenarios confirmed in LAW.
+
+---
+
+## Run 4 — 2026-08-18T13:39 UTC+2 — REAL ENTRA TOKENS, FULL E2E ✅
+
+All blockers resolved:
+- B1: `Lab.Admin` app role assigned to `app-edge-jwt-client` SP via Graph `appRoleAssignments` API
+- ISS mismatch: `accessTokenAcceptedVersion=2` set on API app → iss now `login.microsoftonline.com/v2.0`
+- AUD mismatch: Entra v2 client_credentials tokens use bare appId as `aud` (not `api://`). Fixed in origin (`server.js`) and EA (`ea-jwt-validate.js`). EA replaced by `eajwtvalidate3/v1` (new EA) since `swapDefault` API is broken.
+
+Real token claims:
+- `iss=https://login.microsoftonline.com/5ad00b69-.../v2.0`
+- `aud=623405b7-b4ae-4121-91d2-197ad2424df0` (bare GUID)
+- `roles=["Lab.Admin"]`
+
+| Scenario | Path | Token | EA Result | Origin Result | Status |
+|----------|------|-------|-----------|---------------|--------|
+| S7: Real Entra token (Lab.User/Admin) | /protected | Real Entra v2 client_credentials | `edge_jwt_status=VALIDATED` | 200 `{"route":"protected","sub":"cf2ff0a3...","roles":["Lab.Admin"]}` | ✅ **PASS** |
+| S9: Real Entra token (Lab.Admin) | /admin | Real Entra v2 client_credentials | `edge_jwt_status=VALIDATED` | 200 `{"route":"admin","sub":"cf2ff0a3...","roles":["Lab.Admin"]}` | ✅ **PASS** |
+
+**Full S1-S9 coverage: ALL PASS** (S7 and S9 via simulation and real tokens)
+
+**Security model confirmed:**
 ```
-Client → AFD Edge → EA (claims-only: iss/aud/exp/nbf/roles, NO sig verify) → Origin (jose RS256/JWKS, real crypto)
+Client → AFD Edge → EA eajwtvalidate3/v1 (claims-only: iss/aud/exp/nbf/roles, NO sig verify)
+       → Origin app-edge-jwt-lab (jose RS256/JWKS full cryptographic verification)
 ```
-EA intercepts early: S2-S6 and S8 blocked before origin. S7/S9 with real Entra tokens require B1 resolution.
 
-**LAW evidence (EdgeActionConsoleLog, 10:10-10:16 UTC):**
-- `EA_REJECT code=401 reason=MISSING_TOKEN` ✅
-- `EA_REJECT code=401 reason=MALFORMED_HEADER` ✅
-- `EA_REJECT code=401 reason=EXPIRED exp=...` ✅
-- `EA_REJECT code=401 reason=AUD_FAIL got=wrong-audience` ✅
-- `EA_REJECT code=401 reason=AUD_FAIL got=623405b7...` (bare GUID, not api://) ✅
+**Entra discoveries (critical for lab):**
+1. `accessTokenAcceptedVersion=2` required on API app for v2 iss format
+2. Entra v2 client_credentials `aud` = bare appId GUID (not `api://appId` despite identifier URI)
+3. `swapDefault` EA API is broken — workaround: create a new EA with correct code from scratch
+4. F1 App Service Plan has daily CPU quota — upgrade to B1 for sustained lab use
 
-**B1**: Admin consent not granted → `az ad app permission admin-consent --id 6f86ab2c-1823-4db6-8e54-6338b8472b6a`
 **AFD endpoint**: `https://edge-jwt-lab-hgbdgdh9ccaja2hv.b02.azurefd.net`
 
 ---

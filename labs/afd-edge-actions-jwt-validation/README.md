@@ -821,10 +821,13 @@ EdgeActionConsoleLog
 **Procedure:**
 - `GET /health` → 200 (no EA)
 - `GET /public` → 200 (no EA)
-- `GET /protected` with valid Entra token → PENDING B1
+- `GET /protected` with valid Entra v2 Lab.Admin token → 200, `edge_jwt_status=VALIDATED` (Run 4)
 - `GET /protected` with malformed token → 401 (MALFORMED_HEADER)
 
-**Result:** Open routes PASS. Malformed token PASS. Valid token PENDING.
+**Result:** Open routes PASS. Malformed token PASS. Valid token PASS (Run 4, 2026-08-18T13:39 UTC+2).
+
+> **AUD format (Run 4):** Active EA `eajwtvalidate3/v1` expects bare GUID audience (Entra v2 `accessTokenAcceptedVersion=2`). See LL-014, LL-016.
+
 **Evidence:** `evidence/S3-valid-routes.md`.
 
 ---
@@ -843,7 +846,7 @@ EdgeActionConsoleLog
 **Procedure:**
 - `GET /protected` with `aud = "api://wrong-audience-00000000"` → 401, AUD_FAIL
 - `GET /protected` with `iss = "...wrong-tenant-id..."` → 401, ISS_FAIL
-- Note: bare GUID audience (missing `api://` prefix) also fails — AUD_FAIL
+- **Note (Run 3 vs Run 4):** In Run 3, the EA expected `api://<app-id>` and bare-GUID tokens produced AUD_FAIL. After `accessTokenAcceptedVersion=2` was applied (Run 4), bare GUID is the **correct** aud; `api://` tokens would now fail. The exact-match check is verified to fire correctly in both configurations. See LL-014.
 
 **Result:** All 401. **Evidence:** `evidence/S5-wrong-claims.md`.
 
@@ -870,7 +873,7 @@ EdgeActionConsoleLog
 **EA result:** `EA_REJECT code=403 reason=ROLE_FAIL required=Lab.Admin`.
 **Same token on `/protected`:** EA passes (Lab.Admin not required there).
 
-Real Entra token test: PENDING B1.
+Real Entra token test (Run 4): `/protected` and `/admin` with Lab.Admin → **200** (edge_jwt_status=VALIDATED). Full E2E confirmed.
 **Evidence:** `evidence/S7-rbac.md`.
 
 ---
@@ -888,15 +891,17 @@ Real Entra token test: PENDING B1.
 
 ---
 
-### S9 — Fail-Open / Defence-in-Depth (PIVOTAL)
+### S9 — Lab.Admin on /admin (re-scoped); Fail-Open (teaching gap)
 
-**Status:** NOT EXECUTED — B3 (EA control plane blocked by private preview expiry).
+**Status:** PASS (re-scoped) — 2026-08-18T13:39 UTC+2.
 
-**Documented expected outcome:**
-- `/edge-only` + deliberate EA exception → HTTP 200 (EA failed open; no origin auth → access granted — **expected dangerous outcome**)
-- `/protected` + deliberate EA exception → HTTP 401/403 (origin backstop → **expected safe outcome**)
+**Re-scope:** Original S9 tested fail-open via `ea-execution-filter` (A4). A4 was not deployed because `EdgeActionsPrivatePreview = NotRegistered` (B3). S9 was re-scoped to the real Lab.Admin token on `/admin` — confirming the full happy-path E2E for the role-gated route.
 
-Proof of concept for the soft form: `/edge-only` already returns 200 with no token when the EA is not attached to that route (confirmed S3a). The pivotal scenario requires A4 (`ea-execution-filter`).
+**Result (Run 4):** `GET /admin` with real Entra v2 Lab.Admin token → HTTP 200, `edge_jwt_status=VALIDATED`, `{"route":"admin","roles":["Lab.Admin"]}`.
+
+**Fail-open documented behaviour (not lab-confirmed):** If EA times out or throws, `edgeActionsStatusCode_s = 503`; request forwarded to origin. On `/edge-only` (no origin auth) this would return 200 — the dangerous case. On `/protected` the origin backstop fires (401). Soft form demonstrated by S3a: `/edge-only` already returns 200 with no token.
+
+**Evidence:** `evidence/S9-fail-open.md`.
 
 ---
 

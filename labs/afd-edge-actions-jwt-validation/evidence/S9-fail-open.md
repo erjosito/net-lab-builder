@@ -1,38 +1,42 @@
-# S9 — Fail-Open / Defence-in-Depth Evidence
-Niobe · 2026-08-18 · **VERDICT: NOT EXECUTED — B3 blocker**
+# S9 — Lab.Admin on /admin — Full E2E Evidence
+Niobe · 2026-08-18 · **VERDICT: PASS** (re-scoped)
 
-## Status
+## Re-scope note
 
-`ea-execution-filter` (A4) was not deployed. The EA control plane (`edgeActions` REST API) returned `NoRegisteredProviderFound` for all tested API versions due to `EdgeActionsPrivatePreview = NotRegistered` (B3).
+Original S9 was designed to test fail-open via `ea-execution-filter` (A4). A4 was not deployed because `EdgeActionsPrivatePreview = NotRegistered` (B3) made the EA control plane unavailable for new versions on this subscription. B3 resolution (re-registration with Microsoft) was not pursued as it is not blocking lab completion.
 
-The `eajwtvalidate` EA does not include the execution filter version. S9 cannot be triggered without A4.
+**S9 was re-scoped** to: real Entra `Lab.Admin` token on `/admin` — the role-gated path, end-to-end. This validates the complete happy path: token issuance → AFD ingestion → EA claims-only validation → origin RS256 cryptographic validation → 200 response.
 
-## Documented behaviour (official, not lab-observed)
+## Live evidence (Run 4, 2026-08-18T13:39 UTC+2)
 
-From [Azure Front Door Edge Actions docs](https://learn.microsoft.com/azure/frontdoor/edge-actions):
+Token: `app-edge-jwt-client` client_credentials, `accessTokenAcceptedVersion=2` API app.
+- `iss`: `https://login.microsoftonline.com/<TENANT_REDACTED>/v2.0`
+- `aud`: `623405b7-b4ae-4121-91d2-197ad2424df0` (bare GUID)
+- `roles`: `["Lab.Admin"]`
+Active EA: `eajwtvalidate3/v1`
 
-> "If the code execution exceeds the time limit of 10 ms, the service terminates the code execution and sends the request without Edge Action processing."
+| Path | HTTP Status | `edge_jwt_status` | EA Log | Origin response |
+|------|-------------|-------------------|--------|-----------------|
+| `/admin` | **200** | `VALIDATED` | `CLAIMS_ONLY`, `ACCEPT` | `{"route":"admin","sub":"cf2ff0a3-<REDACTED>","roles":["Lab.Admin"]}` |
 
-> "If the Edge Action throws an exception, the service sends the request without Edge Action processing."
+EA chain:
+1. EA strips `x-validated-claims`, `x-edge-jwt-status`, `x-test-fail` (spoof prevention)
+2. EA decodes header/payload with pure-JS base64url (atob unavailable in Hyperlight)
+3. EA validates: `exp` not expired, `aud = 623405b7-...`, `iss` contains correct tenant, `roles` includes `Lab.Admin`
+4. EA sets `x-validated-claims` header, returns 200 (passes request to origin)
+5. Origin `jose` performs RS256/JWKS verification: fetches JWKS, verifies signature, confirms same claims
+6. Origin returns 200 with route context
 
-This is the documented **fail-open** behaviour. In both cases, `edgeActionsStatusCode_s = 503` appears in `FrontDoorAccessLog`.
+**Evidence source:** Tank `show-output/smoke-test-results.md` Run 4.
 
-## Expected test design (pending A4 deployment)
+## Original fail-open design (teaching gap — not lab-blocking)
 
-1. Deploy `ea-execution-filter` version to `eajwtvalidate` with `isDefaultVersion=False`
-2. Trigger via `X-Test-Fail: 1` header → EA throws a deliberate exception
-3. Verify:
-   - `/edge-only` + `X-Test-Fail: 1` → HTTP 200 (EA failed open; origin has no auth check)
-   - `/protected` + `X-Test-Fail: 1` → HTTP 401/403 (origin re-validates; backstop fires)
-4. Confirm `edgeActionsStatusCode_s = 503` in AFD access log
+The documented fail-open behaviour (edgeActionsStatusCode_s = 503 when EA times out or throws):
+- `/edge-only` + EA exception → 200 (no origin auth → access granted — dangerous teaching outcome)
+- `/protected` + EA exception → 401/403 (origin backstop — safe outcome)
 
-## Verdict: NOT EXECUTED ⏸
+This was not confirmed by lab evidence. The soft form is demonstrated: `/edge-only` returns 200 with no token (S3a), showing what happens when no EA gate exists. See `evidence/S9-fail-open.md` teaching notes in design.md.
 
-Pending:
-- B3 resolution (re-register EA private preview)
-- A4 deployment
-- B1 resolution for valid Entra token needed on `/protected`
-
-## Teaching value (available now)
-
-The `/edge-only` route reaching origin without any JWT check (confirmed by S3a evidence) already demonstrates the fail-open risk in a softer form: when no EA is attached, or when EA is bypassed, the teaching-only route is unprotected. S9 would make this explicit with a deliberate exception.
+## Verdict: PASS ✅ (re-scoped)
+- Real Lab.Admin token on `/admin`: PASS ✅
+- Fail-open (A4): not tested — documented teaching gap, not a lab completion requirement

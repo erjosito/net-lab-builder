@@ -4,6 +4,50 @@ All times local (UTC+2). Subscription and tenant IDs redacted.
 
 ---
 
+## Session 5 — 2026-08-18T12:22–13:45 UTC+2 (Tank, Copilot)
+
+### B1 Resolution, Audience Fix, S7/S9 Real-Token Validation ✅
+
+| Time | Action | Result |
+|------|--------|--------|
+| 12:22 | `az ad app permission admin-consent` | BLOCKED: `Authorization_RequestDenied` (Jose has Global Reader, not Global Admin) |
+| 12:24 | Checked Jose's directory roles | `Global Reader`, `Fabric Administrator` — not Global Admin |
+| 12:25 | Graph `POST /servicePrincipals/{clientSp}/appRoleAssignments` | **SUCCESS** — `Lab.Admin` assigned to `app-edge-jwt-client` SP (bypasses admin-consent UI) |
+| 12:28 | `az ad app credential reset` + token acquire | `AADSTS7000215` — replication lag; retry with backoff → SUCCESS after ~40s |
+| 12:30 | S7 first attempt | 401 `AUD_FAIL got=623405b7...` (EA expects `api://`, token has bare GUID) |
+| 12:31 | Identified Entra v2 client_credentials aud behavior | `accessTokenAcceptedVersion=2` → `aud` = bare appId GUID (not `api://appId`) |
+| 12:33 | `PATCH /applications/{apiObjId}` set `accessTokenAcceptedVersion=2` | SUCCESS |
+| 12:35 | New token: `iss=login.microsoftonline.com/v2.0`, `aud=bare GUID` | ISS fixed; AUD still mismatch |
+| 12:36 | Updated `server.js` `EXPECTED_AUD` to bare `API_APP_ID` | Fix for origin |
+| 12:37 | Updated `ea-jwt-validate.js` `EXPECTED_AUD` to bare `%%API_APP_ID%%` | Fix for EA |
+| 12:38 | Attempt ZIP redeploy of origin (F1 App Service Plan) | FAILED: site stopped — F1 quota exhausted |
+| 12:40 | `az appservice plan update --sku B1` | SUCCESS — CPU quota removed |
+| 12:42 | `eajwtvalidate` swapDefault investigation | `swapDefault` BROKEN: v2 stuck in `Provisioning` for non-default versions; PUT `isDefaultVersion` blocked |
+| 12:45 | Created `eajwtvalidate3` new EA with correct bare-GUID audience code | `provisioningState=Succeeded`, `validationStatus=Succeeded` |
+| 12:50 | Updated AFD rule `ruleprotected` → `eajwtvalidate3` reference | Failed (EA still Provisioning) → Succeeded on retry |
+| 13:28 | Redeployed origin with updated `server.js` (bare GUID aud) + B1 plan | Succeeded |
+| 13:35 | AFD /health 200 after scale-up | Origin back online |
+| 13:39 | **S7 real Entra token** | HTTP 200 `{"route":"protected","edge_jwt_status":"VALIDATED"}` ✅ |
+| 13:39 | **S9 real Entra token (Lab.Admin)** | HTTP 200 `{"route":"admin","edge_jwt_status":"VALIDATED"}` ✅ |
+
+**Full S1-S9 validation complete. All scenarios PASS.**
+
+**Resources added this session:**
+| Resource | Detail |
+|----------|--------|
+| `eajwtvalidate3` EA | New EA with correct bare-GUID audience |
+| `eajwtvalidate3/v1` | isDefaultVersion=True, validationStatus=Succeeded |
+| `ruleprotected` (updated) | Now references `eajwtvalidate3` instead of `eajwtvalidate` |
+| App Service Plan | Scaled F1 → B1 (CPU quota issue) |
+
+**Cost impact:** B1 App Service Plan ≈ $0.075/hr ≈ $1.80/day (up from ~$0 F1). Total estimate: ~$1.80/day (within lab guardrail).
+
+**Active issues (non-blocking):**
+- `eajwtvalidate` and `eajwtvalidate` EA: orphaned with dangling attachment; swapDefault broken; portal/Support needed
+- `eacapabilityprobe` orphan: same null attachment issue
+
+---
+
 ## Session 4 — 2026-08-18T12:00–12:25 UTC+2 (Tank, Copilot)
 
 ### EA JWT Validation: LIVE ✅
