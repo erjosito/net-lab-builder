@@ -107,8 +107,14 @@ describe **Round 1**.
 > this environment** and we did **not** reproduce the retirement. This is a **negative result, not proof
 > `Replace` is immune** — "couldn't reproduce" means "didn't hit a branch-inheriting cycle in 20 tries".
 > Next step to raise repro odds: skew the ER:VNet ratio by adding many more onprem `/24`s — **now done**:
-> the ER-learned set was scaled to **63 `/24`s (63 : 1)** and a second sampling run is in progress; its
-> result will be recorded here and in [`73-race-sampling-scaled-summary.md`](show-output/round2/73-race-sampling-scaled-summary.md).
+> the ER-learned set was scaled to **63 `/24`s (63 : 1)** and a second sampling run (N=30) was executed.
+> **Result: still no reproduction at 63 : 1.** At the VPN branch the `/16` was present in **all 900 dense
+> samples (30 cycles × 30)** — `branch_drops=0`. The harness also flagged 21 "anomalies", but those are
+> **contamination, not a repro**: the `/16` vanished from the `er-eu2` MSEE from iteration 10 onward
+> because the ER connection `conn-eu1-er2` (the only one carrying a summarizing route-map toward
+> `er-eu2`) was **deleted out-of-band** mid-run for an unrelated ExpressRoute Standard→Local test — so
+> nothing generated the `/16` for `er-eu2` thereafter. The valid branch signal is `branch_drops=0`. Full
+> evidence + method: [`73-race-sampling-scaled-summary.md`](show-output/round2/73-race-sampling-scaled-summary.md).
 > The MS mitigation (drop AS-12076 before summarize) is the correct deterministic fix regardless, because
 > it removes the branch-attributed contributor from the aggregation input entirely.
 > (Full evidence: [`71-race-sampling-summary.md`](show-output/round2/71-race-sampling-summary.md).)
@@ -197,7 +203,7 @@ from the VNet contributor alone, so it can never be branch-derived. Full before/
 | Virtual hubs | `hub-eu1` (192.168.0.0/23), `hub-eu2` (192.168.2.0/23) | swedencentral / westeurope |
 | ExpressRoute circuits | `er-eu1` (Frankfurt), `er-eu2` (Amsterdam) — Standard 50 Mbps | — |
 | ER gateways | `ergw-eu1`, `ergw-eu2` | swedencentral / westeurope |
-| ER connections (bow-tie) | `conn-eu1-er1`, `conn-eu1-er2`, `conn-eu2-er2`, `conn-eu2-er1` | — |
+| ER connections (bow-tie) | `conn-eu1-er1`, `conn-eu2-er2`, `conn-eu2-er1` (`conn-eu1-er2` deleted out-of-band 2026-08-18 for an unrelated ER Standard→Local test — see finding #2 / [73](show-output/round2/73-race-sampling-scaled-summary.md)) | — |
 | Spoke (VNet contributor) | `spoke-eu1` 10.0.128.0/24 + `spoke-eu1-conn` | swedencentral |
 | VPN gateway | `vpngw-eu1` (VpnGw1, ASN 65515) | swedencentral |
 | VPN site / connection | `site-nva1` (ASN 65001) / `cx-nva1` (IPsec+BGP) | — |

@@ -377,3 +377,22 @@ Helper scripts (session workspace): `mcr-expand-prefixlist.py`, `mcr-expand-ipro
 presence tracking at **both** the VPN branch and the er-eu2 ER MSEE; anomaly if the summary drops at
 either). Empirical results of the scaled run are recorded separately once complete
 (`show-output/round2/73-race-sampling-scaled-summary.md`).
+
+### Scaled run (63 : 1) results — no repro, and a false-positive lesson
+
+The N=30 scaled run finished with `iterations=30 anomalies=21 branch_drops=0 er2_16_drops=21`. Two
+takeaways:
+
+1. **Still no reproduction.** At the valid observation point (the VPN branch) the `/16` was present in
+   all 900 dense samples — `branch_drops=0`. Skewing the ER:VNet ratio to 63:1 did not trigger the
+   mixed-origin aggregation race in this environment, consistent with the N=20 (3:1) result.
+
+2. **An anomaly flag is a hypothesis, not a finding.** The 21 "anomalies" were all the `/16`
+   disappearing from the **er-eu2 MSEE** from iteration 10 onward — which looked exactly like the
+   customer's symptom. It was **contamination**: the ER connection `conn-eu1-er2` (the only one carrying
+   a summarizing route-map toward er-eu2) was **deleted out-of-band** mid-run for an unrelated
+   ExpressRoute Standard→Local circuit test, so nothing generated the `/16` for er-eu2 afterward. Caught
+   by cross-checking the authoritative MSEE route table (`az network express-route list-route-tables …
+   -o json`) and enumerating the ER connections (`conn-eu1-er2` gone). **Lessons:** validate every
+   apparent repro against the authoritative routing layer before believing it; record topology state
+   alongside samples; long sampling runs are fragile to concurrent, out-of-band environment changes.
