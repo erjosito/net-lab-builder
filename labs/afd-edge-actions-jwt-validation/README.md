@@ -312,6 +312,21 @@ The `roles` claim is populated because `app-edge-jwt-client` has been assigned t
 
 ### 4.3 Token acquisition
 
+> **Set up credentials first — in Azure Cloud Shell.**  
+> The lab vault (`kv-jwt-lab-a8fbd8e1`) has `publicNetworkAccess=Disabled` (tenant policy).  
+> Load credentials from a Cloud Shell session before running any token requests:
+>
+> ```bash
+> # In Azure Cloud Shell (https://shell.azure.com):
+> git clone https://github.com/<org>/net-lab-builder   # first time only
+> cd net-lab-builder/labs/afd-edge-actions-jwt-validation/tests
+> pwsh Import-JwtLabEnvironment.ps1
+> # → sets TENANT_ID, API_APP_ID, CLIENT_ID, CLIENT_SECRET, AFD_ENDPOINT
+> #   in THIS Cloud Shell process only (not your local machine)
+> ```
+>
+> If run locally, the script detects `ForbiddenByConnection` and prints exact Cloud Shell commands.
+
 ```bash
 curl -sX POST \
   "https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token" \

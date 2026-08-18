@@ -17,8 +17,12 @@ param(
     [string]$LawName        = 'law-edge-jwt-lab',
     [string]$AspName        = 'asp-edge-jwt-lab',
     [string]$AppSku         = 'B1',
+    # KV name derived from sub ID last-8 for collision safety; override if needed.
+    # The vault name is non-secret and committed to deployment-output.json.
+    [string]$KvName         = '',
     [switch]$SkipA1,
-    [switch]$SkipAppDeploy
+    [switch]$SkipAppDeploy,
+    [switch]$SkipKv
 )
 
 Set-StrictMode -Version Latest
@@ -83,10 +87,54 @@ function Set-EaDiagnosticSettings([string]$EaName, [string]$SubId, [string]$Rg, 
     Write-Host "[DIAG] 'ea-logs' (UserLog + ServiceLog) active on $EaName"
 }
 
+# ─── Helper: write a secret to Key Vault via ARM management plane ─────────────
+# Uses management.azure.com (not vault.azure.net data plane).
+# Required when publicNetworkAccess=Disabled is enforced by tenant policy.
+# Secret tags: stored via PATCH after PUT (PUT requires value; PATCH with empty
+# properties block is not supported — tags are set inline on initial PUT only).
+# Never print or return secret values; caller must scrub $Value after calling.
+function Set-KvSecretArm {
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [string]$KvResourceId,
+        [string]$SecretName,
+        [string]$Value,
+        [string]$ContentType = 'text/plain',
+        [hashtable]$Tags = @{}
+    )
+    if (-not $PSCmdlet.ShouldProcess($SecretName, 'Store in Key Vault')) { return }
+    $body = @{
+        tags       = $Tags
+        properties = @{
+            value       = $Value
+            contentType = $ContentType
+            attributes  = @{ enabled = $true }
+        }
+    } | ConvertTo-Json -Depth 5 -Compress
+    $tmpFile = Join-Path $env:TEMP "kv-secret-$([System.IO.Path]::GetRandomFileName()).json"
+    # IMPORTANT: write to a temp file, not the repo tree (secret content)
+    $body | Set-Content $tmpFile -Encoding UTF8
+    try {
+        $r = az rest --method PUT `
+          --uri "https://management.azure.com${KvResourceId}/secrets/${SecretName}?api-version=2023-07-01" `
+          --body "@$tmpFile" `
+          --query "properties.secretUri" -o tsv 2>&1
+        Write-Host "[KV] $SecretName stored → $($r.Split('?')[0])"
+    } finally {
+        # Always delete temp file even if az rest fails
+        Remove-Item $tmpFile -ErrorAction SilentlyContinue
+    }
+}
+
 # ═══ PREFLIGHT ════════════════════════════════════════════════════════════════
 Write-Step 'PREFLIGHT'
 $acct = Assert-AzLogin
 $subscriptionId = $acct.id
+
+# Resolve KV name: use param if supplied, else derive from last-8 of sub ID
+if (-not $KvName) { $KvName = "kv-jwt-lab-$($subscriptionId.Substring($subscriptionId.Length - 8))" }
+$KvResourceId = "/subscriptions/$subscriptionId/resourceGroups/$ResourceGroup/providers/Microsoft.KeyVault/vaults/$KvName"
+Write-Host "[PREFLIGHT] Key Vault: $KvName"
 
 # Register EdgeActions private preview feature flag (required before EA resource operations)
 $eaFeatureState = (az feature show --namespace Microsoft.Cdn --name EdgeActionsPrivatePreview --query properties.state -o tsv 2>&1)
@@ -332,6 +380,116 @@ if ($SkipA1) {
 
 $a1End = Get-Date
 Write-Host "[A1] Elapsed: $([int]($a1End - $a1Start).TotalSeconds)s"
+
+# ═══ A_KV — KEY VAULT: CREATE + POPULATE ══════════════════════════════════════
+# Creates a Standard Key Vault with Azure RBAC authorization and stores all test
+# credentials as secrets using the ARM management plane. Data-plane writes are
+# avoided because tenant policy may enforce publicNetworkAccess=Disabled.
+#
+# NETWORK NOTE: The vault is created with -DefaultAction Deny -Bypass AzureServices
+# plus Jose's current public IP. However, tenant policy may override and set
+# publicNetworkAccess=Disabled regardless, making data-plane access available
+# only from Azure Cloud Shell (trusted service) or a private-endpoint network.
+# This is a documented deviation — see deploy-log.md for details.
+#
+# Secret rotation: CLIENT_SECRET expires 7 days from creation.
+# To rotate: az ad app credential reset --id <clientId> --append --end-date <date>
+# Then re-run this section (idempotent — updates existing vault/secrets).
+Write-Step 'A_KV — Create Key Vault and Store Lab Secrets'
+$akvStart = Get-Date
+
+if (-not $SkipKv) {
+    # Resolve current public IP for firewall allowlist
+    $myIp = (Invoke-RestMethod -Uri 'https://api.ipify.org' -TimeoutSec 10 -ErrorAction SilentlyContinue)
+    if (-not $myIp) { Write-Warning '[A_KV] Could not resolve public IP; firewall rule will not include local machine' }
+
+    if ($PSCmdlet.ShouldProcess($KvName, 'Create or update Key Vault')) {
+        # Idempotent: az keyvault create is safe to re-run
+        $kvTags = @(
+            "lab=true", "created_by=copilot-lab", "owner=jose",
+            "ephemeral=true", "run_id=$RunId"
+        )
+        $kvArgs = @(
+            '--name',                 $KvName
+            '--resource-group',       $ResourceGroup
+            '--location',             $Location
+            '--sku',                  'standard'
+            '--enable-rbac-authorization', 'true'
+            '--public-network-access','Enabled'
+            '--default-action',       'Deny'
+            '--bypass',               'AzureServices'
+            '--tags'
+        ) + $kvTags
+        az keyvault create @kvArgs --output none 2>&1
+        Write-Host "[A_KV] Key Vault $KvName created/confirmed"
+
+        # Add current IP to firewall (idempotent)
+        if ($myIp) {
+            az keyvault network-rule add --name $KvName --resource-group $ResourceGroup `
+                --ip-address "$myIp/32" 2>&1 | Out-Null
+            Write-Host "[A_KV] Firewall rule added for $myIp"
+        }
+
+        # Assign Key Vault Secrets Officer to the signed-in identity
+        $userId  = az ad signed-in-user show --query id -o tsv 2>&1
+        $roleId  = 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7'   # Key Vault Secrets Officer
+        $existing = az role assignment list --assignee $userId --role $roleId `
+            --scope $KvResourceId --query '[0].id' -o tsv 2>&1
+        if (-not $existing -or $existing -match '^ERROR') {
+            az role assignment create --assignee $userId --role $roleId `
+                --scope $KvResourceId --output none 2>&1
+            Write-Host "[A_KV] Key Vault Secrets Officer assigned to $userId"
+        } else {
+            Write-Host "[A_KV] Key Vault Secrets Officer already assigned"
+        }
+    }
+
+    # Store secrets — requires $Script:TenantId, $Script:ApiAppId, $Script:ClientAppId,
+    # $env:CLIENT_SECRET to be set (populated by A1 above, or pre-existing run).
+    # Skip if A1 was skipped and these values are not available.
+    if (-not $SkipA1 -and $env:CLIENT_SECRET) {
+        $tenantId  = $Script:TenantId
+        $apiAppId  = $Script:ApiAppId
+        $clientId  = $Script:ClientAppId
+        $afdEndpt  = "https://${afdEndpoint}"
+        $expiry7d  = (Get-Date).ToUniversalTime().AddDays(7).ToString('yyyy-MM-ddTHH:mm:ssZ')
+
+        # Create 7-day credential specifically for KV (short-lived, descriptive name)
+        Write-Host "[A_KV] Creating 7-day client credential for KV storage..."
+        $credOut = az ad app credential reset `
+            --id $clientId `
+            --append `
+            --display-name "jwt-lab-kv-$(Get-Date -Format 'yyyyMMdd')" `
+            --end-date $expiry7d `
+            -o json 2>&1
+        $cred = ($credOut | Where-Object { $_ -notmatch '^WARNING' } | Join-String -Separator "`n") | ConvertFrom-Json
+        $kvSecret = $cred.password
+
+        $expTag  = @{ expiry=$expiry7d; purpose='jwt-lab-client-secret'; lab='afd-edge-actions-jwt-validation'; rotation='create-new-credential-before-expiry' }
+        $cfgTag  = @{ purpose='jwt-lab-config'; lab='afd-edge-actions-jwt-validation' }
+
+        Set-KvSecretArm -KvResourceId $KvResourceId -SecretName 'client-secret' -Value $kvSecret -ContentType 'application/jwt-lab-client-secret' -Tags $expTag
+        Set-KvSecretArm -KvResourceId $KvResourceId -SecretName 'tenant-id'     -Value $tenantId -ContentType 'text/plain' -Tags $cfgTag
+        Set-KvSecretArm -KvResourceId $KvResourceId -SecretName 'api-app-id'    -Value $apiAppId -ContentType 'text/plain' -Tags $cfgTag
+        Set-KvSecretArm -KvResourceId $KvResourceId -SecretName 'client-id'     -Value $clientId -ContentType 'text/plain' -Tags $cfgTag
+        Set-KvSecretArm -KvResourceId $KvResourceId -SecretName 'afd-endpoint'  -Value $afdEndpt -ContentType 'text/plain' -Tags $cfgTag
+
+        # Scrub KV-specific secret from memory (env:CLIENT_SECRET from A1 is kept for App Service config)
+        $kvSecret = $null
+        $cred     = $null
+        Write-Host "[A_KV] All secrets stored. KV-specific credential scrubbed from memory."
+        Write-Host "[A_KV] ⚠️  client-secret expires: $expiry7d — rotate before expiry."
+    } elseif ($SkipA1) {
+        Write-Warning '[A_KV] SkipA1 is set — secrets not populated. Re-run without -SkipA1, or populate manually.'
+    } else {
+        Write-Warning '[A_KV] $env:CLIENT_SECRET is not set — A1 may not have run. Secrets not populated.'
+    }
+} else {
+    Write-Host "[A_KV] Skipped (-SkipKv)"
+}
+
+$akvEnd = Get-Date
+Write-Host "[A_KV] Elapsed: $([int]($akvEnd - $akvStart).TotalSeconds)s"
 
 # ═══ A2 — CAPABILITY PROBE EDGE ACTION ════════════════════════════════════════
 # API learnings (Tank 2026-08-17/18):

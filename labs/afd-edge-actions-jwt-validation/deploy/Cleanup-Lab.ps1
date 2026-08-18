@@ -13,6 +13,7 @@ param(
     [string]$ResourceGroup = 'rg-afd-edge-jwt-lab',
     [string]$AfdProfile    = 'afd-edge-jwt-lab',
     [string]$SubscriptionId = '',
+    [string]$KvName        = '',   # Auto-derived from sub ID if empty
     # ⚠️ Must be explicitly passed by Jose — not a default
     [switch]$Confirmed
 )
@@ -29,6 +30,7 @@ if (-not $Confirmed) {
 
 $acct = az account show -o json 2>&1 | ConvertFrom-Json
 if (-not $SubscriptionId) { $SubscriptionId = $acct.id }
+if (-not $KvName)         { $KvName = "kv-jwt-lab-$($SubscriptionId.Substring($SubscriptionId.Length - 8))" }
 $EA_API = '2025-09-01-preview'
 
 Write-Host "`n[PREVIEW] Resources that would be deleted:`n"
@@ -60,7 +62,16 @@ if ($Confirmed -and $PSCmdlet.ShouldProcess('app-edge-jwt-lab', 'Delete App Serv
     Write-Host "    DELETED: app-edge-jwt-lab + asp-edge-jwt-lab"
 }
 
-# 4. Log Analytics Workspace
+# 4a. Key Vault (must be deleted before resource group; soft-delete may require purge)
+Write-Host "  [KV]    $ResourceGroup/$KvName (Key Vault — contains lab secrets)"
+Write-Host "  [KV]    Note: soft-delete is enabled; purge separately if needed after deletion."
+if ($Confirmed -and $PSCmdlet.ShouldProcess($KvName, 'Delete Key Vault')) {
+    az keyvault delete --name $KvName --resource-group $ResourceGroup --output none 2>&1
+    Write-Host "    DELETED (soft): $KvName"
+    Write-Host "    To purge: az keyvault purge --name $KvName --location swedencentral"
+}
+
+# 4b. Log Analytics Workspace
 Write-Host "  [LAW]   $ResourceGroup/law-edge-jwt-lab (Log Analytics)"
 if ($Confirmed -and $PSCmdlet.ShouldProcess('law-edge-jwt-lab', 'Delete Log Analytics workspace')) {
     az monitor log-analytics workspace delete `

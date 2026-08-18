@@ -21,6 +21,16 @@
     "edge_action_orphaned": "eacapabilityprobe (dangling null attachment, circular delete)",
     "afd_fdid": "549954ba-2ee7-482a-b672-1b0254d009ba"
   },
+  "key_vault": {
+    "kv_name": "kv-jwt-lab-a8fbd8e1",
+    "kv_auth_mode": "Azure RBAC (Key Vault Secrets Officer)",
+    "kv_sku": "standard",
+    "kv_location": "swedencentral",
+    "kv_network_note": "publicNetworkAccess=Disabled enforced by tenant policy; data-plane (vault.azure.net) accessible only from Cloud Shell (AzureServices bypass) or private-endpoint network. Secrets written via ARM management plane.",
+    "kv_secrets": ["client-secret", "tenant-id", "api-app-id", "client-id", "afd-endpoint"],
+    "kv_secret_expiry": "client-secret expires 7 days from creation date (rotate via az ad app credential reset --append)",
+    "kv_loader_script": "labs/afd-edge-actions-jwt-validation/tests/Import-JwtLabEnvironment.ps1"
+  },
   "entra": {
     "api_app_display_name": "app-edge-jwt-api",
     "client_app_display_name": "app-edge-jwt-client",

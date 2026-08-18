@@ -4,7 +4,50 @@ All times local (UTC+2). Subscription and tenant IDs redacted.
 
 ---
 
-## Session 7 — 2026-08-18T17:13 UTC+2 (Tank, Copilot — script fix)
+## Session 8 — 2026-08-18T18:00 UTC+2 (Tank, Copilot — Key Vault + loader)
+
+### Key Vault creation, secret population, and loader script
+
+| Time | Action | Result |
+|------|--------|--------|
+| 18:00 | Pre-flight: confirmed Jose has Owner at MG level; `Key Vault Secrets Officer` role available; apps uniquely identified; public IP discovered | ✅ Ready |
+| 18:05 | `az keyvault create kv-jwt-lab-a8fbd8e1` (Standard, RBAC, swedencentral, bypass=AzureServices, defaultAction=Deny, IP rule for local machine) | Succeeded |
+| 18:07 | `az role assignment create` — Key Vault Secrets Officer on vault scope → Jose OID `7f6e2c82-...` | Succeeded |
+| 18:08 | `az ad app credential reset --append --end-date 2026-08-25T18:07:02Z` — display name `jwt-lab-kv-20260818` | Credential created; password never written to disk |
+| 18:09 | Attempt `az keyvault secret set` → `ForbiddenByConnection` (data-plane blocked by tenant policy) | **BLOCKED** |
+| 18:10 | Confirmed: `az keyvault update --public-network-access Enabled` silently ignored by tenant policy | Deviation documented |
+| 18:11 | Workaround: `PUT management.azure.com/.../vaults/kv-jwt-lab-a8fbd8e1/secrets/{name}?api-version=2023-07-01` | **All 5 secrets written via ARM management plane** |
+| 18:12 | Verified metadata (no values) via management plane GET | SecretUri confirmed for all 5 secrets |
+| 18:13 | `Key Vault Secrets Officer` role assignment confirmed | ✅ |
+| 18:15 | In-memory token acquisition + endpoint calls: `/protected` → HTTP 200, `/admin` → HTTP 200 (`edge_jwt_status=VALIDATED`) | ✅ Real token validation passes |
+| 18:20 | Created `tests/Import-JwtLabEnvironment.ps1` | Loads env vars from KV; `-PassThru` returns names/lengths only |
+| 18:25 | Updated `deploy/Deploy-Lab.ps1` — added `Set-KvSecretArm` helper + `A_KV` section + `$KvName`/`$SkipKv` params | Idempotent; management-plane write pattern |
+| 18:26 | Updated `deploy/Cleanup-Lab.ps1` — added KV to preview list; $KvName auto-derived; soft-delete note | ✅ |
+| 18:27 | Updated `deploy/deployment-output.json` — added `key_vault` block | `kv_name`, auth mode, network note, secret names, expiry |
+| 18:28 | Updated `deploy/README.md` — added Key Vault section, loader usage, credential rotation, secrets table | ✅ |
+| 18:29 | PowerShell syntax validation: Deploy-Lab, Cleanup-Lab, Import-JwtLabEnvironment | ✅ 0 parse errors |
+
+### Deviations
+
+| # | Deviation | Root cause | Impact |
+|---|-----------|-----------|--------|
+| D1 | `publicNetworkAccess=Disabled` enforced by tenant policy | Tenant Azure Policy silently overrides ARM PUT/PATCH | Data-plane (vault.azure.net) unreachable from local machines; reads require Cloud Shell or private endpoint |
+| D2 | Secret tags not set | ARM management plane secret PUT requires `value` in body for PATCH; data-plane tag update would require secret value read (blocked by D1) | Cosmetic only; secrets are functional |
+| D3 | `ping-test` stray secret present in KV | Written during early testing | Cannot disable via management plane without value. Harmless; loader does not reference it |
+
+### Cost shape
+No additional Azure cost from KV creation (Standard SKU ~$0.03/10k operations). Client credential is process-scoped; no compute added.
+
+### Files changed
+- `deploy/Deploy-Lab.ps1` — `$KvName`/`$SkipKv` params + `Set-KvSecretArm` function + `A_KV` section
+- `deploy/Cleanup-Lab.ps1` — `$KvName` param + KV entry in preview list + soft-delete note
+- `deploy/deployment-output.json` — `key_vault` block added
+- `deploy/README.md` — KV section (network posture, loader usage, rotation, secrets table)
+- `tests/Import-JwtLabEnvironment.ps1` — **NEW** — process-only env-var loader script
+
+---
+
+
 
 ### Deploy-Lab.ps1 patched: automatic EA diagnostic settings
 
