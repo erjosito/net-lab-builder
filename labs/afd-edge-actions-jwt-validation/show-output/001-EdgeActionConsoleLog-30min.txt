@@ -1,0 +1,42 @@
+EdgeActionConsoleLog | where TimeGenerated >= ago(30m) | order by TimeGenerated asc
+
+10:10:34  ref=20260818T101034Z-…  EA_REJECT code=401 reason=MISSING_TOKEN
+10:10:41  ref=20260818T101041Z-…  EA_REJECT code=401 reason=MISSING_TOKEN
+10:10:47  ref=20260818T101047Z-…  EA_REJECT code=401 reason=MISSING_TOKEN
+10:10:53  ref=20260818T101053Z-…  EA_REJECT code=401 reason=MISSING_TOKEN
+10:10:58  ref=20260818T101058Z-…  EA_REJECT code=401 reason=MISSING_TOKEN
+10:15:20  ref=20260818T101520Z-…  EA_REJECT code=401 reason=MISSING_TOKEN
+10:15:21  ref=20260818T101521Z-…  EA_REJECT code=401 reason=MALFORMED_HEADER
+10:15:22  ref=20260818T101522Z-…  EA_REJECT code=401 reason=EXPIRED exp=1787044522
+10:15:24  ref=20260818T101524Z-…  EA_REJECT code=401 reason=AUD_FAIL got=wrong-audience
+10:15:25  ref=20260818T101525Z-…  EA_REJECT code=401 reason=AUD_FAIL got=<APP_ID_REDACTED>
+10:19:02  ref=20260818T101902Z-…  EA_REJECT code=401 reason=MISSING_TOKEN
+10:19:04  ref=20260818T101904Z-…  EA_REJECT code=401 reason=EXPIRED exp=1787041145
+10:19:04  ref=20260818T101903Z-…  EA_REJECT code=401 reason=MALFORMED_HEADER
+10:19:06  ref=20260818T101906Z-…  EA_REJECT code=401 reason=AUD_FAIL got=wrong-audience
+10:19:07  ref=20260818T101907Z-…  EA_REJECT code=401 reason=ISS_FAIL got=https://login.microsoftonline.com/wrong-tenant/v2.0
+10:19:08  ref=20260818T101908Z-…  EA_MODE=CLAIMS_ONLY alg=RS256
+10:19:08  ref=20260818T101908Z-…  EA_ACCEPT path=/protected roles=["Lab.User"]
+10:19:19  ref=20260818T101919Z-…  EA_REJECT code=403 reason=ROLE_FAIL required=Lab.Admin
+10:19:19  ref=20260818T101919Z-…  EA_MODE=CLAIMS_ONLY alg=RS256
+10:19:20  ref=20260818T101920Z-…  EA_MODE=CLAIMS_ONLY alg=RS256
+10:19:20  ref=20260818T101920Z-…  EA_ACCEPT path=/admin roles=["Lab.Admin"]
+10:25:41  ref=20260818T102541Z-…  EA_REJECT code=401 reason=EXPIRED exp=1787041540
+10:25:43  ref=20260818T102543Z-…  EA_REJECT code=401 reason=AUD_FAIL got=api://wrong-audience-00000000
+10:25:44  ref=20260818T102544Z-…  EA_REJECT code=401 reason=MALFORMED_HEADER
+10:25:45  ref=20260818T102545Z-…  EA_REJECT code=401 reason=ISS_FAIL got=https://login.microsoftonline.com/TENANT/v2.0
+10:26:16  ref=20260818T102616Z-…  EA_REJECT code=401 reason=MISSING_TOKEN
+10:26:16  ref=20260818T102616Z-…  EA_REJECT code=401 reason=MISSING_TOKEN
+10:26:17  ref=20260818T102617Z-…  EA_REJECT code=401 reason=AUD_FAIL got=api://00000000-0000-0000-0000-wrong-audience
+10:26:17  ref=20260818T102617Z-…  EA_REJECT code=401 reason=ISS_FAIL got=https://login.microsoftonline.com/wrong-tenant-id/v2.0
+10:26:17  ref=20260818T102617Z-…  EA_REJECT code=401 reason=EXPIRED exp=1787045174
+10:26:18  ref=20260818T102618Z-…  EA_REJECT code=401 reason=ISS_FAIL got=https://login.microsoftonline.com/TENANT/v2.0
+10:26:18  ref=20260818T102618Z-…  EA_REJECT code=401 reason=ISS_FAIL got=https://login.microsoftonline.com/TENANT/v2.0
+10:31:26  ref=20260818T103126Z-…  EA_MODE=CLAIMS_ONLY alg=RS256
+10:31:26  ref=20260818T103126Z-…  EA_ACCEPT path=/protected roles=["Lab.Admin"]
+10:31:28  ref=20260818T103128Z-…  EA_MODE=CLAIMS_ONLY alg=RS256
+10:31:28  ref=20260818T103128Z-…  EA_ACCEPT path=/admin roles=["Lab.Admin"]
+
+Source: LAW workspace law-edge-jwt-lab, table EdgeActionConsoleLog
+Workspace customerId: <LAW_WORKSPACE_ID>
+EA resource: /subscriptions/<SUB_ID>/resourcegroups/rg-afd-edge-jwt-lab/providers/microsoft.cdn/edgeactions/eajwtvalidate

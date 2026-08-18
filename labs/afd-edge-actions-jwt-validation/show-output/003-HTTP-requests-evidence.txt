@@ -1,0 +1,30 @@
+# HTTP Request Evidence — Niobe live run 2026-08-18T10:24-10:27 UTC
+
+AFD endpoint: https://edge-jwt-lab-hgbdgdh9ccaja2hv.b02.azurefd.net
+
+health   HTTP 200  ref=20260818T102417Z-158fcdc9776bc95vhC1MRSstmw0000001arg000000003mbh
+public   HTTP 200  ref=20260818T102419Z-158fcdc97762ld99hC1MRSyuvg0000001ap000000000qrds
+edge-only (no token) HTTP 200  ref=20260818T102615Z-167b84b5744znbmthC1 (teaching route; origin returns 200 with no EA on this route)
+S2 /protected no-token  HTTP 401  ref=20260818T102616Z-167b84b5744znbmthC1MRS8qqw0000000vp00000000037gr  EA_REJECT MISSING_TOKEN
+S2 /admin no-token      HTTP 401  ref=20260818T102616Z-167b84b5744znbmthC1MRS8qqw0000000vp00000000037h7  EA_REJECT MISSING_TOKEN
+S3 malformed token      HTTP 401  ref=20260818T102544Z-179d9bcd7c99n9fdhC1  EA_REJECT MALFORMED_HEADER
+S4 expired (exp=past)   HTTP 401  ref=20260818T102541Z-179d9bcd7c9bxfhhhC1  EA_REJECT EXPIRED
+S5 wrong-aud            HTTP 401  ref=20260818T102543Z-179d9bcd7c9n95vvhC1  EA_REJECT AUD_FAIL got=api://wrong-audience-00000000
+S5b wrong-iss           HTTP 401  ref=20260818T102545Z-179d9bcd7c99n9fdhC1  EA_REJECT ISS_FAIL got=https://login.microsoftonline.com/wrong-tenant-id/v2.0
+S6 tampered (TENANT placeholder -> ISS_FAIL) HTTP 401  EA_REJECT ISS_FAIL (see S6-evidence note)
+S7 no-Lab.Admin /admin  HTTP 403  EA_REJECT ROLE_FAIL required=Lab.Admin (from Tank smoke tests)
+S8 direct /protected    HTTP 403  Ip Forbidden (App Service access restriction)
+S8 direct /health       HTTP 403  Ip Forbidden (App Service access restriction)
+S7/S9 real Entra token  BLOCKED by B1 (admin consent not granted)
+S9 fail-open            NOT EXECUTED (A4 blocked by B3)
+
+S6 CONDITIONAL verification (Tank Run 3, 2026-08-18T10:31 UTC):
+  EA_MODE=CLAIMS_ONLY -> EA_ACCEPT path=/protected (EA passes fake-signed token)
+  Origin: 401 ERR_JWKS_MULTIPLE_MATCHING_KEYS (jose RS256 rejects fake signature)
+  Defense-in-depth confirmed PASS.
+
+debug/request echo (AFD headers visible at origin):
+  x-azure-fdid: 549954ba-<FDID_TRUNCATED>
+  x-forwarded-host: edge-jwt-lab-hgbdgdh9ccaja2hv.b02.azurefd.net
+  x-forwarded-for: 4.194.122.170, 69.15.1.206:33086
+  authorization: <redacted length=36> (origin server redacts in echo; never logs value)

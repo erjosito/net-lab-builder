@@ -1,0 +1,48 @@
+%% diagram-id: afd-edge-jwt-02-token-request-flow
+%% Source: deploy-log.md Session 3-4, S1-capability-probe-result.md, smoke-test-results.md
+%% S1 VERDICT: CONDITIONAL — EA is claims-only (pure-JS); origin is only crypto boundary
+%% Render: GitHub native Mermaid (fenced ```mermaid block)
+sequenceDiagram
+    autonumber
+    participant C  as Client<br/>(daemon)
+    participant E  as Entra ID<br/>(token endpoint)
+    participant J  as Entra ID<br/>(JWKS endpoint)
+    participant EA as eajwtvalidate<br/>(AFD PoP — Hyperlight)
+    participant O  as App Service<br/>(origin — jose)
+
+    Note over C,E: Phase A — Token acquisition
+    C->>E: POST /oauth2/v2.0/token<br/>grant_type=client_credentials<br/>scope=api://623405b7-…/.default
+    E-->>C: 200 — Bearer token<br/>aud=api://623405b7-… · roles=[Lab.Admin] · exp
+
+    Note over EA: Synchronous handler(event)<br/>No async · No fetch · No crypto<br/>Pure-JS base64url decode only
+
+    Note over C,EA: Phase B — Edge claims-only gate (S2–S8)
+    C->>EA: GET /protected<br/>Authorization: Bearer token
+    EA->>EA: strip x-validated-claims · x-edge-jwt-status · x-test-fail<br/>parse header+payload (pure-JS base64url decode)<br/>check iss · aud · exp · nbf · roles
+
+    alt Token missing / malformed / expired / wrong aud or iss / wrong role
+        EA-->>C: 401 or 403 — reason code in EdgeActionConsoleLog<br/>EA_REJECT code=401 reason=MISSING_TOKEN<br/>EA_REJECT code=401 reason=AUD_FAIL got=wrong-audience<br/>EA_REJECT code=403 reason=ROLE_FAIL<br/>(origin never reached — edgeActionsStatusCode=200 in AFD log)
+    else Claims structurally valid (iss/aud/exp/roles OK)
+        Note over EA: EA_MODE=CLAIMS_ONLY — signature NOT verified<br/>Fake-signed token with correct claims passes this gate
+        EA->>O: forward request<br/>x-validated-claims: sub/roles/exp/mode=claims_only<br/>x-edge-jwt-status: VALIDATED<br/>X-Azure-FDID: 549954ba-… (platform-set)
+        Note over O: Phase C — Origin RS256/JWKS cryptographic verification
+        O->>J: createRemoteJWKSet — async JWKS fetch<br/>(jose auto-refreshes on key rollover)
+        J-->>O: RS256 public key set
+        O->>O: jwtVerify — RS256 signature verify<br/>iss · aud · exp · algorithms:RS256/ES256
+
+        alt Real Entra token (valid RS256 signature)
+            O-->>C: 200 OK — route payload
+        else Fake-signed token (S7-sim / S9-sim — smoke-test-results.md Run 3)
+            O-->>C: 401 ERR_JWKS_MULTIPLE_MATCHING_KEYS<br/>(origin RS256 rejects fake sig — EA_ACCEPT logged)
+        end
+    end
+
+    Note over C,O: Phase D — Fail-open (S9 — ea-execution-filter with X-Test-Fail:1)
+    C->>EA: GET /protected · X-Test-Fail: 1
+    EA->>EA: execution filter triggers deliberate exception or exceeds 10 ms budget
+    Note over EA: Platform terminates EA — edgeActionsStatusCode=503 in FrontDoorAccessLog
+    EA->>O: request forwarded without any EA processing
+    O->>J: JWKS fetch (jose)
+    J-->>O: RS256 key set
+    O->>O: jwtVerify — RS256 verify
+    O-->>C: 401 Unauthorized — origin backstop catches fail-open

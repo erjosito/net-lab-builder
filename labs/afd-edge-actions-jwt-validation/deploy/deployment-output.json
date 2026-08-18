@@ -1,0 +1,87 @@
+{
+  "run_id": "20260817T151358Z",
+  "deployed_at": "2026-08-18T06:05:00Z",
+  "resource_group": "rg-afd-edge-jwt-lab",
+  "location": "swedencentral",
+  "resources": {
+    "app_service_plan": "asp-edge-jwt-lab",
+    "app_service_name": "app-edge-jwt-lab",
+    "app_service_url": "https://app-edge-jwt-lab.azurewebsites.net",
+    "afd_profile": "afd-edge-jwt-lab",
+    "afd_sku": "Standard_AzureFrontDoor",
+    "afd_endpoint": "edge-jwt-lab-hgbdgdh9ccaja2hv.b02.azurefd.net",
+    "afd_base_url": "https://edge-jwt-lab-hgbdgdh9ccaja2hv.b02.azurefd.net",
+    "law_name": "law-edge-jwt-lab",
+    "edge_action_capability_probe": "eacapabilityprobe",
+    "edge_action_version_v1": "v1 (zip, isDefault=True, validationStatus=EMPTY)",
+    "edge_action_version_v2": "v2 (file, isDefault=False, validationStatus=EMPTY)",
+    "afd_ruleset": "rsedgeprobe",
+    "afd_rule": "ruleprovedebug (provisioningState=Failed - EA attachment blocked by validation)",
+    "edge_action_active": "eaprobe2 (v1=probe default executing, agentType=node confirmed)",
+    "edge_action_orphaned": "eacapabilityprobe (dangling null attachment, circular delete)",
+    "afd_fdid": "549954ba-2ee7-482a-b672-1b0254d009ba"
+  },
+  "entra": {
+    "api_app_display_name": "app-edge-jwt-api",
+    "client_app_display_name": "app-edge-jwt-client",
+    "notes": "Tenant and subscription IDs not stored in committed files per charter"
+  },
+  "smoke_tests": {
+    "afd_health": "PASS - HTTP 200",
+    "afd_public": "PASS - HTTP 200",
+    "afd_protected_no_token": "PASS - HTTP 401 (origin validation working)",
+    "s8_direct_origin_bypass": "PASS - HTTP 403 (access restriction effective)",
+    "s1_ea_probe": "PASS - edgeActionsAgentType=node, edgeActionsStatusCode=200",
+    "afd_admin_no_token": "PASS - HTTP 401",
+    "s8_origin_bypass": "PASS - HTTP 403"
+  },
+  "access_restrictions": {
+    "rule_100_afd_healthprobe": "Configured (AzureFrontDoor.Backend + x-fd-healthprobe=1)",
+    "rule_200_afd_fdid": "Configured via ARM REST (AzureFrontDoor.Backend + x-azure-fdid=FDID)",
+    "note": "Both rules required ARM REST API - az CLI blocks duplicate ServiceTag values"
+  },
+  "s1_gate_verdict": "BLOCKED - Edge Action attachment fails (see blockers)",
+  "activation_status": {
+    "A0": "COMPLETE - RG, LAW, App Service Plan+App, AFD profile+endpoint+origin+route, access restrictions",
+    "A1": "PARTIAL - Entra app registrations created, client secret generated (process-scoped), admin-consent BLOCKED",
+    "A2": "COMPLETE - eaprobe2 executing (edgeActionsAgentType=node, edgeActionsStatusCode=200)",
+    "S1_GATE": "COMPLETE - CONDITIONAL verdict: crypto/fetch/atob=undefined; pure-JS path viable",
+    "A3": "BLOCKED by B3 - EA private preview expired; ea-jwt-validate.js fixed and ready",
+    "A4": "NOT_STARTED - Blocked by B3"
+  },
+  "blockers": [
+    {
+      "id": "B1",
+      "severity": "HIGH",
+      "area": "A1 Entra admin consent",
+      "description": "Current identity does not have Application Administrator role in Entra tenant. Admin consent for app-edge-jwt-client Lab.Admin permission not granted. Token acquisition will fail until an admin grants consent.",
+      "resolution": "Jose or a tenant admin must run: az ad app permission admin-consent --id <client-app-id>. App IDs are available in deployment-output.json (non-secret)."
+    },
+    {
+      "id": "B3",
+      "severity": "HIGH",
+      "area": "A3 EA JWT deployment",
+      "description": "EdgeActionsPrivatePreview=NotRegistered. Private preview access expired. EA control plane blocked. eaprobe2 data plane still executing.",
+      "resolution": "Re-register for Edge Actions private preview. ea-jwt-validate.js is ready."
+    }
+  ],
+  "api_learnings": {
+    "EdgeAction_resource_type": "Microsoft.Cdn/EdgeActions (resource group level, not subscription level)",
+    "EdgeAction_location": "global only",
+    "EdgeAction_sku": "Standard / Standard (not Standard_AzureFrontDoor)",
+    "EdgeAction_name_constraint": "alphanumeric only, max 50 chars",
+    "EdgeAction_version_code_upload": "PUT versions/{name} with properties.code = base64(zip) and deploymentType=zip",
+    "EdgeAction_version_code_validation": "ASYNC - not triggered by REST API; portal/VS Code only",
+    "AFD_rule_action_name": "EdgeAction (not InvokeEdgeAction)",
+    "AFD_rule_action_typeName": "DeliveryRuleEdgeActionParameters",
+    "AFD_rule_invocation_point": "ClientRequest (required property)",
+    "AFD_rule_ea_reference": "edgeActionReference.id",
+    "AFD_rule_api_version": "2025-09-01-preview required for EdgeAction action",
+    "App_Service_duplicate_ServiceTag": "az CLI blocks duplicate ServiceTag; use ARM REST (PATCH config/web) to add two rules with same tag",
+    "App_Service_health_probe_rule": "AzureFrontDoor.Backend + x-fd-healthprobe=1 (health probes do NOT carry X-Azure-FDID)",
+    "deployVersionCode": "POST .../versions/{v}/deployVersionCode {name,content:base64(zip)} — triggers validation. ~17 min before addAttachment works.",
+    "ea_sandbox_apis": "crypto/fetch/atob/btoa/TextEncoder=undefined. Promise/JSON/Date/Uint8Array available.",
+    "ea_console_logs": "UserLog category on EA resource -> EdgeActionConsoleLog in LAW",
+    "ea_preview_expiry": "EdgeActionsPrivatePreview can expire. Data plane continues; control plane fails."
+  }
+}

@@ -1,0 +1,38 @@
+%% diagram-id: afd-edge-jwt-04-fail-open-comparison
+%% Source: smoke-test-results.md Run 3 (S9), deploy-log.md Session 4, S1-capability-probe-result.md
+%% CONDITIONAL mode: fail-open bypasses ALL claim checking (not just sig verify)
+%% Render: GitHub native Mermaid (fenced ```mermaid block)
+flowchart LR
+    classDef good    fill:#d4edda,stroke:#28a745,color:#155724
+    classDef bad     fill:#ffe5e5,stroke:#cc0000,color:#5a0000
+    classDef neutral fill:#f5f5f5,stroke:#999,color:#333
+    classDef edge    fill:#fff3cd,stroke:#e0a800,color:#5a3e00
+    classDef origin  fill:#d4edda,stroke:#28a745,color:#155724
+
+    subgraph LEFT["❌ Edge-only enforcement  (teaching-only — /edge-only route)"]
+        direction TB
+        C1(["Client\n(any token or none)"]):::neutral
+        EA1["eajwtvalidate\nSynchronous handler — 10 ms budget\nClaims-only (NO sig verify)"]:::edge
+        FAIL1["⚠ EA exception or 10 ms overrun\nedgeActionsStatusCode=503 in FrontDoorAccessLog\nPlatform terminates EA, forwards request unchanged"]:::bad
+        APP1["/edge-only route\nNo origin auth check\nTrusts x-validated-claims header only"]:::bad
+        C1 -->|"GET /edge-only\nX-Test-Fail: 1"| EA1
+        EA1 -->|"EA fails open"| FAIL1
+        FAIL1 -->|"request forwarded\nno claim check · no sig check"| APP1
+        APP1 -->|"200 OK — unauthenticated access granted\n⚠ DANGEROUS: proven by S9 smoke test"]:::bad
+    end
+
+    subgraph RIGHT["✅ Defence-in-depth  (production-safe — /protected + /admin routes)"]
+        direction TB
+        C2(["Client\n(any token or none)"]):::neutral
+        EA2["eajwtvalidate\nSynchronous handler — 10 ms budget\nClaims-only (NO sig verify)"]:::edge
+        FAIL2["⚠ EA exception or 10 ms overrun\nedgeActionsStatusCode=503 in FrontDoorAccessLog\nPlatform terminates EA, forwards request unchanged"]:::bad
+        APP2["/protected · /admin routes\njose.jwtVerify — RS256 + JWKS\nOrigin is only crypto boundary — validates independently"]:::good
+        C2 -->|"GET /protected\nX-Test-Fail: 1"| EA2
+        EA2 -->|"EA fails open"| FAIL2
+        FAIL2 -->|"request forwarded\nno claim check · no sig check"| APP2
+        APP2 -->|"401 Unauthorized — origin RS256/JWKS rejects\n✅ SAFE: origin backstop works regardless of EA state"]:::good
+    end
+
+    NOTE(["Key insight (S1 CONDITIONAL + S9 evidence):\nEA fail-open in CONDITIONAL mode means ALL claim checking is skipped\n(not just sig verify — the handler never runs at all).\nOrigin RS256/JWKS is the ONLY enforcement that survives EA failure.\nEA cannot be the sole auth layer in any production scenario."]):::neutral
+    LEFT ~~~ NOTE
+    RIGHT ~~~ NOTE

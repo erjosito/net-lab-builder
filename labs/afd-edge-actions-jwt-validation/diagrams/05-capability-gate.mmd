@@ -1,0 +1,51 @@
+%% diagram-id: afd-edge-jwt-05-capability-gate
+%% Source: deploy-log.md Sessions 2-4, deployment-output.json, S1-capability-probe-result.md
+%% S1-GATE RESOLVED = CONDITIONAL (2026-08-18). GO path dead. B1 active. B3 resolved.
+%% Render: GitHub native Mermaid (fenced ```mermaid block)
+flowchart TD
+    classDef step    fill:#e6f2ff,stroke:#0078d4,color:#003566
+    classDef gate    fill:#fff3cd,stroke:#e0a800,color:#5a3e00
+    classDef go      fill:#e8f5e9,stroke:#aaa,color:#aaa
+    classDef cond    fill:#d4edda,stroke:#28a745,color:#155724
+    classDef stop    fill:#e8f5e9,stroke:#aaa,color:#aaa
+    classDef active  fill:#d4edda,stroke:#28a745,color:#155724
+    classDef blocked fill:#ffe5e5,stroke:#cc0000,color:#5a0000
+    classDef note    fill:#f8f9fa,stroke:#aaa,color:#555,font-style:italic
+
+    A0["A0 — Foundation (COMPLETE)\nrg-afd-edge-jwt-lab · law-edge-jwt-lab\nafd-edge-jwt-lab · app-edge-jwt-lab\nAccess Restrictions Rules 100+200 (ARM REST)"]:::step
+    A1["A1 — Entra ID (PARTIAL)\napp-edge-jwt-api · app-edge-jwt-client created\nClient secret — process-scoped only\n⚠ B1: admin consent not granted"]:::blocked
+    A2["A2 — Capability probe (COMPLETE)\neaprobe2/v1 executing\nedgeActionsAgentType=node confirmed\nEdgeActionConsoleLog populated in LAW"]:::step
+
+    GATE{"S1-GATE\nCAPABILITY VERDICT\n⚠ RESOLVED\n2026-08-18"}:::gate
+
+    N_PROBE(["API availability (eaprobe2, LAW):\ncrypto=undefined · fetch=undefined\natob=undefined · btoa=undefined · TextEncoder=undefined\nPromise=function · JSON=object · Date=function · Uint8Array=function\nResults deterministic across all PoPs"]):::note
+
+    GO_DEAD["GO — DEAD PATH\ncrypto.subtle unavailable\nRS256/JWKS sig verify impossible\nnot taken"]:::go
+
+    COND_LIVE["CONDITIONAL ✅ ACTIVE\nPure-JS base64url decode\niss / aud / exp / nbf / roles claim check\nHeader strip + x-validated-claims inject\nNO signature verification"]:::cond
+
+    STOP_DEAD["STOP — not taken\n(some APIs available — not zero)"]:::stop
+
+    A3_NOTE(["A3 deployment path (resolved):\n1. POST deployVersionCode — uploads JS zip, triggers async validation\n2. validationStatus appears Succeeded in ~15s BUT is premature\n3. Real validation takes ~17 min before addAttachment works\n4. Validation ONLY finalised via portal or VS Code UI\n   (REST API alone cannot trigger it — eacapabilityprobe orphan proves this)\n5. Rule PUT with EdgeAction action auto-triggers correct addAttachment\n⚠ B3: EdgeActionsPrivatePreview=NotRegistered during Session 3\n   (control plane blocked; data plane eaprobe2 continued)\n   B3 resolved via portal before Session 4"]):::note
+
+    A3_LIVE["A3 — eajwtvalidate LIVE (COMPLETE)\nrsedgejwt / ruleprotected\nmatchValues: /protected + /admin\nprovisioningState=Succeeded\nvalidationStatus=Succeeded"]:::active
+
+    B1_BLOCK["⚠ B1 ACTIVE — admin consent blocked\naz ad app permission admin-consent\n--id 6f86ab2c-…\nS7 / S9 real Entra token scenarios blocked\nFake-signed smoke tests passed (S2-S8 verified)"]:::blocked
+
+    VERDICT["Capability verdict: CONDITIONAL\nEA=claims-only-gate · Origin=RS256/JWKS crypto\nEvidence: show-output/S1-capability-probe-result.md\nSmoke tests: smoke-test-results.md Run 3"]:::step
+
+    A0 --> A1
+    A0 --> A2
+    A2 --> GATE
+    N_PROBE -.- GATE
+
+    GATE -->|"crypto.subtle available"| GO_DEAD
+    GATE -->|"claims viable; no sig verify"| COND_LIVE
+    GATE -->|"no APIs at all"| STOP_DEAD
+
+    COND_LIVE --> A3_NOTE
+    A3_NOTE --> A3_LIVE
+    A3_LIVE --> B1_BLOCK
+    B1_BLOCK --> VERDICT
+    GO_DEAD -.-> VERDICT
+    STOP_DEAD -.-> VERDICT

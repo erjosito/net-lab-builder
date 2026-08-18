@@ -1,0 +1,43 @@
+%% diagram-id: afd-edge-jwt-01-topology
+%% Source: deployment-output.json, deploy-log.md, S1-capability-probe-result.md, design.md §1
+%% Live values: endpoint, resource names, FDID prefix, Entra app-id prefix (2026-08-18)
+%% Render: GitHub native Mermaid (fenced ```mermaid block)
+flowchart LR
+    classDef internet  fill:#f5f5f5,stroke:#999,color:#333
+    classDef entra     fill:#dce8fc,stroke:#0078d4,color:#003566
+    classDef afd       fill:#e6f2ff,stroke:#0078d4,color:#003566
+    classDef edge      fill:#fff3cd,stroke:#e0a800,color:#5a3e00
+    classDef origin    fill:#d4edda,stroke:#28a745,color:#155724
+    classDef logging   fill:#f3e8fb,stroke:#7b2d8b,color:#3b0a47
+
+    C(["Client\n(daemon / test runner)"]):::internet
+
+    subgraph EntraID["Entra ID — global"]
+        direction TB
+        TOKEN["Token endpoint\n/oauth2/v2.0/token\nclient_credentials\naud=api://623405b7-…"]:::entra
+        JWKS["JWKS endpoint\n/discovery/v2.0/keys\nRS256 public keys"]:::entra
+    end
+
+    subgraph AFD["AFD Standard — afd-edge-jwt-lab\nedge-jwt-lab-hgbdgdh9ccaja2hv.b02.azurefd.net"]
+        direction TB
+        ROUTE["rsedgejwt / ruleprotected\n/protected + /admin → eajwtvalidate\n/debug/* → eaprobe2\n/health /public → passthrough"]:::afd
+        EA["eajwtvalidate  (Hyperlight, agentType=node)\nSynchronous handler(event) — no async, no fetch\nCLAIMS-ONLY: iss / aud / exp / nbf / roles\nNO crypto · NO fetch · NO sig verify\n10 ms budget — edgeActionsStatusCode=503 on overrun"]:::edge
+    end
+
+    subgraph OriginSE["App Service — swedencentral\napp-edge-jwt-lab.azurewebsites.net"]
+        direction TB
+        RESTRICT["Access Restrictions (ARM-native)\nRule 100: AzureFrontDoor.Backend + X-FD-HealthProbe=1\nRule 200: AzureFrontDoor.Backend + X-Azure-FDID=549954ba-…\nImplicit deny-all"]:::origin
+        APP["Route handlers — jose.jwtVerify\nRS256 + JWKS auto-refresh\nOnly cryptographic security boundary"]:::origin
+    end
+
+    LAW["law-edge-jwt-lab  (Log Analytics — swedencentral)\nFrontDoorAccessLog incl. edgeActionsStatusCode\nEdgeActionConsoleLog  (UserLog on eajwtvalidate)\nReason codes: MISSING_TOKEN · MALFORMED_HEADER\nEXPIRED · AUD_FAIL · ISS_FAIL · ROLE_FAIL · EA_ACCEPT"]:::logging
+
+    C -->|"1 — client_credentials"| TOKEN
+    TOKEN -->|"2 — Bearer token\naud=api://623405b7-…"| C
+    C -->|"3 — HTTPS + Authorization: Bearer"| ROUTE
+    ROUTE -->|"4 — invoke EA"| EA
+    EA -->|"5a — valid claims: forward + x-validated-claims\n5b — 401 or 403: origin skipped"| RESTRICT
+    RESTRICT --> APP
+    APP -.->|"async JWKS fetch (jose)\nRS256 signature verify"| JWKS
+    EA -.->|"console.log → UserLog"| LAW
+    ROUTE -.->|"FrontDoorAccessLog\nedgeActionsStatusCode"| LAW

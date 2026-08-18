@@ -1,0 +1,40 @@
+%% diagram-id: afd-edge-jwt-03-trust-boundaries
+%% Source: design.md §1.1 (B1-B4), S1-capability-probe-result.md (sandbox APIs), server.js
+%% S1 CONDITIONAL: EA claims-only; origin is only cryptographic boundary
+%% Render: GitHub native Mermaid (fenced ```mermaid block)
+flowchart TD
+    classDef untrusted fill:#ffe5e5,stroke:#cc0000,color:#5a0000
+    classDef edge      fill:#fff3cd,stroke:#e0a800,color:#5a3e00
+    classDef platform  fill:#e6f2ff,stroke:#0078d4,color:#003566
+    classDef origin    fill:#d4edda,stroke:#28a745,color:#155724
+    classDef note      fill:#f8f9fa,stroke:#aaa,color:#333,font-style:italic
+
+    C(["User / Client\n(arbitrary internet caller)"]):::untrusted
+
+    subgraph B1["B1 — Internet → AFD  (TLS only; no identity check)"]
+        AFD["AFD global PoP\nTerminates TLS\nafd-edge-jwt-lab  /  edge-jwt-lab-hgbdgdh9ccaja2hv.b02.azurefd.net"]:::platform
+    end
+
+    subgraph B2["B2 — AFD → eajwtvalidate  (Hyperlight sandbox — S1: CONDITIONAL)"]
+        EA["Synchronous handler(event) — no async, no Promise chains\nNO crypto · NO fetch · NO atob/btoa · NO TextEncoder\nAvailable: JSON · Date · Uint8Array · Promise (unused)\nClaims-only: pure-JS base64url decode + iss/aud/exp/nbf/roles\nStrips: x-validated-claims · x-edge-jwt-status · x-test-fail\nInjects: x-validated-claims · x-edge-jwt-status=VALIDATED\nLogs: EA_REJECT or EA_ACCEPT → EdgeActionConsoleLog"]:::edge
+        NSTRIP(["Spoofed-header stripping runs before any auth check\nPrevents client pre-injecting trusted claim headers"]):::note
+    end
+
+    subgraph B3["B3 — AFD → Origin  (ARM-native platform enforcement)"]
+        RESTRICT["App Service Access Restrictions\nRule 100: AzureFrontDoor.Backend + X-FD-HealthProbe=1 → Allow\nRule 200: AzureFrontDoor.Backend + X-Azure-FDID=549954ba-… → Allow\nImplicit deny-all\nHealth probes do NOT carry X-Azure-FDID — two-rule pattern required"]:::platform
+        NDIRECT(["Direct .azurewebsites.net call misses X-Azure-FDID\n→ denied by implicit deny-all\nS8 confirms: HTTP 403 Ip Forbidden"]):::note
+    end
+
+    subgraph B4["B4 — Origin app  (only cryptographic security boundary)"]
+        APP["jose.jwtVerify  —  async\ncreatRemoteJWKSet: auto-fetch + cache JWKS from Entra\nRS256 signature verify (ES256 also accepted)\niss · aud · exp validated cryptographically\nLab.Admin role check on /admin\nNever trusts x-validated-claims as proof of signature"]:::origin
+        NJWKS(["JWKS auto-refresh handles key rollover\nS7-sim / S9-sim: fake-signed token passes B2 but fails here\n(ERR_JWKS_MULTIPLE_MATCHING_KEYS)"]):::note
+    end
+
+    C -->|"HTTPS request"| AFD
+    AFD -->|"matched EA route — eajwtvalidate invoked"| EA
+    EA -.->|"fail-open: exception or 10 ms overrun\nedgeActionsStatusCode=503 in AFD log"| RESTRICT
+    EA -->|"valid claims — forward\ninvalid — 401 or 403 (origin skipped)"| RESTRICT
+    RESTRICT --> APP
+    NSTRIP -.- EA
+    NDIRECT -.- RESTRICT
+    NJWKS -.- APP
