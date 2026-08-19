@@ -181,3 +181,24 @@ Each diagram is introduced with a brief contextual sentence. All five blocks val
 **External-value test:** Post remains fully valuable with all lab-process references removed. It documents a validated multi-region VNRA design, the exact peering prerequisites for any hub-spoke topology, a reusable diagnostic method for silent data-plane failure, and the observability ceiling specific to managed VNRA hardware.
 
 **Lesson:** When a blog post uses a lab error as the structural center rather than the discovery method, readers who have not made the same error see a post-mortem instead of a design guide. The technical content is the same; only the framing determines external value. Always ask: is the reader's problem this article's organizing principle, or is the team's experience?
+
+---
+
+### 2026-08-19: Final editorial reframe — design/observability lead, peering as closing field note
+
+**Directive (Jose):** Lead with reusable managed-VNRA design lessons and observability/diagnostics model. allowVirtualNetworkAccess must not be the headline, title, hook, or organizing thesis. Move to a short anecdote/footnote at the end. Title must foreground managed VNRA multi-region UDR transit design/observability.
+
+**Title:** "Multi-Region UDR Transit with Azure Managed VNRA: Design Guide and Observability Model"
+
+**What changed:**
+- Title: peering flags removed entirely; design guide + observability model foregrounded
+- Opening: hardware VNRA brief + two design-relevant distinguishers (UDR chain wiring; observability narrower than VM NVA); no peering flags in hook
+- "Peering Prerequisites" and "Diagnosing Silent Data-Plane Failure" sections removed from article body
+- New section: "Verifying Transit: TTL Invisibility as the Confirmation Signal" (design concept)
+- Observability section promoted to primary mid-article position; renamed to "The Observability Model"; indirect diagnostics methodology added
+- Closing field note "Field Note: Connected/FullyInSync Is Not Data-Plane Proof" (~250 words at 78% through article): JSON evidence, fix, generalizable lesson
+- Root README index updated to match
+- PR #7: https://github.com/erjosito/azure-networking-blog/pull/7
+- Merge commit: ff0957e6c98432ab011bead680aa28568c64a48e
+
+**Lesson:** When a technical finding has multiple dimensions (design pattern, observability model, specific gotcha), the article's organizing principle should match what readers are searching for — which is almost always the design/operational model, not the specific error. Gotchas belong as evidence, field notes, or appendices. The title, hook, and section order should serve the majority of readers who want to understand how to build and operate the technology, not the subset who have already hit the specific failure.
