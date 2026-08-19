@@ -1,4 +1,4 @@
-# 📝 The Kid — History (SUMMARIZED)
+﻿# 📝 The Kid — History (SUMMARIZED)
 
 ## Tenure Summary
 
@@ -132,3 +132,28 @@ latency/throughput equivalence verdicts, and verified the 23.29 ms positive-cont
 shift with 95% CI 22.08–24.48 ms. Relative-link, Python compile, stale-label,
 Azure-accuracy, and public-sanitization checks passed. Raw per-request captures and
 Azure control-plane dumps were intentionally excluded. No Azure cleanup occurred.
+
+
+---
+
+### 2026-08-19: Diagram embedding fix — dual-hub-vnra-udr-transit post
+
+**Trigger:** User reported published post contained no visible diagrams; called out the directive for readable, understandable, engaging posts.
+
+**Root cause discovered:** The original post (PR #3, merge commit `ed11bea`) submitted four Mermaid diagram files under `assets/` and referenced them with a footer note pointing to a `diagrams/` folder. GitHub does not support Markdown transclusion or includes — separate `.md` files are never rendered inline in a README. Readers who never opened the individual asset files saw zero diagrams, only prose and tables.
+
+**What I did:** Diagnosed the gap; wrote an updated README with all five Mermaid fenced blocks (`graph TB`, `graph LR` ×2, `graph TD` ×2) embedded directly at narrative-appropriate points:
+- Topology overview → after "The Setup" intro paragraph
+- Forward and return data-path → after the UDR chain step list
+- Observability probe sequence → opening "The Observability Ceiling" section
+- Resource dependency / cleanup boundary → in "Full Lab Evidence"
+
+Each diagram is introduced with a brief contextual sentence. All five blocks validated: valid graph types, balanced brackets, outside HTML comments and details tags. Opened PR #5, verified MERGEABLE with no failing checks, squash-merged to main (commit `b89d88097ee40abe070e2182de404fe046c62bfa`), branch deleted.
+
+**Lesson:** Asset files are not diagrams in the post. GitHub renders only what is directly in the README. A Mermaid block in a separate .md file under assets/ is invisible to readers. After every publication, verify inline rendering in the published README on main — not just that diagram files exist in the repo.
+
+**Status:** Fixed. Main now contains 5 inline Mermaid fences. PR: https://github.com/erjosito/azure-networking-blog/pull/5
+
+---
+
+📌 2026-08-19T20:51:00+02:00 — Diagram-embedding gap fixed; team inbox note written at .squad/decisions/inbox/kid-blog-diagrams-must-be-inline.md.
