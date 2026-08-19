@@ -6,6 +6,12 @@
 
 ---
 
+> **Public-preview scope clarification — 2026-08-19**
+>
+> Cryptographic JWT signature validation is outside the supported scope of Edge Actions public preview. Use origin or gateway validation. The lab evidence below demonstrates the resulting claims-only behavior.
+
+---
+
 ## Designs studied
 
 > **New here? Read this orientation first.** This lab tests whether a **JWT** (JSON Web Token — the
@@ -69,7 +75,13 @@ Edge Actions are **small JavaScript functions** that run inside Azure Front Door
 
 They are conceptually similar to Cloudflare Workers or Lambda@Edge but with a much narrower API surface and a strict 10 ms execution budget (as of the lab date).
 
-> **Preview status (2026-08-17):** Azure Front Door Edge Actions are in **public preview** (Standard and Premium SKU). The `edge-actions` REST API uses the `2025-09-01-preview` API version. Private preview feature flags (`EdgeActionsPrivatePreview`) may also be required for some subscriptions; this lab's subscription discovered that private preview access had expired (blocker B3).
+> **Preview status (2026-08-17):** Azure Front Door Edge Actions
+> are in **public preview** (Standard and Premium SKU). The `edge-actions` REST API uses the
+> `2025-09-01-preview` API version. Private preview feature flags (`EdgeActionsPrivatePreview`)
+> may also be required for some subscriptions; this lab's subscription discovered that private
+> preview access had expired (blocker B3).
+>
+> See the public-preview scope clarification at the top of this document.
 
 ### 1.2 Where Edge Actions run in the AFD request pipeline
 
@@ -151,7 +163,7 @@ An EA is **attached to a route** via a Rules Engine rule set. The same AFD profi
 | `console.log()` → `EdgeActionConsoleLog` in LAW | Official docs | ✅ Confirmed |
 | `JSON` parse/stringify | S1 probe | ✅ `typeof JSON = object` |
 | `Date.now()` | S1 probe | ✅ `typeof Date = function` |
-| `Promise` | S1 probe | ✅ `typeof Promise = function` |
+| `Promise` | S1 probe | ⚠️ `typeof Promise = function` — present, but `crypto` / `fetch` remain absent (S1 probe); origin-side RS256/JWKS validation is required |
 | `Uint8Array` | S1 probe | ✅ `typeof Uint8Array = function` |
 | Read `event.context` (AFD server variables: `now`, `country`, `deviceType`, etc.) | Official docs + S1 probe | ✅ Confirmed |
 
@@ -166,7 +178,7 @@ An EA is **attached to a route** via a Rules Engine rule set. The same AFD profi
 | Persistent state across requests | N/A | ❌ Each Hyperlight sandbox is fresh |
 | Arbitrary response status codes | N/A | ❌ Only 200, 401, 403 |
 
-> **⚠️ No JWT sample exists in [Azure/EdgeActionsSamples](https://github.com/Azure/EdgeActionsSamples) as of 2026-08-17.** The official samples cover A/B testing, header manipulation, URL rewrites, and redirects. The capability probe (S1) is the only authoritative source of truth for crypto API availability. Every API used in `ea-jwt-validate.js` was probed before use.
+> Current scope: claims-only filtering at the edge; cryptographic validation remains at the origin or gateway.
 
 ### 2.3 Hard limits (documented)
 
@@ -212,7 +224,7 @@ Key behaviours:
 - **All header keys are lowercase.** Use `event.request.headers['authorization']`, not `'Authorization'`.
 - **Header modifications are forwarded** to the origin if the EA returns 200.
 - **Unreturned event = undefined behaviour** — always return event.
-- **Async/await** — `Promise` is available; whether the platform actually awaits returned promises is undocumented. The lab uses synchronous-only code to avoid this ambiguity.
+- **Async/await** — `Promise` is present in the sandbox (`typeof Promise = function`), but `crypto` and `fetch` remain absent (S1 probe), so async JWT validation via JWKS is not achievable. The lab uses synchronous-only code.
 
 ---
 
@@ -244,15 +256,18 @@ Signature verification means:
 
 ### 3.3 The Edge Action in this lab: CONDITIONAL mode
 
-Because `crypto.subtle` and `fetch` are both `undefined` in the Hyperlight sandbox (S1 verdict), `ea-jwt-validate.js` operates in **CONDITIONAL mode** — claims-only:
+> Current scope: claims-only filtering at the edge; cryptographic validation remains at the origin or gateway.
+
+Because `crypto.subtle` and `fetch` are both `undefined` in the Hyperlight sandbox (S1 verdict),
+`ea-jwt-validate.js` operates in **CONDITIONAL mode** — claims-only:
 
 ```
 Claim checks performed by EA:         Cryptographic check NOT performed:
   ✅ token structural validity         ❌ RS256 signature verification
   ✅ exp (expiry) against Date.now()   ❌ JWKS fetch from Entra ID
   ✅ nbf (not-before)                  ❌ key matching by kid
-  ✅ aud == "api://<APP_ID>"
-  ✅ iss contains <TENANT_ID>
+  ✅ aud === CONFIG.audience (exact)
+  ✅ iss === CONFIG.issuer (exact URL)
   ✅ roles[] contains Lab.Admin (for /admin)
 ```
 
@@ -447,7 +462,7 @@ flowchart LR
     C -->|"3 — HTTPS + Authorization\nBearer ‹token›"| EP
     EP --> ROUTE
     ROUTE -->|"4 — invoke EA\n(matched routes)"| EA
-    EA -.->|"JWKS fetch\n(if crypto API available)"| JWKS
+    EA -.->|"JWKS fetch\n(not supported in\nthis release — scope boundary)"| JWKS
     EA -->|"5 — forward or reject"| RESTRICT
     RESTRICT --> APPSVC
     APPSVC -->|"origin re-validates JWT\ndefence-in-depth"| APPSVC
@@ -555,7 +570,7 @@ flowchart TD
     A2["A2 — Deploy ea-capability-probe\nRoute: /debug/*\nPull EdgeActionConsoleLog"]:::step
     GATE{"S1-GATE\nCrypto API verdict"}:::gate
     N_PROBE(["Probe checks:\ncrypto.subtle, fetch, TextEncoder,\nJSON, Promise, Date, atob/btoa"]):::note
-    GO["GO\nCrypto APIs confirmed\nJWKS fetch reachable\n(NOT this lab — CONDITIONAL only)"]:::go
+    GO["GO\nCrypto APIs confirmed\n(not this lab — CONDITIONAL only)"]:::go
     COND["CONDITIONAL\nThis lab outcome:\ncrypto/fetch/atob all undefined\nClaims-only mode"]:::cond
     STOP["STOP\nNo crypto / no fetch\nOrigin-only path"]:::stop
     A3_GO["A3 — Full JWKS + RS256 validation\n(GO path — not achieved)"]:::go
@@ -593,7 +608,7 @@ sequenceDiagram
     Note over C,EA: Phase B — Request + edge validation
     C->>EA: GET /protected<br/>Authorization: ******
     EA->>EA: strip spoofed headers<br/>(x-validated-claims, x-edge-jwt-status)
-    EA->>J: fetch JWKS<br/>(if crypto API available — NOT in this lab)
+    EA->>J: fetch JWKS<br/>(not supported in this release — lab evidence + scope boundary)
     J-->>EA: 200 OK — public key set (RS256)
     EA->>EA: verify signature, iss, aud, exp<br/>check roles claim for /admin
 
@@ -739,54 +754,85 @@ Probes all JavaScript globals available in the Hyperlight sandbox using `typeof`
 
 ### 12.2 `edge-actions/ea-jwt-validate.js`
 
-The JWT validation Edge Action, operating in CONDITIONAL mode:
+The JWT validation Edge Action, operating in CONDITIONAL mode. Repository source:
+**70 lines / ~2.3 KB** (simplified 2026-08-19 from an earlier 108-line verbose revision).
+
+> The live `eajwtvalidate3/v1` resource still runs the behavior-equivalent earlier revision.
+> Azure rejected an in-place update because a successfully validated default version is immutable,
+> and this lab previously found default-version swapping unreliable. No fifth EA was created solely
+> to change code presentation.
 
 ```javascript
-// Config (substituted at deploy time)
+// CONFIG keys substituted at deploy time
 const CONFIG = {
-  EXPECTED_AUD: 'api://%%API_APP_ID%%',
-  EXPECTED_ISS_TENANT: '%%TENANT_ID%%',
-  ADMIN_ROLE: 'Lab.Admin',
+  audience: '%%API_APP_ID%%',          // exact equality match
+  issuer:   'https://login.microsoftonline.com/%%TENANT_ID%%/v2.0', // exact equality
+  adminRole: 'Lab.Admin',
 };
 
+// Pure-JS base64url decode (replaces missing atob)
+function decodeBase64Url(value) { /* lookup-table char-by-char decode */ }
+function parseJson(value) { try { return JSON.parse(decodeBase64Url(value)); } catch(e) { return null; } }
+
+// deny() — logs EA_REJECT and sets response_code; only log line on reject path
+function deny(event, status, reason) {
+  console.log('EA_REJECT reason=' + reason);
+  event.response.response_code = status;
+  return event;
+}
+
 function handler(event) {
-  // Step 1: Strip spoofed inbound headers
-  delete event.request.headers['x-validated-claims'];
-  delete event.request.headers['x-edge-jwt-status'];
-  delete event.request.headers['x-test-fail'];
+  var headers = event.request.headers;
+  // 1. Strip spoofed inbound headers
+  delete headers['x-validated-claims'];
+  delete headers['x-edge-jwt-status'];
+  delete headers['x-test-fail'];
 
-  // Step 2: Check Authorization header
-  var authHeader = event.request.headers['authorization'] || '';
-  if (authHeader.indexOf('Bearer ') !== 0)
-    return reject(event, 401, 'MISSING_TOKEN');
+  // 2. Authorization header present?
+  if ((headers['authorization'] || '').indexOf('Bearer ') !== 0)
+    return deny(event, 401, 'MISSING_TOKEN');
 
-  // Step 3: Parse JWT (pure-JS base64url — atob unavailable)
-  var hdr = parseJwtPart(token, 0);      // null → MALFORMED_HEADER
-  var payload = parseJwtPart(token, 1);   // null → MALFORMED_PAYLOAD
+  // 3. Parse JWT parts (3-part dot-split, header + payload must JSON-decode)
+  var authorization = headers['authorization'];
+  var parts = authorization.slice(7).split('.');
+  if (parts.length !== 3 || !parseJson(parts[0]))
+    return deny(event, 401, 'MALFORMED_HEADER');
+  var claims = parseJson(parts[1]);
+  if (!claims) return deny(event, 401, 'MALFORMED_PAYLOAD');
 
-  // Step 4: Validate claims
-  if (payload.exp < now)          reject(401, 'EXPIRED')
-  if (payload.nbf > now + 60)     reject(401, 'NOT_YET_VALID')
-  if (aud !== CONFIG.EXPECTED_AUD) reject(401, 'AUD_FAIL')
-  if (!iss.includes(TENANT_ID))    reject(401, 'ISS_FAIL')
+  // 4. Validate claims (strict equality for aud and iss)
+  var now = Math.floor(Date.now() / 1000);
+  if (!claims.exp || claims.exp < now)          return deny(event, 401, 'EXPIRED');
+  if (claims.nbf  && claims.nbf > now + 60)     return deny(event, 401, 'NOT_YET_VALID');
+  if (claims.aud !== CONFIG.audience)            return deny(event, 401, 'AUD_FAIL');
+  if (claims.iss !== CONFIG.issuer)             return deny(event, 401, 'ISS_FAIL');
 
-  // ⚠️ NO SIGNATURE VERIFICATION — crypto.subtle unavailable (S1 CONDITIONAL)
+  // ⚠️ NO SIGNATURE VERIFICATION — crypto.subtle absent (S1 CONDITIONAL)
 
-  // Step 5: Role check for /admin
-  if (path starts with '/admin' && !roles.includes('Lab.Admin'))
-    reject(403, 'ROLE_FAIL')
+  // 5. Role check for /admin
+  if ((event.request.uri || '').indexOf('/admin') === 0 &&
+      (claims.roles || []).indexOf(CONFIG.adminRole) < 0)
+    return deny(event, 403, 'ROLE_FAIL');
 
-  // Step 6: Inject validated claims header and pass through
-  event.request.headers['x-validated-claims'] = JSON.stringify({...});
-  event.request.headers['x-edge-jwt-status'] = 'VALIDATED';
-  event.response.response_code = 200;
+  // 6. Inject minimal header and pass — only log line on accept path
+  headers['x-validated-claims'] = JSON.stringify({ roles: claims.roles || [], exp: claims.exp, mode: 'claims_only' });
+  headers['x-edge-jwt-status'] = 'VALIDATED';
+  console.log('EA_ACCEPT');
   return event;
 }
 ```
 
 Routes: `/protected`, `/admin` (via `rsedgejwt/ruleprotected` rule set).
 
-**Pure-JS base64url decode** (lines 30–40 in the file): replaces missing `atob` with a lookup-table decoder compatible with `Uint8Array` and `String.fromCharCode`. Confirmed working in the Hyperlight sandbox.
+**Key behaviours of the current (simplified) source:**
+- `audience` and `issuer` are checked with **strict equality** (`!==`), not substring includes.
+- `issuer` is the full `https://login.microsoftonline.com/<tenant>/v2.0` URL, not just the tenant ID.
+- `x-validated-claims` injects only `{roles, exp, mode:'claims_only'}` — no sub, no path, no alg.
+- Console output is minimal: **`EA_REJECT reason=<code>`** on any rejection, **`EA_ACCEPT`** on pass. No path, roles, or alg are logged by the current source.
+
+> **Historical log note:** Raw evidence in `show-output/001-EdgeActionConsoleLog-30min.txt` and evidence files contains verbose entries such as `EA_MODE=CLAIMS_ONLY alg=RS256`, `EA_ACCEPT path=/protected roles=[...]`, from the **earlier 108-line deployed revision** (`eajwtvalidate`/`eajwtvalidate3`). These entries are accurate historical evidence for the scenarios tested; they do not reflect what the simplified current source would emit.
+
+**Pure-JS base64url decode:** The `decodeBase64Url()` function (lookup-table char-by-char, no `atob` dependency) is confirmed working in the sandbox. Validated by successful JWT payload parsing in all test runs.
 
 ### 12.3 `app/server.js`
 
@@ -893,7 +939,7 @@ EdgeActionConsoleLog
 
 **Procedure (Tank Run 3):** Construct JWT with correct `iss`, `aud`, `exp`, `roles` but cryptographically invalid signature. `GET /protected`.
 
-**EA result:** `EA_MODE=CLAIMS_ONLY` + `EA_ACCEPT` (EA cannot verify signature — passes).
+**EA result:** `EA_ACCEPT` (EA cannot verify signature — passes). The earlier deployed verbose revision additionally logged `EA_MODE=CLAIMS_ONLY` and path/roles; the current simplified source logs `EA_ACCEPT` only.
 **Origin result:** HTTP 401, `ERR_JWKS_MULTIPLE_MATCHING_KEYS` (jose RS256 rejects fake sig).
 **Verdict:** PASS — defence-in-depth enforced at origin.
 
@@ -1063,7 +1109,7 @@ This value is the primary join key between the EA console log and the AFD access
 
 5. **Never put secrets in Edge Action code.** EA code is embedded in a public API endpoint. Any value in the `CONFIG` object is visible to anyone who can read the EA resource. Tenant IDs and app IDs (non-secret) are acceptable; client secrets are not.
 
-6. **Never log raw Authorization header values.** `ea-jwt-validate.js` only logs reason codes and partial claim values. `app/server.js` logs `<redacted>` for Authorization headers.
+6. **Never log raw Authorization header values.** `ea-jwt-validate.js` logs only `EA_REJECT reason=<code>` or `EA_ACCEPT` — no claim values, no token fragments. `app/server.js` logs `<redacted>` for Authorization headers.
 
 7. **Test S9 before production.** The fail-open scenario must be verified. If your origin does not independently validate JWTs, S9 is an unauthenticated access vector.
 
@@ -1145,6 +1191,8 @@ Cost stops accruing within minutes of `az group delete`.
 | Sample JS files | https://github.com/Azure/EdgeActionsSamples/tree/main/src/edgeactions-js | A/B, header manipulation, origin selection, URL redirect/rewrite, request rejection |
 
 > **⚠️ No JWT sample exists in Azure/EdgeActionsSamples as of 2026-08-17.** The Edge Actions page lists "JWT token validation" as a supported scenario, but no sample code has been published. `ea-capability-probe.js` and `ea-jwt-validate.js` in this repo are the first documented implementations.
+>
+> No JWT validation sample exists in the official sample repository as of the lab date.
 
 ### Lab files
 

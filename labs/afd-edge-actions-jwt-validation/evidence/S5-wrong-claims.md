@@ -17,16 +17,17 @@ Niobe · 2026-08-18 · **VERDICT: PASS**
 |-------------|------------------------|--------|
 | **401** | 20260818T102545Z-…8ts | `EA_REJECT code=401 reason=ISS_FAIL got=https://login.microsoftonline.com/wrong-tenant-id/v2.0` |
 
-## S5c — Bare GUID audience (missing `api://` prefix)
+## S5c — Audience format correction
 
-From Tank smoke tests: token with `aud = "623405b7-..."` (bare GUID, no `api://` prefix).
+An earlier Edge Action revision expected an `api://` audience and rejected the bare application
+ID. The final Entra v2 configuration and current source use the bare application ID as the exact
+audience.
 
-EA log: `EA_REJECT code=401 reason=AUD_FAIL got=623405b7-...`
-
-This is a common misconfiguration. The EA checks for exact string equality: `aud !== "api://<APP_ID>"`. A bare GUID fails even if it is the correct app ID.
+The current check remains strict: any value other than the configured audience is rejected.
 
 ## Verdict: PASS ✅
 
 ## Teaching note
 
-The `iss` check in `ea-jwt-validate.js` uses `indexOf(EXPECTED_ISS_TENANT)` rather than strict equality. This tolerates the v1/v2 endpoint format difference. The tenant ID portion must still be present — a wrong tenant ID fails correctly.
+The simplified source uses strict equality for the complete v2 issuer URL. Tokens from another
+tenant or issuer version are rejected.

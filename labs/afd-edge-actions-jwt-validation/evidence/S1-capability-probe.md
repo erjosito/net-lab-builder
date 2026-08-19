@@ -1,6 +1,8 @@
 # S1 — Capability Probe Evidence
 Niobe · 2026-08-18 · **VERDICT: CONDITIONAL**
 
+> **Scope clarification — 2026-08-19:** Cryptographic JWT signature validation is outside the supported public-preview scope. The probe below records the observed runtime behavior.
+
 ## Activation
 
 EA resource `eaprobe2` deployed; route `rsedgeprobe/ruleprovedebug` attached to `/debug/*`.
@@ -34,13 +36,13 @@ Results confirmed across 10+ probe requests; deterministic across all AFD PoPs.
 | `fetch` | `undefined` | **STOP** — JWKS endpoint calls impossible |
 | `atob` / `btoa` | `undefined` | **STOP** — browser base64 API unavailable |
 | `TextEncoder` | `undefined` | N/A |
-| `Promise` | `function` | ✅ Async control flow available |
+| `Promise` | `function` | ⚠️ Present; `crypto` / `fetch` remain absent (probe) — origin RS256/JWKS required |
 | `JSON` | `object` | ✅ JSON parse/stringify available |
 | `Date` | `function` | ✅ `Date.now()` for exp check |
 | `Uint8Array` | `function` | ✅ Available but not needed for pure-JS path |
 
 **CONDITIONAL** — claims-only enforcement is possible using pure-JS base64url decode.
-Full RS256/JWKS signature verification is impossible in this sandbox.
+Full RS256/JWKS signature verification is not supported in this public preview (probe confirms `crypto` and `fetch` absent).
 
 ## Security Model Confirmed
 

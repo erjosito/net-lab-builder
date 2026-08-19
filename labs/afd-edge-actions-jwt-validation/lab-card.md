@@ -29,9 +29,16 @@ committed.
 > **H₀ (null):** No public crypto runtime API exists in Edge Actions v1. The capability
 > probe returns errors or empty stubs; the implementation falls back to origin-only or
 > header-forwarding patterns.
+>
+> **Outcome: H₀ confirmed (CONDITIONAL verdict).** Lab evidence (S1, 2026-08-17/18)
+> established that `crypto.subtle`, `fetch`, and `atob` are absent from the Edge Action
+> sandbox. Cryptographic JWT signature validation is outside the supported scope of
+> Edge Actions public preview. Claims-only
+> JWT parsing is the maximum supported Edge Action JWT behaviour. See "Confirmed scope
+> boundary" section above.
 
-The study produces a **documented capability verdict** (GO or STOP/CONDITIONAL) plus
-evidence of all nine scenarios under whichever architecture is viable.
+The study produces a **documented capability verdict** (CONDITIONAL — confirmed, see above) plus
+evidence of all nine scenarios under the claims-only architecture.
 
 ---
 
@@ -95,6 +102,19 @@ NSG-based).
 | **A5** | Run scenarios S2–S9; collect evidence | A4 complete |
 
 Cleanup is separately gated (Jose must explicitly approve before Tank deallocates).
+
+---
+
+## ⚠️ Confirmed scope boundary (2026-08-19)
+
+Scope clarification (2026-08-19): cryptographic JWT signature validation is outside
+the supported scope of Edge Actions public preview. Use origin or gateway validation for all
+cryptographic JWT verification.
+
+Lab evidence (S1 probe, 2026-08-17/18) independently corroborates: `crypto=undefined`,
+`fetch=undefined`, `atob=undefined` in the Edge Action sandbox. Claims-only JWT parsing
+(structural validity, expiry, audience, issuer, roles) is the maximum supported EA JWT behaviour
+in this release. The origin is the mandatory cryptographic enforcement point.
 
 ---
 

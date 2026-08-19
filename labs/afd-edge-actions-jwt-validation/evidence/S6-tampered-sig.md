@@ -1,9 +1,11 @@
 # S6 — Tampered Token / Signature Enforcement Evidence
 Niobe · 2026-08-18 · **VERDICT: PASS (CONDITIONAL path confirmed)**
 
+> **Scope clarification — 2026-08-19:** Edge Actions performs claims-only filtering in this lab. The origin (`jose` RS256/JWKS) is the cryptographic security boundary.
+
 ## Architecture reminder
 
-In the CONDITIONAL path, the Edge Action **cannot verify the JWT signature** (`crypto.subtle` unavailable). It performs claims-only validation: iss, aud, exp, nbf, roles. A structurally valid JWT with correct claims but a fake/broken signature **passes the Edge Action** and reaches the origin. The origin (`jose` library) performs full RS256/JWKS signature verification.
+In the CONDITIONAL path, the Edge Action **cannot verify the JWT signature** (S1 probe: `crypto.subtle` and `fetch` absent). It performs claims-only validation: iss, aud, exp, nbf, roles. A structurally valid JWT with correct claims but a fake/broken signature **passes the Edge Action** and reaches the origin. The origin (`jose` library) performs full RS256/JWKS signature verification.
 
 ## Test (from Tank Run 3, 2026-08-18T10:31 UTC)
 
@@ -15,6 +17,8 @@ JWT constructed with:
 - **Signature replaced with random bytes** (cryptographically invalid)
 
 ## EA Result
+
+> **Source revision note:** The log entries below were produced by the earlier **verbose revision** of `ea-jwt-validate.js` deployed to `eajwtvalidate` (Run 3, 2026-08-18T10:31 UTC). The current simplified source logs only `EA_ACCEPT` on the accept path.
 
 ```
 EA_MODE=CLAIMS_ONLY alg=RS256

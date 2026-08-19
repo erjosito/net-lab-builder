@@ -4,8 +4,20 @@ Morpheus · 2026-08-17 · **Phase 4 authorised — deployment-ready**
 References:
 - [Azure Front Door Edge Actions (official docs)](https://learn.microsoft.com/azure/frontdoor/edge-actions)
 - [EdgeActionsSamples (GitHub)](https://github.com/Azure/EdgeActionsSamples)
-  - ⚠️ No JWT sample exists in the public repo as of 2026-08-17; cryptographic runtime APIs are **not
-    documented** in the official samples. Capability probe (S1) is the authoritative source of truth.
+  - No JWT sample exists in the public repo as of 2026-08-17. Capability probe (S1) is the
+    authoritative lab evidence source. See §Confirmed scope boundary.
+
+---
+
+## ⚠️ Confirmed scope boundary (2026-08-19)
+
+Scope clarification (2026-08-19): cryptographic JWT signature validation is outside
+the supported scope of Edge Actions public preview. Use origin or gateway validation for all
+cryptographic JWT verification.
+
+Lab evidence (S1 probe, 2026-08-17/18): `crypto=undefined`, `fetch=undefined`, `atob=undefined`
+in the Edge Action sandbox. Claims-only JWT parsing is the maximum supported EA JWT behaviour in
+this release. The origin is the mandatory cryptographic enforcement point.
 
 ---
 
@@ -22,18 +34,15 @@ scenarios under the recommended pre-validation + origin-revalidation architectur
 
 ### ✅ Recommended: Edge pre-validation + origin revalidation (defence in depth)
 
-Edge Action intercepts every request, attempts JWKS-based JWT validation, and rejects
-missing/malformed/expired/wrong-audience tokens at the edge. The origin **also validates
-the token independently** (app-side middleware). Even if the Edge Action fails open (e.g.,
-JWKS endpoint unreachable, execution timeout), the origin refuses unsigned requests. This
-is the only design that is safe in production.
+Edge Action intercepts every request, performs **claims-only** JWT parsing (the maximum supported EA JWT behaviour in public preview — scope boundary confirmed 2026-08-19), and rejects missing/malformed/expired/wrong-audience/wrong-issuer tokens at the edge. The origin **also validates the token independently** with full RS256 signature verification (`jose` library). Even if the Edge Action fails open (execution timeout, exception), the origin refuses invalid or unsigned requests. This is the only design that is safe in production.
 
-**Condition:** Requires that Edge Actions v1 exposes a network-capable JWKS fetch
-primitive (HTTP/fetch) and a cryptographic verify primitive (RS256/ES256). If not
-available, this design degrades to the teaching-only or origin-only variants.
+**Confirmed scope boundary (2026-08-19):** Cryptographic JWT
+signature validation is outside the supported scope of Edge Actions public preview. Claims-only
+parsing is the maximum supported EA JWT behaviour. Full JWKS-fetch + RS256 verification inside an
+Edge Action is not within the supported scope of public preview. Origin-side cryptographic
+validation is mandatory, not optional defence-in-depth.
 
-**Evidence target:** S2–S9 all exercised against this architecture. S5 (execution filter
-timeout) proves that the origin-side backstop catches the fail-open case.
+**Evidence target:** S2–S9 all exercised against this architecture. S6 (tampered signature) demonstrates the claims-only gap: EA passes, origin rejects.
 
 ---
 
@@ -114,11 +123,13 @@ Diagnostic settings send `FrontDoorAccessLog`, `FrontDoorWebApplicationFirewallL
 | Action name | Purpose | Trigger |
 |-------------|---------|---------|
 | `ea-capability-probe` | Print available global APIs to console log | All requests to `/debug/*` |
-| `ea-jwt-validate` | Full JWKS + signature + claim validation | All requests to `/protected`, `/admin`, `/edge-only` |
+| `ea-jwt-validate` | Claims-only JWT parsing (CONDITIONAL mode — confirmed maximum supported in public preview) | All requests to `/protected`, `/admin`, `/edge-only` |
 | `ea-execution-filter` | Controlled timeout / deliberate exception — tests fail-open | Requests with header `X-Test-Fail: 1` |
 
-> ⚠️ Edge Action JS runtime APIs are **not officially documented** in the sample repo as
-> of 2026-08-17. `ea-capability-probe` is the authoritative probe; never invent APIs.
+> **Confirmed scope boundary (2026-08-19):** Cryptographic JWT
+> signature validation is outside the supported scope of Edge Actions public preview. Lab evidence
+> (S1 probe, 2026-08-17/18): `crypto=undefined`, `fetch=undefined`, `atob=undefined`. Claims-only
+> JWT parsing is the maximum supported EA JWT behaviour in this release.
 
 ---
 
@@ -406,22 +417,22 @@ Verify: `az resource list -g rg-afd-edge-jwt-lab` returns empty.
 
 | Risk | Severity | Mitigation |
 |------|----------|------------|
-| Edge Actions v1 has no crypto runtime API | **High** (changes architecture) | S1-GATE; capability probe mandatory first; STOP path documented |
-| JWKS fetch blocked from Edge Action sandbox (network policy) | Medium | Probe in S1; fallback to header-forwarding or origin-only |
+| Edge Actions v1 has no crypto runtime API | **Confirmed scope boundary (2026-08-19)** — cryptographic JWT signature validation is outside the supported scope of public preview | Claims-only parsing is the maximum supported EA JWT behaviour. Origin must perform cryptographic validation. |
+| JWKS fetch not available in EA sandbox | **Confirmed by lab evidence (S1, 2026-08-17/18)** — `fetch=undefined` | No mitigation within EA; origin is the mandatory cryptographic enforcement point. |
 | Edge Action execution timeout < JWKS RTT | Medium | ea-execution-filter (S9) tests fail-open behaviour; defence-in-depth backstop |
 | App Service service tag restriction ineffective (platform behaviour) | Medium | S8 tests this explicitly; document as finding if bypass succeeds |
 | Entra admin consent unavailable in tenant | Medium | Require `Application Administrator` role; pre-check in A1 |
-| Official sample repo has no JWT reference | Low (lab expects this) | Capability probe approach is designed for exactly this gap |
+| Official sample repo has no JWT reference | Low (expected — confirmed by lab evidence and scope boundary) | No JWT sample expected; `ea-capability-probe` (S1) is the lab's evidence source. |
 | AFD Standard doesn't support Edge Actions (SKU gap) | Low | Verify at A2; Premium_AzureFrontDoor may be required |
 
 ---
 
-## 14. Open Questions (pre-deploy)
+## 14. Open Questions (resolved)
 
-1. Does Edge Actions v1 expose `crypto.subtle` or equivalent? → Answered by S1.
-2. Does the Edge Action sandbox allow outbound HTTPS to `login.microsoftonline.com`? → Answered by S1/S2.
-3. Is Edge Actions GA or still in preview in swedencentral/globally? → Check `az feature show` at deploy time.
-4. Does AFD Standard support Edge Actions, or is Premium required? → Check SKU capability at A0.
+1. Does Edge Actions v1 expose `crypto.subtle` or equivalent? → **No.** Lab evidence (S1, 2026-08-17/18): `crypto=undefined`. Cryptographic JWT signature validation is outside the supported public-preview scope.
+2. Does the Edge Action sandbox allow outbound HTTPS to `login.microsoftonline.com`? → **No.** Lab evidence (S1, 2026-08-17/18): `fetch=undefined`. Scope boundary confirmed (2026-08-19).
+3. Is Edge Actions GA or still in preview in swedencentral/globally? → **Public preview** as of 2026-08-17/18. API version `2025-09-01-preview`.
+4. Does AFD Standard support Edge Actions, or is Premium required? → **Standard supported** — confirmed by successful lab deployment on Standard SKU.
 
 ---
 

@@ -3,6 +3,9 @@ Niobe · 2026-08-17/18
 
 > Live entries added as evidence is collected. All entries from 2026-08-17/18 are confirmed by live lab evidence.
 
+> **Public-preview scope clarification — 2026-08-19**
+> Cryptographic JWT signature validation is outside the supported scope of Edge Actions public preview. Use origin or gateway validation.
+
 ---
 
 ## Edge Actions runtime (confirmed by S1 probe)
@@ -11,15 +14,17 @@ Niobe · 2026-08-17/18
 
 **Finding:** `typeof crypto = undefined`, `typeof fetch = undefined`, `typeof atob = undefined` across all tested AFD PoPs. Results are deterministic.
 
-**Impact:** RS256/JWKS signature verification is impossible inside an Edge Action as of 2026-08-17/18. Claims-only parsing is possible (JSON, Date, Uint8Array, Promise all available). Full JWT validation requires origin-side execution.
+**Scope clarification (2026-08-19):** Cryptographic JWT signature validation is outside the supported public-preview scope.
 
-**Reuse:** Before writing any Edge Action JWT validation code, run the capability probe. Do not assume cryptographic APIs are available in any Hyperlight sandbox release. Check if `crypto.subtle` is available before implementing signature verification.
+**Impact:** RS256/JWKS signature verification is not possible inside an Edge Action in this release. Claims-only parsing is possible (JSON, Date, Uint8Array all available). Full JWT validation requires origin-side execution.
+
+**Reuse:** Implement claims-only parsing in EA. Require origin-side RS256/JWKS validation (e.g. `jose`) as the cryptographic security boundary.
 
 ---
 
 ### LL-002 — Pure-JS base64url decode is required and works
 
-**Finding:** `atob` unavailable. The lookup-table base64url decoder in `ea-jwt-validate.js` (lines 30–40) works correctly in the Hyperlight sandbox with `JSON.parse` and `String.fromCharCode`. Validated by successful JWT payload parsing in all test runs.
+**Finding:** `atob` unavailable. The `decodeBase64Url()` function in `ea-jwt-validate.js` (lookup-table char-by-char decode, no `atob` dependency) works correctly in the sandbox with `JSON.parse` and `String.fromCharCode`. Validated by successful JWT payload parsing in all test runs.
 
 **Reuse:** Copy the `base64urlDecode()` function verbatim for any Edge Action that needs to read JWT claims. It has no dependencies on unavailable browser APIs.
 

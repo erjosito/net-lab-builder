@@ -1,6 +1,8 @@
 # afd-edge-actions-jwt-validation — Validation
 Niobe · 2026-08-17/18
 
+> **Public-preview scope clarification — 2026-08-19:** Cryptographic JWT signature validation is outside the supported scope. The S1 probe demonstrates the resulting claims-only behavior.
+
 > **Live run date:** 2026-08-18T10:24–13:39 UTC+2 (Runs 3–4, all blockers resolved)
 > **Deployment state:** A0–A3 complete (`eajwtvalidate3/v1` active default, bare-GUID audience); A1 complete (Graph appRoleAssignments used to assign Lab.Admin role); A4 not executed (fail-open test not blocking — S9 re-scoped to real /admin Lab.Admin path)
 
@@ -18,6 +20,8 @@ screenshots/       ← best-effort portal screenshots
 ```
 
 > **Log evidence scope:** `001-EdgeActionConsoleLog-30min.txt` was captured from `eajwtvalidate` during Sessions 3–4 (before `eajwtvalidate3` was created). `eajwtvalidate3` had no diagnostic settings from creation (12:45 UTC+2) until manual correction at **2026-08-18T17:12:36 UTC+2**. `EdgeActionConsoleLog` entries from Run 4 (S7/S9 real-token tests at 13:39 UTC+2) are **pending ingestion** post-correction. HTTP 200 responses are the authoritative evidence for S7/S9 PASS; EA log corroboration will appear in LAW after ingestion completes.
+>
+> **Source revision note:** EA log entries in `show-output/001-EdgeActionConsoleLog-30min.txt` were produced by the earlier **108-line verbose revision** of `ea-jwt-validate.js` deployed to `eajwtvalidate`/`eajwtvalidate3`. That revision emitted `EA_MODE=CLAIMS_ONLY`, `alg=`, `path=`, `roles=` fields. The current **simplified 70-line source** logs only `EA_REJECT reason=<code>` or `EA_ACCEPT`. Captured evidence is accurate for the scenarios tested; it does not reflect what the simplified current source would emit.
 
 Sanitization: all committed files pass `tests/Confirm-Sanitization.ps1`. Zero raw subscription IDs, tenant IDs, full JWTs, or client secrets.
 
@@ -31,11 +35,11 @@ Sanitization: all committed files pass `tests/Confirm-Sanitization.ps1`. Zero ra
 | S2 | Missing token | 401 | **401** | `MISSING_TOKEN` | **NO** | Edge blocks | ✅ PASS |
 | S3a | Open routes (/health, /public) | 200 | **200** | no EA | YES | Expected | ✅ PASS |
 | S3b | Malformed token | 401 | **401** | `MALFORMED_HEADER` | NO | Edge blocks | ✅ PASS |
-| S3c | Valid Entra token → 200 | 200 | **200** | expected `CLAIMS_ONLY`+`ACCEPT` — **log pending** (eajwtvalidate3 diag corrected 17:12) | YES | Claims-only + origin RS256 | ✅ PASS |
+| S3c | Valid Entra token → 200 | 200 | **200** | expected `EA_ACCEPT` — **log pending** (eajwtvalidate3 diag corrected 17:12; simplified source logs `EA_ACCEPT` only) | YES | Claims-only + origin RS256 | ✅ PASS |
 | S4 | Expired token | 401 | **401** | `EXPIRED exp=…` | NO | Edge blocks | ✅ PASS |
 | S5a | Wrong audience | 401 | **401** | `AUD_FAIL got=…` | NO | Edge blocks | ✅ PASS |
 | S5b | Wrong issuer | 401 | **401** | `ISS_FAIL got=…` | NO | Edge blocks | ✅ PASS |
-| S6 | Tampered sig (CONDITIONAL) | EA pass, origin 401 | EA: 200 / origin: **401** | `CLAIMS_ONLY` + `ACCEPT` | YES | Origin RS256 enforces | ✅ PASS |
+| S6 | Tampered sig (CONDITIONAL) | EA pass, origin 401 | EA: 200 / origin: **401** | `EA_ACCEPT` (verbose revision also logged `CLAIMS_ONLY`; see source revision note) | YES | Origin RS256 enforces | ✅ PASS |
 | S7a | Missing role → /admin 403 | 403 | **403** | `ROLE_FAIL` | NO | Edge blocks | ✅ PASS |
 | S7b | Real Lab.Admin token → /protected 200 | 200 | **200** | expected `ACCEPT` — **log pending** (eajwtvalidate3 diag corrected 17:12) | YES | Full E2E: claims-only EA + origin RS256 | ✅ PASS |
 | S8 | Direct origin bypass | 403 | **403** | N/A (no AFD) | Blocked by ARM | Access restriction effective | ✅ PASS |
@@ -62,7 +66,7 @@ Sanitization: all committed files pass `tests/Confirm-Sanitization.ps1`. Zero ra
 | EA executing (`edgeActionsAgentType_s = node`) | node | node | ✅ PASS |
 | X-Azure-Ref present in response | Present | Present | ✅ PASS |
 
-**S1-GATE: CONDITIONAL** — claims-only enforcement only. Origin RS256 is security boundary.
+**S1-GATE: CONDITIONAL** — claims-only enforcement only. Origin RS256 is the security boundary. See the scope clarification and S1 probe evidence above.
 **Evidence:** `evidence/S1-capability-probe.md`, `show-output/001-EdgeActionConsoleLog-30min.txt`
 
 ---
@@ -129,7 +133,7 @@ Sanitization: all committed files pass `tests/Confirm-Sanitization.ps1`. Zero ra
 
 | Assertion | Expected (CONDITIONAL) | Actual | Verdict |
 |-----------|----------------------|--------|---------|
-| EA passes tampered token (correct claims, fake sig) | EA 200 (CLAIMS_ONLY) | EA 200, `CLAIMS_ONLY` + `ACCEPT` | ✅ PASS |
+| EA passes tampered token (correct claims, fake sig) | EA 200 (`EA_ACCEPT`) | EA 200, `EA_ACCEPT` (`CLAIMS_ONLY`+`ACCEPT` in verbose revision log — see source revision note above) | ✅ PASS |
 | Origin rejects fake signature | 401 | 401 `ERR_JWKS_MULTIPLE_MATCHING_KEYS` | ✅ PASS |
 | Defence-in-depth holds | Yes | Yes | ✅ PASS |
 | NIOBE-CRIT-001 (EA 200, origin 200 = full bypass) | No trigger | Not triggered | ✅ CLEAR |

@@ -6,6 +6,8 @@
 **Rule**: `rsedgeprobe` / `ruleprovedebug` (condition: `UrlPath BeginsWith /debug`)  
 **Verdict**: ⚠️ **CONDITIONAL** — claim-only enforcement only; signature verification impossible
 
+> **Scope clarification — 2026-08-19:** Cryptographic JWT signature validation is outside the supported public-preview scope. The probe below records the observed runtime behavior.
+
 ---
 
 ## Runtime Confirmation
@@ -30,7 +32,7 @@ The Edge Action IS executing. The runtime is Node.js (Hyperlight sandbox, `agent
 | `atob` | `undefined` | ❌ No browser base64 |
 | `btoa` | `undefined` | ❌ No browser base64 |
 | `TextEncoder` | `undefined` | ❌ No text encoding |
-| `Promise` | `function` | ✅ Async supported |
+| `Promise` | `function` | ⚠️ Present; `crypto` / `fetch` still absent (probe) — origin RS256/JWKS required |
 | `JSON` | `object` | ✅ Available |
 | `Date` | `function` | ✅ Available |
 | `Uint8Array` | `function` | ✅ Available |

@@ -199,32 +199,64 @@ function handler(event) {
 
 | Finding | Verdict | Next step |
 |---------|---------|-----------|
-| `crypto=object` AND `crypto_subtle=object` AND `fetch=function` | **GO** | Proceed to A3; implement full RS256/JWKS validation |
+| `crypto=object` AND `crypto_subtle=object` AND `fetch=function` | **GO** — not within the supported scope of public preview (scope boundary confirmed 2026-08-19; lab evidence S1 corroborates: `crypto=undefined`, `fetch=undefined`) | N/A in current release |
 | `crypto=object` but `fetch=undefined` | **CONDITIONAL** | JWKS fetch impossible; implement claim-only teaching mode (§5.2) |
-| `crypto=undefined` OR `crypto_subtle=undefined` | **CONDITIONAL** | No signature verification; implement claim-only teaching mode |
+| `crypto=undefined` OR `crypto_subtle=undefined` | **CONDITIONAL** — **this lab outcome** | No signature verification; implement claim-only teaching mode — maximum supported EA JWT behaviour in this release |
 | Runtime throws / ea-capability-probe fails to load | **STOP** | No JS crypto available; document; deploy origin-only path |
 
+> **Confirmed scope boundary (2026-08-19):** Cryptographic JWT
+> signature validation is outside the supported scope of Edge Actions public preview. Use origin
+> or gateway validation. Lab evidence (S1, 2026-08-17/18) corroborates: `crypto=undefined`,
+> `fetch=undefined`, `atob=undefined`.
+
 **10 ms budget consideration:** The probe itself does no I/O; it only introspects global
-names. Execution time should be < 1 ms. The verdict on `fetch` and `crypto.subtle`
-availability tells us whether outbound network calls and crypto are feasible *in
-principle* within the 10 ms window — actual JWKS fetch latency requires a separate
-timing sub-probe (§4.4).
+names. Execution time should be < 1 ms.
 
-### 4.4 JWKS latency sub-probe (only if GO verdict)
+### 4.4 JWKS latency sub-probe — NOT APPLICABLE in public preview (scope boundary confirmed 2026-08-19)
 
-Include a timed `fetch` to the JWKS endpoint in the capability probe (wrapped in
+> Cryptographic JWT signature validation is outside the supported
+> scope of Edge Actions public preview. Lab evidence (S1): `fetch=undefined`. A JWKS latency
+> sub-probe is not applicable. This subsection is preserved for historical context only.
+
+~~Include a timed `fetch` to the JWKS endpoint in the capability probe (wrapped in
 `try/catch`). Log `JWKS_FETCH status=<N> ms=<elapsed>`. If elapsed ≥ 8 ms → CONDITIONAL.
 Mark the block `// REQUIRES_PROBE: async` — whether `async/await` is supported is unknown;
-probe `typeof Promise` first. If Promise is undefined, only synchronous-safe code is viable.
+probe `typeof Promise` first. If Promise is undefined, only synchronous-safe code is viable.~~
 
 ---
 
 ## 5. Conditional JWT Validation Implementations
 
-### 5.1 Full JWKS + RS256 validation (GO path)
+### 5.1 Full JWKS + RS256 validation (GO path) — NOT APPLICABLE in public preview (scope boundary confirmed 2026-08-19)
 
-**Condition:** `crypto.subtle` available AND `fetch` available AND JWKS RTT < 8 ms (leaves
-2 ms budget for signature verification and claims parsing).
+> Cryptographic JWT signature validation is outside
+> the supported scope of Edge Actions public preview. Use origin or gateway validation. The GO
+> path below is preserved as historical pre-confirmation design intent only. **Do not implement
+> or recommend this path against the current public-preview release.** §5.2 is the maximum
+> supported approach.
+
+~~**Condition:** `crypto.subtle` available AND `fetch` available AND JWKS RTT < 8 ms.~~
+
+Historical design pattern (for future reference only):
+
+```
+1.  Read event.request.headers["authorization"] → split "Bearer " → 401 if absent/malformed.
+2.  Split token on '.' into [hdr_b64, pay_b64, sig_b64]; 401 if not 3 parts.
+3.  base64url-decode hdr_b64 → JSON → read kid, alg; 401 if alg !== "RS256".
+4.  fetch JWKS endpoint; find JWK matching kid; 401 if not found.
+5.  crypto.subtle.importKey("jwk", jwk, {name:"RSASSA-PKCS1-v1_5",hash:"SHA-256"}, false, ["verify"]).
+6.  crypto.subtle.verify(..., sig_bytes, utf8(hdr_b64+"."+pay_b64)); 401 + log "SIG_FAIL" if false.
+7.  base64url-decode pay_b64 → JSON claims.
+8.  Validate exp > Date.now()/1000 → 401 + "EXPIRED". Validate iss, aud → 401 + "ISS/AUD_FAIL".
+9.  If path starts with /admin: roles.includes("Lab.Admin") → 403 if absent.
+10. Inject event.request.headers["x-validated-claims"] = JSON.stringify({roles,exp}).
+11. event.response.response_code = 200; return event.
+```
+
+> **⚠️ JWKS live-fetch / micro-cache (CORRECTED):** Prior versions suggested JWKS live-fetch
+> and micro-cache patterns. These are not applicable — lab evidence (S1): `fetch=undefined`;
+> scope boundary confirmed (2026-08-19). The origin is the mandatory cryptographic enforcement
+> point.
 
 **Implementation pattern (ea-jwt-validate.js — conceptual):**
 
@@ -242,28 +274,54 @@ probe `typeof Promise` first. If Promise is undefined, only synchronous-safe cod
 11. event.response.response_code = 200; return event.
 ```
 
-**JWKS micro-cache note:** Each Hyperlight sandbox is fresh per request; no persistent cache exists. Each JWKS branch makes one outbound call to `login.microsoftonline.com`. If JWKS RTT > 8 ms (from sub-probe), fall back to CONDITIONAL path.
+### 5.2 Claim-only teaching mode (CONDITIONAL path) — Maximum supported EA JWT behaviour in public preview
 
-### 5.2 Claim-only teaching mode (CONDITIONAL path)
+> Cryptographic JWT signature validation is outside
+> the supported scope of Edge Actions public preview. Claims-only parsing is the maximum
+> supported EA JWT behaviour. The origin **must** perform RS256 signature verification — this is
+> the mandatory cryptographic enforcement point, not optional defence-in-depth.
 
-**Condition:** `crypto.subtle` unavailable OR `fetch` unavailable OR JWKS RTT > 8 ms.
+**Condition:** `crypto.subtle` unavailable OR `fetch` unavailable (both confirmed absent — lab evidence S1, 2026-08-17/18).
 
-**What it does:** Decodes the JWT payload (`base64url` decode, no fetch, no verify),
-reads claims, validates `iss`, `aud`, `exp`, `roles`. **Does not verify the signature.**
+**What it does:** Decodes the JWT payload (pure-JS base64url decode — no `atob`), reads claims,
+validates `iss` (strict equality on full URL), `aud` (strict equality), `exp`, `nbf`, `roles`.
+**Does not verify the signature.**
 
 ```javascript
-// Claim-only decode — NO signature verification
-const parts = token.split('.');
-if (parts.length !== 3) { event.response.response_code = 401; return event; }
-const payload = JSON.parse(atobUrl(parts[1]));
-if (payload.exp < Math.floor(Date.now() / 1000)) { /* 401 */ }
-if (payload.iss !== EXPECTED_ISS) { /* 401 */ }
-if (payload.aud !== EXPECTED_AUD) { /* 401 */ }
+// Claim-only prefilter — NO signature verification
+// atob unavailable; decodeBase64Url() uses a lookup-table char-by-char decoder
+function handler(event) {
+  var headers = event.request.headers;
+  delete headers['x-validated-claims'];
+  delete headers['x-edge-jwt-status'];
+  delete headers['x-test-fail'];
 
-function atobUrl(s) {
-  return atob(s.replace(/-/g,'+').replace(/_/,'/') + '=='.slice((s.length%4||4)-2));
+  var parts = (headers['authorization'] || '').slice(7).split('.');
+  if (parts.length !== 3) return deny(event, 401, 'MALFORMED_HEADER');
+
+  var claims = parseJson(parts[1]);   // decodeBase64Url + JSON.parse; null → 401
+  if (!claims) return deny(event, 401, 'MALFORMED_PAYLOAD');
+
+  var now = Math.floor(Date.now() / 1000);
+  if (!claims.exp || claims.exp < now)       return deny(event, 401, 'EXPIRED');
+  if (claims.nbf && claims.nbf > now + 60)   return deny(event, 401, 'NOT_YET_VALID');
+  if (claims.aud !== CONFIG.audience)         return deny(event, 401, 'AUD_FAIL');
+  if (claims.iss !== CONFIG.issuer)           return deny(event, 401, 'ISS_FAIL');
+  // ⚠️ NO SIGNATURE VERIFICATION
+
+  if (uri starts with '/admin' && roles lacks 'Lab.Admin') return deny(event, 403, 'ROLE_FAIL');
+
+  headers['x-validated-claims'] = JSON.stringify({
+    roles: claims.roles || [], exp: claims.exp, mode: 'claims_only'
+  });
+  headers['x-edge-jwt-status'] = 'VALIDATED';
+  console.log('EA_ACCEPT');
+  return event;
 }
 ```
+
+**Current log output (simplified source):** `EA_REJECT reason=<code>` on any rejection path;
+`EA_ACCEPT` on accept. No path, roles, alg, or mode strings are logged separately.
 
 **⚠️ Explicit security disclaimer (must be in code comments and this design):**
 
@@ -315,9 +373,13 @@ From [EdgeActionsSamples README](https://github.com/Azure/EdgeActionsSamples/tre
 | Restricted headers | Some platform-reserved headers cannot be modified (undocumented list; probe with S1) |
 | `X-Azure-FDID` | Set by AFD platform; do not attempt to set/delete; probe with S1 |
 
-Headers to **inject** outbound (toward origin):
-- `x-validated-claims`: JSON-serialised claims summary (only on successful validation).
-- `x-edge-jwt-status`: `"VALIDATED"`, `"MISSING"`, `"INVALID"`, `"CLAIMS_ONLY"`.
+Headers to **inject** outbound (toward origin) — on accept path only:
+- `x-validated-claims`: `JSON.stringify({roles, exp, mode:'claims_only'})` — injected only on accept.
+- `x-edge-jwt-status`: `"VALIDATED"` — injected only on accept.
+
+> **Note:** The current simplified source sets only `VALIDATED`. Earlier deployed revisions
+> also emitted `EA_MODE`, `EA_REJECT path=…`, `roles=[…]` etc. in log output — those entries
+> in historical evidence files reflect the earlier 108-line version.
 
 Headers to **strip** inbound (from client):
 - `x-validated-claims` (spoofing prevention)
@@ -386,10 +448,10 @@ AzureDiagnostics
 
 | Failure | Documented behaviour | Ranked mitigations |
 |---------|---------------------|-------------------|
-| **Edge Action timeout (> 10 ms)** | Platform terminates EA; request **passes to origin without EA processing** (fail-open). `edgeActionsStatusCode = 503`. | ① Origin re-validates JWT (free, backstop). ② Reduce EA complexity. ③ JWKS micro-cache if SDK supports it. |
+| **Edge Action timeout (> 10 ms)** | Platform terminates EA; request **passes to origin without EA processing** (fail-open). `edgeActionsStatusCode = 503`. | ① Origin re-validates JWT (free, backstop). ② Reduce EA complexity. |
 | **Edge Action JS exception** | Same as timeout — platform fails open. | ① Origin backstop. ② Wrap all EA in try/catch; return 401 on known-bad before exception path. |
-| **JWKS endpoint unavailable** | EA cannot fetch key; explicit catch → 401 or fail-open if no catch. | ① Origin backstop (always). ② Explicit catch → 401 (safe fail). |
-| **Stale JWKS / key rollover** | kid not in current JWKS → EA returns 401 (correct behaviour). Entra rotates ~6 weeks. | ① Always fetch live JWKS (never pin). ② Re-acquire token after rotation. |
+| **JWKS endpoint unavailable** | Not applicable within EA — lab evidence (S1): `fetch=undefined`; scope boundary confirmed (2026-08-19). Origin handles JWKS fetch independently. | ① Origin backstop (always, mandatory). |
+| **Stale JWKS / key rollover** | Not applicable within EA. Origin `jose` handles key rotation automatically (~6 weeks). | ① Origin re-fetches JWKS on next request after rotation. ② Never pin a specific key ID. |
 | **AFD PoP failure** | AFD routes to healthy PoP automatically. | ① No mitigation needed (anycast). |
 | **Origin (App Service) failure** | AFD returns 502/503. | ① AFD health probe (30 s). ② Lab: single origin; production: multi-origin group. |
 | **Direct origin bypass** | Request to `.azurewebsites.net`; Rule 200 requires AFD IP + FDID. | ① ARM-native access restriction. ② Origin JWT validation. |
@@ -426,11 +488,11 @@ AzureDiagnostics
 | Scenario | Input | Expected HTTP | Additional assertion |
 |----------|-------|---------------|----------------------|
 | **S2 — Missing token** | `GET /protected`, no Auth header | **401** | App Service receives no request (edge-rejected on GO path) |
-| **S3 — Valid token** | Valid `Lab.Admin` token, `GET /protected` and `/admin` | **200** both | EdgeActionConsoleLog: `x-edge-jwt-status=VALIDATED` |
+| **S3 — Valid token** | Valid `Lab.Admin` token, `GET /protected` and `/admin` | **200** both | EdgeActionConsoleLog: `EA_ACCEPT`; `x-edge-jwt-status=VALIDATED` forwarded to origin |
 | **S4 — Expired token** | Token with `exp` in past | **401** | Log: `EXPIRED` |
 | **S5 — Wrong audience** | Token with different `aud` | **401** | Log: `AUD_FAIL` |
 | **S6 — Tampered sig ⚠️** | Valid payload, modified `roles`, no re-sign | **401** | Log: `SIG_FAIL`. If **200** → critical finding; document immediately |
-| **S6 CONDITIONAL** | Same tampered token (teaching mode) | EA passes; **origin 401/403** | Documents gap: claim-only cannot catch forged tokens |
+| **S6 CONDITIONAL** | Same tampered token (claims-only mode) | EA passes (`EA_ACCEPT`); **origin 401/403** | Documents gap: claim-only cannot catch forged tokens |
 | **S7 — Wrong role** | Valid token without `Lab.Admin`, `GET /admin` | **403** | `GET /protected` with same token → **200** |
 | **S8 — Direct bypass** | `curl https://app-edge-jwt-lab.azurewebsites.net/protected` | **403** | If 200: access restriction not effective — critical finding |
 | **S9 — Fail-open (pivotal)** | `X-Test-Fail: 1` + valid token, `/edge-only` | **200** (EA failed open, no origin auth — expected teaching failure) | `edgeActionsStatusCode = 503` in AFD log |
