@@ -157,3 +157,27 @@ Each diagram is introduced with a brief contextual sentence. All five blocks val
 ---
 
 📌 2026-08-19T20:51:00+02:00 — Diagram-embedding gap fixed; team inbox note written at .squad/decisions/inbox/kid-blog-diagrams-must-be-inline.md.
+
+---
+
+### 2026-08-19: Reframe — dual-hub-vnra-udr-transit post (practitioner-centered)
+
+**Trigger:** User directive: post must not center on an error the team made merely because it happened; reassess title, hook, lede, section order, and framing for external Azure Networking practitioner value.
+
+**Old framing:** "Managed VNRA Multi-Region UDR Transit: The Silent Peering Trap" — mistake-chronology narrative. Structural spine was "What Went Wrong": investigation sequence, peering flags as the revelation of a lab error, "The Fix" as the payoff. Team-centric investigation language throughout.
+
+**New framing:** "Azure Managed VNRA: Multi-Region Transit Design, Observability Limits, and the Two Peering Prerequisites" — practitioner design reference. Structure is: what this covers → architecture → UDR transit chain → peering prerequisites (general) → diagnosing silent failure (reusable method, lab as evidence) → observability ceiling → undocumented details → reproduction → design checklist → takeaway.
+
+**Changes made:**
+- Title changed in post README and root blog index (both updated in same PR)
+- Opening rewritten from mistake-centric hook to practitioner scope statement
+- "What Went Wrong" section removed; peering investigation recast as general diagnostic method
+- "The Fix and Verification" removed; evidence folded into the diagnostic and prerequisite sections
+- All team-centric language removed (zero instances of we/our mistake/initial validation)
+- All 5 inline Mermaid diagrams preserved
+- PR #6: https://github.com/erjosito/azure-networking-blog/pull/6
+- Merge commit: 63982ee48d5b43c741a2ecdc6fadf8abc3333dc4
+
+**External-value test:** Post remains fully valuable with all lab-process references removed. It documents a validated multi-region VNRA design, the exact peering prerequisites for any hub-spoke topology, a reusable diagnostic method for silent data-plane failure, and the observability ceiling specific to managed VNRA hardware.
+
+**Lesson:** When a blog post uses a lab error as the structural center rather than the discovery method, readers who have not made the same error see a post-mortem instead of a design guide. The technical content is the same; only the framing determines external value. Always ask: is the reader's problem this article's organizing principle, or is the team's experience?
