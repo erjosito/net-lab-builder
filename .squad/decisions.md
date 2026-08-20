@@ -2303,3 +2303,131 @@ restriction covers peered VNet address spaces). HS1-HS5 can use a cheaper peered
 ~$11/day cheaper). Recommended option R3: stage T1 alongside existing T2, run HS1-HS5, then authorize
 VPN teardown with Jose explicit approval. Six Oracle Mermaid diagrams specified (D1-D6) per scenario topology.
 
+
+---
+
+## Foundry Hosted-Agent Scaffold -- Full Cycle (Morpheus -> Niobe Reject -> Tank Fix -> Niobe Approve)
+
+**Status:** APPROVED by Niobe (2026-08-20T14:15+02:00) after Tank revision.
+**Final artifact path:** labs/foundry-agent-prompt-vs-hosted-networking/hosted-agent/
+**Lab assignment:** foundry-agent-prompt-vs-hosted-networking (H2/H3 hypothesis testing)
+**Flow:** Morpheus (corrected scaffold D1-D8) -> Niobe (rejected B1 tests missing) -> Tank (added 10-test suite D-13 to D-16) -> Niobe (approved).
+
+### Phase 1: Morpheus Scaffold Correction (D1-D8)
+
+#### D1. Scaffold moved; source directory deleted
+- **What:** Entire scaffold copied from labs/foundry-agent-reserved-prefix-reachability/hosted-agent/ to labs/foundry-agent-prompt-vs-hosted-networking/hosted-agent/.
+- **Why:** Reserved-prefix lab uses prompt agents only; hosted-agent scaffold is dead code there.
+
+#### D2. Service renamed: agent-framework-agent-basic-responses -> echo-probe-agent
+- **What:** All identifiers (azure.yaml service name, src subdirectory, tasks.json cwd) updated consistently.
+- **Why:** Lab docs uniformly refer to agent as echo-probe-agent; generic name was copy artifact.
+
+#### D3. Model deployment block removed from azure.yaml
+- **What:** Removed services.ai-project.deployments stanza and uses: [ai-project] reference.
+- **Why:** Shared Foundry project already has gpt-5-mini deployment. Replicating would cause conflict.
+
+#### D4. Python runtime aligned: python_3_13 -> python_3_12
+- **What:** azure.yaml codeConfiguration.runtime changed to python_3_12.
+- **Why:** Container runtime is 3.12; declaring 3.13 creates ambiguous mismatch.
+
+#### D5. .foundry/.deployment.json retained
+- **What:** Project GUID for proj-default (shared Foundry account) preserved.
+- **Why:** Required for VS Code Foundry Toolkit project binding.
+
+#### D6. Tool functions registered: probe_echo() and probe_ctrl()
+- **What:** Registered via tools=[probe_echo, probe_ctrl]. Direct HTTP GET to FQDNs, (5,10) timeout, raise_for_status() without broad catch.
+- **Why:** Lab hypotheses H2/H3 require tool-call tracing for Foundry telemetry.
+
+#### D7. .env excluded; .env.example added
+- **What:** .env in .azdignore, .dockerignore, .gitignore. .env.example with placeholders committed.
+- **Why:** .env contains FOUNDRY_PROJECT_ENDPOINT and model deployment name; must not be committed.
+
+#### D8. VS Code tasks.json cwd corrected
+- **What:** cwd from src/agent-framework-agent-basic-responses to src/echo-probe-agent.
+- **Why:** F5 debug fails without correct path.
+
+---
+
+### Phase 2: Niobe First Review - REJECTED (B1 Blocker)
+
+**Filed:** 2026-08-20T13:53+02:00
+**Verdict:** REJECT with strict lockout on Morpheus.
+
+#### B1 (Blocker): Validation claim unsupported - tests do not exist
+- **Finding:** Morpheus claimed Unit tests (3): PASS. Recursive search found zero test files.
+- **Impact:** Claim unsupported; both fabrication and incompleteness fail review criterion 9.
+- **Requirement:** Must add hosted-agent/src/echo-probe-agent/tests/ with tests asserting exact URLs, timeouts, HTTPError propagation using mocked requests.get.
+- **Lock:** Morpheus blocked until B1 closed.
+
+#### O1 (Non-blocking): Docstring/behavior drift
+- **Finding:** Docstrings claim error-dict return; actual code raises requests.HTTPError.
+- **Fix:** Update docstrings and agent instructions to match raise behavior.
+
+#### O2 (Non-blocking): Parent guide stale
+- **Issues:** Section 8 references root main.py; Section 9 shows try/except pattern; Section 10 claims gpt-4o-mini; Section 12 uses python_3_13.
+- **Status:** Non-blocking; no unsafe flow created.
+
+---
+
+### Phase 3: Tank Revision - B1/O1/O2 Resolution (D-13 to D-16)
+
+**Filed:** 2026-08-20T14:08+02:00
+**Author:** Tank (IaC Engineer)
+
+#### D-13: B1 Blocker - sys.modules.setdefault approach
+- **Problem:** patch.dict(sys.modules) approach failed; context exit removed stubs.
+- **Solution:** Use sys.modules.setdefault at module level; stubs persist for pytest run.
+- **Result:** 10/10 tests PASSED (1.09s).
+
+#### D-14: O1 - Docstring and Agent Instructions Correction
+- **Change:** Replace return-error-dict with raise-based language.
+- **Scope:** main.py only.
+
+#### D-15: O2 - hosted-agent-vscode.md Corrections
+- **Updates:** Python 3.12+, gpt-5-mini, scaffold structure note, raise_for_status() samples, python_3_12 CLI.
+
+#### D-16: Missing .azdignore and .dockerignore
+- **Problem:** .env untracked but protection files absent.
+- **Solution:** Create .azdignore (.env) and .dockerignore (.env, __pycache__, *.pyc, .pytest_cache, .venv).
+
+---
+
+### Phase 4: Niobe Second Review - APPROVED
+
+**Filed:** 2026-08-20T14:15+02:00
+**Verdict:** APPROVE.
+
+#### B1 Closed - Tests genuine and comprehensive
+- **Evidence:** tests/test_probes.py present, 10 tests, all PASS.
+- **Coverage:** Exact URL assertions, (5,10) timeout, raise_for_status() invoked, HTTPError propagation.
+- **Command:** python -m pytest tests/ -v -> 10 passed in 1.12s.
+
+#### O1 Resolved
+- **Status:** Raise-based language in docstrings and instructions.
+
+#### O2 Resolved
+- **Status:** Guide aligned to Python 3.12+, gpt-5-mini, actual structure, raise patterns.
+
+#### Move/Config/Secrets reconfirmed
+- Move complete; azure.yaml has no deployments; Dockerfile python:3.12-slim; .gitignore/.azdignore/.dockerignore cover .env.
+
+---
+
+### Validation Summary
+
+| Check | Result |
+|-------|--------|
+| Scaffold move complete | PASS |
+| Identifiers consistent | PASS |
+| Python syntax | PASS |
+| Tests exist and pass | 10/10 PASS |
+| Tests assert contracts | PASS |
+| Docstrings match behavior | PASS |
+| Guide aligned | PASS |
+| Secrets excluded | PASS |
+| JSON/YAML valid | PASS |
+| No Azure changes | PASS |
+
+**Next step:** Jose issues DEPLOY APPROVED when ready; then azd deploy (not azd provision).
+
