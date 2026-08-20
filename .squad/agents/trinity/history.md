@@ -138,3 +138,140 @@ Decisions inbox: `.squad/decisions/inbox/trinity-route-map-user-stories.md`.
 **Hypothesis state preserved as unknown.** No Azure resources created.
 
 
+📌 2026-08-17T14:46+02:00 — **afd-edge-actions-jwt-validation: design.md created + manifest corrected.**
+
+**C1 (critical):** `X-Azure-FDID` header filtering is **ARM-native** in App Service access
+restrictions (`--http-header` condition). Manifest incorrectly stated it required application code.
+Authority: App Service access restrictions + AFD origin-security docs (confirmed 2026-08-17). No
+application code or middleware needed to enforce FDID at the platform tier.
+
+**C2 (critical):** AFD health probes carry `X-FD-HealthProbe: 1` but NOT `X-Azure-FDID`. A single
+combined rule blocks probes. Always use two rules: Rule 100 (X-FD-HealthProbe=1) + Rule 200 (X-Azure-FDID).
+
+**Edge Actions API surface (authoritative from EdgeActionsSamples README):**
+- `handler(event)` → event; hook_point=0 (Client Request only, preview).
+- `event.request.headers` — lowercase keys. `event.response.response_code` — only 200/401/403 valid.
+- Fail-open: 10 ms timeout terminates EA; request continues without EA (`edgeActionsStatusCode=503`).
+- Crypto APIs (`crypto.subtle`, `fetch`, `atob`) are NOT documented; must be probed with `typeof`.
+- No JWT sample exists in EdgeActionsSamples as of 2026-08-17.
+
+**Claim-only ≠ authentication:** Claim parsing without RS256 verification cannot authenticate.
+Any attacker can forge claims. CONDITIONAL path is teaching-only; origin re-validation is the
+only real enforcement.
+
+**Decisions inbox:** `.squad/decisions/inbox/trinity-afd-edge-jwt-design.md`
+
+
+📌 2026-08-19T13:30+02:00 — **Reviewer pass: dual-hub-vnra-udr-transit manifest. REJECTED. Corrected design produced.**
+
+**Core finding:** Manifest (Morpheus, stage-1-locked) modeled each VNRA as an Ubuntu 22.04 VM NVA.
+The user explicitly intends `Microsoft.Network/virtualNetworkAppliances` -- the Azure managed Virtual
+Network Routing Appliance, GA 2026-08-04. These are architecturally distinct: no OS, no user NIC,
+no cloud-init, hardware-level SDN forwarding (AMD DPU / Azure Sirius).
+
+**VNRA authoritative facts (all from Microsoft Learn + erjosito/vnra lab, fetched 2026-08-19):**
+- Resource type: `Microsoft.Network/virtualNetworkAppliances`, REST API `2025-05-01`
+- PowerShell: `New-AzVirtualNetworkAppliance` (Az.Network, GA). No `az network routing-appliance` CLI subcommand.
+- Terraform: AzAPI provider only (AzureRM unsupported at GA).
+- Subnet: `VirtualNetworkApplianceSubnet` (exact name required, case-sensitive). No documented minimum size; /28 recommended.
+- Bandwidth tiers: 50/100/200 Gbps, immutable after creation (delete + redeploy to resize).
+- Quota: max 2/sub/region. Preflight must check this.
+- Regions: swedencentral YES, northeurope (North Europe) YES.
+- UDR next-hop: `VirtualAppliance` + private IP -- identical syntax to VM NVA.
+- `allowForwardedTraffic=true` on ALL transit peerings required ("IP forwarding on relevant peerings" per troubleshoot docs).
+- NIC IP forwarding flag and OS ip_forward: N/A (no user NIC, no OS).
+- Azure Monitor metrics: built-in, no diagnostic config required (BytesSent/Received, Packets, InboundFlows/OutboundFlows).
+- VNet Flow Logs: NOT supported on VNRA subnet.
+- Per-flow logging: NOT available.
+- Internet egress: NOT supported (private connectivity only).
+- Traceroute visibility: invisible (hardware routing; TTL-based probes skip VNRA -- distinguishing proof vs VM NVA).
+- ILB in front: NOT supported (drops traffic).
+- Pricing: NOT published.
+
+**Corrected resource count:** 2 VMs (test VMs only) + 2 VNRA managed resources. NOT 4 VMs.
+
+**Data path spoke1->VNRA1->VNRA2->spoke2:** Analytically expected to work (UDRs on VNRA subnet
+documented; VirtualAppliance NH to cross-VNet IP via global peering valid). Cross-VNRA chaining
+via global peering NOT in any published example. Marked as empirical gate E1 in design.md.
+
+**Effective route observability gap:** Managed VNRA has no user NIC -> no `az network nic show-effective-route-table`.
+No documented subnet-scope effective route REST action. Primary observability: Azure Monitor metrics +
+configured route table list + Network Watcher next-hop from adjacent VM. Probe A1/A2 in S5 tests
+whether an undocumented subnet REST action exists (expected 404). This gap is material for production.
+
+**Cost:** UNCLEAR. VNRA pricing not published on Microsoft Learn.
+
+**Files produced:**
+- `labs/dual-hub-vnra-udr-transit/design.md` -- corrected spec with authoritative resource shape, UDR tables, 5 scenarios, observability matrix, resiliency analysis, 4 empirical gates
+- `.squad/decisions/inbox/trinity-dual-hub-vnra-review.md` -- 6 blocking corrections (B1-B6) + 3 non-blocking (N1-N3)
+
+**Vault write deferred to lab close.** At lab close: create `Services/VNRA.md`, update `Topics/UDR-and-Effective-Routes.md`, create `Labs/2026-08-dual-hub-vnra-udr-transit.md`.
+
+
+📌 2026-08-20T09:10:41+02:00 — **Network design completed for foundry-agent-prompt-vs-hosted-networking lab (no-VPN sibling).**
+
+**Design file:** `labs/foundry-agent-prompt-vs-hosted-networking/design.md` (20.5 KB, within guardrail).
+**Corrections inbox:** `.squad/decisions/inbox/trinity-foundry-network-design.md`.
+
+**Key design decisions (fully authoritative):**
+
+**(Z2) DNS Private Resolver + dnsmasq over Z1.** DNS is first-class. Z2 enables dnsmasq query timestamps and the OQ5 diagnostic probe (DNS Private Resolver logs may expose pre-SNAT client IP). **Documented DNS context-transparency finding confirmed:** the forwarding ruleset is linked at VNet level; all AgentSubnet resources (data proxy containers AND Micro VM NICs) use the same chain; the outbound endpoint (192.168.3.20) SNATs all queries — dnsmasq cannot distinguish originating context by source IP alone. What Z2 proves: that resolution works and correlates with invocation. What it cannot prove without OQ5: which container type initiated the query. H3 is documented-behavior-confirmed if HS3+HS4 both pass.
+
+**(HTTP-first)** HTTP port 80 eliminates TLS hostname SAN as a variable. HTTPS upgrade path documented with cert re-issue commands (SAN: DNS:echo.tools.lab,IP:10.1.100.4). Apply only after HTTP baseline confirmed.
+
+**(C1 — Blocking correction to manifest §6):** Manifest states MCR outbound is required "if remote_build path chosen." Microsoft docs (deploy-hosted-agent-code, accessed 2026-08-20) confirm: "All source-code deployments require outbound access to: 1. mcr.microsoft.com 2. *.login.microsoft.com" — independent of remote_build vs bundled. bundled eliminates server-side pip install but cannot eliminate the base container image pull from MCR at Micro VM startup. NSG rules 125 (MicrosoftContainerRegistry, TCP 443) and 126 (AzureActiveDirectory, TCP 443) are required for all hosted agent deployments. Recommended: use bundled for this lab (only dependency is `requests`; no compiled extensions; deterministic deploy).
+
+**(Peering)** Bidirectional non-transit flags. No GWs in either VNet. `allowForwardedTraffic=false` correct for direct peering.
+
+**(NSG)** nsg-agentsubnet adds rules 110/120 (10.1.x/24, TCP 80+443) + 125+126 (MCR+AAD). New nsg-tools: inbound from 192.168.0.0/16 on 80+443; inbound from DNSOutboundSubnet /28 on port 53 (to EchoSubnet); SSH from MgmtSubnet.
+
+**Source IP observability:** Data proxy source IPs (`192.168.0.x`) observed in sibling lab: 192.168.0.49 and 192.168.0.239 (can rotate). Micro VM NIC IP (`192.168.0.y`) expected distinct from these (H2 hypothesis). H2 ambiguous outcome (same IP) = OQ1 open, SNAT or shared pool, not FAIL.
+
+**Zone conflict rule confirmed:** private DNS zones linked to VNet take precedence over forwarding rulesets. Do not create private zone `tools.lab` — would silently override the forwarding chain and break Z2 observability.
+
+
+📌 2026-08-20T09:28:51+02:00 — **Transition gates documented; VPN/T2 resources reclassified as active cleanup candidates.**
+
+Jose authorized the directional change from T2 (VPN/BGP) to T1 (peered tools VNet) on 2026-08-20. No Azure resources were created or deleted. Two documents were updated/created:
+
+**`design.md §14` (new section):** Defines two independent gates:
+- Gate A (T2 cleanup): destructive. Three pre-conditions — (A1) evidence preservation with exact commands (effective routes on vm-diag NIC, learned routes on vpngw-foundry, advertised routes, portal screenshots, all committed to repo); (A2) dry-run preview via cleanup.ps1 without -AutoApprove, Jose reviews resource list; (A3) Jose states "DELETE APPROVED" in squad conversation. Deletion scope: both VPN connections, both VPN GWs, both Standard PIPs, vm-onprem-echo + vm-onprem-ctrl (+ NICs + disks), nsg-echo-vms, vnet-onprem, stale NSG rules in nsg-agentsubnet for 172.30.100.0/24 and 10.200.100.0/24. Savings: ~$11.04/day. GatewaySubnet in vnet-foundry kept empty (zero cost; fast re-add path).
+- Gate B (T1 deploy): billable additions. New resources: vnet-tools, peering, vm-tools-echo, vm-tools-ctrl, DNS resolver (if not deployed), hosted agent echo-probe-agent. ~$3.72+sessions/day incremental. Jose states "DEPLOY APPROVED" after reviewing what-if output. Gates are independent; neither implies the other.
+
+**`.squad/decisions/inbox/trinity-foundry-vpn-cleanup-plan.md`:** Comprehensive plan with exact PowerShell evidence capture commands, dry-run procedure, full named-resource inventory, dependency-safe teardown order, exact confirmation phrases, new T1 resource table, and cost state matrix for all four gate combinations.
+
+**Key design rule reinforced:** Never delete the resource group (step 5 in cleanup.ps1). Shared Foundry infra (vm-diag, vnet-foundry, PEs, DNS zones, Foundry account, AI Search, Cosmos, Storage) lives in the same RG. T2 teardown is always named-resource-scoped, not RG-scoped.
+
+
+📌 2026-08-20T09:44:10+02:00 — **Reconciliation pass: corrected MCR/bundled claims and cleanup.ps1 teardown scope across all user-facing lab docs.**
+
+**Root-cause errors corrected:**
+
+1. **MCR egress is required for ALL source-code deployments (not just remote_build).** Three locations in `hosted-agent-vscode.md` incorrectly implied that switching to `bundled` mode resolves mcr.microsoft.com connectivity failures: §4 (missing note entirely), §11 Checkpoint (gate row said "OR Trinity approves bundled mode"), §12 Step 7 (suggested bundled as a workaround), and §16 Troubleshooting. All four corrected. The base container image is pulled from MCR at Micro VM startup regardless of dep-resolution mode. Both modes require NSG rules 125 (MicrosoftContainerRegistry, TCP 443) and 126 (AzureActiveDirectory, TCP 443).
+
+2. **cleanup.ps1 -AutoApprove cannot be used for T2-scoped teardown.** Inspection of cleanup.ps1 Step 3 reveals `vm-diag` in the VM deletion list; Step 4 deletes shared private endpoints; Step 5 deletes the entire RG. Both `trinity-foundry-vpn-cleanup-plan.md` §A2 and §A5 incorrectly stated "Cleanup.ps1 with -AutoApprove automates steps 1-4." Corrected to: cleanup.ps1 is safe for resource-listing dry-run only; a dedicated T2-scoped teardown script must be authored, each delete command dry-run previewed, and the output reviewed by Jose before DELETE APPROVED. §A4 teardown commands (direct `az` commands scoped to T2 resources) are correct and form the basis for that script.
+
+3. **design.md §14 Gate A2** — updated to clarify that cleanup.ps1 dry-run lists all RG resources (not just T2-scoped); Tank must cross-reference against §A3 inventory and build a T2-only script.
+
+4. **trinity-foundry-network-design.md** — added Correction C4: manifest §4 NSG requirements table missing rules 125 (MicrosoftContainerRegistry) and 126 (AzureActiveDirectory); manifest §6 preflight row still incorrect ("OR bundled mode").
+
+**Files changed:**
+- `labs/foundry-agent-prompt-vs-hosted-networking/hosted-agent-vscode.md` — 4 targeted edits
+- `labs/foundry-agent-prompt-vs-hosted-networking/design.md` — §14 Gate A2 wording
+- `.squad/decisions/inbox/trinity-foundry-vpn-cleanup-plan.md` — §A2 and §A5 (safety-critical)
+- `.squad/decisions/inbox/trinity-foundry-network-design.md` — added C4
+
+**Files not changed (cannot edit per charter):** `manifest.md`, `README.md` — corrections documented in `trinity-foundry-network-design.md` for Morpheus/Oracle.
+
+**Permanent rule:** cleanup.ps1 is a full-lab cleanup tool. For topology subset teardowns, always author and dry-run a resource-specific script before authorizing -AutoApprove on anything.
+
+
+📌 2026-08-20T09:45:00+02:00 — **Decisions merged to .squad/decisions.md; inbox processed.**
+
+Both Trinity documents now part of team canonical decision log:
+- trinity-foundry-vpn-cleanup-plan.md (VPN/T2 transition gates, resource inventory, evidence capture, destruction order)
+- trinity-foundry-network-design.md (MCR/NSG corrections C1/C4, Zone conflict rule, preflight diagnostics)
+
+Processed inbox files removed. Scribe session log written: .squad/log/2026-08-20T08-04-51-trinity-foundry-design-decisions.md
+
+Cross-agent impact: Morpheus, Oracle, Tank (manifest §4/§6 NSG rules, preflight clarifications, Gate A/B execution scope).
