@@ -158,6 +158,110 @@ Produce the standard 4-diagram set for lab #2 (`vwan-dual-er-symmetric`) ahead o
 - Kept customer-observable facts separate from a deliberately unconnected, opaque Microsoft-underlay band; no physical-route equivalence is implied.
 - Live-value placeholders remain for run suffix, target account, VM private IP, NAT public IP, and per-run public Storage IP.
 
+## 2026-08-18 — Lab #4 diagram refresh: live deployment values + S1 CONDITIONAL verdict
+
+### Trigger
+
+Jose Moreno directive: integrate live deployment names from Tank's output; label synchronous handler,
+10 ms fail-open, claims-only edge gate, origin RS256/JWKS enforcement, EdgeActionConsoleLog,
+`deployVersionCode` validation side effect, and portal/VS Code attachment caveat.
+
+### Sources read
+
+`deployment-output.json`, `deploy-log.md` (Sessions 2–4), `S1-capability-probe-result.md`,
+`S1-capability-probe-blocked.md`, `smoke-test-results.md` (Run 3), `ea-jwt-validate.js`,
+`app/server.js` (jose.jwtVerify implementation).
+
+### Key facts integrated
+
+| Fact | Diagram(s) |
+|------|-----------|
+| Live endpoint: `edge-jwt-lab-hgbdgdh9ccaja2hv.b02.azurefd.net` | 01, 02, 03, 05 |
+| EA resource name: `eajwtvalidate` (not `ea-jwt-validate`) | 01, 02, 03, 04, 05 |
+| Rule set: `rsedgejwt / ruleprotected` | 01, 05 |
+| FDID sanitised: `549954ba-…` | 01, 02, 03 |
+| Entra app-id: `623405b7-…` (api), `6f86ab2c-…` (client) | 01, 02, 05 |
+| S1 CONDITIONAL: `crypto/fetch/atob/btoa/TextEncoder=undefined` | all |
+| EA = synchronous `handler(event)` — no async, no fetch | 01, 02, 03 |
+| Claims-only: pure-JS base64url decode + iss/aud/exp/nbf/roles | all |
+| Origin = `jose.jwtVerify` RS256/JWKS (only crypto boundary) | 01, 02, 03 |
+| EdgeActionConsoleLog via UserLog on EA resource (not AFD profile) | 01, 02 |
+| Reason codes confirmed: MISSING_TOKEN/MALFORMED_HEADER/EXPIRED/AUD_FAIL/ISS_FAIL/ROLE_FAIL | 01, 02 |
+| `edgeActionsStatusCode=503` on EA overrun | 01, 02, 04 |
+| S7-sim/S9-sim: fake sig passes EA, rejected by origin (`ERR_JWKS_MULTIPLE_MATCHING_KEYS`) | 02, 03 |
+| Fail-open in CONDITIONAL = ALL claim checking bypassed (not just sig verify) | 04 |
+| `deployVersionCode` → ~17 min real validation → portal/VS Code attachment required | 05, README |
+| `validationStatus=Succeeded` in ~15s is PREMATURE false positive | 05, README |
+| B3 (preview expired) was temporary blocker; resolved before Session 4 | 05 |
+| B1 (admin consent) still active; blocks S7/S9 real-token scenarios | 05 |
+| `eajwtvalidate` LIVE: provisioningState=Succeeded, rsedgejwt/ruleprotected attached | 05 |
+
+### Diagram changes
+
+- **01:** Removed JWKS fetch from EA; added async JWKS fetch at origin (jose); live names; UserLog label; reason codes on LAW node.
+- **02:** Removed JWKS fetch from EA phase; added synchronous note; real reason codes; S7-sim/S9-sim `ERR_JWKS_MULTIPLE_MATCHING_KEYS` branch; FDID in forwarded headers; `edgeActionsStatusCode=503` in fail-open phase.
+- **03:** B2 rewritten with full API availability list (unavailable + available); synchronous handler noted; B4 updated with `jose.jwtVerify createRemoteJWKSet`; S8/S7-sim evidence in annotations.
+- **04:** CONDITIONAL mode noted; fail-open = ALL claim checking bypassed; `edgeActionsStatusCode=503` explicit; live EA name.
+- **05:** Full rewrite — S1-GATE RESOLVED=CONDITIONAL; GO/STOP greyed as dead; `deployVersionCode` + ~17min + portal/VS Code caveat as annotation node; B3 history; B1 active; `eajwtvalidate` live.
+
+### README update
+
+Rewrote to 28 KB with: live deployment reference table, S1 capability verdict table, `deployVersionCode` operational caveat section, updated diagram captions, and complete inline Mermaid embed blocks for Niobe (all 5 diagrams verbatim, ready to paste into root README).
+
+### Validation
+
+All 5 `.mmd` files: diagram-type declaration present, subgraph opens/ends balanced (flowchart),
+`alt…end` count balanced (sequenceDiagram — 2 alt / 2 end). Result: **5/5 PASS**.
+
+## 2026-08-17 — Lab #4 diagram set: `afd-edge-actions-jwt-validation`
+
+### Task
+
+Produce the 5-diagram set for lab #4 (AFD Edge Actions JWT validation) from lab-card, manifest, and design.
+Fetch official Edge Actions docs before drawing.
+
+### Key findings from docs fetch (learn.microsoft.com/azure/frontdoor/edge-actions)
+
+- Edge Actions **is in preview** as of 2026-08-17.
+- JWT validation is listed as a **supported scenario** in the docs.
+- Hyperlight sandbox; 10 ms execution budget.
+- When execution exceeds 10 ms the platform terminates Edge Action and sends the request **without EA processing** (fail-open is a platform guarantee, not a code path).
+- `EdgeActionConsoleLog` schema confirmed; `edgeActionsStatusCode` (200/503) in AFD access log confirmed.
+- **EdgeActionsSamples repo has NO JWT/JWKS/crypto sample** — confirmed in manifest and verified against official sample page description. S1 capability probe is the only authoritative source.
+
+### Files produced
+
+| # | File | Format | Subgraph count | Status |
+|---|------|--------|---------------|--------|
+| 01 | `diagrams/01-topology.mmd` | `flowchart LR` | 3 subgraphs/3 ends | ✅ balanced |
+| 02 | `diagrams/02-token-request-flow.mmd` | `sequenceDiagram` | 0 subgraphs; 1 `alt…end` | ✅ balanced |
+| 03 | `diagrams/03-trust-boundaries.mmd` | `flowchart TD` | 4 subgraphs/4 ends | ✅ balanced |
+| 04 | `diagrams/04-fail-open-comparison.mmd` | `flowchart LR` | 2 subgraphs/2 ends | ✅ balanced |
+| 05 | `diagrams/05-capability-gate.mmd` | `flowchart TD` | 0 subgraphs | ✅ balanced |
+| — | `diagrams/README.md` | Markdown | reference table + embed handoff | ✅ |
+
+### Render status
+
+No `mmdc` binary available without installing new tooling. All diagrams validated by:
+1. PowerShell syntax check: diagram type declaration present, subgraph opens/ends balanced.
+2. Manual inspection of `alt…end` in sequenceDiagram (diagram 02 — 1 alt, 1 end ✅).
+GitHub native rendering is the delivery mechanism. PNG exports not produced per charter.
+
+### Live-value placeholders
+
+`‹app-id›`, `‹FDID›`, `‹hash›` — replace from Tank's sanitised deployment output after A0/A1.
+Resource role names from manifest (`law-edge-jwt-lab`, `afd-edge-jwt-lab`, `app-edge-jwt-lab`)
+are stable and do not require replacement.
+
+### Embed handoff
+
+Full embed block provided in `diagrams/README.md §Niobe — Embed Handoff`.
+Niobe is explicitly instructed not to edit `.mmd` sources and to request a live-value refresh from Oracle.
+
+### Decision filed
+
+`.squad/decisions/inbox/oracle-afd-edge-jwt-diagrams.md` — visual conventions and no-JWT-sample-reference pattern.
+
 ## 2026-08-08 — Translator endpoint diagram replacement finalized
 
 - Replaced the superseded Storage visuals under `labs/storage-endpoint-path-equivalence/diagrams/` with the deployed Azure AI Translator F0 design in Sweden Central.
@@ -167,3 +271,110 @@ Produce the standard 4-diagram set for lab #2 (`vwan-dual-er-symmetric`) ahead o
 - Removed Storage/blob/service-endpoint placeholders and sensitive live names/public addresses. Retained only documented private topology addresses needed to explain the deployed paths.
 - Decision handoff: `.squad/decisions/inbox/oracle-translator-diagram-replacement.md`.
 
+
+## 2026-08-20 -- Lab #5 diagram set + VS Code guide: foundry-agent-prompt-vs-hosted-networking
+
+### Task
+
+Produce 6 Mermaid diagrams, one VS Code hands-on guide, and a README update for the new sibling lab
+`labs/foundry-agent-prompt-vs-hosted-networking/`. Lab status: Stage-1 locked, no resources deployed.
+
+### Sources read
+
+`manifest.md` (LOCKED), `README.md` (existing stub), `results.md` (sibling lab), `design.md`
+(sibling lab, first 60 lines), three morpheus decision-inbox files (hosted-agent-extension,
+vscode-walkthrough, topology-rethink), `morpheus-foundry-lab-restructure.md`, `history.md`, `now.md`.
+
+### Key finding: tools.lab vs onprem.lab naming divergence
+
+The three morpheus decision-inbox files all use `onprem.lab` (predating the lab-restructure decision).
+The locked manifest uses `tools.lab` with VMs at `10.1.100.4`/`10.1.200.4`. Oracle followed the
+manifest. Decision recorded in `.squad/decisions/inbox/oracle-foundry-diagrams.md` (Decision D1).
+Morpheus review requested.
+
+### Files produced
+
+| File | Format | Validated |
+|------|--------|-----------|
+| `diagrams/01-peered-tools-topology.mmd` | `flowchart TB` 3 subgraphs | drawio-mcp PASS |
+| `diagrams/02-historical-vpn-reference.mmd` | `flowchart TB` 4 subgraphs | drawio-mcp PASS |
+| `diagrams/03-agent-egress-paths.mmd` | `flowchart LR` 3 path subgraphs | drawio-mcp PASS |
+| `diagrams/04-dns-resolution-contexts.mmd` | `flowchart TD` 3 context subgraphs | drawio-mcp PASS |
+| `diagrams/05-scenario-matrix.mmd` | `flowchart LR` PREREQS subgraph | drawio-mcp PASS |
+| `diagrams/06-programmatic-invocation.mmd` | `flowchart LR` 4 subgraphs | drawio-mcp PASS |
+| `hosted-agent-vscode.md` | VS Code guide, 16 sections | Content review |
+| `README.md` | Updated with diagram table + inline topology embed | Content review |
+| `.squad/decisions/inbox/oracle-foundry-diagrams.md` | Decisions/ambiguities record | Filed |
+
+### Visual grammar choices
+
+- `classDef platform fill:#ddf`: Foundry platform (blue-lavender).
+- `classDef toolsnet fill:#e8f8e8`: vnet-tools VMs (green).
+- `classDef dns fill:#fff8e1`: DNS resolver components (amber).
+- `classDef historical fill:#f5f5f5,stroke-dasharray:6 3`: T2/VPN historical items (grey, dashed).
+- `classDef scenario fill:#fce4ec`: scenario nodes in matrix (pink).
+- `classDef prereq fill:#e8f4f8`: prerequisite nodes in matrix (blue).
+- Bidirectional `<-->` edge for VNet peering; `-.->` dashed for informational flows (Run Command, RBAC annotation).
+
+### Diagram 05 deviation from Morpheus spec
+
+Morpheus D5 in topology-rethink was "S1/S2 negative controls topology". Task A item 5 requires
+"HS1-HS5 scenario matrix". Oracle implemented the HS1-HS5 dependency graph, not the negative controls.
+Reasoning: negative controls are documented in the sibling lab; this lab needs a scenario matrix.
+Deviation recorded in oracle-foundry-diagrams.md Decision D2.
+
+### README embed decision
+
+Diagram 01 (T1 topology) embedded inline in README as "Topology overview" for immediate reader
+context. Diagrams 02-06 are source-linked only (table). Trade-off: if diagram 01 changes,
+README inline block must also be updated (charter rule: minimize duplication but provide immediate
+value). Oracle to track.
+
+### VS Code guide conventions
+
+- Pause/checkpoint boxes before deployment (§11) and before billable Toolbox creation (§14 callout).
+- Uses `tools.lab` zone and `echo.tools.lab`/`ctrl.tools.lab` FQDNs throughout.
+- Approach A (direct code, Micro VM NIC) vs Approach B (Toolbox SDK, data proxy) clearly separated.
+- VS Code UI limitation for OpenAPI toolbox explicitly noted with source citation (2026-08-19).
+- Placeholders used for subscription/project IDs and endpoints; no secrets.
+
+## 2026-08-20 (follow-up) -- VPN cleanup direction change: wording update
+
+### Trigger
+
+Jose Moreno authorized changing topology direction (2026-08-20). VPN/on-prem resources are now
+active cleanup candidates rather than indefinitely retained.
+
+### Files changed
+
+| File | Change |
+|------|--------|
+| `README.md` | Updated VPN status note from "NOT authorized" to "authorized cleanup candidate, Gate D1 required". Added "Transition and Cleanup Plan" section with all four required elements (evidence preservation, deletion preview, new resource plan, two separate explicit gates). |
+| `diagrams/02-historical-vpn-reference.mmd` | Changed HIST node class from `historical` (grey) to `cleanup` (amber, dashed). Changed label from "VPN cleanup pending Jose approval" to "AUTHORIZED CLEANUP CANDIDATE -- not yet deleted / Gate D1 required before any deletion". Added "CLEANUP CANDIDATE" label to GatewaySubnet, VPN subgraph, vnet-onprem subgraph, and all on-prem resource nodes. Updated `%% updated:` header. |
+
+### Diagram 02 re-validated: drawio-mcp PASS.
+
+### Four required documentation elements delivered (README)
+
+1. **Exact evidence preservation:** Two `az` commands with full flags and output paths;
+   three portal screenshot subjects specified.
+2. **Exact deletion preview:** Ordered table of 8 resources + RG with region and cost;
+   dry-run Bicep `what-if` command; explicit exclusion list of shared resources.
+3. **Exact new peered-tools resource plan:** Wave 0-7 table with per-wave action and
+   verification command.
+4. **Two separate explicit confirmation gates:**
+   - Gate D1 (destructive cleanup): Jose must say "DELETE APPROVED" after reviewing
+     evidence capture and dry-run outputs. Independent of Gate D2.
+   - Gate D2 (billable additions): Jose must say "DEPLOY APPROVED" after Phase 0 preflight
+     PASS. Independent of Gate D1; T1 deployment may proceed before or after VPN teardown.
+
+### What did NOT change
+
+- `hosted-agent-vscode.md`: VPN references in that file are about workstation connectivity
+  (laptop has no VPN route to Azure VNet; P2S for external SDK calls), not the cleanup gate.
+  No changes required.
+- `manifest.md`, `design.md`: not Oracle's to edit.
+- No live Azure actions; no git commit.
+
+
+📌 Team update (2026-08-20T11:20:05+02:00): Doc audit complete; manifest corrected for MCR+AAD NSG rules; 6 diagrams validated; ready for Jose review — decided by Scribe

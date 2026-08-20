@@ -2,6 +2,135 @@
 
 # Project Context
 
+## 2026-08-19 -- dual-hub-vnra-udr-transit Peering Fix
+
+### TANK-008 -- allowVirtualNetworkAccess=false: Silent Drop Root Cause
+
+**Problem:** deploy.ps1 Step 4 called `az network vnet peering create --allow-forwarded-traffic` without `--allow-vnet-access`. On this tenant/CLI version, omitting the flag causes `allowVirtualNetworkAccess` to default to `false`. All 6 peering objects were created with `allowVirtualNetworkAccess=false`, causing 100% packet loss and zero VNRA metrics.
+
+**Live correction:** Coordinator updated all 6 peerings via `az network vnet peering update --set allowVirtualNetworkAccess=true` while lab was live. Peerings converged to Connected/FullyInSync immediately.
+
+**Post-fix connectivity:** test1->test2 10/10 avg 33.094 ms; test2->test1 10/10 avg 31.372 ms. Tracepath shows 1 visible hop (managed VNRA is TTL-invisible, as designed).
+
+**Script fix (deploy.ps1):**
+- `--allow-vnet-access` added to `az network vnet peering create`.
+- Idempotent correction: on re-run, existing peerings with either flag false are updated before continuing.
+- Step 10 added: post-deploy assertions that `throw` if any of the 6 peerings has incorrect flags or is not Connected/FullyInSync.
+
+**Doc fix (manifest.md, design.md):** Peering tables updated to include `allowVirtualNetworkAccess` column (was omitted). Note updated: both flags must be explicit; CLI does not default `allowVirtualNetworkAccess` to true.
+
+**Rule:** For all future labs with VNet peerings, always pass BOTH `--allow-forwarded-traffic` AND `--allow-vnet-access` explicitly. Never rely on CLI defaults for either flag.
+
+Evidence: `labs/dual-hub-vnra-udr-transit/show-output/validation/retry-20260819T185118+0200/` files 10-13.
+
+## 2026-08-18 — Session 8: Key Vault + Loader Script
+
+### TANK-007 — ARM Management Plane KV Secret Write Pattern
+
+**Problem:** Tenant Azure Policy enforces `publicNetworkAccess=Disabled` on all Key Vaults. Data-plane (`vault.azure.net`) returns `ForbiddenByConnection` from local machines. `az keyvault update --public-network-access Enabled` silently fails.
+
+**Solution:** Write secrets via ARM management plane:
+```
+PUT https://management.azure.com/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.KeyVault/vaults/{name}/secrets/{secretName}?api-version=2023-07-01
+Body: { "tags": {...}, "properties": { "value": "...", "contentType": "...", "attributes": { "enabled": true } } }
+```
+- Tags must be at TOP LEVEL (not inside `properties`). Tags inside properties are silently ignored.
+- `az rest --body` with inline JSON is mangled on Windows — always use `@filepath` pattern.
+- Use `$env:TEMP` for temp body file; delete immediately after the call regardless of success/failure.
+- GET via management plane returns metadata only (no value) — reading values still requires data-plane / Cloud Shell.
+
+**Reading secrets:** `az keyvault secret show` uses data-plane. Require Cloud Shell (AzureServices bypass) or private-endpoint network. Document this prominently in loader scripts.
+
+**PATCH limitation:** Updating secret metadata-only (tags) via management plane requires `value` in body — impossible without current value. Accept as cosmetic deviation.
+
+## 2026-08-18 — afd-edge-actions-jwt-validation COMPLETE — S1-S9 ALL PASS ✅
+
+- **S7 and S9 PASS with real Entra tokens.** `edge_jwt_status=VALIDATED` in responses confirms EA intercepted; `jose` RS256/JWKS verified on origin. Full E2E flow working.
+- **Admin consent workaround**: `az ad app permission admin-consent` requires Global Admin. Workaround: `POST /graph.microsoft.com/v1.0/servicePrincipals/{clientSpId}/appRoleAssignments` with `principalId`/`resourceId`/`appRoleId` — succeeds with Application Administrator or lower if assignment is to your own SP. Jose has Global Reader which was sufficient for this cross-app assignment.
+- **Entra v2 client_credentials aud format**: `accessTokenAcceptedVersion=2` on API app → `iss` changes to `login.microsoftonline.com/v2.0`. But `aud` remains bare appId GUID (not `api://appId`) for client_credentials flow. Always use bare GUID as expected audience for machine-to-machine tokens, even if identifier URI is `api://`.
+- **EA swapDefault is broken**: Cannot promote a non-default version. `provisioningState` on non-default EA versions stays `Provisioning` indefinitely. Workaround: create a new EA resource with v1 as default from the start with correct code. Use `deployVersionCode` on v1 immediately.
+- **F1 App Service Plan has 60-min/day CPU quota**: Lab App Service Plans may be F1 by default. The quota exhaustion manifests as `QuotaExceeded` state and 403 "Web App is stopped." Fix: `az appservice plan update --name <plan> --resource-group <rg> --sku B1`.
+- **Credential replication lag**: New Entra client secrets may take 30-60s to replicate. Retry with `Start-Sleep 30` + backoff loop if `AADSTS7000215: Invalid client secret provided` occurs.
+
+### TANK-006 — Entra App Roles + swapDefault Learnings
+
+| Item | Finding |
+|------|---------|
+| Admin consent via Graph | `POST /servicePrincipals/{sp}/appRoleAssignments` bypasses admin-consent UI for app role assignment |
+| v2 client_credentials aud | `aud` = bare appId GUID, NOT `api://appId`. `accessTokenAcceptedVersion=2` only changes `iss` format |
+| EA swapDefault | Broken: non-default versions stay `Provisioning`. Workaround: new EA resource |
+| F1 SKU quota | Daily CPU quota causes QuotaExceeded. Scale to B1 for sustained lab use |
+| Graph PATCH app manifest | `az rest --method PATCH --uri /graph.microsoft.com/v1.0/applications/{objId} --body @file` — set `api.requestedAccessTokenVersion=2` |
+
+## 2026-08-18 — afd-edge-actions-jwt-validation A3 LIVE — JWT EA ACTIVE ✅
+
+- **A3 LIVE.** `eajwtvalidate/v1` executing at edge. All 8 JWT scenarios verified in LAW (`EdgeActionConsoleLog V1`). Route `rt-api` attached to `rsedgejwt`/`ruleprotected` (matchValues: `/protected`, `/admin`).
+- **`api://` prefix required.** EA `EXPECTED_AUD = 'api://%%API_APP_ID%%'`. Tokens using bare GUID without `api://` → `AUD_FAIL`. Always construct test tokens with `api://<appId>` audience.
+- **Security model confirmed.** EA=claims-only (no sig), origin=RS256/JWKS (`jose`). Fake-signed tokens with correct claims pass EA but fail origin with `ERR_JWKS_MULTIPLE_MATCHING_KEYS` — cryptographic enforcement confirmed at origin.
+- **S2-S8 all PASS.** LAW confirms: `MISSING_TOKEN`, `MALFORMED_HEADER`, `EXPIRED`, `AUD_FAIL`, `ISS_FAIL`, `ROLE_FAIL` all logging correctly.
+- **B1 remains.** Admin consent for `app-edge-jwt-client` not granted. S7/S9 with real Entra tokens blocked.
+- **Build artifacts cleaned.** `edge-actions/build/` removed.
+
+### Audience format learning
+
+AFD Edge Actions `EXPECTED_AUD` uses the Application ID URI format: `api://<appId>`. Entra-issued tokens for app registrations default to `api://<appId>` unless customized. Testing with bare UUID audience → `AUD_FAIL` even when UUID matches. Always use `api://` prefix in both EA config and test token construction.
+
+## 2026-08-18 — afd-edge-actions-jwt-validation S1 COMPLETE + A3 BLOCKED (B3)
+
+- **S1 COMPLETE.** EA probe `eaprobe2/v1` executing (`edgeActionsAgentType=node`, `edgeActionsStatusCode=200`). `EdgeActionConsoleLog` populated in LAW. Verdict: **CONDITIONAL**. `crypto/fetch/atob/btoa/TextEncoder = undefined` in sandbox. Pure-JS base64url decode confirmed viable (`JSON/Date/Promise/Uint8Array` available).
+- **ea-jwt-validate.js FIXED.** Replaced `atob` with pure-JS base64url; removed GO path (STOP on signatures). CONDITIONAL claim-only path: iss/aud/exp/nbf/roles checks, header strip, `x-validated-claims` inject.
+- **B3 NEW.** `Microsoft.Cdn/EdgeActionsPrivatePreview = NotRegistered`. Private preview access expired. ALL EA control plane operations now return `NoRegisteredProviderFound`. `eaprobe2` data plane continues executing independently.
+- **A3 BLOCKED.** `ea-jwt-validate.js` ready and fixed; awaiting preview re-enrollment.
+- **Smoke tests PASS.** S3/S4/S6/S7-like/S8 all pass. S7/S9 blocked by B1.
+
+### New API Learnings (TANK-005)
+
+| Item | Finding |
+|------|---------|
+| `deployVersionCode` | `POST .../versions/{v}/deployVersionCode` `{name,content:base64(zip)}` — correct trigger for validation |
+| Validation timing | ~17 min from `deployVersionCode` Accepted before `addAttachment` succeeds |
+| `swapDefault` | BROKEN in preview |
+| EA sandbox: unavailable | `crypto`, `fetch`, `atob`, `btoa`, `TextEncoder` — all `undefined` |
+| EA sandbox: available | `Promise`, `JSON`, `Date`, `Uint8Array` |
+| EA console logs | `UserLog` category on EA resource → `EdgeActionConsoleLog` in LAW |
+| Private preview expiry | Feature flag can expire; data plane continues, control plane fails |
+
+---
+
+## 2026-08-17 — afd-edge-actions-jwt-validation A0/A1/A2 EXECUTED
+
+- **A0 COMPLETE.** Deployed resource group `rg-afd-edge-jwt-lab`, Log Analytics `law-edge-jwt-lab`, App Service Plan B1 + App `app-edge-jwt-lab` (Node 20, Linux, swedencentral), AFD Standard profile `afd-edge-jwt-lab` with endpoint/origin/route, diagnostic settings. App code (Node.js Express + jose JWT library) deployed via zip. Four smoke tests PASS: AFD `/health` 200, `/public` 200, `/protected` no-token 401, S8 direct origin bypass 403.
+- **A1 PARTIAL.** Entra `app-edge-jwt-api` (Lab.Admin app role) and `app-edge-jwt-client` (API permission) created. Client secret generated (process-only). Admin consent **BLOCKED** (B1): current identity lacks Application Administrator role in tenant.
+- **A2 PARTIAL.** EdgeAction `eacapabilityprobe` created (SKU Standard/Standard, location global, alphanumeric name constraint). Version v1 uploaded (deploymentType=zip, code=base64(handler.js zip)). AFD rule set `rsedgeprobe` and rule `ruleprovedebug` (EdgeAction action, invocationPoint=ClientRequest) created — rule consistently **BLOCKED** (B2): `validationStatus` remains empty string; backend requires it Succeeded before attachment; REST API does not trigger the validation pipeline. Portal/VS Code extension required.
+- **S1-GATE: BLOCKED.** EdgeAction not attached → no EdgeActionConsoleLog → cannot collect S1 evidence.
+
+### API Learnings (TANK-004)
+
+| Item | Wrong (spec/assumption) | Correct (confirmed empirically) |
+|------|------------------------|--------------------------------|
+| EdgeActions resource level | Subscription | Resource Group |
+| EdgeActions location | any region | `global` only |
+| EdgeActions SKU | Standard_AzureFrontDoor | `{"name":"Standard","tier":"Standard"}` |
+| EdgeActions name | hyphenated ok | alphanumeric only, max 50 chars |
+| Version code upload | via `code` property (any type) | `deploymentType=zip`, `code`=base64(zip file) |
+| Version validation trigger | auto on upload | ONLY via portal/VS Code extension |
+| AFD Rules Engine action name | InvokeEdgeAction | `EdgeAction` |
+| AFD Rules Engine typeName | DeliveryRuleInvokeEdgeActionActionParameters | `DeliveryRuleEdgeActionParameters` |
+| AFD Rules Engine invocationPoint | optional | required; value: `ClientRequest` |
+| AFD Rules Engine edgeAction field | edgeActionId | `edgeActionReference.id` |
+| AFD rule API version | stable CDN API | `2025-09-01-preview` required |
+| App Service duplicate ServiceTag | CLI supports multiple rules | ARM REST only (`PATCH config/web`); CLI rejects duplicate ServiceTag |
+
+### Blockers Outstanding
+
+- **B1 (MEDIUM):** Entra admin consent for `app-edge-jwt-client`. Resolution: Jose runs `az ad app permission admin-consent --id 6f86ab2c-1823-4db6-8e54-6338b8472b6a`
+- **B2 (CRITICAL):** EA code validation portal-only. Resolution: Jose uploads `ea-capability-probe.js` via portal → Edge Actions → eacapabilityprobe → Versions → Add. After validation, existing rule will succeed or retry.
+
+### Cleanup gate OPEN
+Cleanup not approved. `Cleanup-Lab.ps1` preview-safe. Estimated daily cost ~$1.05/day.
+
+Decision inbox: `.squad/decisions/inbox/tank-afd-edge-jwt-deploy.md`
+
 ## 2026-08-06 — dual-hub-interconnect-ars-route-policy U1.5 + U2 EXECUTED (docs-only recovery)
 
 - U1.5 and U2 were technically executed live in a prior turn whose final response/docs write-up was
@@ -658,3 +787,139 @@ No git commit made, per instruction.
 
 📌 Decision inbox written: `.squad/decisions/inbox/tank-poland-cleanup-executed.md`
 
+## 2026-08-19 -- Lab #4 dual-hub-vnra-udr-transit: Manifest v2 (VNRA correction)
+
+### TANK-008 -- Azure VNRA Managed Resource: Prerequisite Discovery + Pricing
+
+**Context:** Trinity rejected manifest v1 (authored by Morpheus) because it modeled Azure
+managed VNRA as Ubuntu VM NVAs. Tank authored v2 as the required different revision author,
+applying all B1-B6 corrections independently.
+
+**Provider / API evidence (read-only az rest / az provider):**
+- Microsoft.Network: Registered
+- virtualNetworkAppliances resource type: present in provider manifest
+- API version 2025-05-01: confirmed available (also 2025-07-01, 2025-09-01, 2026-01-01)
+- swedencentral + northeurope: both listed in resource type supported locations
+- Existing VNRAs in subscription: 0 in both regions; quota 2/sub/region -> PASS for lab
+
+**Pricing evidence (Azure Retail Prices API, public, no auth):**
+Product "Virtual Network Routing Appliance" (productId DZH318XZPG6Q) found with two named tiers:
+  - "Basic Appliance": $0.675/hr and $3.50/hr (dual price points, same meter, same skuId)
+  - "Standard Appliance": $3.375/hr and $17.50/hr (same pattern)
+The ARM spec uses scalingBandwidth: 50; mapping to Basic/Standard Retail SKU name is unconfirmed.
+Cost range: $33-$170/day for 2 VNRAs + 2 test VMs. Guardrail UNCLEAR. Jose approval required.
+
+**Key learnings:**
+1. VNRA pricing IS in the Retail Prices API under "Virtual Network Routing Appliance".
+   Meter naming uses "Basic Appliance" / "Standard Appliance" not bandwidth-tier names (50/100/200 Gbps).
+2. Dual price points per tier in Retail API (same skuId, meterName, type=Consumption) likely
+   represent region-specific pricing aggregated under "Global" armRegionName label.
+3. No az network routing-appliance subcommand exists (CLI gap confirmed). az rest PUT required for create.
+4. AzureRM Terraform provider does not support virtualNetworkAppliances; AzAPI required.
+5. Traceroute invisibility (TTL bypass) is the primary empirical discriminator: absence of VNRA
+   hop in traceroute proves managed hardware, not VM NVA, is in the data path.
+6. UDR on VirtualNetworkApplianceSubnet is documented as supported; cross-VNRA chaining
+   via global peering is analytically sound but empirically unproven (gate E1).
+7. Effective route observability gap: no NIC -> no az network nic show-effective-route-table.
+   Indirect proxy: Network Watcher show-next-hop from adjacent VM with source-ip spoofed to VNRA.
+8. Route table names should use "-vnra" suffix (rt-hub1-vnra, rt-hub2-vnra) not "-nva" (N1 fix).
+
+**Artifacts produced:**
+  - labs/dual-hub-vnra-udr-transit/manifest.md -- replaced with v2 (approval-ready)
+  - labs/dual-hub-vnra-udr-transit/preflight.md -- appended VNRA prerequisite/quota/pricing section
+  - .squad/decisions/inbox/tank-dual-hub-vnra-manifest-v2.md -- decision drop
+---
+
+## 2026-08-19 — dual-hub-vnra-udr-transit DEPLOYMENT COMPLETE ✅
+
+### TANK-008 — Managed VNRA (Microsoft.Network/virtualNetworkAppliances) Deployment Learnings
+
+**All resources deployed. Smoke check passed. Ready for Niobe.**
+
+| Resource | IP | State |
+|---|---|---|
+| vnra1 (swedencentral) | 10.1.0.4 | Succeeded |
+| vnra2 (northeurope) | 10.2.0.4 | Succeeded |
+| test1-vm (swedencentral) | 10.10.1.4 | Succeeded |
+| test2-vm (northeurope) | 10.20.1.4 | Succeeded |
+
+#### ARM Body Schema Correction (preview -> GA)
+
+Design referenced `virtualNetworkApplianceSku.scalingBandwidth=50` (Jose's preview lab). GA API (2025-05-01) uses `properties.bandwidthInGbps="50"` (STRING). No SKU object. Source confirmed from REST API docs. Always verify schema against MS Learn REST API reference before deploy.
+
+Correct GA body:
+```json
+{ "location": "swedencentral", "tags": {...},
+  "properties": { "bandwidthInGbps": "50", "subnet": { "id": "..." } } }
+```
+
+#### az rest --body on Windows (CONFIRMED learning from TANK-007)
+
+`az rest --body $jsonVar` breaks on Windows (media type null + JSON deserialization errors). ALWAYS use `--body "@filepath"` with `Set-Content -Encoding UTF8`. Applies to both KV secrets (TANK-007) and VNRA creation.
+
+#### az vm create + --nics conflict
+
+When `--nics $nicName` is passed to `az vm create`, do NOT pass `--public-ip-address` or `--nsg` -- they conflict and cause parser error. The pre-created NIC controls the network configuration.
+
+#### az network nic create auto-NSG
+
+`az network nic create` auto-creates a default NSG on the attached subnet. For baseline no-NSG designs, always pass `--network-security-group ""`. Four unexpected NSGs appeared: 2 from NIC creation, 2 from VNRA provisioning (managed, do not remove).
+
+#### VNRA-provisioned NSGs on VirtualNetworkApplianceSubnet
+
+The managed VNRA creates NSGs on its dedicated subnet during provisioning. These are Azure-managed resources. They have default rules only (allow VirtualNetwork). Do not attempt to remove them.
+
+#### Sequential CLI Deployment Speed
+
+Sequential `az` calls in swedencentral/northeurope averaged ~1-2 min per resource. 20-resource lab took ~88 min wall-clock. Parallelise with Start-Job for future deploys.
+
+## 2026-08-20 -- foundry-agent-prompt-vs-hosted-networking T1 IaC
+
+### TANK-009 -- Layered-Lab Bicep Pattern: existing Resources + Conditional Rules
+
+**Context:** T1 peered-tools lab layers on top of existing sibling-lab infrastructure. Template
+must reference existing `vnet-foundry` and `nsg-agentsubnet` without redeploying them.
+
+**Pattern used:**
+- Declare `existing` resources (unconditional) for cross-resource references.
+- Make child/rule resources conditional with `if (param)` on the resource declaration.
+- Validate + what-if against the ACTUAL lab RG, not a temp RG -- `existing` lookups require
+  the named resources to be present in the target RG at ARM evaluation time.
+- Incremental mode (`--mode Incremental`) prevents deletion of unmanaged resources.
+
+**VNet peering flags:** Both `allowVirtualNetworkAccess=true` AND `allowForwardedTraffic=false`
+set explicitly in the Bicep resource properties (lesson from TANK-008). No GW transit needed
+(no gateways in either VNet).
+
+**DNS Resolver:** `deployDnsResolver` parameter gates the whole resolver block. Forwarding
+ruleset name (`ruleset-tools-lab`) differs from sibling lab (`ruleset-onprem-lab`) to avoid
+conflicts if both are deployed. VNet link propagates `tools.lab` rule to all vnet-foundry subnets.
+
+**dnsmasq binding:** `listen-address=10.1.100.4` + `bind-interfaces` to avoid port 53 conflict
+with systemd-resolved stub (127.0.0.53). Disable stub via resolved.conf before starting dnsmasq.
+
+**NSG rules 125+126:** Always required for hosted-agent source-ZIP deployments. `bundled` mode
+eliminates server-side pip but NOT the MCR base image pull at Micro VM startup. Both
+`MicrosoftContainerRegistry` and `AzureActiveDirectory` service tags must be in outbound allow
+rules before Wave 6 (hosted agent deployment). Added to both Bicep template and manifest §4.
+
+### Files Produced
+
+| File | Local Validation |
+|------|-----------------|
+| `deploy/main.bicep` | `az bicep build` PASS (18 ARM resources, 0 warnings) |
+| `deploy/main.json` | Generated by az bicep build |
+| `deploy/deploy.ps1` | PS parser PASS |
+| `deploy/cleanup.ps1` | PS parser PASS |
+| `deploy/parameters/lab.parameters.json` | Valid JSON |
+| `deploy/cloud-init/echo-vm.yaml` | Reused sibling pattern; updated IPs/zone/dnsmasq |
+| `deploy/cloud-init/ctrl-vm.yaml` | Reused sibling pattern; updated IPs/zone |
+
+### Prerequisites Remaining for Live What-if
+
+- `az login` + correct subscription
+- RG with vnet-foundry (sibling lab must be deployed)
+- nsg-agentsubnet must exist in RG (or set patchAgentSubnetNsg=false)
+- `~/.ssh/id_rsa.pub` for real SSH key (placeholder used in validate-only mode)
+
+📌 Team update (2026-08-20T11:20:05+02:00): IaC approved by Niobe; non-deploying artifacts staged; what-if validated; awaiting DEPLOY APPROVED for execution — decided by Scribe

@@ -28,6 +28,20 @@
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
 
+📌 2026-08-19 — Lab #4 dual-hub-vnra-udr-transit Stage-1 lab card LOCKED.
+
+**Design gist.** Two hubs (swedencentral + northeurope) globally peered. One Ubuntu 22.04 VM-based NVA ("VNRA VM") in `VirtualNetworkApplianceSubnet` per hub with NIC enableIPForwarding=true and OS net.ipv4.ip_forward=1. Four UDRs stitch spoke->hub-NVA->global-peering->hub-NVA->spoke for symmetric east-west transit. 4 VMs total. No public IPs. No ARS. No gateways. ~$1.50/day -- well clear of $50 guardrail.
+
+**Azure VNRA managed resource is NOT a VM.** The Azure Virtual Network Routing Appliance (https://learn.microsoft.com/azure/virtual-network/virtual-network-routing-appliance-overview) is a managed network device, not an Ubuntu VM. It lives in `VirtualNetworkApplianceSubnet`, has bandwidth tiers (50/100/200 Gbps), max 2/subscription/region, and has NO user-accessible NIC. When a task says "VNRA VM" it means VM-based NVA acting as a routing appliance. The distinction matters for observability: VM NVA has a queryable NIC; VNRA managed resource does not.
+
+**Observability gap for actual Azure VNRA.** Microsoft Learn documents effective routes exclusively at NIC scope (az network nic show-effective-route-table, Get-AzEffectiveRouteTable). No subnet-scope effective route CLI or documented REST endpoint exists as of 2026-08-19. For the actual VNRA managed resource (no VM NIC), there is no standard tool to query what routes the appliance uses for forwarding. S5 in this lab empirically probes undocumented REST endpoints (effectiveRouteTable, listEffectiveRoutes on subnet) and portal to measure the gap. This is the lab's headline observability investigation.
+
+**UDR on VirtualNetworkApplianceSubnet is the design's critical stitch.** Without a UDR on the hub NVA subnet pointing the remote spoke prefix to the remote hub's NVA IP, the NVA has no route to the far spoke (VNet peering is non-transitive). This is the mechanism that makes cross-hub spoke transit work.
+
+**Phase-0 preflight: swedencentral CLEAN, northeurope Zone restriction Zone 1+2 only.** B2ts_v2 in northeurope has blockedZones=[1,2], Zone 3 free; non-zonal deploy valid. Both catalog and live-capacity gates PASSED. Validation used existing RG rg-foundry-reserved-8d532edd (swedencentral) with --validate dry-run against northeurope location -- this is valid (RG location != VM location for validation).
+
+**Process note.** When task has 4 Ubuntu VMs but the VNRA concept is relevant, design with VM-based NVAs, name the subnet VirtualNetworkApplianceSubnet, and document the actual managed resource as D3 (Teaching-only) with explicit observability gap analysis. This preserves the lab's value for both immediate (VM NVA) and forward-looking (managed VNRA) use cases.
+
 
 📌 2026-08-03 — Lab #3 scoped: `dual-hub-hubless-region-ars`. Stage-1 lab card locked at `labs/dual-hub-hubless-region-ars/manifest.md` (~6.8 KB — mild overrun on the ≤5 KB budget because the mandated content list this time was atypically dense: mechanism, scope in/out, four regions with resource counts, address plan, subnet plan, ASN plan, 10 BGP sessions, full peering + UDR + route-policy split, connection-model decision with justification, secrets flow, five pass/fail scenarios, deployment duration, defensible daily cost breakdown, cleanup boundary, four `## Designs studied` entries, six MS Learn URLs, and lock statement). This is a **new Stage-1 card, not a revision of the rejected initial review** (`morpheus-dual-hub-design-review.md` from 2026-08-03T11:16 stays untouched); the user-approved design pivoted the topology after Trinity's before-DR reviewer pass and the four subsequent locked-intent corrections in this session's prompt.
 
@@ -259,3 +273,93 @@
 
 **Key Foundry architecture learnings (from deep-dive research).** The delegated AgentSubnet is a standard Azure Container Apps environment subnet; the Foundry deep-dive confirms outbound agent traffic leaves through the subnet's effective route table. The restriction is stated as "address spaces of your VNET and peered VNETs" — address spaces are statically declared objects, not BGP-learned entries. The data proxy handles all tool calls; Hosted agents also get a dedicated NIC per Micro VM. A /24 AgentSubnet is recommended; /26 for 50 concurrent sessions. Azure DNS Private Resolver is optional for DNS plane (S5); not required for the primary data-plane hypothesis (S4). Private DNS zones for `privatelink.cognitiveservices.azure.com`, `privatelink.openai.azure.com`, `privatelink.services.ai.azure.com`, `privatelink.search.windows.net`, `privatelink.documents.azure.com`, `privatelink.blob.core.windows.net` must be linked to vnet-foundry.
 
+
+
+---
+
+📌 2026-08-17 — New lab planned and locked: `labs/afd-edge-actions-jwt-validation`. Stage-1 lab card LOCKED, Phase 4 deployment authorised by Jose Moreno 2026-08-17.
+
+**The question.** Do Azure Front Door Edge Actions v1 expose a cryptographic runtime (JWKS fetch + RS256/ES256 verify) sufficient to perform JWT validation at the edge? The public sample repo has no JWT example; the documentation does not specify available runtime APIs. The capability probe (S1) is the authoritative source of truth.
+
+**Architecture chosen.** Recommended: Edge pre-validation + origin re-validation (defence in depth). App Service is the enforcement backstop if the Edge Action fails open. Teaching-only (edge-only enforcement) and control (origin-only) are documented as comparison designs. AFD Standard · App Service B1 Linux (swedencentral) · Entra ID two-app-registration client-credentials model · Log Analytics (EdgeActionConsoleLog + AFD access logs).
+
+**Key design decisions.** Two-app-registration Entra model: one resource/API registration (`app-edge-jwt-api`) exposing `Lab.Admin` app role; one confidential client (`app-edge-jwt-client`) assigned that role. Client secret never committed; held in shell env var only. Origin hardening: AFD service tag access restriction + `X-Azure-FDID` middleware validation in app code. No VM, no VNet, no custom domain. Phase 0 VM preflight inapplicable.
+
+**Nine scenarios.** S1 capability probe (S1-GATE: GO/STOP); S2 missing token; S3 valid token; S4 expired token; S5 wrong audience/issuer; S6 tampered signature; S7 RBAC role check; S8 direct origin bypass (service tag hardening test); S9 controlled runtime failure comparing fail-open on edge-only route vs defence-in-depth route.
+
+**Cost.** ~.13/day; ~.30 per 4–6 h session. Well within the /day guardrail (rule #7).
+
+**Downstream fan-out.** Trinity → design.md (Edge Action JS stubs, JWKS wiring, app code, Entra ID instructions, KQL templates) · Tank → activation sequence A0–A5 with CLI deploy commands · Niobe → S1–S9 pass/fail criteria and evidence collection · Oracle → topology and Entra token-flow diagrams. Cleanup separately gated.
+
+
+
+---
+
+📌 2026-08-19 -- Foundry hosted agent extension brief locked (extension of `foundry-agent-reserved-prefix-reachability`).
+
+**The question.** How does the network integration of a Foundry hosted agent differ from the existing prompt agent? Specifically: does the Micro VM dedicated NIC produce a different egress source IP from the data proxy? Does DNS behave differently from the Micro VM code context vs the data proxy tool-call context?
+
+**Confirmed: existing lab uses a prompt agent.** Four evidence sources (portal-foundry-setup.md Step 8, design.md Section 10, results.md operational pattern, manifest.md scope exclusion) all confirm the existing agent is a prompt agent.
+
+**Key architectural facts (from docs 2026-08-19).**
+- Prompt agent path: Foundry endpoint to Tools Service to Data Proxy. No Micro VM. Data proxy IPs shared at project level. No IP consumed per agent.
+- Hosted agent path: Foundry endpoint to Micro VM (dedicated NIC in AgentSubnet, `/invoke`) to Tools Service to Data Proxy. Tool calls STILL route through the single-tenant data proxy. The Micro VM dedicated NIC is only for the agent code direct outbound and the `/invoke` ingress path.
+- Source-ZIP deployment (no ACR required) is a current supported deployment model for hosted agents via `azd ai agent init --deploy-mode code`. The statement "Hosted agent requires ACR and a container image" in portal-foundry-setup.md Step 8 is now partially outdated.
+- `remote_build` source deployment requires outbound internet access to `mcr.microsoft.com` and `*.login.microsoft.com` from the delegated subnet. The current lab NSG (rule 4000, deny-all internet egress) blocks this. Trinity must decide: NSG outbound allowlist rule vs `bundled` mode (pre-packaged Linux wheels, no internet pull).
+
+**Five extension scenarios.** HS1 (hosted agent OpenAPI tool call -- same data proxy path as S4); HS2 (hosted agent direct code HTTP call -- Micro VM NIC IP, distinct from data proxy IP); HS3 (DNS from Micro VM code context -- compare source IP vs HS4); HS4 (prompt agent DNS forwarding, completing original S5); HS5 (programmatic invocation without portal sandbox).
+
+**Four open empirical questions.** OQ1: can Micro VM NIC IPs and data proxy IPs be distinguished by IP value? OQ2: does DNS Private Resolver forwarding ruleset auto-associate with Micro VM NIC context? OQ3: does Micro VM NIC inherit gateway route propagation? OQ4: does `remote_build` work through current NSG?
+
+**No new Azure resources authorized.** Estimated total with DNS resolver (HS3/HS4 dependency): ~$21/day. Well within $50/day guardrail.
+
+**Downstream fan-out.** Decision filed at `.squad/decisions/inbox/morpheus-foundry-hosted-agent-extension.md`. Trinity → `design-extension.md` (NSG decision, DNS OQ2 analysis, updated packet paths); Oracle → topology diagram update (add Micro VM node to AgentSubnet); Tank → Python scaffold + azure.yaml template + NSG patch proposal (unapplied until Phase 4 approval).
+
+📌 2026-08-19 (v1.1 amendment) -- DNS first-class in Foundry hosted-agent extension brief.
+
+**DNS architecture clarification (confirmed by docs 2026-08-19).** DNS Private Resolver forwarding rulesets are linked at the VNet level, not the subnet level. All resources in vnet-foundry -- data proxy containers, Micro VM NICs, vm-diag -- use the same forwarding chain via 168.63.129.16 --> outbound endpoint (192.168.3.20) --> dnsmasq. The DNS context does NOT differ between agent types. The observable network difference between prompt agent and hosted agent is exclusively the HTTP TCP source IP (data proxy IP for tool calls vs Micro VM NIC IP for code calls). OQ2 from v1.0 brief is closed with YES.
+
+**DNS resolution order matters for zone selection.** Azure DNS checks private DNS zones linked to the VNet BEFORE it consults forwarding rulesets. If a private zone `onprem.lab` is linked to vnet-foundry AND a forwarding ruleset has a rule for `onprem.lab`, the private zone answers and the forwarding rule is never used. Z1 (private zone) and Z2 (forwarding) cannot coexist for the same zone name. Trinity must choose one.
+
+**Four DNS contexts defined.** C1 (prompt agent tool call via data proxy), C2 (hosted agent tool call via data proxy -- identical to C1), C3 (hosted agent code call via Micro VM NIC -- same DNS chain as C1/C2, different HTTP source IP), C4 (programmatic client resolving Foundry private ingress endpoint -- private zone Z3, already deployed). The dnsmasq source IP for C1/C2/C3 is ALWAYS the outbound endpoint IP (192.168.3.20), not the originating container -- DNS logs cannot directly distinguish agent types.
+
+**Key new dependencies in v1.1.** (1) Hostname-based OpenAPI docs needed (`echo-reserved-dns.openapi.json`, `echo-control-dns.openapi.json`). (2) dnsmasq `ctrl.onprem.lab` record missing from design.md Section 6 (only `echo.onprem.lab` was there). (3) NSG: WorkloadSubnet needs inbound UDP/TCP 53 from DNSOutboundSubnet (192.168.3.16/28) for Z2. (4) TLS cert update with hostname SANs (contingency). (5) OQ5: does DNS Private Resolver expose data-plane query logs with originating client IP? Check diagnostic settings at deployment time.
+
+📌 2026-08-19 (walkthrough) -- VS Code Foundry Toolkit for hosted agents; key findings for reuse.
+
+**VS Code Foundry Toolkit workflow (confirmed by quickstart docs 2026-08-19).** Install from https://aka.ms/foundrytk; Command Palette: `Foundry Toolkit: Create new Hosted Agent` scaffolds a Python Responses-protocol agent with main.py + requirements.txt + .env + azure.yaml. F5 starts local debug on port 8088 with Agent Inspector -- breakpoints work. `Foundry Toolkit: Deploy Hosted Agent` deploys via source-ZIP Code/Remote (no ACR, equivalent to azd remote_build). VS Code Playground tab allows invocation after deployment.
+
+**OpenAPI tool UI gap in Foundry Toolkit (confirmed from toolbox capability table 2026-08-19).** The VS Code Foundry Toolkit UI does NOT support adding OpenAPI tools to a toolbox. The table explicitly shows `Foundry Toolkit: No` for OpenAPI tool type. OpenAPI toolbox tools require Python SDK, REST API, .NET SDK, JavaScript SDK, or azd CLI. For labs that need to reproduce prompt-agent OpenAPI tool calls via hosted agent, use direct requests.get() in agent code (Micro VM NIC egress) as the starting point; use Python SDK toolbox creation for the data-proxy-egress equivalent.
+
+**Authentication in hosted agent context.** Local run uses DefaultAzureCredential from VS Code Azure Account sign-in. Deployed agent gets a platform-assigned managed identity (auto-created per agent); by default it can call the Foundry model via project endpoint. VPN route access comes from Micro VM being in AgentSubnet (routing, not RBAC). Callers invoking the hosted agent endpoint need Foundry Agent Consumer role at project scope. The Azure AI Developer role is explicitly documented as INSUFFICIENT for hosted agent scenarios.
+
+**Role minimum for source-ZIP deployment: Foundry Project Manager at project scope.** Owner/Contributor at resource group are ARM roles that do not include Foundry data-plane permissions. This is a common pitfall.
+
+📌 2026-08-20 -- Topology rethink: VPN vs peered tools VNet split for reserved-prefix lab.
+
+**The governing constraint (confirmed 2026-08-20).** Foundry VNet injection restriction covers PEERED VNet address spaces, not only the Foundry VNet's own address space. A tools VNet with 172.30.0.0/16 CANNOT be peered to vnet-foundry. This makes the topology split non-negotiable: (a) T1 peered tools VNet (10.1.0.0/16, allowed) for HS1-HS5 extension scenarios; (b) T2 VPN/BGP (existing) for S3/S4 reserved-prefix scenarios.
+
+**Scenario-topology mapping.** ONLY S3 and S4 require T2 (VPN/BGP). Both are already validated (H₁ confirmed). All extension scenarios HS1-HS5 and DNS scenarios S5/HS4 can run on T1. VPN GW teardown does not affect HS1-HS5 capability at all.
+
+**Cost savings from T1 transition: ~$11.04/day (~59% of VPN stack).** VPN stack (both VpnGw1AZ + 2 connection objects + 2 PIPs): $11.40/day. T1 replacement (peering + 2 VMs, swedencentral): $0.36/day. Rule 7 guardrail ($50/day) met in all configurations.
+
+**Recommendation: Option R3 (staged teardown).** Phase 1: Add T1 alongside existing T2; run HS1-HS5 against T1. Phase 2 (Jose approval required): capture pre-teardown evidence (effective routes, GW learned routes, portal screenshots), then delete VPN stack. GatewaySubnet kept empty for future VPN re-addition without subnet recreation. Reconstruction path: existing deploy/ Bicep, ~45 min, ~$1.68 per 4h test session.
+
+**Six Mermaid diagrams specified.** D1 (T1 base topology), D2 (T2 VPN/BGP reference), D3 (traffic paths prompt vs hosted), D4 (DNS chain C1-C4), D5 (S1/S2 negative controls), D6 (client invocation C4/HS5). Oracle to commit editable Mermaid source to labs/foundry-agent-reserved-prefix-reachability/diagrams/.
+
+**Evidence lost in Phase 2.** Live effective route table showing 172.30.0.0/16 via VirtualNetworkGateway; live BGP session; live VPN tunnel status. NOT lost: confirmed S3/S4 H₁ result (in results.md + raw-output), captured evidence files. Mitigation: pre-teardown evidence capture script (Run Command on vm-diag) before any deletion.
+
+📌 2026-08-20 -- Lab restructure: sibling folder over Phase 2; sibling lab manifest locked.
+
+**Decision: sibling lab folder.** `labs/foundry-agent-prompt-vs-hosted-networking/` as a sibling to `labs/foundry-agent-reserved-prefix-reachability/`, not a Phase 2 inside the existing folder. Decisive criterion: the existing lab's manifest.md accurately describes its resources (VPN gateways, on-prem VNet, 172.30.x.x tools VMs). Adding hosted-agent scenarios with a completely different topology (peered 10.1.0.0/16 tools VNet, no VPN) would make the manifest inventory misleading. Historical separation = one manifest per coherent resource set.
+
+**Sibling lab manifest (locked 2026-08-20).** `labs/foundry-agent-prompt-vs-hosted-networking/manifest.md` covers: three hypotheses (H1 tool call shared data proxy, H2 Micro VM NIC direct egress distinguishable, H3 DNS context uniform); full T1 topology spec (vnet-tools 10.1.0.0/16 peered to vnet-foundry); shared prereqs vs lab-owned resources; five scenarios HS1-HS5 with pass/fail; NSG requirements for nsg-agentsubnet and new nsg-tools; OpenAPI doc file names (HTTP-first, no HTTPS cert complexity in baseline); Phase-0 preflight checklist; deployment waves 0-7; cost breakdown (~$4.22/day incremental, ~$15.40/day total after VPN teardown); cleanup gate.
+
+**Zone name: tools.lab (not onprem.lab).** Targets are in a peered tools VNet, not a simulated on-premises network. The `tools.lab` name prevents readers from inheriting the VPN-era mental model. DNS: Z2 default (DNS Private Resolver + dnsmasq for observability); Z1 (Azure Private DNS zone) as authorized cost-saving fallback requiring Trinity decision.
+
+**Key unresolved trinity decisions before Phase 4.** (1) Z1 vs Z2 DNS zone approach. (2) HTTPS vs HTTP for hostname-based tool calls (TLS cert SAN update needed for hostname HTTPS). (3) remote_build vs bundled mode (depends on MCR internet egress from AgentSubnet -- OQ4 still open). (4) Zone name confirmation: tools.lab vs onprem.lab (recommendation given above).
+
+**Sibling lab folder layout.** README.md (purpose + shared infra + lab-owned resources), manifest.md (planning card), diagrams/ (D1-D6 Mermaid -- Oracle deliverable), design/ (Trinity deliverable), deploy/ (Tank deliverable), scenarios/ (Niobe deliverable). No deploy/, design/, or scenarios/ created yet -- not authorized.
+
+
+📌 Team update (2026-08-20T11:20:05+02:00): Foundry decisions consolidated and merged into decisions.md; Tower verification complete; ready for Gate B approval — decided by Scribe

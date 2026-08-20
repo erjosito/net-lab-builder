@@ -1,5 +1,49 @@
 **Archived entries:** see \history-archive.md\
 
+## Learnings (2026-08-18 — afd-edge-actions-jwt-validation live validation)
+
+- **Hyperlight sandbox: `crypto`, `fetch`, `atob`, `TextEncoder` all `undefined`.** S1-GATE = CONDITIONAL. Claims-only enforcement only. Origin `jose` RS256 is the only cryptographic security boundary. Results are deterministic across all AFD PoPs.
+- **`EdgeActionConsoleLog` is a top-level LAW table, not an AzureDiagnostics category.** Query as `EdgeActionConsoleLog | ...` not `AzureDiagnostics | where Category == "EdgeActionConsoleLog"`. There is also `EdgeActionServiceLog` (platform events) and `AppServiceHTTPLogs` (origin access).
+- **`edgeActionsStatusCode_s = 200` ≠ client got 200.** It means EA executed without timeout/exception. A client-facing 401 still shows `200` in this field. `503` = fail-open.
+- **`httpStatusCode_d = None` when EA rejects.** When EA synthesises a 401/403 response, the origin is never called, so the AFD access log records no origin HTTP status. Use `EdgeActionConsoleLog` reason codes for EA-level verdicts.
+- **EA response body is always AFD's default HTML 401/403 page.** EA code can only set `event.response.response_code` (200/401/403). No custom body is possible from EA code.
+- **The two-rule App Service access restriction pattern is validated by S8 (PASS).** Direct callers to `.azurewebsites.net` get HTTP 403 "Ip Forbidden" — ARM-native, no application code.
+- **Tampered token test (S6 CONDITIONAL): EA passes (CLAIMS_ONLY/ACCEPT), origin rejects (ERR_JWKS_MULTIPLE_MATCHING_KEYS).** Defence-in-depth holds. No NIOBE-CRIT-001.
+- **`deployVersionCode` LRO timing:** `validationStatus=Succeeded` appears ~15s after POST but `addAttachment` requires ~17 min. A deployment script that polls validationStatus and proceeds immediately will fail.
+- **`swapDefault` is broken** (always 400). Set `isDefaultVersion=true` at upload time.
+- **`addAttachment` direct call creates dangling null attachments.** Always use AFD rule PUT to trigger attachment. Dangling attachments cannot be removed via REST API; require portal/Support.
+- **Entra admin consent = blocking step in any application-permission flow.** Must be documented as a separate manual step with tenant admin coordination. `az ad app permission admin-consent --id <client-app-id>`.
+- **Audience format matters exactly:** `api://<app-id>` (with prefix), not bare GUID. EA AUD_FAIL fires on bare GUID.
+
+
+- **JWT sample gap is real and documented:** `Azure/EdgeActionsSamples` has no JWT sample
+  as of 2026-08-17. The capability probe (S1) is the only authoritative source of truth
+  for crypto API availability. Any harness that assumes `crypto.subtle` or `fetch` are
+  available before S1 evidence is invalid.
+- **SecureString token pattern for PS harnesses:** Tokens acquired via `Invoke-RestMethod`
+  must be immediately wrapped in `ConvertTo-SecureString -AsPlainText -Force`. Callers
+  receive a SecureString; the plain-text materialisation should occur only inside the HTTP
+  header assignment, then `Clear-Variable`. No token value ever reaches a file or `Write-Host`.
+- **Tampered JWT construction without disk leakage:** Split on `.`, decode middle part with
+  `base64url → UTF8 → JSON`, apply overrides, re-encode, reassemble with original sig bytes.
+  The full three-part tampered token lives only in a SecureString; the evidence file contains
+  only the decoded payload JSON.
+- **Sanitization patterns for edge/Entra scenarios (four critical patterns):**
+  1. Three-part base64url JWT shape
+  2. `Authorization: Bearer <value>` header in HTTP logs
+  3. `/subscriptions/<guid>` in resource IDs
+  4. `login.microsoftonline.com/<guid>` in Entra issuer URLs
+  All four must be scrubbed before commit; `Confirm-Sanitization.ps1` enforces this.
+- **Edge Action response contract is narrow:** Only 200/401/403 are valid return codes from
+  Edge Action code. Fail-open on exception/timeout is the platform's undocumented behaviour
+  (`edgeActionsStatusCode = 503`). S9 is the empirical proof; design correctly treats this
+  as the pivotal scenario.
+- **Two-rule App Service access restriction is required (not one):** Health probes carry
+  `X-FD-HealthProbe: 1` but NOT `X-Azure-FDID`. A single FDID rule blocks probes. Always
+  use rule 100 (health probe path) + rule 200 (FDID path) pattern.
+- **README Blog callout first, then Designs studied, then topology:** Per charter contract
+  for all net-lab-builder README files.
+
 # Project Context
 
 - **Owner:** Jose Moreno
@@ -327,3 +371,43 @@ completed (Tank's final response was lost). Nothing in Azure or on the NVAs is u
 
 📌 Decision inbox written: `.squad/decisions/inbox/niobe-u15-u2-verification.md`
 
+
+## Learnings (2026-08-19 -- dual-hub-vnra-udr-transit final validation)
+
+- **`allowVirtualNetworkAccess=false` is the silent E1 root cause.** All six peerings were Connected/FullyInSync with allowForwardedTraffic=true yet dropped all data-plane traffic. The flag defaults false in some creation paths; always verify every peering leg with a full GET before testing UDR-steered hub-spoke topologies.
+- **Managed VNRA cross-hub UDR chaining DOES work** once peering flags are correct. Post-fix: 10/10, 0% loss both directions, avg 33/31 ms. The initial failure was a misconfiguration, not a platform limitation.
+- **Managed VNRA is TTL-invisible.** Tracepath shows one visible hop to the remote VM with no intermediate VNRA hops. Hardware forwarding does not decrement TTL. Definitive distinguisher from VM NVA.
+- **Pre-fix VNRA metrics (09-vnra1/2-metrics.json) all zero** -- explained by peering misconfiguration. Post-fix metrics NOT re-queried. Do not assert non-zero post-fix metric values.
+- **E2 (subnet effectiveRoute API) confirmed 404** from regional backend for VirtualNetworkApplianceSubnet. The full observability toolkit is: configured UDRs, spoke NIC effective routes, Network Watcher (spoke), VNRA resource GET, Monitor metrics, peering GET (all legs), end-to-end ping/tracepath.
+- **Retry evidence path:** `show-output/validation/retry-20260819T185118+0200/` files 01-13. File 06-07 = pre-fix still 100% loss; 09 = pre-fix zeros; 10-11 = peering correction + verification; 12-13 = post-fix PASS.
+- **Artifacts updated:** validation.md (stage 1-v3 final), lessons-learned.md (L1 revised + L11 added), README.md (E1 PASS, diagrams index, status table), `.squad/decisions/inbox/niobe-dual-hub-vnra-final-validation.md`.
+- **Lab ready for teardown.** No Azure writes beyond the peering flag correction. No commit or cleanup performed.
+
+---
+
+## 2026-08-20 · Foundry T1 IaC review (non-deploying) — APPROVE
+
+Independently validated Tank's labs/foundry-agent-prompt-vs-hosted-networking/deploy/
+artifacts without creating or modifying any Azure resource.
+
+- `az bicep build main.bicep`: OK, 18 ARM resources (nsg-tools, vnet-tools + 2 subnets,
+  2 peerings, 2 NIC/VM pairs, DNS resolver + 2 endpoints, forwarding ruleset + rule +
+  VNet link, 4 nsg-agentsubnet rules 110/120/125/126).
+- PS AST parse: 0 errors on deploy.ps1 and cleanup.ps1.
+- deploy.ps1: default runs bicep build + ARM validate + what-if only; apply gated by
+  `-Apply` AND exact `Read-Host` match `DEPLOY APPROVED`; `--mode Incremental`.
+- cleanup.ps1: default preview-only; delete gated by `-Delete` AND exact `DELETE APPROVED`;
+  fixed T2 arrays (VPN conns/GWs/PIPs, vm-onprem-*, nsg-echo-vms, vnet-onprem) and stale
+  `nsg-agentsubnet` rules matched by destination `172.30.100.0/24` / `10.200.100.0/24`.
+  No `az group delete`, no wildcards, no reference to vm-diag/vnet-foundry/PEs/DNS zones.
+- Live ARM validate + what-if against `rg-foundry-reserved-8d532edd` (safe, non-destructive):
+  Validate PASS. What-if: 18 Create, 0 Modify, 0 Delete, 52 Ignore — all shared Foundry
+  infra and all T2 VPN/on-prem resources correctly marked Ignore.
+- Parameters file contains no secrets; `vmSshPublicKey` supplied at deploy time.
+- README approval strings match the exact `Read-Host` gates.
+
+Record filed: `.squad/decisions/inbox/niobe-foundry-iac-review.md`.
+Verdict: **APPROVE**. No revisions required before Gate B (`DEPLOY APPROVED`).
+
+
+📌 Team update (2026-08-20T11:20:05+02:00): IaC review verdict: APPROVE; all foundry inbox entries processed and merged into decisions.md — decided by Scribe
