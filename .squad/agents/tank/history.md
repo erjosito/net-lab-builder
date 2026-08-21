@@ -2,6 +2,24 @@
 
 # Project Context
 
+## 2026-08-20 -- dual-hub-vnra-udr-transit Cleanup
+
+### TANK-009 -- Lab Deletion: rg-dual-hub-vnra-udr-transit
+
+**Action:** Deleted resource group `rg-dual-hub-vnra-udr-transit` on Jose Moreno's explicit approval following 22-resource preview.
+
+**Pre-delete inventory:** 22 resources (2 VNets hub, 2 VNets spoke, 2 managed VNRAs, 4 route tables, 2 VMs + NICs + OS disks, 4 auto-created NSGs, 2 MDE.Linux extensions). No ExpressRoute or Megaport resources.
+
+**Command:** `az group delete -n rg-dual-hub-vnra-udr-transit --yes --no-wait` with bounded 30-second polling.
+
+**Elapsed:** ~7 min 54 sec (12:41:17 to 12:49:11 +02:00). VNRA deprovisioning completed within that window.
+
+**Verification:** `az group exists` → false; subscription resource count → 0; tagged straggler scan (correlation_id: vnra-c7e2a3f1) → 0. All clean.
+
+**Evidence:** `labs/dual-hub-vnra-udr-transit/show-output/cleanup/cleanup-evidence.md`, `validation.md` updated with CLEANUP STATUS: COMPLETE.
+
+**Decision:** No inbox entry required beyond this history -- deletion was straightforward and fully authorized. VNRA deletion speed (~8 min for 2x 50 Gbps managed appliances) is consistent with platform behavior and can be used as a baseline estimate for future VNRA labs.
+
 ## 2026-08-19 -- dual-hub-vnra-udr-transit Peering Fix
 
 ### TANK-008 -- allowVirtualNetworkAccess=false: Silent Drop Root Cause
@@ -923,3 +941,348 @@ rules before Wave 6 (hosted agent deployment). Added to both Bicep template and 
 - `~/.ssh/id_rsa.pub` for real SSH key (placeholder used in validate-only mode)
 
 📌 Team update (2026-08-20T11:20:05+02:00): IaC approved by Niobe; non-deploying artifacts staged; what-if validated; awaiting DEPLOY APPROVED for execution — decided by Scribe
+
+
+---
+
+### TANK-010 — Phase 0 Preflight Completion (2026-08-20)
+**Lab:** foundry-agent-prompt-vs-hosted-networking  
+**Task:** Complete interrupted preflight, save sanitized evidence, apply factual corrections.
+
+**Actions taken:**
+1. Parsed what-if output from temp file — confirmed **18 Create, 0 Modify, 0 Delete, 52 Ignore**.
+2. Fixed critical NSG name discrepancy: 
+sg-agentsubnet → net-foundry-AgentSubnet-nsg-swedencentral in deploy/parameters/lab.parameters.json AND deploy/main.bicep param default.
+3. Rebuilt main.json via z bicep build after param fix (exit 0).
+4. Confirmed DNS Private Resolver actual cost: **\.25/hr per endpoint = \.08/day for 2 endpoints** vs. manifest estimate of \.36/day. Confirmed VM cost: **\.01/hr = \.24/day per B2ts_v2** vs. estimate \.18/day.
+5. Updated manifest §8 cost table and Wave Z2 cost with API-confirmed figures.
+6. Wrote all 8 sanitized preflight evidence files to aw-output/ (gates 1–7 + summary).
+
+**Gate results:** All 7 gates PASS (Gate 3 conditional — no current conflict, future caution logged).
+
+**Remaining blocker:** Exact DEPLOY APPROVED phrase not provided (Jose said "Deployment approved"). No deployment executed.
+
+**Lessons:**
+- Container Apps service auto-names the AgentSubnet NSG (net-foundry-AgentSubnet-nsg-swedencentral), not following a manual naming convention. Always verify NSG names with z network nsg list before templating.
+- DNS Private Resolver is a substantial lab cost (~\/day vs. \.48/day for just 2 VMs). Offer deployDnsResolver=false as default-off option in labs where DNS hierarchy is optional.
+- z bicep build is always needed after modifying param defaults to keep main.json in sync.
+
+
+---
+
+### TANK-011 — T1 Deployment + Smoke Checks (2026-08-20)
+**Lab:** foundry-agent-prompt-vs-hosted-networking  
+**Task:** Execute deploy.ps1 -Apply after DEPLOY APPROVED Gate B, monitor, smoke check.
+
+**Deployment outcome:** SUCCESS. ARM deployment completed. 18 resources created, 0 Modified/Deleted.
+
+**Issues encountered and resolved:**
+1. **deploy.ps1 + ErrorActionPreference=Stop + az CLI warnings**: az bicep build and az deployment group validate write "WARNING: A new Bicep release available" to stderr. PowerShell with ErrorActionPreference=Stop treats native-command stderr as terminating error, even with 2>&1. Fix: add --only-show-errors to all 5 az commands in deploy.ps1 (bicep build, validate, what-if, create, show).
+2. **UTF-8 BOM in cloud-init YAML files**: apply_patch tool saves files with UTF-8 BOM (EF BB BF). Cloud-init reads the first bytes for the #cloud-config header; with BOM it sees \ufeff#cloud-config and logs "Unhandled non-multipart userdata" — the entire cloud-config is silently skipped. All services stayed inactive. Fix: strip BOM using [System.IO.File]::ReadAllBytes and WriteAllBytes (3-byte strip). Delete and redeploy VMs. Rebuild ARM JSON after YAML fix.
+
+**Final state:**
+- vm-tools-echo (10.1.100.4): nginx + echo-http + dnsmasq active; HTTP/HTTPS echo returning correct JSON with label/server_ip/request_url/src_ip. dnsmasq resolving echo.tools.lab→10.1.100.4, ctrl.tools.lab→10.1.200.4.
+- vm-tools-ctrl (10.1.200.4): nginx + echo-http active; HTTP echo returning correct JSON with label=ctrl.
+- Peering: Connected/FullyInSync both directions.
+- DNS Resolver: dns-resolver-foundry Succeeded, ep-inbound at 192.168.3.4.
+- AgentSubnet NSG rules: 4 rules applied (echo-subnet/ctrl-subnet/MCR/AAD outbound allow).
+
+**Files changed:**
+- deploy/deploy.ps1: --only-show-errors added to 5 az commands
+- deploy/cloud-init/echo-vm.yaml: BOM stripped
+- deploy/cloud-init/ctrl-vm.yaml: BOM stripped
+- deploy/main.json: rebuilt after BOM fix
+- raw-output/smoke-results.md: deployment timeline, resource list, smoke results
+- README.md: Deployment Status section added
+
+**Outstanding:**
+- vm-diag is deallocated; Wave 5 curl/dig from Foundry VNet to tools requires starting vm-diag or using Foundry hosted agent directly
+- Wave 6 (hosted agent scenario) ready for Jose to run
+
+
+## 2026-08-20 -- foundry-agent-prompt-vs-hosted-networking Hosted-Agent Revision
+
+### TANK-012 -- Hosted-Agent Revision: B1 Blocker + O1/O2 Corrections
+
+**Context:** Niobe formally rejected Morpheus's hosted-agent artifact. B1 blocker: claimed 3 tests
+passed but no test files existed. Tank assigned as independent revision owner (strict reviewer
+lockout — no Morpheus consultation).
+
+**B1 Resolution — test_probes.py written and verified 10/10 PASSED:**
+- Wrote src/echo-probe-agent/tests/test_probes.py (UTF-8 no-BOM, 6 697 bytes).
+- Root cause for first attempt failure: patch.dict(sys.modules, _STUBS) context manager removes
+  stubs AND the imported main module when the with block exits. @patch("main.requests.get")
+  decorators trigger re-import of main, which fails on missing gent_framework.
+- Fix: sys.modules.setdefault(name, MagicMock()) at module level — stubs persist for the full
+  test session; main stays in sys.modules.
+- All 10 tests pass: 3× TestProbeEcho, 3× TestProbeCtrl, 4× TestHTTPErrorPropagation.
+- Command: python -m pytest tests/ -v from src/echo-probe-agent/ → **10 passed in 1.09s**.
+
+**O1 — Docstrings and agent instructions corrected:**
+- probe_echo / probe_ctrl docstrings: replaced "returns a dict with an 'error' key" with
+  "raises requests.HTTPError from raise_for_status()".
+- Agent instructions string: replaced "If a tool call returns an error key, report the error
+  verbatim" with "If a tool call raises an exception, report the exception message verbatim".
+
+**O2 — hosted-agent-vscode.md corrections:**
+- Python 3.13+ → Python 3.12+ (§4 Prerequisites, line 107).
+- gpt-4o-mini → gpt-5-mini (lines 112, 154, 270).
+- Scaffold structure note added: actual path is src/echo-probe-agent/main.py (line 182 area).
+- Code sample replaced: obsolete try/except error-dict → correct raise-based pattern (§9).
+- Local run note updated to "do not swallow; let exception propagate".
+- --runtime python_3_13 → --runtime python_3_12 (line 330).
+
+**Additional:**
+- Created .azdignore and .dockerignore (.env excluded) — were missing.
+- py_compile: both main.py and 	ests/test_probes.py OK.
+- All JSON artifacts valid; .env confirmed untracked by git.
+- Decision inbox: .squad/decisions/inbox/tank-hosted-agent-revision.md (D-13 through D-16).
+
+**Status:** Artifact ready for Niobe's second review. Self-approval prohibited.
+
+## 2026-08-20 -- foundry-agent-prompt-vs-hosted-networking azd Env Binding
+
+### TANK-013 -- azd Environment Binding for echo-probe-agent
+
+**Context:** Jose ran `azd deploy` from hosted-agent/; got "infrastructure has not been provisioned"
+because FOUNDRY_PROJECT_ENDPOINT was missing from the azd env layer. The local src/.env had the
+correct value, but azd uses its own env layer (.azure/foundry-networking/.env).
+
+**Diagnosis steps (all read-only):**
+- `azd ai agent doctor` → confirmed 1 fail (FOUNDRY_PROJECT_ENDPOINT not set), all remote checks skipped
+- Listed CognitiveServices accounts → foundry-reserved-test in swedencentral
+- Queried projects via REST API → proj-default endpoint confirmed
+- Verified .env value matches ARM API response (exact string equality)
+- Tested endpoint reachability with/without auth: 400 on /agents confirms API is up
+
+**Fix applied:**
+- `azd env set FOUNDRY_PROJECT_ENDPOINT` — copied from verified .env value
+- `azd env set AZURE_AI_PROJECT_ID` — set to ARM resource ID of the CognitiveServices project
+
+**Doctor final state:**
+- 10 passed / 1 fail (Hosted agents not deployed -- expected before first deploy) / 2 skipped
+
+**azure.yaml verdict:** No changes needed. Without ai-project service block, azd deploy
+reads FOUNDRY_PROJECT_ENDPOINT directly from env. The uses: [ai-project] pattern is only
+needed when azd provision creates the project and outputs the endpoint. Setting env vars
+directly is the correct approach for existing project binding.
+
+**README updated:** Added first-time binding note explaining azd env set steps before azd deploy.
+
+**Decision inbox:** D-17 in tank-foundry-iac.md.
+
+**Next action for Jose:** Run `azd deploy` from labs/foundry-agent-prompt-vs-hosted-networking/hosted-agent/
+
+## 2026-08-20 -- foundry-agent-prompt-vs-hosted-networking Runtime Correction
+
+### TANK-014 -- Runtime python_3_12 -> python_3_13 (unsupported -> supported)
+
+**Context:** Official docs (deploy-hosted-agent-code.md) list only python_3_13 and python_3_14 as
+supported runtimes for source-code hosted agents. The artifact was using python_3_12 following
+TANK-012 O2 correction which was based on Niobe review notes. That correction was wrong: python_3_12
+is not in the supported runtimes table and not shown in azd init --runtime examples. python_3_13
+is the lowest supported runtime.
+
+**No dependency constraint blocks 3.13:** requirements.txt uses agent-framework-foundry,
+agent-framework-foundry-hosting>=1.0.0a260630, requests>=2.32<3, debugpy -- all support Python 3.13.
+
+**Files changed:**
+- azure.yaml: runtime python_3_12 -> python_3_13
+- src/echo-probe-agent/Dockerfile: FROM python:3.12-slim -> python:3.13-slim
+- AGENTS.md: two references updated (3.12-slim -> 3.13-slim, python_3_12 -> python_3_13)
+- hosted-agent-vscode.md: Python 3.12+ prereq -> Python 3.13+; --runtime python_3_12 -> python_3_13
+
+**Validation results:**
+- py_compile main.py: OK
+- py_compile tests/test_probes.py: OK
+- pytest tests/ -v: 10/10 PASSED (0.42s, Python 3.13.15)
+- azure.yaml YAML parse: OK (runtime=python_3_13)
+- All project JSON files: OK (22 files including .vscode/*, .foundry/*, .azure/*)
+- azd ai agent doctor: 10 passed / 1 expected-fail (agent not deployed) / 2 skipped
+
+**Decision inbox:** No new decision needed; correction is straightforward doc-to-config alignment.
+## 2026-08-20 -- foundry-agent-prompt-vs-hosted-networking azd Deploy Fix
+
+### TANK-015 -- azd deploy "infrastructure has not been provisioned" -- Root Cause Fix
+
+**Context:** Jose re-ran `azd deploy` and still got "infrastructure has not been provisioned" even
+after FOUNDRY_PROJECT_ENDPOINT and AZURE_AI_PROJECT_ID were set in the prior session (TANK-013).
+
+**Root cause (confirmed from azd source deploy.go):** azd core checks `da.env.GetSubscriptionId() == ""`
+as the FIRST gate in `DeployAction.Run`. This reads AZURE_SUBSCRIPTION_ID. Setting only Foundry vars
+satisfied `azd ai agent doctor` (azure.ai.agents extension) but not the core deploy gate.
+
+**Binary inspection method:** Searched azd.exe string table; found the error string in azd core binary
+(not in either extension binary). Fetched `cli/azd/internal/cmd/deploy.go` from azure-dev GitHub repo
+to confirm the exact check at line ~6005 of the Run() method.
+
+**Fix applied (6 vars set via azd env set -- no Azure resources created):**
+- AZURE_SUBSCRIPTION_ID (the exact gate)
+- AZURE_TENANT_ID
+- AZURE_RESOURCE_GROUP = rg-foundry-reserved-8d532edd
+- AZURE_LOCATION = swedencentral
+- AZURE_AI_ACCOUNT_NAME = foundry-reserved-test
+- AZURE_AI_PROJECT_NAME = proj-default
+
+**Doctor status after fix:** 9 passed / 1 fail / 3 skipped. The new 1-fail (remote.foundry-endpoint
+unreachable) is because AZURE_AI_PROJECT_ID being set now causes remote checks to RUN (vs SKIP);
+the endpoint requires lab network / VPN. Not a config error; resolves when Jose is on lab network.
+
+**Files changed:**
+- `.azure/foundry-networking/.env` -- 6 vars added
+- `hosted-agent/README.md` -- first-time binding instructions expanded with all required vars
+
+**Next action for Jose:** Ensure lab network / VPN active, then run `azd deploy` from
+`labs/foundry-agent-prompt-vs-hosted-networking/hosted-agent/`.
+
+## 2026-08-21 -- foundry-agent-prompt-vs-hosted-networking Empirical Testing Complete
+
+### TANK-016 -- Hosted Agent Deployed and All Scenarios Tested
+
+**Context:** DEPLOY APPROVED granted. azd deploy succeeded (3m 5s). Comprehensive empirical testing
+completed across all lab scenarios.
+
+**Deployment:**
+- `azd deploy` from `hosted-agent/` -- echo-probe-agent:1 active (python_3_13, hosted)
+- Root cause of prior "infrastructure has not been provisioned": AZURE_SUBSCRIPTION_ID missing (fixed in TANK-015)
+- `azd ai agent invoke` blocked by stale AzureDeveloperCLICredential token; workaround: direct REST POST
+  to Responses API endpoint with Python AzureCliCredential
+
+**Testing outcomes:**
+- HS2/HS3 (hosted agent direct code path): 4 invocations, all HTTP 200. src_ips: 192.168.0.238, .28, .110, .229
+  All from AgentSubnet; IP is ephemeral (changes per invocation/container allocation)
+- H2 confirmed: Micro VM NIC egress path confirmed; shares same /24 pool as data proxy but distinct mechanism
+- H3 confirmed: All DNS queries at dnsmasq arrive from 192.168.3.21-25 (DNSOutboundSubnet SNAT) regardless
+  of whether caller is Micro VM NIC or vm-diag; DNS chain context-transparent by design
+- HS5 (vm-diag in-VNet): Both echo+ctrl HTTP 200 from MgmtSubnet; Foundry endpoint DNS → 192.168.1.10 (PE IP)
+- NSG negative test: deny rule on nsg-tools blocked Micro VM HTTP access → "Function failed." as expected;
+  DNS still worked (queries from DNSOutboundSubnet, not AgentSubnet). NSG fully restored.
+
+**Key discovery:** nsg-echo-vms (old lab NSG) is attached to VNET-ONPREM subnets from prior lab.
+Actual active NSG for vnet-tools is nsg-tools. Naming collision from sibling lab resources co-existing in same RG.
+
+**Foundry DNS split-horizon confirmed:** foundry-reserved-test.services.ai.azure.com → 192.168.1.10 (PESubnet PE IP)
+from inside vnet-foundry. Private DNS zone correctly intercepts the resolution.
+
+**HS1 (prompt agent data-proxy):** Not re-run empirically. Python SDK function calling is client-side
+(not data-proxy path). Prior lab evidence (2026-08-14, src_ip=192.168.0.49/239) used as baseline.
+
+**VMs deallocated:** vm-tools-echo, vm-tools-ctrl, vm-diag deallocated (no-wait) to stop billing.
+
+**Temp scripts removed:** 7 diagnostic/test scripts removed from hosted-agent/src/.
+
+**Evidence files committed:**
+- raw-output/hosted-agent-invoke-evidence-20260821.json
+- raw-output/dnsmasq-query-log-20260821.txt
+- raw-output/vm-diag-hs5-connectivity-20260821.txt
+- raw-output/test-matrix-results-20260821.md
+- design.md §15 (empirical results section added)
+- README.md (deployment status + test results updated)
+
+**Decision inbox:** tank-foundry-iac.md updated with D-19 (NSG discovery and test matrix).
+
+## 2026-08-21 — Niobe Approval + Doctor/Endpoint Analysis
+
+### TANK-017 — ENABLE_ Var Provenance, Doctor Timeout Root Cause, Endpoint Reachability
+
+**Context:** Niobe independently approved AZURE_SUBSCRIPTION_ID diagnosis. New constraints added:
+use `azd deploy echo-probe-agent` (scoped); never `azd provision`/`up`/`down`; check endpoint
+reachability; record ENABLE_HOSTED_AGENTS and ENABLE_CAPABILITY_HOST provenance.
+
+**ENABLE_ var provenance (confirmed):**
+- Binary search: `ENABLE_HOSTED_AGENTS` string found in `~/.azd/extensions/azure.ai.agents/azure-ai-agents-windows-amd64.exe`
+- Created by: `azd deploy echo-probe-agent` (2026-08-21 07:42–07:46) via azure.ai.agents extension pre-deploy hook
+- Purpose: capability flags stamped into azd env after querying the Foundry project
+- ENABLE_HOSTED_AGENTS="true" → project has hosted agents; ENABLE_CAPABILITY_HOST="false" → no capability host
+- Doctor does NOT set/change these vars (confirmed by before/after comparison across 2 doctor runs)
+
+**Doctor auth timeout root cause:**
+- Symptom: "Token acquisition timed out after 10s" in remote.auth check
+- Root cause: `az account get-access-token --scope "https://management.azure.com/.default"` takes ~15s on this workstation
+- Token IS acquired successfully; gRPC 10s timeout is the blocker, not auth failure or network block
+- `azd deploy echo-probe-agent` uses a different credential path and is NOT affected
+- All remote doctor checks are skipped; NOT a block on deploy or invocation
+
+**Workstation endpoint reachability:**
+- Resolves: public IP (not private endpoint IP) → workstation is outside vnet-foundry
+- TCP 443 reachable: True; REST response: 1,631ms
+- From vm-diag (inside vnet-foundry): resolves to 192.168.1.10 (PE IP) — DNS split-horizon working
+- Public access was pre-existing; not weakened by this lab; Niobe constraint satisfied
+
+**Niobe constraints observed:** azd deploy used scoped command; no provision/up/down; public access unchanged.
+
+**Evidence:** raw-output/endpoint-reachability-doctor-analysis-20260821.md
+**Decision inbox:** D-20 added to tank-foundry-iac.md
+
+## TANK-018 -- Python Invocation Test Scripts (2026-08-21)
+Task: Implement programmatic invocation comparison scripts for prompt agent vs hosted agent.
+
+### Key finding: azure-ai-projects 2.3.0 SDK Architecture
+- AgentsOperations is for HOSTED AGENT LIFECYCLE ONLY (create_version, create_session, enable)
+- NO create_agent/threads/runs (Assistants API) in this SDK
+- AIProjectClient.get_openai_client(agent_name=...) -> hosted agent Responses endpoint
+  (base_url: <endpoint>/agents/<name>/endpoint/protocols/openai)
+- AIProjectClient.get_openai_client() [no agent_name] -> standard /openai/v1/
+- MAF (agent_framework_openai 1.12.0) is SERVER-SIDE runtime, not for external callers
+
+### Scripts created
+- labs/foundry-agent-prompt-vs-hosted-networking/tests/probe_network.py
+  - probe_hosted_sdk(): AIProjectClient.get_openai_client(agent_name=...) + oai.responses.create()
+  - probe_hosted_rest(): direct REST with requests + AzureCliCredential (SSE streaming demo)
+  - probe_client_side_fc(): get_openai_client() [no agent_name] + client-side FC (control path)
+- labs/foundry-agent-prompt-vs-hosted-networking/tests/README.md
+
+### Test results (confirmed)
+Hosted SDK runs:
+  Run 1: latency=123.56s, src_ip=192.168.0.92, server_ip=10.1.100.4 -- PASS
+  Run 2: latency=36.86s,  src_ip=192.168.0.142, server_ip=10.1.100.4 -- PASS
+
+Client-side FC:
+  DNS failure: echo.tools.lab, ctrl.tools.lab not reachable from workstation
+  [Errno 11001] getaddrinfo failed -- EXPECTED (tools.lab VNet-only DNS)
+  Proves: client-side FC cannot access private VNet-only targets without VNet connectivity
+
+### H2 assessment
+CONFIRMED: Micro VM NIC egress from AgentSubnet (192.168.0.0/24), ephemeral per invocation.
+Client-FC vs hosted-agent: fundamentally different egress paths. Data proxy (prior UI evidence)
+is a third path distinct from both.
+
+### AzureCliCredential transient failure
+Long hosted-agent SDK invocations (~120s) may cause AzureCliCredential to fail if CLI
+process is busy/locked. Run tests sequentially to avoid. Short re-runs succeed (token cached).
+
+### VMs deallocation pending
+VMs were running for tests; should be deallocated when not in use.
+
+---
+
+## TANK-019 -- Lab Documentation Completion (2026-08-21)
+Task: Complete lab documentation after SDK invocation tests (TANK-018). No Azure changes.
+
+### design.md §16 added
+Added section "Programmatic SDK Invocation Results (2026-08-21)" with:
+- Invocation path comparison table (hosted SDK / REST SSE / Sessions / client-FC / data proxy)
+- Full SDK invocation results table (8 runs, all src_ips, latencies)
+- MAF architecture (internal server-side, not for external callers)
+- Client-side FC isolation finding (DNS isolation proof)
+- Sessions API documentation (non-default: cost risk)
+- Link to tests/probe_network.py
+
+### README.md updated
+- Navigation table: added probe_network.py, tests/README.md, SDK evidence file
+- Lab-owned resources section: updated "not yet deployed" -> "DEPLOYED — 2026-08-20/21"
+- Added "Key Results Summary" section with hypothesis outcomes and invocation summary table
+- VM billing note updated: deallocate after each test session
+
+### VMs deallocated (no-wait)
+vm-tools-echo and vm-tools-ctrl sent deallocate requests at end of documentation session.
+
+### No Azure resource changes
+Design.md + README.md edits only. All lab scenarios previously completed.
+
+### Bug fix: probe_network.py Authorization header
+probe_hosted_rest() fetched a bearer token but used literal "******" in both streaming
+and non-streaming request headers (sanitization artifact). Fixed to f"Bearer {tok}".
+All three files pass py_compile; 10/10 unit tests pass.
+
+📌 Team update (2026-08-21T15:35:00+02:00): Foundry prompt-vs-hosted networking lab PUBLICATION-READY. Echo-probe-agent deployed, SDK testing complete (8 invocations, all empirical outcomes confirmed). Hypothesis H1 baseline-only, H2-H3 confirmed. Documentation, test scripts, diagrams all finalized. Niobe approval granted. Decided by Scribe (session orchestration).

@@ -411,3 +411,38 @@ Verdict: **APPROVE**. No revisions required before Gate B (`DEPLOY APPROVED`).
 
 
 📌 Team update (2026-08-20T11:20:05+02:00): IaC review verdict: APPROVE; all foundry inbox entries processed and merged into decisions.md — decided by Scribe
+
+
+## 2026-08-20T13:53+02:00 -- Hosted-Agent Correction Review (Morpheus)
+
+**Artifact:** `labs/foundry-agent-prompt-vs-hosted-networking/hosted-agent/`
+**Verdict:** REJECT (strict lockout on Morpheus)
+**Record:** `.squad/decisions/inbox/niobe-hosted-agent-review.md`
+
+**Summary:** Move completed cleanly (old `labs/foundry-agent-reserved-prefix-reachability/hosted-agent/`
+absent; new tree has all hidden files). Function tools `probe_echo` / `probe_ctrl` are correctly
+registered on `Agent(tools=[...])`, use exact FQDNs `http://echo.tools.lab/api/echo` and
+`http://ctrl.tools.lab/api/echo`, explicit connect/read timeouts `(5, 10)`, and
+`raise_for_status()` without a broad catch. `azure.yaml` has no `deployments:` block; instructions
+consistently say `azd deploy` only. `.env` is gitignored and excluded from azd + Docker; `.env.example`
+is placeholder-only; `.foundry/.deployment.json` contains only a `projectId` GUID (no credential).
+Python runtime is `python_3_12` in both `azure.yaml` and the Dockerfile. `py_compile main.py` passes;
+`json.load` and `yaml.safe_load` pass on the JSON/YAML files.
+
+**Blocker (B1):** Morpheus's decision doc claims three unit tests passed (Host header assertions
+for both probes, plus `raise_for_status` propagation). No test files exist in the artifact
+(`rg`/`glob`/directory listing all return zero). Review criterion 9 (inspect tests to ensure they
+really assert Host headers and error propagation rather than merely passing) cannot be satisfied.
+Morpheus must add real tests or retract the claim.
+
+**Non-blocking observations:**
+- O1: `probe_echo`/`probe_ctrl` docstrings and the agent `instructions` string still describe the
+  old `{"error": ...}` return contract; the code correctly raises instead. Fix wording alongside B1.
+- O2: `hosted-agent-vscode.md` has stale scaffold paths (root `main.py`), stale sample code
+  (`try/except` wrapper), stale model reference (`gpt-4o-mini`), and stale runtime
+  (`--runtime python_3_13`). None push Jose into an unsafe flow, so per criterion 11 I did not edit
+  the guide; flagged as a follow-up doc PR.
+
+No Azure calls; no writes to `deploy/` or `raw-output/`.
+
+📌 Team update (2026-08-21T15:35:00+02:00): Foundry lab review cycle complete. First review REJECTED (B1-B4); Trinity revision APPROVED in second review. All blockers resolved; sanitization verified; VM state confirmed. Lab PUBLICATION-READY. Decided by Scribe (session orchestration).

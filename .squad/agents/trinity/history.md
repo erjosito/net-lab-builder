@@ -275,3 +275,51 @@ Both Trinity documents now part of team canonical decision log:
 Processed inbox files removed. Scribe session log written: .squad/log/2026-08-20T08-04-51-trinity-foundry-design-decisions.md
 
 Cross-agent impact: Morpheus, Oracle, Tank (manifest §4/§6 NSG rules, preflight clarifications, Gate A/B execution scope).
+
+
+📌 2026-08-21T12:40:00+02:00 — **Revision cycle: Niobe blockers B1-B4 addressed in foundry-agent-prompt-vs-hosted-networking. Reviewer-mandated; Trinity author.**
+
+**Context:** Niobe rejected the report (Tank locked out). Trinity independently revised all affected artifacts.
+
+**B1 (README overclaim — four hypotheses, H1 confirmed):** Corrected hypothesis count to three (H1–H3). H1 relabelled `BASELINE ONLY` in README Key Results table with full provenance: inherited 2026-08-14 sibling-lab data-proxy evidence; not re-run; SDK control path is client-side FC (not data proxy). Added explanation in README intro and design.md §1.
+
+**B2 (hosted-agent-vscode.md overclaim — Approach B, H1 confirmed):** §3 Approach B and §14 intro updated. Approach B (Toolbox/OpenAPI through data proxy) marked as **predicted, not implemented or tested in this lab**. "H1 confirmed" wording removed. OQ1 design uncertainty and the lab's scope limitation documented explicitly.
+
+**B3 (unsourced src_ip .229):** Removed `192.168.0.229` from all occurrences: `hosted-agent-invoke-evidence-20260821.json` (micro_vm_src_ips array; provenance note added), `probe-network-sdk-evidence-20260821.md`, `README.md` invocation table, `design.md §15`, `test-matrix-results-20260821.md`. JSON validity confirmed after edit.
+
+**B4 (missing consolidated comparison):** Added `design.md §17` — full evidence-linked table covering ingress (caller→agent, agent/tool→target) and egress (deploy-time vs runtime). Rows cover URL shape, DNS, RBAC, invocation protocol, data proxy vs Micro VM NIC vs client-FC, SNAT source at dnsmasq, NSG/peering. Each row marked Same/Different/Not tested/predicted with evidence citations. Provenance note distinguishes SDK control path from prompt-agent re-run.
+
+**Ancillary:**
+- Stale README text removed: "Stage-1 lab card locked. Phase 0 preflight pending. Phase 4 deployment not yet authorized"; "No resources have been deleted or deployed yet. Both gates below must be completed"; Step 3 Wave 0-7 deployment plan and Gate D2 (completed). VPN/on-prem Gate D1 kept (still pending).
+- Navigation table: `results.md | Not yet authored` → links to `test-matrix-results-20260821.md`.
+- dnsmasq SNAT source reconciled: design docs that referenced fixed `192.168.3.20` (EP address) updated to the observed SNAT pool `192.168.3.21–25` (DNSOutboundSubnet range) in all evidence/test-pass criteria. Topology diagrams retain `.20` as the outbound EP address (correct).
+- Sanitized literal Foundry account hostname (`foundry-reserved-test` → `<account>`), literal RG (`rg-foundry-reserved-8d532edd` → `<rg-foundry>`), and account public IP (`51.12.73.214` → `<public-ip>`) from raw-output files, probe scripts, and hosted-agent README.
+- `probe_hosted_sessions()` in `tests/probe_network.py`: documented as not exposed by any CLI flag and not live-tested (stateful session/cost concern) in design.md §16 and probe_network.py main() docstring.
+- Python 3.13 interpreter note added to `tests/README.md`.
+- `hosted-agent-vscode.md` status line updated from "no resources deployed, not authorized" to deployment-complete.
+
+**Files changed:** README.md, design.md, hosted-agent-vscode.md, manifest.md, raw-output/hosted-agent-invoke-evidence-20260821.json, raw-output/probe-network-sdk-evidence-20260821.md, raw-output/test-matrix-results-20260821.md, raw-output/vm-diag-hs5-connectivity-20260821.txt, raw-output/endpoint-reachability-doctor-analysis-20260821.md, raw-output/gate2-arm-validate.json, raw-output/gate5-foundry-resources.json, raw-output/gate6-whatif.txt, raw-output/preflight-summary.md, tests/probe_network.py, tests/README.md, hosted-agent/README.md, hosted-agent/src/echo-probe-agent/main.py, deploy/cloud-init/echo-vm.yaml, diagrams/04-dns-resolution-contexts.mmd, diagrams/05-scenario-matrix.mmd.
+
+**No Azure resources deployed, modified, or queried. No commit/push.**
+
+---
+
+📌 2026-08-21T11:xx+02:00 — **Reviewer-mandated revision pass 2: Foundry Networking Architecture Primer (new acceptance criterion)**
+
+**Revision context:** Reviewer added a second mandatory criterion mid-cycle: the final README/report must be understandable to readers who know Azure Networking but are new to Microsoft Foundry. A concise primer must be added before the B4 comparison table.
+
+**Action:** Added `## Foundry Networking Architecture Primer` section to README.md between the Topology overview and Key Results Summary. The primer:
+- Defines all 10 Foundry networking terms (project/account endpoint, prompt agent, hosted agent, data proxy, Micro VM/runtime NIC, AgentSubnet injection, private endpoint + private DNS, DNS Private Resolver, tool target, caller/client, client-side FC) with Azure analogies.
+- Provides a Microsoft-managed vs customer-owned resource table.
+- Documents all four packet/control paths (invocation ingress, prompt-tool egress, hosted-tool egress, client-side FC) as concise ASCII path diagrams with src_ip observations and diagram cross-references.
+- Labels inferred/undocumented Foundry internals clearly.
+- Links to official Microsoft Learn sources (Private Link DNS, DNS Private Resolver, AI Foundry private networking).
+- References existing diagrams 01, 03, 04, 06 rather than adding new Mermaid.
+- Added cross-reference from design.md §17 back to primer.
+- Updated README Navigation table with primer anchor link.
+
+**No new unsupported claims introduced. No new `src_ip` values. No Azure operations.**
+
+**Files changed:** README.md (primer + nav table), design.md (§17 cross-reference).
+
+📌 Team update (2026-08-21T15:35:00+02:00): Foundry lab revision cycle complete. Independent revision resolved all B1-B4 blockers per Morpheus lockout. Foundry Networking Architecture Primer added (D-27). Lab PUBLICATION-READY after Niobe second review APPROVED. Decided by Scribe (session orchestration).

@@ -363,3 +363,5 @@
 
 
 📌 Team update (2026-08-20T11:20:05+02:00): Foundry decisions consolidated and merged into decisions.md; Tower verification complete; ready for Gate B approval — decided by Scribe
+
+📌 Team update (2026-08-21T15:35:00+02:00): Foundry ingress/egress comparison matrix finalized (D-29). Architectural pattern mapping (hosted ≈ Functions, prompt ≈ Logic Apps). Lab ready for publication. Decided by Scribe (session orchestration).

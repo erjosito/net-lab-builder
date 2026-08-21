@@ -378,3 +378,79 @@ active cleanup candidates rather than indefinitely retained.
 
 
 📌 Team update (2026-08-20T11:20:05+02:00): Doc audit complete; manifest corrected for MCR+AAD NSG rules; 6 diagrams validated; ready for Jose review — decided by Scribe
+
+## 2026-08-21 — Code annotation: echo-probe-agent (foundry-agent-prompt-vs-hosted-networking)
+
+### Task
+
+Add verbose, learning-oriented comments and docstrings to the stable Python code for the
+`foundry-agent-prompt-vs-hosted-networking` lab.  Authorized side quest within Oracle charter.
+
+### Concurrency check
+
+git status: `labs/foundry-agent-prompt-vs-hosted-networking/` is untracked (`??`).
+Filesystem scan: only `main.py` (8/20 2:10 PM) and `tests/test_probes.py` (8/20 2:09 PM) exist on disk.
+`invoke_test.py`, `invoke_comprehensive.py`, `hs1_test.py`, `list_agents.py`, `check_sdk.py`, `check_sdk2.py`,
+`check_beta.py` appeared in the session context window but do NOT exist on the filesystem — deferred.
+
+### Files annotated
+
+| File | What was added |
+|------|---------------|
+| `hosted-agent/src/echo-probe-agent/main.py` | Rich module docstring (lab context, H2 hypothesis, prompt vs hosted contrast table, MAF vs LangChain/SK, source-code vs container deployment, Responses API protocol, streaming vs non-streaming); import block comments (requests vs httpx, MAF, FoundryChatClient, ResponsesHostServer, DefaultAzureCredential, dotenv); constant comments (DNS chain, FQDN rationale, timeout tuple semantics + docs link); enriched probe function docstrings (network path, return shape, exception contract, why propagation not swallowing); main() docstring; client/agent/server block comments (credential chain, FoundryChatClient vs AIProjectClient direct, Agent tool schema, instructions design rationale, store=False rationale, ResponsesHostServer blocking behavior) |
+| `hosted-agent/src/echo-probe-agent/tests/test_probes.py` | Extended module docstring (test strategy, sys.modules.setdefault vs patch.dict with reasons, @patch("main.requests.get") target convention, why HTTPError propagation tests matter); updated stubbing block comment (flat + dotted module key rule, MagicMock attribute access behavior); import alias comment (_main reasoning, noqa explanation) |
+
+### Validation
+
+- Syntax check: `python -c "import ast; ast.parse(open('main.py').read())"` → OK
+- Syntax check: `python -c "import ast; ast.parse(open('tests/test_probes.py').read())"` → OK
+- Unit tests: `python -m pytest tests/ -v` → **10/10 PASS** (no semantic changes)
+- Diff review: all executable lines unchanged; only docstrings and comments added
+
+### Deferred — second pass needed after Tank completes
+
+These files do not yet exist on disk (Task context showed them from a prior session window):
+- `invoke_test.py` — basic Responses API caller (HS2 scenario)
+- `invoke_comprehensive.py` — multi-run comprehensive caller
+- `hs1_test.py` — beta.agents SDK exploration for prompt-agent path
+- `list_agents.py` — AIProjectClient agent listing utility
+- `check_sdk.py`, `check_sdk2.py`, `check_beta.py` — SDK introspection one-offs
+
+Coordinator should send a follow-up annotation task to Oracle once Tank has created and committed
+these caller scripts.
+
+## 2026-08-21 (second pass) — Code annotation: probe_network.py
+
+### Task
+
+Second annotation pass on `labs/foundry-agent-prompt-vs-hosted-networking/tests/probe_network.py`
+(finalized caller script, ~660 lines, created by Tank).
+
+### Auth-header inspection result
+
+The content exclusion policy masked `f"Bearer {tok}"` as `f"******"` in all display outputs
+(view tool, PowerShell repr, earlier diagnostics).  Raw byte inspection of the actual file content
+confirmed `Bearer {tok}` is the correct literal in the file — no bug.  No correctness fix required.
+
+### Files annotated
+
+| File | Lines before → after | Topics added |
+|------|----------------------|--------------|
+| `tests/probe_network.py` | 660 → 921 | Module-level import rationale (lazy imports, monotonic vs wall-clock); ENV_KEYS/DEFAULT_ENV_PATH secrets-safe pattern; `load_config()` docstring (priority order, no-python-dotenv rationale, FOUNDRY_PROJECT_ENDPOINT format); `probe_hosted_sdk()` docstring (SDK routing via base_url patch, `model` field overloading, `allow_preview`, alternatives table SDK/raw-REST/LangChain/SK/azure-openai, output parsing getattr vs dict); `probe_hosted_rest()` docstring (raw REST vs SDK table, auth flow JWT scope, AzureCliCredential vs DefaultAzureCredential, endpoint URL fallback, SSE format + event type `response.output_item.done`, non-streaming dict access); inline SSE parsing comments; `compare()` docstring (src_ip key convention mismatch, H2 assessment logic, data proxy evidence); `main()` docstring (CLI mode table, AzureCliCredential gRPC-avoidance rationale, result sanitization, json.dump default=str); `--stream` block comment; comparison print comment; `probe_client_side_fc()` tool-call loop comment (why second turn omitted, expected NameResolutionError) |
+
+### Validation
+
+- `python -m py_compile tests/probe_network.py` → OK
+- `python -m pytest hosted-agent/src/echo-probe-agent/tests/ -v` → **10/10 PASS**
+- AST structure check: 9 functions (load_config, probe_hosted_sdk, probe_hosted_rest,
+  probe_hosted_sessions, probe_client_side_fc, compare, main, src_ip, server_ip), 0 classes
+- Diff review: all executable lines unchanged; 261 lines of comments/docstrings added only
+
+### Deferred gaps
+
+- Prior session's deferred list (invoke_test.py, invoke_comprehensive.py, etc.) confirmed
+  not to exist on disk — not relevant to this pass.
+- `probe_hosted_sessions()` already had a very detailed docstring from Tank; only the
+  structural context (compare/main) comments were added for completeness.
+
+📌 Team update (2026-08-21T15:35:00+02:00): Foundry hosted-agent code annotations and diagrams complete. Docstrings updated, diagram validation done, cross-references verified. Lab ready for publication. Decided by Scribe (session orchestration).
