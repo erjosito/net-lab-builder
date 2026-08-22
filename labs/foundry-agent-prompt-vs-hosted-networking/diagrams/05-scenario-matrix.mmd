@@ -13,11 +13,11 @@ flowchart LR
         AG(["echo-probe-agent<br/>deployed to Foundry<br/>source-ZIP"]):::prereq
     end
 
-    HS1["HS1<br/>Prompt OpenAPI tool call<br/>echo.tools.lab<br/>PASS: src_ip = data proxy IP<br/>Tests H1"]:::scenario
-    HS2["HS2<br/>Hosted direct code call<br/>echo.tools.lab<br/>PASS: src_ip = Micro VM NIC IP<br/>Tests H2"]:::scenario
-    HS3["HS3<br/>Hosted DNS from Micro VM<br/>ctrl.tools.lab<br/>PASS: dnsmasq log from 192.168.3.21-25 (SNAT pool)<br/>Tests H3"]:::scenario
-    HS4["HS4<br/>Prompt agent DNS forwarding<br/>ctrl.tools.lab<br/>PASS: same dnsmasq query source<br/>Tests H3 baseline"]:::scenario
-    HS5["HS5<br/>Programmatic invocation<br/>vm-diag SDK + azd CLI<br/>PASS: private DNS + SDK call<br/>Tests C4"]:::scenario
+    HS1["HS1<br/>Prompt OpenAPI tool call<br/>echo.tools.lab<br/>BASELINE ONLY: sibling lab 2026-08-14; not re-run<br/>Pass criteria: src_ip = data proxy IP (H1)"]:::scenario
+    HS2["HS2<br/>Hosted direct code call<br/>echo.tools.lab<br/>PASS: 7 invocations — REST .238/.28/.110; SDK .92/.142/.165; SSE .124<br/>Pass criteria: src_ip = Micro VM NIC IP (H2)"]:::scenario
+    HS3["HS3<br/>Hosted DNS from Micro VM<br/>ctrl.tools.lab<br/>PASS: dnsmasq log from 192.168.3.21-25 (SNAT pool)<br/>Pass criteria: dnsmasq from DNSOutboundSubnet SNAT (H3)"]:::scenario
+    HS4["HS4<br/>Prompt agent DNS forwarding<br/>ctrl.tools.lab<br/>DOCUMENTED / not re-run: inferred from H3<br/>Pass criteria: same dnsmasq SNAT source as HS3"]:::scenario
+    HS5["HS5<br/>Programmatic invocation<br/>vm-diag SDK + azd CLI<br/>PASS: vm-diag src_ip 192.168.2.4; Foundry DNS -> 192.168.1.10<br/>Pass criteria: private DNS + SDK call (C4)"]:::scenario
 
     T1 --> HS1
     T1 --> HS2

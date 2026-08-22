@@ -18,7 +18,7 @@
 | Scenario | Description | Result | Evidence |
 |----------|-------------|--------|----------|
 | HS1 | Prompt agent OpenAPI tool call via data proxy | BASELINE ONLY (not re-run empirically) | Prior lab evidence (2026-08-14): src_ip=192.168.0.49, 192.168.0.239 via data-proxy. Empirical re-test blocked: SDK function-calling is client-side (not data-proxy). |
-| HS2 | Hosted agent direct code call (Micro VM NIC path) | PASS | 4 invocations: all HTTP 200, src_ip from AgentSubnet (192.168.0.x), request_url=http://echo.tools.lab/api/echo |
+| HS2 | Hosted agent direct code call (Micro VM NIC path) | PASS | 3 successful REST + 1 NSG-blocked = 4 REST attempts; 3 SDK runs + 1 SSE run = 7 total hosted invocations. All successful runs HTTP 200, src_ip from AgentSubnet (192.168.0.x). |
 | HS3 | Hosted agent DNS from Micro VM context (ctrl endpoint) | PASS | ctrl.tools.lab resolved to 10.1.200.4 in all 4 invocations; HTTP 200 from ctrl VM |
 | HS4 | Prompt agent DNS forwarding | DOCUMENTED (not re-run) | H3 confirmed from dnsmasq logs; prompt-agent DNS would follow same path |
 | HS5 | Programmatic invocation + vm-diag in-VNet access | PASS | vm-diag curl → echo HTTP 200 src_ip=192.168.2.4; ctrl HTTP 200 src_ip=192.168.2.4; Foundry DNS → 192.168.1.10 (PE IP) |

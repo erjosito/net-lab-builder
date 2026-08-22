@@ -448,7 +448,7 @@ the direct `requests.get()` `src_ip` from HS2.
 ## 15. Programmatic invocation from a network-connected client
 
 This section covers the private endpoint and RBAC requirements for invoking the hosted agent from
-within or outside the VNet. See also [diagram 06](diagrams/06-programmatic-invocation.mmd).
+within or outside the VNet. See also [diagram 06](diagrams/06-programmatic-invocation.png) ([excalidraw](diagrams/06-programmatic-invocation.excalidraw) · [svg](diagrams/06-programmatic-invocation.svg) · [mmd](diagrams/06-programmatic-invocation.mmd)).
 
 ### From inside vnet-foundry (vm-diag — HS5)
 

@@ -54,7 +54,7 @@ dnsmasq on vm-tools-echo (Z2 recommended).
 | **Foundry Networking Primer** | [README.md#foundry-networking-architecture-primer](#foundry-networking-architecture-primer) | This document |
 | Results | [raw-output/test-matrix-results-20260821.md](raw-output/test-matrix-results-20260821.md) | Complete (2026-08-21) |
 | VS Code hosted-agent guide | [hosted-agent-vscode.md](hosted-agent-vscode.md) | Documentation |
-| Diagrams | [diagrams/](diagrams/) | Six Mermaid sources |
+| Diagrams | [diagrams/](diagrams/) | Six purpose-built static SVG/PNG exports with matching `.excalidraw` sources; legacy `.mmd` kept as supplemental |
 | **T1 Bicep template** | [deploy/main.bicep](deploy/main.bicep) | Authored (Tank) |
 | **T1 parameters example** | [deploy/parameters/lab.parameters.json](deploy/parameters/lab.parameters.json) | Authored (Tank) |
 | **T1 deploy script** | [deploy/deploy.ps1](deploy/deploy.ps1) | Authored (Tank); safe preview by default |
@@ -66,61 +66,61 @@ dnsmasq on vm-tools-echo (Z2 recommended).
 | Test results | [raw-output/test-matrix-results-20260821.md](raw-output/test-matrix-results-20260821.md) | HS1–HS5 + NSG negative outcomes |
 | **SDK invocation scripts** | [tests/probe_network.py](tests/probe_network.py) | Programmatic comparison: hosted SDK + client-side FC + sessions API doc |
 | SDK invocation README | [tests/README.md](tests/README.md) | API choices, prerequisites, expected results |
-| SDK evidence | [raw-output/probe-network-sdk-evidence-20260821.md](raw-output/probe-network-sdk-evidence-20260821.md) | 8-invocation summary; SDK architecture findings |
+| SDK evidence | [raw-output/probe-network-sdk-evidence-20260821.md](raw-output/probe-network-sdk-evidence-20260821.md) | 7 hosted invocations + 1 client-side DNS-FAIL row; SDK architecture findings |
 
 ---
 
 ## Diagrams
 
-All six diagrams are Mermaid source files -- editable and GitHub-renderable. No PNG required.
+All six diagrams are purpose-built static SVG exports (opaque white background, black text, explicit dimensions) with matching `.excalidraw` sources for editing on <https://aka.ms/excalidraw>. PNGs are rasterized from the same static SVGs at 2× resolution via a sharp/librsvg pipeline; the browser Excalidraw canvas is not used for export. Legacy `.mmd` Mermaid files are kept as supplemental sources. Every image linked below is click-through to the SVG for full-page zoom.
 
-| # | File | What it shows | Scenarios |
-|---|------|--------------|-----------|
-| 01 | [01-peered-tools-topology.mmd](diagrams/01-peered-tools-topology.mmd) | T1 base topology: vnet-foundry + vnet-tools peered, DNS resolver, no VPN | HS1-HS5 |
-| 02 | [02-historical-vpn-reference.mmd](diagrams/02-historical-vpn-reference.mmd) | Historical T2 VPN/BGP topology (sibling lab); S3/S4 evidence; authorized cleanup candidate | Reference |
-| 03 | [03-agent-egress-paths.mmd](diagrams/03-agent-egress-paths.mmd) | Three egress paths: prompt tool call / hosted toolbox / hosted direct code | HS1, HS2 |
-| 04 | [04-dns-resolution-contexts.mmd](diagrams/04-dns-resolution-contexts.mmd) | DNS chain for C1-C4; why dnsmasq sees same source in all contexts | HS3, HS4 |
-| 05 | [05-scenario-matrix.mmd](diagrams/05-scenario-matrix.mmd) | HS1-HS5 dependency graph: which prerequisites each scenario requires | All |
-| 06 | [06-programmatic-invocation.mmd](diagrams/06-programmatic-invocation.mmd) | Client invocation (VS Code / vm-diag / public); RBAC and private DNS | HS5, C4 |
+### 01 — Peered tools topology
 
-### Topology overview (T1)
+T1 base topology: `vnet-foundry` + `vnet-tools` peered, DNS Private Resolver + dnsmasq, no VPN. Prereq for HS1–HS5.
 
-```mermaid
-flowchart TB
-    classDef platform fill:#ddf,stroke:#44a
-    classDef foundrynet fill:#e8f4f8,stroke:#1e88e5
-    classDef toolsnet fill:#e8f8e8,stroke:#2e7d32
-    classDef dns fill:#fff8e1,stroke:#f57f17
+[![01 — Peered tools topology](diagrams/01-peered-tools-topology.png)](diagrams/01-peered-tools-topology.svg)
 
-    subgraph MSFT["Foundry Platform -- Microsoft-managed"]
-        FE["Foundry endpoint<br/>account.services.ai.azure.com"]:::platform
-        TS["Tools Service"]:::platform
-        DP["Data Proxy<br/>AgentSubnet 192.168.0.x"]:::platform
-        MV["Micro VM NIC<br/>AgentSubnet 192.168.0.y<br/>hosted agent only"]:::platform
-        FE --> TS --> DP
-        FE --> MV
-    end
+Sources: [SVG](diagrams/01-peered-tools-topology.svg) · [Excalidraw](diagrams/01-peered-tools-topology.excalidraw) · [Mermaid](diagrams/01-peered-tools-topology.mmd)
 
-    subgraph VF["vnet-foundry  192.168.0.0/16  swedencentral"]
-        PE["PESubnet /24<br/>Foundry private endpoints"]:::foundrynet
-        MG["MgmtSubnet /27<br/>vm-diag  192.168.2.4"]:::foundrynet
-        DO["DNS Outbound EP<br/>192.168.3.20"]:::dns
-        DI["DNS Inbound EP<br/>192.168.3.4"]:::dns
-        GS["GatewaySubnet /27<br/>EMPTY -- no VPN GW"]:::foundrynet
-    end
+### 02 — Historical VPN reference
 
-    subgraph VT["vnet-tools  10.1.0.0/16  swedencentral"]
-        EV["vm-tools-echo  10.1.100.4<br/>EchoSubnet 10.1.100.0/24<br/>nginx + dnsmasq :53"]:::toolsnet
-        CV["vm-tools-ctrl  10.1.200.4<br/>CtrlSubnet 10.1.200.0/24<br/>nginx echo"]:::toolsnet
-    end
+Historical T2 VPN/BGP topology from the sibling lab; documents S3/S4 evidence and the authorized cleanup candidate. Reference only.
 
-    VF <-->|"VNet peering -- bidirectional<br/>10.1.0.0/16 non-reserved -- allowed"| VT
-    DP -->|"tool calls  ports 80/443"| EV
-    DP -->|"tool calls  ports 80/443"| CV
-    MV -->|"direct code calls<br/>Micro VM NIC egress"| EV
-    DO -->|"tools.lab forward<br/>UDP/TCP 53"| EV
-    MG -.->|"Run Command / SSH"| EV
-```
+[![02 — Historical VPN reference](diagrams/02-historical-vpn-reference.png)](diagrams/02-historical-vpn-reference.svg)
+
+Sources: [SVG](diagrams/02-historical-vpn-reference.svg) · [Excalidraw](diagrams/02-historical-vpn-reference.excalidraw) · [Mermaid](diagrams/02-historical-vpn-reference.mmd)
+
+### 03 — Agent egress paths (HS1 baseline / Path 2 predicted / HS2 measured)
+
+Three egress paths converging on `echo.tools.lab`. Status chips distinguish sibling-lab baseline evidence, an unimplemented Toolbox prediction, and the 2026-08-21 hosted-direct-code measurement.
+
+[![03 — Agent egress paths](diagrams/03-agent-egress-paths.png)](diagrams/03-agent-egress-paths.svg)
+
+Sources: [SVG](diagrams/03-agent-egress-paths.svg) · [Excalidraw](diagrams/03-agent-egress-paths.excalidraw) · [Mermaid](diagrams/03-agent-egress-paths.mmd)
+
+### 04 — DNS resolution contexts (C1–C4)
+
+How queries from the data proxy, Micro VM NIC, and vm-diag fan into Azure DNS, then into either the `tools.lab` forwarding ruleset or the Private DNS zone.
+
+[![04 — DNS resolution contexts](diagrams/04-dns-resolution-contexts.png)](diagrams/04-dns-resolution-contexts.svg)
+
+Sources: [SVG](diagrams/04-dns-resolution-contexts.svg) · [Excalidraw](diagrams/04-dns-resolution-contexts.excalidraw) · [Mermaid](diagrams/04-dns-resolution-contexts.mmd)
+
+### 05 — HS1–HS5 scenario dependencies with status chips
+
+Dependency graph from prerequisites to scenarios, with explicit status chips (BASELINE ONLY / PASS / DOCUMENTED) and pass-criteria vs. observed-outcome lines for each scenario.
+
+[![05 — HS1–HS5 scenario matrix](diagrams/05-scenario-matrix.png)](diagrams/05-scenario-matrix.svg)
+
+Sources: [SVG](diagrams/05-scenario-matrix.svg) · [Excalidraw](diagrams/05-scenario-matrix.excalidraw) · [Mermaid](diagrams/05-scenario-matrix.mmd)
+
+### 06 — Programmatic invocation (HS5, C4)
+
+Client invocation surfaces (VS Code Toolkit / azd / vm-diag / public workstation), the Foundry hosted-agent runtime, RBAC required to invoke, and downstream agent egress to the tool VMs.
+
+[![06 — Programmatic invocation](diagrams/06-programmatic-invocation.png)](diagrams/06-programmatic-invocation.svg)
+
+Sources: [SVG](diagrams/06-programmatic-invocation.svg) · [Excalidraw](diagrams/06-programmatic-invocation.excalidraw) · [Mermaid](diagrams/06-programmatic-invocation.mmd)
 
 ---
 
@@ -185,8 +185,8 @@ DNS zones, DNS Private Resolver. No Foundry-specific knowledge assumed.*
 
 ### Four packet/control paths
 
-The following paths are illustrated in [diagram 03](diagrams/03-agent-egress-paths.mmd) (egress),
-[diagram 06](diagrams/06-programmatic-invocation.mmd) (invocation ingress), and [diagram 04](diagrams/04-dns-resolution-contexts.mmd) (DNS).
+The following paths are illustrated in [diagram 03](diagrams/03-agent-egress-paths.png) (egress),
+[diagram 06](diagrams/06-programmatic-invocation.png) (invocation ingress), and [diagram 04](diagrams/04-dns-resolution-contexts.png) (DNS).
 
 #### 1. Invocation ingress — Caller → Foundry agent endpoint
 
@@ -372,7 +372,7 @@ VPN GW deletion takes approximately 5 minutes each. Do not interrupt mid-sequenc
 |--------|---------|
 | [manifest.md](manifest.md) | Full lab card, hypotheses, scenarios, NSG spec, cost estimate |
 | [hosted-agent-vscode.md](hosted-agent-vscode.md) | VS Code Foundry Toolkit walkthrough for Jose |
-| [diagrams/](diagrams/) | All six Mermaid diagrams |
+| [diagrams/](diagrams/) | Six purpose-built static SVG/PNG exports with matching `.excalidraw` sources; legacy `.mmd` kept as supplemental |
 | Sibling lab: `../foundry-agent-reserved-prefix-reachability/` | Shared infra baseline; H1 evidence (S3/S4) |
 | `.squad/decisions/inbox/morpheus-foundry-lab-restructure.md` | Cleanup gate details (original lab) |
 | `.squad/decisions/inbox/morpheus-foundry-topology-rethink.md` | T1 vs T2 split rationale; teardown order |

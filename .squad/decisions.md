@@ -2584,3 +2584,98 @@ design.md §17 added: evidence-linked table with three sub-tables (caller→agen
 **Lab readiness:** PUBLICATION-READY. All gates passed; no Azure changes outstanding.
 
 ---
+
+## D-31: Trinity revision — diagrams V1-V3 blocker resolution (2026-08-22)
+
+**Decision:** Niobe REJECTED Oracle's new diagram artifacts (V1 diagram 03 overclaims, V2 diagram 05 mislabels HS1/HS4 as PASS, V3 README embeds diagrams in a 5-column table). Reviewer lockout applied; Trinity independently authored this revision.
+
+**V1 - Diagram 03 (agent egress paths):** Path 1 now carries a `BASELINE - sibling lab 2026-08-14; not re-run here` chip. Path 2 (Toolbox) carries a `PREDICTED - not implemented or tested` chip. Path 3 (HS2) carries a `MEASURED - hosted direct code, this lab 2026-08-21` chip. Node labels reworded (Data Proxy on Path 1 = `prior-lab evidence`; Path 2 = `assumed, not observed in this lab`; Path 3 = `measured .92/.142/.165`). The old `Key finding tested` block was replaced with an honest `Design intent and measurement provenance` block that cites raw-output evidence files. Applied to .svg, .png (2x sharp/librsvg render), .excalidraw JSON, and legacy .mmd.
+
+**V2 - Diagram 05 (scenario matrix):** Each scenario box now carries an explicit status chip and separate `Pass criteria` vs `Observed` lines. HS1 = BASELINE ONLY (amber). HS2 / HS3 / HS5 = PASS (green). HS4 = DOCUMENTED / not re-run (grey). Added a bottom status legend. Applied consistently to .svg, .png, .excalidraw, and .mmd.
+
+**V3 - README diagrams section:** Replaced the 5-column embedded table with numbered `### 01` ... `### 06` subsections. Each has a short introduction, a clickable `[![alt](png)](svg)` inline image, then compact source links (SVG / Excalidraw / Mermaid). Provenance text now says `purpose-built static SVG/PNG exports with matching Excalidraw sources` and explicitly notes rasterization via the sharp/librsvg pipeline; browser Excalidraw rendering is no longer claimed. Navigation row and Key-references row updated with matching wording.
+
+**Non-blocking items:** Diagram 04 - `account...ai.azure.com` edge label moved off the C4 group border. Diagram 06 - deploy connectors rerouted to enter the Foundry endpoint from the left (mid-height, y=380) instead of crossing the `Foundry - hosted agent runtime` group title (y=322); Deploy-surface subtitle now reads `VS Code Toolkit / azd (source-ZIP)` and the redundant deploy label was replaced with a single boxed `deploy (source-ZIP upload)` callout on the safe channel between groups.
+
+**Constraints preserved:** Opaque white backgrounds, black text, explicit dimensions, sanitized placeholders (`.229` remains absent from all six diagrams), approved findings. Legacy Mermaid sources retained as supplemental.
+
+**Files changed:** `labs/foundry-agent-prompt-vs-hosted-networking/README.md`; six diagram triplets under `labs/foundry-agent-prompt-vs-hosted-networking/diagrams/` (03, 04, 05, 06 as `.svg`/`.png`/`.excalidraw`; 03 and 05 also as `.mmd`); rendering helper `tools/svg-render/render.js` (with local `package.json` / `node_modules`, gitignore recommended before commit).
+
+**Validation:** SVG viewBox parses; PNG dimensions match 2x viewBox (03=2800x1720, 04=3000x1800, 05=2800x1720, 06=2800x1800), PNG mode RGBA on white; Excalidraw JSON re-parses (28-45 elements each); Markdown `### ` sections and `[![alt](png)](svg)` links render correctly; no `.229` string in any diagram source; no `Key finding tested` or `advanced-HS1` overclaim remains in 03; HS1 and HS4 no longer described as PASS in 05.
+
+**Residual caveats:** Not committed or pushed (awaiting user). No Azure operations performed. Legacy .mmd for 04 and 06 not restructured (only 03 and 05 were affected by the review claims).
+
+
+---
+
+## D-32: Morpheus revision — diagram 03/05 blocker V1a resolution (2026-08-22)
+
+**Author:** Morpheus (Lead / Architect)
+**Filed:** 2026-08-22T10:27:55+02:00
+**Status:** COMPLETE — not committed (awaiting user)
+**Revision sequence:** v1 (Oracle, locked out), v2 (Trinity, locked out), **v3 = this revision (Morpheus)**
+
+### Blocker V1a — Diagram 03 footer miscategorised this lab's REST/SSE IPs as sibling-lab baseline
+
+**Root cause:** D-31 (Trinity) partially fixed the Path 3 label but left two data errors:
+1. Footer bullet "Path 1 (HS1, BASELINE)" listed `.238/.28/.110/.124` — these are **this lab's** hosted-agent REST runs (`.238/.28/.110`) and SSE run (`.124`), not the sibling-lab data-proxy observation.
+2. Footer bullet "Path 3 (HS2, MEASURED)" said "192.168.0.92 / .142 / .165 during four invocations" — only SDK IPs; the 3 REST runs and 1 SSE run were absent; "four invocations" conflated NSG-blocked attempt (no src_ip) with successful measurements.
+3. Path 3 Micro VM node: "measured .92 / .142 / .165" — SDK-only; REST and SSE IPs missing.
+4. Diagram 05 HS2 node: ".92/.142/.165 over 4 invocations" — same SDK-only view, wrong count.
+
+**Correct evidence (from `raw-output/hosted-agent-invoke-evidence-20260821.json`, `probe-network-sdk-evidence-20260821.md`, `probe-network-stream-20260821T120441.json`, `test-matrix-results-20260821.md`):**
+- **Path 1 baseline (sibling lab 2026-08-14):** src_ip = 192.168.0.49 / 192.168.0.239 — data proxy egress; not re-run in this lab.
+- **Path 3 REST runs (3 successful):** src_ip = 192.168.0.238 / 192.168.0.28 / 192.168.0.110 (runs 1–3). Run 4 was NSG-blocked; no src_ip recorded.
+- **Path 3 SDK runs (3):** src_ip = 192.168.0.92 / 192.168.0.142 / 192.168.0.165.
+- **Path 3 SSE run (1):** src_ip = 192.168.0.124.
+- **Total hosted invocations: 7** (3 REST + 3 SDK + 1 SSE).
+
+### Changes applied in this revision
+
+**`03-agent-egress-paths.mmd`:**
+- PATH1 DP1 node: `src_ip = 192.168.0.49 / 192.168.0.239 (sibling lab 2026-08-14)`.
+- PATH3 MV_DC node: `REST .238/.28/.110 (3 runs) · SDK .92/.142/.165 (3 runs) · SSE .124`.
+- NOTE: complete IP-set breakdown (REST/SDK/SSE), 7 invocations, 4th REST attempt NSG-blocked note.
+
+**`03-agent-egress-paths.svg`:**
+- Path 1 Data Proxy node text: `.49 / .239 (sibling lab 2026-08-14)`.
+- Path 3 Micro VM node text: `REST .238/.28/.110 (3 runs)` / `SDK .92/.142/.165 · SSE .124`.
+- Footer Path 1 bullet: corrected to sibling-lab IPs `.49/.239`.
+- Footer Path 3 bullet: full 7-invocation breakdown; "four invocations" removed; NSG-blocked note added.
+
+**`03-agent-egress-paths.excalidraw`:**
+- Data Proxy text element (`t_13_tf947a`): `.49 / .239 (sibling lab 2026-08-14)`.
+- Micro VM text element (`t_27_7wru6k`): `REST .238/.28/.110 (3 runs) / SDK .92/.142/.165 · SSE .124`.
+- Footer text element (`t_35_qjckvq`): corrected Path 1 and Path 3 bullets.
+
+**`05-scenario-matrix.mmd`:**
+- HS2 node: `PASS: 7 invocations — REST .238/.28/.110; SDK .92/.142/.165; SSE .124`.
+
+**`05-scenario-matrix.svg`:**
+- HS2 observed line: `REST .238/.28/.110; SDK .92/.142/.165; SSE .124 — 7 invocations 2026-08-21`.
+- Legend box height: 90 → 110 (bottom chip was 2px outside the container; now has 8px clearance).
+- SVG canvas height: 860 → 880; viewBox and white-background rect updated accordingly.
+
+**`05-scenario-matrix.excalidraw`:**
+- HS2 text element (`t_13_8yjd5z`): `PASS: 7 invocations — REST .238/.28/.110; SDK .92/.142/.165; SSE .124`.
+
+**`tools/svg-render/.gitignore`:**
+- Removed `package-lock.json` from ignore list. Lockfile is present and sanitised; node_modules remain ignored.
+
+**PNGs re-rasterised:** `03-agent-egress-paths.png` (2800×1720) and `05-scenario-matrix.png` (2800×1760) via `tools/svg-render/render.js` (sharp, density 288, 2× viewBox).
+
+### Constraints preserved
+- `.229` absent from all six diagram sources (verified via ripgrep).
+- Opaque white backgrounds, black text, approved labels retained.
+- No Azure operations performed. Not committed.
+
+### Validation
+- `rg` confirms no stale `four invocations`, `\.238.*sibling`, or `\.238/.28/.110.*BASELINE` pattern remains in any `.mmd`, `.svg`, or `.excalidraw` file.
+- PNG 03: 2800×1720 (matches viewBox 1400×860 at 2×).
+- PNG 05: 2800×1760 (matches viewBox 1400×880 at 2×).
+- Excalidraw `text`/`originalText` fields updated consistently in both files.
+
+### Residual caveats
+- Diagrams 01, 02, 04, 06 not in scope for this blocker and were not modified.
+- `05-scenario-matrix.mmd` HS1 chip wording not updated (remains `BASELINE ONLY: sibling lab 2026-08-14; not re-run` — already correct).
+- Not committed or pushed; awaiting user review and commit authorisation.
