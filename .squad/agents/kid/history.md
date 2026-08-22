@@ -202,3 +202,30 @@ Each diagram is introduced with a brief contextual sentence. All five blocks val
 - Merge commit: ff0957e6c98432ab011bead680aa28568c64a48e
 
 **Lesson:** When a technical finding has multiple dimensions (design pattern, observability model, specific gotcha), the article's organizing principle should match what readers are searching for — which is almost always the design/operational model, not the specific error. Gotchas belong as evidence, field notes, or appendices. The title, hook, and section order should serve the majority of readers who want to understand how to build and operate the technology, not the subset who have already hit the specific failure.
+---
+
+### 2026-08-22: Draft published for review — Foundry prompt-agent vs hosted-agent networking
+
+**Lab:** `foundry-agent-prompt-vs-hosted-networking`
+**Post repo:** `erjosito/azure-networking-blog`
+**Branch:** `post/foundry-prompt-vs-hosted-networking`
+**PR:** https://github.com/erjosito/azure-networking-blog/pull/8
+**Word count:** 4,465
+**Inline visuals:** 4 Mermaid diagrams (topology, egress paths, DNS chain, invocation flow)
+
+**Headline finding:** The user-visible private-network reachability and policy experience is largely the same for both agent types (AgentSubnet, NSG, VNet peering, DNS forwarding chain). Prompt-agent tools use a data proxy; hosted-agent code uses an ephemeral Micro VM NIC. Both consume AgentSubnet addressing, obey the same VNet/NSG/DNS controls, and DNS Private Resolver SNAT hides the original agent type from dnsmasq.
+
+**H1 status:** BASELINE ONLY — prompt-agent data-proxy path uses evidence from sibling lab (2026-08-14). `azure-ai-projects 2.3.0` AgentsOperations does not expose an Assistants API; prompt agents with HTTP Connection resources cannot be created programmatically. Explicitly noted in the post.
+
+**H2 confirmed:** 7 hosted-agent invocations (3 REST direct, 3 AIProjectClient SDK, 1 SSE streaming) confirmed Micro VM NIC egress from AgentSubnet (192.168.0.0/24). Ephemeral source IPs change per invocation.
+
+**H3 confirmed:** Dnsmasq log shows all VNet callers (Micro VM NIC, vm-diag) produce queries from DNSOutboundSubnet SNAT pool (192.168.3.21-25) — context-transparent by design.
+
+**Evidence also includes:**
+- NSG negative test: TCP deny on nsg-tools produced `"Error: Function failed."` while DNS still resolved (SNAT-pool source allowed separately). Proves DNS and TCP are independent failure modes.
+- Client-side FC DNS failure: `[Errno 11001] getaddrinfo failed` from workstation outside VNet.
+
+**Sanitization:** PASS — no GUIDs, no real account hostnames, no credentials.
+**Render validation:** PASS — 4 inline Mermaid fenced blocks; no diagram files in assets/.
+**Back-requests:** None. All evidence sufficient from committed lab artifacts.
+**Ship status:** published (branch pushed, PR open; pending Jose review)
