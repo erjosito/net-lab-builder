@@ -229,3 +229,14 @@ Each diagram is introduced with a brief contextual sentence. All five blocks val
 **Render validation:** PASS — 4 inline Mermaid fenced blocks; no diagram files in assets/.
 **Back-requests:** None. All evidence sufficient from committed lab artifacts.
 **Ship status:** published (branch pushed, PR open; pending Jose review)
+
+
+### 2026-08-22 — Morpheus diagram revision applied to PR #8
+
+Niobe approved Morpheus's final diagram revision. Applied to blog PR #8:
+
+- **Diagrams replaced**: 03-agent-egress-paths (318873 bytes; fixes transposed IPs and overclaimed Toolbox path), 04-dns-resolution-contexts, 06-programmatic-invocation — all four formats (PNG/SVG/excalidraw/mmd) for each.
+- **Prose fixed**: §3 intro now explicitly labels diagram path 2 (hosted Toolbox) as PREDICTED/INFERRED — not tested in this lab; diagram path 1 as BASELINE; diagram path 3 as CONFIRMED.
+- **Alt text corrected**: prompt baseline .49/.239 (sibling lab, no re-run); hosted REST .238/.28/.110, SDK .92/.142/.165, SSE .124 (seven observations); fourth REST attempt NSG-blocked/no src_ip.
+- **Commit SHA**: 840c020. **PR #8** remains OPEN, UNMERGED at https://github.com/erjosito/azure-networking-blog/pull/8.
+- Three independent diagram revision cycles: Oracle (rejected — transposed IPs, overclaimed Toolbox); Trinity (rejected — same IP issue + invocation count error); Morpheus (approved).
