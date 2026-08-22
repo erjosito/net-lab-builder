@@ -1,0 +1,407 @@
+[
+  {
+    "addressSpace": {
+      "addressPrefixes": [
+        "10.2.0.0/16"
+      ]
+    },
+    "enableDdosProtection": false,
+    "etag": "W/\"a62300af-8af1-40f3-8639-b848fb973e02\"",
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/hub2-vnet",
+    "location": "northeurope",
+    "name": "hub2-vnet",
+    "privateEndpointVNetPolicies": "Disabled",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+    "resourceGuid": "a92d8737-64bc-4e0b-850d-630fb428f2b2",
+    "subnets": [
+      {
+        "addressPrefix": "10.2.0.0/24",
+        "delegations": [],
+        "etag": "W/\"a62300af-8af1-40f3-8639-b848fb973e02\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/hub2-vnet/subnets/VirtualNetworkApplianceSubnet",
+        "ipConfigurations": [
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-DUAL-HUB-VNRA-UDR-TRANSIT/providers/Microsoft.Network/networkInterfaces/_E41F87A2_VNANIC.EF939EB4-3331-44BC-B5C6-47602D9C9915_0/ipConfigurations/IPCONFIG_1",
+            "resourceGroup": "RG-DUAL-HUB-VNRA-UDR-TRANSIT"
+          },
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-DUAL-HUB-VNRA-UDR-TRANSIT/providers/Microsoft.Network/networkInterfaces/_E41F87A2_VNANIC.EF939EB4-3331-44BC-B5C6-47602D9C9915_0/ipConfigurations/IPCONFIG_2",
+            "resourceGroup": "RG-DUAL-HUB-VNRA-UDR-TRANSIT"
+          },
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-DUAL-HUB-VNRA-UDR-TRANSIT/providers/Microsoft.Network/networkInterfaces/_E41F87A2_VNANIC.EF939EB4-3331-44BC-B5C6-47602D9C9915_0/ipConfigurations/IPCONFIG_3",
+            "resourceGroup": "RG-DUAL-HUB-VNRA-UDR-TRANSIT"
+          },
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-DUAL-HUB-VNRA-UDR-TRANSIT/providers/Microsoft.Network/networkInterfaces/_E41F87A2_VNANIC.EF939EB4-3331-44BC-B5C6-47602D9C9915_0/ipConfigurations/IPCONFIG_4",
+            "resourceGroup": "RG-DUAL-HUB-VNRA-UDR-TRANSIT"
+          },
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-DUAL-HUB-VNRA-UDR-TRANSIT/providers/Microsoft.Network/networkInterfaces/_E41F87A2_VNANIC.EF939EB4-3331-44BC-B5C6-47602D9C9915_0/ipConfigurations/IPCONFIG_5",
+            "resourceGroup": "RG-DUAL-HUB-VNRA-UDR-TRANSIT"
+          }
+        ],
+        "name": "VirtualNetworkApplianceSubnet",
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Enabled",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+        "routeTable": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/routeTables/rt-hub2-vnra",
+          "resourceGroup": "rg-dual-hub-vnra-udr-transit"
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      }
+    ],
+    "tags": {
+      "correlation_id": "vnra-c7e2a3f1",
+      "created_by": "copilot-lab",
+      "lab": "true"
+    },
+    "type": "Microsoft.Network/virtualNetworks",
+    "virtualNetworkPeerings": [
+      {
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "allowVirtualNetworkAccess": false,
+        "doNotVerifyRemoteGateways": false,
+        "etag": "W/\"a62300af-8af1-40f3-8639-b848fb973e02\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/hub2-vnet/virtualNetworkPeerings/hub2-to-spoke2",
+        "name": "hub2-to-spoke2",
+        "peerCompleteVnets": true,
+        "peeringState": "Connected",
+        "peeringSyncLevel": "FullyInSync",
+        "provisioningState": "Succeeded",
+        "remoteAddressSpace": {
+          "addressPrefixes": [
+            "10.20.0.0/16"
+          ]
+        },
+        "remoteVirtualNetwork": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/spoke2-vnet",
+          "resourceGroup": "rg-dual-hub-vnra-udr-transit"
+        },
+        "remoteVirtualNetworkAddressSpace": {
+          "addressPrefixes": [
+            "10.20.0.0/16"
+          ]
+        },
+        "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+        "resourceGuid": "0908dc89-b525-0d1d-0600-30d0808c7917",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "useRemoteGateways": false
+      },
+      {
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "allowVirtualNetworkAccess": false,
+        "doNotVerifyRemoteGateways": false,
+        "etag": "W/\"a62300af-8af1-40f3-8639-b848fb973e02\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/hub2-vnet/virtualNetworkPeerings/hub2-to-hub1",
+        "name": "hub2-to-hub1",
+        "peerCompleteVnets": true,
+        "peeringState": "Connected",
+        "peeringSyncLevel": "FullyInSync",
+        "provisioningState": "Succeeded",
+        "remoteAddressSpace": {
+          "addressPrefixes": [
+            "10.1.0.0/16"
+          ]
+        },
+        "remoteVirtualNetwork": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/hub1-vnet",
+          "resourceGroup": "rg-dual-hub-vnra-udr-transit"
+        },
+        "remoteVirtualNetworkAddressSpace": {
+          "addressPrefixes": [
+            "10.1.0.0/16"
+          ]
+        },
+        "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+        "resourceGuid": "12dc4a18-75a0-08ec-3f73-7ade01867226",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "useRemoteGateways": false
+      }
+    ]
+  },
+  {
+    "addressSpace": {
+      "addressPrefixes": [
+        "10.20.0.0/16"
+      ]
+    },
+    "enableDdosProtection": false,
+    "etag": "W/\"0dda9199-c6cc-4062-90fc-2fd3ed83af7f\"",
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/spoke2-vnet",
+    "location": "northeurope",
+    "name": "spoke2-vnet",
+    "privateEndpointVNetPolicies": "Disabled",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+    "resourceGuid": "a0255bbe-d199-4316-830d-53df34a48ba5",
+    "subnets": [
+      {
+        "addressPrefix": "10.20.1.0/24",
+        "delegations": [],
+        "etag": "W/\"0dda9199-c6cc-4062-90fc-2fd3ed83af7f\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/spoke2-vnet/subnets/vm-subnet",
+        "name": "vm-subnet",
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Enabled",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+        "routeTable": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/routeTables/rt-spoke2",
+          "resourceGroup": "rg-dual-hub-vnra-udr-transit"
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      }
+    ],
+    "tags": {
+      "correlation_id": "vnra-c7e2a3f1",
+      "created_by": "copilot-lab",
+      "lab": "true"
+    },
+    "type": "Microsoft.Network/virtualNetworks",
+    "virtualNetworkPeerings": [
+      {
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "allowVirtualNetworkAccess": false,
+        "doNotVerifyRemoteGateways": false,
+        "etag": "W/\"0dda9199-c6cc-4062-90fc-2fd3ed83af7f\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/spoke2-vnet/virtualNetworkPeerings/spoke2-to-hub2",
+        "name": "spoke2-to-hub2",
+        "peerCompleteVnets": true,
+        "peeringState": "Connected",
+        "peeringSyncLevel": "FullyInSync",
+        "provisioningState": "Succeeded",
+        "remoteAddressSpace": {
+          "addressPrefixes": [
+            "10.2.0.0/16"
+          ]
+        },
+        "remoteVirtualNetwork": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/hub2-vnet",
+          "resourceGroup": "rg-dual-hub-vnra-udr-transit"
+        },
+        "remoteVirtualNetworkAddressSpace": {
+          "addressPrefixes": [
+            "10.2.0.0/16"
+          ]
+        },
+        "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+        "resourceGuid": "0908dc89-b525-0d1d-0600-30d0808c7917",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "useRemoteGateways": false
+      }
+    ]
+  },
+  {
+    "addressSpace": {
+      "addressPrefixes": [
+        "10.1.0.0/16"
+      ]
+    },
+    "enableDdosProtection": false,
+    "etag": "W/\"48046cd0-8775-43bc-bf70-b172e566896d\"",
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/hub1-vnet",
+    "location": "swedencentral",
+    "name": "hub1-vnet",
+    "privateEndpointVNetPolicies": "Disabled",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+    "resourceGuid": "bbf1cd2f-111c-46e7-ba7e-19d1b5ae8094",
+    "subnets": [
+      {
+        "addressPrefix": "10.1.0.0/24",
+        "delegations": [],
+        "etag": "W/\"48046cd0-8775-43bc-bf70-b172e566896d\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/hub1-vnet/subnets/VirtualNetworkApplianceSubnet",
+        "ipConfigurations": [
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-DUAL-HUB-VNRA-UDR-TRANSIT/providers/Microsoft.Network/networkInterfaces/_E41F87A2_VNANIC.CCBB9B52-B672-4858-9965-493B6DD8AA07_0/ipConfigurations/IPCONFIG_1",
+            "resourceGroup": "RG-DUAL-HUB-VNRA-UDR-TRANSIT"
+          },
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-DUAL-HUB-VNRA-UDR-TRANSIT/providers/Microsoft.Network/networkInterfaces/_E41F87A2_VNANIC.CCBB9B52-B672-4858-9965-493B6DD8AA07_0/ipConfigurations/IPCONFIG_2",
+            "resourceGroup": "RG-DUAL-HUB-VNRA-UDR-TRANSIT"
+          },
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-DUAL-HUB-VNRA-UDR-TRANSIT/providers/Microsoft.Network/networkInterfaces/_E41F87A2_VNANIC.CCBB9B52-B672-4858-9965-493B6DD8AA07_0/ipConfigurations/IPCONFIG_3",
+            "resourceGroup": "RG-DUAL-HUB-VNRA-UDR-TRANSIT"
+          },
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-DUAL-HUB-VNRA-UDR-TRANSIT/providers/Microsoft.Network/networkInterfaces/_E41F87A2_VNANIC.CCBB9B52-B672-4858-9965-493B6DD8AA07_0/ipConfigurations/IPCONFIG_4",
+            "resourceGroup": "RG-DUAL-HUB-VNRA-UDR-TRANSIT"
+          },
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-DUAL-HUB-VNRA-UDR-TRANSIT/providers/Microsoft.Network/networkInterfaces/_E41F87A2_VNANIC.CCBB9B52-B672-4858-9965-493B6DD8AA07_0/ipConfigurations/IPCONFIG_5",
+            "resourceGroup": "RG-DUAL-HUB-VNRA-UDR-TRANSIT"
+          }
+        ],
+        "name": "VirtualNetworkApplianceSubnet",
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Enabled",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+        "routeTable": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/routeTables/rt-hub1-vnra",
+          "resourceGroup": "rg-dual-hub-vnra-udr-transit"
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      }
+    ],
+    "tags": {
+      "correlation_id": "vnra-c7e2a3f1",
+      "created_by": "copilot-lab",
+      "lab": "true"
+    },
+    "type": "Microsoft.Network/virtualNetworks",
+    "virtualNetworkPeerings": [
+      {
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "allowVirtualNetworkAccess": false,
+        "doNotVerifyRemoteGateways": false,
+        "etag": "W/\"48046cd0-8775-43bc-bf70-b172e566896d\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/hub1-vnet/virtualNetworkPeerings/hub1-to-spoke1",
+        "name": "hub1-to-spoke1",
+        "peerCompleteVnets": true,
+        "peeringState": "Connected",
+        "peeringSyncLevel": "FullyInSync",
+        "provisioningState": "Succeeded",
+        "remoteAddressSpace": {
+          "addressPrefixes": [
+            "10.10.0.0/16"
+          ]
+        },
+        "remoteVirtualNetwork": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/spoke1-vnet",
+          "resourceGroup": "rg-dual-hub-vnra-udr-transit"
+        },
+        "remoteVirtualNetworkAddressSpace": {
+          "addressPrefixes": [
+            "10.10.0.0/16"
+          ]
+        },
+        "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+        "resourceGuid": "a77adf5a-dfd0-034e-1a85-a4217f325419",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "useRemoteGateways": false
+      },
+      {
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "allowVirtualNetworkAccess": false,
+        "doNotVerifyRemoteGateways": false,
+        "etag": "W/\"48046cd0-8775-43bc-bf70-b172e566896d\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/hub1-vnet/virtualNetworkPeerings/hub1-to-hub2",
+        "name": "hub1-to-hub2",
+        "peerCompleteVnets": true,
+        "peeringState": "Connected",
+        "peeringSyncLevel": "FullyInSync",
+        "provisioningState": "Succeeded",
+        "remoteAddressSpace": {
+          "addressPrefixes": [
+            "10.2.0.0/16"
+          ]
+        },
+        "remoteVirtualNetwork": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/hub2-vnet",
+          "resourceGroup": "rg-dual-hub-vnra-udr-transit"
+        },
+        "remoteVirtualNetworkAddressSpace": {
+          "addressPrefixes": [
+            "10.2.0.0/16"
+          ]
+        },
+        "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+        "resourceGuid": "12dc4a18-75a0-08ec-3f73-7ade01867226",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "useRemoteGateways": false
+      }
+    ]
+  },
+  {
+    "addressSpace": {
+      "addressPrefixes": [
+        "10.10.0.0/16"
+      ]
+    },
+    "enableDdosProtection": false,
+    "etag": "W/\"cdc75c4c-765a-40db-8d27-8fb6d54f8073\"",
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/spoke1-vnet",
+    "location": "swedencentral",
+    "name": "spoke1-vnet",
+    "privateEndpointVNetPolicies": "Disabled",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+    "resourceGuid": "1c8b1275-cecc-45a9-a0fb-bdf0ca9cd48d",
+    "subnets": [
+      {
+        "addressPrefix": "10.10.1.0/24",
+        "delegations": [],
+        "etag": "W/\"cdc75c4c-765a-40db-8d27-8fb6d54f8073\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/spoke1-vnet/subnets/vm-subnet",
+        "ipConfigurations": [
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-DUAL-HUB-VNRA-UDR-TRANSIT/providers/Microsoft.Network/networkInterfaces/TEST1-VMVMNIC/ipConfigurations/IPCONFIG1",
+            "resourceGroup": "RG-DUAL-HUB-VNRA-UDR-TRANSIT"
+          }
+        ],
+        "name": "vm-subnet",
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Enabled",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+        "routeTable": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/routeTables/rt-spoke1",
+          "resourceGroup": "rg-dual-hub-vnra-udr-transit"
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      }
+    ],
+    "tags": {
+      "correlation_id": "vnra-c7e2a3f1",
+      "created_by": "copilot-lab",
+      "lab": "true"
+    },
+    "type": "Microsoft.Network/virtualNetworks",
+    "virtualNetworkPeerings": [
+      {
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "allowVirtualNetworkAccess": false,
+        "doNotVerifyRemoteGateways": false,
+        "etag": "W/\"cdc75c4c-765a-40db-8d27-8fb6d54f8073\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/spoke1-vnet/virtualNetworkPeerings/spoke1-to-hub1",
+        "name": "spoke1-to-hub1",
+        "peerCompleteVnets": true,
+        "peeringState": "Connected",
+        "peeringSyncLevel": "FullyInSync",
+        "provisioningState": "Succeeded",
+        "remoteAddressSpace": {
+          "addressPrefixes": [
+            "10.1.0.0/16"
+          ]
+        },
+        "remoteVirtualNetwork": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/hub1-vnet",
+          "resourceGroup": "rg-dual-hub-vnra-udr-transit"
+        },
+        "remoteVirtualNetworkAddressSpace": {
+          "addressPrefixes": [
+            "10.1.0.0/16"
+          ]
+        },
+        "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+        "resourceGuid": "a77adf5a-dfd0-034e-1a85-a4217f325419",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "useRemoteGateways": false
+      }
+    ]
+  }
+]
+

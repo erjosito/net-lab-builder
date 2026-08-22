@@ -327,20 +327,19 @@ The `roles` claim is populated because `app-edge-jwt-client` has been assigned t
 
 ### 4.3 Token acquisition
 
-> **Set up credentials first — in Azure Cloud Shell.**  
-> The lab vault (`kv-jwt-lab-a8fbd8e1`) has `publicNetworkAccess=Disabled` (tenant policy).  
-> Load credentials from a Cloud Shell session before running any token requests:
+> **Set up credentials first on the private management VM.**
+> The lab vault (`kv-jwt-lab-a8fbd8e1`) has `publicNetworkAccess=Disabled` (tenant policy).
+> Open `vm-edge-jwt-management` in the Azure portal, select **Connect > Bastion**,
+> authenticate as `azurelabuser` with your SSH private key, and run:
 >
 > ```bash
-> # In Azure Cloud Shell (https://shell.azure.com):
-> git clone https://github.com/<org>/net-lab-builder   # first time only
-> cd net-lab-builder/labs/afd-edge-actions-jwt-validation/tests
-> pwsh Import-JwtLabEnvironment.ps1
+> source /usr/local/share/jwt-lab/Import-JwtLabEnvironment.sh
 > # → sets TENANT_ID, API_APP_ID, CLIENT_ID, CLIENT_SECRET, AFD_ENDPOINT
-> #   in THIS Cloud Shell process only (not your local machine)
+> #   in this VM shell only
 > ```
 >
-> If run locally, the script detects `ForbiddenByConnection` and prints exact Cloud Shell commands.
+> The VM uses its system-assigned managed identity and reaches the vault through
+> Private Link. Secret values are not printed or written to disk.
 
 ```bash
 curl -sX POST \
@@ -1088,7 +1087,7 @@ This value is the primary join key between the EA console log and the AFD access
 | Admin consent fails `Authorization_RequestDenied` | Caller not Application Administrator | Jose or tenant admin must run `az ad app permission admin-consent` |
 | Token `AUD_FAIL got=<bare-GUID>` | Client requesting wrong scope | Scope must be `api://<api-app-id>/.default` (not bare GUID) |
 | `ERR_JWKS_MULTIPLE_MATCHING_KEYS` from origin | Tampered or fake signature | Expected: origin `jose` library correctly rejects; this is CONDITIONAL path S6 expected outcome |
-| EA returns 401 HTML (not JSON) | EA synthesises response body — AFD provides default HTML | EA code only sets `response_code`; custom body not yet documented; HTML is expected |
+| EA returns 401 HTML (not JSON) | The documented `response_code` path produced AFD default HTML | Custom body assignment was not tested because no supported body field was documented; produce structured errors at the origin |
 | `httpStatusCode_d = None` in FrontDoorAccessLog | EA handled the response (no origin call) | Confirmed lab finding; client HTTP status is synthesised by EA and not separately logged in FrontDoorAccessLog when EA intercepts |
 | `EdgeActionsPrivatePreview = NotRegistered` | Private preview access expired | Re-register subscription for Edge Actions private preview |
 | No `az afd edge-action` CLI subcommand | CLI does not have EA subcommand | Use `az rest` with `2025-09-01-preview` API version |

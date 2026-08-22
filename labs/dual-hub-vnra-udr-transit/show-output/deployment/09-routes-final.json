@@ -1,0 +1,43 @@
+[
+  {
+    "n": "rt-hub2-vnra",
+    "routes": [
+      {
+        "nh": "10.1.0.4",
+        "p": "10.10.0.0/16",
+        "t": "VirtualAppliance"
+      }
+    ]
+  },
+  {
+    "n": "rt-spoke2",
+    "routes": [
+      {
+        "nh": "10.2.0.4",
+        "p": "10.10.0.0/16",
+        "t": "VirtualAppliance"
+      }
+    ]
+  },
+  {
+    "n": "rt-hub1-vnra",
+    "routes": [
+      {
+        "nh": "10.2.0.4",
+        "p": "10.20.0.0/16",
+        "t": "VirtualAppliance"
+      }
+    ]
+  },
+  {
+    "n": "rt-spoke1",
+    "routes": [
+      {
+        "nh": "10.1.0.4",
+        "p": "10.20.0.0/16",
+        "t": "VirtualAppliance"
+      }
+    ]
+  }
+]
+

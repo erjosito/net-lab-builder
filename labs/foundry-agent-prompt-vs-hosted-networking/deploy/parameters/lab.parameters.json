@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "value": "labadmin"
+    },
+    "vmSize": {
+      "value": "Standard_B2ts_v2"
+    },
+    "deployDnsResolver": {
+      "value": true
+    },
+    "patchAgentSubnetNsg": {
+      "value": true
+    },
+    "vnetFoundryName": {
+      "value": "vnet-foundry"
+    },
+    "nsgAgentSubnetName": {
+      "value": "vnet-foundry-AgentSubnet-nsg-swedencentral"
+    }
+  }
+}

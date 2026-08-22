@@ -1,0 +1,43 @@
+Gate 6: ARM What-If (deploy.ps1 default validate+what-if mode)
+Command: az deployment group what-if --resource-group <rg-foundry> --template-file deploy/main.bicep
+Parameters: nsgAgentSubnetName=vnet-foundry-AgentSubnet-nsg-swedencentral (corrected)
+Exit code: 0
+Timestamp: 2026-08-20T11:08:xx+02:00
+RESULT: PASS
+
+== Summary ==
+Resource changes: 18 to create, 52 to ignore.
+
+== Resources to Create (+) ==
++ Microsoft.Compute/virtualMachines/vm-tools-ctrl
++ Microsoft.Compute/virtualMachines/vm-tools-echo
++ Microsoft.Network/dnsForwardingRulesets/ruleset-tools-lab
++ Microsoft.Network/dnsForwardingRulesets/ruleset-tools-lab/forwardingRules/rule-tools-lab
++ Microsoft.Network/dnsForwardingRulesets/ruleset-tools-lab/virtualNetworkLinks/link-vnet-foundry
++ Microsoft.Network/dnsResolvers/dns-resolver-foundry
++ Microsoft.Network/dnsResolvers/dns-resolver-foundry/inboundEndpoints/ep-inbound
++ Microsoft.Network/dnsResolvers/dns-resolver-foundry/outboundEndpoints/ep-outbound
++ Microsoft.Network/networkInterfaces/nic-vm-tools-ctrl
++ Microsoft.Network/networkInterfaces/nic-vm-tools-echo
++ Microsoft.Network/networkSecurityGroups/nsg-tools
++ Microsoft.Network/networkSecurityGroups/vnet-foundry-AgentSubnet-nsg-swedencentral/securityRules/allow-out-aad
++ Microsoft.Network/networkSecurityGroups/vnet-foundry-AgentSubnet-nsg-swedencentral/securityRules/allow-out-ctrl-subnet
++ Microsoft.Network/networkSecurityGroups/vnet-foundry-AgentSubnet-nsg-swedencentral/securityRules/allow-out-echo-subnet
++ Microsoft.Network/networkSecurityGroups/vnet-foundry-AgentSubnet-nsg-swedencentral/securityRules/allow-out-mcr
++ Microsoft.Network/virtualNetworks/vnet-foundry/virtualNetworkPeerings/peer-to-vnet-tools
++ Microsoft.Network/virtualNetworks/vnet-tools
++ Microsoft.Network/virtualNetworks/vnet-tools/virtualNetworkPeerings/peer-to-vnet-foundry
+
+== Resources to Ignore (*) ==
+52 existing resources (Foundry account, vm-diag, PEs, VPN connections, NICs, NSGs, CosmosDB, EventGrid, etc.)
+-- Notable ignores --
+* Microsoft.CognitiveServices/accounts/<account>
+* Microsoft.CognitiveServices/accounts/<account>/projects/<project>
+* Microsoft.Compute/virtualMachines/vm-diag
+* Microsoft.Network/networkSecurityGroups/vnet-foundry-AgentSubnet-nsg-swedencentral  <-- parent NSG untouched
+* Microsoft.Network/connections/conn-foundry-to-onprem  <-- VPN connections untouched
+* Microsoft.Network/connections/conn-onprem-to-foundry
+
+== 0 Modify, 0 Delete ==
+All 52 existing shared resources are untouched.
+[Subscription IDs redacted from original output]

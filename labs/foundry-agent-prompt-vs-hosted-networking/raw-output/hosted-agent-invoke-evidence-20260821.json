@@ -1,0 +1,57 @@
+{
+  "_note": "Sanitized. Subscription IDs, tenant IDs, project endpoints, credentials removed.",
+  "_lab": "foundry-agent-prompt-vs-hosted-networking",
+  "_agent": "echo-probe-agent:1",
+  "_date": "2026-08-21",
+  "_invoker": "Python AzureCliCredential + Responses REST API",
+  "_endpoint_pattern": "https://<account>.services.ai.azure.com/api/projects/<project>/agents/echo-probe-agent/endpoint/protocols/openai/responses?api-version=v1",
+  "invocations": [
+    {
+      "run": 1, "timestamp_utc": "2026-08-21T06:12:35Z", "latency_s": 43,
+      "tool_outputs": {
+        "probe_echo": {"label":"echo","server_ip":"10.1.100.4","src_ip":"192.168.0.238","request_url":"http://echo.tools.lab/api/echo"},
+        "probe_ctrl": {"label":"ctrl","server_ip":"10.1.200.4","src_ip":"192.168.0.238","request_url":"http://ctrl.tools.lab/api/echo"}
+      }
+    },
+    {
+      "run": 2, "timestamp_utc": "2026-08-21T06:13:54Z", "latency_s": 41,
+      "tool_outputs": {
+        "probe_echo": {"label":"echo","server_ip":"10.1.100.4","src_ip":"192.168.0.28","request_url":"http://echo.tools.lab/api/echo"},
+        "probe_ctrl": {"label":"ctrl","server_ip":"10.1.200.4","src_ip":"192.168.0.28","request_url":"http://ctrl.tools.lab/api/echo"}
+      }
+    },
+    {
+      "run": 3, "timestamp_utc": "2026-08-21T06:14:27Z", "latency_s": 38,
+      "tool_outputs": {
+        "probe_echo": {"label":"echo","server_ip":"10.1.100.4","src_ip":"192.168.0.110","request_url":"http://echo.tools.lab/api/echo"},
+        "probe_ctrl": {"label":"ctrl","server_ip":"10.1.200.4","src_ip":"192.168.0.110","request_url":"http://ctrl.tools.lab/api/echo"}
+      }
+    },
+    {
+      "run": 4, "timestamp_utc": "2026-08-21T08:55:33Z", "latency_s": 59, "nsg_test": true,
+      "scenario": "deny-agentsubnet-inbound-test ACTIVE on nsg-tools (priority 100, Deny, src 192.168.0.0/24)",
+      "tool_outputs": {"probe_echo": "Error: Function failed.", "probe_ctrl": "Error: Function failed."},
+      "result": "FAIL (expected) - NSG deny rule blocked AgentSubnet HTTP access to vnet-tools"
+    }
+  ],
+  "key_findings": {
+    "H2_confirmed": {
+      "result": "CONFIRMED - direct code egress from Micro VM NIC",
+      "micro_vm_src_ips": ["192.168.0.238","192.168.0.28","192.168.0.110"],
+      "micro_vm_src_ips_note": "Three recorded invocations only (runs 1-3). .229 removed: no corresponding raw invocation record.",
+      "prior_prompt_agent_src_ips": ["192.168.0.49","192.168.0.239"],
+      "nuance": "Both Micro VM NIC and data proxy draw from 192.168.0.0/24 (AgentSubnet). Direct egress confirmed; IPs not distinguishable by range.",
+      "dynamic_ip": "src_ip changes per invocation - ephemeral Micro VM container or replica load balancing"
+    },
+    "nsg_enforcement": {
+      "result": "CONFIRMED - nsg-tools controls Micro VM NIC access to vnet-tools",
+      "correct_nsg": "nsg-tools (EchoSubnet + CtrlSubnet in vnet-tools)",
+      "incorrect_nsg_first_attempt": "nsg-echo-vms (VNET-ONPREM subnets from prior lab - unrelated)",
+      "nsg_restored": true
+    },
+    "deployment": {
+      "agent": "echo-probe-agent:1", "status": "active", "runtime": "python_3_13",
+      "deploy_duration_s": 185, "deployed_via": "azd deploy"
+    }
+  }
+}

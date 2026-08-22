@@ -1,0 +1,23 @@
+{
+  "interpretation": "No current address space conflict. hub1-vnet (10.1.0.0/16) is NOT peered to vnet-foundry. CAUTION: peering hub1-vnet to vnet-foundry in the future would overlap with vnet-tools (both 10.1.0.0/16).",
+  "timestamp": "2026-08-20T10:49:xx+02:00",
+  "findings": {
+    "hub1_peered_to_foundry": false,
+    "hub1_vnet_peers": [
+      "spoke1-vnet (10.10.0.0/16)",
+      "hub2-vnet (10.2.0.0/16)"
+    ],
+    "conflicting_vnet": {
+      "addressSpace": "10.1.0.0/16",
+      "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+      "name": "hub1-vnet",
+      "lab": "dual-hub-VNRA-udr-transit (unrelated lab)"
+    },
+    "vnet_foundry_peerings": {
+      "count": 0,
+      "detail": "vnet-foundry has no existing peerings - proposed vnet-tools peering is safe"
+    }
+  },
+  "result": "CONDITIONAL PASS",
+  "gate": "3 - 10.1.0.0/16 address space conflict check"
+}

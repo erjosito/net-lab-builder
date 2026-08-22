@@ -1,0 +1,83 @@
+{
+  "etag": "W/\"edec4559-e04e-4c79-b93a-bdfc7daf213b\"",
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworkAppliances/vnra2",
+  "location": "northeurope",
+  "name": "vnra2",
+  "properties": {
+    "bandwidthInGbps": 50,
+    "ipConfigurations": [
+      {
+        "etag": "W/\"edec4559-e04e-4c79-b93a-bdfc7daf213b\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworkAppliances/vnra2/ipConfigurations/ipconfig_1_a9fa89bb-d30d-401d-a206-ff769e5f958b",
+        "name": "ipconfig_1_a9fa89bb-d30d-401d-a206-ff769e5f958b",
+        "properties": {
+          "primary": true,
+          "privateIPAddress": "10.2.0.4",
+          "privateIPAllocationMethod": "Dynamic",
+          "provisioningState": "Succeeded"
+        },
+        "type": "Microsoft.Network/virtualNetworkAppliances/ipConfigurations"
+      },
+      {
+        "etag": "W/\"edec4559-e04e-4c79-b93a-bdfc7daf213b\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworkAppliances/vnra2/ipConfigurations/ipconfig_2_a9fa89bb-d30d-401d-a206-ff769e5f958b",
+        "name": "ipconfig_2_a9fa89bb-d30d-401d-a206-ff769e5f958b",
+        "properties": {
+          "primary": false,
+          "privateIPAddress": "10.2.0.5",
+          "privateIPAllocationMethod": "Dynamic",
+          "provisioningState": "Succeeded"
+        },
+        "type": "Microsoft.Network/virtualNetworkAppliances/ipConfigurations"
+      },
+      {
+        "etag": "W/\"edec4559-e04e-4c79-b93a-bdfc7daf213b\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworkAppliances/vnra2/ipConfigurations/ipconfig_3_a9fa89bb-d30d-401d-a206-ff769e5f958b",
+        "name": "ipconfig_3_a9fa89bb-d30d-401d-a206-ff769e5f958b",
+        "properties": {
+          "primary": false,
+          "privateIPAddress": "10.2.0.6",
+          "privateIPAllocationMethod": "Dynamic",
+          "provisioningState": "Succeeded"
+        },
+        "type": "Microsoft.Network/virtualNetworkAppliances/ipConfigurations"
+      },
+      {
+        "etag": "W/\"edec4559-e04e-4c79-b93a-bdfc7daf213b\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworkAppliances/vnra2/ipConfigurations/ipconfig_4_a9fa89bb-d30d-401d-a206-ff769e5f958b",
+        "name": "ipconfig_4_a9fa89bb-d30d-401d-a206-ff769e5f958b",
+        "properties": {
+          "primary": false,
+          "privateIPAddress": "10.2.0.7",
+          "privateIPAllocationMethod": "Dynamic",
+          "provisioningState": "Succeeded"
+        },
+        "type": "Microsoft.Network/virtualNetworkAppliances/ipConfigurations"
+      },
+      {
+        "etag": "W/\"edec4559-e04e-4c79-b93a-bdfc7daf213b\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworkAppliances/vnra2/ipConfigurations/ipconfig_5_a9fa89bb-d30d-401d-a206-ff769e5f958b",
+        "name": "ipconfig_5_a9fa89bb-d30d-401d-a206-ff769e5f958b",
+        "properties": {
+          "primary": false,
+          "privateIPAddress": "10.2.0.8",
+          "privateIPAllocationMethod": "Dynamic",
+          "provisioningState": "Succeeded"
+        },
+        "type": "Microsoft.Network/virtualNetworkAppliances/ipConfigurations"
+      }
+    ],
+    "privateIPAddressVersion": "IPv4",
+    "provisioningState": "Succeeded",
+    "resourceGuid": "ef939eb4-3331-44bc-b5c6-47602d9c9915",
+    "subnet": {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/hub2-vnet/subnets/VirtualNetworkApplianceSubnet"
+    }
+  },
+  "tags": {
+    "correlation_id": "vnra-c7e2a3f1",
+    "created_by": "copilot-lab",
+    "lab": "true"
+  },
+  "type": "Microsoft.Network/virtualNetworkAppliances"
+}

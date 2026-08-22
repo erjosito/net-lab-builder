@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+requiredVersions:
+  extensions:
+    azure.ai.agents: '>=1.0.0-beta.4'
+name: echo-probe-agent
+services:
+  # NOTE: The ai-project service block with a deployments: stanza has been intentionally
+  # removed. The existing model deployment in the shared Foundry project must be reused.
+  # Keeping a deployments: block would cause `azd provision` to attempt creating a duplicate
+  # model deployment and may fail or incur unexpected cost.
+  #
+  # To deploy the agent without provisioning new Azure resources, run:
+  #   azd deploy
+  # or from VS Code: Foundry Toolkit > Deploy Hosted Agent (source-ZIP, Code mode).
+  echo-probe-agent:
+    host: azure.ai.agent
+    metadata:
+      tags:
+        - Agent Framework
+        - AI Agent Hosting
+        - Azure AI AgentServer
+        - Responses Protocol
+        - Direct Egress
+        - Network Lab
+    project: src/echo-probe-agent
+    language: python
+    codeConfiguration:
+      runtime: python_3_13
+      entryPoint: main.py
+    kind: hosted
+    name: echo-probe-agent
+    description: >
+      Hosted agent that probes echo.tools.lab and ctrl.tools.lab directly from the Micro VM
+      NIC (AgentSubnet). Used in the foundry-agent-prompt-vs-hosted-networking lab to measure
+      source IPs for H2 (direct code egress path differs from data proxy path).
+    protocols:
+      - protocol: responses
+        version: 2.0.0
+    environmentVariables:
+      - name: AZURE_AI_MODEL_DEPLOYMENT_NAME
+        value: ${AZURE_AI_MODEL_DEPLOYMENT_NAME}
+    container:
+      resources:
+        cpu: '0.5'
+        memory: 1Gi
+infra:
+  provider: microsoft.foundry

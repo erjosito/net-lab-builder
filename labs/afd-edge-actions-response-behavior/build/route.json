@@ -1,0 +1,30 @@
+{
+  "id": "/subscriptions/[REDACTED-SUB]/resourcegroups/rg-afd-edge-response-lab/providers/Microsoft.Cdn/profiles/afd-edge-response-a8fbd8e1/afdendpoints/edge-response-a8fbd8e1/routes/rt-all",
+  "name": "rt-all",
+  "properties": {
+    "cacheConfiguration": null,
+    "customDomains": [],
+    "deploymentStatus": "NotStarted",
+    "enabledState": "Enabled",
+    "forwardingProtocol": "HttpsOnly",
+    "httpsRedirect": "Enabled",
+    "linkToDefaultDomain": "Enabled",
+    "originGroup": {
+      "id": "/subscriptions/[REDACTED-SUB]/resourceGroups/rg-afd-edge-response-lab/providers/Microsoft.Cdn/profiles/afd-edge-response-a8fbd8e1/originGroups/og-origin"
+    },
+    "originPath": null,
+    "patternsToMatch": [
+      "/*"
+    ],
+    "provisioningState": "Succeeded",
+    "ruleSets": [
+      {
+        "id": "/subscriptions/[REDACTED-SUB]/resourceGroups/rg-afd-edge-response-lab/providers/Microsoft.Cdn/profiles/afd-edge-response-a8fbd8e1/ruleSets/rsresponseprobe"
+      }
+    ],
+    "supportedProtocols": [
+      "Https"
+    ]
+  },
+  "type": "Microsoft.Cdn/profiles/afdendpoints/routes"
+}

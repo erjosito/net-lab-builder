@@ -1,0 +1,124 @@
+{
+  "_note": "Sanitized output. No subscription IDs, tenant IDs, tokens, or endpoints.",
+  "_timestamp": "20260821T100443Z",
+  "_sdk_map": {
+    "azure-ai-projects 2.3.0": "External caller SDK for BOTH paths",
+    "agent_framework_openai 1.12.0": "MAF -- hosted agent INTERNAL runtime (server side, not for external callers)",
+    "azure-ai-agentserver-responses 1.0.0b9": "Hosted agent server runtime (server side, not for external callers)",
+    "azure-identity 1.25.3": "Auth; AzureCliCredential for local dev"
+  },
+  "hosted_sdk": {
+    "method": "hosted_agent_sdk",
+    "sdk": "azure-ai-projects.AIProjectClient.get_openai_client(agent_name=...)",
+    "endpoint_type": "hosted-agent Responses (stateless)",
+    "base_url_pattern": "<endpoint>/agents/<name>/endpoint/protocols/openai",
+    "auth": "AIProjectClient managed (azure-identity, ai.azure.com scope)",
+    "stream": false,
+    "latency_s": 51.27,
+    "tool_outputs": {
+      "echo": {
+        "echo": "",
+        "label": "echo",
+        "server_ip": "10.1.100.4",
+        "request_url": "http://echo.tools.lab/api/echo",
+        "ts": "2026-08-21T10:05:29.525614Z",
+        "src_ip": "192.168.0.165"
+      },
+      "ctrl": {
+        "echo": "",
+        "label": "ctrl",
+        "server_ip": "10.1.200.4",
+        "request_url": "http://ctrl.tools.lab/api/echo",
+        "ts": "2026-08-21T10:05:29.521982Z",
+        "src_ip": "192.168.0.165"
+      }
+    },
+    "output_item_types": [
+      "reasoning",
+      "function_call",
+      "function_call",
+      "function_call_output",
+      "function_call_output",
+      "reasoning",
+      "message"
+    ],
+    "agent_version": "echo-probe-agent:1",
+    "egress_context": "Micro VM NIC inside AgentSubnet (192.168.0.0/24)"
+  },
+  "hosted_rest_stream": {
+    "method": "hosted_agent_rest_streaming",
+    "sdk": "requests + AzureCliCredential direct REST (SSE)",
+    "endpoint_type": "hosted-agent Responses SSE stream",
+    "stream": true,
+    "latency_s": 40.5,
+    "sse_event_count": 213,
+    "tool_outputs": {
+      "echo": {
+        "echo": "",
+        "label": "echo",
+        "server_ip": "10.1.100.4",
+        "request_url": "http://echo.tools.lab/api/echo",
+        "ts": "2026-08-21T10:06:12.285922Z",
+        "src_ip": "192.168.0.124"
+      },
+      "ctrl": {
+        "echo": "",
+        "label": "ctrl",
+        "server_ip": "10.1.200.4",
+        "request_url": "http://ctrl.tools.lab/api/echo",
+        "ts": "2026-08-21T10:06:12.290658Z",
+        "src_ip": "192.168.0.124"
+      }
+    }
+  },
+  "comparison": {
+    "comparison_table": [
+      {
+        "dimension": "Agent / caller type",
+        "hosted": "hosted-agent echo-probe-agent:1 (Micro VM NIC, inside AgentSubnet)",
+        "client_fc": "N/A"
+      },
+      {
+        "dimension": "Invocation API",
+        "hosted": "azure-ai-projects.AIProjectClient.get_openai_client(agent_name=...)",
+        "client_fc": "N/A"
+      },
+      {
+        "dimension": "Endpoint type",
+        "hosted": "hosted-agent Responses (stateless)",
+        "client_fc": "N/A"
+      },
+      {
+        "dimension": "echo src_ip (caller seen by server)",
+        "hosted": "192.168.0.165",
+        "client_fc": "N/A"
+      },
+      {
+        "dimension": "ctrl src_ip",
+        "hosted": "192.168.0.165",
+        "client_fc": "N/A"
+      },
+      {
+        "dimension": "echo server_ip",
+        "hosted": "10.1.100.4",
+        "client_fc": "N/A"
+      },
+      {
+        "dimension": "tools.lab reachable",
+        "hosted": "Yes (Micro VM inside VNet)",
+        "client_fc": "N/A"
+      },
+      {
+        "dimension": "Latency (s)",
+        "hosted": 51.27,
+        "client_fc": "N/A"
+      },
+      {
+        "dimension": "Data proxy used",
+        "hosted": "No (direct Micro VM NIC egress)",
+        "client_fc": "N/A"
+      }
+    ],
+    "h2_assessment": "H2 CONFIRMED: Hosted agent Micro VM NIC egress from AgentSubnet (192.168.0.x)."
+  }
+}

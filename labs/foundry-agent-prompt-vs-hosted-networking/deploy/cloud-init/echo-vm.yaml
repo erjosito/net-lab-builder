@@ -1,0 +1,162 @@
+#cloud-config
+# vm-tools-echo -- HTTP/HTTPS echo service + dnsmasq for tools.lab zone
+# Role    : Primary tool target (10.1.100.4); DNS authority for tools.lab (Z2 path)
+# Label   : "echo"  (identifies which VM responded)
+# Ubuntu 22.04 LTS Gen2 . Standard_B2ts_v2
+#
+# Services:
+#   echo-http.service -- Python HTTP echo backend on port 80
+#   nginx             -- HTTPS reverse proxy on port 443 (self-signed, IP+FQDN SANs)
+#   dnsmasq           -- DNS authority for tools.lab on 10.1.100.4:53 (Z2 path)
+#
+# Echo response includes: label, server_ip (listener), request_url (dialed host/URL),
+# src_ip (client source IP via X-Real-IP from nginx or direct).
+
+packages:
+  - nginx
+  - python3
+  - tcpdump
+  - dnsmasq
+  - openssl
+  - curl
+  - net-tools
+
+write_files:
+  # -- Python echo service (HTTP, port 80) ---
+  - path: /opt/echo/app.py
+    owner: root:root
+    permissions: '0755'
+    content: |
+      #!/usr/bin/env python3
+      """
+      Echo service for foundry-agent-prompt-vs-hosted-networking lab.
+      GET /api/echo?msg=<text>  ->  JSON with echo, label, server_ip, request_url, ts, src_ip
+      GET /healthz              ->  ok
+      """
+      import datetime, json, sys
+      from http.server import BaseHTTPRequestHandler, HTTPServer
+      from urllib.parse import urlparse, parse_qs
+
+      LABEL     = "echo"
+      SERVER_IP = "10.1.100.4"
+      PORT      = 80
+
+      class EchoHandler(BaseHTTPRequestHandler):
+          def log_message(self, fmt, *args):
+              ts = datetime.datetime.utcnow().isoformat()
+              sys.stdout.write(f"[{ts}] {self.address_string()} {fmt % args}\n")
+              sys.stdout.flush()
+
+          def do_GET(self):
+              parsed = urlparse(self.path)
+              if parsed.path == '/api/echo':
+                  qs     = parse_qs(parsed.query)
+                  msg    = qs.get('msg', [''])[0]
+                  scheme = self.headers.get('X-Forwarded-Proto', 'http')
+                  # Host header preserves the originally dialed hostname (FQDN or IP)
+                  host   = self.headers.get('Host', SERVER_IP)
+                  body = json.dumps({
+                      "echo":        msg,
+                      "label":       LABEL,
+                      "server_ip":   SERVER_IP,
+                      "request_url": f"{scheme}://{host}{self.path}",
+                      "ts":          datetime.datetime.utcnow().isoformat() + "Z",
+                      "src_ip":      self.headers.get('X-Real-IP', self.client_address[0])
+                  }).encode()
+                  self.send_response(200)
+                  self.send_header('Content-Type', 'application/json')
+                  self.send_header('Content-Length', str(len(body)))
+                  self.end_headers()
+                  self.wfile.write(body)
+              elif parsed.path == '/healthz':
+                  self.send_response(200)
+                  self.send_header('Content-Length', '2')
+                  self.end_headers()
+                  self.wfile.write(b'ok')
+              else:
+                  self.send_response(404)
+                  self.end_headers()
+
+      if __name__ == '__main__':
+          server = HTTPServer(('0.0.0.0', PORT), EchoHandler)
+          sys.stdout.write(f"Echo server (label={LABEL}) listening on 0.0.0.0:{PORT}\n")
+          server.serve_forever()
+
+  # -- Systemd unit ---
+  - path: /etc/systemd/system/echo-http.service
+    content: |
+      [Unit]
+      Description=Echo HTTP service -- foundry-agent-prompt-vs-hosted-networking (label=echo)
+      After=network.target
+      [Service]
+      ExecStart=/usr/bin/python3 /opt/echo/app.py
+      Restart=always
+      RestartSec=5
+      User=root
+      StandardOutput=journal
+      StandardError=journal
+      [Install]
+      WantedBy=multi-user.target
+
+  # -- nginx HTTPS site ---
+  # Cert SAN covers IP (10.1.100.4) and FQDN (echo.tools.lab).
+  # X-Real-IP propagates the client source IP for HTTPS paths.
+  - path: /etc/nginx/sites-available/echo-https
+    content: |
+      server {
+          listen 443 ssl;
+          server_name _;
+          ssl_certificate     /etc/nginx/ssl/echo-selfsigned.crt;
+          ssl_certificate_key /etc/nginx/ssl/echo-selfsigned.key;
+          ssl_protocols       TLSv1.2 TLSv1.3;
+          location /api/echo {
+              proxy_pass http://127.0.0.1:80;
+              proxy_set_header Host $host;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_set_header X-Real-IP $remote_addr;
+          }
+          location /healthz {
+              proxy_pass http://127.0.0.1:80;
+          }
+      }
+
+  # -- dnsmasq config: tools.lab zone ---
+  # Forwarding ruleset (tools.lab -> 10.1.100.4:53) routes all tools.lab queries here.
+  # ctrl.tools.lab also served from here; vm-tools-ctrl has no DNS service.
+  # log-queries captures query source IP (observed: 192.168.3.21-25 SNAT pool from DNSOutboundSubnet /28 -- OQ5 evidence).
+  - path: /etc/dnsmasq.d/tools-lab.conf
+    content: |
+      address=/echo.tools.lab/10.1.100.4
+      address=/ctrl.tools.lab/10.1.200.4
+      listen-address=10.1.100.4
+      bind-interfaces
+      log-queries
+      log-facility=/var/log/dnsmasq.log
+
+runcmd:
+  # Free port 53 for dnsmasq (systemd-resolved stub owns it by default)
+  - sed -i 's/#DNSStubListener=yes/DNSStubListener=no/; s/DNSStubListener=yes/DNSStubListener=no/' /etc/systemd/resolved.conf
+  - systemctl restart systemd-resolved
+  - rm -f /etc/nginx/sites-enabled/default
+  - mkdir -p /etc/nginx/ssl
+  - >
+    openssl req -x509 -nodes -days 730 -newkey rsa:2048
+    -keyout /etc/nginx/ssl/echo-selfsigned.key
+    -out    /etc/nginx/ssl/echo-selfsigned.crt
+    -subj   "/CN=echo.tools.lab/O=FoundryLab/C=SE"
+    -addext "subjectAltName=DNS:echo.tools.lab,IP:10.1.100.4"
+  - chmod 600 /etc/nginx/ssl/echo-selfsigned.key
+  - ln -sf /etc/nginx/sites-available/echo-https /etc/nginx/sites-enabled/echo-https
+  - systemctl daemon-reload
+  - systemctl enable echo-http.service
+  - systemctl start echo-http.service
+  - systemctl enable dnsmasq
+  - systemctl restart dnsmasq
+  - nginx -t && systemctl restart nginx
+
+final_message: |
+  vm-tools-echo ready.
+  HTTP echo : http://10.1.100.4/api/echo?msg=test
+  HTTPS echo: https://10.1.100.4/api/echo?msg=test
+  FQDN echo : http://echo.tools.lab/api/echo?msg=test (after DNS ruleset active)
+  DNS       : dnsmasq on 10.1.100.4:53 (echo.tools.lab, ctrl.tools.lab)

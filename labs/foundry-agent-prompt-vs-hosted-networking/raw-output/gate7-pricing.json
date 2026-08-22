@@ -1,0 +1,31 @@
+{
+  "result": "PASS (manifest estimates corrected)",
+  "timestamp": "2026-08-20T11:10:xx+02:00",
+  "gate": "7 - Cost validation via Azure Retail Prices API",
+  "source": "https://prices.azure.com/api/retail/prices",
+  "findings": {
+    "incremental_total_corrected": "~12.56/day (vs 4.22/day estimated)",
+    "two_vms_per_day": 0.48,
+    "vm_b2ts_v2_linux": {
+      "product": "Virtual Machines Bsv2 Series",
+      "delta_per_day": "+0.06 (33% higher than estimate)",
+      "per_day": 0.24,
+      "retailPrice_per_hour": 0.01,
+      "meter": "B2ts v2",
+      "manifest_estimate": 0.18
+    },
+    "guardrail_50_per_day": "WITHIN GUARDRAIL - total with shared infra ~26.86/day",
+    "dns_private_resolver": {
+      "per_endpoint_per_day": 6.0,
+      "two_endpoints_per_day": 12.0,
+      "dns_forwarding_ruleset_per_day": 0.08,
+      "actual_per_day": "~12.08",
+      "inbound_endpoint_per_month": 180.0,
+      "outbound_endpoint_per_month": 180.0,
+      "manifest_estimate_per_day": 3.36,
+      "delta": "+8.72/day (3.6x higher than estimate - manifest significantly understated)",
+      "dns_forwarding_ruleset_per_month": 2.5
+    },
+    "notes": "DNS Private Resolver is the dominant cost. Lab should run only as long as needed. dnsmasq-only alternative (deployDnsResolver=false) saves ~12/day."
+  }
+}

@@ -31,12 +31,14 @@ All times local (UTC+2). Subscription and tenant IDs redacted.
 
 | # | Deviation | Root cause | Impact |
 |---|-----------|-----------|--------|
-| D1 | `publicNetworkAccess=Disabled` enforced by tenant policy | Tenant Azure Policy silently overrides ARM PUT/PATCH | Data-plane (vault.azure.net) unreachable from local machines; reads require Cloud Shell or private endpoint |
+| D1 | `publicNetworkAccess=Disabled` enforced by tenant policy | Tenant Azure Policy silently overrides ARM PUT/PATCH | Data-plane (`vault.azure.net`) is reachable only through the deployed private endpoint; standard Cloud Shell remains blocked |
 | D2 | Secret tags not set | ARM management plane secret PUT requires `value` in body for PATCH; data-plane tag update would require secret value read (blocked by D1) | Cosmetic only; secrets are functional |
 | D3 | `ping-test` stray secret present in KV | Written during early testing | Cannot disable via management plane without value. Harmless; loader does not reference it |
 
 ### Cost shape
-No additional Azure cost from KV creation (Standard SKU ~$0.03/10k operations). Client credential is process-scoped; no compute added.
+Key Vault operations are low cost. The later management-access add-on incurs
+charges for the `Standard_B2ts_v2` VM, its disk, the private endpoint, and
+Azure Bastion Basic until those resources are removed.
 
 ### Files changed
 - `deploy/Deploy-Lab.ps1` — `$KvName`/`$SkipKv` params + `Set-KvSecretArm` function + `A_KV` section

@@ -1,0 +1,30 @@
+%% diagram-id: 05-scenario-matrix
+%% lab: foundry-agent-prompt-vs-hosted-networking
+%% purpose: HS1-HS5 topology and evidence dependencies
+%% authored: 2026-08-20
+flowchart LR
+    classDef prereq fill:#e8f4f8,stroke:#1e88e5,font-weight:bold
+    classDef scenario fill:#fce4ec,stroke:#c62828
+    classDef hyp fill:#e8f8e8,stroke:#2e7d32
+
+    subgraph PREREQS["Prerequisites"]
+        T1(["T1<br/>vnet-tools peered<br/>10.1.0.0/16"]):::prereq
+        Z2(["Z2 DNS<br/>tools.lab forwarding<br/>Outbound EP 192.168.3.20"]):::prereq
+        AG(["echo-probe-agent<br/>deployed to Foundry<br/>source-ZIP"]):::prereq
+    end
+
+    HS1["HS1<br/>Prompt OpenAPI tool call<br/>echo.tools.lab<br/>PASS: src_ip = data proxy IP<br/>Tests H1"]:::scenario
+    HS2["HS2<br/>Hosted direct code call<br/>echo.tools.lab<br/>PASS: src_ip = Micro VM NIC IP<br/>Tests H2"]:::scenario
+    HS3["HS3<br/>Hosted DNS from Micro VM<br/>ctrl.tools.lab<br/>PASS: dnsmasq log from 192.168.3.21-25 (SNAT pool)<br/>Tests H3"]:::scenario
+    HS4["HS4<br/>Prompt agent DNS forwarding<br/>ctrl.tools.lab<br/>PASS: same dnsmasq query source<br/>Tests H3 baseline"]:::scenario
+    HS5["HS5<br/>Programmatic invocation<br/>vm-diag SDK + azd CLI<br/>PASS: private DNS + SDK call<br/>Tests C4"]:::scenario
+
+    T1 --> HS1
+    T1 --> HS2
+    T1 --> HS3
+    T1 --> HS4
+    Z2 --> HS3
+    Z2 --> HS4
+    AG --> HS2
+    AG --> HS3
+    AG --> HS5

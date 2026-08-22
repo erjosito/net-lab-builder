@@ -1,0 +1,135 @@
+#cloud-config
+# vm-tools-ctrl -- HTTP/HTTPS echo service (control VM, no DNS service)
+# Role    : Control tool target (10.1.200.4)
+# Label   : "ctrl"  (distinguishes response from vm-tools-echo)
+# Ubuntu 22.04 LTS Gen2 . Standard_B2ts_v2
+#
+# Configuration identical to echo-vm.yaml except:
+#   LABEL = "ctrl" / SERVER_IP = "10.1.200.4" / no dnsmasq
+# This design isolates the destination address as the sole variable between HS1 and HS4.
+
+packages:
+  - nginx
+  - python3
+  - tcpdump
+  - openssl
+  - curl
+  - net-tools
+
+write_files:
+  # -- Python echo service (HTTP, port 80) ---
+  - path: /opt/echo/app.py
+    owner: root:root
+    permissions: '0755'
+    content: |
+      #!/usr/bin/env python3
+      """
+      Echo service for foundry-agent-prompt-vs-hosted-networking lab (ctrl VM).
+      GET /api/echo?msg=<text>  ->  JSON with echo, label, server_ip, request_url, ts, src_ip
+      GET /healthz              ->  ok
+      """
+      import datetime, json, sys
+      from http.server import BaseHTTPRequestHandler, HTTPServer
+      from urllib.parse import urlparse, parse_qs
+
+      LABEL     = "ctrl"
+      SERVER_IP = "10.1.200.4"
+      PORT      = 80
+
+      class EchoHandler(BaseHTTPRequestHandler):
+          def log_message(self, fmt, *args):
+              ts = datetime.datetime.utcnow().isoformat()
+              sys.stdout.write(f"[{ts}] {self.address_string()} {fmt % args}\n")
+              sys.stdout.flush()
+
+          def do_GET(self):
+              parsed = urlparse(self.path)
+              if parsed.path == '/api/echo':
+                  qs     = parse_qs(parsed.query)
+                  msg    = qs.get('msg', [''])[0]
+                  scheme = self.headers.get('X-Forwarded-Proto', 'http')
+                  host   = self.headers.get('Host', SERVER_IP)
+                  body = json.dumps({
+                      "echo":        msg,
+                      "label":       LABEL,
+                      "server_ip":   SERVER_IP,
+                      "request_url": f"{scheme}://{host}{self.path}",
+                      "ts":          datetime.datetime.utcnow().isoformat() + "Z",
+                      "src_ip":      self.headers.get('X-Real-IP', self.client_address[0])
+                  }).encode()
+                  self.send_response(200)
+                  self.send_header('Content-Type', 'application/json')
+                  self.send_header('Content-Length', str(len(body)))
+                  self.end_headers()
+                  self.wfile.write(body)
+              elif parsed.path == '/healthz':
+                  self.send_response(200)
+                  self.send_header('Content-Length', '2')
+                  self.end_headers()
+                  self.wfile.write(b'ok')
+              else:
+                  self.send_response(404)
+                  self.end_headers()
+
+      if __name__ == '__main__':
+          server = HTTPServer(('0.0.0.0', PORT), EchoHandler)
+          sys.stdout.write(f"Echo server (label={LABEL}) listening on 0.0.0.0:{PORT}\n")
+          server.serve_forever()
+
+  # -- Systemd unit ---
+  - path: /etc/systemd/system/echo-http.service
+    content: |
+      [Unit]
+      Description=Echo HTTP service -- foundry-agent-prompt-vs-hosted-networking (label=ctrl)
+      After=network.target
+      [Service]
+      ExecStart=/usr/bin/python3 /opt/echo/app.py
+      Restart=always
+      RestartSec=5
+      User=root
+      StandardOutput=journal
+      StandardError=journal
+      [Install]
+      WantedBy=multi-user.target
+
+  # -- nginx HTTPS site ---
+  - path: /etc/nginx/sites-available/echo-https
+    content: |
+      server {
+          listen 443 ssl;
+          server_name _;
+          ssl_certificate     /etc/nginx/ssl/echo-selfsigned.crt;
+          ssl_certificate_key /etc/nginx/ssl/echo-selfsigned.key;
+          ssl_protocols       TLSv1.2 TLSv1.3;
+          location /api/echo {
+              proxy_pass http://127.0.0.1:80;
+              proxy_set_header Host $host;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_set_header X-Real-IP $remote_addr;
+          }
+          location /healthz {
+              proxy_pass http://127.0.0.1:80;
+          }
+      }
+
+runcmd:
+  - rm -f /etc/nginx/sites-enabled/default
+  - mkdir -p /etc/nginx/ssl
+  - >
+    openssl req -x509 -nodes -days 730 -newkey rsa:2048
+    -keyout /etc/nginx/ssl/echo-selfsigned.key
+    -out    /etc/nginx/ssl/echo-selfsigned.crt
+    -subj   "/CN=ctrl.tools.lab/O=FoundryLab/C=SE"
+    -addext "subjectAltName=DNS:ctrl.tools.lab,IP:10.1.200.4"
+  - chmod 600 /etc/nginx/ssl/echo-selfsigned.key
+  - ln -sf /etc/nginx/sites-available/echo-https /etc/nginx/sites-enabled/echo-https
+  - systemctl daemon-reload
+  - systemctl enable echo-http.service
+  - systemctl start echo-http.service
+  - nginx -t && systemctl restart nginx
+
+final_message: |
+  vm-tools-ctrl ready.
+  HTTP echo : http://10.1.200.4/api/echo?msg=test
+  HTTPS echo: https://10.1.200.4/api/echo?msg=test
+  FQDN echo : http://ctrl.tools.lab/api/echo?msg=test (after DNS ruleset active)

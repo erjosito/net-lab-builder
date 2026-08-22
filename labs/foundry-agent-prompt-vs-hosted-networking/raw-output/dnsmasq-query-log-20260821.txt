@@ -1,0 +1,54 @@
+# dnsmasq query log - sanitized - 2026-08-21
+# Source: vm-tools-echo (10.1.100.4), dnsmasq process 622
+# All queries arrive from DNSOutboundSubnet (192.168.3.16/28); SNAT hides original caller IP
+
+# --- Hosted agent invocations (Micro VM NIC) ---
+Aug 21 06:12:35 dnsmasq[622]: query[A] echo.tools.lab from 192.168.3.23
+Aug 21 06:12:35 dnsmasq[622]: config echo.tools.lab is 10.1.100.4
+Aug 21 06:12:35 dnsmasq[622]: query[A] ctrl.tools.lab from 192.168.3.22
+Aug 21 06:12:35 dnsmasq[622]: config ctrl.tools.lab is 10.1.200.4
+# ^ Invocation 1: src_ip=192.168.0.238; queries from .23 (echo) and .22 (ctrl)
+
+Aug 21 06:13:54 dnsmasq[622]: query[A] echo.tools.lab from 192.168.3.24
+Aug 21 06:13:54 dnsmasq[622]: config echo.tools.lab is 10.1.100.4
+Aug 21 06:13:54 dnsmasq[622]: query[A] ctrl.tools.lab from 192.168.3.21
+Aug 21 06:13:54 dnsmasq[622]: config ctrl.tools.lab is 10.1.200.4
+# ^ Invocation 2: src_ip=192.168.0.28; queries from .24 (echo) and .21 (ctrl)
+
+Aug 21 06:14:27 dnsmasq[622]: query[A] ctrl.tools.lab from 192.168.3.25
+Aug 21 06:14:27 dnsmasq[622]: config ctrl.tools.lab is 10.1.200.4
+Aug 21 06:14:27 dnsmasq[622]: query[A] echo.tools.lab from 192.168.3.25
+Aug 21 06:14:27 dnsmasq[622]: config echo.tools.lab is 10.1.100.4
+# ^ Invocation 3: src_ip=192.168.0.110; SAME outbound EP (.25) for both queries
+
+# --- vm-diag curl test (HS5, MgmtSubnet 192.168.2.4) ---
+Aug 21 06:24:15 dnsmasq[622]: query[A] echo.tools.lab from 192.168.3.24
+Aug 21 06:24:15 dnsmasq[622]: config echo.tools.lab is 10.1.100.4
+Aug 21 06:24:15 dnsmasq[622]: query[AAAA] echo.tools.lab from 192.168.3.25
+Aug 21 06:24:15 dnsmasq[622]: forwarded echo.tools.lab to 168.63.129.16
+Aug 21 06:24:15 dnsmasq[622]: reply echo.tools.lab is NODATA-IPv6
+Aug 21 06:24:15 dnsmasq[622]: query[AAAA] ctrl.tools.lab from 192.168.3.23
+Aug 21 06:24:15 dnsmasq[622]: forwarded ctrl.tools.lab to 168.63.129.16
+Aug 21 06:24:15 dnsmasq[622]: query[A] ctrl.tools.lab from 192.168.3.21
+Aug 21 06:24:15 dnsmasq[622]: config ctrl.tools.lab is 10.1.200.4
+Aug 21 06:24:15 dnsmasq[622]: reply ctrl.tools.lab is NODATA-IPv6
+# ^ vm-diag curl triggered both A and AAAA queries (modern curl); AAAA forwarded to Azure DNS (168.63.129.16), returns NODATA
+
+# --- NSG negative test invocation (run 4 - deny rule active on nsg-tools) ---
+Aug 21 08:55:33 dnsmasq[622]: query[A] echo.tools.lab from 192.168.3.25
+Aug 21 08:55:33 dnsmasq[622]: config echo.tools.lab is 10.1.100.4
+Aug 21 08:55:33 dnsmasq[622]: query[A] ctrl.tools.lab from 192.168.3.22
+Aug 21 08:55:33 dnsmasq[622]: config ctrl.tools.lab is 10.1.200.4
+# ^ DNS resolved OK (queries from DNSOutboundSubnet .3.x which is allowed by allow-in-dns rule prio 110)
+# ^ HTTP request from Micro VM (192.168.0.x) was blocked by deny rule prio 100 -> "Function failed."
+
+# --- Post-NSG-restore probe / vm-diag run ---
+Aug 21 09:00:44 dnsmasq[622]: query[A] ctrl.tools.lab from 192.168.3.24
+Aug 21 09:00:44 dnsmasq[622]: config ctrl.tools.lab is 10.1.200.4
+Aug 21 09:00:44 dnsmasq[622]: query[A] echo.tools.lab from 192.168.3.23
+Aug 21 09:00:44 dnsmasq[622]: config echo.tools.lab is 10.1.100.4
+
+# KEY FINDING - H3 CONFIRMED:
+# All DNS queries arrive at dnsmasq from 192.168.3.21-25 (DNSOutboundSubnet SNAT IPs)
+# regardless of whether the original caller was a Micro VM NIC or vm-diag (MgmtSubnet)
+# The DNS forwarding chain is context-transparent; dnsmasq cannot distinguish callers by IP.

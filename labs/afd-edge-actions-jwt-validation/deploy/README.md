@@ -119,35 +119,27 @@ Tenant policy enforces `publicNetworkAccess=Disabled` on all Key Vaults, overrid
 - **Data-plane (`vault.azure.net`)** is unreachable from local machines → returns `ForbiddenByConnection`.  
   The error is network-layer, not RBAC — the `Key Vault Secrets Officer` role assignment is correctly in place.
 - **ARM management plane** (`management.azure.com`) is unaffected → secrets are written by the deploy script via `PUT .../vaults/{name}/secrets/{secretName}?api-version=2023-07-01`.
-- **Reading** secret values requires Azure Cloud Shell (AzureServices bypass, no extra cost) or a private-endpoint network.
+- **Reading** secret values requires a private-endpoint-connected host. Standard
+  Cloud Shell uses the public data-plane endpoint and cannot reach this vault.
 
-### Loading test credentials — run in Azure Cloud Shell
+### Loading test credentials — private management VM
 
-> ⚠️ **Env vars are set in the Cloud Shell process only.** They are NOT transferred to your local machine.  
-> Run your tests in the same session immediately after loading.
+The deployed management path is:
 
 ```bash
-# 1. Open https://shell.azure.com  (or use the [>_] button in the Azure portal)
-# 2. Clone the repo (first time only):
-git clone https://github.com/<org>/net-lab-builder
-cd net-lab-builder/labs/afd-edge-actions-jwt-validation/tests
-
-# 3. Load credentials:
-pwsh Import-JwtLabEnvironment.ps1
-
-# 4. Optional — inspect names/lengths (no values):
-pwsh Import-JwtLabEnvironment.ps1 -PassThru
-
-# 5. Override vault name if needed:
-pwsh Import-JwtLabEnvironment.ps1 -VaultName kv-jwt-lab-a8fbd8e1
+# Azure portal: vm-edge-jwt-management > Connect > Bastion
+# Username: azurelabuser; authentication: local SSH private key
+source /usr/local/share/jwt-lab/Import-JwtLabEnvironment.sh
 ```
 
-After loading: `$env:TENANT_ID`, `$env:API_APP_ID`, `$env:CLIENT_ID`, `$env:CLIENT_SECRET`, `$env:AFD_ENDPOINT` are set for the lifetime of that Cloud Shell process only.
+The VM has Azure CLI installed and uses its system-assigned managed identity,
+which has `Key Vault Secrets User` at vault scope. Private DNS resolves
+`kv-jwt-lab-a8fbd8e1.vault.azure.net` to the private endpoint. The variables
+remain set only for the current Bash session.
 
-If you run the script from a local machine, `Import-JwtLabEnvironment.ps1` will detect `ForbiddenByConnection` and emit an actionable error with the exact Cloud Shell commands — no secrets will be printed or transferred.
-
-### Local PowerShell (future option)
-If local access becomes required, add a private endpoint for `kv-jwt-lab-a8fbd8e1` in `rg-afd-edge-jwt-lab`. No script changes are needed — the loader will work automatically once data-plane is reachable.
+The installed loader is also maintained in the repository as
+`tests/Import-JwtLabEnvironment.sh`. The PowerShell loader remains available
+for any PowerShell host connected to the same VNet/private DNS path.
 
 ### Credential rotation
 `client-secret` expires 7 days from creation. To rotate:
@@ -193,7 +185,7 @@ Run `.\Cleanup-Lab.ps1 -Confirmed` (with Jose's approval) to stop billing.
 
 | Issue | Check |
 |-------|-------|
-| `ForbiddenByConnection` from Import-JwtLabEnvironment.ps1 | Run the script in **Azure Cloud Shell** (`bypass=AzureServices`). The script will print exact commands when this error is detected. Do not copy secrets manually. |
+| `ForbiddenByConnection` from an environment loader | Connect to `vm-edge-jwt-management` through Azure Bastion. Standard Cloud Shell and local hosts use the blocked public endpoint. |
 | App Service 403 on `/health` | Access restriction rule 100 may have wrong header; verify `az webapp config access-restriction show` |
 | `EdgeActionConsoleLog` empty after 10 min | (1) Verify EA is attached to route; check `edgeActionsStatusCode` in FrontDoorAccessLog. (2) Confirm diagnostic settings `ea-logs` exist on the **EA resource** (not the AFD profile): `az monitor diagnostic-settings list --resource /subscriptions/.../providers/Microsoft.Cdn/EdgeActions/<name>` |
 | `InvokeEdgeAction` action not found in Rules Engine API | Try `2025-12-01-preview` API version in deploy script |

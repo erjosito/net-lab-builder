@@ -1,0 +1,33 @@
+{
+  "findings": {
+    "dns_resolver_deployed": false,
+    "agentsubnet_nsg": {
+      "CRITICAL": "NSG auto-named by Container Apps service",
+      "actual_name": "vnet-foundry-AgentSubnet-nsg-swedencentral",
+      "was_wrong": "nsg-agentsubnet",
+      "fix": "Updated nsgAgentSubnetName in lab.parameters.json and main.bicep param default",
+      "custom_rules": 0
+    },
+    "vnet_foundry": {
+      "addressSpace": "192.168.0.0/16",
+      "peering_count": 0,
+      "name": "vnet-foundry",
+      "location": "swedencentral",
+      "subnets": [
+        "AgentSubnet/24 - ACTIVE delegation Microsoft.App/environments",
+        "PESubnet/24",
+        "MgmtSubnet/24",
+        "DNSInboundSubnet/28",
+        "DNSOutboundSubnet/28",
+        "GatewaySubnet/27"
+      ]
+    },
+    "foundry_account": {
+      "name": "<account>",
+      "location": "swedencentral",
+      "kind": "AIServices"
+    }
+  },
+  "result": "PASS (critical NSG name finding - fixed)",
+  "gate": "5 - Existing Foundry account/project and AgentSubnet prerequisites"
+}

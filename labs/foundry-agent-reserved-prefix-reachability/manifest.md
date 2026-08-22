@@ -1,5 +1,17 @@
 # foundry-agent-reserved-prefix-reachability — Stage-1 Planning Manifest
-Morpheus · 2026-08-14 · **PLANNING ONLY — Phase 0 preflight and Phase 4 deployment approval not yet requested.**
+Morpheus · 2026-08-14 · **PHASE COMPLETE — S3/S4 validated 2026-08-14; H₁ confirmed.**
+
+> **Phase Status (updated 2026-08-20):** This lab is complete. S3 and S4 are validated; H₁ is
+> confirmed (VPN-learned reserved prefix `172.30.0.0/16` is reachable from agent tool calls).
+> Active work has moved to the sibling lab `labs/foundry-agent-prompt-vs-hosted-networking/`.
+>
+> **VPN stack status:** Cleanup candidate (~$11/day running cost). NOT deleted. Requires the
+> three-condition gate in `.squad/decisions/inbox/morpheus-foundry-lab-restructure.md`.
+>
+> **Shared infra** (vnet-foundry, Foundry account, model deployment, private endpoints, vm-diag,
+> private DNS zones): preserved and shared with the sibling lab. Do not delete.
+
+---
 
 ## Card Summary
 

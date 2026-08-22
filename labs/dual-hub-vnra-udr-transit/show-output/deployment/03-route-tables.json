@@ -1,0 +1,147 @@
+[
+  {
+    "disableBgpRoutePropagation": false,
+    "etag": "W/\"ab851167-1207-468e-8402-9b5699c7a4bc\"",
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/routeTables/rt-hub2-vnra",
+    "location": "northeurope",
+    "name": "rt-hub2-vnra",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+    "resourceGuid": "e9e1cbda-24e2-4a8d-9c2d-01ba55f2fcfb",
+    "routes": [
+      {
+        "addressPrefix": "10.10.0.0/16",
+        "etag": "W/\"ab851167-1207-468e-8402-9b5699c7a4bc\"",
+        "hasBgpOverride": false,
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/routeTables/rt-hub2-vnra/routes/to-10-10-0-0x16",
+        "name": "to-10-10-0-0x16",
+        "nextHopIpAddress": "10.1.0.4",
+        "nextHopType": "VirtualAppliance",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+        "type": "Microsoft.Network/routeTables/routes"
+      }
+    ],
+    "subnets": [
+      {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/hub2-vnet/subnets/VirtualNetworkApplianceSubnet",
+        "resourceGroup": "rg-dual-hub-vnra-udr-transit"
+      }
+    ],
+    "tags": {
+      "correlation_id": "vnra-c7e2a3f1",
+      "created_by": "copilot-lab",
+      "lab": "true"
+    },
+    "type": "Microsoft.Network/routeTables"
+  },
+  {
+    "disableBgpRoutePropagation": false,
+    "etag": "W/\"30c47abb-678f-42a1-9bc8-f8e475bb72ce\"",
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/routeTables/rt-spoke2",
+    "location": "northeurope",
+    "name": "rt-spoke2",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+    "resourceGuid": "2a74bfff-56e1-49fc-9c6a-12fa92a4156e",
+    "routes": [
+      {
+        "addressPrefix": "10.10.0.0/16",
+        "etag": "W/\"30c47abb-678f-42a1-9bc8-f8e475bb72ce\"",
+        "hasBgpOverride": false,
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/routeTables/rt-spoke2/routes/to-10-10-0-0x16",
+        "name": "to-10-10-0-0x16",
+        "nextHopIpAddress": "10.2.0.4",
+        "nextHopType": "VirtualAppliance",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+        "type": "Microsoft.Network/routeTables/routes"
+      }
+    ],
+    "subnets": [
+      {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/spoke2-vnet/subnets/vm-subnet",
+        "resourceGroup": "rg-dual-hub-vnra-udr-transit"
+      }
+    ],
+    "tags": {
+      "correlation_id": "vnra-c7e2a3f1",
+      "created_by": "copilot-lab",
+      "lab": "true"
+    },
+    "type": "Microsoft.Network/routeTables"
+  },
+  {
+    "disableBgpRoutePropagation": false,
+    "etag": "W/\"a4ded4da-1530-44e6-9c25-f8a55f42e618\"",
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/routeTables/rt-hub1-vnra",
+    "location": "swedencentral",
+    "name": "rt-hub1-vnra",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+    "resourceGuid": "94603107-d5a9-4f20-8a55-9596e84f19bb",
+    "routes": [
+      {
+        "addressPrefix": "10.20.0.0/16",
+        "etag": "W/\"a4ded4da-1530-44e6-9c25-f8a55f42e618\"",
+        "hasBgpOverride": false,
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/routeTables/rt-hub1-vnra/routes/to-10-20-0-0x16",
+        "name": "to-10-20-0-0x16",
+        "nextHopIpAddress": "10.2.0.4",
+        "nextHopType": "VirtualAppliance",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+        "type": "Microsoft.Network/routeTables/routes"
+      }
+    ],
+    "subnets": [
+      {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/hub1-vnet/subnets/VirtualNetworkApplianceSubnet",
+        "resourceGroup": "rg-dual-hub-vnra-udr-transit"
+      }
+    ],
+    "tags": {
+      "correlation_id": "vnra-c7e2a3f1",
+      "created_by": "copilot-lab",
+      "lab": "true"
+    },
+    "type": "Microsoft.Network/routeTables"
+  },
+  {
+    "disableBgpRoutePropagation": false,
+    "etag": "W/\"e51a6b4d-cd75-4c90-9d18-4fe0d8a14e70\"",
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/routeTables/rt-spoke1",
+    "location": "swedencentral",
+    "name": "rt-spoke1",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+    "resourceGuid": "13d994a3-a0ef-46b8-a942-e740ad6b3e83",
+    "routes": [
+      {
+        "addressPrefix": "10.20.0.0/16",
+        "etag": "W/\"e51a6b4d-cd75-4c90-9d18-4fe0d8a14e70\"",
+        "hasBgpOverride": false,
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/routeTables/rt-spoke1/routes/to-10-20-0-0x16",
+        "name": "to-10-20-0-0x16",
+        "nextHopIpAddress": "10.1.0.4",
+        "nextHopType": "VirtualAppliance",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "rg-dual-hub-vnra-udr-transit",
+        "type": "Microsoft.Network/routeTables/routes"
+      }
+    ],
+    "subnets": [
+      {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-dual-hub-vnra-udr-transit/providers/Microsoft.Network/virtualNetworks/spoke1-vnet/subnets/vm-subnet",
+        "resourceGroup": "rg-dual-hub-vnra-udr-transit"
+      }
+    ],
+    "tags": {
+      "correlation_id": "vnra-c7e2a3f1",
+      "created_by": "copilot-lab",
+      "lab": "true"
+    },
+    "type": "Microsoft.Network/routeTables"
+  }
+]
+

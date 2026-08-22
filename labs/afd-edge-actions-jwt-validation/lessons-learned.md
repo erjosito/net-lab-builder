@@ -30,11 +30,18 @@ Niobe · 2026-08-17/18
 
 ---
 
-### LL-003 — Edge Action response body is always AFD's HTML default page
+### LL-003 — Supported EA rejection returned AFD's HTML default page
 
 **Finding:** When EA sets `event.response.response_code = 401` and returns, the client receives AFD's standard HTML 401 error page — not JSON. EA code cannot set the response body (not documented in `EdgeActionsSamples`).
 
-**Impact:** APIs that return `{"error":{"code":"..."}}` JSON must set this body at the origin, not the EA. The EA is a gate, not a full HTTP response generator.
+**Evidence boundary:** The lab did not attempt to assign an undocumented
+`event.response.body` property. The confirmed observation is that the documented
+`response_code` contract produced AFD's default HTML body; custom body support
+was absent from the documented interface and was therefore not relied upon.
+
+**Impact:** APIs that require `{"error":{"code":"..."}}` JSON should produce
+that response at the origin unless custom Edge Action body support is explicitly
+documented and validated. Treat the EA as a gate, not a full response generator.
 
 **Reuse:** If a JSON error body is required for 401/403 responses, ensure the origin produces it. Clients must tolerate HTML from AFD when EA rejects.
 

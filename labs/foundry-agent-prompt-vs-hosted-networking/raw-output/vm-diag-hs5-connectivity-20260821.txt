@@ -1,0 +1,24 @@
+# vm-diag HS5 connectivity and DNS evidence - 2026-08-21
+# vm-diag: 192.168.2.4 (MgmtSubnet, vnet-foundry)
+# Run-command executed via az vm run-command invoke
+
+=ECHO-HTTP=
+{"echo":"","label":"echo","server_ip":"10.1.100.4","request_url":"http://echo.tools.lab/api/echo","ts":"2026-08-21T09:03:14.108072Z","src_ip":"192.168.2.4"}
+# HTTP 200; src_ip=192.168.2.4 (MgmtSubnet IP); DNS forwarding chain working from MgmtSubnet
+
+=CTRL-HTTP=
+{"echo":"","label":"ctrl","server_ip":"10.1.200.4","request_url":"http://ctrl.tools.lab/api/echo","ts":"2026-08-21T09:03:14.148072Z","src_ip":"192.168.2.4"}
+# HTTP 200; src_ip=192.168.2.4; both VNet-tools endpoints reachable from MgmtSubnet via peering
+
+=DNS-FOUNDRY-PRIVATE-ENDPOINT=
+Server:     127.0.0.53
+Address:    127.0.0.53#53
+
+Non-authoritative answer:
+<account>.services.ai.azure.com  canonical name = <account>.privatelink.services.ai.azure.com.
+Name:   <account>.privatelink.services.ai.azure.com
+Address: 192.168.1.10
+
+# FOUNDRY DNS SPLIT-HORIZON CONFIRMED:
+# From inside vnet-foundry (MgmtSubnet), Foundry endpoint resolves to 192.168.1.10 (PE IP in PESubnet 192.168.1.0/24)
+# NOT the public Foundry IP. Private endpoint DNS is working correctly.

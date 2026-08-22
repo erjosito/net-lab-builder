@@ -1,0 +1,31 @@
+{
+  "properties": {
+    "conditions": [
+      {
+        "parameters": {
+          "typeName": "DeliveryRuleUrlPathMatchConditionParameters",
+          "matchValues": [
+            "/ea/"
+          ],
+          "operator": "BeginsWith",
+          "transforms": [],
+          "negateCondition": false
+        },
+        "name": "UrlPath"
+      }
+    ],
+    "order": 1,
+    "actions": [
+      {
+        "parameters": {
+          "edgeActionReference": {
+            "id": "/subscriptions/[REDACTED-SUB]/resourceGroups/rg-afd-edge-response-lab/providers/Microsoft.Cdn/EdgeActions/earesponseprobe"
+          },
+          "typeName": "DeliveryRuleEdgeActionParameters",
+          "invocationPoint": "ClientRequest"
+        },
+        "name": "EdgeAction"
+      }
+    ]
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "_note": "Sanitized output. No subscription IDs, tenant IDs, tokens, or endpoints.",
+  "_timestamp": "20260821T095329Z",
+  "_sdk_map": {
+    "azure-ai-projects 2.3.0": "External caller SDK for BOTH paths",
+    "agent_framework_openai 1.12.0": "MAF -- hosted agent INTERNAL runtime (server side, not for external callers)",
+    "azure-ai-agentserver-responses 1.0.0b9": "Hosted agent server runtime (server side, not for external callers)",
+    "azure-identity 1.25.3": "Auth; AzureCliCredential for local dev"
+  },
+  "hosted_sdk": {
+    "method": "hosted_agent_sdk",
+    "error": "Failed to invoke the Azure CLI",
+    "tool_outputs": {}
+  },
+  "client_side_fc": {
+    "method": "client_side_function_calling",
+    "sdk": "azure-ai-projects.AIProjectClient.get_openai_client() [no agent_name] -> /openai/v1/",
+    "endpoint_type": "standard Foundry OpenAI endpoint (client-side tool execution)",
+    "base_url_pattern": "<endpoint>/openai/v1/",
+    "auth": "AIProjectClient managed (azure-identity)",
+    "model": "gpt-5-mini",
+    "stream": false,
+    "latency_s": 12.67,
+    "tool_calls_requested_by_model": [
+      "probe_echo",
+      "probe_ctrl"
+    ],
+    "tool_outputs": {
+      "probe_echo": {
+        "error": "HTTPConnectionPool(host='echo.tools.lab', port=80): Max retries exceeded with url: /api/echo (Caused by NameResolutionError(\"HTTPConnection(host='echo.tools.lab', port=80): Failed to resolve 'echo.tools.lab' ([Errno 11001] getaddrinfo failed)\"))",
+        "src_ip": "N/A (client-side failure)"
+      },
+      "probe_ctrl": {
+        "error": "HTTPConnectionPool(host='ctrl.tools.lab', port=80): Max retries exceeded with url: /api/echo (Caused by NameResolutionError(\"HTTPConnection(host='ctrl.tools.lab', port=80): Failed to resolve 'ctrl.tools.lab' ([Errno 11001] getaddrinfo failed)\"))",
+        "src_ip": "N/A (client-side failure)"
+      }
+    },
+    "connection_failures": [
+      "probe_echo: ConnectionError: HTTPConnectionPool(host='echo.tools.lab', port=80): Max retries exceeded with url: /api/echo (Caused by NameResolutionError(\"HTTPConnection(host='echo.tools.lab', port=80): Failed to resolve 'echo.tools.lab' ([Errno 11001] getaddrinfo failed)\"))",
+      "probe_ctrl: ConnectionError: HTTPConnectionPool(host='ctrl.tools.lab', port=80): Max retries exceeded with url: /api/echo (Caused by NameResolutionError(\"HTTPConnection(host='ctrl.tools.lab', port=80): Failed to resolve 'ctrl.tools.lab' ([Errno 11001] getaddrinfo failed)\"))"
+    ],
+    "egress_context": "CALLER (workstation/vm-diag NIC), NOT data proxy or Micro VM NIC",
+    "finding": "EXPECTED: Connection failure from workstation -- tools.lab DNS resolves only inside VNet. Client-side FC cannot access private VNet-only targets. Hosted agent (Micro VM NIC inside AgentSubnet) and data proxy (inside vnet-foundry) can.",
+    "sdk_note": "azure-ai-projects 2.3.0 AgentsOperations manages hosted agent lifecycle only (create_version, create_session, enable, disable). No create_agent/threads/runs (Assistants API). Foundry portal prompt agents with HTTP connections cannot be created programmatically."
+  },
+  "comparison": {
+    "comparison_table": [
+      {
+        "dimension": "Agent / caller type",
+        "hosted": "hosted-agent echo-probe-agent:1 (Micro VM NIC, inside AgentSubnet)",
+        "client_fc": "client-side FC via standard Foundry OpenAI endpoint"
+      },
+      {
+        "dimension": "Invocation API",
+        "hosted": "hosted_agent_sdk",
+        "client_fc": "azure-ai-projects.AIProjectClient.get_openai_client() [no agent_name] -> /openai/v1/"
+      },
+      {
+        "dimension": "Endpoint type",
+        "hosted": null,
+        "client_fc": "standard Foundry OpenAI endpoint (client-side tool execution)"
+      },
+      {
+        "dimension": "echo src_ip (caller seen by server)",
+        "hosted": "N/A",
+        "client_fc": "N/A (client-side failure)"
+      },
+      {
+        "dimension": "ctrl src_ip",
+        "hosted": "N/A",
+        "client_fc": "N/A (client-side failure)"
+      },
+      {
+        "dimension": "echo server_ip",
+        "hosted": "N/A",
+        "client_fc": "N/A"
+      },
+      {
+        "dimension": "tools.lab reachable",
+        "hosted": "Yes (Micro VM inside VNet)",
+        "client_fc": "No (DNS/connection failure): ['probe_echo: ConnectionError: HTTPConnectionPool(host=\\'echo.tools.lab\\', port=80): Max retries exceeded with url: /api/echo (Caused by NameResolutionError(\"HTTPConnection(host=\\'echo.tools.lab\\', port=80): Failed to resolve \\'echo.tools.lab\\' ([Errno 11001] getaddrinfo failed)\"))', 'probe_ctrl: ConnectionError: HTTPConnectionPool(host=\\'ctrl.tools.lab\\', port=80): Max retries exceeded with url: /api/echo (Caused by NameResolutionError(\"HTTPConnection(host=\\'ctrl.tools.lab\\', port=80): Failed to resolve \\'ctrl.tools.lab\\' ([Errno 11001] getaddrinfo failed)\"))']"
+      },
+      {
+        "dimension": "Latency (s)",
+        "hosted": null,
+        "client_fc": 12.67
+      },
+      {
+        "dimension": "Data proxy used",
+        "hosted": "No (direct Micro VM NIC egress)",
+        "client_fc": "No (client-side; data proxy requires Foundry portal agent with HTTP Connection)"
+      }
+    ],
+    "h2_assessment": "H2: insufficient data"
+  }
+}

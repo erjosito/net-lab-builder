@@ -1,0 +1,38 @@
+﻿%% diagram-id: 02-historical-vpn-reference
+%% lab: foundry-agent-prompt-vs-hosted-networking
+%% topology: T2 -- HISTORICAL VPN/BGP (sibling lab: foundry-agent-reserved-prefix-reachability)
+%% scenarios: S3 S4 (both VALIDATED -- not re-runnable without VPN stack redeploy)
+%% updated: 2026-08-20 -- VPN stack is authorized cleanup candidate; Gate D1 required before deletion
+flowchart TB
+    classDef platform fill:#ddf,stroke:#44a
+    classDef foundrynet fill:#e8f4f8,stroke:#1e88e5
+    classDef onprem fill:#fce4ec,stroke:#c62828
+    classDef cleanup fill:#fff3e0,stroke:#e65100,stroke-dasharray:6 3
+
+    HIST["AUTHORIZED CLEANUP CANDIDATE -- not yet deleted<br/>Gate D1 required before any deletion<br/>Sibling lab: foundry-agent-reserved-prefix-reachability<br/>S3/S4 validated 2026-08-14  Direction change: 2026-08-20"]:::cleanup
+
+    subgraph MSFT["Foundry Platform -- Microsoft-managed"]
+        FE["Foundry endpoint"]:::platform
+        TS["Tools Service"]:::platform
+        DP["Data Proxy<br/>AgentSubnet 192.168.0.x<br/>observed src_ip: 192.168.0.49 / 192.168.0.239"]:::platform
+        FE --> TS --> DP
+    end
+
+    subgraph VF["vnet-foundry  192.168.0.0/16  swedencentral"]
+        GWF["GatewaySubnet /27<br/>vpngw-foundry<br/>VpnGw1AZ  AS 65010<br/>CLEANUP CANDIDATE"]:::foundrynet
+    end
+
+    subgraph VPN["S2S VPN -- IKEv2 + BGP  eBGP 65010 to 65020  CLEANUP CANDIDATE"]
+        BGP["BGP advertised from onprem:<br/>172.30.0.0/16 -- reserved range<br/>10.200.100.0/24 -- control range"]:::cleanup
+    end
+
+    subgraph VO["vnet-onprem  172.30.0.0/16 + 10.200.100.0/24  norwayeast  CLEANUP CANDIDATE"]
+        GWO["GatewaySubnet /27<br/>vpngw-onprem  AS 65020<br/>CLEANUP CANDIDATE"]:::onprem
+        WS["WorkloadSubnet  172.30.100.0/24<br/>vm-onprem-echo  172.30.100.4<br/>S4 target -- RESERVED PREFIX  CLEANUP CANDIDATE"]:::onprem
+        CT["CtrlSubnet  10.200.100.0/24<br/>vm-onprem-ctrl  10.200.100.4<br/>S3 target -- control prefix  CLEANUP CANDIDATE"]:::onprem
+    end
+
+    GWF <-->|"IPsec/IKEv2"| VPN
+    VPN <-->|"IPsec/IKEv2"| GWO
+    DP -->|"S4 PASS: 172.30.100.4<br/>reserved prefix -- H1 confirmed"| WS
+    DP -->|"S3 PASS: 10.200.100.4<br/>control prefix"| CT

@@ -1,0 +1,103 @@
+[
+  {
+    "location": "swedencentral",
+    "name": "hub1-vnet",
+    "type": "Microsoft.Network/virtualNetworks"
+  },
+  {
+    "location": "northeurope",
+    "name": "hub2-vnet",
+    "type": "Microsoft.Network/virtualNetworks"
+  },
+  {
+    "location": "swedencentral",
+    "name": "spoke1-vnet",
+    "type": "Microsoft.Network/virtualNetworks"
+  },
+  {
+    "location": "northeurope",
+    "name": "spoke2-vnet",
+    "type": "Microsoft.Network/virtualNetworks"
+  },
+  {
+    "location": "swedencentral",
+    "name": "rt-spoke1",
+    "type": "Microsoft.Network/routeTables"
+  },
+  {
+    "location": "northeurope",
+    "name": "rt-spoke2",
+    "type": "Microsoft.Network/routeTables"
+  },
+  {
+    "location": "swedencentral",
+    "name": "rt-hub1-vnra",
+    "type": "Microsoft.Network/routeTables"
+  },
+  {
+    "location": "northeurope",
+    "name": "rt-hub2-vnra",
+    "type": "Microsoft.Network/routeTables"
+  },
+  {
+    "location": "swedencentral",
+    "name": "vnra1",
+    "type": "Microsoft.Network/virtualNetworkAppliances"
+  },
+  {
+    "location": "northeurope",
+    "name": "vnra2",
+    "type": "Microsoft.Network/virtualNetworkAppliances"
+  },
+  {
+    "location": "swedencentral",
+    "name": "test1-vmVMNic",
+    "type": "Microsoft.Network/networkInterfaces"
+  },
+  {
+    "location": "swedencentral",
+    "name": "test1-vm",
+    "type": "Microsoft.Compute/virtualMachines"
+  },
+  {
+    "location": "swedencentral",
+    "name": "test1-vm_OsDisk_1_0efc1a624b61457184b9eac87ea6c31a",
+    "type": "Microsoft.Compute/disks"
+  },
+  {
+    "location": "northeurope",
+    "name": "test2-vmVMNic",
+    "type": "Microsoft.Network/networkInterfaces"
+  },
+  {
+    "location": "northeurope",
+    "name": "test2-vm",
+    "type": "Microsoft.Compute/virtualMachines"
+  },
+  {
+    "location": "northeurope",
+    "name": "test2-vm_OsDisk_1_3052719420a2465d87d09c79e3ca0567",
+    "type": "Microsoft.Compute/disks"
+  },
+  {
+    "location": "northeurope",
+    "name": "spoke2-vnet-vm-subnet-nsg-northeurope",
+    "type": "Microsoft.Network/networkSecurityGroups"
+  },
+  {
+    "location": "swedencentral",
+    "name": "spoke1-vnet-vm-subnet-nsg-swedencentral",
+    "type": "Microsoft.Network/networkSecurityGroups"
+  },
+  {
+    "location": "northeurope",
+    "name": "hub2-vnet-VirtualNetworkApplianceSubnet-nsg-northeurope",
+    "type": "Microsoft.Network/networkSecurityGroups"
+  },
+  {
+    "location": "swedencentral",
+    "name": "hub1-vnet-VirtualNetworkApplianceSubnet-nsg-swedencentral",
+    "type": "Microsoft.Network/networkSecurityGroups"
+  }
+]
+

@@ -15,7 +15,10 @@ committed.
 
 **IN scope:** AFD Standard · Edge Actions v1 · App Service Linux B1 · Entra ID two-app-registration client-credentials · Log Analytics (EdgeActionConsoleLog + AFD access logs) · nine scenarios.
 
-**OUT scope:** Custom domain · PE/Private Link · WAF · App Gateway · VMs · Key Vault · multi-region origin · ExpressRoute · vWAN.
+**OUT scope (application data path):** Custom domain · PE/Private Link · WAF · App Gateway · workload VMs · multi-region origin · ExpressRoute · vWAN.
+
+> A Key Vault and private management VM were added later as operational test
+> infrastructure. They are not part of the AFD-to-origin application data path.
 
 ---
 

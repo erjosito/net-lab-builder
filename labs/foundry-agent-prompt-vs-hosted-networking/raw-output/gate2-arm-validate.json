@@ -1,0 +1,11 @@
+{
+  "command": "az deployment group validate --resource-group <rg-foundry> --template-file deploy/main.bicep --parameters ...",
+  "gate": "2 - ARM template validate (live capacity gate)",
+  "result": "PASS",
+  "outcome": {
+    "properties_provisioningState": "Succeeded",
+    "error": null
+  },
+  "notes": "Validated against actual lab RG (not temp RG) because template uses 'existing' resource references that require live resolution. ARM validate does not resolve existing references - confirmed safe. SSH key placeholder used.",
+  "timestamp": "2026-08-20T10:46:xx+02:00"
+}

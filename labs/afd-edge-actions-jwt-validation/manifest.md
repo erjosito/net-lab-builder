@@ -80,7 +80,9 @@ This is the fallback design if Edge Actions cannot perform signature verificatio
 | Log Analytics workspace | swedencentral |
 | Entra ID tenant | Tenant home directory (global) |
 
-No VNet, no VPN gateway, no private endpoint. Phase 0 VM SKU/capacity preflight is **inapplicable** — this lab has no VMs.
+The original application topology has no VNet, VPN gateway, or workload VM.
+A later operational add-on provides a private management VM, Key Vault private
+endpoint, private DNS, and Azure Bastion; it is not in the AFD request path.
 
 ---
 

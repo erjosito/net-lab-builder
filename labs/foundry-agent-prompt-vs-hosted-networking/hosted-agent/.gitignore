@@ -1,0 +1,15 @@
+# Local environment — never commit
+src/echo-probe-agent/.env
+
+# Python runtime artifacts
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# azd local state (do not commit project-specific deployment context)
+# .foundry/.deployment.json is intentionally kept for VS Code project binding.
+
+# azd runtime logs (empty, not useful in repo)
+azd-ai-agents-*.log

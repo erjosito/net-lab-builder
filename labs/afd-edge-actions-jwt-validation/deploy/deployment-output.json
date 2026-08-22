@@ -26,10 +26,24 @@
     "kv_auth_mode": "Azure RBAC (Key Vault Secrets Officer)",
     "kv_sku": "standard",
     "kv_location": "swedencentral",
-    "kv_network_note": "publicNetworkAccess=Disabled enforced by tenant policy; data-plane (vault.azure.net) accessible only from Cloud Shell (AzureServices bypass) or private-endpoint network. Secrets written via ARM management plane.",
+    "kv_network_note": "publicNetworkAccess=Disabled enforced by tenant policy; data-plane access is available from vm-edge-jwt-management through Private Link and private DNS.",
     "kv_secrets": ["client-secret", "tenant-id", "api-app-id", "client-id", "afd-endpoint"],
     "kv_secret_expiry": "client-secret expires 7 days from creation date (rotate via az ad app credential reset --append)",
-    "kv_loader_script": "labs/afd-edge-actions-jwt-validation/tests/Import-JwtLabEnvironment.ps1"
+    "kv_loader_script": "labs/afd-edge-actions-jwt-validation/tests/Import-JwtLabEnvironment.sh"
+  },
+  "management_access": {
+    "vm_name": "vm-edge-jwt-management",
+    "vm_private_ip": "10.90.0.4",
+    "vm_size": "Standard_B2ts_v2",
+    "admin_username": "azurelabuser",
+    "azure_cli_version": "2.89.1",
+    "bastion_name": "bas-edge-jwt-management",
+    "bastion_sku": "Basic",
+    "vnet_name": "vnet-edge-jwt-management",
+    "key_vault_private_endpoint": "pe-kv-jwt-lab",
+    "key_vault_private_ip": "10.90.0.36",
+    "installed_loader": "/usr/local/share/jwt-lab/Import-JwtLabEnvironment.sh",
+    "direct_public_ip": null
   },
   "entra": {
     "api_app_display_name": "app-edge-jwt-api",

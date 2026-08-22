@@ -1,0 +1,21 @@
+{
+  "query_command": "az vm list-skus --location swedencentral --name Standard_B2ts_v2 --all --output json",
+  "gate": "1 - Standard_B2ts_v2 SKU availability in SwedenCentral",
+  "result": "PASS",
+  "interpretation": "SKU available in all 3 availability zones with no restrictions. Suitable for both VMs.",
+  "findings": {
+    "zones": [
+      "1",
+      "2",
+      "3"
+    ],
+    "tier": "Standard",
+    "family": "standardBSv2Family",
+    "name": "Standard_B2ts_v2",
+    "restrictions": [],
+    "locations": [
+      "SwedenCentral"
+    ]
+  },
+  "timestamp": "2026-08-20T10:44:xx+02:00"
+}
