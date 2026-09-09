@@ -21,30 +21,88 @@
     BacpacCompression / BakCompression parameters instead of guessing them.
 
 .PARAMETER TimingCsv
-    CSV with columns: Database, SizeGb, Shape, RestoreMinutes, ExportMinutes, ArtifactGb
-    Produced by instrumenting the drain, or assembled from the drain manifests.
+    A manifest CSV written by Export-SqlDbLtrBackups.ps1 or Export-SqlMiLtrBackups.ps1.
+    The drain scripts instrument themselves, so their manifest is the measurement run;
+    no separate timing file needs assembling.
+
+    Column names are matched flexibly, so a hand-written CSV with Database/SizeGb also
+    works. Required data: a database name, a source size, restore and export minutes,
+    and an artifact size.
+
+.PARAMETER ExcludeDatabase
+    Databases to hold out of the fit. Fitting a model and then judging it by how well it
+    reproduces its own inputs proves nothing. Hold one size out, fit on the rest, and
+    compare the prediction against the measurement that was never used.
 
 .EXAMPLE
-    .\Measure-LtrCalibration.ps1 -TimingCsv .\lab-timings.csv
+    .\Measure-LtrCalibration.ps1 -TimingCsv .\ltr-export-manifest-20250101-120000.csv
+
+.EXAMPLE
+    # Held-out validation: fit without the 5 GB database, then check it.
+    .\Measure-LtrCalibration.ps1 -TimingCsv .\manifest.csv -ExcludeDatabase calib-5gb
 #>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)][string] $TimingCsv,
-    [string] $OutputPath = './calibrated-parameters.json'
+    [string]   $OutputPath = './calibrated-parameters.json',
+    [string[]] $ExcludeDatabase = @()
 )
 
 $ErrorActionPreference = 'Stop'
 
-$rows = Import-Csv $TimingCsv | ForEach-Object {
+function Get-Field {
+    # Manifests and hand-written timing files disagree on column names. Accept both
+    # rather than making the caller reshape the CSV.
+    param($Row, [string[]] $Names, $Default = $null)
+    foreach ($n in $Names) {
+        if ($Row.PSObject.Properties.Name -contains $n) {
+            $v = $Row.$n
+            if ($null -ne $v -and "$v".Trim() -ne '') { return $v }
+        }
+    }
+    return $Default
+}
+
+$raw = Import-Csv $TimingCsv
+
+# Only exported rows carry timings. Failed rows have blanks and would poison the fit.
+$status = $raw | Where-Object { $_.PSObject.Properties.Name -contains 'Status' }
+if ($status) { $raw = $raw | Where-Object { $_.Status -eq 'exported' } }
+
+$rows = $raw | ForEach-Object {
+    $name = Get-Field $_ @('Database', 'SourceDatabase', 'StagedDatabase')
+    $size = Get-Field $_ @('SizeGb', 'SourceGb')
+    $rest = Get-Field $_ @('RestoreMinutes')
+    $exp  = Get-Field $_ @('ExportMinutes')
+    $art  = Get-Field $_ @('ArtifactGb')
+    if ($null -eq $size -or $null -eq $rest -or $null -eq $exp) {
+        Write-Warning "Skipping '$name': missing size or timing data."
+        return
+    }
     [pscustomobject]@{
-        Database       = $_.Database
-        SizeGb         = [double] $_.SizeGb
-        Shape          = $_.Shape
-        RestoreMinutes = [double] $_.RestoreMinutes
-        ExportMinutes  = [double] $_.ExportMinutes
-        ArtifactGb     = [double] $_.ArtifactGb
+        Database       = $name
+        # Measured size, not requested size. Allocated size diverges from what was
+        # written (off-row storage, fill factor), and that bias lands in the slope.
+        SizeGb         = [double] $size
+        # Shape is a lab concept; infer it from the naming convention when absent so a
+        # production manifest still fits.
+        Shape          = Get-Field $_ @('Shape') $(
+                             if ("$name" -match 'compressible') { 'compressible' }
+                             elseif ("$name" -match 'random')   { 'random' }
+                             else                               { 'mixed' })
+        RestoreMinutes = [double] $rest
+        ExportMinutes  = [double] $exp
+        ArtifactGb     = if ($null -ne $art) { [double] $art } else { 0 }
     }
 }
+
+$holdout = @()
+if ($ExcludeDatabase) {
+    $holdout = @($rows | Where-Object { $ExcludeDatabase -contains $_.Database })
+    $rows    = @($rows | Where-Object { $ExcludeDatabase -notcontains $_.Database })
+    Write-Host "Holding out: $($ExcludeDatabase -join ', ')" -ForegroundColor Yellow
+}
+if (-not $rows) { throw "No usable rows in $TimingCsv." }
 
 if (-not $rows) { throw "No rows found in $TimingCsv." }
 
@@ -145,6 +203,44 @@ Write-Host "Observed range: ${worst}x (worst) to ${best}x (best)" -ForegroundCol
 Write-Host 'Use the WORST ratio for budgeting. It produces the largest artifacts and' -ForegroundColor DarkGray
 Write-Host 'the storage term dominates total cost.' -ForegroundColor DarkGray
 
+# --- Held-out validation ------------------------------------------------------
+# The honest test of the model: predict a measurement it never saw.
+$holdoutReport = @()
+if ($holdout) {
+    Write-Host ''
+    Write-Host 'Held-out prediction check' -ForegroundColor Cyan
+    Write-Host ('=' * 62) -ForegroundColor DarkGray
+    foreach ($h in $holdout) {
+        foreach ($phase in @(
+            @{ Name = 'Restore'; Fit = $restoreFit; Actual = $h.RestoreMinutes },
+            @{ Name = 'Export';  Fit = $exportFit;  Actual = $h.ExportMinutes }
+        )) {
+            $predicted = $phase.Fit.Intercept + ($phase.Fit.Slope * $h.SizeGb)
+            $errPct = if ($phase.Actual -ne 0) {
+                [math]::Round(100 * ($predicted - $phase.Actual) / $phase.Actual, 1)
+            } else { $null }
+            $holdoutReport += [pscustomobject]@{
+                Database    = $h.Database
+                Phase       = $phase.Name
+                SizeGb      = $h.SizeGb
+                PredictedMin= [math]::Round($predicted, 2)
+                ActualMin   = [math]::Round($phase.Actual, 2)
+                ErrorPct    = $errPct
+            }
+        }
+    }
+    $holdoutReport | Format-Table -AutoSize | Out-String -Width 100 | Write-Host
+
+    $maxErr = ($holdoutReport | Where-Object { $null -ne $_.ErrorPct } |
+               ForEach-Object { [math]::Abs($_.ErrorPct) } | Measure-Object -Maximum).Maximum
+    if ($maxErr -gt 25) {
+        Write-Warning "Held-out error reaches $maxErr%. The linear model does not generalise well; treat estimates as order-of-magnitude only."
+    }
+    else {
+        Write-Host "Worst held-out error: $maxErr%." -ForegroundColor Green
+    }
+}
+
 $calibrated = [pscustomobject]@{
     GeneratedUtc      = (Get-Date).ToUniversalTime().ToString('o')
     Source            = (Resolve-Path $TimingCsv).Path
@@ -157,6 +253,7 @@ $calibrated = [pscustomobject]@{
     CompressionWorst  = $worst
     CompressionBest   = $best
     SizesTestedGb     = @($calib.SizeGb)
+    HeldOut           = $holdoutReport
 }
 $calibrated | ConvertTo-Json -Depth 4 | Set-Content $OutputPath
 

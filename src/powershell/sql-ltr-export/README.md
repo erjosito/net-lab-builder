@@ -48,6 +48,17 @@ All three support `-WhatIf`. Both export scripts write a **manifest CSV** record
 original server/instance, database and restore point each artifact came from, which is the
 provenance evidence auditors actually ask for.
 
+The manifest also doubles as a measurement run. Alongside the provenance columns, each row
+records `SourceGb`, `RestoreMinutes`, `ExportMinutes` and `ArtifactGb`. Feed it to
+`labs/sql-ltr-backup-migration/deploy/Measure-LtrCalibration.ps1` to replace the
+estimator's guessed throughput and compression defaults with numbers measured on your own
+data. This matters most for compression: the default assumes 4x, and real data ranges from
+barely compressible to better than 30x. Artifact storage dominates the multi-year cost, so
+a wrong compression ratio is the single largest source of error in the estimate.
+
+Size and artifact lookups are best-effort. They never fail an export that has already
+succeeded, so a blank column means "not measured", not "zero".
+
 ### Quick start
 
 ```powershell

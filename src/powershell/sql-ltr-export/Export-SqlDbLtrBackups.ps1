@@ -83,6 +83,66 @@ function Invoke-Az {
     return $out
 }
 
+function Get-DatabaseUsedGb {
+    <#
+        Best-effort used-data size of a database, via Azure Monitor.
+
+        Deliberately best-effort: it is instrumentation for the cost model, not part
+        of the drain, so it must never fail an export. Metrics are also published on a
+        delay, so a freshly restored database can legitimately report nothing yet.
+
+        'storage' is Data space used; 'allocated_data_storage' is Data space allocated.
+        Allocated is >= used and is the safer conservative fallback.
+    #>
+    param([string] $ResourceGroup, [string] $Server, [string] $Database)
+
+    $resourceId = "/subscriptions/$((& az account show --query id -o tsv))/resourceGroups/$ResourceGroup" +
+                  "/providers/Microsoft.Sql/servers/$Server/databases/$Database"
+    foreach ($metric in @('storage', 'allocated_data_storage')) {
+        try {
+            $json = & az monitor metrics list --resource $resourceId --metric $metric `
+                        --aggregation Maximum --interval PT1M -o json 2>$null
+            if ($LASTEXITCODE -ne 0) { continue }
+            $bytes = ($json | ConvertFrom-Json).value.timeseries.data |
+                     Where-Object { $null -ne $_.maximum } |
+                     Measure-Object -Property maximum -Maximum
+            if ($bytes.Maximum -gt 0) { return [math]::Round($bytes.Maximum / 1GB, 4) }
+        }
+        catch { }
+    }
+    Write-Verbose "Could not determine used size for $Database; leaving SourceGb blank."
+    return ''
+}
+
+function Get-BlobGb {
+    <#
+        Size of the exported artifact. This is the numerator of the compression ratio,
+        which drives the artifact-storage term that dominates total cost.
+    #>
+    param([string] $BlobUri, [string] $AccountKey, [string] $KeyType = 'StorageAccessKey')
+    try {
+        $u = [Uri] $BlobUri
+        $account   = $u.Host.Split('.')[0]
+        $container = $u.AbsolutePath.Trim('/').Split('/')[0]
+        $blob      = $u.AbsolutePath.Trim('/').Substring($container.Length + 1)
+
+        # The same credential the export used: an account key or a SAS token.
+        $auth = if ($KeyType -eq 'SharedAccessKey') {
+            @('--sas-token', $AccountKey.TrimStart('?'))
+        } else {
+            @('--account-key', $AccountKey)
+        }
+
+        $size = & az storage blob show --account-name $account @auth `
+                    --container-name $container --name $blob `
+                    --query 'properties.contentLength' -o tsv 2>$null
+        if ($LASTEXITCODE -eq 0 -and $size) { return [math]::Round([double]$size / 1GB, 4) }
+    }
+    catch { }
+    Write-Verbose "Could not determine artifact size for $BlobUri."
+    return ''
+}
+
 Write-Host "Selecting source subscription $SourceSubscriptionId" -ForegroundColor Cyan
 Invoke-Az @('account', 'set', '--subscription', $SourceSubscriptionId) | Out-Null
 
@@ -138,10 +198,17 @@ foreach ($backup in $backups) {
         Status           = 'pending'
         Error            = ''
         ExportedAtUtc    = ''
+        # Instrumentation. These are what Measure-LtrCalibration.ps1 fits against,
+        # so the drain doubles as the measurement run rather than needing a separate one.
+        SourceGb         = ''
+        RestoreMinutes   = ''
+        ExportMinutes    = ''
+        ArtifactGb       = ''
     }
 
     try {
         Write-Host '  -> restoring LTR backup to temp database...' -ForegroundColor DarkGray
+        $swRestore = [System.Diagnostics.Stopwatch]::StartNew()
         Invoke-Az @(
             'sql', 'db', 'ltr-backup', 'restore',
             '--backup-id',           $backup.id,
@@ -153,8 +220,16 @@ foreach ($backup in $backups) {
             '--capacity',            $Capacity,
             '-o', 'none'
         ) | Out-Null
+        $swRestore.Stop()
+        $record.RestoreMinutes = [math]::Round($swRestore.Elapsed.TotalMinutes, 3)
+
+        # Used data size of the restored copy. Fit the cost model against this rather
+        # than against a nominal size: allocated size routinely diverges from what was
+        # written, and it is the slope of the model that suffers.
+        $record.SourceGb = Get-DatabaseUsedGb -ResourceGroup $StagingResourceGroup -Server $StagingServer -Database $tempDb
 
         Write-Host '  -> exporting BACPAC to destination storage...' -ForegroundColor DarkGray
+        $swExport = [System.Diagnostics.Stopwatch]::StartNew()
         Invoke-Az @(
             'sql', 'db', 'export',
             '-g', $StagingResourceGroup,
@@ -167,10 +242,14 @@ foreach ($backup in $backups) {
             '--storage-key-type', $DestStorageKeyType,
             '-o', 'none'
         ) | Out-Null
+        $swExport.Stop()
+        $record.ExportMinutes = [math]::Round($swExport.Elapsed.TotalMinutes, 3)
+        $record.ArtifactGb    = Get-BlobGb -BlobUri $blobUri -AccountKey $DestStorageKey -KeyType $DestStorageKeyType
 
         $record.Status        = 'exported'
         $record.ExportedAtUtc = (Get-Date).ToUniversalTime().ToString('o')
-        Write-Host "  -> OK  $blobUri" -ForegroundColor Green
+        Write-Host ("  -> OK  {0}  (restore {1} min, export {2} min, artifact {3} GB)" -f `
+                    $blobUri, $record.RestoreMinutes, $record.ExportMinutes, $record.ArtifactGb) -ForegroundColor Green
     }
     catch {
         $record.Status = 'failed'

@@ -100,6 +100,36 @@ function Invoke-Az {
     return $out
 }
 
+function Get-BlobGb {
+    <#
+        Total size in GB of one or more blobs. Striped backups are a set of blobs, so
+        the artifact size is their sum, not the size of the first one.
+
+        Best-effort: this is instrumentation for the cost model, and must never fail an
+        export that has already succeeded and verified.
+    #>
+    param([string[]] $BlobUri, [string] $Sas)
+    $total = 0
+    foreach ($uri in $BlobUri) {
+        try {
+            $u = [Uri] $uri
+            $account   = $u.Host.Split('.')[0]
+            $path      = $u.AbsolutePath.Trim('/')
+            $container = $path.Split('/')[0]
+            $blob      = $path.Substring($container.Length + 1)
+
+            $auth = if ($Sas) { @('--sas-token', $Sas.TrimStart('?')) } else { @('--auth-mode', 'login') }
+            $size = & az storage blob show --account-name $account @auth `
+                        --container-name $container --name $blob `
+                        --query 'properties.contentLength' -o tsv 2>$null
+            if ($LASTEXITCODE -ne 0 -or -not $size) { return '' }
+            $total += [double] $size
+        }
+        catch { return '' }
+    }
+    return [math]::Round($total / 1GB, 4)
+}
+
 if ($ArtifactType -eq 'NativeBak' -and -not $DestContainerSas) {
     throw 'NativeBak mode needs -DestContainerSas: the engine writes to blob using a SAS credential.'
 }
@@ -194,10 +224,16 @@ foreach ($backup in $backups) {
         Status         = 'pending'
         Error          = ''
         ExportedAtUtc  = ''
+        # Instrumentation consumed by Measure-LtrCalibration.ps1.
+        SourceGb       = ''
+        RestoreMinutes = ''
+        ExportMinutes  = ''
+        ArtifactGb     = ''
     }
 
     try {
         Write-Host '  -> restoring LTR backup onto the instance...' -ForegroundColor DarkGray
+        $swRestore = [System.Diagnostics.Stopwatch]::StartNew()
         Invoke-Az @(
             'sql', 'midb', 'ltr-backup', 'restore',
             '--backup-id',           $backup.id,
@@ -206,6 +242,20 @@ foreach ($backup in $backups) {
             '--dest-resource-group', $DestResourceGroup,
             '-o', 'none'
         ) | Out-Null
+        $swRestore.Stop()
+        $record.RestoreMinutes = [math]::Round($swRestore.Elapsed.TotalMinutes, 3)
+
+        # Allocated row-data size of the staged copy. Used twice: to size the stripe
+        # count, and as the independent variable the cost model is fitted against.
+        $sizeGb = [double] (Invoke-Mi -Database $stagedDb -Query @"
+SELECT CAST(SUM(CAST(size AS bigint)) * 8.0 / 1048576.0 AS decimal(18,2)) AS size_gb
+FROM sys.database_files WHERE type_desc = 'ROWS';
+"@).size_gb
+        $record.SourceGb = $sizeGb
+
+        # Timed separately from the restore so the cost model can fit the two phases
+        # independently. They scale very differently with size.
+        $swExport = [System.Diagnostics.Stopwatch]::StartNew()
 
         if ($ArtifactType -eq 'NativeBak') {
 
@@ -233,26 +283,21 @@ WHERE d.name = N'$stagedDb';
             Write-Host '  -> COPY_ONLY backup to blob...' -ForegroundColor DarkGray
 
             # A single blob caps at 195 GB (50,000 blocks x 4 MB MAXTRANSFERSIZE), so
-            # stripe wider databases across multiple URLs. Size the stripe count from the
-            # database's actual allocated size, not the compressed backup size, to stay safe.
-            $sizeGb = [double] (Invoke-Mi -Database $stagedDb -Query @"
-SELECT CAST(SUM(CAST(size AS bigint)) * 8.0 / 1048576.0 AS decimal(18,2)) AS size_gb
-FROM sys.database_files WHERE type_desc = 'ROWS';
-"@).size_gb
-
+            # stripe wider databases across multiple URLs.
             $stripeCount = [math]::Max(1, [math]::Ceiling($sizeGb / $GbPerStripe))
             if ($stripeCount -gt $MaxStripes) {
                 throw "Database is $sizeGb GB and needs $stripeCount stripes, above the $MaxStripes limit. Raise -GbPerStripe."
             }
 
             if ($stripeCount -eq 1) {
-                $urls = @("N'$blobUri'")
+                $stripeUris = @($blobUri)
             }
             else {
                 Write-Host "     $sizeGb GB -> striping across $stripeCount blobs" -ForegroundColor DarkGray
-                $urls = 1..$stripeCount | ForEach-Object { "N'$baseUri.part$_-of-$stripeCount.bak'" }
+                $stripeUris = 1..$stripeCount | ForEach-Object { "$baseUri.part$_-of-$stripeCount.bak" }
                 $record.ArtifactUri = "$baseUri.part{1..$stripeCount}-of-$stripeCount.bak"
             }
+            $urls = $stripeUris | ForEach-Object { "N'$_'" }
             $record.Stripes = $stripeCount
             $urlList = ($urls -join ",`n     URL = ")
 
@@ -267,6 +312,9 @@ WITH COPY_ONLY, COMPRESSION, CHECKSUM, FORMAT, INIT,
             Write-Host '  -> verifying artifact...' -ForegroundColor DarkGray
             Invoke-Mi -TimeoutSec 0 -Query "RESTORE VERIFYONLY FROM URL = $urlList WITH CHECKSUM;" | Out-Null
             $record.Verified = 'RESTORE VERIFYONLY OK'
+
+            # Sum every stripe: the whole point of striping is that one blob is not the artifact.
+            $record.ArtifactGb = Get-BlobGb -BlobUri $stripeUris -Sas $DestContainerSas
         }
         else {
             # No managed export API exists for MI, so drive sqlpackage directly. This host
@@ -285,12 +333,18 @@ WITH COPY_ONLY, COMPRESSION, CHECKSUM, FORMAT, INIT,
             $dest = if ($DestContainerSas) { "$blobUri`?$($DestContainerSas.TrimStart('?'))" } else { $blobUri }
             & az storage blob upload --blob-url $dest --file $tempBacpac --overwrite true -o none
             if ($LASTEXITCODE -ne 0) { throw 'Uploading the BACPAC to blob storage failed.' }
+            $record.ArtifactGb = [math]::Round((Get-Item $tempBacpac).Length / 1GB, 4)
             Remove-Item $tempBacpac -Force -ErrorAction SilentlyContinue
         }
 
+        $swExport.Stop()
+        $record.ExportMinutes = [math]::Round($swExport.Elapsed.TotalMinutes, 3)
+
         $record.Status        = 'exported'
         $record.ExportedAtUtc = (Get-Date).ToUniversalTime().ToString('o')
-        Write-Host "  -> OK  $blobUri" -ForegroundColor Green
+        Write-Host ("  -> OK  {0}  (restore {1} min, export {2} min, source {3} GB, artifact {4} GB)" -f `
+                    $blobUri, $record.RestoreMinutes, $record.ExportMinutes,
+                    $record.SourceGb, $record.ArtifactGb) -ForegroundColor Green
     }
     catch {
         $record.Status = 'failed'

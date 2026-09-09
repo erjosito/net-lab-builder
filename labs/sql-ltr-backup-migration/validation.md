@@ -25,6 +25,12 @@ run appears to succeed with nothing to do.
 | B2 | Restore SKU can be overridden | restore a Premium source into GP 2 vCore | 1 | Succeeds; validates the cost saving |
 | B3 | Restoring below source max size fails | restore 20 GB source into a 2 GB tier | 1 | Clean early failure |
 | B4 | Hyperscale cannot cross tiers | restore Hyperscale into GP | 1 | Fails; confirms the documented limit |
+
+B4 needs a Hyperscale database, which `Deploy-LtrLab.ps1` does not create (Hyperscale has
+no serverless auto-pause at the low end, so it would bill continuously through the
+multi-day LTR wait). Run it only if you actually have Hyperscale sources to migrate: add
+one manually with `az sql db create --edition Hyperscale --family Gen5 --capacity 2`, wait
+for its LTR backup, and confirm the drain reports the tier hint rather than a raw ARM error.
 | B5 | BACPAC export succeeds | `az sql db export` | 1 | Blob written |
 | B6 | BACPAC re-imports and matches | `az sql db import`, compare checksums | 1 | Row counts and checksums identical |
 | B7 | Temp database is always dropped | kill the run mid-export | 1 | `finally` still drops it |
@@ -77,7 +83,14 @@ and must not be tested. It is taken from documentation.
 | E5 | Estimator predicts a held-out case | predict 5 GB from 1 and 20 GB only | 1 | Within ~25% of measured |
 
 E5 is the honest test of the model. Fitting a line through points it was fitted on proves
-nothing; predicting a withheld point does.
+nothing; predicting a withheld point does. Run it with:
+
+```powershell
+.\Measure-LtrCalibration.ps1 -TimingCsv <manifest.csv> -ExcludeDatabase calib-5gb
+```
+
+The fitter drops that database, fits on the remaining sizes, then prints predicted versus
+actual and warns if the error exceeds 25%.
 
 **Why three sizes and two shapes.** A single database cannot separate fixed overhead from
 per-GB slope, and a single data shape cannot bound compression. A dry run of
@@ -94,7 +107,7 @@ the dominant cost term over a multi-year retention.
 - The C1 failure message verbatim; it is the documented behaviour in the wild
 - `RESTORE VERIFYONLY` output for both the intact and corrupted artifact (C4, C5)
 - Cost analysis export covering the drain window (C9, D5)
-- `calibrated-parameters.json` and the timing CSV (E1 to E5)
+- `calibrated-parameters.json` and the drain manifest CSV (E1 to E5)
 
 Sanitize per `labs/README.md` before committing: subscription IDs, tenant IDs, admin
 passwords, storage keys and SAS tokens.

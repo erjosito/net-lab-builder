@@ -144,6 +144,7 @@ backups costs storage only.
 
 | Phase | Script | Duration |
 |---|---|---|
+| 0. Pre-flight | `Test-LabSql.ps1` | seconds |
 | 1. Seed | `Deploy-LtrLab.ps1` | ~1 hour (data load) |
 | 2. Wait | `Watch-LtrLabBackups.ps1` | hours to 7 days |
 | 3. Execute | delete sources, then the drain scripts in `src/powershell/sql-ltr-export/` | ~2 hours |
@@ -152,6 +153,9 @@ backups costs storage only.
 
 ```powershell
 cd labs\sql-ltr-backup-migration\deploy
+
+# Phase 0: parse the T-SQL before spending an hour finding a typo the hard way
+.\Test-LabSql.ps1
 
 # Phase 1
 .\Deploy-LtrLab.ps1 -ResourceGroup rg-ltr-lab -Location eastus `
@@ -164,12 +168,19 @@ cd labs\sql-ltr-backup-migration\deploy
 az sql db delete -g rg-ltr-lab -s <server> -n <db> --yes
 .\Watch-LtrLabBackups.ps1 -Location eastus -Server <server> -Once   # must still list
 
-# Phase 4
-.\Measure-LtrCalibration.ps1 -TimingCsv .\lab-timings.csv
+# Phase 4: the drain manifest IS the measurement run
+.\Measure-LtrCalibration.ps1 -TimingCsv ..\..\..\ltr-export-manifest-*.csv
 
 # Phase 5 (deletes the LTR backups too; the resource group alone is not enough)
 .\Remove-LtrLab.ps1 -ResourceGroup rg-ltr-lab -Location eastus -Server <server>
 ```
+
+**The drain scripts instrument themselves.** Each manifest row carries `SourceGb`,
+`RestoreMinutes`, `ExportMinutes` and `ArtifactGb` alongside the provenance fields, so
+phase 4 reads the manifest directly. There is no separate timing file to assemble by hand,
+and the model is fitted against the *measured* size of each restored copy rather than the
+size the seed script was asked for. Those two numbers routinely differ, and the difference
+lands in the per-GB slope if you ignore it.
 
 **Teardown is not just a resource-group delete.** LTR backups deliberately outlive their
 source resources, so `Remove-LtrLab.ps1` clears the policies and deletes the backups

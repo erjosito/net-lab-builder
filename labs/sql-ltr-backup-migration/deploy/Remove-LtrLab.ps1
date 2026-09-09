@@ -48,9 +48,14 @@ foreach ($db in ($dbs -split "`n" | Where-Object { $_ })) {
 Write-Host 'Deleting existing LTR backups...' -ForegroundColor Cyan
 $backups = & az sql db ltr-backup list -l $Location --server $Server --database-state All -o json 2>$null | ConvertFrom-Json
 foreach ($b in $backups) {
+    # Unlike `midb`, `az sql db ltr-backup delete` has no --id/--ids parameter.
+    # It requires the location/server/database/name tuple. The name is the
+    # composite "<serverGuid>;<backupTimeTicks>;<tier>" returned by the list call.
+    $srv = if ($b.serverName) { $b.serverName } else { $Server }
     if ($PSCmdlet.ShouldProcess("$($b.databaseName) @ $($b.backupTime)", 'delete LTR backup')) {
-        Try-Az @('sql', 'db', 'ltr-backup', 'delete', '--id', $b.id, '--yes', '-o', 'none') `
-               "delete backup $($b.id)" | Out-Null
+        Try-Az @('sql', 'db', 'ltr-backup', 'delete', '-l', $Location, '-s', $srv,
+                 '-d', $b.databaseName, '-n', $b.name, '--yes', '-o', 'none') `
+               "delete backup $($b.name)" | Out-Null
     }
 }
 
