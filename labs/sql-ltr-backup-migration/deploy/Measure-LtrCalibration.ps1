@@ -211,6 +211,12 @@ if ($holdout) {
     Write-Host 'Held-out prediction check' -ForegroundColor Cyan
     Write-Host ('=' * 62) -ForegroundColor DarkGray
     foreach ($h in $holdout) {
+        # The fit is built from mixed-shape databases only. Holding out a probe reports
+        # a comparison against a model that never included its shape, which is not a
+        # generalisation test; it mostly measures the compression difference.
+        if ($h.Shape -ne 'mixed') {
+            Write-Warning "'$($h.Database)' is shape '$($h.Shape)', which is excluded from the fit anyway. Hold out a mixed-shape database for a meaningful test."
+        }
         foreach ($phase in @(
             @{ Name = 'Restore'; Fit = $restoreFit; Actual = $h.RestoreMinutes },
             @{ Name = 'Export';  Fit = $exportFit;  Actual = $h.ExportMinutes }

@@ -144,7 +144,7 @@ backups costs storage only.
 
 | Phase | Script | Duration |
 |---|---|---|
-| 0. Pre-flight | `Test-LabSql.ps1` | seconds |
+| 0. Pre-flight | `Test-LabSql.ps1`, `Test-DrainHelpers.ps1` | seconds |
 | 1. Seed | `Deploy-LtrLab.ps1` | ~1 hour (data load) |
 | 2. Wait | `Watch-LtrLabBackups.ps1` | hours to 7 days |
 | 3. Execute | delete sources, then the drain scripts in `src/powershell/sql-ltr-export/` | ~2 hours |
@@ -156,6 +156,9 @@ cd labs\sql-ltr-backup-migration\deploy
 
 # Phase 0: parse the T-SQL before spending an hour finding a typo the hard way
 .\Test-LabSql.ps1
+# ...and prove the instrumentation helpers parse az output correctly. They fail soft
+# to blank, so a parsing bug would silently leave phase 4 with nothing to fit.
+.\Test-DrainHelpers.ps1
 
 # Phase 1
 .\Deploy-LtrLab.ps1 -ResourceGroup rg-ltr-lab -Location eastus `
