@@ -61,6 +61,11 @@ param(
 
     # Staging SKU. Cheapest tier that still fits the data wins; GP_Gen5 2 vCore is a
     # sane speed/cost balance. Standard S0 is cheaper per hour but exports far slower.
+    #
+    # IMPORTANT: restoring BETWEEN Hyperscale and non-Hyperscale tiers is not supported.
+    # If the source database was Hyperscale you must pass -Edition Hyperscale, and a
+    # Hyperscale database cannot be exported to BACPAC at all in some configurations.
+    # The chosen tier must also be large enough to hold the source's max data size.
     [string] $Edition  = 'GeneralPurpose',
     [string] $Family   = 'Gen5',
     [int]    $Capacity = 2,
@@ -171,6 +176,13 @@ foreach ($backup in $backups) {
         $record.Status = 'failed'
         $record.Error  = $_.Exception.Message
         Write-Warning "  -> FAILED: $($_.Exception.Message)"
+
+        # The two failure modes that actually bite in practice both look like generic
+        # restore errors, so translate them into something actionable.
+        if ($_.Exception.Message -match 'Hyperscale|edition|service objective|tier') {
+            Write-Warning "     Hint: the source may be Hyperscale, or -Capacity $Capacity may be too small for its max size."
+            Write-Warning "     Restoring between Hyperscale and other tiers is not supported. Re-run these backups with a matching -Edition."
+        }
     }
     finally {
         # Always drop the temp database: it is the only thing actually costing money.

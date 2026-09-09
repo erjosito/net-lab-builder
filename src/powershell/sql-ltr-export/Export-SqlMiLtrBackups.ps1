@@ -81,6 +81,12 @@ param(
 
     [string] $SqlPackagePath = 'sqlpackage.exe',
     [int]    $DecryptTimeoutMinutes = 60,
+
+    # BACKUP TO URL is capped at 195 GB per stripe (50,000 blocks x 4 MB). Larger
+    # databases must be striped across multiple URLs, up to 64 of them.
+    [int]    $GbPerStripe = 150,
+    [int]    $MaxStripes  = 64,
+
     [string] $ManifestPath = "./mi-ltr-export-manifest-$(Get-Date -Format 'yyyyMMdd-HHmmss').csv",
     [switch] $KeepStagedDatabase
 )
@@ -152,26 +158,37 @@ $index    = 0
 
 foreach ($backup in $backups) {
     $index++
+
+    # Property names per the ManagedInstanceLongTermRetentionBackup schema. Fall back
+    # rather than silently writing blanks into the compliance manifest.
+    $srcInstance = if ($backup.managedInstanceName) { $backup.managedInstanceName } else { 'unknown-instance' }
+    $srcDatabase = if ($backup.databaseName)        { $backup.databaseName }        else { 'unknown-database' }
+    if ($srcInstance -eq 'unknown-instance' -or $srcDatabase -eq 'unknown-database') {
+        Write-Warning "Backup $($backup.id) is missing expected name properties; manifest provenance will be incomplete."
+    }
+
     $stamp    = ([datetime] $backup.backupTime).ToString('yyyyMMdd-HHmmss')
-    $stagedDb = "ltr_$($backup.databaseName)_$stamp" -replace '[^A-Za-z0-9_]', '_'
+    $stagedDb = "ltr_${srcDatabase}_$stamp" -replace '[^A-Za-z0-9_]', '_'
     if ($stagedDb.Length -gt 100) { $stagedDb = $stagedDb.Substring(0, 100) }
 
     $ext      = if ($ArtifactType -eq 'NativeBak') { 'bak' } else { 'bacpac' }
-    $blobUri  = "$($DestContainerUri.TrimEnd('/'))/$($backup.managedInstanceName)/$($backup.databaseName)/$stamp.$ext"
+    $baseUri  = "$($DestContainerUri.TrimEnd('/'))/$srcInstance/$srcDatabase/$stamp"
+    $blobUri  = "$baseUri.$ext"
 
     Write-Host ''
-    Write-Host "[$index/$($backups.Count)] $($backup.managedInstanceName)/$($backup.databaseName) @ $($backup.backupTime)" -ForegroundColor Yellow
+    Write-Host "[$index/$($backups.Count)] $srcInstance/$srcDatabase @ $($backup.backupTime)" -ForegroundColor Yellow
 
     if (-not $PSCmdlet.ShouldProcess($blobUri, "restore LTR backup and export $ArtifactType")) { continue }
 
     $record = [pscustomobject]@{
-        SourceInstance = $backup.managedInstanceName
-        SourceDatabase = $backup.databaseName
+        SourceInstance = $srcInstance
+        SourceDatabase = $srcDatabase
         BackupTime     = $backup.backupTime
         BackupExpiry   = $backup.backupExpirationTime
         LtrBackupId    = $backup.id
         ArtifactUri    = $blobUri
         ArtifactType   = $ArtifactType
+        Stripes        = 1
         StagedDatabase = $stagedDb
         Verified       = ''
         Status         = 'pending'
@@ -214,16 +231,41 @@ WHERE d.name = N'$stagedDb';
             }
 
             Write-Host '  -> COPY_ONLY backup to blob...' -ForegroundColor DarkGray
+
+            # A single blob caps at 195 GB (50,000 blocks x 4 MB MAXTRANSFERSIZE), so
+            # stripe wider databases across multiple URLs. Size the stripe count from the
+            # database's actual allocated size, not the compressed backup size, to stay safe.
+            $sizeGb = [double] (Invoke-Mi -Database $stagedDb -Query @"
+SELECT CAST(SUM(CAST(size AS bigint)) * 8.0 / 1048576.0 AS decimal(18,2)) AS size_gb
+FROM sys.database_files WHERE type_desc = 'ROWS';
+"@).size_gb
+
+            $stripeCount = [math]::Max(1, [math]::Ceiling($sizeGb / $GbPerStripe))
+            if ($stripeCount -gt $MaxStripes) {
+                throw "Database is $sizeGb GB and needs $stripeCount stripes, above the $MaxStripes limit. Raise -GbPerStripe."
+            }
+
+            if ($stripeCount -eq 1) {
+                $urls = @("N'$blobUri'")
+            }
+            else {
+                Write-Host "     $sizeGb GB -> striping across $stripeCount blobs" -ForegroundColor DarkGray
+                $urls = 1..$stripeCount | ForEach-Object { "N'$baseUri.part$_-of-$stripeCount.bak'" }
+                $record.ArtifactUri = "$baseUri.part{1..$stripeCount}-of-$stripeCount.bak"
+            }
+            $record.Stripes = $stripeCount
+            $urlList = ($urls -join ",`n     URL = ")
+
             # CHECKSUM makes the artifact independently verifiable years from now.
             Invoke-Mi -TimeoutSec 0 -Query @"
 BACKUP DATABASE [$stagedDb]
-TO URL = N'$blobUri'
+TO URL = $urlList
 WITH COPY_ONLY, COMPRESSION, CHECKSUM, FORMAT, INIT,
      MAXTRANSFERSIZE = 4194304;
 "@ | Out-Null
 
             Write-Host '  -> verifying artifact...' -ForegroundColor DarkGray
-            Invoke-Mi -TimeoutSec 0 -Query "RESTORE VERIFYONLY FROM URL = N'$blobUri' WITH CHECKSUM;" | Out-Null
+            Invoke-Mi -TimeoutSec 0 -Query "RESTORE VERIFYONLY FROM URL = $urlList WITH CHECKSUM;" | Out-Null
             $record.Verified = 'RESTORE VERIFYONLY OK'
         }
         else {
