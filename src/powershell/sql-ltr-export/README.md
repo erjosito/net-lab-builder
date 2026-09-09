@@ -17,6 +17,44 @@ portable artifact.
 LTR backup --restore--> live database --export--> BACPAC / .bak --> blob storage (any subscription)
 ```
 
+## Verification status
+
+Be honest about what has and has not been proven, because the cost model is only as good
+as its inputs.
+
+| Claim | Status | How |
+|---|---|---|
+| LTR survives DB / server / instance deletion, dies with the subscription | **Verified** | Microsoft Learn |
+| LTR restore is subscription-locked; PITR is not | **Verified** | Microsoft Learn |
+| Export destination storage may live in another subscription | **Verified** | Auth is storage key / SAS, not ARM |
+| Service-managed TDE blocks COPY_ONLY on MI | **Verified** | Microsoft Learn |
+| `BACKUP TO URL` caps at 195 GB per stripe, 64 stripes | **Verified** | Microsoft Learn |
+| `az` command and parameter surface | **Verified** | Live `az --help`, CLI 2.84.0 |
+| SQL DB / MI GP Gen5 compute $/vCore/hr | **Verified** | Retail prices API: $0.152217 |
+| Cost model arithmetic | **Verified** | Hand-checked against every printed field |
+| Regression fitter recovers known parameters | **Verified** | Synthetic ground truth, R-squared 1.0 |
+| Scripts are syntactically valid | **Verified** | PowerShell AST + ScriptDom for T-SQL |
+| **Drain scripts run end to end against Azure** | **NOT verified** | Requires the lab |
+| **Throughput constants** (min/GB for restore, export, backup) | **NOT verified** | Educated guesses; the lab exists to measure them |
+| **Compression ratios** (4.0 BACPAC, 3.0 `.bak`) | **NOT verified** | Depends entirely on your data |
+
+**The compression assumption is the one that matters.** Artifact storage dominates total
+cost over a multi-year retention, and it is inversely proportional to the compression
+ratio. For 60 backups x 50 GB over 7 years:
+
+| Compression | Artifact GB | Grand total |
+|---|---|---|
+| 4.0x (default assumption) | 750 | $1,289 |
+| 1.02x (incompressible) | 2,941 | $4,971 |
+
+That is a 3.9x swing driven by a number nobody has measured on your data. Budget with the
+worst ratio you observe, and price the Archive tier before committing: it cuts the storage
+term by roughly 20x and it is the term that dominates.
+
+The throughput constants are far less dangerous. They only affect one-time compute, which
+is noise (about 2% of the total for SQL DB, and exactly zero for MI if you drain before
+deleting the instance).
+
 ## Decision tree
 
 **Before building anything, confirm the old subscription is really going away.**

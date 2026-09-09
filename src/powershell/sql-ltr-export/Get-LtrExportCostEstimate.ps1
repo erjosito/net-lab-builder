@@ -79,7 +79,11 @@ param(
     [ValidateSet('SameRegion', 'CrossRegion', 'Internet')]
     [string] $ArtifactDestination = 'SameRegion',
 
-    [switch] $RefreshPrices
+    [switch] $RefreshPrices,
+
+    # Return the estimate objects for scripting. Without this the script only prints
+    # the human-readable view.
+    [switch] $PassThru
 )
 
 $ErrorActionPreference = 'Stop'
@@ -91,18 +95,26 @@ function Get-RetailPrice {
 }
 
 if ($RefreshPrices) {
-    Write-Verbose 'Refreshing prices from the Azure retail price API...'
+    Write-Host 'Refreshing compute prices from the Azure retail price API...' -ForegroundColor DarkGray
     $db = Get-RetailPrice "serviceName eq 'SQL Database' and armRegionName eq 'eastus' and priceType eq 'Consumption' and unitOfMeasure eq '1 Hour'" |
             Where-Object { $_.productName -eq 'SQL Database Single/Elastic Pool General Purpose - Compute Gen5' -and $_.skuName -eq '1 vCore' } |
             Select-Object -First 1
+    # Warn rather than fall through quietly. Meter names change; a filter that stops
+    # matching would otherwise leave -RefreshPrices looking like it worked while
+    # silently using the hardcoded defaults.
     if ($db) { $VCoreHourUsd = [double] $db.retailPrice }
+    else     { Write-Warning "No retail price matched for SQL DB GP Gen5 1 vCore; keeping default `$$VCoreHourUsd/vCore/hr." }
 
     $mi = Get-RetailPrice "serviceName eq 'SQL Managed Instance' and armRegionName eq 'eastus' and priceType eq 'Consumption' and unitOfMeasure eq '1 Hour'" |
             Where-Object { $_.productName -eq 'SQL Managed Instance General Purpose - Compute Gen5' -and $_.skuName -eq '1 vCore' } |
             Select-Object -First 1
     if ($mi) { $MiVCoreHourUsd = [double] $mi.retailPrice }
+    else     { Write-Warning "No retail price matched for SQL MI GP Gen5 1 vCore; keeping default `$$MiVCoreHourUsd/vCore/hr." }
 
-    Write-Verbose "SQL DB vCore/hr = $VCoreHourUsd ; SQL MI vCore/hr = $MiVCoreHourUsd"
+    Write-Host "  SQL DB vCore/hr = `$$VCoreHourUsd ; SQL MI vCore/hr = `$$MiVCoreHourUsd" -ForegroundColor DarkGray
+    # Storage rates are not refreshed: blob, SQL data and LTR meters vary by redundancy
+    # and tier, so picking one automatically would be a guess dressed up as a lookup.
+    Write-Host "  Storage rates not refreshed; override -BlobGbMonthUsd / -SqlStorageGbMonthUsd if needed." -ForegroundColor DarkGray
 }
 
 # Azure Hybrid Benefit strips the SQL licence component out of the vCore rate.
@@ -204,9 +216,12 @@ if ($Path -in 'SqlMi', 'Both') {
 Write-Host ''
 Write-Host "LTR drain estimate - $BackupCount backups x $AvgDatabaseGb GB, $RetentionMonths months retention" -ForegroundColor Cyan
 Write-Host ('=' * 78) -ForegroundColor DarkGray
-$results | Format-List
+$results | Format-List | Out-String -Width 120 | Write-Host
 Write-Host 'Incremental cost only. Excludes the LTR storage you already pay for today.' -ForegroundColor DarkGray
 Write-Host "Artifact destination: $ArtifactDestination (egress `$$egressGbUsd/GB)."       -ForegroundColor DarkGray
 Write-Host ''
 
-$results
+# Emit objects only on request. Rendering them here AND returning them printed the
+# whole estimate twice; -PassThru keeps the display readable while still allowing
+# `... -PassThru | Export-Csv` for comparing scenarios.
+if ($PassThru) { $results }
