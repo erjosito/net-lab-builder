@@ -2,6 +2,54 @@
 
 # Project Context
 
+## 2026-09-10 -- sql-ltr-backup-migration Managed Instance Provisioning Started
+
+### TANK-011 -- SQL Managed Instance Create Issued with Entra-only Application Admin
+
+**Objective:** Start provisioning Azure SQL Managed Instance `ltrlab552754-mi` in
+`rg-ltr-lab` and stop after the async create begins. No databases were created and no
+BACKUP TO URL tests were run.
+
+**Quota gate:** Microsoft.Sql usage for `swedencentral` showed
+`SubscriptionSQLManagedInstanceStandardSeriesVCoreQuota` current=0, limit=960 before
+network changes. The 4-vCore minimum MI create was allowed to proceed.
+
+**Network prerequisites created and verified before create:**
+- Subnet `snet-mi` with prefix `10.70.3.0/24`.
+- Delegation `Microsoft.Sql/managedInstances`.
+- Route table `rt-snet-mi`, initially empty, BGP route propagation left enabled.
+- NSG `nsg-snet-mi`, initially default rules only.
+- Both route table and NSG associated to `snet-mi`.
+- Subnet had no IP configurations before `az sql mi create`.
+
+**Create command pattern used:** Entra-only auth with
+`--external-admin-principal-type Application`, external admin name
+`ltrlab552754-umi`, and `--external-admin-sid 9dab92a8-7084-442e-8617-139fda64b1c9`.
+For Application principal type this SID is the UAMI clientId, not the principalId.
+The UAMI was also attached as UserAssigned identity and primary UAMI.
+
+**Result:** `ltrlab552754-mi` is provisioning. `az sql mi show` reports
+`provisioningState=Creating`, `state=Creating`, `vCores=4`, `storageSizeInGb=32`,
+`licenseType=BasePrice`, `requestedBackupStorageRedundancy=Local`,
+`publicDataEndpointEnabled=false`, Entra-only admin enabled, and primary UAMI set to
+`ltrlab552754-umi`.
+
+**Post-start network intent policy behavior:** As soon as MI provisioning starts,
+Azure creates a SQL MI service association link, virtual cluster association, and
+Microsoft.Sql-managedInstances_UseOnly routes and NSG rules. From that point on,
+rewriting the route table as empty fails with `ConflictWithNetworkIntentPolicy`.
+The reusable script must create an empty RT and default NSG before MI create, then use
+read-only subnet verification if the MI already exists.
+
+**Artifacts produced:**
+- `labs/sql-ltr-backup-migration/deploy/Deploy-LtrLabMi.ps1`
+- `labs/sql-ltr-backup-migration/deploy/ltrlab-mi-identifiers.json`
+
+**Poll command:**
+```powershell
+az sql mi show -g rg-ltr-lab -n ltrlab552754-mi --query "{provisioningState:provisioningState,state:state,fullyQualifiedDomainName:fullyQualifiedDomainName}" -o json
+```
+
 ## 2026-09-10 -- sql-ltr-backup-migration Calibration Run
 
 ### TANK-010 -- BACPAC Compression and Export Throughput: First Live Measurements
@@ -1399,3 +1447,50 @@ and non-streaming request headers (sanitization artifact). Fixed to f"Bearer {to
 All three files pass py_compile; 10/10 unit tests pass.
 
 📌 Team update (2026-08-21T15:35:00+02:00): Foundry prompt-vs-hosted networking lab PUBLICATION-READY. Echo-probe-agent deployed, SDK testing complete (8 invocations, all empirical outcomes confirmed). Hypothesis H1 baseline-only, H2-H3 confirmed. Documentation, test scripts, diagrams all finalized. Niobe approval granted. Decided by Scribe (session orchestration).
+
+## 2026-09-10 -- sql-ltr-backup-migration MI BACKUP TO URL Validation
+
+### TANK-020 -- Managed Identity Credential Accepted, Native Backup Blocked by Service-managed TDE
+
+**Context:** Jose requested the final load-bearing validation for the Managed Instance path under Entra-only auth, disabled public network access, and storage with shared keys and SAS disabled. Existing MI, UAMI, storage, private endpoint, and VM were reused. No Azure resources were deleted and public network access was not enabled.
+
+**Prerequisites confirmed:**
+- Storage account `ltrlab552754sa`: `allowSharedKeyAccess=false`, `publicNetworkAccess=Disabled`.
+- UAMI principalId `6ae8e9fe-6b1a-437f-bf94-83430a391337` already had `Storage Blob Data Contributor` at storage account scope.
+- Workstation `az storage container create --auth-mode login` failed due storage network rules, as expected.
+- From `ltrlab-vm`, blob DNS resolves through privatelink to `10.70.1.5`; TCP 443 succeeds.
+- Container `mi-backups` was created from inside the VNet using the VM UAMI and Blob REST with an IMDS storage token.
+
+**SQL test:**
+- Connected to `ltrlab552754-mi.8a97d4e15d77.database.windows.net` from `ltrlab-vm` using `Invoke-Sqlcmd -AccessToken` with an IMDS database token for UAMI clientId `9dab92a8-7084-442e-8617-139fda64b1c9`.
+- Created `mitest` and seeded 2500 rows: 43.1171875 MB reserved, 42.0312500 MB used, 104.0000000 MB allocated.
+- `CREATE CREDENTIAL [https://ltrlab552754sa.blob.core.windows.net/mi-backups] WITH IDENTITY = 'Managed Identity'` succeeded.
+- `BACKUP DATABASE [mitest] TO URL = 'https://ltrlab552754sa.blob.core.windows.net/mi-backups/mitest.bak' WITH COPY_ONLY, COMPRESSION, STATS = 10` failed with Msg 41922:
+
+```text
+The backup operation for a database with service-managed transparent data encryption is not supported on SQL Database Managed Instance.
+BACKUP DATABASE is terminating abnormally.
+ Msg 41922, Level 16, State 1, Procedure , Line 1.
+```
+
+**Correction after Jose review:** The first verdict was misattributed. Msg 41922 proved only the documented service-managed TDE caveat, not a negative Managed Identity storage-auth result.
+
+**Follow-up test after TDE remediation:**
+- Ran `ALTER DATABASE [mitest] SET ENCRYPTION OFF`; DMV reached `encryption_state=1`.
+- First retry still failed with Msg 41938: `BACKUP WITH COPY_ONLY cannot be performed since database encryption key for the database 'mitest' still exists. Retry command after you drop database encryption key.`
+- Ran `DROP DATABASE ENCRYPTION KEY` in `mitest`; DMV row disappeared.
+- Retried `BACKUP DATABASE [mitest] TO URL = 'https://ltrlab552754sa.blob.core.windows.net/mi-backups/mitest.bak' WITH COPY_ONLY, COMPRESSION, STATS = 10`; backup succeeded.
+- `RESTORE HEADERONLY` succeeded: `Compressed : 1`, `CompressedBackupSize : 11624952`, `CompressionAlgorithm : MS_XPRESS`, `IsCopyOnly : True`.
+- `RESTORE VERIFYONLY` succeeded: `The backup set on file 1 is valid.`
+- Blob REST from inside the VNet confirmed `mitest.bak` exists with `Content-Length=11927552`.
+
+**Corrected verdicts:**
+- Credential syntax: SUPPORTED. MI accepts `WITH IDENTITY = 'Managed Identity'` and returns `credential_identity = Managed Identity`.
+- End-to-end MI backup to private, shared-key-disabled storage using that identity: SUPPORTED after service-managed TDE is disabled and the DEK is dropped.
+- Service-managed TDE caveat: CONFIRMED with Msg 41922; TDE-off staged copies also need `DROP DATABASE ENCRYPTION KEY` before COPY_ONLY backup.
+
+**Compression result:** 104.00 MiB allocated database vs 11,927,552 byte blob equals 9.14x allocated-to-blob ratio. `BackupSize` 66,459,648 vs `CompressedBackupSize` 11,624,952 equals 5.72x backup-compression ratio.
+
+**Artifacts:**
+- `labs/sql-ltr-backup-migration/research/mi-backup-to-url-result.md`
+- `.squad/decisions/inbox/tank-mi-backup-to-url.md`

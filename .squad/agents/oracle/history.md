@@ -548,3 +548,30 @@ after compaction:
 - **Calibration changes scope of the "Questions to ask" section:** Q12 (storage tier) now
   can reference the 1.04x floor as a lab result without presenting it as vendor documentation.
   Section-wide rule: keep the questions environment-agnostic; put evidence in Caveats/Calibration.
+
+## 2026-09-10 (continued) - MI path proven and roadmap folded into README
+
+### Task
+
+Folded the coordinator-verified MI results and roadmap scan into
+`labs/sql-ltr-backup-migration/README.md` and the decision-tree diagram source.
+
+### Key learnings
+
+- MI `BACKUP TO URL` with `IDENTITY = 'Managed Identity'` is no longer an unverified
+  assumption. Microsoft Learn now documents it for Azure SQL Managed Instance, and the lab
+  verified it under shared-key-disabled storage, public-network-disabled storage, and
+  private endpoint access with a user-assigned managed identity.
+- Service-managed TDE remediation has two mandatory steps on the staged copy: disable TDE
+  and wait for `encryption_state = 1`, then run `DROP DATABASE ENCRYPTION KEY;`. The DMV
+  state alone is a trap. Backup fails with Msg 41922 before TDE is disabled and Msg 41938
+  after TDE is disabled until the DEK is dropped.
+- The MI test artifact size must not become a planning compression ratio. Keep the
+  planning figures anchored to the BACPAC calibration: 4.0x for realistic mixed data and
+  1.04x as the safe floor for high-entropy data.
+- SQL Database import/export Private Link and managed identity previews address different
+  blockers. Neither is sufficient alone in an environment with both public network access
+  disabled and shared-key access disabled. The combined path is not documented as tested,
+  so in-VNet `sqlpackage` remains the recommendation for deadline-driven compliance drains.
+- MI database copy/move across subscriptions is a live database migration feature, not an
+  archive feature. It does not move PITR backups, and LTR stays behind as well.
