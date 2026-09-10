@@ -83,7 +83,7 @@ If the subscription is being deleted, the second question is about timing:
 | `Export-SqlMiLtrBackups.ps1` | Azure SQL MI: LTR -> staged DB -> COPY_ONLY `.bak` (or BACPAC) -> blob. |
 
 There is also a companion Excel model in
-[`src/python/ltr-cost-workbook/`](../../python/ltr-cost-workbook/README.md). The PowerShell
+[`labs/sql-ltr-backup-migration/cost-model/`](../../../labs/sql-ltr-backup-migration/cost-model/README.md). The PowerShell
 estimator answers "what does one drain run cost"; the workbook answers "what does keeping
 the artifacts cost for the next seven years", swept across backup count and database size,
 with every storage tier and redundancy option priced side by side. Storage is the term that

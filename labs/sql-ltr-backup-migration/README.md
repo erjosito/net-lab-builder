@@ -111,6 +111,32 @@ first production database and feeding the result back into `Get-LtrExportCostEst
 
 See `validation.md` for the assertion-level matrix.
 
+## Cost model
+
+`cost-model/` holds an Excel model of the transfer and long-term storage cost of the
+artifacts this lab produces, plus a variant for reaching the storage account over a private
+endpoint. See [`cost-model/README.md`](cost-model/README.md). It is the storage half of the
+picture; `src/powershell/sql-ltr-export/Get-LtrExportCostEstimate.ps1` is the compute half.
+
+## How this lab deviates from the repo convention
+
+`labs/README.md` describes the convention for this folder, and it assumes an **Azure
+Networking** lab following an eight-phase lifecycle with a specific artifact set. This lab
+deliberately departs from it in four ways. They are listed here so the gaps read as choices
+rather than omissions.
+
+| Convention | This lab | Why |
+|---|---|---|
+| Azure Networking subject matter | Azure SQL Database and Managed Instance backup retention | The question asked was a database one. The rest of the repo's tooling and structure still applied, so it was reused rather than duplicated elsewhere. |
+| `design.md` with mechanism trade-offs and an F-table / M-table resiliency analysis | Absent | Those sections model failure and recovery of a running network topology. This lab has no topology and no traffic; its subject is the lifecycle of a backup artifact. The equivalent reasoning lives in the decision tree and the BACPAC vs native `.bak` comparison in `src/powershell/sql-ltr-export/README.md`. |
+| `## Designs studied` section with recommended and not-recommended designs | Covered by the scenario table above and by `validation.md` | The unit of study here is an assertion to be proved or disproved, not a design to be recommended. Scenario 8 is an explicit "never do this". |
+| `lessons-learned.md`, `show-output/`, `screenshots/` | Not yet created | These are execution artifacts and **this lab has never been run**. Creating them now would mean inventing evidence. They should be written during phase 3. |
+| `diagrams/` | Absent | There is no topology to draw. A diagram would add nothing over the phase table. |
+
+One convention this lab does follow exactly: **sanitization**. No subscription IDs, tenant
+IDs, server names or admin passwords appear in any committed file, and the deploy scripts
+take the admin password as a `SecureString` parameter rather than embedding one.
+
 ## Lab environment
 
 Provisioned by `deploy/Deploy-LtrLab.ps1`. Single subscription, one free logical server,
