@@ -172,7 +172,7 @@ created temporary databases.
 | **2. Are you using TDE? If yes, which flavour: service-managed or customer-managed (BYOK / Key Vault)?** | Service-managed TDE: the key never leaves the platform, so a `.bak` produced with `COPY_ONLY` is unrestorable anywhere. TDE is on by default on MI. | Service-managed: disable TDE on every staged copy, wait until `sys.dm_database_encryption_keys` reports `encryption_state = 1`, then drop the database encryption key before backup. The DEK drop is mandatory; the unencrypted state alone is not enough. Customer-managed: `COPY_ONLY TO URL` works directly and the `.bak` stays encrypted, but the Key Vault key must be preserved for the full retention period in a vault that outlives the source subscription; lose the key and every artifact is permanently unreadable. In both cases the artifact is a `.bak` file supporting `RESTORE VERIFYONLY`. |
 | **3. How large is the largest database?** | `BACKUP TO URL` on MI caps at 195 GB per stripe, 64 stripes maximum (roughly 12.5 TB total). | Up to 195 GB: single-stripe backup. Above 195 GB: striping required, use `-GbPerStripe` in the script. Above ~12.5 TB: `COPY_ONLY` is not feasible; BACPAC may be the only option, at the cost of losing `RESTORE VERIFYONLY` support. |
 | **4. Does the instance have enough storage headroom for the drain?** | The drain restores each database onto the live instance before extracting the artifact. That consumes instance storage for the restored database, its log growth, and the artifact workflow's working set. | Size the MI for the largest database being drained plus operational headroom. This is a hard planning constraint, independent of throughput measurements. |
-| **5. Does the in-VNet VM have a staging disk sized for the largest BACPAC?** | Client-side `sqlpackage` reads and writes local files only. It has no native Azure Blob Storage IO, so SQL Database artifacts must land on VM disk before upload and be downloaded to VM disk before import. | Add a data disk with free space for the largest single artifact, sized against the compression floor, not the expected compression case. The MI `.bak` path does not need this disk because the artifact streams directly between the instance and blob storage. |
+| **5. Does the in-VNet VM have a staging disk sized for the largest BACPAC?** | Client-side `sqlpackage` reads and writes local files only. It has no native Azure Blob Storage IO, so SQL Database artifacts must land on VM disk before upload and be downloaded to VM disk before import. | Add a data disk with free space for the largest single artifact, sized against the compression floor, not the expected compression case, provided each local artifact is deleted only after its upload is verified. If artifacts run in parallel or stale files accumulate after failed runs, size for peak concurrent occupancy instead. The MI `.bak` path does not need this disk because the artifact streams directly between the instance and blob storage. |
 
 ### Network and access governance
 
@@ -344,11 +344,19 @@ This is a real architectural difference between the two halves of the lab:
 | Managed Instance | Control channel only. The VM issues T-SQL, and `BACKUP TO URL` executes server-side from the instance directly to blob storage. The artifact never touches the VM. | None for the `.bak` artifact. |
 | Azure SQL Database | Data path. Every byte of every BACPAC physically transits the VM local disk on export, and again on import if the artifact is ever restored. | Required. |
 
-Size the VM data disk for the largest single artifact it will handle. Use the compression
-floor, not the expected case. Storage cost can be planned on measured realistic compression
-of about 4.0x, but staging disk must survive the worst case because running out of disk
+Size the VM data disk for the largest single artifact it will handle, provided the drain
+deletes each local `.bacpac` after its upload has been verified. Use the compression floor,
+not the expected case. Storage cost can be planned on measured realistic compression of
+about 4.0x, but staging disk must survive the worst case because running out of disk
 part-way through an export fails the job outright, potentially under a subscription
 deletion deadline.
+
+That "largest single artifact" rule assumes serial processing and successful local cleanup
+after every verified upload. If the pipeline is parallelised across databases, size for the
+sum of artifacts that can exist on disk at the same time. If failed uploads leave stale
+files behind, those files also count against the next run. Stale staging files are a real
+accumulation risk on repeated drains and can turn a safe single-artifact disk into a
+part-way failure later in the run.
 
 Worked example: a 500 GB database at the measured 4.0x realistic compression produces
 roughly a 125 GB artifact. The same 500 GB database with incompressible contents, such as
@@ -493,7 +501,9 @@ Pre-flight results section below.
 Decide which LTR backups must actually be retained. Cost scales directly with count and
 size. Run the cost model in `cost-model/` and the compute estimator in
 `src/powershell/sql-ltr-export/Get-LtrExportCostEstimate.ps1` before committing to a
-drain run.
+drain run. Those modelled figures cover transfer, artifact storage, and database restore
+or export timing only. Add the drain VM, its staging data disk sized by the rule above,
+private endpoints, and any gateway as separate line items.
 
 If the source subscription survives (resources deleted but subscription kept empty), do
 nothing: the LTR backups persist and you pay only LTR storage. The drain pipeline is only
@@ -537,7 +547,12 @@ For each LTR backup to preserve:
    VM local disk first.
 3. Upload the `.bacpac` from VM local disk to the destination blob storage account,
    preferably with a parallel-capable tool such as `azcopy`.
-4. Delete the temporary database.
+4. Verify that the uploaded blob exists and has the expected size before treating the
+   artifact as durable.
+5. Delete the local staging copy only after the upload is verified. Do not delete it
+   earlier: until the upload is known good, the local `.bacpac` is the only copy of that
+   artifact.
+6. Delete the temporary database.
 
 For a later restore, reverse the artifact movement: download the `.bacpac` from blob
 storage to VM local disk, then import it with `sqlpackage`. This means every SQL Database
@@ -812,6 +827,9 @@ See `validation.md` for the assertion-level matrix.
 artifacts this lab produces, plus a variant for reaching the storage account over a private
 endpoint. See [`cost-model/README.md`](cost-model/README.md). It is the storage half of the
 picture; `src/powershell/sql-ltr-export/Get-LtrExportCostEstimate.ps1` is the compute half.
+Neither includes every infrastructure line item required to run the drain. Add the in-VNet
+VM, the SQL Database staging data disk sized by the rule above, private endpoints, and any
+gateway separately.
 
 ## How this lab deviates from the repo convention
 
