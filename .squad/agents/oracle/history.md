@@ -575,3 +575,35 @@ Folded the coordinator-verified MI results and roadmap scan into
   so in-VNet `sqlpackage` remains the recommendation for deadline-driven compliance drains.
 - MI database copy/move across subscriptions is a live database migration feature, not an
   archive feature. It does not move PITR backups, and LTR stays behind as well.
+
+## 2026-09-10 (second round) - Artifact restore proof folded into README
+
+### Task
+
+Fold Jose's independently verified second-round lab results into
+`labs/sql-ltr-backup-migration/README.md`, preserving the existing structure and not touching
+diagrams because no embedded diagram statement became factually wrong.
+
+### Key learnings
+
+- The compliance archive question is now sharper: `RESTORE VERIFYONLY` proves a `.bak` is
+  readable and complete, but it is not a restore. The lab now also proves real artifact
+  consumption on both halves.
+- Managed Instance `.bak` artifact consumption is proven: restored into a new database in
+  30.5 s with 130000 rows, checksum -1557385128, and 1056 MiB ROWS matching the source.
+- SQL Database BACPAC artifact consumption is proven: imported client-side with sqlpackage
+  in 198.6 s with 131072 rows, checksum 12517530, and 1104 MiB ROWS matching the source.
+  LOG allocation changed after import, which is expected for a logical import and is not
+  data loss.
+- LTR restore remains the only restore gap. No LTR backup has existed in this lab, so LTR
+  backup availability and LTR restore remain unverified and unmeasured.
+- MI timing constants are useful only as coarse planning slopes. R-squared must stay null
+  for the two-point fits, and the TDE decryption slope must be applied against ROWS file
+  GiB from `sys.database_files`, not total file footprint.
+- MI `RESTORE ... WITH STATS` fails with Msg 41901. Remove `STATS`; the same artifact
+  restores successfully without it.
+- Instance storage headroom is a hard drain constraint because each restored copy lands on
+  the live instance before extraction. The 32 GB lab ceiling materially constrained tests.
+- The BACPAC download measurement is not a throughput planning rate. It reflected the
+  single-stream lab method; production drains should use a parallel-capable tool such as
+  `azcopy`.

@@ -32,6 +32,15 @@ extract a portable artifact from the restored copy, write that artifact to stora
 delete the restored copy. This drain must run **while the source subscription is still
 alive**, because deleting the subscription purges the LTR backups.
 
+The second-round lab results close the most important archive-quality gap: the portable
+artifacts are now proven consumable. The Managed Instance `.bak` restored into a new
+database with matching row count, aggregate checksum, and file allocation. The SQL
+Database `.bacpac` imported into a new database with matching row count, aggregate
+checksum, and ROWS allocation; its smaller imported LOG allocation is normal after a
+logical import and is not data loss. The remaining unproven links are earlier in the
+chain: no LTR backup has existed yet in this lab, so LTR backup availability and LTR
+restore remain unverified and unmeasured.
+
 ```mermaid
 flowchart LR
     subgraph SRC["Source subscription"]
@@ -125,7 +134,8 @@ A COPY_ONLY backup is a real SQL Server backup file (`.bak`) that does not distu
 differential base or the transaction log chain, making it safe to take alongside an
 existing backup schedule. It is fast, byte-exact, and transactionally consistent.
 Integrity can be verified years later with `RESTORE VERIFYONLY` without actually restoring
-the database.
+the database. `RESTORE VERIFYONLY` is useful, but it is not the same thing as a restore;
+the lab now also proves that the `.bak` artifact restores into a working database.
 
 **This is a Managed Instance capability only.** Azure SQL Database has no `BACKUP DATABASE`
 statement. See the comparison table and caveats below.
@@ -159,25 +169,26 @@ created temporary databases.
 | Question | Why it matters | What it rules in or out |
 |---|---|---|
 | **1. Is it Azure SQL Database or Managed Instance?** | SQL Database has no `BACKUP DATABASE` statement at all. MI does. | SQL DB: BACPAC is the only portable artifact. MI: COPY_ONLY native `.bak` is the default (supports `RESTORE VERIFYONLY`). BACPAC is also possible on MI but requires `sqlpackage` with network line-of-sight and loses the integrity verification benefit. |
-| **2. Are you using TDE? If yes, which flavour: service-managed or customer-managed (BYOK / Key Vault)?** | Service-managed TDE: the key never leaves the platform, so a `.bak` produced with `COPY_ONLY` is unrestorable anywhere. TDE is on by default on MI. | Service-managed: disable TDE on the staged copy, wait until `sys.dm_database_encryption_keys` reports `encryption_state = 1`, then drop the database encryption key before backup. The DEK drop is mandatory; the unencrypted state alone is not enough. Customer-managed: `COPY_ONLY TO URL` works directly and the `.bak` stays encrypted, but the Key Vault key must be preserved for the full retention period in a vault that outlives the source subscription; lose the key and every artifact is permanently unreadable. In both cases the artifact is a `.bak` file supporting `RESTORE VERIFYONLY`. |
+| **2. Are you using TDE? If yes, which flavour: service-managed or customer-managed (BYOK / Key Vault)?** | Service-managed TDE: the key never leaves the platform, so a `.bak` produced with `COPY_ONLY` is unrestorable anywhere. TDE is on by default on MI. | Service-managed: disable TDE on every staged copy, wait until `sys.dm_database_encryption_keys` reports `encryption_state = 1`, then drop the database encryption key before backup. The DEK drop is mandatory; the unencrypted state alone is not enough. Customer-managed: `COPY_ONLY TO URL` works directly and the `.bak` stays encrypted, but the Key Vault key must be preserved for the full retention period in a vault that outlives the source subscription; lose the key and every artifact is permanently unreadable. In both cases the artifact is a `.bak` file supporting `RESTORE VERIFYONLY`. |
 | **3. How large is the largest database?** | `BACKUP TO URL` on MI caps at 195 GB per stripe, 64 stripes maximum (roughly 12.5 TB total). | Up to 195 GB: single-stripe backup. Above 195 GB: striping required, use `-GbPerStripe` in the script. Above ~12.5 TB: `COPY_ONLY` is not feasible; BACPAC may be the only option, at the cost of losing `RESTORE VERIFYONLY` support. |
+| **4. Does the instance have enough storage headroom for the drain?** | The drain restores each database onto the live instance before extracting the artifact. That consumes instance storage for the restored database, its log growth, and the artifact workflow's working set. | Size the MI for the largest database being drained plus operational headroom. This is a hard planning constraint, independent of throughput measurements. |
 
 ### Network and access governance
 
 | Question | Why it matters | What it rules in or out |
 |---|---|---|
-| **4. Is public network access allowed on the logical server or managed instance?** | `az sql db export` is a Microsoft-managed service that connects inbound over the public endpoint. If the endpoint is off, the mechanism is unavailable, not merely unauthorised. A tenant policy can force `publicNetworkAccess` to `Disabled` and silently ignore API requests to enable it, returning success status without changing the value. | Public endpoint allowed: `az sql db export` and the standard drain script work. Public endpoint disabled: client-side `sqlpackage` from in-VNet compute over a private endpoint is the only SQL DB option. The MI path (`BACKUP TO URL`) is unaffected because it writes outbound from inside the instance and never depends on an inbound service. |
-| **5. Does the storage account allow shared-key access?** | Shared-key disabled kills account keys and SAS tokens together. The trap: `az storage account keys list` still succeeds and returns a key that then fails on every data-plane operation. The failure is confusingly late and looks like a permissions error. | Shared-key allowed: SAS-based `BACKUP TO URL` works. Shared-key disabled: SAS unavailable. Use a Managed Instance managed identity credential: `CREATE CREDENTIAL ... WITH IDENTITY = 'Managed Identity'`. This is documented for Azure SQL Managed Instance and has been verified under shared-key-disabled storage. |
-| **6. Is the storage account's public network access disabled?** | Even if the SQL resource can reach storage internally, a locked-down storage firewall blocks all workstation-based and managed-service writes at the data plane. | Storage public access allowed: writes go directly. Storage public access disabled: all data-plane calls must originate from inside the VNet. Requires in-VNet compute, a private endpoint on the storage account, a private DNS zone, and `Storage Blob Data Contributor` RBAC on the writing identity. A private endpoint bills at $0.01 per hour regardless of traffic; consider whether to create it only for the drain and delete it afterwards. |
+| **5. Is public network access allowed on the logical server or managed instance?** | `az sql db export` is a Microsoft-managed service that connects inbound over the public endpoint. If the endpoint is off, the mechanism is unavailable, not merely unauthorised. A tenant policy can force `publicNetworkAccess` to `Disabled` and silently ignore API requests to enable it, returning success status without changing the value. | Public endpoint allowed: `az sql db export` and the standard drain script work. Public endpoint disabled: client-side `sqlpackage` from in-VNet compute over a private endpoint is the only SQL DB option. The MI path (`BACKUP TO URL`) is unaffected because it writes outbound from inside the instance and never depends on an inbound service. |
+| **6. Does the storage account allow shared-key access?** | Shared-key disabled kills account keys and SAS tokens together. The trap: `az storage account keys list` still succeeds and returns a key that then fails on every data-plane operation. The failure is confusingly late and looks like a permissions error. | Shared-key allowed: SAS-based `BACKUP TO URL` works. Shared-key disabled: SAS unavailable. Use a Managed Instance managed identity credential: `CREATE CREDENTIAL ... WITH IDENTITY = 'Managed Identity'`. This is documented for Azure SQL Managed Instance and has been verified under shared-key-disabled storage. |
+| **7. Is the storage account's public network access disabled?** | Even if the SQL resource can reach storage internally, a locked-down storage firewall blocks all workstation-based and managed-service writes at the data plane. | Storage public access allowed: writes go directly. Storage public access disabled: all data-plane calls must originate from inside the VNet. Requires in-VNet compute, a private endpoint on the storage account, a private DNS zone, and `Storage Blob Data Contributor` RBAC on the writing identity. A private endpoint bills at $0.01 per hour regardless of traffic; consider whether to create it only for the drain and delete it afterwards. |
 
 ### Scope, timing and cost
 
 | Question | Why it matters | What it rules in or out |
 |---|---|---|
-| **7. When is the source subscription being deleted?** | This is the hard deadline. LTR backups survive database, server, and instance deletion, but are purged permanently when the subscription is deleted. There is no recovery after that point. | Build in time for a full recovery drill (restore at least one artifact end to end) before the subscription is deleted. An untested compliance archive is not a compliance archive. |
-| **8. Which subset of LTR backups must you actually retain for compliance?** | Cost scales directly with count and size. Artifact storage dominates the multi-year total by roughly 50x over compute. A wide compliance scope is also a large and costly archive. | Narrowing the scope to the legally required minimum is the single largest cost lever available. Run `src/powershell/sql-ltr-export/Get-LtrExportCostEstimate.ps1` for each candidate scope before committing. |
-| **9. Do you have vCore and server quota headroom in the source subscription for the temporary restore targets?** | The drain creates temporary databases in the source subscription. SQL DB logical servers are free, but General Purpose vCores and MI vCores consume regional quota. | Check `az sql server list-usages` and MI vCore quota before starting. Running out of quota mid-drain leaves orphaned temporary databases that keep billing and require manual cleanup. |
-| **10. Can the Managed Instance stay running for the entire LTR retention wait (up to 7 days)?** | A stopped MI takes no automated backups at all. A skipped LTR backup is never backfilled. Stopping the instance during the wait destroys the backup you were waiting to produce. | The MI must stay running for the entire wait. The free MI offer defaults to a schedule that stops the instance outside working hours to conserve credits; that schedule is incompatible with a continuous retention wait. |
+| **8. When is the source subscription being deleted?** | This is the hard deadline. LTR backups survive database, server, and instance deletion, but are purged permanently when the subscription is deleted. There is no recovery after that point. | Build in time for a full recovery drill (restore at least one artifact end to end) before the subscription is deleted. An untested compliance archive is not a compliance archive. |
+| **9. Which subset of LTR backups must you actually retain for compliance?** | Cost scales directly with count and size. Artifact storage dominates the multi-year total by roughly 50x over compute. A wide compliance scope is also a large and costly archive. | Narrowing the scope to the legally required minimum is the single largest cost lever available. Run `src/powershell/sql-ltr-export/Get-LtrExportCostEstimate.ps1` for each candidate scope before committing. |
+| **10. Do you have vCore and server quota headroom in the source subscription for the temporary restore targets?** | The drain creates temporary databases in the source subscription. SQL DB logical servers are free, but General Purpose vCores and MI vCores consume regional quota. | Check `az sql server list-usages` and MI vCore quota before starting. Running out of quota mid-drain leaves orphaned temporary databases that keep billing and require manual cleanup. |
+| **11. Can the Managed Instance stay running for the entire LTR retention wait (up to 7 days)?** | A stopped MI takes no automated backups at all. A skipped LTR backup is never backfilled. Stopping the instance during the wait destroys the backup you were waiting to produce. | The MI must stay running for the entire wait. The free MI offer defaults to a schedule that stops the instance outside working hours to conserve credits; that schedule is incompatible with a continuous retention wait. |
 
 ### Storage tier recommendation
 
@@ -255,8 +266,34 @@ TDE database fails with Msg 41922. Turning encryption off succeeds and the DMV r
 encryption key is dropped. Seeing "unencrypted" in the DMV is therefore not sufficient.
 
 Note also: disabling TDE on a large restored database is an IO-heavy operation and can take
-hours. It needs to be in the time budget. Also note the striping limits: 195 GB per stripe,
-64 stripes maximum.
+hours. It needs to be in the time budget for every restored copy, not once per drain. If
+you are preserving many LTR backups, the `SET ENCRYPTION OFF` wait and the DEK drop step
+multiply by the number of restored databases. Also note the striping limits: 195 GB per
+stripe, 64 stripes maximum.
+
+### Managed Instance does not support RESTORE WITH STATS
+
+Many SQL Server restore examples include `WITH STATS = 10` so DBAs can watch progress.
+Azure SQL Managed Instance rejects that option with Msg 41901:
+
+```text
+One or more of the options (stats, stats=) are not supported for this statement in SQL Database Managed Instance.
+```
+
+Remove `STATS`. In the 2026-09-10 artifact proof, the identical `.bak` failed before
+artifact consumption with `STATS` present and restored successfully once `STATS` was
+removed.
+
+### Instance storage headroom is a hard planning constraint
+
+The Managed Instance drain restores each LTR backup onto the live instance before it can
+disable TDE, drop the DEK, and write the `.bak` artifact. That means the instance must
+have storage headroom for the largest database being drained, including log growth during
+the staged operations. This is a capacity requirement, not a timing-model estimate.
+
+The lab's 32 GB instance storage ceiling actively constrained which tests could run. Do
+not size a production drain from average database size alone; size it from the largest
+restored copy that may exist on the instance at one time, with operational headroom.
 
 ### BACPAC export requires a reachable public endpoint
 
@@ -350,8 +387,9 @@ first backup can take up to 7 days to appear. This dominates the lab's calendar.
 
 Mitigation: when an LTR policy is enabled for the first time, the most recent existing
 PITR full backup may be copied into long-term storage. In the 2026-09-10 lab run, no
-backup appeared within 25 minutes of enablement. Enable the policy early and wait; do not
-assume same-day availability.
+SQL Database backup appeared within 25 minutes of enablement. On Managed Instance, a
+policy was set at 2026-09-10T11:02:07Z with `P12W` weekly retention and no backup appeared
+immediately. Enable the policy early and wait; do not assume same-day availability.
 
 ### A stopped Managed Instance takes no automated backups
 
@@ -429,9 +467,12 @@ important cost lever in the whole process.
 
 For each LTR backup to preserve:
 1. Restore the LTR backup to a temporary database on the instance (same subscription).
+   Do not add `WITH STATS`; Managed Instance rejects that restore option, and habitual
+   SQL Server examples can lead you into a false failure.
 2. If the database is using service-managed TDE, disable TDE on the restored copy, wait for
    `encryption_state = 1`, then drop the database encryption key. Plan the time: this is
-   IO-heavy on large databases. Do not skip the DEK drop.
+   IO-heavy on large databases, and the cost repeats for every restored copy. Do not skip
+   the DEK drop.
 3. Run `BACKUP DATABASE ... WITH COPY_ONLY TO URL`, writing directly to the destination
    blob storage account. Stripe if the database exceeds 195 GB.
 4. Delete the temporary database immediately.
@@ -461,6 +502,12 @@ These files are restorable on demand. They will **not** appear in the new resour
 Backup blade. The Backup blade reflects only the new resource's own PITR and LTR chains.
 This is a real loss of convenience compared to the preferred outcome; it is the only viable
 alternative, and the reader should know it going in.
+
+This is not just an export claim. The lab has now consumed one artifact from each path
+back into a new database and matched row counts plus aggregate checksums against the
+source. `RESTORE VERIFYONLY` remains useful for `.bak` readability checks, but a passing
+`VERIFYONLY` is not the same as a restore. LTR restore itself remains the unproven part,
+because no LTR backup has existed yet in this lab.
 
 For storage tier selection (Archive vs Cool vs Cold), bandwidth costs, and the private
 endpoint variant, see `cost-model/README.md`. The Archive tier typically cuts the 7-year
@@ -585,8 +632,8 @@ and one of them must never be tested at all.
 |---|---|---|
 | 1 | LTR backups survive deletion of database, server and managed instance | 1 |
 | 2 | Deleted-source backups are still enumerable and restorable | 1 |
-| 3 | SQL DB drain: LTR -> temp DB -> BACPAC -> blob, round-tripped back | 1 |
-| 4 | MI drain: TDE blocker, workaround, COPY_ONLY, `RESTORE VERIFYONLY` | 1 |
+| 3 | SQL DB drain: LTR -> temp DB -> BACPAC -> blob, then artifact import with data checks | 1 |
+| 4 | MI drain: TDE blocker, workaround, COPY_ONLY, `RESTORE VERIFYONLY`, then artifact restore with data checks | 1 |
 | 5 | Striping path for databases above 195 GB | 1 (see trick below) |
 | 6 | Artifact destination in a different subscription | **2** (storage only) |
 | 7 | LTR restore is subscription-locked (negative test) | **2**, optional |
@@ -658,9 +705,10 @@ labs and needs to be planned for rather than discovered:
 | Execute | Delete sources, run both drain scripts, verify | Day N |
 | Teardown | Delete everything, including LTR policies | Day N |
 
-Do not let the managed instance idle at full price during the wait. General Purpose
-instances support stop/start, which halts compute and licence billing while storage
-continues, so stop it between the seed and execute phases.
+Do not stop the managed instance during the wait. General Purpose instances support
+stop/start, which halts compute and licence billing while storage continues, but a stopped
+instance takes no automated backups. A skipped LTR backup is never backfilled, so stopping
+between the seed and execute phases can destroy the very backup the lab is waiting for.
 
 ## Cost of the lab
 
@@ -694,10 +742,10 @@ first production database and feeding the result back into `Get-LtrExportCostEst
 ## Deliberately out of scope
 
 - Subscription deletion behaviour (scenario 8).
-- Real-world restore durations. No LTR backup exists yet; Phase 3 (restore and drain) has
-  not been run. The calibration file correctly reports null for all restore parameters. This
-  item will leave scope once LTR backups appear and `Measure-LtrCalibration.ps1` is re-run
-  with real restore timings.
+- Real-world LTR restore durations. No LTR backup exists yet, so the first two links in
+  the production chain remain unverified: LTR backup availability and LTR restore. Artifact
+  consumption after extraction is no longer out of scope; it is now proven on both the
+  Managed Instance `.bak` path and the SQL Database BACPAC path.
 - Customer-managed-key TDE. The tooling defaults to `DisableOnStagedCopy` precisely to
   avoid introducing a Key Vault key that must outlive the old subscription; testing the CMK
   path is only worthwhile if you have decided to accept that key-custody burden.
@@ -768,8 +816,9 @@ databases run at the minimum serverless vCore level during the LTR wait, not sto
 
 Phases 0 through 4 (pre-flight, seed, export, and calibrate) have been completed as of
 2026-09-10. Full command output is in `show-output/`. Key calibration results are in the
-Calibration results section below. Phase 3 (LTR restore and drain) and Phase 5 (teardown)
-remain pending, blocked on LTR backup availability.
+Calibration results section below. A second-round artifact consumption proof has also
+completed for both extracted artifact types. Phase 3 LTR restore and drain, plus Phase 5
+teardown, remain pending and blocked on LTR backup availability.
 
 Quotas below were read from the lab subscription in `swedencentral` at Phase 0.
 
@@ -908,7 +957,8 @@ Scenario 4 needs a Managed Instance, and it is a different proposition entirely:
 Since the two drain scripts share most of their logic, running the Database half first
 validates the shared export assumptions at about 8 percent of the cost of doing both.
 The 2026-09-10 calibration run completed this step: export throughput and BACPAC
-compression are now measured. Restore timing remains pending LTR backup availability.
+compression are now measured, and a BACPAC artifact import has been proven with data
+checks. LTR restore timing remains pending LTR backup availability.
 
 ## Calibration results
 
@@ -934,6 +984,12 @@ is the correct basis for capacity planning.
 
 **The pre-run 4.0x default is validated for realistic mixed data.** The existing cost
 figures for the typical case are accurate.
+
+The Managed Instance native `.bak` path independently corroborates the same central case:
+the 2026-09-10 MI tests compressed realistic mixed data at 4.21x for the 1 GiB ROWS file
+and 4.12x for the 5 GiB ROWS file. That is a different engine and artifact format from
+sqlpackage BACPAC, so the agreement raises confidence in the model's 4.0x central case.
+It does not change the conservative planning floor.
 
 **The budgeting floor is 1.04x, not 4.0x.** Plan compliance archive storage against the
 floor, because data containing encrypted columns, pre-compressed blobs, or binary payloads
@@ -967,17 +1023,75 @@ public-internet or cross-region export will be slower; do not generalise this ra
 compute term is roughly 2 percent of the multi-year total cost regardless, so the financial
 impact of the difference is small.
 
-Feed the calibrated export constants into the estimator (but not restore, which is still
-unmeasured):
+Feed the calibrated export constants into the estimator (but not LTR restore, which is
+still unmeasured):
 ```powershell
 .\Get-LtrExportCostEstimate.ps1 ... -ExportFixedMin 0.36 -ExportMinPerGb 0.159 -BacpacCompression 1.04
 ```
 
-### Restore timing
+### Managed Instance calibration
 
-Not measured. No LTR backup has been produced yet, so Phase 3 (LTR restore) has not been
-run. The calibration file correctly reports null for all restore parameters. The restore
-timing constants remain at their original estimated defaults. Re-run
+The 2026-09-10 MI measurements were taken on a GP_Gen5 4 vCore Managed Instance with
+32 GB storage in `swedencentral`, using same-region private endpoint access.
+
+These fits are coarse planning slopes, not validated regressions. Only two size points
+were measured, so R-squared is deliberately null: a two-point fit would be tautological
+and would overstate confidence.
+
+| Term | Measurement | Status |
+|---|---:|---|
+| TDE decryption fixed term | 0.1914 min | MEASURED |
+| TDE decryption slope | 0.2300 min/GiB | MEASURED |
+| `DROP DATABASE ENCRYPTION KEY` | under 0.1 s at both sizes | MEASURED, effectively instant |
+| `BACKUP TO URL` with `COPY_ONLY` and `COMPRESSION` | 0.1725 min/GiB | MEASURED |
+| Native `.bak` compression on realistic mixed data | 4.21x at 1 GiB, 4.12x at 5 GiB | MEASURED |
+| MI PITR restore | 55.5 s | PROXY only, not LTR |
+| MI artifact restore from `.bak` | 30.5 s at roughly 1 GiB | MEASURED |
+
+The decryption slope must be applied on the same basis it was fitted on: ROWS file GiB
+from `sys.database_files`. If you divide by total file size including the log, the 5 GiB
+test database's 8.85 GiB total footprint makes the apparent rate 7.1 s/GiB instead of
+13.8 s/GiB, nearly a 2x difference. Mixing those bases is an easy way to be wrong by a
+factor of two.
+
+The 55.5 s MI restore number is a same-instance PITR restore proxy. It is explicitly not
+an LTR restore measurement and must not be fed into the estimator as an LTR constant.
+
+### Artifact consumption proof
+
+The archive files are now proven consumable on both halves of the lab.
+
+| Artifact path | Consumption proof | Data proof |
+|---|---|---|
+| Managed Instance `.bak` | `RESTORE DATABASE ... FROM URL` into a new database in 30.5 s | 130000 rows on both sides, aggregate checksum -1557385128 on both sides, 1056 MiB ROWS on both sides |
+| SQL Database BACPAC | Client-side `sqlpackage` import from the in-VNet VM into a new database in 198.6 s | 131072 rows on both sides, aggregate checksum 12517530 on both sides, 1104 MiB ROWS on both sides |
+
+The SQL Database LOG allocation differed after import: 1224 MiB on the source and 472 MiB
+on the imported database. That is expected after a logical import and does not indicate
+data loss.
+
+Keep three facts separate:
+
+1. `RESTORE VERIFYONLY` passed for the Managed Instance `.bak`, proving the backup set is
+   readable and complete. This is not a restore.
+2. The artifacts restored or imported into working databases with row counts and checksums
+   verified against the source. This is a restore or import, and it is now proven on both
+   halves.
+3. LTR restore remains unverified and unmeasured. No LTR backup has ever existed in this
+   lab.
+
+The BACPAC download to the VM took 347.8 seconds in this test, but do not use that as a
+throughput planning figure. It reflects the single-stream download method used during the
+lab, not an inherent limit of the private endpoint or storage account. A production drain
+should use a parallel-capable transfer tool such as `azcopy`.
+
+### LTR restore timing
+
+Not measured. No LTR backup has been produced yet, so Phase 3 LTR restore has not been
+run. The MI PITR restore above is only a proxy and the artifact restore is a later-chain
+proof, not an LTR restore. The calibration file correctly reports null for all LTR restore
+parameters. The LTR restore timing constants remain at their original estimated defaults.
+Re-run
 `Measure-LtrCalibration.ps1` once LTR backups are available and restore durations have
 been captured.
 
