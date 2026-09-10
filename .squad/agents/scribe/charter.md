@@ -21,6 +21,42 @@
   - **Tier 2 (7-day):** If still >50KB after Tier 1, archive entries older than 7 days
   - Emit HEALTH REPORT to session log after archival runs
 
+### Archival integrity gate (MANDATORY, non-negotiable)
+
+A previous run of this process **deleted nine decision entries without archiving them**.
+Root cause: removal and archival were two independent operations using **different
+selection criteria**, so entries fell through the gap between them. A later run then
+reported "0 unaccounted for" while counting only `^## ` headings against a file whose
+real entry headings were `^#{2,4}`, so the gate passed while measuring 16 of 190
+headings. **A gate that measures a subset is not a gate.**
+
+Every archival run MUST follow this exact sequence:
+
+1. **Capture the baseline** of every heading in `decisions.md` BEFORE any edit. Use this
+   regex and no other. It must match all heading depths used for entries:
+
+   ```powershell
+   function Get-Heads($lines) {
+     @($lines | Where-Object { $_ -match '^#{2,4}\s+\S' } | ForEach-Object { $_.Trim() })
+   }
+   ```
+
+2. **Select once.** Build ONE explicit list of the headings to archive. Use that SAME
+   list for both the append and the removal. NEVER re-derive the selection.
+3. **Append first.** Write the selected entries verbatim to `decisions-archive.md`.
+   Do not reformat, renumber, or summarize them.
+4. **Verify the append** landed: every selected heading must now be present in the archive.
+5. **Only then remove** them from `decisions.md`.
+6. **Final gate.** Compute the union of headings in `decisions.md` plus
+   `decisions-archive.md` and compare against the step 1 baseline. The count of
+   baseline headings absent from that union **MUST be exactly 0**.
+7. If the count is not 0: **STOP**, restore `decisions.md` to its pre-edit state, commit
+   nothing, and report the failure. A lossy result must never be committed.
+
+Report the RAW NUMBERS in the health report, never just a pass/fail verdict:
+baseline heading count, remaining count, archived count, and unaccounted count. Numbers
+that do not add up are visible to a reviewer; a bare "verified" is not.
+
 ## How I Work
 
 **Worktree awareness:** Use the `TEAM ROOT` provided in the spawn prompt to resolve all `.squad/` paths. If no TEAM ROOT is given, run `git rev-parse --show-toplevel` as fallback. Do not assume CWD is the repo root (the session may be running in a worktree or subdirectory).
