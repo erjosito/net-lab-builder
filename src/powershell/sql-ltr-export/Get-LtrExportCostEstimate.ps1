@@ -56,6 +56,10 @@ param(
 
     # ---- Throughput assumptions ----------------------------------------------
     # Deliberately conservative. Measure your first database and re-run.
+    # RestoreFixedMin and RestoreMinPerGb accept $null (from calibrated-parameters.json
+    # when restore timing has not been measured yet). A null or coerced-zero value triggers
+    # a warning and falls back to the documented defaults, rather than silently zeroing out
+    # the restore term and understating the drain timeline.
     [double] $RestoreFixedMin     = 12.0,
     [double] $RestoreMinPerGb     = 0.35,
     [double] $ExportFixedMin      = 6.0,
@@ -129,6 +133,23 @@ $egressGbUsd = switch ($ArtifactDestination) {
     'SameRegion'  { 0.00  }
     'CrossRegion' { 0.02  }
     'Internet'    { 0.087 }
+}
+
+# Guard: PowerShell coerces $null to 0.0 when binding [double] parameters. If
+# RestoreFixedMin or RestoreMinPerGb arrives as 0.0, it most likely means null was
+# passed from calibrated-parameters.json (RestoreMeasured=false). Silently computing
+# with 0 restore time understates the drain timeline. Fall back to documented defaults
+# with a visible warning; do not produce a quietly wrong number.
+$restoreUncertain = $false
+if ($RestoreFixedMin -eq 0.0 -or $RestoreMinPerGb -eq 0.0) {
+    Write-Warning ("RestoreFixedMin=$RestoreFixedMin and/or RestoreMinPerGb=$RestoreMinPerGb " +
+        "is 0.0. This likely means null was passed from calibrated-parameters.json, where " +
+        "RestoreMeasured=false (no LTR restores have been performed yet). Using documented " +
+        "defaults (RestoreFixedMin=12.0, RestoreMinPerGb=0.35). Re-run once restore durations " +
+        "are captured in the timing manifest.")
+    if ($RestoreFixedMin -eq 0.0) { $RestoreFixedMin = 12.0 }
+    if ($RestoreMinPerGb -eq 0.0) { $RestoreMinPerGb = 0.35 }
+    $restoreUncertain = $true
 }
 
 # ---------------------------------------------------------------------------
@@ -219,6 +240,11 @@ Write-Host ('=' * 78) -ForegroundColor DarkGray
 $results | Format-List | Out-String -Width 120 | Write-Host
 Write-Host 'Incremental cost only. Excludes the LTR storage you already pay for today.' -ForegroundColor DarkGray
 Write-Host "Artifact destination: $ArtifactDestination (egress `$$egressGbUsd/GB)."       -ForegroundColor DarkGray
+if ($restoreUncertain) {
+    Write-Warning ("Restore timing was not measured (calibrated-parameters.json: RestoreMeasured=false). " +
+        "Compute terms above use documented defaults (RestoreFixedMin=12.0, RestoreMinPerGb=0.35). " +
+        "Update once LTR restores have been performed and re-run.")
+}
 Write-Host ''
 
 # Emit objects only on request. Rendering them here AND returning them printed the

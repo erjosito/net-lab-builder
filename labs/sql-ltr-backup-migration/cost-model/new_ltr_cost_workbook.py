@@ -350,10 +350,15 @@ def sheet_readme(wb: Workbook, snap: dict) -> None:
         ("Confidence", ""),
         ("", "VERIFIED: all prices, taken from the Azure retail prices API (see 'Prices' for the "
              "exact retrieval timestamp). Transfer and storage arithmetic."),
-        ("", "ASSUMED: the compression ratio. This is the weakest input and it drives the largest "
-             "term. Measured ratios in testing ranged from 1.02x on incompressible data to 33x on "
-             "highly repetitive data, against a default assumption of 4x. Budget with the worst "
-             "ratio you actually observe."),
+        ("", "MEASURED (2026-09-10): the compression ratio. Ratios were measured on live Azure SQL "
+             "databases via sqlpackage over a private endpoint (Standard_D4s_v5, same-region, "
+             "swedencentral). Mixed realistic business data: 3.98x-4.25x (validates the 4.0x "
+             "default). Incompressible floor (random bytes): 1.04x. A synthetic upper bound of "
+             "145x was also observed from a single-repeated-byte seed; it is not a planning value. "
+             "The remaining uncertainty is which shape the reader's data resembles: budget with "
+             "1.04x (worst case, largest artifacts) and note that mixed realistic data lands near "
+             "4x. If your databases are encrypted or pre-compressed at the application layer, use "
+             "the 1.04x row."),
         ("", "EXCLUDED: the compute cost of restoring each backup before exporting it. It is small "
              "and one-time. See Get-LtrExportCostEstimate.ps1 in the toolkit for that half."),
         ("", ""),
@@ -514,7 +519,9 @@ def sheet_parameters(wb: Workbook, snap: dict, price_last: int, bw_first: int) -
     inp(4, "Number of LTR backups", 60, "How many restore points you must preserve.", NUM)
     inp(5, "Average database size (GB)", 50, "Source size, before compression.", NUM2)
     inp(6, "Compression ratio", 4.0,
-        "Source GB per artifact GB. THE weakest assumption. Measured 1.02x to 33x.", NUM2)
+        "Source GB per artifact GB. Measured 2026-09-10: 3.98-4.25x on mixed realistic data "
+        "(validates this default). Incompressible floor: 1.04x. Budget with 1.04x if you do not "
+        "know your data shape. See 'Compression sensitivity' for the full range.", NUM2)
     inp(7, "Retention (months)", 84, "84 = 7 years.", NUM)
     inp(8, "Storage tier", "Archive", "Hot / Cool / Cold / Archive.")
     inp(9, "Redundancy", "LRS", "LRS / ZRS / GRS / GZRS / RA-GRS / RA-GZRS.")
@@ -717,14 +724,17 @@ def sheet_sensitivity(wb: Workbook) -> None:
 
     notes = [
         (1.0, "No compression at all."),
-        (1.02, "Measured worst case: already-compressed or encrypted data."),
-        (1.5, "Pessimistic."),
+        (1.04, "MEASURED incompressible floor (2026-09-10): random/high-entropy data such as "
+               "encrypted blobs or compressed application payloads. Recommended budgeting input "
+               "when data shape is unknown."),
+        (1.5, "Pessimistic estimate."),
         (2.0, "Conservative planning number."),
         (3.0, "Typical native .bak with COMPRESSION."),
-        (4.0, "Default assumption in the toolkit. Unverified."),
-        (6.0, "Optimistic; text-heavy schemas."),
-        (10.0, "Very repetitive data."),
-        (33.0, "Measured best case: highly repetitive test data. Do not plan on this."),
+        (4.0, "MEASURED for mixed realistic data (2026-09-10): range 3.98-4.25x across 1, 5 and "
+              "20 GB databases. Validated default. Use this if your databases hold typical "
+              "structured business data."),
+        (6.0, "Optimistic; text-heavy schemas with low cardinality."),
+        (10.0, "Very repetitive data; unlikely in production."),
     ]
     first = 5
     r = first
@@ -745,7 +755,7 @@ def sheet_sensitivity(wb: Workbook) -> None:
         fill = None
         if ratio == 4.0:
             fill = C_INPUT
-        elif ratio == 1.02:
+        elif ratio == 1.04:
             fill = C_WARN
         if fill:
             for col in range(1, 5):
@@ -755,14 +765,16 @@ def sheet_sensitivity(wb: Workbook) -> None:
     ws.cell(row=r + 1, column=1, value="Worst case vs default assumption:").font = F_BOLD
     ws.merge_cells(start_row=r + 1, start_column=1, end_row=r + 1, end_column=3)
     c = ws.cell(row=r + 1, column=4,
-                value=f"=IFERROR($D{row_of[1.02]}/$D{row_of[4.0]},0)")
+                value=f"=IFERROR($D{row_of[1.04]}/$D{row_of[4.0]},0)")
     c.number_format = '0.0"x"'
     c.font = F_BOLD
     c.fill = PatternFill("solid", fgColor=C_WARN)
 
     c = ws.cell(row=r + 3, column=1, value=(
-        "Yellow is the toolkit default. Orange is the measured worst case. The gap between them "
-        "is the single largest source of error in this model."))
+        "Yellow is the measured default (4.0x, validated for mixed realistic data on 2026-09-10). "
+        "Orange is the measured incompressible floor (1.04x, random/high-entropy data). "
+        "The ratio between them is the planning uncertainty: it is no longer a guess about the "
+        "ratio itself, but about which data shape your databases resemble."))
     c.font = F_NOTE
     ws.merge_cells(start_row=r + 3, start_column=1, end_row=r + 3, end_column=5)
 
