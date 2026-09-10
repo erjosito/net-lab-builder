@@ -1,0 +1,42 @@
+# LTR policy findings - 2026-09-10
+
+## First attempt: auto-pause enabled (failed)
+
+Setting LTR policies at UTC: 2026-09-10T08:58:38Z
+
+$ az sql db ltr-policy set -g rg-ltr-lab -s ltrlab552754-sql -n ltrlab552754-probe-compressible --weekly-retention P12W
+ERROR: (LtrConfigPolicyUnsupportedIfAutoPauseEnabled) Enabling long-term backup retention
+for a serverless database is not supported if auto-pause is enabled.
+Code: LtrConfigPolicyUnsupportedIfAutoPauseEnabled
+Message: Enabling long-term backup retention for a serverless database is not supported if auto-pause is enabled.
+
+[Same error for all 5 databases]
+
+FINDING: LTR policies cannot be enabled on serverless databases that have auto-pause
+enabled. The databases were created with --auto-pause-delay 60.
+
+## Fix: disable auto-pause on all databases
+
+$ az sql db update -g rg-ltr-lab -s ltrlab552754-sql -n ltrlab552754-probe-compressible --auto-pause-delay -1
+[Repeated for all 5 databases. All succeeded.]
+
+## Second attempt: auto-pause disabled (succeeded)
+
+Setting LTR policies at UTC: 2026-09-10T09:01:50Z
+
+$ az sql db ltr-policy set -g rg-ltr-lab -s ltrlab552754-sql -n ltrlab552754-probe-compressible --weekly-retention P12W
+[Success for all 5 databases]
+
+All policies set at UTC: 2026-09-10T09:03:35Z
+
+## Immediate backup check (2 minutes after policy set)
+
+$ az sql db ltr-backup list -l swedencentral --server ltrlab552754-sql --database-state All -o json
+Result: [] (empty)
+
+ANSWER: Enabling LTR policy for the first time does NOT immediately copy the
+latest PITR full backup. Checked at 2 minutes (09:03:35Z) and again at 25 minutes
+(09:26:08Z) after policy set - no LTR backups both times.
+The documentation says it may take up to 7 days. The "immediate copy" may occur later
+(hours) or this tenant/subscription may not trigger it immediately.
+Re-check with Watch-LtrLabBackups.ps1 after several hours.

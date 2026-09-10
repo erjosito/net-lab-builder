@@ -2,7 +2,120 @@
 
 # Project Context
 
-## 2026-08-20 -- dual-hub-vnra-udr-transit Cleanup
+## 2026-09-10 -- sql-ltr-backup-migration Calibration Run
+
+### TANK-010 -- BACPAC Compression and Export Throughput: First Live Measurements
+
+**Objective:** Get the single highest-value measurement from the LTR lab: the BACPAC
+compression ratio for the cost model. Secondary: measure real export throughput.
+
+**Environment:** rg-ltr-lab, swedencentral. Private-endpoint-only tenant with three
+enforced governance controls (see Learnings below). No resources were deleted.
+
+**Databases created and seeded:**
+- ltrlab552754-probe-compressible (5 GB, compressible shape): 5.67 min to seed
+- ltrlab552754-probe-random (5 GB, random/incompressible shape): 5.54 min to seed
+- ltrlab552754-calib-5gb (5 GB, mixed shape): 5.46 min to seed
+- ltrlab552754-calib-1gb (1 GB, mixed shape): 1.23 min to seed
+- ltrlab552754-calib-20gb (20 GB, mixed shape): 23.27 min to seed
+
+**Export results (sqlpackage v170.4.83.3, private endpoint, Standard_D4s_v5 VM):**
+
+| Database | Src GB | Art GB | Ratio | Export min |
+|---|---|---|---|---|
+| probe-compressible | 5.0781 | 0.0349 | 145.3x | 0.887 |
+| probe-random | 5.0781 | 4.9028 | 1.04x | 3.306 |
+| calib-1gb (mixed) | 1.0781 | 0.2538 | 4.25x | 0.499 |
+| calib-5gb (mixed) | 5.0781 | 1.269 | 4.00x | 1.202 |
+| calib-20gb (mixed) | 20.2031 | 5.0758 | 3.98x | 3.558 |
+
+**Key findings:**
+1. **4.0x default VALIDATED for mixed/realistic data.** The three calibration databases
+   (1 GB, 5 GB, 20 GB, all mixed shape) compressed to 3.98x-4.25x. The cost model's
+   default was correct for this data shape.
+2. **Worst case for budgeting: 1.04x** (random/high-entropy data). This is essentially
+   incompressible. Artifact size nearly equals source size.
+3. **ExportMinPerGb = 0.159** (linear fit R² = 0.9995). The default estimate was 1.20
+   min/GB; measured is 7.5x faster. This is for same-region private endpoint on a D4s_v5.
+   Public or cross-region will be slower.
+4. **ExportFixedMin = 0.36** (connection + schema extraction overhead).
+5. **LTR not supported with auto-pause enabled** (LtrConfigPolicyUnsupportedIfAutoPauseEnabled).
+   The README said auto-pause was fine for the wait; it is not. Auto-pause must be disabled
+   before setting an LTR policy.
+6. **LTR "immediate PITR copy" question: NOT within 2 minutes.** No backups appeared within
+   2 minutes of setting the first-ever LTR policy. May materialise hours later.
+
+**Calibrated parameters** (see show-output/06-calibrated-parameters.json):
+- ExportFixedMin: 0.36
+- ExportMinPerGb: 0.1588
+- ExportRSquared: 0.9995
+- CompressionWorst: 1.04x (use this for budgeting)
+- CompressionBest: 145.5x (informational, not budgeting)
+
+**Evidence:** labs/sql-ltr-backup-migration/show-output/ (files 01-06)
+
+**Scripts produced:**
+- labs/sql-ltr-backup-migration/deploy/Deploy-LtrLabPrivate.ps1 (new - private arch)
+- labs/sql-ltr-backup-migration/deploy/Deploy-LtrLab.ps1 (fixed - removed account-key,
+  removed firewall rules that fail under PNA-disabled)
+- labs/sql-ltr-backup-migration/deploy/ltr-export-manifest-2026-09-10.csv
+
+## Learnings
+
+### Governance constraints (empirical, all verified in this tenant)
+
+1. **SQL Entra-only auth enforced.** Policy `AzureSQL_WithoutAzureADOnlyAuthentication_Deny`
+   in `MCAPSGovDenyPolicies` at the management group. Every connection must use an Entra
+   token. `Invoke-Sqlcmd -AccessToken` with a UAMI IMDS token is the working pattern.
+   **Never use `SecurityControl=Ignore`.**
+
+2. **publicNetworkAccess force-disabled on SQL.** Three attempts (CLI update, ARM PATCH,
+   fresh create with flag set) all accepted the request, reported success, came back
+   Disabled. `az sql db export` is therefore unavailable. Use `sqlpackage` on a VM
+   inside the VNet instead.
+
+3. **Storage force-gets allowSharedKeyAccess=false and publicNetworkAccess=Disabled.**
+   `az storage account keys list` still returns a key but it is dead on all data-plane
+   calls. The failure lands late and looks like a permissions error. Always use
+   `--auth-mode login` (CLI) or AzCopy with MSI env vars.
+
+### Working patterns
+
+- **IMDS path is `/metadata/identity/oauth2/token`**, NOT `/imds/identity/oauth2/token`.
+  The wrong path gets a 404 that routes via ARM and returns an XML error: "'imds' isn't a
+  valid resource name." The correct path returns 200 with a JSON token.
+- **curl.exe with `--noproxy "*"`** is more reliable than `Invoke-RestMethod` for IMDS
+  from inside a run-command context. No proxy issues, no WinHTTP routing surprises.
+- **`az vm run-command invoke`** executes as SYSTEM on the VM. PowerShell 5.1, not 7.x.
+  No heredocs. Single-quoted here-strings avoid `$` expansion issues when generating
+  scripts programmatically.
+- **SID from GUID for `CREATE USER ... WITH SID`:** correct pattern:
+  `$bytes = ([guid]$clientId).ToByteArray(); $hex = ($bytes | ForEach-Object { $_.ToString('X2') }) -join ''; $sid = '0x' + $hex`
+  The known bug: `'0x' + $arr -join ''` parses as `('0x' + $arr) -join ''`. Parenthesise
+  the join separately.
+- **AzCopy with MSI:** set `$env:AZCOPY_AUTO_LOGIN_TYPE = 'MSI'` and
+  `$env:AZCOPY_MSI_CLIENT_ID = '<clientId>'` before each AzCopy call. No explicit login
+  step needed. Container must exist first (`azcopy make` or REST PUT).
+- **LTR policy requires auto-pause disabled.** `az sql db update --auto-pause-delay -1`
+  before `az sql db ltr-policy set`.
+- **`Invoke-Sqlcmd -Variable` and SQLCMD substitution across GO batches works correctly.**
+  The `$(VarName)` syntax is pre-processed before T-SQL parsing. However, inlining values
+  via string replace on the SQL text (`.Replace('$(TargetGb)', '5')`) is even safer and
+  avoids any PS-to-SQLCMD variable escaping issues.
+
+### Gotchas
+
+- **`$PSNativeCommandArgumentPassing = 'Standard'`** required in PS7+ scripts that pass
+  empty strings to native commands (e.g., `az vm create --public-ip-address ""`). In
+  Windows mode (default), the empty string is silently dropped.
+- **`Install-Module ... -AcceptLicense`** does not exist in the PSGet version on Windows
+  Server 2022. Use `Install-Module SqlServer -Force -AllowClobber` without that flag.
+- **Run-command serialises on the VM.** Only one command at a time. Plan seeds and exports
+  sequentially, not in parallel via `--no-wait`.
+- **AzCopy container must exist before copy.** `azcopy make <containerUrl>` is idempotent
+  and safe to call before any upload.
+
+
 
 ### TANK-009 -- Lab Deletion: rg-dual-hub-vnra-udr-transit
 

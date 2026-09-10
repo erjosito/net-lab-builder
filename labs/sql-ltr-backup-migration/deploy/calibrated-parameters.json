@@ -1,0 +1,22 @@
+{
+  "GeneratedUtc": "2026-09-10T09:30:54.2340485Z",
+  "Source": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sql-ltr-backup-migration\\deploy\\ltr-export-manifest-2026-09-10.csv",
+  "RestoreMeasured": false,
+  "RestoreFixedMin": null,
+  "RestoreMinPerGb": null,
+  "RestoreRSquared": null,
+  "RestoreNote": "Restore timing not measured. All RestoreMinutes were 0 in the source CSV. Re-run Measure-LtrCalibration.ps1 once LTR backups are available and restore durations have been captured.",
+  "ExportFixedMin": 0.36,
+  "ExportMinPerGb": 0.1588,
+  "ExportRSquared": 0.9995,
+  "ExportEnvironment": "sqlpackage v170.4.83.3, Standard_D4s_v5 (4 vCPU 16 GB RAM), same-region private endpoint, swedencentral. These constants are environment-specific. Public-internet or cross-region deployments will be slower.",
+  "CompressionWorst": 1.04,
+  "CompressionBest": 145.5,
+  "CompressionBestNote": "probe-compressible was seeded with a single 8-byte repeat pattern, which is a synthetic upper bound. It is not a planning value. Realistic mixed business data compresses at approximately 4x (see CompressionWorst=1.04 for the incompressible lower bound).",
+  "SizesTestedGb": [
+    1.0781,
+    5.0781,
+    20.2031
+  ],
+  "HeldOut": []
+}

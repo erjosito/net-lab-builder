@@ -1,0 +1,69 @@
+# Seeding results - 2026-09-10
+# All databases seeded via az vm run-command invoke on ltrlab-vm
+# Auth: UAMI token from IMDS (client_id 9dab92a8-7084-442e-8617-139fda64b1c9)
+# IMDS endpoint: http://169.254.169.254/metadata/identity/oauth2/token
+
+=== probe-compressible (5 GB, compressible shape) ===
+SQL token: 2191 chars
+Creating contained user in ltrlab552754-probe-compressible ...
+Contained user OK.
+Seeding 5 GB of compressible data into ltrlab552754-probe-compressible ...
+
+database_name                   data_shape   row_count allocated_gb
+-------------                   ----------   --------- ------------
+ltrlab552754-probe-compressible compressible    655360         5.08
+Seed done: 5.67 min
+Allocated GB: 5.08
+SEED_RESULT: DB=ltrlab552754-probe-compressible SeedMin=5.67 AllocGb=5.08
+
+=== probe-random (5 GB, random shape) ===
+SQL token: 2191 chars
+Creating contained user in ltrlab552754-probe-random ...
+Contained user OK.
+Seeding 5 GB of random data into ltrlab552754-probe-random ...
+
+database_name             data_shape row_count allocated_gb
+-------------             ---------- --------- ------------
+ltrlab552754-probe-random random        655360         5.08
+Seed done: 5.54 min
+Allocated GB: 5.08
+SEED_RESULT: DB=ltrlab552754-probe-random SeedMin=5.54 AllocGb=5.08
+
+=== calib-5gb (5 GB, mixed shape) ===
+SQL token: 2191 chars
+Creating contained user in ltrlab552754-calib-5gb ...
+Contained user OK.
+Seeding 5 GB of mixed data into ltrlab552754-calib-5gb ...
+
+database_name          data_shape row_count allocated_gb
+-------------          ---------- --------- ------------
+ltrlab552754-calib-5gb mixed         655360         5.08
+Seed done: 5.46 min
+Allocated GB: 5.08
+SEED_RESULT: DB=ltrlab552754-calib-5gb SeedMin=5.46 AllocGb=5.08
+
+=== calib-1gb (1 GB, mixed shape) ===
+SQL token: 2191 chars
+Creating contained user in ltrlab552754-calib-1gb ...
+Contained user OK.
+Seeding 1 GB of mixed data into ltrlab552754-calib-1gb ...
+
+database_name          data_shape row_count allocated_gb
+-------------          ---------- --------- ------------
+ltrlab552754-calib-1gb mixed         131072         1.08
+Seed done: 1.23 min
+Allocated GB: 1.08
+SEED_RESULT: DB=ltrlab552754-calib-1gb SeedMin=1.23 AllocGb=1.08
+
+=== calib-20gb (20 GB, mixed shape) ===
+SQL token: 2191 chars
+Creating contained user in ltrlab552754-calib-20gb ...
+Contained user OK.
+Seeding 20 GB of mixed data into ltrlab552754-calib-20gb ...
+
+database_name           data_shape row_count allocated_gb
+-------------           ---------- --------- ------------
+ltrlab552754-calib-20gb mixed        2621440        20.20
+Seed done: 23.27 min
+Allocated GB: 20.20
+SEED_RESULT: DB=ltrlab552754-calib-20gb SeedMin=23.27 AllocGb=20.20

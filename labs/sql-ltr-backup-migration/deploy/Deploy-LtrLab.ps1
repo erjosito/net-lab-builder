@@ -158,17 +158,11 @@ if ($EntraOnlyAuth) {
                 '-u', $AdminUser, '-p', $plainPassword, '-o', 'none') | Out-Null
 }
 
-# The BACPAC export service reaches the database from an Azure IP, so the
-# allow-Azure-services rule (0.0.0.0) is required, not optional.
-Invoke-Az @('sql', 'server', 'firewall-rule', 'create', '-g', $ResourceGroup, '-s', $server,
-            '-n', 'AllowAzureServices', '--start-ip-address', '0.0.0.0',
-            '--end-ip-address', '0.0.0.0', '-o', 'none') | Out-Null
-
-$myIp = (Invoke-RestMethod 'https://api.ipify.org?format=json').ip
-Write-Host "Allowing client IP $myIp ..." -ForegroundColor Cyan
-Invoke-Az @('sql', 'server', 'firewall-rule', 'create', '-g', $ResourceGroup, '-s', $server,
-            '-n', 'LabClient', '--start-ip-address', $myIp,
-            '--end-ip-address', $myIp, '-o', 'none') | Out-Null
+# Firewall rules are omitted. This tenant forces publicNetworkAccess=Disabled on SQL
+# servers (silently: the API reports success but the value does not change). With public
+# access disabled, adding firewall rules fails with DenyPublicEndpointEnabled, and the
+# BACPAC export service cannot reach the database at all regardless of rules. Use a
+# private endpoint and sqlpackage instead (see Deploy-LtrLabPrivate.ps1).
 
 Write-Host "Creating artifact storage account $storageAccount ..." -ForegroundColor Cyan
 Invoke-Az @('storage', 'account', 'create', '-g', $ResourceGroup, '-n', $storageAccount,
@@ -176,11 +170,13 @@ Invoke-Az @('storage', 'account', 'create', '-g', $ResourceGroup, '-n', $storage
             '--min-tls-version', 'TLS1_2', '--allow-blob-public-access', 'false',
             '-o', 'none') | Out-Null
 
-$storageKey = (Invoke-Az @('storage', 'account', 'keys', 'list', '-g', $ResourceGroup,
-                           '-n', $storageAccount, '--query', '[0].value', '-o', 'tsv')).Trim()
-
+# NOTE: This tenant forces allowSharedKeyAccess=false and publicNetworkAccess=Disabled
+# on storage accounts. az storage account keys list still returns a key (trap: the
+# key is dead on every data-plane call). Use --auth-mode login for all data-plane
+# operations. Container creation requires the signed-in principal to have
+# Storage Blob Data Contributor on the account.
 Invoke-Az @('storage', 'container', 'create', '--account-name', $storageAccount,
-            '--account-key', $storageKey, '-n', $container, '-o', 'none') | Out-Null
+            '--auth-mode', 'login', '-n', $container, '-o', 'none') | Out-Null
 
 if ($EntraOnlyAuth) {
     # The export writes the BACPAC as the managed identity, not with the account key, so

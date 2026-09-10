@@ -154,25 +154,52 @@ $sizes    = [double[]] ($calib.SizeGb)
 $restores = [double[]] ($calib.RestoreMinutes)
 $exports  = [double[]] ($calib.ExportMinutes)
 
-$restoreFit = Get-LinearFit -X $sizes -Y $restores
+# Guard: refuse to fit a regression through an all-zero restore column.
+# When no LTR restores have been performed yet, RestoreMinutes is 0 for every row.
+# A regression through five identical zeros gives intercept=0, slope=0, R-squared=1.0,
+# which looks like a perfect fit but is a degenerate case: the model has no data.
+# Emitting those zeros would silently drop the restore term from cost estimates.
+$restoreMeasured = ($restores | Where-Object { $_ -gt 0 }).Count -gt 0
+if (-not $restoreMeasured) {
+    Write-Warning "All RestoreMinutes are 0: restore timing has not been measured. Restore fit skipped. Re-run once LTR backups are available and restore durations are captured."
+    $restoreFit = $null
+} else {
+    $restoreFit = Get-LinearFit -X $sizes -Y $restores
+}
+
 $exportFit  = Get-LinearFit -X $sizes -Y $exports
 
 Write-Host ''
 Write-Host 'Timing fit (minutes = intercept + slope * SizeGb)' -ForegroundColor Cyan
 Write-Host ('=' * 62) -ForegroundColor DarkGray
-[pscustomobject]@{
-    Measurement = 'Restore'
-    FixedMin    = $restoreFit.Intercept
-    MinPerGb    = $restoreFit.Slope
-    RSquared    = $restoreFit.RSquared
-}, [pscustomobject]@{
+
+$timingTable = @()
+if ($restoreFit) {
+    $timingTable += [pscustomobject]@{
+        Measurement = 'Restore'
+        FixedMin    = $restoreFit.Intercept
+        MinPerGb    = $restoreFit.Slope
+        RSquared    = $restoreFit.RSquared
+    }
+} else {
+    $timingTable += [pscustomobject]@{
+        Measurement = 'Restore'
+        FixedMin    = 'N/A (not measured)'
+        MinPerGb    = 'N/A'
+        RSquared    = 'N/A'
+    }
+}
+$timingTable += [pscustomobject]@{
     Measurement = 'Export'
     FixedMin    = $exportFit.Intercept
     MinPerGb    = $exportFit.Slope
     RSquared    = $exportFit.RSquared
-} | Format-Table -AutoSize | Out-String -Width 100 | Write-Host
+}
+$timingTable | Format-Table -AutoSize | Out-String -Width 100 | Write-Host
 
-foreach ($fit in @(@{N='Restore';F=$restoreFit}, @{N='Export';F=$exportFit})) {
+$fitsToCheck = @(@{N='Export';F=$exportFit})
+if ($restoreFit) { $fitsToCheck += @{N='Restore';F=$restoreFit} }
+foreach ($fit in $fitsToCheck) {
     if ($fit.F.RSquared -lt 0.90) {
         Write-Warning "$($fit.N): R-squared $($fit.F.RSquared) is poor. The linear model is questionable; add more sizes before trusting the estimate."
     }
@@ -221,6 +248,7 @@ if ($holdout) {
             @{ Name = 'Restore'; Fit = $restoreFit; Actual = $h.RestoreMinutes },
             @{ Name = 'Export';  Fit = $exportFit;  Actual = $h.ExportMinutes }
         )) {
+            if (-not $phase.Fit) { continue }   # skip unmeasured phases
             $predicted = $phase.Fit.Intercept + ($phase.Fit.Slope * $h.SizeGb)
             $errPct = if ($phase.Actual -ne 0) {
                 [math]::Round(100 * ($predicted - $phase.Actual) / $phase.Actual, 1)
@@ -250,14 +278,26 @@ if ($holdout) {
 $calibrated = [pscustomobject]@{
     GeneratedUtc      = (Get-Date).ToUniversalTime().ToString('o')
     Source            = (Resolve-Path $TimingCsv).Path
-    RestoreFixedMin   = $restoreFit.Intercept
-    RestoreMinPerGb   = $restoreFit.Slope
-    RestoreRSquared   = $restoreFit.RSquared
+    # Restore: null when no LTR restores were performed. Do not use 0 as a default;
+    # a zero-valued restore term silently understates the drain timeline.
+    RestoreMeasured   = $restoreMeasured
+    RestoreFixedMin   = if ($restoreFit) { $restoreFit.Intercept } else { $null }
+    RestoreMinPerGb   = if ($restoreFit) { $restoreFit.Slope    } else { $null }
+    RestoreRSquared   = if ($restoreFit) { $restoreFit.RSquared } else { $null }
+    RestoreNote       = if (-not $restoreMeasured) { 'Restore timing not measured. All RestoreMinutes were 0 in the source CSV. Re-run Measure-LtrCalibration.ps1 once LTR backups are available and restore durations have been captured.' } else { $null }
     ExportFixedMin    = $exportFit.Intercept
     ExportMinPerGb    = $exportFit.Slope
     ExportRSquared    = $exportFit.RSquared
+    # ExportEnvironment documents conditions under which this was measured. Export
+    # throughput is environment-specific: private endpoint, same-region, and VM SKU
+    # all dominate the result. Do not reuse these numbers for a different topology.
+    ExportEnvironment = $null   # caller should set; see README
     CompressionWorst  = $worst
     CompressionBest   = $best
+    # CompressionBest may include a synthetic upper-bound probe (e.g. repeated-byte
+    # data). That value is not a planning input. The safe budgeting value is
+    # CompressionWorst. Mixed realistic data typically compresses at ~4x.
+    CompressionBestNote = $null  # set by caller if probe-compressible was included
     SizesTestedGb     = @($calib.SizeGb)
     HeldOut           = $holdoutReport
 }
@@ -268,7 +308,11 @@ Write-Host "Calibrated parameters written to $OutputPath" -ForegroundColor Green
 Write-Host 'Feed them into the estimator:' -ForegroundColor Green
 Write-Host ''
 Write-Host "  .\Get-LtrExportCostEstimate.ps1 -BackupCount <n> -AvgDatabaseGb <gb> ``" -ForegroundColor Cyan
-Write-Host "      -RestoreFixedMin $($restoreFit.Intercept) -RestoreMinPerGb $($restoreFit.Slope) ``" -ForegroundColor Cyan
+if ($restoreFit) {
+    Write-Host "      -RestoreFixedMin $($restoreFit.Intercept) -RestoreMinPerGb $($restoreFit.Slope) ``" -ForegroundColor Cyan
+} else {
+    Write-Host "      # -RestoreFixedMin and -RestoreMinPerGb: not measured; omit or supply defaults" -ForegroundColor DarkGray
+}
 Write-Host "      -ExportFixedMin $($exportFit.Intercept) -ExportMinPerGb $($exportFit.Slope) ``" -ForegroundColor Cyan
 Write-Host "      -BacpacCompression $worst" -ForegroundColor Cyan
 Write-Host ''

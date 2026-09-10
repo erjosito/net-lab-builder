@@ -1,0 +1,73 @@
+# Export results - 2026-09-10
+# All exports via sqlpackage v170.4.83.3 on ltrlab-vm
+# Auth: UAMI access token from IMDS, /AccessToken: parameter
+# Network: private endpoint (pe-sql -> 10.70.1.4, pe-blob -> 10.70.1.5)
+# VM SKU: Standard_D4s_v5 (4 vCPU, 16 GB RAM)
+# Artifacts uploaded to: https://ltrlab552754sa.blob.core.windows.net/ltr-artifacts/
+
+=== probe-compressible (5.0781 GB, compressible shape) ===
+Source: 5452595200 bytes (5.0781 GB)
+sqlpackage: Successfully exported. Time elapsed 0:00:52.54
+Export time: 0.887 min
+Artifact: 37526698 bytes (0.0349 GB)
+Compression ratio: 145.299x
+AzCopy upload: Completed (37526698 bytes)
+EXPORT_RESULT: DB=ltrlab552754-probe-compressible SrcBytes=5452595200 SrcGb=5.0781 ArtBytes=37526698 ArtGb=0.0349 ExportMin=0.887 CompressionRatio=145.299
+
+=== probe-random (5.0781 GB, random/incompressible shape) ===
+Source: 5452595200 bytes (5.0781 GB)
+sqlpackage: Successfully exported. Time elapsed 0:03:18.07
+Export time: 3.306 min
+Artifact: 5264354201 bytes (4.9028 GB)
+Compression ratio: 1.036x
+AzCopy upload: Completed (5264354201 bytes)
+EXPORT_RESULT: DB=ltrlab552754-probe-random SrcBytes=5452595200 SrcGb=5.0781 ArtBytes=5264354201 ArtGb=4.9028 ExportMin=3.306 CompressionRatio=1.036
+
+=== calib-5gb (5.0781 GB, mixed shape) ===
+Source: 5452595200 bytes (5.0781 GB)
+sqlpackage: Successfully exported. Time elapsed 0:01:11.86
+Export time: 1.202 min
+Artifact: 1362535337 bytes (1.2690 GB)
+Compression ratio: 4.002x
+AzCopy upload: Completed (1362535337 bytes)
+EXPORT_RESULT: DB=ltrlab552754-calib-5gb SrcBytes=5452595200 SrcGb=5.0781 ArtBytes=1362535337 ArtGb=1.269 ExportMin=1.202 CompressionRatio=4.002
+
+=== calib-1gb (1.0781 GB, mixed shape) ===
+Source: 1157627904 bytes (1.0781 GB)
+sqlpackage: Successfully exported. Time elapsed 0:00:29.67
+Export time: 0.499 min
+Artifact: 272523032 bytes (0.2538 GB)
+Compression ratio: 4.248x
+AzCopy upload: Completed (272523032 bytes)
+EXPORT_RESULT: DB=ltrlab552754-calib-1gb SrcBytes=1157627904 SrcGb=1.0781 ArtBytes=272523032 ArtGb=0.2538 ExportMin=0.499 CompressionRatio=4.248
+
+=== calib-20gb (20.2031 GB, mixed shape) ===
+Source: 21692940288 bytes (20.2031 GB)
+sqlpackage: Successfully exported. Time elapsed 0:03:33.18
+Export time: 3.558 min
+Artifact: 5450099812 bytes (5.0758 GB)
+Compression ratio: 3.980x
+AzCopy upload: Completed (5450099812 bytes)
+EXPORT_RESULT: DB=ltrlab552754-calib-20gb SrcBytes=21692940288 SrcGb=20.2031 ArtBytes=5450099812 ArtGb=5.0758 ExportMin=3.558 CompressionRatio=3.98
+
+=== Summary ===
+
+SizeGb in this manifest is from sys.database_files.size (allocated 8 KB pages), not from
+data-row actual sizes. For freshly seeded databases with no deletes the difference is
+1-8% (fill factor, IAM pages, system structures). Compression ratio = allocated / artifact.
+
+Mixed data (realistic) compression: 3.98x - 4.25x. Default estimate of 4.0x VALIDATED.
+Incompressible data (lower bound): 1.04x
+Compressible data (upper bound): 145.3x -- SYNTHETIC. Single repeated-byte seed pattern.
+  This is not a planning value. The honest planning range is 1.04x to 4.25x.
+  Use 1.04x for worst-case budgeting.
+
+Export throughput (mixed, private endpoint, D4s_v5, same region):
+  Linear fit: ExportMin = 0.36 + 0.159 * SizeGb  (R-squared = 0.9995)
+  Default estimate was 1.20 min/GB. Measured = 0.159 min/GB (7.5x faster).
+  CONTEXT: sqlpackage v170.4.83.3, Standard_D4s_v5, same-region private endpoint.
+  These constants are environment-specific. Public-internet or cross-region will be slower.
+
+RestoreMinPerGb: NOT measured this session (no LTR backups yet).
+  RestoreFixedMin and RestoreMinPerGb are null in calibrated-parameters.json.
+  Re-run Measure-LtrCalibration.ps1 once LTR restores have been performed.

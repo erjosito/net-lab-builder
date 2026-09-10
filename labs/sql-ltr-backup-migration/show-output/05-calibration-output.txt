@@ -1,0 +1,48 @@
+# Measure-LtrCalibration.ps1 output - 2026-09-10 (corrected run)
+# Input: ltr-export-manifest-2026-09-10.csv
+# Note: RestoreMinutes = 0 for all rows (LTR restores not performed in this session).
+# The script now detects all-zero restore columns and skips the restore fit rather than
+# producing a degenerate R-squared=1.0 through five identical zeros.
+
+WARNING: All RestoreMinutes are 0: restore timing has not been measured.
+Restore fit skipped. Re-run once LTR backups are available and restore durations have been captured.
+
+Timing fit (minutes = intercept + slope * SizeGb)
+==============================================================
+
+Measurement FixedMin           MinPerGb RSquared
+----------- --------           -------- --------
+Restore     N/A (not measured) N/A      N/A
+Export      0.36               0.16     1.00
+
+
+Compression ratios (source GB / artifact GB)
+==============================================================
+
+Database                        Shape        SizeGb Artifact  Ratio
+--------                        -----        ------ --------  -----
+ltrlab552754-probe-random       random         5.08     4.90   1.04
+ltrlab552754-calib-20gb         mixed         20.20     5.08   3.98
+ltrlab552754-calib-5gb          mixed          5.08     1.27   4.00
+ltrlab552754-calib-1gb          mixed          1.08     0.25   4.25
+ltrlab552754-probe-compressible compressible   5.08     0.03 145.50
+
+
+Observed range: 1.04x (worst) to 145.5x (best)
+Use the WORST ratio for budgeting. It produces the largest artifacts and
+the storage term dominates total cost.
+
+NOTE: 145.5x (probe-compressible) is a synthetic upper bound from a single repeated-byte
+seed. It is not a planning value. The honest planning range is 1.04x to 4.25x.
+
+Calibrated parameters written to calibrated-parameters.json
+Feed them into the estimator:
+
+  .\Get-LtrExportCostEstimate.ps1 -BackupCount <n> -AvgDatabaseGb <gb> `
+      # -RestoreFixedMin and -RestoreMinPerGb: not measured; omit or supply defaults
+      -ExportFixedMin 0.36 -ExportMinPerGb 0.1588 `
+      -BacpacCompression 1.04
+
+Export environment: sqlpackage v170.4.83.3, Standard_D4s_v5 (4 vCPU 16 GB RAM),
+same-region private endpoint, swedencentral. These constants are environment-specific.
+Public-internet or cross-region deployments will be slower.
