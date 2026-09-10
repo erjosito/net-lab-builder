@@ -285,7 +285,9 @@ The timing of LTR backups is controlled by Microsoft. After enabling an LTR poli
 first backup can take up to 7 days to appear. This dominates the lab's calendar.
 
 Mitigation: when an LTR policy is enabled for the first time, the most recent existing
-PITR full backup is copied into long-term storage. Enable the policy early and wait.
+PITR full backup may be copied into long-term storage. In the 2026-09-10 lab run, no
+backup appeared within 25 minutes of enablement. Enable the policy early and wait; do not
+assume same-day availability.
 
 ### A stopped Managed Instance takes no automated backups
 
@@ -297,6 +299,32 @@ wait for an LTR backup.
 backup is never backfilled. The instance must stay running for the entire wait. This is why
 the MI half of the lab costs roughly $102 for a 7-day wait rather than the small number an
 earlier draft assumed.
+
+### LTR policies cannot be enabled on serverless databases with auto-pause active
+
+Attempting to set an LTR policy on a serverless database that has auto-pause enabled fails
+immediately with error code `LtrConfigPolicyUnsupportedIfAutoPauseEnabled`. Auto-pause
+must be disabled first on every affected database:
+
+```
+az sql db update -g <rg> -s <server> -n <db> --auto-pause-delay -1
+```
+
+The cost consequence is real: once auto-pause is off, the database runs at the minimum
+serverless vCore level throughout the LTR wait even with zero activity. Five GP_S_Gen5
+serverless databases at minimum vCores cost roughly $0.38/hour, adding approximately $64
+over a 7-day wait. The "storage cost only during the wait" assumption in earlier drafts was
+false. The cost table above has been corrected.
+
+### Enabling an LTR policy does not guarantee an immediate PITR backup copy
+
+The Microsoft documentation states that when a policy is first enabled on a database, the
+most recent PITR full backup may be copied into long-term storage. In the 2026-09-10 lab
+run, no LTR backup appeared within 25 minutes of first-time policy enablement (checked at
+2 minutes and again at 25 minutes after enablement). This is not long enough to rule out a
+later copy; the documentation says it may take up to 7 days. The optimistic reading that
+a backup appears within minutes is not supported by this observation. Enable policies early
+and treat the full 7-day window as the realistic wait.
 
 ### CLI asymmetries
 
@@ -549,8 +577,11 @@ from a documented platform limit rather than from our logic.
 > available backups.
 
 There is one mitigation, also documented: when an LTR policy is enabled **for the first
-time** on a database, the most recent existing PITR full backup is copied into long-term
-storage. So seeding early and waiting is the only reliable approach.
+time** on a database, the most recent existing PITR full backup may be copied into
+long-term storage. In the 2026-09-10 lab run, no LTR backup appeared within 25 minutes
+of first-time policy enablement (checked at 2 minutes and again at 25 minutes). This does
+not rule out the copy arriving later; 25 minutes is too short an observation window.
+Seeding early and waiting is the only reliable approach.
 
 This splits the lab into two phases separated by days, which is unusual for this repo's
 labs and needs to be planned for rather than discovered:
@@ -572,10 +603,11 @@ continues, so stop it between the seed and execute phases.
 
 | Item | Estimate |
 |---|---|
-| SQL DB serverless, 60-minute auto-pause, ~3 active hours | ~$1 |
+| SQL DB serverless, active compute during seed (~3 hours) | ~$1 |
+| SQL DB serverless, minimum compute during 7-day LTR wait (auto-pause must be disabled) | ~$64 |
 | Data storage for ~36 GB across five databases, one week | ~$1 |
 | Storage, LTR and artifacts | <$1 |
-| **Total** | **~$5 to $10** |
+| **Total** | **~$70** |
 
 **Adding the Managed Instance** (scenario 4):
 
@@ -597,7 +629,10 @@ first production database and feeding the result back into `Get-LtrExportCostEst
 ## Deliberately out of scope
 
 - Subscription deletion behaviour (scenario 8).
-- Real-world restore durations. Lab databases are too small to extrapolate from.
+- Real-world restore durations. No LTR backup exists yet; Phase 3 (restore and drain) has
+  not been run. The calibration file correctly reports null for all restore parameters. This
+  item will leave scope once LTR backups appear and `Measure-LtrCalibration.ps1` is re-run
+  with real restore timings.
 - Customer-managed-key TDE. The tooling defaults to `DisableOnStagedCopy` precisely to
   avoid introducing a Key Vault key that must outlive the old subscription; testing the CMK
   path is only worthwhile if you have decided to accept that key-custody burden.
@@ -650,20 +685,28 @@ large fixed cost or a steep slope. Three sizes spanning an order of magnitude le
 `Measure-LtrCalibration.ps1` recover both by least squares, and the R-squared tells you
 whether the linear assumption holds at all.
 
-**Why two data shapes.** The estimator assumes BACPAC compresses ~4x. That number is pure
-guesswork and it multiplies the dominant cost term. A dry run of the fitter against
-synthetic ground truth reported a compression range of **1.02x to 33x** between the two
-probes. If your data resembles the random probe, artifact storage costs roughly four times
-the default estimate. Bracketing this is worth two small databases.
+**Why two data shapes.** The estimator's 4.0x BACPAC compression default was an
+unverified guess before the 2026-09-10 calibration run. That run validated it: mixed
+realistic data (75% repetitive text, 25% random bytes) compressed at 3.98x to 4.25x
+across three database sizes. The existing cost figures for the typical case do not need
+revision. The planning floor, however, is **1.04x**, measured on random-byte data. Any
+compliance archive sized using the 4.0x default against high-entropy data (encrypted
+columns, pre-compressed blobs, binary payloads) will be 4x undersized. Use 1.04x when
+the compression ratio of the actual data is unknown. A synthetic upper bound of 145.5x
+was also measured; it came from a single repeated-byte seed pattern and is not a planning
+value. See the Calibration results section for the full table and throughput fit.
 
-The databases are serverless with a 60-minute auto-pause, so the multi-day wait for LTR
-backups costs storage only.
+LTR policies cannot be enabled while auto-pause is active (see the Caveats section). The
+databases run at the minimum serverless vCore level during the LTR wait, not storage only.
 
 ## Pre-flight results
 
-Phase 0 has been run. Nothing has been deployed to Azure.
+Phases 0 through 4 (pre-flight, seed, export, and calibrate) have been completed as of
+2026-09-10. Full command output is in `show-output/`. Key calibration results are in the
+Calibration results section below. Phase 3 (LTR restore and drain) and Phase 5 (teardown)
+remain pending, blocked on LTR backup availability.
 
-Quotas below were read from the lab subscription in `swedencentral`.
+Quotas below were read from the lab subscription in `swedencentral` at Phase 0.
 
 | Check | Result |
 |---|---|
@@ -775,9 +818,11 @@ looked simpler, is the one that breaks.
 
 ### Run the SQL Database half first
 
-The lab is worth splitting. Scenarios 1, 2, 3 and 5 need only Azure SQL Database, whose
-databases are serverless with a 60-minute auto-pause, so the multi-day wait costs storage
-only, on the order of $5 to $10.
+The lab is worth splitting. Scenarios 1, 2, 3 and 5 need only Azure SQL Database. Note
+that the serverless databases accumulate compute charges at the minimum vCore level during
+the LTR wait because auto-pause must be disabled when an LTR policy is active; the
+updated cost table reflects this. The SQL Database half still costs significantly less than
+adding the Managed Instance.
 
 Scenario 4 needs a Managed Instance, and it is a different proposition entirely:
 
@@ -796,8 +841,80 @@ Scenario 4 needs a Managed Instance, and it is a different proposition entirely:
   and treat the free offer as unsuitable for this particular lab.
 
 Since the two drain scripts share most of their logic, running the Database half first
-falsifies the shared assumptions, above all the compression ratio, for about 8 percent of
-the cost of doing both.
+validates the shared export assumptions at about 8 percent of the cost of doing both.
+The 2026-09-10 calibration run completed this step: export throughput and BACPAC
+compression are now measured. Restore timing remains pending LTR backup availability.
+
+## Calibration results
+
+Phases 1 through 4 completed on 2026-09-10. Tooling: sqlpackage v170.4.83.3 on a
+Standard_D4s_v5 VM (4 vCPU, 16 GB RAM), connecting to the logical server over a private
+endpoint in the same region (swedencentral). Full output is in `show-output/`; the fitted
+parameters are in `deploy/calibrated-parameters.json`.
+
+### BACPAC compression ratios
+
+Source sizes are allocated file size from `sys.database_files` (8 KB pages), not raw data
+volume. For freshly seeded databases with no deletes, allocated size exceeded target by
+1 to 8 percent. The compression ratio below is therefore allocated-size-to-artifact, which
+is the correct basis for capacity planning.
+
+| Database | Data shape | Source GB | Artifact GB | Ratio |
+|---|---|---|---|---|
+| `probe-compressible` | Repeated bytes (synthetic upper bound, not a planning value) | 5.08 | 0.03 | 145.5x |
+| `calib-1gb` | Mixed realistic (75% text, 25% random) | 1.08 | 0.25 | 4.25x |
+| `calib-5gb` | Mixed realistic | 5.08 | 1.27 | 4.00x |
+| `calib-20gb` | Mixed realistic | 20.20 | 5.08 | 3.98x |
+| `probe-random` | Random bytes (`CRYPT_GEN_RANDOM`), incompressible | 5.08 | 4.90 | 1.04x |
+
+**The pre-run 4.0x default is validated for realistic mixed data.** The existing cost
+figures for the typical case are accurate.
+
+**The budgeting floor is 1.04x, not 4.0x.** Plan compliance archive storage against the
+floor, because data containing encrypted columns, pre-compressed blobs, or binary payloads
+may compress barely at all. An archive sized on 4.0x against incompressible data will be
+roughly 4x undersized, and artifact storage dominates the multi-year cost.
+
+**The 145.5x figure is a synthetic bracket.** It came from a single repeated-byte seed
+pattern (the most compressible data shape possible). No production database has this shape.
+Do not use it as a planning input. The honest planning range is 1.04x to 4.25x.
+
+Feed the floor into the estimator:
+```powershell
+.\Get-LtrExportCostEstimate.ps1 -BackupCount <n> -AvgDatabaseGb <gb> -BacpacCompression 1.04
+```
+
+### Export throughput
+
+Linear fit on the three mixed-data databases:
+
+`ExportMin = 0.36 + 0.159 * SizeGb`  (R-squared = 1.00)
+
+| Database | Source GB | Export min | Min/GB observed |
+|---|---|---|---|
+| `calib-1gb` | 1.08 | 0.50 | 0.46 |
+| `calib-5gb` | 5.08 | 1.20 | 0.24 |
+| `calib-20gb` | 20.20 | 3.56 | 0.18 |
+
+The default estimator assumed 1.20 min/GB. The measured rate is 0.159 min/GB, roughly 7.5x
+faster. **This is environment-specific:** same region, private endpoint, 4 vCPU VM. A
+public-internet or cross-region export will be slower; do not generalise this rate. The
+compute term is roughly 2 percent of the multi-year total cost regardless, so the financial
+impact of the difference is small.
+
+Feed the calibrated export constants into the estimator (but not restore, which is still
+unmeasured):
+```powershell
+.\Get-LtrExportCostEstimate.ps1 ... -ExportFixedMin 0.36 -ExportMinPerGb 0.159 -BacpacCompression 1.04
+```
+
+### Restore timing
+
+Not measured. No LTR backup has been produced yet, so Phase 3 (LTR restore) has not been
+run. The calibration file correctly reports null for all restore parameters. The restore
+timing constants remain at their original estimated defaults. Re-run
+`Measure-LtrCalibration.ps1` once LTR backups are available and restore durations have
+been captured.
 
 ## Running the lab
 
