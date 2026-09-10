@@ -446,3 +446,6 @@ Morpheus must add real tests or retract the claim.
 No Azure calls; no writes to `deploy/` or `raw-output/`.
 
 📌 Team update (2026-08-21T15:35:00+02:00): Foundry lab review cycle complete. First review REJECTED (B1-B4); Trinity revision APPROVED in second review. All blockers resolved; sanitization verified; VM state confirmed. Lab PUBLICATION-READY. Decided by Scribe (session orchestration).
+
+📌 Team update (2026-09-10T09:35:25Z): BACPAC compression measured (1.04x worst, 4.0x typical, 145x best); export throughput calibrated (0.36 + 0.159 GB formula); LTR policy cannot coexist with auto-pause enabled — decided by Tank & Oracle
+
