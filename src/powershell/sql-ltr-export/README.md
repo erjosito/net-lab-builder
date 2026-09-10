@@ -26,8 +26,12 @@ skip them.
 ```bash
 # 1. Is SQL authentication even permitted? Some tenants deny any logical server or
 #    managed instance that allows it (policy: SFI-ID4.2.2, Safe Secrets Standard).
-#    If denied, every -AdminUser/-AdminPassword path below is unusable.
-az policy assignment list --disable-scope-strict-match -o table
+#    Do NOT rely on `az policy assignment list` for this. That command omits
+#    management-group scoped assignments, which is exactly where such policies live,
+#    so it returns a clean list while the deny is active. Read the set definition at
+#    the governing management group instead, or just attempt a throwaway server.
+az policy set-definition show --management-group <mgId> -n MCAPSGovDenyPolicies \
+  --query "policyDefinitions[].policyDefinitionReferenceId" -o tsv
 
 # 2. Is public network access forced off? Create a throwaway logical server (they are
 #    free) and read the value back. Do NOT trust the request succeeding: the platform
