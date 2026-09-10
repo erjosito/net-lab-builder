@@ -82,6 +82,13 @@ If the subscription is being deleted, the second question is about timing:
 | `Export-SqlDbLtrBackups.ps1` | Azure SQL Database: LTR -> temp DB -> BACPAC -> blob. |
 | `Export-SqlMiLtrBackups.ps1` | Azure SQL MI: LTR -> staged DB -> COPY_ONLY `.bak` (or BACPAC) -> blob. |
 
+There is also a companion Excel model in
+[`src/python/ltr-cost-workbook/`](../../python/ltr-cost-workbook/README.md). The PowerShell
+estimator answers "what does one drain run cost"; the workbook answers "what does keeping
+the artifacts cost for the next seven years", swept across backup count and database size,
+with every storage tier and redundancy option priced side by side. Storage is the term that
+dominates, so it is worth its own model.
+
 All three support `-WhatIf`. Both export scripts write a **manifest CSV** recording which
 original server/instance, database and restore point each artifact came from, which is the
 provenance evidence auditors actually ask for.
