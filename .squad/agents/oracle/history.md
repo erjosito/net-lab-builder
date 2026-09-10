@@ -500,3 +500,51 @@ No drawio/mermaid MCP tools available. All three `.mmd` files validated with
   drawio stencil approach is wrong. Mermaid flowcharts covering lifecycle events and pipeline
   branches with governance constraint annotations are the right tool. The "no topology" conclusion
   from the original deviation table was too strong; lifecycle and pipeline diagrams always apply.
+
+## 2026-09-10 (continued) — Calibration fold-in: Questions section and diagram fixes
+
+### Task
+
+Multi-pass refinement of the sql-ltr-backup-migration README over the same session, completed
+after compaction:
+
+1. Added "Questions to ask before you start" section (18 questions, three groups), plus
+   `04-decision-tree.mmd` decision flowchart.
+2. Fixed `\n` in all four diagram sources and README fences (replaced with `<br/>`).
+   Verified via SVG inspection (mermaid v11 uses foreignObject+HTML; `<br/>` confirmed
+   rendered as HTML `<br>` elements, no literal backslash-n).
+3. Removed Q3 (transactional consistency, structurally guaranteed by pipeline) and Q4
+   (restore target, fixed by scenario definition). Simplified `04-decision-tree.mmd`:
+   removed MI_TGT branch, MI path terminates at `.bak`.
+4. Stripped all lab-specific language from the questions section per Jose's direction.
+   Reframed UNVERIFIED note in shared-key question as a documentation gap factual statement.
+5. Merged Entra-only auth question into Directory Readers question (preview risk preserved);
+   running total reduced to 15 questions.
+6. Folded Tank's 2026-09-10 calibration results:
+   - Added "## Calibration results" section with compression table, throughput fit, and
+     restore-pending note.
+   - Corrected DB-half cost table: auto-pause must be disabled for LTR; ~$64 added for
+     minimum-vCore wait. Total raised from ~$5-10 to ~$70.
+   - Replaced "pure guesswork" compression language with measured values.
+   - Added two new Caveats entries: LTR+auto-pause incompatibility and no-immediate-copy
+     observation.
+   - Updated Pre-flight results opener (phases 0-4 complete).
+   - Updated "Deliberately out of scope" (restore phase not yet run, null in calibration JSON).
+
+### Key learnings
+
+- **LTR + serverless auto-pause incompatibility:** `LtrConfigPolicyUnsupportedIfAutoPauseEnabled`
+  is an immediate API rejection; must disable auto-pause before setting any LTR policy.
+  Cost consequence: minimum serverless compute throughout the LTR wait, not storage only.
+- **No immediate LTR backup copy:** enabling an LTR policy does not guarantee a backup within
+  minutes; 25-minute observation in the lab showed nothing. Treat the full 7-day window as real.
+- **Exit 0 does not prove label rendering:** mermaid-cli exits 0 even when `\n` in labels
+  would render as literal text. Always SVG-inspect for `<br>` elements in foreignObject, not
+  just check the exit code.
+- **Fence byte-identity verification:** use a regex extraction script after every edit to
+  confirm all embedded README fences still match their `.mmd` source files exactly.
+  Fence order in the README is not the same as file-number order (04 appears first in the
+  Questions section; 01-03 appear later in the Diagrams section).
+- **Calibration changes scope of the "Questions to ask" section:** Q12 (storage tier) now
+  can reference the 1.04x floor as a lab result without presenting it as vendor documentation.
+  Section-wide rule: keep the questions environment-agnostic; put evidence in Caveats/Calibration.
