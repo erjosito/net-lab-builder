@@ -137,3 +137,95 @@ This is not an LTR restore measurement. It is a same-instance PITR restore of `m
 | Managed Instance LTR restore duration | UNMEASURED | No LTR backup existed during this run. PITR restore is recorded separately as a PROXY only. |
 | Managed Instance TDE decryption above 5 GiB | UNMEASURED | Larger sizes were not attempted to preserve the 32 GB storage ceiling and leave room for the PITR proxy copy. |
 
+## Task 4: MI `.bak` artifact consumption proof
+
+Status: MEASURED.
+
+This is distinct from `RESTORE VERIFYONLY`. Earlier validation proved the backup set was readable and complete. This task consumed the backup artifact into a new working database and compared the restored data to the source database.
+
+The first restore attempt used `WITH STATS = 10` and failed before consuming the artifact:
+
+```text
+Msg 41901: One or more of the options (stats, stats=) are not supported for this statement in SQL Database Managed Instance.
+```
+
+The restore was rerun without `STATS`, using the existing Managed Identity credential and the 1 GiB backup:
+
+```sql
+RESTORE DATABASE [mi_tde_1gb_restored]
+FROM URL = N'https://ltrlab552754sa.blob.core.windows.net/mi-backups/mi_tde_1gb_20260910-20260910T110634Z.bak';
+```
+
+| Field | Value |
+|---|---|
+| Source database | `mi_tde_1gb_20260910` |
+| Restored database | `mi_tde_1gb_restored` |
+| Backup artifact | `mi_tde_1gb_20260910-20260910T110634Z.bak` |
+| Artifact bytes | 262733824 |
+| Restore start UTC | 2026-09-10T11:26:20.3185197Z |
+| Restore end UTC | 2026-09-10T11:26:50.8211499Z |
+| Restore wall-clock duration | 30.503 s |
+| Data intact | true |
+
+Data integrity comparison:
+
+| Measurement | Source | Restored | Match |
+|---|---:|---:|---|
+| `dbo.Payload` row count | 130000 | 130000 | Yes |
+| `CHECKSUM_AGG(BINARY_CHECKSUM(id, repeat_text, random_bytes, created_at))` | -1557385128 | -1557385128 | Yes |
+| ROWS file allocation | 1056 MiB | 1056 MiB | Yes |
+| LOG file allocation | 88 MiB | 88 MiB | Yes |
+| FILESTREAM allocation | 0 MiB | 0 MiB | Yes |
+
+Conclusion: the Managed Instance `.bak` artifact was restored into a working database and the payload data matched the source by row count and aggregate checksum.
+
+## Task 5: SQL Database BACPAC artifact consumption proof
+
+Status: MEASURED.
+
+Existing BACPAC artifacts were found in the `ltr-artifacts` container. No BACPAC was regenerated.
+
+| BACPAC | Bytes | Last modified |
+|---|---:|---|
+| `ltrlab552754-calib-1gb.bacpac` | 272523032 | Thu, 10 Sep 2026 09:14:14 GMT |
+| `ltrlab552754-calib-5gb.bacpac` | 1362535337 | Thu, 10 Sep 2026 09:12:40 GMT |
+| `ltrlab552754-calib-20gb.bacpac` | 5450099812 | Thu, 10 Sep 2026 09:18:35 GMT |
+| `ltrlab552754-probe-compressible.bacpac` | 37526698 | Thu, 10 Sep 2026 09:06:10 GMT |
+| `ltrlab552754-probe-random.bacpac` | 5264354201 | Thu, 10 Sep 2026 09:10:31 GMT |
+
+The 1 GiB artifact was selected to minimize resource growth while proving the path. It was downloaded from private blob storage to `ltrlab-vm`, then imported with `C:\tools\sqlpackage\sqlpackage.exe` using an Entra token from IMDS for the UAMI. `az sql db import` was not used.
+
+| Field | Value |
+|---|---|
+| Source database | `ltrlab552754-calib-1gb` |
+| Imported database | `ltrlab552754-calib-1gb-imported` |
+| BACPAC artifact | `ltrlab552754-calib-1gb.bacpac` |
+| BACPAC bytes | 272523032 |
+| Download start UTC | 2026-09-10T11:31:22.2641678Z |
+| Download end UTC | 2026-09-10T11:37:10.0178721Z |
+| Download duration | 347.754 s |
+| sqlpackage import start UTC | 2026-09-10T11:39:22.8551167Z |
+| sqlpackage import end UTC | 2026-09-10T11:42:41.4987163Z |
+| sqlpackage import duration | 198.644 s |
+| sqlpackage reported elapsed | 0:03:18.22 |
+| Data intact | true |
+
+Data integrity comparison:
+
+| Measurement | Source | Imported | Match |
+|---|---:|---:|---|
+| `dbo.LabPayload` row count | 131072 | 131072 | Yes |
+| `CHECKSUM_AGG(BINARY_CHECKSUM(Id, CreatedUtc, Category, Amount, Payload))` | 12517530 | 12517530 | Yes |
+| ROWS file allocation | 1104 MiB | 1104 MiB | Yes |
+| LOG file allocation | 1224 MiB | 472 MiB | Different, expected after import |
+| FILESTREAM allocation | 0 MiB | 0 MiB | Yes |
+
+Conclusion: the SQL Database BACPAC artifact was imported into a working database and the payload data matched the source by row count and aggregate checksum.
+
+## Restore confidence boundaries
+
+These are three separate facts and must not be conflated:
+
+1. `RESTORE VERIFYONLY` passed for the Managed Instance `.bak`, proving the backup set is readable and complete.
+2. Artifact consumption is now MEASURED: the Managed Instance `.bak` restored with data intact, and the SQL Database BACPAC imported with data intact.
+3. LTR restore is still UNMEASURED and UNVERIFIED because no Managed Instance LTR backup existed during this run.
