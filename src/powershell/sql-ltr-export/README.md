@@ -17,6 +17,41 @@ portable artifact.
 LTR backup --restore--> live database --export--> BACPAC / .bak --> blob storage (any subscription)
 ```
 
+## Prerequisite check before you trust any of this
+
+Run these three checks against the **source** subscription first. Each one has been
+observed to block the pipeline outright, and all three fail late and confusingly if you
+skip them.
+
+```bash
+# 1. Is SQL authentication even permitted? Some tenants deny any logical server or
+#    managed instance that allows it (policy: SFI-ID4.2.2, Safe Secrets Standard).
+#    If denied, every -AdminUser/-AdminPassword path below is unusable.
+az policy assignment list --disable-scope-strict-match -o table
+
+# 2. Is public network access forced off? Create a throwaway logical server (they are
+#    free) and read the value back. Do NOT trust the request succeeding: the platform
+#    accepts publicNetworkAccess=Enabled, reports success, and silently keeps it Disabled.
+az sql server show -g <rg> -n <server> --query publicNetworkAccess -o tsv
+
+# 3. Can the export service reach the database at all?
+az sql db export --help   # confirm --auth-type options available in your CLI version
+```
+
+**If public network access is disabled, `az sql db export` cannot work.** BACPAC
+import/export runs as a Microsoft-managed service that reaches the database over its
+public endpoint. With that endpoint denied, the mechanism is unavailable, not merely
+unauthorised. You then need either the import/export private link preview, or
+`sqlpackage` running on your own compute inside the virtual network.
+
+This was found the hard way. See
+`labs/sql-ltr-backup-migration/README.md` for the full evidence, including the three
+separate attempts to enable public access that all silently failed.
+
+Note the resulting asymmetry: **the Managed Instance path survives this and the SQL
+Database path does not.** MI uses native `BACKUP TO URL`, which writes to storage from
+inside the instance, so it never depends on an inbound Microsoft-managed service.
+
 ## Verification status
 
 Be honest about what has and has not been proven, because the cost model is only as good

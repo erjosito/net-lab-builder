@@ -249,6 +249,51 @@ under similar governance, a drain runbook built on SQL authentication will fail 
 first step, and the fallback of "just enable SQL auth temporarily" is exactly what the
 policy exists to prevent.
 
+### Finding: public network access is forced off, which breaks the export mechanism entirely
+
+With Entra-only authentication in place the server was created successfully, and the
+deployment then failed one step later:
+
+```
+(DenyPublicEndpointEnabled) Unable to create or modify firewall rules when public
+network interface for the server is disabled.
+```
+
+This one is worse than it looks, and it was worth testing rather than assuming. Three
+attempts to turn public access on:
+
+| Attempt | Result |
+|---|---|
+| `az sql server update --enable-public-network true` | Reported success, exit code 0, value unchanged |
+| ARM `PATCH` with `publicNetworkAccess: Enabled` | Accepted, returned an operation, value unchanged |
+| Fresh server created with `--enable-public-network true` | Created successfully, came back `Disabled` |
+
+The tenant forces `publicNetworkAccess: Disabled` on every logical server, **silently**.
+Nothing errors. The API accepts the request, reports success, and ignores it. Any script
+that sets this flag and then assumes it took effect will proceed on a false premise.
+
+The consequence is the significant one. Azure's BACPAC import/export runs as a
+**Microsoft-managed service that connects to the database over its public endpoint**. With
+public network access denied, that service cannot reach the database, so `az sql db export`
+cannot work in this tenant at all. The failure mode is not a permissions error that can be
+granted away; the mechanism is simply unavailable.
+
+**This invalidates the central assumption of the drain toolkit.** Both drain scripts are
+built on the service-side export path.
+
+Two compliant alternatives exist, and neither is a drop-in replacement:
+
+| Approach | Trade-off |
+|---|---|
+| Import/Export via private link | Service creates managed private endpoints for the operation, which you must manually approve on both the SQL server and the storage account. Still in preview, and Azure SQL Database only. |
+| `sqlpackage` on a VM inside the virtual network | Fully supported and predictable, but you now own compute, a private endpoint, DNS, and the software. This is the same self-hosted requirement the MI drain already had. |
+
+There is an irony worth noting: the MI drain script was written to use native `BACKUP TO
+URL` precisely because `az sql midb export` does not exist, and that path writes to storage
+from inside the instance rather than via a Microsoft-managed service. **The MI approach is
+the one that survives this governance model**, while the SQL Database approach, which
+looked simpler, is the one that breaks.
+
 ### Run the SQL Database half first
 
 The lab is worth splitting. Scenarios 1, 2, 3 and 5 need only Azure SQL Database, whose

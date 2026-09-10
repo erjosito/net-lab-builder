@@ -32,7 +32,20 @@ param(
     [Parameter(Mandatory)][string] $ResourceGroup,
     [Parameter(Mandatory)][string] $Location,
     [Parameter(Mandatory)][string] $AdminUser,
-    [Parameter(Mandatory)][securestring] $AdminPassword,
+
+    # Only used when SQL authentication is permitted. Under -EntraOnlyAuth no SQL login
+    # exists at all, so this is deliberately not mandatory.
+    [securestring] $AdminPassword,
+
+    # Many tenants deny Microsoft.Sql/servers that permit SQL authentication
+    # (policy AzureSQL_WithoutAzureADOnlyAuthentication_Deny, "SFI-ID4.2.2 SQL DB -
+    # Safe Secrets Standard"). In that case there is no username-and-password path at
+    # all, and BACPAC export must authenticate with a user-assigned managed identity
+    # attached at the logical server level. Defaults to the signed-in user as admin.
+    [switch] $EntraOnlyAuth,
+    [string] $EntraAdminName,
+    [string] $EntraAdminSid,
+    [string] $EntraAdminType = 'User',
 
     [string] $Prefix = "ltrlab$(Get-Random -Minimum 1000 -Maximum 9999)",
 
@@ -67,7 +80,20 @@ function Invoke-Az {
 $server         = "$Prefix-sql"
 $storageAccount = ($Prefix -replace '[^a-z0-9]', '') + 'sa'
 $container      = 'ltr-artifacts'
-$plainPassword  = [System.Net.NetworkCredential]::new('', $AdminPassword).Password
+$identityName   = "$Prefix-umi"
+$plainPassword  = if ($AdminPassword) { [System.Net.NetworkCredential]::new('', $AdminPassword).Password } else { $null }
+
+if ($EntraOnlyAuth) {
+    if (-not $EntraAdminName -or -not $EntraAdminSid) {
+        Write-Host 'Resolving signed-in user as the Entra SQL admin ...' -ForegroundColor DarkGray
+        $me = az ad signed-in-user show --query '{upn:userPrincipalName, id:id}' -o json | ConvertFrom-Json
+        if (-not $me) { throw 'Could not resolve the signed-in user. Pass -EntraAdminName and -EntraAdminSid explicitly.' }
+        if (-not $EntraAdminName) { $EntraAdminName = $me.upn }
+        if (-not $EntraAdminSid)  { $EntraAdminSid  = $me.id }
+    }
+} elseif (-not $AdminPassword) {
+    throw 'Provide -AdminPassword, or use -EntraOnlyAuth if the tenant denies SQL authentication.'
+}
 
 # Databases under test. 'Shape' drives the generator in Seed-LabData.sql.
 $databases = @()
@@ -109,8 +135,28 @@ Write-Host "Creating resource group $ResourceGroup ..." -ForegroundColor Cyan
 Invoke-Az @('group', 'create', '-n', $ResourceGroup, '-l', $Location, '-o', 'none') | Out-Null
 
 Write-Host "Creating logical server $server (the server itself is free) ..." -ForegroundColor Cyan
-Invoke-Az @('sql', 'server', 'create', '-g', $ResourceGroup, '-n', $server, '-l', $Location,
-            '-u', $AdminUser, '-p', $plainPassword, '-o', 'none') | Out-Null
+if ($EntraOnlyAuth) {
+    # A user-assigned managed identity is not optional here. Under Entra-only
+    # authentication, BACPAC export must authenticate as a UAMI attached at the LOGICAL
+    # SERVER level; a system-assigned identity, a database-scoped identity or a service
+    # principal are all unsupported for import/export.
+    Write-Host "Creating user-assigned managed identity $identityName ..." -ForegroundColor Cyan
+    $umi = Invoke-Az @('identity', 'create', '-g', $ResourceGroup, '-n', $identityName,
+                       '-l', $Location, '-o', 'json') | ConvertFrom-Json
+
+    Invoke-Az @('sql', 'server', 'create', '-g', $ResourceGroup, '-n', $server, '-l', $Location,
+                '--enable-ad-only-auth',
+                '--external-admin-principal-type', $EntraAdminType,
+                '--external-admin-name', $EntraAdminName,
+                '--external-admin-sid', $EntraAdminSid,
+                '--identity-type', 'UserAssigned',
+                '--user-assigned-identity-id', $umi.id,
+                '--pid', $umi.id,
+                '-o', 'none') | Out-Null
+} else {
+    Invoke-Az @('sql', 'server', 'create', '-g', $ResourceGroup, '-n', $server, '-l', $Location,
+                '-u', $AdminUser, '-p', $plainPassword, '-o', 'none') | Out-Null
+}
 
 # The BACPAC export service reaches the database from an Azure IP, so the
 # allow-Azure-services rule (0.0.0.0) is required, not optional.
@@ -136,10 +182,45 @@ $storageKey = (Invoke-Az @('storage', 'account', 'keys', 'list', '-g', $Resource
 Invoke-Az @('storage', 'container', 'create', '--account-name', $storageAccount,
             '--account-key', $storageKey, '-n', $container, '-o', 'none') | Out-Null
 
+if ($EntraOnlyAuth) {
+    # The export writes the BACPAC as the managed identity, not with the account key, so
+    # the identity needs data-plane rights on the container. Role assignments are
+    # eventually consistent; a failed export minutes after this line usually means the
+    # assignment had not propagated yet rather than that it is wrong.
+    $storageId = (Invoke-Az @('storage', 'account', 'show', '-g', $ResourceGroup,
+                              '-n', $storageAccount, '--query', 'id', '-o', 'tsv')).Trim()
+    Write-Host "Granting $identityName 'Storage Blob Data Contributor' on $storageAccount ..." -ForegroundColor Cyan
+    Invoke-Az @('role', 'assignment', 'create', '--assignee-object-id', $umi.principalId,
+                '--assignee-principal-type', 'ServicePrincipal',
+                '--role', 'Storage Blob Data Contributor',
+                '--scope', $storageId, '-o', 'none') | Out-Null
+}
+
 # --- Databases ----------------------------------------------------------------
 $seedScript = Join-Path $PSScriptRoot 'Seed-LabData.sql'
 $serverFqdn = "$server.database.windows.net"
-$sqlCred    = [pscredential]::new($AdminUser, $AdminPassword)
+
+# Connection arguments differ entirely between the two auth models, so build them once.
+$sqlAuthArgs = @{}
+if ($EntraOnlyAuth) {
+    $sqlAuthArgs['AccessToken'] = (Invoke-Az @('account', 'get-access-token',
+                                   '--resource', 'https://database.windows.net/',
+                                   '--query', 'accessToken', '-o', 'tsv')).Trim()
+
+    # Grant the export identity access to each database WITHOUT 'FROM EXTERNAL PROVIDER',
+    # which would require the server to hold Directory Readers in Entra. Creating the
+    # user from an explicit SID derived from the identity's client ID needs no directory
+    # permission at all. The bytes are the client ID GUID in little-endian .NET order,
+    # which is exactly what Guid.ToByteArray produces.
+    $umiSidHex = '0x' + (([guid]$umi.clientId).ToByteArray().ForEach({ $_.ToString('X2') }) -join '')
+    $grantUmiSql = @"
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = N'$identityName')
+    CREATE USER [$identityName] WITH SID = $umiSidHex, TYPE = E;
+ALTER ROLE db_owner ADD MEMBER [$identityName];
+"@
+} else {
+    $sqlAuthArgs['Credential'] = [pscredential]::new($AdminUser, $AdminPassword)
+}
 
 foreach ($db in $databases) {
     Write-Host ''
@@ -158,11 +239,17 @@ foreach ($db in $databases) {
     if (-not $SkipDataLoad) {
         Write-Host "  seeding $($db.SizeGb) GB of '$($db.Shape)' data..." -ForegroundColor DarkGray
         $sw = [System.Diagnostics.Stopwatch]::StartNew()
-        Invoke-Sqlcmd -ServerInstance $serverFqdn -Database $db.Name -Credential $sqlCred `
+        Invoke-Sqlcmd -ServerInstance $serverFqdn -Database $db.Name @sqlAuthArgs `
                       -InputFile $seedScript -QueryTimeout 0 -TrustServerCertificate `
                       -Variable @("TargetGb=$($db.SizeGb)", "Shape=$($db.Shape)") | Out-Null
         $sw.Stop()
         Write-Host "  seeded in $([math]::Round($sw.Elapsed.TotalMinutes,1)) min" -ForegroundColor DarkGray
+    }
+
+    if ($EntraOnlyAuth) {
+        Write-Host "  granting $identityName db_owner (needed for BACPAC export) ..." -ForegroundColor DarkGray
+        Invoke-Sqlcmd -ServerInstance $serverFqdn -Database $db.Name @sqlAuthArgs `
+                      -Query $grantUmiSql -QueryTimeout 0 -TrustServerCertificate | Out-Null
     }
 
     # Enabling an LTR policy for the FIRST time copies the most recent PITR full backup
@@ -179,11 +266,22 @@ if ($IncludeManagedInstance) {
     $miName = "$Prefix-mi"
     Write-Host ''
     Write-Host "Creating managed instance $miName (this takes 4-6 hours) ..." -ForegroundColor Yellow
-    Invoke-Az @('sql', 'mi', 'create', '-g', $ResourceGroup, '-n', $miName, '-l', $Location,
-                '-u', $AdminUser, '-p', $plainPassword, '--subnet', $MiSubnetId,
+    $miArgs = @('sql', 'mi', 'create', '-g', $ResourceGroup, '-n', $miName, '-l', $Location,
+                '--subnet', $MiSubnetId,
                 '--capacity', '4', '--storage', '32GB',
                 '--edition', 'GeneralPurpose', '--family', 'Gen5',
-                '--no-wait', '-o', 'none') | Out-Null
+                '--no-wait', '-o', 'none')
+    # AzureSQLMI_WithoutAzureADOnlyAuthentication_Deny mirrors the logical-server policy,
+    # so the instance needs the same treatment.
+    if ($EntraOnlyAuth) {
+        $miArgs += @('--enable-ad-only-auth',
+                     '--external-admin-principal-type', $EntraAdminType,
+                     '--external-admin-name', $EntraAdminName,
+                     '--external-admin-sid', $EntraAdminSid)
+    } else {
+        $miArgs += @('-u', $AdminUser, '-p', $plainPassword)
+    }
+    Invoke-Az $miArgs | Out-Null
     Write-Host '  submitted asynchronously; poll with: az sql mi show' -ForegroundColor DarkGray
 }
 
@@ -197,6 +295,10 @@ $context = [pscustomobject]@{
     Container       = $container
     ContainerUri    = "https://$storageAccount.blob.core.windows.net/$container"
     AdminUser       = $AdminUser
+    AuthMode        = $(if ($EntraOnlyAuth) { 'EntraOnly' } else { 'Sql' })
+    EntraAdminName  = $EntraAdminName
+    ExportIdentity  = $(if ($EntraOnlyAuth) { $identityName } else { $null })
+    ExportIdentityId = $(if ($EntraOnlyAuth) { $umi.id } else { $null })
     Databases       = $databases
     SeededAtUtc     = (Get-Date).ToUniversalTime().ToString('o')
     ManagedInstance = $miName
