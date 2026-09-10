@@ -89,13 +89,27 @@ continues, so stop it between the seed and execute phases.
 
 ## Cost of the lab
 
+**Database half only** (scenarios 1, 2, 3, 5):
+
 | Item | Estimate |
 |---|---|
-| SQL MI, GP Gen5 4 vCore, ~8 active hours | ~$5 |
-| MI storage during the wait (stopped instance) | ~$1 |
-| SQL DB, GP Gen5 2 vCore, ~3 hours | ~$1 |
+| SQL DB serverless, 60-minute auto-pause, ~3 active hours | ~$1 |
+| Data storage for ~36 GB across five databases, one week | ~$1 |
 | Storage, LTR and artifacts | <$1 |
-| **Total** | **~$10, plus MI provisioning time** |
+| **Total** | **~$5 to $10** |
+
+**Adding the Managed Instance** (scenario 4):
+
+| Item | Estimate |
+|---|---|
+| MI, GP Gen5 4 vCore, running continuously for a 7-day wait | ~$102 |
+| MI storage | ~$1 |
+| **Total** | **~$110, plus 2 to 4 hours of provisioning time** |
+
+The MI figure is not a typo and it cannot be reduced by stopping the instance between
+phases. A stopped instance takes no automated backups, and a skipped LTR backup is never
+backfilled, so the instance has to stay up for the whole wait. Earlier drafts of this table
+assumed otherwise and understated the MI cost by roughly a factor of sixteen.
 
 Keep test databases small, single-digit GB. The lab validates mechanics, not throughput.
 Throughput numbers for the real estimate should be calibrated separately by measuring the
@@ -165,6 +179,101 @@ the default estimate. Bracketing this is worth two small databases.
 
 The databases are serverless with a 60-minute auto-pause, so the multi-day wait for LTR
 backups costs storage only.
+
+## Pre-flight results
+
+Phase 0 has been run. Nothing has been deployed to Azure.
+
+Quotas below were read from the lab subscription in `swedencentral`.
+
+| Check | Result |
+|---|---|
+| `Test-LabSql.ps1` | PASS, `Seed-LabData.sql` parses as 4 batches |
+| `Test-DrainHelpers.ps1` | PASS, 9 of 9 |
+| Regional SQL server quota | 0 of 250 |
+| Regional vCore quota, SQL DB | 0 of 500 |
+| MI subnet quota | 0 of 8 |
+| MI vCore quota | 0 of 960 |
+| MI free offer instances | 0 of 1, available |
+| MI free vCore hours currently granted | 0 |
+
+Two prerequisites are not satisfied by a fresh clone:
+
+1. **The `SqlServer` PowerShell module.** Phase 1 seeds data through `Invoke-Sqlcmd`.
+   Install it with `Install-Module SqlServer -Scope CurrentUser`.
+2. **An admin password**, supplied interactively as a `SecureString`. It is never written
+   to the repo.
+
+### Finding: the toolkit assumed SQL authentication, and that can be denied outright
+
+The first live deployment attempt **failed**, and the failure is more useful than a success
+would have been.
+
+Creating the logical server was rejected by Azure Policy:
+
+```
+(RequestDisallowedByPolicy) Resource 'ltrlab...-sql' was disallowed by policy.
+policyDefinitionName: AzureSQL_WithoutAzureADOnlyAuthentication_Deny
+policyDefinitionDisplayName: SFI-ID4.2.2 SQL DB - Safe Secrets Standard
+```
+
+The governing management group denies any `Microsoft.Sql/servers` whose
+`properties.administrators.azureADOnlyAuthentication` is not `True`. In other words
+**SQL authentication is forbidden**, and every script here was written around an admin
+username and password.
+
+A companion policy, `AzureSQLMI_WithoutAzureADOnlyAuthentication_Deny`, applies the same
+rule to Managed Instances, so this is not something the MI half escapes.
+
+The policy does expose an escape hatch, a `SecurityControl=Ignore` tag on the resource or
+resource group. **Do not use it.** It suppresses a tenant security control to make a lab
+convenient, and the compliant path exists.
+
+The compliant path, which is what this lab now uses:
+
+| Concern | SQL auth approach | Entra-only approach |
+|---|---|---|
+| Server admin | `-u/-p` | `--enable-ad-only-auth` plus an external admin principal |
+| Seeding | `Invoke-Sqlcmd -Credential` | `Invoke-Sqlcmd -AccessToken` |
+| BACPAC export | `--auth-type SQL` | `--auth-type ManagedIdentity` |
+| Storage auth | account key | `--storage-key-type ManagedIdentity` plus RBAC |
+
+Export under Entra-only authentication requires a **user-assigned managed identity attached
+at the logical server level**, granted `Storage Blob Data Contributor` on the artifact
+storage account and made a database user in each database being exported. A
+system-assigned identity, a database-scoped identity, or a service principal will not do,
+and the feature is still in preview.
+
+**Carry this into production planning.** If the subscription holding the LTR backups sits
+under similar governance, a drain runbook built on SQL authentication will fail at the
+first step, and the fallback of "just enable SQL auth temporarily" is exactly what the
+policy exists to prevent.
+
+### Run the SQL Database half first
+
+The lab is worth splitting. Scenarios 1, 2, 3 and 5 need only Azure SQL Database, whose
+databases are serverless with a 60-minute auto-pause, so the multi-day wait costs storage
+only, on the order of $5 to $10.
+
+Scenario 4 needs a Managed Instance, and it is a different proposition entirely:
+
+- The minimum is 4 General Purpose vCores, roughly **$102 for a seven-day wait**, plus two
+  to four hours simply to provision.
+- **The instance cannot be stopped to reduce that.** A stopped instance takes no automated
+  backups, and a skipped LTR backup is never backfilled, so stopping it during the wait
+  destroys the very thing the wait exists to produce.
+- **The free offer does not rescue this, and is actively dangerous here.** A free instance
+  is available (720 vCore hours per month for 12 months, one per subscription), but it
+  defaults to a 9-to-5 weekday schedule specifically to conserve those credits. That
+  schedule is exactly the stopped-instance trap above: the instance would be off for
+  roughly two thirds of every week and the LTR backup would likely never be produced. Run
+  it always-on and a seven-day wait consumes 672 of the 720 monthly hours, leaving almost
+  no margin before the instance auto-stops and silently breaks the run. Use a paid instance
+  and treat the free offer as unsuitable for this particular lab.
+
+Since the two drain scripts share most of their logic, running the Database half first
+falsifies the shared assumptions, above all the compression ratio, for about 8 percent of
+the cost of doing both.
 
 ## Running the lab
 

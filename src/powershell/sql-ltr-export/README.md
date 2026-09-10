@@ -256,6 +256,13 @@ usually sitting in the very subscription being decommissioned.
   orphaned temp database keeps billing, and on MI it keeps consuming instance storage.
 - **MI stop/start.** General Purpose instances can be stopped, which halts compute and
   licence billing while storage continues. Useful if the drain is spread over days.
+  **But do not stop an instance whose databases still need to produce LTR backups.** A
+  stopped instance takes no automated backups at all, and a skipped LTR backup is never
+  caught up afterwards; Azure does not backfill it. If you are stopping the source instance
+  to save money in the run-up to decommissioning, confirm every LTR backup you intend to
+  keep already exists *before* you stop it, otherwise the retention points you were relying
+  on will simply never be created. Once the LTR backups exist, stopping is safe: they have
+  their own lifecycle and are unaffected by the state of the instance.
 - **Azure Hybrid Benefit** applies to a staging MI (`-ApplyAhb` in the estimator) and cuts
   the compute component substantially.
 - **Run a recovery drill.** Restore one artifact end to end before deleting anything.
