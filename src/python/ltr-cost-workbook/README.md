@@ -33,6 +33,7 @@ workbook is reproducible and its provenance is auditable.
 | Cost matrix | Backup count (10 to 800) against database size (5 to 1000 GB), split into transfer / storage / total |
 | Tier comparison | All 21 tier and redundancy combinations, including read-back cost |
 | Compression sensitivity | How the total moves as the compression ratio moves |
+| Private endpoint variant | Additive: what it costs to reach the storage account privately |
 
 Every cell is a live Excel formula, not a baked value. Change an input and the
 whole model recalculates.
@@ -49,6 +50,11 @@ whole model recalculates.
   redundancy (RA-GZRS from GZRS, not from LRS) and flagged in the Prices sheet's
   Substituted column. Falling back to LRS would make read-access SKUs look cheaper
   than their non-read-access parents, which is wrong.
+- **Private Link meters are global.** They are published against
+  `armRegionName eq 'Global'`, so the region filter used for storage must not be
+  applied to them. Private endpoint data processed is banded at 1 PB and 5 PB; the
+  model prices the first band, which holds for anything this workbook covers.
+  Azure DNS prices private zones by geography zone, and the model uses Zone 1.
 - **Restore and export compute is excluded.** It is one-time and small. The
   headline cell is labelled "GRAND TOTAL (storage side)" to make that explicit.
 
@@ -66,6 +72,40 @@ whole model recalculates.
   costs $62 to store for 7 years and $111 to read back once.
 - **Compression is the weakest input** and it scales the largest term. The
   default 4x assumption is unverified; observed ratios spanned 1.02x to 33x.
+- **A private endpoint can cost ten times the data it protects.** It bills at
+  $0.01/hour for as long as it exists, whether or not anything uses it. Over 84
+  months that is $613 per endpoint against $64 of storage in the default
+  scenario. Create it for the drain, delete it, re-create it if anyone ever needs
+  to read the archive.
+
+## The private endpoint variant
+
+The `Private endpoint variant` sheet is **strictly additive**. Nothing on it feeds
+back into `Parameters`, `Cost matrix` or `Tier comparison`, so the baseline model
+and the verification figures below are unaffected by it.
+
+Default scenario, one endpoint:
+
+| Scenario | Add-on | Combined with storage |
+| --- | --- | --- |
+| No private endpoint | $0.00 | $64.29 |
+| Endpoint only during the drain (1 month) | $15.34 | $79.63 |
+| Endpoint kept for 3 months | $31.02 | $95.31 |
+| Endpoint kept for the full 84 months | $666.06 | $730.35 |
+
+Two things the sheet makes explicit that are easy to get wrong:
+
+- **The drain usually does not traverse the endpoint.** `az sql db export` and the
+  Managed Instance `BACKUP TO URL` statement run service-side, not from your VNet,
+  so the write is not charged as data processed. There is a toggle for the case
+  where you stage through your own VM or self-hosted `sqlpackage`.
+- **But locking the storage account to private endpoints only will block that same
+  service-side write.** You need the "Allow trusted Microsoft services" exception
+  or a resource-instance rule scoped to the SQL server or instance.
+
+Not modelled: the VNet, any staging VM, and any VPN or ExpressRoute gateway needed
+to reach the endpoint from on-premises. A gateway starts around $0.19/hour, which
+dwarfs everything else here. If you need one purely for this, model it separately.
 
 ## Verification
 
@@ -81,6 +121,12 @@ comparing against hand calculations:
 | Read back once | $111.00 | $111.00 |
 | Matrix corner, 800 backups x 1000 GB | $17,144 | $17,144 |
 | Worst case vs default compression | 3.92x | 3.92x |
+| Private endpoint, 84 months | $613.20 | $613.20 |
+| Private endpoint add-on total | $666.06 | $666.06 |
+| Add-on as a multiple of storage | 10.36x | 10.36x |
+
+The baseline rows are re-checked after every change to confirm the private
+endpoint sheet stayed additive.
 
 The destination dropdown's range reference was also checked directly in the
 generated OOXML, since openpyxl will happily write a `formula1` that Excel then

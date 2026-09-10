@@ -1,5 +1,5 @@
 {
-  "retrieved_utc": "2026-09-10T06:38:00.882590+00:00",
+  "retrieved_utc": "2026-09-10T06:51:02.761357+00:00",
   "region": "eastus",
   "currency": "USD",
   "source": "https://prices.azure.com/api/retail/prices",
@@ -408,5 +408,49 @@
       "destination": "Out to the internet",
       "usd_per_gb": 0.087
     }
-  ]
+  ],
+  "private_link": {
+    "endpoint_usd_hour": 0.01,
+    "ingress_usd_gb": 0.01,
+    "egress_usd_gb": 0.01,
+    "ingress_bands": [
+      {
+        "from_gb": 0.0,
+        "price": 0.01,
+        "unit": "1 GB"
+      },
+      {
+        "from_gb": 1000000.0,
+        "price": 0.006,
+        "unit": "1 GB"
+      },
+      {
+        "from_gb": 5000000.0,
+        "price": 0.004,
+        "unit": "1 GB"
+      }
+    ],
+    "egress_bands": [
+      {
+        "from_gb": 0.0,
+        "price": 0.01,
+        "unit": "1 GB"
+      },
+      {
+        "from_gb": 1000000.0,
+        "price": 0.006,
+        "unit": "1 GB"
+      },
+      {
+        "from_gb": 5000000.0,
+        "price": 0.004,
+        "unit": "1 GB"
+      }
+    ]
+  },
+  "private_dns": {
+    "zone_usd_month_first25": 0.5,
+    "zone_usd_month_over25": 0.1,
+    "queries_usd_per_million": 0.4
+  }
 }

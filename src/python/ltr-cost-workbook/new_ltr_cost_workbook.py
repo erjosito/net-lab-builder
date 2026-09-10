@@ -201,10 +201,75 @@ def refresh_prices(region: str) -> dict:
         ),
         "storage": sorted(table, key=lambda r: (TIERS.index(r["tier"]), r["redundancy"])),
         "bandwidth": [{"destination": d, "usd_per_gb": p} for d, p in BANDWIDTH],
+        "private_link": fetch_private_link(),
+        "private_dns": fetch_private_dns(),
     }
     SNAPSHOT.write_text(json.dumps(snap, indent=2), encoding="utf-8")
     print(f"  wrote {SNAPSHOT.name}")
     return snap
+
+
+def fetch_private_link() -> dict:
+    """
+    Private Link meters are published against armRegionName 'Global', not against a
+    specific region, so the region filter used for storage must NOT be applied here.
+    Getting this wrong returns an empty set and silently prices the endpoint at zero.
+    """
+    print("Fetching Private Link prices (region 'Global')...")
+    rows = fetch_all(
+        "productName eq 'Virtual Network Private Link' and priceType eq 'Consumption' "
+        "and armRegionName eq 'Global'"
+    )
+    print(f"  {len(rows)} meters returned")
+
+    def meter(name: str) -> list[dict]:
+        out = [
+            {"from_gb": float(r.get("tierMinimumUnits", 0)),
+             "price": float(r["retailPrice"]),
+             "unit": r.get("unitOfMeasure")}
+            for r in rows if r.get("meterName") == name
+        ]
+        return sorted(out, key=lambda b: b["from_gb"])
+
+    ep = meter("Standard Private Endpoint")
+    ing = meter("Standard Data Processed - Ingress")
+    egr = meter("Standard Data Processed - Egress")
+    return {
+        "endpoint_usd_hour": ep[0]["price"] if ep else None,
+        "ingress_usd_gb": ing[0]["price"] if ing else None,
+        "egress_usd_gb": egr[0]["price"] if egr else None,
+        "ingress_bands": ing,
+        "egress_bands": egr,
+    }
+
+
+def fetch_private_dns() -> dict:
+    """
+    A private endpoint for blob storage normally needs a privatelink.blob.core.windows.net
+    private DNS zone. Azure DNS prices this by geography zone rather than by Azure region;
+    'Zone 1' covers the commercial regions this model targets.
+    """
+    print("Fetching Azure private DNS prices...")
+    rows = fetch_all("serviceName eq 'Azure DNS' and priceType eq 'Consumption'")
+    print(f"  {len(rows)} meters returned")
+
+    def pick(meter_name: str, tier_min: float) -> float | None:
+        for pref in ("Zone 1", "", None):
+            for r in rows:
+                if r.get("meterName") != meter_name:
+                    continue
+                if float(r.get("tierMinimumUnits", 0)) != tier_min:
+                    continue
+                reg = r.get("armRegionName") or ""
+                if pref is None or reg == pref:
+                    return float(r["retailPrice"])
+        return None
+
+    return {
+        "zone_usd_month_first25": pick("Private Zone", 0.0),
+        "zone_usd_month_over25": pick("Private Zone", 25.0),
+        "queries_usd_per_million": pick("Private Queries", 0.0),
+    }
 
 
 # --- Sheet helpers ------------------------------------------------------------
@@ -272,6 +337,15 @@ def sheet_readme(wb: Workbook, snap: dict) -> None:
              "what it costs to read the data back."),
         ("", "4. 'Compression sensitivity' shows how much the answer moves with the one number "
              "nobody has measured yet."),
+        ("", "5. 'Private endpoint variant' adds the cost of reaching the storage account "
+             "privately. It is additive and does not change the other sheets."),
+        ("", ""),
+        ("Private endpoints", ""),
+        ("", "If you reach the storage account over a private endpoint, the endpoint bills by "
+             "the hour for as long as it exists, whether or not anything is using it. Over a "
+             "multi-year retention that standing charge can exceed the cost of the data itself. "
+             "The fix is to create the endpoint for the drain, delete it, and re-create it if "
+             "someone ever needs to read the archive."),
         ("", ""),
         ("Confidence", ""),
         ("", "VERIFIED: all prices, taken from the Azure retail prices API (see 'Prices' for the "
@@ -369,8 +443,43 @@ def sheet_prices(wb: Workbook, snap: dict) -> tuple[int, int]:
         "for Hot scenarios above 50 TB the workbook is slightly conservative. Cool, Cold and "
         "Archive are flat at any volume.")).font = F_NOTE
 
+    pl = snap.get("private_link") or {}
+    dns = snap.get("private_dns") or {}
+    pe_head = foot + 3
+    ws.cell(row=pe_head - 1, column=1,
+            value="Private endpoint and private DNS").font = F_BOLD
+    header_cells(ws, pe_head, ["Item", "Rate"])
+    pe_first = pe_head + 1
+    pe_rows = [
+        ("Private endpoint ($/hour)", pl.get("endpoint_usd_hour"), MONEY4),
+        ("Data processed, ingress ($/GB)", pl.get("ingress_usd_gb"), MONEY4),
+        ("Data processed, egress ($/GB)", pl.get("egress_usd_gb"), MONEY4),
+        ("Private DNS zone ($/month, first 25)", dns.get("zone_usd_month_first25"), MONEY4),
+        ("Private DNS queries ($/million)", dns.get("queries_usd_per_million"), MONEY4),
+    ]
+    for i, (name, val, fmt) in enumerate(pe_rows):
+        ws.cell(row=pe_first + i, column=1, value=name).border = BOX
+        c = ws.cell(row=pe_first + i, column=2, value=val if val is not None else 0.0)
+        c.number_format = fmt
+        c.border = BOX
+        if val is None:
+            c.fill = PatternFill("solid", fgColor=C_WARN)
+
+    pe_foot = pe_first + len(pe_rows) + 1
+    ing_bands = [b for b in (pl.get("ingress_bands") or []) if b["from_gb"] > 0]
+    band_txt = ("; ".join(f"over {b['from_gb']:,.0f} GB: ${b['price']}" for b in ing_bands)
+                or "no higher bands published")
+    ws.cell(row=pe_foot, column=1, value=(
+        "Private endpoint meters are published against region 'Global', not against an Azure "
+        "region, so they are identical everywhere in the commercial cloud. Data processed is "
+        f"volume-banded ({band_txt}); this workbook prices the first band, which holds for "
+        "anything under 1 PB.")).font = F_NOTE
+    ws.cell(row=pe_foot + 1, column=1, value=(
+        "Azure DNS prices private zones by geography zone rather than by region. These are the "
+        "'Zone 1' rates, which cover the commercial regions this model targets.")).font = F_NOTE
+
     ws.freeze_panes = "A5"
-    return last, bw_first
+    return last, bw_first, pe_first
 
 
 def sheet_parameters(wb: Workbook, snap: dict, price_last: int, bw_first: int) -> None:
@@ -658,6 +767,179 @@ def sheet_sensitivity(wb: Workbook) -> None:
     ws.merge_cells(start_row=r + 3, start_column=1, end_row=r + 3, end_column=5)
 
 
+def sheet_private_endpoint(wb: Workbook, pe_first: int) -> None:
+    """
+    Strictly additive. Nothing on this sheet feeds back into 'Parameters', the
+    'Cost matrix' or 'Tier comparison', so the baseline model and its published
+    verification figures are unaffected by anything here.
+    """
+    ws = wb.create_sheet("Private endpoint variant")
+    title_row(ws, "Variant: reaching the storage account over a private endpoint", 6)
+    widths(ws, {"A": 46, "B": 16, "C": 66, "D": 16, "E": 16, "F": 16})
+
+    R_EP, R_ING, R_EGR, R_ZONE, R_QRY = (pe_first, pe_first + 1, pe_first + 2,
+                                         pe_first + 3, pe_first + 4)
+
+    c = ws.cell(row=2, column=1, value=(
+        "A private endpoint is not a one-off charge. It bills by the hour for as long as it "
+        "exists, which changes the shape of the answer completely: for a compliance archive "
+        "the endpoint can easily cost more than the data it protects. This sheet is additive; "
+        "it does not alter the baseline model on the other sheets."))
+    c.font = F_NOTE
+    c.alignment = Alignment(wrap_text=True, vertical="top")
+    ws.merge_cells(start_row=2, start_column=1, end_row=3, end_column=6)
+
+    def inp(row, name, value, note, fmt=None):
+        label(ws, row, name, note)
+        c = ws.cell(row=row, column=2, value=value)
+        c.fill = PatternFill("solid", fgColor=C_INPUT)
+        c.border = BOX
+        c.font = F_BOLD
+        if fmt:
+            c.number_format = fmt
+        return c
+
+    def calc(row, name, formula, note, fmt=MONEY):
+        label(ws, row, name, note)
+        c = ws.cell(row=row, column=2, value=formula)
+        c.fill = PatternFill("solid", fgColor=C_CALC)
+        c.border = BOX
+        c.number_format = fmt
+        return c
+
+    ws.cell(row=5, column=1, value="INPUTS").font = Font(bold=True, color=C_HEAD)
+    inp(6, "Number of private endpoints", 1,
+        "One per storage sub-resource. Blob only = 1; blob + dfs = 2.", NUM)
+    inp(7, "Endpoint lifetime (months)", 84,
+        "How long the endpoint EXISTS, which is not necessarily the retention period.", NUM)
+    inp(8, "Hours per month", 730, "Azure's standard billing month.", NUM)
+    inp(9, "Dedicated private DNS zone?", "Yes",
+        "No if you already own privatelink.blob.core.windows.net; then its marginal cost is 0.")
+    inp(10, "DNS queries per month (millions)", 0.1,
+        "An idle archive generates very few.", NUM2)
+    inp(11, "Drain traffic traverses the endpoint?", "No",
+        "See the note at the bottom. Usually No, because the export is service-side.")
+    inp(12, "Read-back traverses the endpoint?", "Yes",
+        "If you retrieve the artifacts from inside your VNet, it does.")
+
+    for formula, cell in (('"Yes,No"', "B9"), ('"Yes,No"', "B11"), ('"Yes,No"', "B12")):
+        dv = DataValidation(type="list", formula1=formula, allow_blank=False)
+        ws.add_data_validation(dv)
+        dv.add(ws[cell])
+
+    ws.cell(row=14, column=1, value="RATES (from the Prices sheet)").font = Font(bold=True, color=C_HEAD)
+    calc(15, "Private endpoint $/hour", f"=Prices!$B${R_EP}", "", MONEY4)
+    calc(16, "Data processed, ingress $/GB", f"=Prices!$B${R_ING}", "", MONEY4)
+    calc(17, "Data processed, egress $/GB", f"=Prices!$B${R_EGR}", "", MONEY4)
+    calc(18, "Private DNS zone $/month", f"=Prices!$B${R_ZONE}", "", MONEY4)
+    calc(19, "Private DNS queries $/million", f"=Prices!$B${R_QRY}", "", MONEY4)
+
+    ws.cell(row=21, column=1, value="COSTS").font = Font(bold=True, color=C_HEAD)
+    calc(22, "Endpoint hours", "=$B$6*$B$7*$B$8*$B$15",
+         "The standing charge. Usually the largest term on this sheet.")
+    calc(23, "Private DNS zone", '=IF($B$9="Yes",$B$7*$B$18,0)', "")
+    calc(24, "Private DNS queries", "=$B$7*$B$10*$B$19", "")
+    calc(25, "Data processed on the drain (ingress)",
+         '=IF($B$11="Yes",Parameters!$B$20*$B$16,0)',
+         "Zero when the export is service-side, which is the normal case.")
+    calc(26, "Data processed on one full read-back (egress)",
+         '=IF($B$12="Yes",Parameters!$B$20*$B$17,0)', "")
+
+    c = calc(27, "TOTAL private endpoint add-on", "=SUM($B$22:$B$26)", "")
+    c.font = Font(bold=True, size=12)
+    c.fill = PatternFill("solid", fgColor=C_WARN)
+    ws.cell(row=27, column=1).font = Font(bold=True, size=12)
+
+    ws.cell(row=29, column=1, value="COMPARED WITH THE BASELINE").font = Font(bold=True, color=C_HEAD)
+    calc(30, "Storage-side total (from Parameters)", "=Parameters!$B$30", "")
+    calc(31, "Private endpoint add-on", "=$B$27", "")
+    c = calc(32, "COMBINED", "=$B$30+$B$31", "")
+    c.font = Font(bold=True, size=12)
+    calc(33, "Add-on as a multiple of the storage-side cost",
+         "=IFERROR($B$31/$B$30,0)",
+         "Above 1 means the plumbing costs more than the data.", '0.0"x"')
+    ws.cell(row=33, column=2).fill = PatternFill("solid", fgColor=C_WARN)
+
+    ws.cell(row=35, column=1, value="SCENARIOS").font = Font(bold=True, color=C_HEAD)
+    header_cells(ws, 36, ["Scenario", "Endpoint months", "Endpoint + DNS",
+                          "Data processed", "Add-on total", "Combined"])
+    scenarios = [
+        ("No private endpoint at all", 0),
+        ("Endpoint only during the drain (1 month)", 1),
+        ("Endpoint kept for 3 months", 3),
+        ("Endpoint kept for the full retention", None),
+    ]
+    r = 37
+    for name, months in scenarios:
+        m = "$B$7" if months is None else str(months)
+        ws.cell(row=r, column=1, value=name).font = F_BOLD
+        ws.cell(row=r, column=2, value=f"={m}" if months is None else months).number_format = NUM
+        ws.cell(row=r, column=3,
+                value=f'=$B$6*{m}*$B$8*$B$15+IF($B$9="Yes",{m}*$B$18,0)+{m}*$B$10*$B$19'
+                ).number_format = MONEY
+        ws.cell(row=r, column=4, value=f"=IF({m}=0,0,$B$25+$B$26)").number_format = MONEY
+        ws.cell(row=r, column=5, value=f"=$C{r}+$D{r}").number_format = MONEY
+        ws.cell(row=r, column=5).font = F_BOLD
+        ws.cell(row=r, column=6, value=f"=Parameters!$B$30+$E{r}").number_format = MONEY
+        for col in range(1, 7):
+            ws.cell(row=r, column=col).border = BOX
+        if months == 1:
+            for col in range(1, 7):
+                ws.cell(row=r, column=col).fill = PatternFill("solid", fgColor=C_CALC)
+        r += 1
+
+    ws.cell(row=r + 1, column=1,
+            value="ADD-ON BY ENDPOINT LIFETIME AND COUNT").font = Font(bold=True, color=C_HEAD)
+    counts = [1, 2, 4, 8]
+    header_cells(ws, r + 2, ["Lifetime (months) \\ endpoints"] + [str(n) for n in counts])
+    lifetimes = [0, 1, 3, 6, 12, 24, 60, 84]
+    mr = r + 3
+    for i, months in enumerate(lifetimes):
+        row = mr + i
+        hc = ws.cell(row=row, column=1, value=months)
+        hc.font = F_BOLD
+        hc.fill = PatternFill("solid", fgColor=C_BAND)
+        hc.border = BOX
+        for j, n in enumerate(counts):
+            cell = ws.cell(row=row, column=2 + j, value=(
+                f'={n}*{months}*$B$8*$B$15'
+                f'+IF($B$9="Yes",{months}*$B$18,0)+{months}*$B$10*$B$19'
+                f'+IF({months}=0,0,$B$25+$B$26)'))
+            cell.number_format = MONEY
+            cell.border = BOX
+
+    fr = mr + len(lifetimes) + 1
+    notes = [
+        ("Why the drain usually does NOT cross the endpoint:",
+         "'az sql db export' and the Managed Instance 'BACKUP TO URL' statement are executed by "
+         "the SQL service itself, not by a machine in your VNet, so the write does not traverse "
+         "your private endpoint and is not charged as data processed. The toggle above exists "
+         "because it does traverse the endpoint if you stage the artifacts through your own VM "
+         "or self-hosted sqlpackage."),
+        ("The trap this creates:",
+         "If you lock the storage account to private endpoints only, that same service-side "
+         "write is BLOCKED. You need the 'Allow trusted Microsoft services' network exception, "
+         "or a resource-instance rule scoped to the SQL server or instance. Otherwise the drain "
+         "fails and the private endpoint is not the reason you would expect."),
+        ("The actionable conclusion:",
+         "Do not leave the endpoint running for the retention period. Create it for the drain, "
+         "delete it, and re-create it in minutes on the day someone actually needs to read the "
+         "archive. A deleted endpoint costs nothing, and the blobs are unaffected."),
+        ("Not modelled here:",
+         "The VNet itself, any VM you stage through, and any VPN or ExpressRoute gateway you "
+         "need to reach the endpoint from on-premises. A gateway starts around $0.19/hour, "
+         "which dwarfs everything on this sheet. If you need one purely for this, model it "
+         "separately and it will change your conclusion."),
+    ]
+    for i, (head, body) in enumerate(notes):
+        row = fr + i * 2
+        ws.cell(row=row, column=1, value=head).font = Font(bold=True, color=C_HEAD)
+        c = ws.cell(row=row, column=2, value=body)
+        c.font = F_NOTE
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+        ws.merge_cells(start_row=row, start_column=2, end_row=row + 1, end_column=6)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -677,11 +959,12 @@ def main() -> None:
     wb.remove(wb.active)
 
     sheet_readme(wb, snap)
-    price_last, bw_first = sheet_prices(wb, snap)
+    price_last, bw_first, pe_first = sheet_prices(wb, snap)
     sheet_parameters(wb, snap, price_last, bw_first)   # inserted at index 1
     sheet_matrix(wb)
     sheet_tiers(wb, snap, price_last)
     sheet_sensitivity(wb)
+    sheet_private_endpoint(wb, pe_first)
 
     wb.active = 0
     out = pathlib.Path(args.output)
