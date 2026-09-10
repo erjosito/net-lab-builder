@@ -454,3 +454,49 @@ confirmed `Bearer {tok}` is the correct literal in the file — no bug.  No corr
   structural context (compare/main) comments were added for completeness.
 
 📌 Team update (2026-08-21T15:35:00+02:00): Foundry hosted-agent code annotations and diagrams complete. Docstrings updated, diagram validation done, cross-references verified. Lab ready for publication. Decided by Scribe (session orchestration).
+
+## 2026-09-10T07:56:32Z — Lab sql-ltr-backup-migration: front-matter and diagrams
+
+### Task
+
+Add the missing conceptual layer to `labs/sql-ltr-backup-migration/README.md`: original ask,
+PITR/LTR/BACPAC/COPY_ONLY concepts and comparison table, caveats with evidence, recommended
+process, and three Mermaid diagrams. Jose's explicit direction: "I am not a DBA — write for that
+reader."
+
+### Files produced
+
+| File | Notes |
+|---|---|
+| `labs/sql-ltr-backup-migration/README.md` | New front-matter sections inserted before existing content |
+| `labs/sql-ltr-backup-migration/diagrams/01-backup-lifecycle.mmd` | PITR vs LTR lifecycle; divergence at database deletion is the visual punchline |
+| `labs/sql-ltr-backup-migration/diagrams/02-drain-pipeline.mmd` | SQL DB and MI drain branches side by side; governance constraints annotated |
+| `labs/sql-ltr-backup-migration/diagrams/03-governance-constraints.mmd` | Three controls mapped to the pipeline steps they break |
+
+### Validation
+
+No drawio/mermaid MCP tools available. All three `.mmd` files validated with
+`npx @mermaid-js/mermaid-cli` — exit 0. Em/en dash scan and GUID scan: 0 findings.
+
+### Domain learnings
+
+- **LTR backup lifecycle:** keyed by subscription + region + server/instance GUID. Survives
+  database, server, and instance deletion. Purged only at subscription deletion. No export,
+  move, or copy operation exists; the only API surface is restore (subscription-locked).
+- **PITR vs LTR boundary:** the delete-database event is the hard boundary. Both are visible
+  in the portal Backup blade on separate tabs; the question was asked directly and needed a
+  direct answer.
+- **The governance corollary:** MI's `BACKUP TO URL` writes outbound from inside the instance,
+  making it independent of inbound public endpoint availability. This means the MI path
+  survives a forced-off public endpoint policy that kills the SQL DB managed-export path.
+- **Shared-key disabled trap:** `az storage account keys list` succeeds and returns a valid-looking
+  key even when shared-key is disabled. The failure is deferred to the first data-plane operation
+  and is confusingly late. `BACKUP TO URL` with managed identity is the workaround, but it is
+  UNVERIFIED for MI specifically.
+- **Silent policy enforcement pattern:** Azure Policy can accept API calls, report success (exit 0),
+  and silently leave the value unchanged. Observed on `publicNetworkAccess`. Scripts must read
+  back the value after setting it; do not trust the exit code alone.
+- **Diagram shape for non-topology labs:** this lab has no network topology to draw, so the standard
+  drawio stencil approach is wrong. Mermaid flowcharts covering lifecycle events and pipeline
+  branches with governance constraint annotations are the right tool. The "no topology" conclusion
+  from the original deviation table was too strong; lifecycle and pipeline diagrams always apply.

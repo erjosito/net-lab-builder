@@ -1,0 +1,18 @@
+﻿flowchart TD
+    subgraph GOV["Governance controls"]
+        G1["Entra-only authentication<br/>SQL auth denied by policy"]
+        G2["Public network access disabled<br/>API silently ignores enable requests"]
+        G3["Shared-key access disabled<br/>keys returned, fail on data plane"]
+    end
+
+    subgraph PIPELINE["Drain pipeline steps"]
+        P1["Enumerate LTR backups"]
+        P2["Create server and restore LTR backup"]
+        P3["Export artifact from temp database"]
+        P4["Write artifact to blob storage"]
+        P1 --> P2 --> P3 --> P4
+    end
+
+    G1 -->|blocks server creation| P2
+    G2 -->|blocks az sql db export, SQL DB only| P3
+    G3 -->|SAS tokens also fail, UNVERIFIED on MI| P4

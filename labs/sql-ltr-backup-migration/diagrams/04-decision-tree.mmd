@@ -1,0 +1,17 @@
+﻿flowchart TD
+    START([LTR backup to drain])
+    START --> RTYPE{"SQL DB or MI?"}
+
+    RTYPE -->|Azure SQL Database| DB_PUB{"Public endpoint<br/>allowed?"}
+    RTYPE -->|Azure SQL MI| MI_TDE{"TDE flavour?"}
+
+    DB_PUB -->|Yes| DB_SVC["az sql db export<br/>BACPAC via managed service"]
+    DB_PUB -->|No| DB_PRIV["sqlpackage from in-VNet VM<br/>BACPAC via client-side export"]
+
+    MI_TDE -->|Service-managed| MI_DIS["Disable TDE on staged copy<br/>then BACKUP ... WITH COPY_ONLY"]
+    MI_TDE -->|Customer-managed or none| MI_DIR["BACKUP ... WITH COPY_ONLY<br/>directly to URL"]
+
+    DB_SVC --> BACPAC_OUT(["Artifact: .bacpac<br/>Not in Backup blade"])
+    DB_PRIV --> BACPAC_OUT
+    MI_DIS --> BAK_OUT(["Artifact: .bak<br/>RESTORE VERIFYONLY supported"])
+    MI_DIR --> BAK_OUT

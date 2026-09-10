@@ -1,0 +1,23 @@
+﻿flowchart LR
+    DB_START([Database created])
+    PITR_ON["PITR backups<br/>automatic, 1-35 days<br/>full + diff + log"]
+    LTR_OPT["LTR policy<br/>opt-in, up to 10 years<br/>weekly / monthly / yearly full"]
+    DB_DEL{"Database<br/>deleted"}
+    PITR_DEAD[/"PITR purged immediately"/]
+    LTR_LIVE["LTR backups survive<br/>linked to subscription<br/>not to database or server"]
+    SUB_DEL{"Subscription<br/>deleted"}
+    LTR_DEAD[/"LTR purged permanently"/]
+
+    DB_START --> PITR_ON
+    DB_START --> LTR_OPT
+    PITR_ON --> DB_DEL
+    LTR_OPT --> DB_DEL
+    DB_DEL --> PITR_DEAD
+    DB_DEL --> LTR_LIVE
+    LTR_LIVE --> SUB_DEL
+    SUB_DEL --> LTR_DEAD
+
+    classDef dead fill:#f8d7da,stroke:#dc3545,color:#721c24
+    classDef live fill:#d4edda,stroke:#28a745,color:#155724
+    class PITR_DEAD,LTR_DEAD dead
+    class LTR_LIVE live

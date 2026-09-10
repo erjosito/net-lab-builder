@@ -1,0 +1,23 @@
+﻿flowchart TD
+    START([LTR backup to preserve])
+
+    subgraph DB["Azure SQL Database path"]
+        DB1["Restore LTR backup<br/>to temp database<br/>same subscription as backup"]
+        DB2["Export to BACPAC<br/>via sqlpackage on in-VNet VM<br/>public endpoint blocked by policy"]
+        DB3["Write .bacpac to<br/>blob storage"]
+        DB4["Delete temp database"]
+        DB1 --> DB2 --> DB3 --> DB4
+    end
+
+    subgraph MI["Azure SQL Managed Instance path"]
+        MI1["Restore LTR backup<br/>to staged database<br/>same subscription as backup"]
+        MI2["Disable TDE on staged copy<br/>required for service-managed TDE<br/>IO-heavy, plan the time budget"]
+        MI3["BACKUP ... WITH COPY_ONLY TO URL<br/>writes outbound from inside instance<br/>survives public-endpoint lockdown"]
+        MI4["Delete staged database"]
+        MI1 --> MI2 --> MI3 --> MI4
+    end
+
+    START --> DB1
+    START --> MI1
+    DB4 --> RESULT(["Artifact in storage<br/>.bacpac or .bak<br/>Not in new resource's Backup blade"])
+    MI4 --> RESULT
