@@ -8,7 +8,7 @@
     DB_PUB -->|Yes| DB_SVC["az sql db export<br/>BACPAC via managed service"]
     DB_PUB -->|No| DB_PRIV["sqlpackage from in-VNet VM<br/>BACPAC via client-side export"]
 
-    MI_TDE -->|Service-managed| MI_DIS["Disable TDE on staged copy<br/>then BACKUP ... WITH COPY_ONLY"]
+    MI_TDE -->|Service-managed| MI_DIS["Disable TDE on staged copy<br/>wait for encryption_state = 1<br/>DROP DATABASE ENCRYPTION KEY<br/>then BACKUP ... WITH COPY_ONLY"]
     MI_TDE -->|Customer-managed or none| MI_DIR["BACKUP ... WITH COPY_ONLY<br/>directly to URL"]
 
     DB_SVC --> BACPAC_OUT(["Artifact: .bacpac<br/>Not in Backup blade"])

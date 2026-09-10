@@ -159,7 +159,7 @@ created temporary databases.
 | Question | Why it matters | What it rules in or out |
 |---|---|---|
 | **1. Is it Azure SQL Database or Managed Instance?** | SQL Database has no `BACKUP DATABASE` statement at all. MI does. | SQL DB: BACPAC is the only portable artifact. MI: COPY_ONLY native `.bak` is the default (supports `RESTORE VERIFYONLY`). BACPAC is also possible on MI but requires `sqlpackage` with network line-of-sight and loses the integrity verification benefit. |
-| **2. Are you using TDE? If yes, which flavour: service-managed or customer-managed (BYOK / Key Vault)?** | Service-managed TDE: the key never leaves the platform, so a `.bak` produced with `COPY_ONLY` is unrestorable anywhere. TDE is on by default on MI. | Service-managed: disable TDE on the staged copy before backup (IO-heavy on large databases; factor into the time budget), then `COPY_ONLY TO URL` produces a plaintext `.bak`. Customer-managed: `COPY_ONLY TO URL` works directly and the `.bak` stays encrypted, but the Key Vault key must be preserved for the full retention period in a vault that outlives the source subscription; lose the key and every artifact is permanently unreadable. In both cases the artifact is a `.bak` file supporting `RESTORE VERIFYONLY`. |
+| **2. Are you using TDE? If yes, which flavour: service-managed or customer-managed (BYOK / Key Vault)?** | Service-managed TDE: the key never leaves the platform, so a `.bak` produced with `COPY_ONLY` is unrestorable anywhere. TDE is on by default on MI. | Service-managed: disable TDE on the staged copy, wait until `sys.dm_database_encryption_keys` reports `encryption_state = 1`, then drop the database encryption key before backup. The DEK drop is mandatory; the unencrypted state alone is not enough. Customer-managed: `COPY_ONLY TO URL` works directly and the `.bak` stays encrypted, but the Key Vault key must be preserved for the full retention period in a vault that outlives the source subscription; lose the key and every artifact is permanently unreadable. In both cases the artifact is a `.bak` file supporting `RESTORE VERIFYONLY`. |
 | **3. How large is the largest database?** | `BACKUP TO URL` on MI caps at 195 GB per stripe, 64 stripes maximum (roughly 12.5 TB total). | Up to 195 GB: single-stripe backup. Above 195 GB: striping required, use `-GbPerStripe` in the script. Above ~12.5 TB: `COPY_ONLY` is not feasible; BACPAC may be the only option, at the cost of losing `RESTORE VERIFYONLY` support. |
 
 ### Network and access governance
@@ -167,7 +167,7 @@ created temporary databases.
 | Question | Why it matters | What it rules in or out |
 |---|---|---|
 | **4. Is public network access allowed on the logical server or managed instance?** | `az sql db export` is a Microsoft-managed service that connects inbound over the public endpoint. If the endpoint is off, the mechanism is unavailable, not merely unauthorised. A tenant policy can force `publicNetworkAccess` to `Disabled` and silently ignore API requests to enable it, returning success status without changing the value. | Public endpoint allowed: `az sql db export` and the standard drain script work. Public endpoint disabled: client-side `sqlpackage` from in-VNet compute over a private endpoint is the only SQL DB option. The MI path (`BACKUP TO URL`) is unaffected because it writes outbound from inside the instance and never depends on an inbound service. |
-| **5. Does the storage account allow shared-key access?** | Shared-key disabled kills account keys and SAS tokens together. The trap: `az storage account keys list` still succeeds and returns a key that then fails on every data-plane operation. The failure is confusingly late and looks like a permissions error. | Shared-key allowed: SAS-based `BACKUP TO URL` works. Shared-key disabled: SAS unavailable. Microsoft documents `CREATE CREDENTIAL ... WITH IDENTITY = 'Managed Identity'` as the alternative for SQL Server on Azure VMs; equivalent support for `BACKUP TO URL` on Azure SQL Managed Instance is not documented in the same way. **Test in your environment before depending on it.** |
+| **5. Does the storage account allow shared-key access?** | Shared-key disabled kills account keys and SAS tokens together. The trap: `az storage account keys list` still succeeds and returns a key that then fails on every data-plane operation. The failure is confusingly late and looks like a permissions error. | Shared-key allowed: SAS-based `BACKUP TO URL` works. Shared-key disabled: SAS unavailable. Use a Managed Instance managed identity credential: `CREATE CREDENTIAL ... WITH IDENTITY = 'Managed Identity'`. This is documented for Azure SQL Managed Instance and has been verified under shared-key-disabled storage. |
 | **6. Is the storage account's public network access disabled?** | Even if the SQL resource can reach storage internally, a locked-down storage firewall blocks all workstation-based and managed-service writes at the data plane. | Storage public access allowed: writes go directly. Storage public access disabled: all data-plane calls must originate from inside the VNet. Requires in-VNet compute, a private endpoint on the storage account, a private DNS zone, and `Storage Blob Data Contributor` RBAC on the writing identity. A private endpoint bills at $0.01 per hour regardless of traffic; consider whether to create it only for the drain and delete it afterwards. |
 
 ### Scope, timing and cost
@@ -205,7 +205,7 @@ flowchart TD
     DB_PUB -->|Yes| DB_SVC["az sql db export<br/>BACPAC via managed service"]
     DB_PUB -->|No| DB_PRIV["sqlpackage from in-VNet VM<br/>BACPAC via client-side export"]
 
-    MI_TDE -->|Service-managed| MI_DIS["Disable TDE on staged copy<br/>then BACKUP ... WITH COPY_ONLY"]
+    MI_TDE -->|Service-managed| MI_DIS["Disable TDE on staged copy<br/>wait for encryption_state = 1<br/>DROP DATABASE ENCRYPTION KEY<br/>then BACKUP ... WITH COPY_ONLY"]
     MI_TDE -->|Customer-managed or none| MI_DIR["BACKUP ... WITH COPY_ONLY<br/>directly to URL"]
 
     DB_SVC --> BACPAC_OUT(["Artifact: .bacpac<br/>Not in Backup blade"])
@@ -238,14 +238,21 @@ Instance, so this blocks the native backup path unless handled.
 
 Two options:
 
-- **Disable TDE on the staged copy** (the toolkit's default). Run `ALTER DATABASE ... SET
-  ENCRYPTION OFF` on the throwaway restored copy, back it up, then discard the copy. The
+- **Disable TDE and drop the DEK on the staged copy** (the toolkit's default). Run
+  `ALTER DATABASE ... SET ENCRYPTION OFF` on the throwaway restored copy, wait until
+  `sys.dm_database_encryption_keys` reports `encryption_state = 1`, then run
+  `DROP DATABASE ENCRYPTION KEY;` inside the database before taking the backup. The
   original database is never touched. This produces a plaintext `.bak`, so protect it with
   immutable blob storage and service-side encryption on the storage account.
 - **Customer-managed TDE (BYOK, Azure Key Vault)**. If the instance already uses CMK TDE,
   the `.bak` stays encrypted, but you must preserve that Key Vault key for the full
   retention period, in a vault that outlives the deleted subscription. Lose the key and
   every artifact is permanently unreadable.
+
+This trap is empirically confirmed. `BACKUP ... WITH COPY_ONLY` against a service-managed
+TDE database fails with Msg 41922. Turning encryption off succeeds and the DMV reaches
+`encryption_state = 1`, but the backup still fails with Msg 41938 until the database
+encryption key is dropped. Seeing "unencrypted" in the DMV is therefore not sufficient.
 
 Note also: disabling TDE on a large restored database is an IO-heavy operation and can take
 hours. It needs to be in the time budget. Also note the striping limits: 195 GB per stripe,
@@ -285,8 +292,11 @@ an inbound Microsoft-managed service. So it is unaffected by a forced-off public
 
 The SQL Database path, which looked simpler because it uses a managed export service,
 breaks entirely in a locked-down tenant. The MI path, which looked harder because it
-requires native T-SQL and storage credentials, is the robust one. The approach that seemed
-more complex turned out to be the one that works.
+requires native T-SQL and storage credentials, is the robust one. It has now been proven
+under the full governance model that breaks SQL Database managed export: shared-key access
+disabled on storage, public network access disabled on storage, and the write reaching blob
+over a private endpoint from the VNet. The approach that seemed more complex turned out to
+be the one that works.
 
 ### Entra-only authentication may be mandatory
 
@@ -326,9 +336,12 @@ permissions problem. SAS-based `BACKUP TO URL` is therefore unavailable in this
 configuration.
 
 The workaround is a managed identity credential on the Managed Instance:
-`CREATE CREDENTIAL ... WITH IDENTITY = 'Managed Identity'`. This approach is documented
-for SQL Server on VMs. **UNVERIFIED: it is not confirmed to work for Azure SQL Managed
-Instance `BACKUP TO URL`. Do not treat it as a working solution until tested.**
+`CREATE CREDENTIAL ... WITH IDENTITY = 'Managed Identity'`. This approach is now both
+documented for Azure SQL Managed Instance and empirically verified in this lab. A Managed
+Instance with a user-assigned managed identity wrote a native `.bak` to shared-key-disabled,
+public-network-disabled storage over a private endpoint, and both `RESTORE HEADERONLY` and
+`RESTORE VERIFYONLY` succeeded. The small synthetic test artifact is evidence of mechanism
+only, not a compression or capacity-planning input.
 
 ### LTR backups cannot be created on demand
 
@@ -416,8 +429,9 @@ important cost lever in the whole process.
 
 For each LTR backup to preserve:
 1. Restore the LTR backup to a temporary database on the instance (same subscription).
-2. If the database is using service-managed TDE, disable TDE on the restored copy. Plan
-   the time: this is IO-heavy on large databases.
+2. If the database is using service-managed TDE, disable TDE on the restored copy, wait for
+   `encryption_state = 1`, then drop the database encryption key. Plan the time: this is
+   IO-heavy on large databases. Do not skip the DEK drop.
 3. Run `BACKUP DATABASE ... WITH COPY_ONLY TO URL`, writing directly to the destination
    blob storage account. Stripe if the database exceeds 195 GB.
 4. Delete the temporary database immediately.
@@ -534,7 +548,7 @@ access token for scripts, and a user-assigned managed identity for the export se
 (public network access) is handled by running `sqlpackage` from in-VNet compute; the MI
 path is unaffected because it writes outbound rather than accepting inbound. G3
 (shared-key disabled) requires a managed identity credential for `BACKUP TO URL`; this is
-**UNVERIFIED** on Managed Instance.
+verified on Managed Instance.
 
 ```mermaid
 flowchart TD
@@ -554,7 +568,7 @@ flowchart TD
 
     G1 -->|blocks server creation| P2
     G2 -->|blocks az sql db export, SQL DB only| P3
-    G3 -->|SAS tokens also fail, UNVERIFIED on MI| P4
+    G3 -->|SAS tokens also fail, MI managed identity works| P4
 ```
 
 Source: `diagrams/03-governance-constraints.mmd`
@@ -967,6 +981,51 @@ timing constants remain at their original estimated defaults. Re-run
 `Measure-LtrCalibration.ps1` once LTR backups are available and restore durations have
 been captured.
 
+## Roadmap and emerging alternatives
+
+Scan date: 2026-09-10. Roadmap content ages quickly, so re-check the Microsoft Learn pages
+before executing a real drain.
+
+**SQL Database import/export over Private Link** is in public preview:
+<https://learn.microsoft.com/en-us/azure/azure-sql/database/database-import-export-private-link>.
+It addresses the `publicNetworkAccess=Disabled` blocker by having the import/export
+service create service-managed private endpoints that must be manually approved. This is
+for Azure SQL Database only, not Managed Instance.
+
+**SQL Database import/export with managed identity** is also in public preview:
+<https://learn.microsoft.com/en-us/azure/azure-sql/database/database-import-export-managed-identity>.
+It addresses the `allowSharedKeyAccess=false` blocker by replacing storage keys and SAS
+tokens with managed identity and RBAC. This is also for Azure SQL Database only, not
+Managed Instance.
+
+The key judgement is that the governed environment has both constraints at the same time:
+SQL public network access disabled and storage shared-key access disabled. Neither preview
+feature is sufficient alone. Together, they would in principle revive `az sql db export`
+and remove the need for in-VNet compute running `sqlpackage`, but the combination is not
+documented as a tested path. For a compliance drain against a hard subscription-deletion
+deadline, depending on two preview features is a planning risk. The recommendation stands:
+run client-side `sqlpackage` from in-VNet compute. Re-evaluate if both features reach GA
+before execution.
+
+**Managed Instance database copy and move across subscriptions** is GA:
+<https://learn.microsoft.com/en-us/azure/azure-sql/managed-instance/database-copy-move-how-to>.
+Keep this separate from the LTR archive problem. `az sql midb copy` and `az sql midb move`
+with `--dest-sub-id` move live databases across subscriptions in the same tenant, and both
+instances must be in the same Azure region. The documentation explicitly states that
+database copy and move operations do not copy or move PITR backups. LTR backups stay
+behind too. This can solve a live database migration, not the compliance archive.
+
+**LTR cross-subscription restore** is still not available:
+<https://learn.microsoft.com/en-us/azure/azure-sql/database/long-term-retention-overview>.
+The core conclusion is unchanged: LTR backups can only be restored under the same
+subscription as the original database.
+
+**LTR immutability on Managed Instance** is not available on the same LTR overview page.
+Microsoft notes that Managed Instance LTR backups cannot currently be configured as
+immutable and points to copy-only backups into your own storage as the workaround. That is
+independent Microsoft-side endorsement of the drain pattern this lab derived from the
+governance constraints.
+
 ## Running the lab
 
 | Phase | Script | Duration |
@@ -1015,4 +1074,3 @@ lands in the per-GB slope if you ignore it.
 **Teardown is not just a resource-group delete.** LTR backups deliberately outlive their
 source resources, so `Remove-LtrLab.ps1` clears the policies and deletes the backups
 explicitly. Skipping it leaves them billing for the full 12-week retention.
-
