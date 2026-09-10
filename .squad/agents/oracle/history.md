@@ -607,3 +607,25 @@ diagrams because no embedded diagram statement became factually wrong.
 - The BACPAC download measurement is not a throughput planning rate. It reflected the
   single-stream lab method; production drains should use a parallel-capable tool such as
   `azcopy`.
+
+## 2026-09-10 (follow-up) - SQL Database staging disk requirement
+
+### Task
+
+Documented the VM staging disk requirement in `labs/sql-ltr-backup-migration/README.md`
+after Jose asked why the VM is needed and why the BACPAC artifact must be downloaded.
+
+### Key learnings
+
+- `sqlpackage` reads and writes local files only. It has no native Azure Blob Storage IO,
+  so client-side SQL Database export/import necessarily stages the BACPAC on VM disk.
+- Blob-direct BACPAC import/export is available only through the portal and REST managed
+  service path, which is the same inbound-connecting mechanism blocked by
+  `publicNetworkAccess=Disabled`.
+- The VM roles differ by platform: Managed Instance uses the VM as a control channel only,
+  while SQL Database uses the VM as the data path.
+- SQL Database staging disk should be sized for the largest single artifact at the 1.04x
+  incompressible compression floor, not the 4.0x realistic mixed-data expectation.
+- SQL Database artifacts cross the network twice over the archive lifetime: upload after
+  export and download before a later import. Use `azcopy` or another parallel-capable tool
+  for production drains.

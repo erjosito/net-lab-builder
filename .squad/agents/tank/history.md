@@ -1494,3 +1494,63 @@ BACKUP DATABASE is terminating abnormally.
 **Artifacts:**
 - `labs/sql-ltr-backup-migration/research/mi-backup-to-url-result.md`
 - `.squad/decisions/inbox/tank-mi-backup-to-url.md`
+
+## 2026-09-10 -- sql-ltr-backup-migration MI Timing Measurements
+
+### TANK-021 -- LTR Hedge, TDE Decryption Rate, PITR Restore Proxy
+
+**Context:** Jose decided to keep the Managed Instance running but skip the multi-day LTR wait. The goal was to set the LTR policy hedge immediately, measure Managed Instance TDE decryption throughput, and capture a same-instance PITR restore duration as a clearly labelled proxy.
+
+**LTR hedge:**
+- Set `mitest` LTR policy at 2026-09-10T11:02:07Z using `az sql midb ltr-policy set -g rg-ltr-lab --mi ltrlab552754-mi -n mitest --weekly-retention P12W`.
+- Confirmed Managed Instance LTR syntax uses `--name/-n` for the database.
+- Immediate LTR backup list check at 2026-09-10T11:02:34Z returned `[]`.
+
+**TDE decryption measurements:**
+- Created `mi_tde_1gb_20260910` and `mi_tde_5gb_20260910` with default service-managed TDE enabled.
+- Seeded mixed payload rows using approximately 75 percent repeated text and 25 percent `CRYPT_GEN_RANDOM`.
+- `mi_tde_1gb_20260910`: 1.0313 GiB ROWS file, 1.1172 GiB total files, 130000 payload rows, decryption 25.716 s, DEK drop 0.047 s, compressed backup 10.741 s, blob 250.5625 MiB.
+- `mi_tde_5gb_20260910`: 5.0156 GiB ROWS file, 8.8516 GiB total files, 650000 payload rows, decryption 80.701 s, DEK drop 0.094 s, compressed backup 51.986 s, blob 1247.9375 MiB.
+- Decryption fit: fixed 0.1914 min, 0.2300 min/GiB using ROWS file GiB. R-squared recorded as null because the two-point fit would be tautological.
+
+**PITR restore proxy:**
+- `mitest` earliest restore point was 2026-09-10T10:24:12.090000Z.
+- Restored `mitest` to `mitest_pitr_proxy_20260910` at restore point 2026-09-10T10:30:00Z.
+- Same-instance PITR restore took 55.549 s and ended Online.
+- This is only a PROXY for MI restore machinery, not an LTR restore measurement. LTR restore remains unmeasured until an actual LTR backup exists.
+
+**Artifacts:**
+- `labs/sql-ltr-backup-migration/research/mi-timing-measurements.md`
+- `labs/sql-ltr-backup-migration/deploy/mi-calibrated-parameters.json`
+- `.squad/decisions/inbox/tank-mi-timing.md`
+
+## 2026-09-10 -- sql-ltr-backup-migration Artifact Consumption Proof
+
+### TANK-022 -- MI `.bak` Restore and SQL DB BACPAC Import Verified With Data
+
+**Context:** Jose asked whether the portable artifacts had actually been consumed, not just exported or checked with `RESTORE VERIFYONLY`. The answer before this task was no. This task restored or imported one artifact from each half into a new database and compared data integrity against the source.
+
+**Managed Instance `.bak`:**
+- Source artifact: `https://ltrlab552754sa.blob.core.windows.net/mi-backups/mi_tde_1gb_20260910-20260910T110634Z.bak`.
+- Initial `RESTORE DATABASE ... WITH STATS = 10` failed before artifact consumption with Msg 41901 because Managed Instance does not support that restore option.
+- Reran without `STATS`; restored to new database `mi_tde_1gb_restored`.
+- Restore duration: 30.503 s, from 2026-09-10T11:26:20.3185197Z to 2026-09-10T11:26:50.8211499Z.
+- Data proof matched: source and restored `dbo.Payload` both had 130000 rows, checksum -1557385128, 1056 MiB ROWS file, 88 MiB LOG file, 0 MiB FILESTREAM.
+
+**SQL Database BACPAC:**
+- Existing BACPACs were found in `ltr-artifacts`; no BACPAC was regenerated.
+- Selected `ltrlab552754-calib-1gb.bacpac` to minimize footprint.
+- Downloaded from private blob storage to `ltrlab-vm` in 347.754 s using UAMI storage token from IMDS.
+- Imported with `C:\tools\sqlpackage\sqlpackage.exe` and UAMI database token from IMDS to new database `ltrlab552754-calib-1gb-imported`.
+- sqlpackage import duration: 198.644 s, reported elapsed 0:03:18.22.
+- Data proof matched: source and imported `dbo.LabPayload` both had 131072 rows, checksum 12517530, and 1104 MiB ROWS file. LOG allocation differed, 1224 MiB source vs 472 MiB imported, expected after import.
+
+**Honesty boundaries:**
+- `RESTORE VERIFYONLY` passed for the MI `.bak`, proving backup set readability and completeness.
+- Artifact consumption is now measured and verified for both MI `.bak` and SQL DB BACPAC.
+- LTR restore remains unmeasured and unverified because no LTR backup exists yet.
+
+**Artifacts updated:**
+- `labs/sql-ltr-backup-migration/research/mi-timing-measurements.md`
+- `labs/sql-ltr-backup-migration/deploy/mi-calibrated-parameters.json`
+- `.squad/decisions/inbox/tank-mi-timing.md`
