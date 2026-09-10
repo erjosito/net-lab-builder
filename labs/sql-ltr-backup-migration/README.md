@@ -32,6 +32,39 @@ extract a portable artifact from the restored copy, write that artifact to stora
 delete the restored copy. This drain must run **while the source subscription is still
 alive**, because deleting the subscription purges the LTR backups.
 
+```mermaid
+flowchart LR
+    subgraph SRC["Source subscription"]
+        SRC_RES["Old SQL resource<br/>(database, server, or instance)"]
+        LTR["LTR backups<br/>survive database, server, and instance deletion<br/>purged when this subscription is deleted"]
+        TEMP["Temporary restored copy<br/>(drain only, then deleted)"]
+        ART["Portable artifact<br/>(.bacpac or .bak)"]
+        DEADLINE(["Subscription deleted<br/>LTR backups purged permanently"])
+
+        SRC_RES -->|"LTR policy"| LTR
+        LTR -->|"Step 1: restore<br/>(subscription-locked)"| TEMP
+        TEMP -->|"Step 2: extract"| ART
+        LTR -.->|"if not drained in time"| DEADLINE
+    end
+
+    subgraph DST["Destination subscription"]
+        NEW_RES["New SQL resource"]
+        NEW_CHAIN["New backup chain<br/>(PITR + LTR from creation)<br/>Drained artifacts do not appear here"]
+
+        NEW_RES -->|"starts fresh"| NEW_CHAIN
+    end
+
+    STORAGE["Storage account<br/>(source or destination subscription)"]
+
+    ART -->|"Step 3: write to storage"| STORAGE
+    LTR --x|"No path: restore is subscription-locked<br/>no export, no Resource Mover, no attach"| NEW_RES
+
+    classDef deadline fill:#fee2e2,stroke:#b91c1c,color:#b91c1c
+    class DEADLINE deadline
+```
+
+Source: `diagrams/00-solution-overview.mmd`
+
 ---
 
 ## Concepts and vocabulary
@@ -136,20 +169,25 @@ created temporary databases.
 | **4. Is public network access allowed on the logical server or managed instance?** | `az sql db export` is a Microsoft-managed service that connects inbound over the public endpoint. If the endpoint is off, the mechanism is unavailable, not merely unauthorised. A tenant policy can force `publicNetworkAccess` to `Disabled` and silently ignore API requests to enable it, returning success status without changing the value. | Public endpoint allowed: `az sql db export` and the standard drain script work. Public endpoint disabled: client-side `sqlpackage` from in-VNet compute over a private endpoint is the only SQL DB option. The MI path (`BACKUP TO URL`) is unaffected because it writes outbound from inside the instance and never depends on an inbound service. |
 | **5. Does the storage account allow shared-key access?** | Shared-key disabled kills account keys and SAS tokens together. The trap: `az storage account keys list` still succeeds and returns a key that then fails on every data-plane operation. The failure is confusingly late and looks like a permissions error. | Shared-key allowed: SAS-based `BACKUP TO URL` works. Shared-key disabled: SAS unavailable. Microsoft documents `CREATE CREDENTIAL ... WITH IDENTITY = 'Managed Identity'` as the alternative for SQL Server on Azure VMs; equivalent support for `BACKUP TO URL` on Azure SQL Managed Instance is not documented in the same way. **Test in your environment before depending on it.** |
 | **6. Is the storage account's public network access disabled?** | Even if the SQL resource can reach storage internally, a locked-down storage firewall blocks all workstation-based and managed-service writes at the data plane. | Storage public access allowed: writes go directly. Storage public access disabled: all data-plane calls must originate from inside the VNet. Requires in-VNet compute, a private endpoint on the storage account, a private DNS zone, and `Storage Blob Data Contributor` RBAC on the writing identity. A private endpoint bills at $0.01 per hour regardless of traffic; consider whether to create it only for the drain and delete it afterwards. |
-| **7. Can the identity running the drain authenticate into the databases, and if Entra-only authentication is enforced, is a server-level user-assigned managed identity in place for the managed export path?** | If Entra-only authentication is in force (policy `AzureSQL_WithoutAzureADOnlyAuthentication_Deny`), contained database users are required. Without Directory Readers, `CREATE USER ... FROM EXTERNAL PROVIDER` fails and the user must be created from an explicit SID by a privileged admin. Additionally, `az sql db export` under Entra-only auth requires a server-level user-assigned managed identity, which is a preview feature; depending on a preview capability for a compliance-driven drain carries planning risk. Note: `az policy assignment list` does not return management-group-scoped assignments, so a clean result does not confirm the policy is absent. | Directory Readers available: `CREATE USER ... FROM EXTERNAL PROVIDER`. Not available: an Entra privileged admin must create the user from an explicit object ID (`CREATE USER [name] WITH SID = ..., TYPE = E`); confirm this before starting, not after the first authentication failure mid-drain. If using `az sql db export` under Entra-only auth: a server-level user-assigned managed identity is required (preview). Client-side `sqlpackage` does not carry this dependency and avoids the preview risk. |
-| **8. Are there policy escape hatches (for example a resource tag that exempts from a deny policy), and is your organisation actually permitting you to use them?** | Escape hatches exist for legitimate exceptions, but using one to suppress a security control for operational convenience undermines the control and may create audit findings. | Confirm written approval from your security team before using any exemption mechanism. Availability of an escape hatch does not imply permission to use it. |
 
 ### Scope, timing and cost
 
 | Question | Why it matters | What it rules in or out |
 |---|---|---|
-| **9. Are the LTR backups and the drain infrastructure in the same subscription?** | LTR restore is subscription-locked. The staging server or instance that receives the restore must be in the same subscription that owns the LTR backup. | Cross-subscription staging: not possible. The artifact destination (storage account) can be in any subscription; only the restore target is constrained. |
-| **10. When is the source subscription being deleted?** | This is the hard deadline. LTR backups survive database, server, and instance deletion, but are purged permanently when the subscription is deleted. There is no recovery after that point. | Build in time for a full recovery drill (restore at least one artifact end to end) before the subscription is deleted. An untested compliance archive is not a compliance archive. |
-| **11. Which subset of LTR backups must you actually retain for compliance?** | Cost scales directly with count and size. Artifact storage dominates the multi-year total by roughly 50x over compute. A wide compliance scope is also a large and costly archive. | Narrowing the scope to the legally required minimum is the single largest cost lever available. Run `src/powershell/sql-ltr-export/Get-LtrExportCostEstimate.ps1` for each candidate scope before committing. |
-| **12. Do you have vCore and server quota headroom in the source subscription for the temporary restore targets?** | The drain creates temporary databases in the source subscription. SQL DB logical servers are free, but General Purpose vCores and MI vCores consume regional quota. | Check `az sql server list-usages` and MI vCore quota before starting. Running out of quota mid-drain leaves orphaned temporary databases that keep billing and require manual cleanup. |
-| **13. Can the Managed Instance stay running for the entire LTR retention wait (up to 7 days)?** | A stopped MI takes no automated backups at all. A skipped LTR backup is never backfilled. Stopping the instance during the wait destroys the backup you were waiting to produce. | The MI must stay running for the entire wait. The free MI offer defaults to a schedule that stops the instance outside working hours to conserve credits; that schedule is incompatible with a continuous retention wait. |
-| **14. Do you need the retained backups to appear in the new resource's Backup blade?** | The Backup blade reflects only the new resource's own PITR and LTR chains, which begin at that resource's creation. There is no import mechanism. | Not possible. The only output of this process is files in a storage account. Plan for the operational cost of a non-blade restore path: you need to know which file to use, provision a staging target, and execute a manual restore. |
-| **15. What storage tier and redundancy do the artifacts need?** | Storage dominates the multi-year cost. Archive cuts the total by roughly 20x versus Hot, at the cost of up to 15 hours of rehydration before a restore. Only Hot is volume-banded; Cool, Cold, and Archive are flat-rate at any volume. | Hot: immediate access, highest cost. Cool or Cold: lower cost, small read penalty. Archive: lowest cost, up to 15-hour rehydration. For a compliance copy that may never be read, Archive is usually right. See `cost-model/` for the full tier and redundancy comparison. |
+| **7. When is the source subscription being deleted?** | This is the hard deadline. LTR backups survive database, server, and instance deletion, but are purged permanently when the subscription is deleted. There is no recovery after that point. | Build in time for a full recovery drill (restore at least one artifact end to end) before the subscription is deleted. An untested compliance archive is not a compliance archive. |
+| **8. Which subset of LTR backups must you actually retain for compliance?** | Cost scales directly with count and size. Artifact storage dominates the multi-year total by roughly 50x over compute. A wide compliance scope is also a large and costly archive. | Narrowing the scope to the legally required minimum is the single largest cost lever available. Run `src/powershell/sql-ltr-export/Get-LtrExportCostEstimate.ps1` for each candidate scope before committing. |
+| **9. Do you have vCore and server quota headroom in the source subscription for the temporary restore targets?** | The drain creates temporary databases in the source subscription. SQL DB logical servers are free, but General Purpose vCores and MI vCores consume regional quota. | Check `az sql server list-usages` and MI vCore quota before starting. Running out of quota mid-drain leaves orphaned temporary databases that keep billing and require manual cleanup. |
+| **10. Can the Managed Instance stay running for the entire LTR retention wait (up to 7 days)?** | A stopped MI takes no automated backups at all. A skipped LTR backup is never backfilled. Stopping the instance during the wait destroys the backup you were waiting to produce. | The MI must stay running for the entire wait. The free MI offer defaults to a schedule that stops the instance outside working hours to conserve credits; that schedule is incompatible with a continuous retention wait. |
+
+### Storage tier recommendation
+
+These artifacts exist solely for compliance and will most likely never be read. The tier choice follows directly from a single question: how long can you wait for a file before a restore can begin?
+
+**Default recommendation: Archive.** Rehydration can take up to 15 hours, but Archive is the lowest cost tier by a significant margin. For a file that may sit untouched for years and is accessed only if a regulator or auditor requires a restore, that wait is acceptable.
+
+**Choose Cold instead** when retrieval within minutes is required (for example, your recovery time objective is shorter than 15 hours).
+
+Both Archive and Cold are flat-rate at any volume. Hot is volume-banded and priced for frequent reads; it is the wrong tier for this use case. Redundancy choice (LRS versus GRS) is a separate input: GRS roughly doubles the storage cost but protects against a regional outage. For multi-year compliance archives the cost difference compounds. See `cost-model/` for the full tier and redundancy comparison.
 
 ### Decision flowchart
 
@@ -261,6 +299,19 @@ Managed Instances (`AzureSQLMI_WithoutAzureADOnlyAuthentication_Deny`).
 Every tool in the drain chain must authenticate with an Entra token. The toolkit
 originally assumed SQL authentication and had to be reworked. Full evidence and the
 compliant pattern are in the Pre-flight results section below.
+
+Two additional access requirements follow from Entra-only enforcement:
+
+- **Contained database users.** Without Directory Readers assigned to the managed identity
+  or service principal running the drain, `CREATE USER ... FROM EXTERNAL PROVIDER` fails.
+  An Entra privileged admin must instead create the user from an explicit object ID:
+  `CREATE USER [name] WITH SID = <object-id-as-bytes>, TYPE = E`. Confirm this is in place
+  before starting the drain, not after the first authentication failure.
+- **Preview dependency for the managed export path.** `az sql db export` under Entra-only
+  auth requires a server-level user-assigned managed identity, which is a preview feature.
+  Client-side `sqlpackage` does not carry this dependency. For a long-lived compliance
+  process, the stability of a preview feature is a genuine planning risk; prefer
+  `sqlpackage` if that risk is unacceptable.
 
 Do not use the `SecurityControl=Ignore` escape hatch on the resource or resource group. It
 suppresses a tenant security control to make a lab convenient, and the compliant path

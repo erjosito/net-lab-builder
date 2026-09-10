@@ -1,0 +1,28 @@
+flowchart LR
+    subgraph SRC["Source subscription"]
+        SRC_RES["Old SQL resource<br/>(database, server, or instance)"]
+        LTR["LTR backups<br/>survive database, server, and instance deletion<br/>purged when this subscription is deleted"]
+        TEMP["Temporary restored copy<br/>(drain only, then deleted)"]
+        ART["Portable artifact<br/>(.bacpac or .bak)"]
+        DEADLINE(["Subscription deleted<br/>LTR backups purged permanently"])
+
+        SRC_RES -->|"LTR policy"| LTR
+        LTR -->|"Step 1: restore<br/>(subscription-locked)"| TEMP
+        TEMP -->|"Step 2: extract"| ART
+        LTR -.->|"if not drained in time"| DEADLINE
+    end
+
+    subgraph DST["Destination subscription"]
+        NEW_RES["New SQL resource"]
+        NEW_CHAIN["New backup chain<br/>(PITR + LTR from creation)<br/>Drained artifacts do not appear here"]
+
+        NEW_RES -->|"starts fresh"| NEW_CHAIN
+    end
+
+    STORAGE["Storage account<br/>(source or destination subscription)"]
+
+    ART -->|"Step 3: write to storage"| STORAGE
+    LTR --x|"No path: restore is subscription-locked<br/>no export, no Resource Mover, no attach"| NEW_RES
+
+    classDef deadline fill:#fee2e2,stroke:#b91c1c,color:#b91c1c
+    class DEADLINE deadline
