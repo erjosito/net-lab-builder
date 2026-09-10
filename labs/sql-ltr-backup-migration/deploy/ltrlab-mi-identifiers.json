@@ -1,0 +1,51 @@
+{
+  "capturedAt": "2026-09-10T12:13:16.4245334+02:00",
+  "subscriptionName": "Litware-MngEnvMCAP642473-jomore",
+  "subscriptionId": "a8fbd8e1-fb5a-4411-804a-4ac80929c93c",
+  "tenantId": "5ad00b69-0386-4c74-8adc-ac7a28649f34",
+  "resourceGroup": "rg-ltr-lab",
+  "location": "swedencentral",
+  "managedInstance": {
+    "name": "ltrlab552754-mi",
+    "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-ltr-lab/providers/Microsoft.Sql/managedInstances/ltrlab552754-mi",
+    "provisioningState": "Creating",
+    "state": "Creating",
+    "subnetId": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-ltr-lab/providers/Microsoft.Network/virtualNetworks/ltrlab-vnet/subnets/snet-mi",
+    "vCores": 4,
+    "storageSizeInGb": 32,
+    "licenseType": "BasePrice",
+    "requestedBackupStorageRedundancy": "Local",
+    "publicDataEndpointEnabled": false,
+    "identityType": "UserAssigned",
+    "userAssignedIdentityIds": [
+      "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourcegroups/rg-ltr-lab/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ltrlab552754-umi"
+    ],
+    "primaryUserAssignedIdentityId": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourcegroups/rg-ltr-lab/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ltrlab552754-umi",
+    "externalAdminPrincipalType": "Application",
+    "externalAdminName": "ltrlab552754-umi",
+    "externalAdminSid": "9dab92a8-7084-442e-8617-139fda64b1c9",
+    "azureAdOnlyAuthentication": true
+  },
+  "network": {
+    "vnetName": "ltrlab-vnet",
+    "subnetName": "snet-mi",
+    "subnetId": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-ltr-lab/providers/Microsoft.Network/virtualNetworks/ltrlab-vnet/subnets/snet-mi",
+    "subnetAddressPrefix": "10.70.3.0/24",
+    "subnetDelegationServiceName": "Microsoft.Sql/managedInstances",
+    "subnetRouteTableId": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-ltr-lab/providers/Microsoft.Network/routeTables/rt-snet-mi",
+    "subnetNetworkSecurityGroupId": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-ltr-lab/providers/Microsoft.Network/networkSecurityGroups/nsg-snet-mi",
+    "serviceAssociationLinkCount": 1,
+    "routeTableName": "rt-snet-mi",
+    "routeTableId": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-ltr-lab/providers/Microsoft.Network/routeTables/rt-snet-mi",
+    "disableBgpRoutePropagation": false,
+    "networkSecurityGroupName": "nsg-snet-mi",
+    "networkSecurityGroupId": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-ltr-lab/providers/Microsoft.Network/networkSecurityGroups/nsg-snet-mi"
+  },
+  "uami": {
+    "name": "ltrlab552754-umi",
+    "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourcegroups/rg-ltr-lab/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ltrlab552754-umi",
+    "clientId": "9dab92a8-7084-442e-8617-139fda64b1c9",
+    "principalId": "6ae8e9fe-6b1a-437f-bf94-83430a391337"
+  },
+  "pollCommand": "az sql mi show -g rg-ltr-lab -n ltrlab552754-mi --query \"{provisioningState:provisioningState,state:state,fullyQualifiedDomainName:fullyQualifiedDomainName}\" -o json"
+}
