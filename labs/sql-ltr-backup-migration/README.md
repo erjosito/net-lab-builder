@@ -172,23 +172,24 @@ created temporary databases.
 | **2. Are you using TDE? If yes, which flavour: service-managed or customer-managed (BYOK / Key Vault)?** | Service-managed TDE: the key never leaves the platform, so a `.bak` produced with `COPY_ONLY` is unrestorable anywhere. TDE is on by default on MI. | Service-managed: disable TDE on every staged copy, wait until `sys.dm_database_encryption_keys` reports `encryption_state = 1`, then drop the database encryption key before backup. The DEK drop is mandatory; the unencrypted state alone is not enough. Customer-managed: `COPY_ONLY TO URL` works directly and the `.bak` stays encrypted, but the Key Vault key must be preserved for the full retention period in a vault that outlives the source subscription; lose the key and every artifact is permanently unreadable. In both cases the artifact is a `.bak` file supporting `RESTORE VERIFYONLY`. |
 | **3. How large is the largest database?** | `BACKUP TO URL` on MI caps at 195 GB per stripe, 64 stripes maximum (roughly 12.5 TB total). | Up to 195 GB: single-stripe backup. Above 195 GB: striping required, use `-GbPerStripe` in the script. Above ~12.5 TB: `COPY_ONLY` is not feasible; BACPAC may be the only option, at the cost of losing `RESTORE VERIFYONLY` support. |
 | **4. Does the instance have enough storage headroom for the drain?** | The drain restores each database onto the live instance before extracting the artifact. That consumes instance storage for the restored database, its log growth, and the artifact workflow's working set. | Size the MI for the largest database being drained plus operational headroom. This is a hard planning constraint, independent of throughput measurements. |
+| **5. Does the in-VNet VM have a staging disk sized for the largest BACPAC?** | Client-side `sqlpackage` reads and writes local files only. It has no native Azure Blob Storage IO, so SQL Database artifacts must land on VM disk before upload and be downloaded to VM disk before import. | Add a data disk with free space for the largest single artifact, sized against the compression floor, not the expected compression case. The MI `.bak` path does not need this disk because the artifact streams directly between the instance and blob storage. |
 
 ### Network and access governance
 
 | Question | Why it matters | What it rules in or out |
 |---|---|---|
-| **5. Is public network access allowed on the logical server or managed instance?** | `az sql db export` is a Microsoft-managed service that connects inbound over the public endpoint. If the endpoint is off, the mechanism is unavailable, not merely unauthorised. A tenant policy can force `publicNetworkAccess` to `Disabled` and silently ignore API requests to enable it, returning success status without changing the value. | Public endpoint allowed: `az sql db export` and the standard drain script work. Public endpoint disabled: client-side `sqlpackage` from in-VNet compute over a private endpoint is the only SQL DB option. The MI path (`BACKUP TO URL`) is unaffected because it writes outbound from inside the instance and never depends on an inbound service. |
-| **6. Does the storage account allow shared-key access?** | Shared-key disabled kills account keys and SAS tokens together. The trap: `az storage account keys list` still succeeds and returns a key that then fails on every data-plane operation. The failure is confusingly late and looks like a permissions error. | Shared-key allowed: SAS-based `BACKUP TO URL` works. Shared-key disabled: SAS unavailable. Use a Managed Instance managed identity credential: `CREATE CREDENTIAL ... WITH IDENTITY = 'Managed Identity'`. This is documented for Azure SQL Managed Instance and has been verified under shared-key-disabled storage. |
-| **7. Is the storage account's public network access disabled?** | Even if the SQL resource can reach storage internally, a locked-down storage firewall blocks all workstation-based and managed-service writes at the data plane. | Storage public access allowed: writes go directly. Storage public access disabled: all data-plane calls must originate from inside the VNet. Requires in-VNet compute, a private endpoint on the storage account, a private DNS zone, and `Storage Blob Data Contributor` RBAC on the writing identity. A private endpoint bills at $0.01 per hour regardless of traffic; consider whether to create it only for the drain and delete it afterwards. |
+| **6. Is public network access allowed on the logical server or managed instance?** | `az sql db export` is a Microsoft-managed service that connects inbound over the public endpoint. If the endpoint is off, the mechanism is unavailable, not merely unauthorised. A tenant policy can force `publicNetworkAccess` to `Disabled` and silently ignore API requests to enable it, returning success status without changing the value. | Public endpoint allowed: `az sql db export` and the standard drain script work. Public endpoint disabled: client-side `sqlpackage` from in-VNet compute over a private endpoint is the only SQL DB option. The MI path (`BACKUP TO URL`) is unaffected because it writes outbound from inside the instance and never depends on an inbound service. |
+| **7. Does the storage account allow shared-key access?** | Shared-key disabled kills account keys and SAS tokens together. The trap: `az storage account keys list` still succeeds and returns a key that then fails on every data-plane operation. The failure is confusingly late and looks like a permissions error. | Shared-key allowed: SAS-based `BACKUP TO URL` works. Shared-key disabled: SAS unavailable. Use a Managed Instance managed identity credential: `CREATE CREDENTIAL ... WITH IDENTITY = 'Managed Identity'`. This is documented for Azure SQL Managed Instance and has been verified under shared-key-disabled storage. |
+| **8. Is the storage account's public network access disabled?** | Even if the SQL resource can reach storage internally, a locked-down storage firewall blocks all workstation-based and managed-service writes at the data plane. | Storage public access allowed: writes go directly. Storage public access disabled: all data-plane calls must originate from inside the VNet. Requires in-VNet compute, a private endpoint on the storage account, a private DNS zone, and `Storage Blob Data Contributor` RBAC on the writing identity. A private endpoint bills at $0.01 per hour regardless of traffic; consider whether to create it only for the drain and delete it afterwards. |
 
 ### Scope, timing and cost
 
 | Question | Why it matters | What it rules in or out |
 |---|---|---|
-| **8. When is the source subscription being deleted?** | This is the hard deadline. LTR backups survive database, server, and instance deletion, but are purged permanently when the subscription is deleted. There is no recovery after that point. | Build in time for a full recovery drill (restore at least one artifact end to end) before the subscription is deleted. An untested compliance archive is not a compliance archive. |
-| **9. Which subset of LTR backups must you actually retain for compliance?** | Cost scales directly with count and size. Artifact storage dominates the multi-year total by roughly 50x over compute. A wide compliance scope is also a large and costly archive. | Narrowing the scope to the legally required minimum is the single largest cost lever available. Run `src/powershell/sql-ltr-export/Get-LtrExportCostEstimate.ps1` for each candidate scope before committing. |
-| **10. Do you have vCore and server quota headroom in the source subscription for the temporary restore targets?** | The drain creates temporary databases in the source subscription. SQL DB logical servers are free, but General Purpose vCores and MI vCores consume regional quota. | Check `az sql server list-usages` and MI vCore quota before starting. Running out of quota mid-drain leaves orphaned temporary databases that keep billing and require manual cleanup. |
-| **11. Can the Managed Instance stay running for the entire LTR retention wait (up to 7 days)?** | A stopped MI takes no automated backups at all. A skipped LTR backup is never backfilled. Stopping the instance during the wait destroys the backup you were waiting to produce. | The MI must stay running for the entire wait. The free MI offer defaults to a schedule that stops the instance outside working hours to conserve credits; that schedule is incompatible with a continuous retention wait. |
+| **9. When is the source subscription being deleted?** | This is the hard deadline. LTR backups survive database, server, and instance deletion, but are purged permanently when the subscription is deleted. There is no recovery after that point. | Build in time for a full recovery drill (restore at least one artifact end to end) before the subscription is deleted. An untested compliance archive is not a compliance archive. |
+| **10. Which subset of LTR backups must you actually retain for compliance?** | Cost scales directly with count and size. Artifact storage dominates the multi-year total by roughly 50x over compute. A wide compliance scope is also a large and costly archive. | Narrowing the scope to the legally required minimum is the single largest cost lever available. Run `src/powershell/sql-ltr-export/Get-LtrExportCostEstimate.ps1` for each candidate scope before committing. |
+| **11. Do you have vCore and server quota headroom in the source subscription for the temporary restore targets?** | The drain creates temporary databases in the source subscription. SQL DB logical servers are free, but General Purpose vCores and MI vCores consume regional quota. | Check `az sql server list-usages` and MI vCore quota before starting. Running out of quota mid-drain leaves orphaned temporary databases that keep billing and require manual cleanup. |
+| **12. Can the Managed Instance stay running for the entire LTR retention wait (up to 7 days)?** | A stopped MI takes no automated backups at all. A skipped LTR backup is never backfilled. Stopping the instance during the wait destroys the backup you were waiting to produce. | The MI must stay running for the entire wait. The free MI offer defaults to a schedule that stops the instance outside working hours to conserve credits; that schedule is incompatible with a continuous retention wait. |
 
 ### Storage tier recommendation
 
@@ -321,6 +322,44 @@ private endpoint. This is a client-side export and is not subject to the
 Microsoft-managed-service constraint. The compute, private endpoint, DNS, and sqlpackage
 installation are your responsibility.
 
+### Client-side BACPAC requires local staging disk
+
+`sqlpackage` reads and writes local files only. It has no native Azure Blob Storage IO.
+Blob-direct import and export exist only through the portal and the REST managed service,
+which is the same inbound-connecting service that `publicNetworkAccess=Disabled` blocks.
+The staging hop is therefore inherent to the client-side SQL Database approach, not an
+implementation shortcut.
+
+The SQL Database flow is necessarily:
+
+1. Export: `sqlpackage` writes the `.bacpac` to VM local disk, then the file is uploaded to
+   blob storage.
+2. Restore: the `.bacpac` is downloaded from blob storage to VM local disk, then
+   `sqlpackage` imports it.
+
+This is a real architectural difference between the two halves of the lab:
+
+| Path | VM role | Staging disk requirement |
+|---|---|---|
+| Managed Instance | Control channel only. The VM issues T-SQL, and `BACKUP TO URL` executes server-side from the instance directly to blob storage. The artifact never touches the VM. | None for the `.bak` artifact. |
+| Azure SQL Database | Data path. Every byte of every BACPAC physically transits the VM local disk on export, and again on import if the artifact is ever restored. | Required. |
+
+Size the VM data disk for the largest single artifact it will handle. Use the compression
+floor, not the expected case. Storage cost can be planned on measured realistic compression
+of about 4.0x, but staging disk must survive the worst case because running out of disk
+part-way through an export fails the job outright, potentially under a subscription
+deletion deadline.
+
+Worked example: a 500 GB database at the measured 4.0x realistic compression produces
+roughly a 125 GB artifact. The same 500 GB database with incompressible contents, such as
+encrypted blobs, media, or already-compressed data, produces roughly a 480 GB artifact at
+the measured 1.04x floor. If the staging disk was sized for 125 GB, the second case fails.
+
+Also budget the transfer time. On the SQL Database half every artifact crosses the network
+twice over the archive lifetime, once during export and once during a later restore. Use a
+parallel-capable transfer tool such as `azcopy`. On the Managed Instance `.bak` path this
+VM-local transfer cost does not exist.
+
 ### The governance corollary: MI survives the lockdown, SQL DB does not
 
 This is the most consequential finding in the lab. `BACKUP TO URL` on Managed Instance
@@ -333,7 +372,8 @@ requires native T-SQL and storage credentials, is the robust one. It has now bee
 under the full governance model that breaks SQL Database managed export: shared-key access
 disabled on storage, public network access disabled on storage, and the write reaching blob
 over a private endpoint from the VNet. The approach that seemed more complex turned out to
-be the one that works.
+be the one that works. It is also operationally cleaner for artifacts because the VM stays
+out of the data path.
 
 ### Entra-only authentication may be mandatory
 
@@ -463,7 +503,9 @@ necessary if the subscription itself is being deleted.
 
 If the source MI is still running, restore LTR backups directly into it. This makes the
 compute cost of staging zero: you are already paying for those vCores. This is the most
-important cost lever in the whole process.
+important cost lever in the whole process. The VM is only a control channel for this path:
+it issues T-SQL, while `BACKUP TO URL` streams the `.bak` from the instance directly to
+blob storage. The artifact never lands on the VM.
 
 For each LTR backup to preserve:
 1. Restore the LTR backup to a temporary database on the instance (same subscription).
@@ -481,14 +523,26 @@ See `src/powershell/sql-ltr-export/Export-SqlMiLtrBackups.ps1`.
 
 ### Step 2: drain Azure SQL Database
 
+Before starting, provision a VM data disk with free space for the largest single BACPAC
+artifact the VM will handle. Size that disk against the 1.04x compression floor, not the
+4.0x expected case. The disk is a hard requirement because `sqlpackage` writes and reads
+local files only.
+
 For each LTR backup to preserve:
 1. Restore the LTR backup to a temporary database in the source subscription. The logical
    server is free; only the temporary database incurs compute cost.
 2. Export to BACPAC via `sqlpackage`. If public network access is disabled on the logical
    server, `az sql db export` will not work: run `sqlpackage` from compute inside the
-   virtual network connected over a private endpoint.
-3. Write the `.bacpac` to the destination blob storage account.
+   virtual network connected over a private endpoint. `sqlpackage` writes the `.bacpac` to
+   VM local disk first.
+3. Upload the `.bacpac` from VM local disk to the destination blob storage account,
+   preferably with a parallel-capable tool such as `azcopy`.
 4. Delete the temporary database.
+
+For a later restore, reverse the artifact movement: download the `.bacpac` from blob
+storage to VM local disk, then import it with `sqlpackage`. This means every SQL Database
+artifact crosses the network and touches VM disk on the way out, and again on the way back
+if it is ever restored.
 
 See `src/powershell/sql-ltr-export/Export-SqlDbLtrBackups.ps1`.
 
