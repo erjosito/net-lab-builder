@@ -29,13 +29,28 @@ workbook is reproducible and its provenance is auditable.
 | --- | --- |
 | Read me | What is modelled, what is verified, what is assumed |
 | Parameters | The yellow input cells. Everything else recalculates from these |
-| Prices | The raw price snapshot with its retrieval timestamp |
+| Prices | The raw price snapshot with its retrieval timestamp, volume bands and any substituted rates |
 | Cost matrix | Backup count (10 to 800) against database size (5 to 1000 GB), split into transfer / storage / total |
 | Tier comparison | All 21 tier and redundancy combinations, including read-back cost |
 | Compression sensitivity | How the total moves as the compression ratio moves |
 
 Every cell is a live Excel formula, not a baked value. Change an input and the
 whole model recalculates.
+
+## Known simplifications
+
+- **Volume banding.** The model prices everything at the first band (0 to 50 TB).
+  Only the **Hot** tier is volume-banded; Cool, Cold and Archive are flat at any
+  volume. For Hot scenarios above 50 TB the model is roughly 4 percent
+  conservative. The Parameters sheet warns when this applies, and the Prices sheet
+  lists the higher bands.
+- **Substituted operation rates.** Azure does not publish an operation meter for
+  every redundancy. Where one is missing it is taken from the closest published
+  redundancy (RA-GZRS from GZRS, not from LRS) and flagged in the Prices sheet's
+  Substituted column. Falling back to LRS would make read-access SKUs look cheaper
+  than their non-read-access parents, which is wrong.
+- **Restore and export compute is excluded.** It is one-time and small. The
+  headline cell is labelled "GRAND TOTAL (storage side)" to make that explicit.
 
 ## Headline findings
 
@@ -66,5 +81,9 @@ comparing against hand calculations:
 | Read back once | $111.00 | $111.00 |
 | Matrix corner, 800 backups x 1000 GB | $17,144 | $17,144 |
 | Worst case vs default compression | 3.92x | 3.92x |
+
+The destination dropdown's range reference was also checked directly in the
+generated OOXML, since openpyxl will happily write a `formula1` that Excel then
+rejects.
 
 Retail prices exclude any enterprise agreement discount, reservation or credit.

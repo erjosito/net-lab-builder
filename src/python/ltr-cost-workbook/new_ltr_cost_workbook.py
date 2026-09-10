@@ -114,14 +114,26 @@ def refresh_prices(region: str) -> dict:
             # 'Archive Data Retrieval'. Never silently substitute one for the other.
             if "Priority" in meter and "Priority" not in kind:
                 continue
-            # Data Stored is banded by volume; take the first band (0 to 50 TB),
-            # which is where a backup archive of this size sits.
+            # Data Stored is banded by volume. Take the first band (0 to 50 TB) as
+            # the headline rate and record the higher bands separately.
             if kind == "Data Stored" and float(r.get("tierMinimumUnits", 0)) != 0:
                 continue
             price = float(r["retailPrice"])
             if best is None or price < best:
                 best = price
         return best
+
+    def bands(tier: str, red: str) -> list[dict]:
+        """Volume bands for Data Stored, if this meter is banded at all."""
+        out = []
+        for r in rows:
+            if r.get("skuName") != f"{tier} {red}":
+                continue
+            if "Data Stored" not in r.get("meterName", ""):
+                continue
+            out.append({"from_gb": float(r.get("tierMinimumUnits", 0)),
+                        "usd_gb_month": float(r["retailPrice"])})
+        return sorted(out, key=lambda b: b["from_gb"])
 
     table = []
     for tier in TIERS:
@@ -135,22 +147,45 @@ def refresh_prices(region: str) -> dict:
                     "tier": tier,
                     "redundancy": red,
                     "stored_usd_gb_month": stored,
+                    "bands": bands(tier, red),
                     "write_usd_per_10k": pick(tier, red, "Write Operations"),
                     "read_usd_per_10k": pick(tier, red, "Read Operations"),
                     "retrieval_usd_gb": pick(tier, red, "Data Retrieval") or 0.0,
+                    "substituted": [],
                 }
             )
 
-    # Ops meters are not published for every redundancy. Fall back to the LRS rate
-    # for the same tier rather than leaving a hole, and say so in the workbook.
-    lrs = {r["tier"]: r for r in table if r["redundancy"] == "LRS"}
+    # Operation meters are not published for every redundancy. Where one is missing,
+    # substitute along the redundancy relationship that actually holds: a read-access
+    # SKU prices its operations like its non-read-access parent (RA-GZRS like GZRS),
+    # and only as a last resort like LRS. Falling straight back to LRS produces
+    # nonsense such as RA-GZRS writes costing less than GZRS writes.
+    by_key = {r["key"]: r for r in table}
+    fallback_order = {
+        "RA-GZRS": ["GZRS", "ZRS", "LRS"],
+        "RA-GRS": ["GRS", "LRS"],
+        "GZRS": ["ZRS", "LRS"],
+        "GRS": ["LRS"],
+        "ZRS": ["LRS"],
+        "LRS": [],
+    }
     for r in table:
-        base = lrs.get(r["tier"], {})
-        for col in ("write_usd_per_10k", "read_usd_per_10k"):
+        for col in ("write_usd_per_10k", "read_usd_per_10k", "retrieval_usd_gb"):
+            if r[col]:
+                continue
+            # A genuine zero is meaningful for retrieval (Hot has no retrieval charge),
+            # so only substitute when the meter was absent entirely.
+            if col == "retrieval_usd_gb" and r["tier"] == "Hot":
+                r[col] = 0.0
+                continue
+            for red in fallback_order.get(r["redundancy"], ["LRS"]):
+                donor = by_key.get(f"{r['tier']} {red}")
+                if donor and donor.get(col):
+                    r[col] = donor[col]
+                    r["substituted"].append(f"{col} from {red}")
+                    break
             if r[col] is None:
-                r[col] = base.get(col) or 0.0
-        if not r["retrieval_usd_gb"]:
-            r["retrieval_usd_gb"] = base.get("retrieval_usd_gb") or 0.0
+                r[col] = 0.0
 
     snap = {
         "retrieved_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
@@ -159,9 +194,10 @@ def refresh_prices(region: str) -> dict:
         "source": RETAIL_API,
         "product": "General Block Blob v2",
         "note": (
-            "Data Stored is the first volume band (0-50 TB). Operation meters are "
-            "not published for every redundancy; missing ones fall back to the LRS "
-            "rate for the same tier."
+            "Data Stored is the first volume band (0-50 TB). Only the Hot tier is "
+            "volume-banded; Cool, Cold and Archive are flat. Operation meters are not "
+            "published for every redundancy; missing ones are substituted from the "
+            "closest published redundancy and flagged in the Substituted column."
         ),
         "storage": sorted(table, key=lambda r: (TIERS.index(r["tier"]), r["redundancy"])),
         "bandwidth": [{"destination": d, "usd_per_gb": p} for d, p in BANDWIDTH],
@@ -264,18 +300,20 @@ def sheet_readme(wb: Workbook, snap: dict) -> None:
 def sheet_prices(wb: Workbook, snap: dict) -> tuple[int, int]:
     """Returns (last storage row, first bandwidth data row)."""
     ws = wb.create_sheet("Prices")
-    title_row(ws, "Price snapshot from the Azure retail prices API", 7)
-    widths(ws, {"A": 34, "B": 12, "C": 14, "D": 20, "E": 20, "F": 20, "G": 22})
+    title_row(ws, "Price snapshot from the Azure retail prices API", 9)
+    widths(ws, {"A": 34, "B": 12, "C": 14, "D": 20, "E": 20, "F": 20, "G": 22,
+                "H": 22, "I": 30})
 
     c = ws.cell(row=2, column=1, value=(
         f"Retrieved {snap['retrieved_utc']} for region '{snap['region']}' in {snap['currency']}. "
         f"Product: {snap['product']}. {snap['note']}"))
     c.font = F_NOTE
-    ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=7)
+    ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=9)
 
     header_cells(ws, 4, [
         "Key", "Tier", "Redundancy", "Stored $/GB/month",
         "Write $/10k ops", "Read $/10k ops", "Retrieval $/GB",
+        "Volume banded?", "Substituted rates",
     ])
 
     r = 5
@@ -287,9 +325,26 @@ def sheet_prices(wb: Workbook, snap: dict) -> tuple[int, int]:
         ws.cell(row=r, column=5, value=row["write_usd_per_10k"]).number_format = MONEY4
         ws.cell(row=r, column=6, value=row["read_usd_per_10k"]).number_format = MONEY4
         ws.cell(row=r, column=7, value=row["retrieval_usd_gb"]).number_format = MONEY4
-        for col in range(1, 8):
+
+        bands = [b for b in row.get("bands", []) if b["from_gb"] > 0]
+        if bands:
+            desc = "; ".join(
+                f"over {b['from_gb']:,.0f} GB: ${b['usd_gb_month']:.6f}" for b in bands)
+            bc = ws.cell(row=r, column=8, value=desc)
+            bc.font = F_NOTE
+            bc.fill = PatternFill("solid", fgColor=C_WARN)
+        else:
+            ws.cell(row=r, column=8, value="flat").font = F_NOTE
+
+        sub = row.get("substituted") or []
+        if sub:
+            sc = ws.cell(row=r, column=9, value="; ".join(sub))
+            sc.font = F_NOTE
+            sc.fill = PatternFill("solid", fgColor=C_WARN)
+
+        for col in range(1, 10):
             ws.cell(row=r, column=col).border = BOX
-            if row["tier"] == "Archive":
+            if row["tier"] == "Archive" and col <= 7:
                 ws.cell(row=r, column=col).fill = PatternFill("solid", fgColor=C_BAND)
         r += 1
     last = r - 1
@@ -304,9 +359,15 @@ def sheet_prices(wb: Workbook, snap: dict) -> tuple[int, int]:
         c = ws.cell(row=bw_first + i, column=2, value=b["usd_per_gb"])
         c.number_format = MONEY4
         c.border = BOX
-    ws.cell(row=bw_first + len(snap["bandwidth"]) + 1, column=1, value=(
+    foot = bw_first + len(snap["bandwidth"]) + 1
+    ws.cell(row=foot, column=1, value=(
         "Ingress into Azure Storage is always free. A subscription boundary costs nothing; "
         "only a region boundary does.")).font = F_NOTE
+    ws.cell(row=foot + 1, column=1, value=(
+        "Volume banding: the rest of this workbook prices everything at the first band. "
+        "Only the Hot tier is banded, and the discount above 50 TB is roughly 4 percent, so "
+        "for Hot scenarios above 50 TB the workbook is slightly conservative. Cool, Cold and "
+        "Archive are flat at any volume.")).font = F_NOTE
 
     ws.freeze_panes = "A5"
     return last, bw_first
@@ -355,7 +416,7 @@ def sheet_parameters(wb: Workbook, snap: dict, price_last: int, bw_first: int) -
 
     dv_tier = DataValidation(type="list", formula1=f'"{",".join(TIERS)}"', allow_blank=False)
     dv_red = DataValidation(type="list", formula1=f'"{",".join(REDUNDANCIES)}"', allow_blank=False)
-    dv_dest = DataValidation(type="list", formula1=f"={dest_rng}", allow_blank=False)
+    dv_dest = DataValidation(type="list", formula1=dest_rng, allow_blank=False)
     for dv, cell in ((dv_tier, "B8"), (dv_red, "B9"), (dv_dest, "B10")):
         ws.add_data_validation(dv)
         dv.add(ws[cell])
@@ -385,7 +446,8 @@ def sheet_parameters(wb: Workbook, snap: dict, price_last: int, bw_first: int) -
     calc(27, "Storage per month", "=$B$20*$B$14", "")
     calc(28, "Storage over full retention", "=$B$27*$B$7", "The number that actually matters.")
 
-    c = calc(30, "GRAND TOTAL", "=$B$26+$B$28", "Transfer plus retention.")
+    c = calc(30, "GRAND TOTAL (storage side)", "=$B$26+$B$28",
+             "Transfer plus retention. Does NOT include restore/export compute.")
     c.font = Font(bold=True, size=12)
     c.fill = PatternFill("solid", fgColor=C_WARN)
     ws.cell(row=30, column=1).font = Font(bold=True, size=12)
@@ -403,6 +465,16 @@ def sheet_parameters(wb: Workbook, snap: dict, price_last: int, bw_first: int) -
         "See Get-LtrExportCostEstimate.ps1 for that half of the model."))
     c.font = F_NOTE
     ws.merge_cells(start_row=35, start_column=1, end_row=35, end_column=3)
+
+    label(ws, 37, "Banding check")
+    c = ws.cell(row=37, column=2, value=(
+        '=IF(AND($B$8="Hot",$B$20>51200),'
+        '"Hot is volume-banded above 50 TB and this scenario exceeds it. '
+        'The figures above use the first-band rate, so they are about 4% conservative.",'
+        '"OK - no volume banding applies at this tier and volume.")'))
+    c.font = F_NOTE
+    c.alignment = Alignment(wrap_text=True, vertical="top")
+    ws.merge_cells(start_row=37, start_column=2, end_row=38, end_column=3)
 
 
 def sheet_matrix(wb: Workbook) -> None:
@@ -458,6 +530,13 @@ def sheet_matrix(wb: Workbook) -> None:
         "into a storage account in a different subscription."))
     c.font = F_NOTE
     ws.merge_cells(start_row=nxt + 1, start_column=1, end_row=nxt + 1, end_column=9)
+    c = ws.cell(row=nxt + 2, column=1, value=(
+        "Every cell uses the first-band storage rate. Only the Hot tier is volume-banded, so "
+        "if the tier on 'Parameters' is Hot, cells whose artifact volume exceeds 50 TB "
+        "(count x size / compression > 51,200 GB) overstate the cost by roughly 4 percent. "
+        "Cool, Cold and Archive are flat at any volume."))
+    c.font = F_NOTE
+    ws.merge_cells(start_row=nxt + 2, start_column=1, end_row=nxt + 3, end_column=9)
     ws.freeze_panes = "B3"
 
 

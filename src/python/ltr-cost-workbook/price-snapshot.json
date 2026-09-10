@@ -1,199 +1,398 @@
 {
-  "retrieved_utc": "2026-09-10T06:32:45.497151+00:00",
+  "retrieved_utc": "2026-09-10T06:38:00.882590+00:00",
   "region": "eastus",
   "currency": "USD",
   "source": "https://prices.azure.com/api/retail/prices",
   "product": "General Block Blob v2",
-  "note": "Data Stored is the first volume band (0-50 TB). Operation meters are not published for every redundancy; missing ones fall back to the LRS rate for the same tier.",
+  "note": "Data Stored is the first volume band (0-50 TB). Only the Hot tier is volume-banded; Cool, Cold and Archive are flat. Operation meters are not published for every redundancy; missing ones are substituted from the closest published redundancy and flagged in the Substituted column.",
   "storage": [
     {
       "key": "Hot GRS",
       "tier": "Hot",
       "redundancy": "GRS",
       "stored_usd_gb_month": 0.0458,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.0458
+        },
+        {
+          "from_gb": 51200.0,
+          "usd_gb_month": 0.043968
+        },
+        {
+          "from_gb": 512000.0,
+          "usd_gb_month": 0.042136
+        }
+      ],
       "write_usd_per_10k": 0.1,
       "read_usd_per_10k": 0.004,
-      "retrieval_usd_gb": 0.0
+      "retrieval_usd_gb": 0.0,
+      "substituted": []
     },
     {
       "key": "Hot GZRS",
       "tier": "Hot",
       "redundancy": "GZRS",
       "stored_usd_gb_month": 0.0468,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.0468
+        },
+        {
+          "from_gb": 51200.0,
+          "usd_gb_month": 0.044928
+        },
+        {
+          "from_gb": 512000.0,
+          "usd_gb_month": 0.043056
+        }
+      ],
       "write_usd_per_10k": 0.1175,
       "read_usd_per_10k": 0.004,
-      "retrieval_usd_gb": 0.0
+      "retrieval_usd_gb": 0.0,
+      "substituted": []
     },
     {
       "key": "Hot LRS",
       "tier": "Hot",
       "redundancy": "LRS",
       "stored_usd_gb_month": 0.0208,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.0208
+        },
+        {
+          "from_gb": 51200.0,
+          "usd_gb_month": 0.019968
+        },
+        {
+          "from_gb": 512000.0,
+          "usd_gb_month": 0.019136
+        }
+      ],
       "write_usd_per_10k": 0.05,
       "read_usd_per_10k": 0.004,
-      "retrieval_usd_gb": 0.0
+      "retrieval_usd_gb": 0.0,
+      "substituted": []
     },
     {
       "key": "Hot RA-GRS",
       "tier": "Hot",
       "redundancy": "RA-GRS",
       "stored_usd_gb_month": 0.0589,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.0589
+        },
+        {
+          "from_gb": 51200.0,
+          "usd_gb_month": 0.056544
+        },
+        {
+          "from_gb": 512000.0,
+          "usd_gb_month": 0.054188
+        }
+      ],
       "write_usd_per_10k": 0.1,
       "read_usd_per_10k": 0.004,
-      "retrieval_usd_gb": 0.0
+      "retrieval_usd_gb": 0.0,
+      "substituted": []
     },
     {
       "key": "Hot RA-GZRS",
       "tier": "Hot",
       "redundancy": "RA-GZRS",
       "stored_usd_gb_month": 0.0585,
-      "write_usd_per_10k": 0.05,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.0585
+        },
+        {
+          "from_gb": 51200.0,
+          "usd_gb_month": 0.05616
+        },
+        {
+          "from_gb": 512000.0,
+          "usd_gb_month": 0.05382
+        }
+      ],
+      "write_usd_per_10k": 0.1175,
       "read_usd_per_10k": 0.004,
-      "retrieval_usd_gb": 0.0
+      "retrieval_usd_gb": 0.0,
+      "substituted": [
+        "write_usd_per_10k from GZRS"
+      ]
     },
     {
       "key": "Hot ZRS",
       "tier": "Hot",
       "redundancy": "ZRS",
       "stored_usd_gb_month": 0.026,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.026
+        },
+        {
+          "from_gb": 51200.0,
+          "usd_gb_month": 0.02496
+        },
+        {
+          "from_gb": 512000.0,
+          "usd_gb_month": 0.02392
+        }
+      ],
       "write_usd_per_10k": 0.0625,
       "read_usd_per_10k": 0.004,
-      "retrieval_usd_gb": 0.0
+      "retrieval_usd_gb": 0.0,
+      "substituted": []
     },
     {
       "key": "Cool GRS",
       "tier": "Cool",
       "redundancy": "GRS",
       "stored_usd_gb_month": 0.0334,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.0334
+        }
+      ],
       "write_usd_per_10k": 0.2,
       "read_usd_per_10k": 0.01,
-      "retrieval_usd_gb": 0.01
+      "retrieval_usd_gb": 0.01,
+      "substituted": []
     },
     {
       "key": "Cool GZRS",
       "tier": "Cool",
       "redundancy": "GZRS",
       "stored_usd_gb_month": 0.0342,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.0342
+        }
+      ],
       "write_usd_per_10k": 0.2,
       "read_usd_per_10k": 0.01,
-      "retrieval_usd_gb": 0.01
+      "retrieval_usd_gb": 0.01,
+      "substituted": []
     },
     {
       "key": "Cool LRS",
       "tier": "Cool",
       "redundancy": "LRS",
       "stored_usd_gb_month": 0.0152,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.0152
+        }
+      ],
       "write_usd_per_10k": 0.1,
       "read_usd_per_10k": 0.01,
-      "retrieval_usd_gb": 0.01
+      "retrieval_usd_gb": 0.01,
+      "substituted": []
     },
     {
       "key": "Cool RA-GRS",
       "tier": "Cool",
       "redundancy": "RA-GRS",
       "stored_usd_gb_month": 0.0425,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.0425
+        }
+      ],
       "write_usd_per_10k": 0.2,
       "read_usd_per_10k": 0.01,
-      "retrieval_usd_gb": 0.01
+      "retrieval_usd_gb": 0.01,
+      "substituted": []
     },
     {
       "key": "Cool RA-GZRS",
       "tier": "Cool",
       "redundancy": "RA-GZRS",
       "stored_usd_gb_month": 0.04275,
-      "write_usd_per_10k": 0.1,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.04275
+        }
+      ],
+      "write_usd_per_10k": 0.2,
       "read_usd_per_10k": 0.01,
-      "retrieval_usd_gb": 0.01
+      "retrieval_usd_gb": 0.01,
+      "substituted": [
+        "write_usd_per_10k from GZRS"
+      ]
     },
     {
       "key": "Cool ZRS",
       "tier": "Cool",
       "redundancy": "ZRS",
       "stored_usd_gb_month": 0.019,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.019
+        }
+      ],
       "write_usd_per_10k": 0.1,
       "read_usd_per_10k": 0.01,
-      "retrieval_usd_gb": 0.01
+      "retrieval_usd_gb": 0.01,
+      "substituted": []
     },
     {
       "key": "Cold GRS",
       "tier": "Cold",
       "redundancy": "GRS",
       "stored_usd_gb_month": 0.0081,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.0081
+        }
+      ],
       "write_usd_per_10k": 0.36,
       "read_usd_per_10k": 0.1,
-      "retrieval_usd_gb": 0.03
+      "retrieval_usd_gb": 0.03,
+      "substituted": []
     },
     {
       "key": "Cold GZRS",
       "tier": "Cold",
       "redundancy": "GZRS",
       "stored_usd_gb_month": 0.0085,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.0085
+        }
+      ],
       "write_usd_per_10k": 0.38,
       "read_usd_per_10k": 0.1,
-      "retrieval_usd_gb": 0.03
+      "retrieval_usd_gb": 0.03,
+      "substituted": []
     },
     {
       "key": "Cold LRS",
       "tier": "Cold",
       "redundancy": "LRS",
       "stored_usd_gb_month": 0.0036,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.0036
+        }
+      ],
       "write_usd_per_10k": 0.18,
       "read_usd_per_10k": 0.1,
-      "retrieval_usd_gb": 0.03
+      "retrieval_usd_gb": 0.03,
+      "substituted": []
     },
     {
       "key": "Cold RA-GRS",
       "tier": "Cold",
       "redundancy": "RA-GRS",
       "stored_usd_gb_month": 0.0101,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.0101
+        }
+      ],
       "write_usd_per_10k": 0.36,
       "read_usd_per_10k": 0.1,
-      "retrieval_usd_gb": 0.03
+      "retrieval_usd_gb": 0.03,
+      "substituted": []
     },
     {
       "key": "Cold RA-GZRS",
       "tier": "Cold",
       "redundancy": "RA-GZRS",
       "stored_usd_gb_month": 0.0106,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.0106
+        }
+      ],
       "write_usd_per_10k": 0.38,
       "read_usd_per_10k": 0.1,
-      "retrieval_usd_gb": 0.03
+      "retrieval_usd_gb": 0.03,
+      "substituted": []
     },
     {
       "key": "Cold ZRS",
       "tier": "Cold",
       "redundancy": "ZRS",
       "stored_usd_gb_month": 0.004,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.004
+        }
+      ],
       "write_usd_per_10k": 0.2,
       "read_usd_per_10k": 0.1,
-      "retrieval_usd_gb": 0.03
+      "retrieval_usd_gb": 0.03,
+      "substituted": []
     },
     {
       "key": "Archive GRS",
       "tier": "Archive",
       "redundancy": "GRS",
       "stored_usd_gb_month": 0.00299,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.00299
+        }
+      ],
       "write_usd_per_10k": 0.21,
       "read_usd_per_10k": 5.0,
-      "retrieval_usd_gb": 0.02
+      "retrieval_usd_gb": 0.02,
+      "substituted": []
     },
     {
       "key": "Archive LRS",
       "tier": "Archive",
       "redundancy": "LRS",
       "stored_usd_gb_month": 0.00099,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.00099
+        }
+      ],
       "write_usd_per_10k": 0.1,
       "read_usd_per_10k": 5.0,
-      "retrieval_usd_gb": 0.02
+      "retrieval_usd_gb": 0.02,
+      "substituted": []
     },
     {
       "key": "Archive RA-GRS",
       "tier": "Archive",
       "redundancy": "RA-GRS",
       "stored_usd_gb_month": 0.00299,
+      "bands": [
+        {
+          "from_gb": 0.0,
+          "usd_gb_month": 0.00299
+        }
+      ],
       "write_usd_per_10k": 0.21,
       "read_usd_per_10k": 5.0,
-      "retrieval_usd_gb": 0.02
+      "retrieval_usd_gb": 0.02,
+      "substituted": []
     }
   ],
   "bandwidth": [
