@@ -176,8 +176,11 @@ comes back encrypted even if encryption has since been turned off on the source.
 
 Both PITR and LTR, on separate tabs. PITR backups appear on the "Available backups" tab.
 LTR backups appear on the "Long-term retention" tab. After the database is deleted, PITR
-backups disappear. LTR backups remain visible and restorable as long as the subscription
-exists. After the subscription is deleted, both are gone permanently.
+backups disappear. LTR backups remain visible as long as the subscription exists, and are
+documented as restorable to another server or managed instance in the same subscription.
+This lab verified the persistence and the visibility; it did not restore an orphaned
+backup, so treat the restore half as documented rather than demonstrated here.
+After the subscription is deleted, both are gone permanently.
 
 ### BACPAC
 
