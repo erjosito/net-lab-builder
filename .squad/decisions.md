@@ -596,3 +596,115 @@ R-squared 0.468043 was computed and DISCARDED as an artifact.
 carrying no data. New standing gate: any future restore timing run must verify restored
 row counts against the source before a slope is fitted. A valid measurement needs an
 LTR backup taken AFTER seeding; the existing three can never provide one.
+
+---
+
+# Decision: Cross-tenant drain is possible, and the CSP subscription is the root cause
+
+Date: 2026-09-11
+
+**By:** Jose (via Copilot), recorded by Scribe. **Status:** accepted. Reframes the premise
+of `labs/sql-ltr-backup-migration/`.
+
+## Reframing (the headline)
+
+The drain exists because the SUBSCRIPTION cannot move, not because LTR backups are
+inherently unmovable. This is the single most important correction to the lab's framing.
+
+Customer context: an old CSP subscription in one Entra tenant, moving to a new subscription
+in a DIFFERENT tenant.
+
+**Root cause (DOCUMENTED, quoted from Microsoft Learn):**
+
+> For Azure Cloud Solution Providers (CSP) subscriptions, changing the Microsoft Entra
+> directory for the subscription isn't supported.
+
+That is why the databases had to be re-created. The subscription itself is immovable across
+directories, so every resource bound to that subscription has to be drained and rebuilt
+rather than transferred.
+
+## Mechanism (EMPIRICALLY VERIFIED in this lab)
+
+A managed identity cannot hold cross-tenant RBAC directly. It CAN, however, act as a
+federated credential for a multi-tenant app registration provisioned into the target tenant.
+This is GA, not preview.
+
+Identifier asymmetry, worth calling out because it is an easy misconfiguration:
+
+- The federated identity credential is configured with the UAMI **principalId**.
+- The runtime token request uses the UAMI **clientId**.
+
+These are different values and they are not interchangeable.
+
+## Measurement (EMPIRICALLY VERIFIED in this lab)
+
+- 1.219 GiB artifact moved cross-tenant in 12.1 seconds.
+- 0.1655 min/GiB, approximately 103 MiB/s.
+- MD5 identical on both sides. Verified independently from the TARGET tenant rather than
+  trusting the source VM's self-report.
+- Within roughly 4 percent of the same-tenant `BACKUP TO URL` rate. Conclusion: the tenant
+  boundary costs authorization setup, not throughput.
+- One data point only, so R-squared is deliberately null. Do not present this as a fitted
+  throughput model.
+
+## Superseded claim (recorded deliberately)
+
+A previous assertion in this session held that because managed identity is single-tenant,
+the drain path "stops at the tenant boundary." **That claim was wrong** and was corrected in
+the repo and to the user. It is recorded here rather than quietly deleted because a recalled
+limitation is a hypothesis, not a fact, and the distinction is the reusable lesson.
+
+## Dead ends (do not re-walk)
+
+| Path | Why it fails |
+|---|---|
+| CSP subscription directory transfer | Not supported at all for CSP subscriptions. |
+| Azure Lighthouse | Grants cross-tenant access; moves nothing. Delegation is not migration. |
+| Backup Cross-Tenant Restore | Covers "SQL Server in Azure VM" but NOT Azure SQL PaaS. It operates on Recovery Services vault recovery points, and PaaS LTR backups never land in a vault. |
+
+---
+
+# Decision: LTR backup binding scope is the subscription, not the server
+
+Date: 2026-09-11
+
+**By:** Jose (via Copilot), recorded by Scribe. **Status:** accepted. Documentation verified;
+empirical teardown verification still in progress at time of writing.
+
+## Documented behaviour (quoted from Microsoft Learn, long-term-retention-overview)
+
+> If you delete a logical server or a SQL managed instance, all databases on that server or
+> managed instance are also deleted... However, if you had configured LTR for a database, LTR
+> backups aren't deleted and can be used to restore databases to a different server or
+> managed instance in the same subscription.
+
+The binding scope is therefore the SUBSCRIPTION. The server is not the anchor; deleting it
+does not take the LTR backups with it.
+
+## Also verified
+
+LTR backups are enumerable by LOCATION ALONE, with no `--server` argument. That is the
+mechanism by which you find backups orphaned by a deleted server.
+
+## Practical consequences
+
+1. Deleting a resource group does NOT clean up LTR backups. They keep billing for the full
+   retention period and must be deleted explicitly.
+2. Conversely, this is exactly why the drain is mandatory when the SUBSCRIPTION itself is
+   going away. Within a subscription the backups survive a server deletion; across
+   subscriptions they do not survive at all.
+
+## Evidence status (do not overstate)
+
+- The quoted binding-scope behaviour and the location-only enumeration are **DOCUMENTED**.
+- The empirical teardown verification (deleting the server and confirming the LTR backups
+  persist and remain restorable) was **STILL IN PROGRESS** when this entry was written.
+  Treat the billing and persistence consequence as documented, not lab-proven, until an
+  empirical result is appended to this entry.
+
+## Source-quality note
+
+An AI web-search summary confidently asserted the OPPOSITE, that deleting the server
+destroys the LTR backups. The primary Microsoft Learn source contradicted it. Recorded as a
+standing reminder: a search summary is not a primary source, and confident phrasing is not
+evidence.
