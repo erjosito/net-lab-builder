@@ -629,3 +629,47 @@ after Jose asked why the VM is needed and why the BACPAC artifact must be downlo
 - SQL Database artifacts cross the network twice over the archive lifetime: upload after
   export and download before a later import. Use `azcopy` or another parallel-capable tool
   for production drains.
+
+### 2026-09-11: Folded LTR restore results into the sql-ltr-backup-migration README
+
+Third documentation round on this lab. The blocker (no LTR backup had ever existed) cleared
+overnight, so the README had stale "unproven / unmeasured / blocked on LTR backup
+availability" language in seven places. Grepping for those words before editing was faster
+and safer than re-reading 1272 lines.
+
+What changed:
+
+- `The answer, stated up front`: split the status by half. MI is proven end to end (LTR
+  backup, data-intact restore, decrypt, `.bak`, VERIFYONLY, blob confirmed in-VNet). SQL DB
+  has restore mechanism proven but rate still null. One sentence could no longer cover both.
+- `Concepts and vocabulary`: added two properties to the LTR section. An LTR backup is a
+  copy of a PITR full backup, and it preserves encryption state as of backup time.
+- `Caveats`: two new caveats placed FIRST for prominence. The content-timestamp finding
+  (policy time is not backup time) and the TDE-on-restore finding. Also added MI cold start
+  (~20.5 min) and the `LongTermRetentionPolicyNotSupported` trap on a stopped instance.
+- `Recommended process`: new Step 0b, verify `backupTime` before deleting anything. Added row
+  count checks to both drain step lists.
+- `Calibration results`: replaced the "LTR restore timing: Not measured" stub with two real
+  sections, one per half.
+
+Judgement calls worth remembering:
+
+- Finding 3 (content timestamp) belongs in caveats plus a process verification step, NOT in
+  `Questions to ask before you start`. Jose pruned that list to decision-relevant scoping
+  facts; a verification step is not a scoping question. Resisted the temptation to add a
+  thirteenth row.
+- Publishing discipline matters more than completeness here. MI LTR restore got one
+  observation at one size, so I quoted only the 41.4 s upper bound and said explicitly that
+  no slope exists. The discarded SQL DB fit is described as discarded with a reason and the
+  numbers are deliberately NOT reproduced.
+- The empty SQL DB restores needed framing as a seeding-order lab artifact in the same breath
+  as reporting them, or a reader concludes LTR backups are unreliable. Said so twice.
+- Kept the 15.3 s drain decrypt away from the 0.23 min/GiB slope. A single small-database
+  observation proves a sequence works; it does not validate a rate.
+- Added a four-way distinction table (`RESTORE VERIFYONLY` / artifact restore / PITR restore /
+  LTR restore) now that all four exist as evidence. That vocabulary was already implicit in
+  the document; making it a table keeps future rounds honest.
+
+Process note: the previous round staged without committing. Committed explicitly this time
+and verified with `git show --stat`. Also ran a dash sweep over the staged diff before
+committing; Jose is strict about em-dashes and en-dashes.

@@ -32,14 +32,35 @@ extract a portable artifact from the restored copy, write that artifact to stora
 delete the restored copy. This drain must run **while the source subscription is still
 alive**, because deleting the subscription purges the LTR backups.
 
-The second-round lab results close the most important archive-quality gap: the portable
-artifacts are now proven consumable. The Managed Instance `.bak` restored into a new
-database with matching row count, aggregate checksum, and file allocation. The SQL
+The portable artifacts are proven consumable. The Managed Instance `.bak` restored into a
+new database with matching row count, aggregate checksum, and file allocation. The SQL
 Database `.bacpac` imported into a new database with matching row count, aggregate
 checksum, and ROWS allocation; its smaller imported LOG allocation is normal after a
-logical import and is not data loss. The remaining unproven links are earlier in the
-chain: no LTR backup has existed yet in this lab, so LTR backup availability and LTR
-restore remain unverified and unmeasured.
+logical import and is not data loss.
+
+**On the Managed Instance half the whole chain is now proven end to end.** On 2026-09-11 a
+real LTR backup was restored into a new MI database and verified data intact (2500 rows and
+aggregate checksum `195376932` on both sides, identical file allocations). The full drain
+then ran from that LTR-restored copy: decrypt, `DROP DATABASE ENCRYPTION KEY`,
+`BACKUP DATABASE ... WITH COPY_ONLY, COMPRESSION` to URL, and `RESTORE VERIFYONLY`, with the
+resulting blob confirmed at 11,862,016 bytes by a Blob REST listing issued from inside the
+VNet. LTR backup, restored copy, portable artifact in locked-down storage, and back again:
+every link is now evidence rather than expectation.
+
+On the SQL Database half the **restore mechanism** is proven (`az sql db ltr-backup restore`
+succeeded three times out of three) but the **restore rate is not**. Those three backups
+carried no payload, for lab-specific reasons explained in the Calibration results section,
+so `RestoreMinPerGb` for SQL Database stays null.
+
+Two findings from that round change how you should plan a real drain, and both are covered
+in the Caveats:
+
+- **An LTR backup's content can predate the policy that created it.** Enabling LTR does not
+  capture the current state of the database; the service retroactively adopts an existing
+  PITR full backup. Verify `backupTime` before you delete anything.
+- **An LTR-restored database arrives TDE-encrypted**, reflecting the encryption state at
+  backup time rather than the current state of the source. The decrypt step therefore
+  repeats for every retained backup and never amortises to a one-off.
 
 ```mermaid
 flowchart LR
@@ -106,6 +127,17 @@ it.** An LTR backup survives deletion of the database, deletion of the logical s
 deletion of the managed instance. It is purged only when the **subscription** is deleted.
 This is why deleting the old database or instance is safe, but deleting the old subscription
 is not.
+
+**Second critical property: an LTR backup is a copy of a PITR full backup, not a fresh
+capture.** Enabling an LTR policy does not snapshot the database at the moment you enable
+it. The service adopts an existing full backup from the PITR chain, so the content of the
+first LTR backup can predate the policy by up to the full-backup interval. The `backupTime`
+field on the backup, not the time you set the policy, is what tells you what the backup
+actually contains. This is measured behaviour in this lab; see the Caveats.
+
+**Third critical property: an LTR backup preserves the encryption state as of backup time.**
+If the database was TDE-encrypted when the adopted full backup was taken, the restored copy
+comes back encrypted even if encryption has since been turned off on the source.
 
 ### What the portal's Backup blade shows
 
@@ -234,6 +266,78 @@ Source: `diagrams/04-decision-tree.mmd`
 
 Each caveat states what breaks and what to do instead.
 
+### An LTR backup's content timestamp is not the time you set the policy
+
+This is the most consequential planning finding in the lab, and it is easy to get wrong
+because the intuitive reading is the opposite of the behaviour.
+
+**Enabling an LTR policy does not capture the current state of the database. It
+retroactively adopts an existing PITR full backup, whose content can predate the policy by
+up to the full-backup interval.**
+
+Measured three ways in the 2026-09-10 and 2026-09-11 runs:
+
+| Observation | Policy set (UTC) | Resulting LTR `backupTime` (UTC) | Gap |
+|---|---|---|---|
+| SQL Database, five databases | 09:03:35 | 08:06:45 to 08:07:35 | backups are roughly an hour **earlier** than the policy |
+| Managed Instance, `mitest` | 11:02:07 | 10:24:10 | backup is about 38 minutes **earlier** than the policy |
+
+The mechanism was confirmed directly on `ltrlab552754-calib-1gb` by comparing the PITR
+chain to the LTR backup: `earliestRestoreDate` was 08:07:44Z and the LTR `backupTime` was
+08:07:35Z. The LTR backup is a copy of the first available full PITR backup, not a new one.
+
+**Why this matters for the scenario in this document.** The source subscription is going to
+be deleted. If an operator enables LTR expecting to capture today's data, walks away, and
+then deletes the subscription, they may have archived a backup that is missing the most
+recent data. Once the subscription is gone there is no way to find out: the source is
+destroyed and the LTR backup is immutable.
+
+**The rule:** read `backupTime` on every LTR backup you intend to rely on and confirm it
+postdates the data you need, **before** deleting the source database, the server, the
+instance, or the subscription. This is a verification step in the Recommended process, not
+an optional sanity check. A compliance archive whose content predates the compliance event
+it was meant to capture is worse than no archive, because it looks complete.
+
+Two related traps follow from the same mechanism:
+
+- **Time between enabling the policy and the backup appearing is not the same thing as the
+  age of the backup's content.** A backup that appears days later can still contain data
+  from the moment the policy was applied, or earlier.
+- **A restored LTR backup can be perfectly healthy and completely empty.** In this lab all
+  three SQL Database LTR restores reached `Online` with no errors and contained no tables at
+  all, because the adopted full backup predated the payload seeding. See the standing
+  verification gate in the Calibration results section.
+
+### An LTR-restored database arrives TDE-encrypted
+
+The encryption state of an LTR backup is the state as of backup time, not the current state
+of the source database.
+
+Proven on 2026-09-11: an LTR backup of `mitest` was restored into a new Managed Instance
+database and the copy came back with service-managed TDE active, `encryption_state = 3`,
+`encryptor_type = CERTIFICATE`, even though the source database had since had encryption
+turned off and its DEK dropped. Turning encryption off on the source does not reach back
+into backups already taken.
+
+Two consequences for a real drain:
+
+- **Every LTR-sourced restore arrives encrypted and must be decrypted before
+  `BACKUP DATABASE ... TO URL` will succeed.** Skip it and the backup fails with Msg 41922.
+  The DEK must also be dropped, or it fails with Msg 41938. Both steps are covered in the
+  TDE caveat below.
+- **The decrypt cost multiplies across every retained backup and never amortises to a
+  one-off.** This document previously reasoned that the decrypt step is per-database; it is
+  now empirically confirmed. At the measured Managed Instance decrypt rate of roughly
+  0.23 min/GiB of ROWS file, a drain of N retained backups pays that cost N times, not once.
+  For a wide compliance scope this is a real line item in the time budget, not a rounding
+  error. Multiply the rate by the sum of the sizes of every backup you intend to drain, not
+  by the size of the database.
+
+The single small LTR-sourced drain measured here (64 MiB ROWS, decrypt 15.3 s, DEK drop
+0.06 s, `BACKUP TO URL` 1.2 s) proves the sequence works. It is one observation at one very
+small size and does not confirm or refine the 0.23 min/GiB slope; use the slope from the
+two-point TDE calibration in the Calibration results section for planning.
+
 ### COPY_ONLY backup is Managed Instance only
 
 Azure SQL Database has no `BACKUP DATABASE` statement at all. On SQL Database, BACPAC
@@ -269,8 +373,10 @@ encryption key is dropped. Seeing "unencrypted" in the DMV is therefore not suff
 Note also: disabling TDE on a large restored database is an IO-heavy operation and can take
 hours. It needs to be in the time budget for every restored copy, not once per drain. If
 you are preserving many LTR backups, the `SET ENCRYPTION OFF` wait and the DEK drop step
-multiply by the number of restored databases. Also note the striping limits: 195 GB per
-stripe, 64 stripes maximum.
+multiply by the number of restored databases. This is no longer a reasoned expectation: the
+2026-09-11 run confirmed that an LTR-restored database arrives encrypted regardless of the
+current state of the source, so the multiplication is certain rather than likely. Also note
+the striping limits: 195 GB per stripe, 64 stripes maximum.
 
 ### Managed Instance does not support RESTORE WITH STATS
 
@@ -450,6 +556,19 @@ backup is never backfilled. The instance must stay running for the entire wait. 
 the MI half of the lab costs roughly $102 for a 7-day wait rather than the small number an
 earlier draft assumed.
 
+Two operational facts follow, both measured on 2026-09-11 after tenant automation stopped
+this lab's instance overnight:
+
+- **Cold start is slow.** Going from `Stopped` to `Ready` took roughly 20.5 minutes
+  (1233 seconds, polled at 60 to 90 second intervals). If an instance has been stopped,
+  budget that before any drain work can begin.
+- **A stopped instance reports a misleading LTR policy error.** While the instance was
+  stopped, `az sql midb ltr-policy show` failed with `LongTermRetentionPolicyNotSupported`
+  and the text "Database ... does not exist on server". Nothing had been lost. The same
+  command returned `P12W` once the instance reached `Ready`. Do not read this error on a
+  stopped instance as evidence that the LTR configuration was destroyed; start the instance
+  and re-query before concluding anything.
+
 ### LTR policies cannot be enabled on serverless databases with auto-pause active
 
 Attempting to set an LTR policy on a serverless database that has auto-pause enabled fails
@@ -475,6 +594,13 @@ run, no LTR backup appeared within 25 minutes of first-time policy enablement (c
 later copy; the documentation says it may take up to 7 days. The optimistic reading that
 a backup appears within minutes is not supported by this observation. Enable policies early
 and treat the full 7-day window as the realistic wait.
+
+The backups did eventually appear, and when they did they confirmed the copy mechanism
+rather than a fresh capture: their `backupTime` values sat almost an hour **before** the
+policy was set. Two separate properties are in play and should not be confused. *When* the
+backup becomes visible is unpredictable and can take days. *What* the backup contains is
+fixed at the `backupTime` of the adopted PITR full backup. See the content-timestamp caveat
+above.
 
 ### CLI asymmetries
 
@@ -509,6 +635,30 @@ If the source subscription survives (resources deleted but subscription kept emp
 nothing: the LTR backups persist and you pay only LTR storage. The drain pipeline is only
 necessary if the subscription itself is being deleted.
 
+### Step 0b: verify what each LTR backup actually contains, before deleting anything
+
+Enumerate the LTR backups and read the `backupTime` field on each one. Confirm it postdates
+the data you are required to retain.
+
+```powershell
+az sql db ltr-backup list -l <region> -s <server> -g <rg> -o table
+az sql midb ltr-backup list -l <region> --mi <instance> -g <rg> -o table
+```
+
+Do this **before** you delete the source database, the server, the instance, or the
+subscription. An LTR backup's content can predate the policy that created it by up to the
+full-backup interval, because the service adopts an existing PITR full backup rather than
+taking a new one. Once the source is gone the backup is immutable and there is no way to
+establish what it was missing.
+
+If a `backupTime` is earlier than the data you need, the fix is to wait for a later backup,
+not to re-enable the policy. Re-enabling does not force a fresh capture.
+
+Where possible, add a content check as well as a timestamp check: restore one backup and
+count rows against a known expectation. This lab restored three LTR backups that all
+reported `Online` with no errors and all turned out to be empty, and only a row count
+detected it.
+
 ### Step 1: drain Azure SQL Managed Instance first
 
 If the source MI is still running, restore LTR backups directly into it. This makes the
@@ -521,15 +671,26 @@ For each LTR backup to preserve:
 1. Restore the LTR backup to a temporary database on the instance (same subscription).
    Do not add `WITH STATS`; Managed Instance rejects that restore option, and habitual
    SQL Server examples can lead you into a false failure.
-2. If the database is using service-managed TDE, disable TDE on the restored copy, wait for
+   If the instance is currently stopped, start it first and budget roughly 20 minutes of
+   cold start before the first restore can be issued.
+2. Count rows in the restored copy and compare against what you expect to be retaining.
+   A restore that reports `Online` is not evidence that the backup carried data.
+3. If the database is using service-managed TDE, disable TDE on the restored copy, wait for
    `encryption_state = 1`, then drop the database encryption key. Plan the time: this is
    IO-heavy on large databases, and the cost repeats for every restored copy. Do not skip
-   the DEK drop.
-3. Run `BACKUP DATABASE ... WITH COPY_ONLY TO URL`, writing directly to the destination
+   the DEK drop. Assume this step is always required on an LTR-sourced restore: the restored
+   copy arrives with the encryption state as of backup time, so it can come back encrypted
+   even if the source has since had encryption turned off.
+4. Run `BACKUP DATABASE ... WITH COPY_ONLY TO URL`, writing directly to the destination
    blob storage account. Stripe if the database exceeds 195 GB.
-4. Delete the temporary database immediately.
+5. Delete the temporary database immediately.
 
 See `src/powershell/sql-ltr-export/Export-SqlMiLtrBackups.ps1`.
+
+This whole sequence is proven end to end on a real LTR backup as of 2026-09-11: restore,
+row count and checksum verification, decrypt, DEK drop, `BACKUP TO URL` with `COPY_ONLY` and
+`COMPRESSION`, `RESTORE VERIFYONLY`, and blob confirmation from inside the VNet against
+storage with shared-key access disabled and public network access disabled.
 
 ### Step 2: drain Azure SQL Database
 
@@ -541,18 +702,23 @@ local files only.
 For each LTR backup to preserve:
 1. Restore the LTR backup to a temporary database in the source subscription. The logical
    server is free; only the temporary database incurs compute cost.
-2. Export to BACPAC via `sqlpackage`. If public network access is disabled on the logical
+   `az sql db ltr-backup restore` is proven working: use the `id` returned by
+   `az sql db ltr-backup list` verbatim, because the `;` separators and the tier suffix are
+   significant and a hand-assembled identifier will not resolve.
+2. Count rows in the restored database and compare against the source before exporting.
+   This lab produced three restores that reported `Online` and contained no tables at all.
+3. Export to BACPAC via `sqlpackage`. If public network access is disabled on the logical
    server, `az sql db export` will not work: run `sqlpackage` from compute inside the
    virtual network connected over a private endpoint. `sqlpackage` writes the `.bacpac` to
    VM local disk first.
-3. Upload the `.bacpac` from VM local disk to the destination blob storage account,
+4. Upload the `.bacpac` from VM local disk to the destination blob storage account,
    preferably with a parallel-capable tool such as `azcopy`.
-4. Verify that the uploaded blob exists and has the expected size before treating the
+5. Verify that the uploaded blob exists and has the expected size before treating the
    artifact as durable.
-5. Delete the local staging copy only after the upload is verified. Do not delete it
+6. Delete the local staging copy only after the upload is verified. Do not delete it
    earlier: until the upload is known good, the local `.bacpac` is the only copy of that
    artifact.
-6. Delete the temporary database.
+7. Delete the temporary database.
 
 For a later restore, reverse the artifact movement: download the `.bacpac` from blob
 storage to VM local disk, then import it with `sqlpackage`. This means every SQL Database
@@ -575,8 +741,21 @@ alternative, and the reader should know it going in.
 This is not just an export claim. The lab has now consumed one artifact from each path
 back into a new database and matched row counts plus aggregate checksums against the
 source. `RESTORE VERIFYONLY` remains useful for `.bak` readability checks, but a passing
-`VERIFYONLY` is not the same as a restore. LTR restore itself remains the unproven part,
-because no LTR backup has existed yet in this lab.
+`VERIFYONLY` is not the same as a restore.
+
+Keep four operations distinct when reading the evidence in this document, because they prove
+different things and all four now exist as measured events:
+
+| Operation | What it proves | Status in this lab |
+|---|---|---|
+| `RESTORE VERIFYONLY` | The `.bak` backup set is readable and complete | Proven, Managed Instance |
+| Artifact restore or import (`.bak` or `.bacpac`) | The portable archive file reconstitutes a working database | Proven on both halves, row counts and checksums matched |
+| PITR restore | The point-in-time chain works | Measured on Managed Instance as a proxy only |
+| **LTR restore** | The compliance archive itself reconstitutes a database | **Proven on Managed Instance, data intact.** Mechanism proven on SQL Database; rate unmeasured |
+
+The Managed Instance half is now proven as a single continuous chain: LTR backup, restored
+copy verified data intact, decrypted, `.bak` written to locked-down storage, and the blob
+confirmed from inside the VNet.
 
 For storage tier selection (Archive vs Cool vs Cold), bandwidth costs, and the private
 endpoint variant, see `cost-model/README.md`. The Archive tier typically cuts the 7-year
@@ -764,6 +943,11 @@ of first-time policy enablement (checked at 2 minutes and again at 25 minutes). 
 not rule out the copy arriving later; 25 minutes is too short an observation window.
 Seeding early and waiting is the only reliable approach.
 
+When the backups did eventually arrive, their content timestamps sat almost an hour before
+the policy was set, confirming that the copy is of an existing PITR full backup rather than a
+fresh capture. Plan for two independent unknowns: **when** the backup becomes visible, and
+**what moment in time** it contains. Check `backupTime` before relying on either.
+
 This splits the lab into two phases separated by days, which is unusual for this repo's
 labs and needs to be planned for rather than discovered:
 
@@ -811,10 +995,10 @@ first production database and feeding the result back into `Get-LtrExportCostEst
 ## Deliberately out of scope
 
 - Subscription deletion behaviour (scenario 8).
-- Real-world LTR restore durations. No LTR backup exists yet, so the first two links in
-  the production chain remain unverified: LTR backup availability and LTR restore. Artifact
-  consumption after extraction is no longer out of scope; it is now proven on both the
-  Managed Instance `.bak` path and the SQL Database BACPAC path.
+- Real-world LTR restore durations at scale. LTR restore itself is no longer out of scope:
+  it is proven data-intact on the Managed Instance half and proven as a mechanism on the
+  SQL Database half. What remains unmeasured is how restore time scales with database size,
+  on either half. Artifact consumption after extraction is also proven on both paths.
 - Customer-managed-key TDE. The tooling defaults to `DisableOnStagedCopy` precisely to
   avoid introducing a Key Vault key that must outlive the old subscription; testing the CMK
   path is only worthwhile if you have decided to accept that key-custody burden.
@@ -889,8 +1073,9 @@ databases run at the minimum serverless vCore level during the LTR wait, not sto
 Phases 0 through 4 (pre-flight, seed, export, and calibrate) have been completed as of
 2026-09-10. Full command output is in `show-output/`. Key calibration results are in the
 Calibration results section below. A second-round artifact consumption proof has also
-completed for both extracted artifact types. Phase 3 LTR restore and drain, plus Phase 5
-teardown, remain pending and blocked on LTR backup availability.
+completed for both extracted artifact types. On 2026-09-11 the LTR backups finally appeared
+and Phase 3 ran: the Managed Instance drain is now proven end to end from a real LTR backup,
+and the SQL Database LTR restore mechanism is proven. Phase 5 teardown remains pending.
 
 Quotas below were read from the lab subscription in `swedencentral` at Phase 0.
 
@@ -1040,7 +1225,7 @@ Since the two drain scripts share most of their logic, running the Database half
 validates the shared export assumptions at about 8 percent of the cost of doing both.
 The 2026-09-10 calibration run completed this step: export throughput and BACPAC
 compression are now measured, and a BACPAC artifact import has been proven with data
-checks. LTR restore timing remains pending LTR backup availability.
+checks. LTR restore was subsequently run on 2026-09-11; see the LTR restore sections below.
 
 ## Calibration results
 
@@ -1105,8 +1290,8 @@ public-internet or cross-region export will be slower; do not generalise this ra
 compute term is roughly 2 percent of the multi-year total cost regardless, so the financial
 impact of the difference is small.
 
-Feed the calibrated export constants into the estimator (but not LTR restore, which is
-still unmeasured):
+Feed the calibrated export constants into the estimator (but not an LTR restore rate, which
+remains unmeasured on this half):
 ```powershell
 .\Get-LtrExportCostEstimate.ps1 ... -ExportFixedMin 0.36 -ExportMinPerGb 0.159 -BacpacCompression 1.04
 ```
@@ -1129,6 +1314,7 @@ and would overstate confidence.
 | Native `.bak` compression on realistic mixed data | 4.21x at 1 GiB, 4.12x at 5 GiB | MEASURED |
 | MI PITR restore | 55.5 s | PROXY only, not LTR |
 | MI artifact restore from `.bak` | 30.5 s at roughly 1 GiB | MEASURED |
+| MI LTR restore | upper bound 41.4 s at 64 MiB ROWS | MEASURED, one observation, no slope |
 
 The decryption slope must be applied on the same basis it was fitted on: ROWS file GiB
 from `sys.database_files`. If you divide by total file size including the log, the 5 GiB
@@ -1137,7 +1323,9 @@ test database's 8.85 GiB total footprint makes the apparent rate 7.1 s/GiB inste
 factor of two.
 
 The 55.5 s MI restore number is a same-instance PITR restore proxy. It is explicitly not
-an LTR restore measurement and must not be fed into the estimator as an LTR constant.
+an LTR restore measurement and must not be fed into the estimator as an LTR constant. A real
+MI LTR restore has since been measured; see the LTR restore section below. It too is a single
+observation and yields no slope, so both values stay out of the size model.
 
 ### Artifact consumption proof
 
@@ -1159,23 +1347,118 @@ Keep three facts separate:
 2. The artifacts restored or imported into working databases with row counts and checksums
    verified against the source. This is a restore or import, and it is now proven on both
    halves.
-3. LTR restore remains unverified and unmeasured. No LTR backup has ever existed in this
-   lab.
+3. LTR restore is a separate operation again, and it is now measured. See the two LTR
+   restore sections below.
 
 The BACPAC download to the VM took 347.8 seconds in this test, but do not use that as a
 throughput planning figure. It reflects the single-stream download method used during the
 lab, not an inherent limit of the private endpoint or storage account. A production drain
 should use a parallel-capable transfer tool such as `azcopy`.
 
-### LTR restore timing
+### LTR restore: Managed Instance
 
-Not measured. No LTR backup has been produced yet, so Phase 3 LTR restore has not been
-run. The MI PITR restore above is only a proxy and the artifact restore is a later-chain
-proof, not an LTR restore. The calibration file correctly reports null for all LTR restore
-parameters. The LTR restore timing constants remain at their original estimated defaults.
-Re-run
-`Measure-LtrCalibration.ps1` once LTR backups are available and restore durations have
-been captured.
+**Measured 2026-09-11. The chain is proven end to end, and no per-GiB rate is published.**
+
+A real LTR backup of `mitest` (`backupTime` 2026-09-10T10:24:10Z) was restored into a new
+database on the same instance and verified data intact.
+
+| Check | Source | LTR-restored copy |
+|---|---:|---:|
+| Row count | 2500 | 2500 |
+| Aggregate checksum | 195376932 | 195376932 |
+
+This is a real LTR restore with data verification, distinct from `RESTORE VERIFYONLY`,
+distinct from the PITR restore proxy above, and distinct from restoring the extracted `.bak`
+artifact.
+
+The full drain was then executed **from the LTR-restored copy** rather than from a live
+database, which is what closes the last unproven link:
+
+| Step | Result |
+|---|---|
+| Encryption state on arrival | 3 (encrypted, `encryptor_type = CERTIFICATE`) |
+| `ALTER DATABASE ... SET ENCRYPTION OFF` | 15.3 s, state reached 1 |
+| `DROP DATABASE ENCRYPTION KEY` | 0.06 s |
+| `BACKUP DATABASE ... WITH COPY_ONLY, COMPRESSION` to URL | 1.2 s |
+| `RESTORE VERIFYONLY` | passed |
+| Blob confirmed from inside the VNet | 11,862,016 bytes |
+
+The blob check was a Blob REST listing issued from `ltrlab-vm` using an IMDS token for the
+user-assigned identity, against a storage account with `allowSharedKeyAccess` false and
+`publicNetworkAccess` Disabled. Listing from outside the VNet fails by design, so this is a
+governance-model proof as well as an existence proof.
+
+**Timing.** The restore itself was observed once, at one size (64 MiB ROWS, 40 MiB LOG). The
+destination was absent from the listing at t0+17.2 s and `Online` at t0+41.4 s under a
+20 second poll interval, so true completion lies somewhere in that interval.
+
+**Quote 41.4 seconds as a worst-case upper bound at that size and nothing else.** One
+observation at one size cannot produce a slope. `LtrRestoreMinPerGb` and `LtrRestoreFixedMin`
+remain null in `deploy/mi-calibrated-parameters.json`, deliberately. Do not derive a per-GiB
+MI LTR restore rate from this number, and do not substitute the 55.5 s PITR proxy for it
+either.
+
+The drain timings above are likewise a single small-database observation. They prove the
+sequence works; they are not calibration inputs. Use the two-point TDE decrypt slope
+(0.23 min/GiB) and the `BACKUP TO URL` slope (0.1725 min/GiB) from the Managed Instance
+calibration table for planning, and apply the decrypt slope **once per retained backup**,
+because every LTR-sourced restore arrives encrypted.
+
+### LTR restore: Azure SQL Database
+
+**Measured 2026-09-11. The restore mechanism is proven. The per-GB restore rate is still
+not measured, and `RestoreMinPerGb` remains null.**
+
+`az sql db ltr-backup restore` was exercised end to end for the first time in this lab.
+Three LTR backups were restored into three new `GP_Gen5_4` databases, sequentially. All
+three succeeded and reached `Online` with no errors. Backup identifiers from
+`az sql db ltr-backup list` were used verbatim.
+
+**All three restored databases were empty.** Data-plane verification from `ltrlab-vm` found
+zero tables in each one; `dbo.LabPayload` did not exist in any of them, against source row
+counts of 131072, 655360 and 2621440 which all matched their seed values exactly. Azure
+Monitor independently reported all three restored databases at 20.81 MB of data space used,
+byte-identical, against sources of 1053, 5178 and 20643 MB.
+
+**This is a lab artifact of the seeding order, not a product defect.** The three LTR backups
+had adopted the first automatic PITR full backup, taken minutes after database creation and
+before the payload table was seeded. The restores are faithful; the backups simply had no
+data in them to preserve. Nothing here suggests LTR backups are unreliable. It is the same
+content-timestamp behaviour described in the Caveats, observed from the other end.
+
+Because all three restores moved the same near-zero payload, the observed durations carry
+**no size information**. A provisional linear fit was computed before the emptiness was
+discovered and has been **discarded**; it is an artifact of the defect, not a property of LTR
+restore, and it is not reproduced here so that nobody mistakes it for a result.
+
+The one timing constant this run legitimately produced:
+
+| Constant | Value | What it is |
+|---|---:|---|
+| `RestoreEmptyDbFloorMin` | about 3.86 min, observed range 3.55 to 4.53 min | Wall-clock cost of an LTR restore carrying essentially no data: provisioning and control-plane orchestration only |
+
+This is a **lower bound** for any real LTR restore. It carries no size information and must
+never be used as a fixed term in a size model. The spread across the three empty restores is
+itself about one minute. Durations are accurate to plus or minus 15 seconds, the poll
+interval. All three targets used provisioned `GP_Gen5_4`; restore into serverless was not
+measured.
+
+**Standing verification gate, earned the hard way.** A restore can succeed, report `Online`,
+produce clean sequential timings and yield a plausible-looking linear fit while carrying no
+data whatsoever. Timing alone cannot detect that. **Only a row count can.** Any future
+restore timing work, in this lab or in a production drain, must verify restored row counts
+against the source before anything is fitted.
+
+The three existing LTR backups can never yield a valid rate: their content predates seeding
+and LTR backups are immutable. A valid measurement needs a backup whose `backupTime` is later
+than seed completion. When such a backup appears is unknown; this lab has already recorded
+that LTR timing here does not follow the documentation. Poll with `Watch-LtrLabBackups.ps1`
+and trigger on `backupTime`, not on a predicted weekly boundary. Fit on the
+`allocated_data_storage` / ROWS GiB basis so the restore slope stays composable with
+`ExportMinPerGb`.
+
+Do not borrow values between the two halves in either direction. The engines, the artifact
+formats and the restore paths all differ.
 
 ## Roadmap and emerging alternatives
 
