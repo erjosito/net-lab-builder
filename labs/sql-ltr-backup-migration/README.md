@@ -1014,9 +1014,19 @@ Scenario 4 needs a Managed Instance, and it is a different proposition entirely:
 
 - The minimum is 4 General Purpose vCores, roughly **$102 for a seven-day wait**, plus two
   to four hours simply to provision.
-- **The instance cannot be stopped to reduce that.** A stopped instance takes no automated
-  backups, and a skipped LTR backup is never backfilled, so stopping it during the wait
-  destroys the very thing the wait exists to produce.
+- **The instance can be stopped, but it must not be during the LTR wait.** General Purpose
+  instances support stop and start, which suspends compute and licensing charges while
+  storage and backup charges continue. That makes stopping attractive for cost control and
+  actively dangerous here: a stopped instance takes no automated backups, and a skipped LTR
+  backup is never backfilled, so stopping it during the wait destroys the very thing the
+  wait exists to produce.
+- **Check for automation that stops instances on your behalf.** During this lab a tenant
+  automation stopped the instance overnight without warning. It was harmless only by luck,
+  because the LTR backup had already been produced some thirteen hours earlier. Had the
+  stop landed before the backup window, the wait would have silently produced nothing and
+  the failure would not have been visible until someone went looking for a backup that was
+  never taken. If your subscription has cost-control automation, exclude the instance for
+  the duration of the wait rather than assuming a stop will be noticed.
 - **The free offer does not rescue this, and is actively dangerous here.** A free instance
   is available (720 vCore hours per month for 12 months, one per subscription), but it
   defaults to a 9-to-5 weekday schedule specifically to conserve those credits. That
