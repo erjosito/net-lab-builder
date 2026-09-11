@@ -776,3 +776,32 @@ ew_str did not
   bareLF = 0 immediately after the first edit rather than at the end.
 - **Self-check result.** 2108 lines, 5/5 Mermaid fences byte-identical, 0 dashes, 0 GUIDs,
   0 literal backslash-n, 13/13 anchors resolve, no measured constant changed.
+### 2026-09-11: cross-tenant addendum, root-cause framing
+
+- **Ask the root-cause question before documenting the workaround.** Playbook G originally
+  opened with "here is how to cross the tenant boundary". The better opening is "check whether
+  you need to cross it at all": the drain exists because the *subscription* cannot move, not
+  because LTR backups are unmovable. Moved subscription-transfer viability from a dead-end
+  bullet at the bottom to the first thing the reader evaluates. A reader who can transfer the
+  subscription should never build the drain.
+- **A dead end and a root cause are the same fact at different positions.** Subscription
+  transfer appears twice on purpose: once at the top as the question that might make the work
+  unnecessary, once at the bottom as the shortcut that does not work mid-drain. Different
+  decisions, so duplication is correct here rather than repetition to be cut.
+- **Precision beats summary in a dead-end.** "Not a shortcut" was too vague. The accurate
+  form is two-branched: for CSP it is unavailable outright (quoted from Learn), for everyone
+  else it is available but permanently deletes role assignments and custom roles and forces
+  managed identities to be re-created, which is exactly the plumbing the drain depends on.
+  That makes it an alternative to the drain, not a step within it.
+- **Label reasoning as reasoning.** Whether a directory transfer preserves LTR backups was not
+  tested. The document states the inference (purge is triggered by subscription *deletion*, a
+  transfer does not delete the subscription) and then says plainly that it was not tested and
+  the reader should verify enumeration after a move. Honesty convention applies to inferences,
+  not just to measurements.
+- **Azure Lighthouse belongs to playbook 0, not playbook G.** It changes *who can reach* a
+  subscription; it moves nothing. So it improves the retained-subscription case when the
+  operators have moved tenant, and is useless when the subscription is being deleted.
+  Cross-referenced both ways with the scope stated explicitly in both places, because the
+  failure mode is a reader adopting it as a drain substitute.
+- **Self-check.** 2164 lines, 5/5 Mermaid fences byte-identical, 0 dashes, 0 GUIDs,
+  0 literal backslash-n, 16/16 anchors resolve, no measured constant changed.

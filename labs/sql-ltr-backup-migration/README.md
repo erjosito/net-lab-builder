@@ -335,6 +335,20 @@ subscription is being kept". If the deletion is merely deferred, you still need 
 you now have a deadline you have not written down. Establish the deletion date before
 choosing this playbook.
 
+**If the retained subscription is in a different tenant from the people who now operate it,
+use Azure Lighthouse.** This is the common shape after a tenant migration: the old
+subscription is kept for compliance, but every operator has moved to the new tenant. Leave the
+subscription where it is and delegate its resources to the target directory, so users there
+can enumerate and restore the LTR backups without guest accounts or shared credentials.
+Reference:
+<https://learn.microsoft.com/en-us/azure/role-based-access-control/transfer-subscription>.
+
+Be precise about what this does and does not do. Lighthouse changes **who can reach** the
+subscription; it does not move or copy anything. It is not a substitute for a drain when the
+subscription really is going to be deleted, because the LTR backups still live in, and die
+with, the source subscription. If your subscription is being deleted, you are in
+[playbook G](#playbook-g-the-target-subscription-is-in-a-different-tenant), not here.
+
 ### Playbook A: Azure SQL Database, public endpoint reachable
 
 **When this applies.** The LTR backups belong to an Azure SQL Database, and
@@ -583,6 +597,40 @@ a legacy tenant and the new one is created under the organisation's own tenant.
 Everything in playbooks A to F still applies unchanged. The only thing this overlay changes
 is **how the source-side identity is authorised against target-tenant storage**.
 
+**Before anything else: ask whether the subscription itself can move.** This is the question
+that decides whether you need a drain at all, and it is worth an hour of investigation before
+you spend days building one. The drain exists because the **subscription** cannot move, not
+because LTR backups are inherently unmovable. If the subscription can be transferred to the
+target directory, the subscription is never deleted, so the LTR backups are never purged, and
+the entire drain becomes unnecessary. Reference:
+<https://learn.microsoft.com/en-us/azure/role-based-access-control/transfer-subscription>.
+
+Three things to establish, in this order:
+
+- **Is it a CSP subscription?** If so, stop: this option does not exist. The page states that
+  "For Azure Cloud Solution Providers (CSP) subscriptions, changing the Microsoft Entra
+  directory for the subscription isn't supported." That single sentence is what forces the
+  drain for CSP customers, and it is the reason a Cloud Solution Provider exit ends in
+  re-creating databases in the new tenant rather than moving them.
+- **If it is not CSP, what does the transfer destroy?** The option exists but is not free. Per
+  the same page: all role assignments and all custom roles are **permanently deleted**;
+  system-assigned managed identities must be disabled and re-enabled; user-assigned managed
+  identities must be deleted, re-created and re-attached; and Key Vault requires its
+  associated tenant ID to be updated, which matters directly if you are using customer-managed
+  TDE. The page also warns that transfers can require downtime. In other words, a directory
+  transfer destroys precisely the identity plumbing the rest of this playbook depends on, so
+  it is a decision to take *instead of* the drain, not alongside it.
+- **Would it actually preserve the LTR backups?** Reasoning from documented behaviour rather
+  than from a lab result: LTR backups are purged when the **subscription is deleted**, and a
+  directory transfer does not delete the subscription, so the purge trigger does not fire.
+  **This was not tested here.** If your transfer is viable and the backups matter, verify
+  enumeration after the move before you decommission anything.
+
+**A retained subscription in the old tenant is a separate case.** If the subscription is being
+kept for compliance but the people who would operate it now work in the target tenant, you do
+not need a drain and you do not need a directory transfer either. See the Azure Lighthouse
+note in [playbook 0](#playbook-0-the-source-subscription-is-not-being-deleted).
+
 **Which constraints bite.**
 
 - **A managed identity is a single-tenant service principal.** It exists only in its home
@@ -647,12 +695,14 @@ days to a drain that has a hard subscription-deletion deadline.
 
 **Two dead ends. Neither is a shortcut, and both cost time to rule out.**
 
-- **Transferring the subscription to the other tenant.** It looks like it would make the whole
-  problem disappear, and it does not. Moving a subscription between tenants breaks its
-  managed identities and every role assignment that references them; they have to be
-  recreated afterwards. That means the drain identity you rely on is one of the casualties.
-  CSP subscriptions carry their own transfer constraints on top, which is exactly the case
-  this overlay exists for.
+- **Transferring the subscription to the other tenant.** Covered at the top of this playbook,
+  and the conclusion is the same from both directions. For a CSP subscription it is
+  **unavailable outright**: changing the Entra directory is not supported. For everyone else
+  it is available but it **destroys the identity plumbing this drain depends on**, because
+  role assignments and custom roles are permanently deleted, system-assigned identities must
+  be disabled and re-enabled, and user-assigned identities must be deleted, re-created and
+  re-attached. That makes it an alternative to the drain rather than a shortcut within one.
+  Decide between them; do not start one and fall back to the other halfway.
 - **Cross-Tenant Restore (preview).** It reads as though it solves this and it does not apply
   to Azure SQL PaaS at all. Its supported workloads are Azure VM, Azure Files, **SQL Server in
   Azure VM**, SAP HANA in Azure VM and SAP ASE in Azure VM. Azure SQL Database and Azure SQL
@@ -869,9 +919,15 @@ identity, is provisioned into the target tenant, and holds the RBAC there. The f
 the verification steps and the prerequisites are in
 [playbook G](#playbook-g-the-target-subscription-is-in-a-different-tenant).
 
-Two apparent shortcuts are not shortcuts. **Transferring the subscription to the other
-tenant** breaks managed identities and every role assignment referencing them, so they must
-be recreated after the move; CSP subscriptions have additional transfer constraints.
+Before building any of that, check whether the **subscription itself** can be transferred to
+the target directory. If it can, the subscription is never deleted, the LTR backups are never
+purged, and no drain is needed. For **CSP subscriptions this is not supported at all**, which
+is what forces the drain in a Cloud Solution Provider exit. Where it is supported it is
+destructive: role assignments and custom roles are permanently deleted and managed identities
+must be re-created, so it is an alternative to the drain rather than a step within one. See
+[playbook G](#playbook-g-the-target-subscription-is-in-a-different-tenant) for the detail and
+the source.
+
 **Cross-Tenant Restore (preview)** does not cover Azure SQL Database or Managed Instance at
 all; see appendix C.
 
