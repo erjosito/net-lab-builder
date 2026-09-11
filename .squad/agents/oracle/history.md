@@ -842,3 +842,38 @@ ew_str did not
   for each *.ps1 mentioned. 15 of 15 exist. Cheap check, catches renames and inventions.
 - **Self-check.** 2326 lines, 5/5 Mermaid fences byte-identical, 34 code fences (even),
   0 dashes, 0 GUIDs, 19/19 anchors resolve, no measured constant changed.
+### 2026-09-11: correcting a claim that became false
+
+- **A "not yet measured" statement is a liability with a shelf life.** I wrote "Cross-tenant
+  throughput is unproven. Only a small probe blob has been moved" on instruction, and it was
+  true when written and false roughly an hour later. Lesson: when a document states an absence
+  of evidence, that sentence needs re-checking every time the underlying work advances. Grep
+  for the hedging words ("unproven", "untested", "not measured", "no figure") as a routine step
+  whenever new evidence lands, because they will not show up in a diff of the new material.
+- **Correct forward, not by deletion.** Jose's instruction was explicit and right: make the
+  finding the headline rather than quietly removing the stale sentence. The finding is that
+  0.1655 min/GiB across tenants is within about four percent of the same-tenant BACKUP TO URL
+  rate of 0.1725 min/GiB, so **the tenant boundary costs authorization setup, not throughput**,
+  and a reader can size a cross-tenant drain with same-tenant rates. That is more useful than
+  the raw number and is what belongs in the reader-facing half.
+- **State a new measurement in three places with three different jobs.** Appendix A gets the
+  full table and the limits; playbook G's "What it costs you" gets the one-line planning
+  consequence; the automation section gets the corrected paragraph where the false claim used
+  to live. Each links to appendix A rather than restating the caveats, which keeps the honesty
+  conditions in exactly one place.
+- **New evidence must not silently relax a neighbouring limit.** The measurement was taken
+  against a PUBLIC target endpoint on purpose. It would have been easy to let "cross-tenant
+  transfer is now proven" bleed into the playbook F composed with playbook G warning, which is
+  about network line of sight and is still untested. I restated that boundary explicitly inside
+  the new appendix subsection so the two cannot be conflated, and left the playbook G wording
+  untouched.
+- **Single observation, null R-squared, stated as such.** One point at 1.219 GiB, so no slope
+  and no fixed term. CrossTenantRSquared is null in mi-calibrated-parameters.json and the
+  appendix says why, matching the convention already used for the two-point TDE and
+  BACKUP TO URL fits and for the single-observation LTR restore.
+- **An anecdote becomes memorable when it carries a number.** The Invoke-WebRequest trap was
+  previously "ran for over an hour". It is now "12.1 s with curl.exe, versus over an hour
+  without completing", on the same 1.22 GiB payload, plus the detail that recovery required a
+  VM restart. Same fact, far more likely to change a reader's behaviour.
+- **Self-check.** 2388 lines, 5/5 Mermaid fences byte-identical, 34 code fences (even),
+  0 dashes, 0 GUIDs, 21/21 anchors resolve, 0 surviving occurrences of the retracted claim.

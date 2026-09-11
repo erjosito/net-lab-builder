@@ -701,6 +701,12 @@ and a role assignment are free. The cost is administrative rights in both tenant
 coordination to obtain them. Obtain them early; this is the step most likely to add calendar
 days to a drain that has a hard subscription-deletion deadline.
 
+**It does not cost you throughput.** A 1.219 GiB artifact crossed the boundary at
+0.1655 min/GiB, within about four percent of the same-tenant `BACKUP TO URL` rate of
+0.1725 min/GiB. Size the transfer with your same-tenant rates and add no boundary penalty.
+This is a single observation at a single size; see
+[appendix A](#cross-tenant-artifact-transfer).
+
 **Two dead ends. Neither is a shortcut, and both cost time to rule out.**
 
 - **Transferring the subscription to the other tenant.** Covered at the top of this playbook,
@@ -1302,10 +1308,19 @@ cd labs\sql-ltr-backup-migration\deploy
     -AppId <APP_ID> -TargetStorageAccount <account> -WriteProbeBlob
 ```
 
-**Cross-tenant throughput is unproven.** Only a small probe blob has been moved across the
-tenant boundary. No figure in appendix A describes the cross-tenant hop, and none should be
-inferred from the same-tenant export rates. If you are moving artifact-sized payloads across
-tenants, measure it yourself before you build a schedule on it.
+**Cross-tenant transfer costs authorization setup, not throughput.** A 1.219 GiB native
+backup artifact was moved across the tenant boundary by this mechanism in **12.1 s**, which is
+**0.1655 min/GiB**, about **103 MiB/s**. That is within roughly four percent of the
+same-tenant `BACKUP TO URL` rate of 0.1725 min/GiB already in this document. The practical
+consequence for planning: **size a cross-tenant drain with the same-tenant transfer rates and
+do not add a boundary penalty.** The measurement, its integrity check and its limits are in
+[appendix A](#cross-tenant-artifact-transfer).
+
+Two limits on that number. It is **one data point at one size**, so there is no slope and no
+R-squared; `CrossTenantRSquared` is null in `mi-calibrated-parameters.json` for that reason.
+And the target endpoint was **public by design**, to keep the identity question separate from
+the network question, so it says nothing about the private-endpoint end state discussed in
+playbook G.
 
 ### Two automation traps that cost real time
 
@@ -1313,9 +1328,11 @@ Both of these bit during this work, and neither is obvious from the failure.
 
 - **`Invoke-WebRequest` is pathologically slow on binary transfers in Windows PowerShell
   unless you silence the progress bar.** Set `$ProgressPreference = 'SilentlyContinue'`, and
-  prefer `curl.exe` outright for artifact-sized payloads. Left at the default, a transfer that
-  should take seconds ran for over an hour and blocked the VM's run-command extension against
-  every retry, so the symptom presented as an unresponsive VM rather than as a slow download.
+  prefer `curl.exe` outright for artifact-sized payloads. The contrast on the same 1.22 GiB
+  payload is the memorable part: **12.1 s with `curl.exe`, versus over an hour without
+  completing** via `Invoke-WebRequest` with the progress bar active. It also blocked the VM's
+  run-command extension against every retry, so the symptom presented as an unresponsive VM
+  rather than as a slow download, and clearing it required a **VM restart**.
 - **PowerShell 7.6 defaults `$PSNativeCommandArgumentPassing` to `Windows`, which silently
   drops empty-string arguments** on the way to the Azure CLI. Any `az` call that legitimately
   passes `''` loses it, and the CLI then reports a different and misleading error. Set
@@ -1718,6 +1735,51 @@ The 55.5 s MI restore number is a same-instance PITR restore proxy. It is explic
 an LTR restore measurement and must not be fed into the estimator as an LTR constant. A real
 MI LTR restore has since been measured; see the LTR restore section below. It too is a single
 observation and yields no slope, so both values stay out of the size model.
+
+### Cross-tenant artifact transfer
+
+Measured 2026-09-11. Source: `deploy/mi-calibrated-parameters.json`, `CrossTenant*` fields.
+
+A native backup artifact was moved from source-tenant storage into target-tenant storage using
+the playbook G mechanism: a user-assigned managed identity federated to a multi-tenant app
+registration provisioned into the target tenant. The target storage account was created with
+`allow-shared-key-access false`, so the transfer ran on **RBAC only, with no account keys and
+no SAS**.
+
+| Quantity | Value | Status |
+|---|---|---|
+| Artifact size | 1,308,557,312 bytes (1.219 GiB) | MEASURED |
+| Download from source private endpoint | 7.9 s | MEASURED |
+| Upload across the tenant boundary | 12.1 s | MEASURED |
+| Cross-tenant upload rate | 0.1655 min/GiB, about 103 MiB/s | MEASURED, one observation |
+| Integrity | MD5 identical on both sides, `4F5B8B350026C287CEF79B7EE1602E1B` | MEASURED |
+| Token `tid` claim | target tenant, verified | MEASURED |
+| Blob listed from target-tenant context | yes | MEASURED |
+| `CrossTenantRSquared` | null | not fittable, see below |
+
+**The finding: the tenant boundary costs authorization setup, not throughput.** 0.1655 min/GiB
+is within roughly four percent of the same-tenant `BACKUP TO URL` rate of 0.1725 min/GiB in
+the calibration table above. A reader sizing a cross-tenant drain can use the same-tenant
+transfer rates without adding a penalty for the boundary.
+
+**What this does not establish.**
+
+- **One data point, at 1.219 GiB.** No slope and no fixed term can be fitted from a single
+  observation, so `CrossTenantRSquared` is deliberately null, consistent with the convention
+  used elsewhere in this appendix that a fit needs more points than free parameters. Treat
+  0.1655 min/GiB as an observation at one size, not as a rate law.
+- **The target endpoint was public, by design.** The transfer was run against a public target
+  endpoint specifically to isolate the identity question from the network question. **The
+  private-endpoint end state across two tenants remains untested**, and nothing here changes
+  the playbook F composed with playbook G warning: that combination additionally needs network
+  line of sight, implying cross-tenant VNet peering, which was not built.
+- **Verification was two-sided.** The blob was listed from target-tenant context rather than
+  inferred from a source-side read, which is the check that distinguishes a real crossing from
+  a source-side illusion.
+
+The `Invoke-WebRequest` trap in the automating section was measured on this same payload:
+12.1 s with `curl.exe` against over an hour without completing when the progress bar was
+active. It is recorded as `CrossTenantTransferTrap` in the same JSON file.
 
 ### Artifact consumption proof
 
