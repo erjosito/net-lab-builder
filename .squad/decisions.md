@@ -662,14 +662,25 @@ limitation is a hypothesis, not a fact, and the distinction is the reusable less
 | Azure Lighthouse | Grants cross-tenant access; moves nothing. Delegation is not migration. |
 | Backup Cross-Tenant Restore | Covers "SQL Server in Azure VM" but NOT Azure SQL PaaS. It operates on Recovery Services vault recovery points, and PaaS LTR backups never land in a vault. |
 
+## Teardown addendum (2026-09-11): the cross-tenant footprint is invisible to RG deletion
+
+The teardown experiment surfaced a cleanup gap specific to this mechanism. The app
+registration, its federated identity credential, and the target-tenant service principal are
+DIRECTORY objects. They live outside every resource group, so deleting both resource groups
+left a working cross-tenant trust standing until those objects were removed explicitly.
+
+Treat the cross-tenant trust as a separate teardown step, never as something an infrastructure
+cleanup will sweep up. `Remove-LtrLab.ps1` now covers this, commit `f3c2911`.
+
 ---
 
 # Decision: LTR backup binding scope is the subscription, not the server
 
 Date: 2026-09-11
 
-**By:** Jose (via Copilot), recorded by Scribe. **Status:** accepted. Documentation verified;
-empirical teardown verification still in progress at time of writing.
+**By:** Jose (via Copilot), recorded by Scribe. **Status:** accepted and now LAB-PROVEN.
+Originally written 2026-09-11 with the teardown verification still in progress; the
+teardown result was appended the same day (see "Teardown experiment" below).
 
 ## Documented behaviour (quoted from Microsoft Learn, long-term-retention-overview)
 
@@ -694,13 +705,48 @@ mechanism by which you find backups orphaned by a deleted server.
    going away. Within a subscription the backups survive a server deletion; across
    subscriptions they do not survive at all.
 
-## Evidence status (do not overstate)
+## Teardown experiment (EMPIRICALLY VERIFIED, 2026-09-11)
 
-- The quoted binding-scope behaviour and the location-only enumeration are **DOCUMENTED**.
-- The empirical teardown verification (deleting the server and confirming the LTR backups
-  persist and remain restorable) was **STILL IN PROGRESS** when this entry was written.
-  Treat the billing and persistence consequence as documented, not lab-proven, until an
-  empirical result is appended to this entry.
+Run as a controlled experiment by Jose. This fills the slot left open above; the documented
+behaviour is now lab-proven.
+
+Sequence:
+
+1. Recorded the inventory before touching anything: 3 Azure SQL Database LTR backups and
+   1 Managed Instance LTR backup.
+2. Deleted the WHOLE resource group, containing the logical server, the managed instance,
+   its virtual cluster, a VM, storage, the VNet and private endpoints. Elapsed time about
+   16 minutes, dominated by the managed instance and the virtual cluster.
+3. Confirmed the resource group was gone and that `az sql server list` returned zero lab
+   servers.
+4. Re-enumerated by location. **ALL FOUR LTR BACKUPS SURVIVED**, with unchanged
+   `backupTime` and unchanged expiry of 2026-12-03, still naming a server and a managed
+   instance that no longer exist.
+5. Deleted all four explicitly, then verified the count is zero for both SQL Database and
+   Managed Instance.
+
+Three findings newly established by this run:
+
+- **MI-side LTR survival is proven for the first time.** This lab had previously shown
+  survival only for Azure SQL Database after DATABASE deletion. Survival after deletion of
+  the server, the managed instance, and the entire resource group is new, and the Managed
+  Instance case had never been tested at all.
+- **Location-only enumeration is the orphan handle.**
+  `az sql db ltr-backup list --location <loc> --database-state All` and the `midb`
+  equivalent both work with no `--server` argument. Once the server is deleted, this is the
+  ONLY way to find the backups.
+- **The cleanup trap is confirmed, not theoretical.** Resource group deletion does not stop
+  LTR billing. The four backups stayed billable to their full 2026-12-03 expiry and required
+  explicit deletion.
+
+## Evidence status
+
+- The quoted binding-scope behaviour and the location-only enumeration are **DOCUMENTED**
+  and now also **EMPIRICALLY VERIFIED** by the teardown experiment above.
+- The billing and persistence consequence is **LAB-PROVEN**, no longer documentation only.
+- Not tested: whether a surviving orphaned backup still RESTORES into a fresh server. The
+  backups were enumerated and then deleted, not restored. Do not claim restorability of an
+  orphaned backup on the strength of this run.
 
 ## Source-quality note
 
@@ -708,3 +754,37 @@ An AI web-search summary confidently asserted the OPPOSITE, that deleting the se
 destroys the LTR backups. The primary Microsoft Learn source contradicted it. Recorded as a
 standing reminder: a search summary is not a primary source, and confident phrasing is not
 evidence.
+
+---
+
+# Decision: RestoreMinPerGb is permanently unresolved for this lab (abandoned, not pending)
+
+Date: 2026-09-11
+
+**By:** Jose (via Copilot), recorded by Scribe. **Status:** ABANDONED. Closes the open item
+carried by the 2026-09-11 Tank entry "LTR restore mechanism proven, but RestoreMinPerGb
+stays null."
+
+## What
+
+`RestoreMinPerGb` and `RestoreRSquared` are recorded as PERMANENTLY UNRESOLVED for
+`labs/sql-ltr-backup-migration/`. They are not a pending task and must not be carried forward
+as one.
+
+## Why
+
+- A valid LTR restore slope requires an LTR backup taken AFTER seeding. The three existing
+  LTR backups were copies of the first automatic PITR full backup, taken before seeding
+  completed, which is why the restores came back with zero rows.
+- The three post-seed calibration databases never received an LTR backup within about
+  5 hours of observation. Documentation allows up to seven days for an LTR backup to appear,
+  so this is not an anomaly; the wait was simply longer than the lab window.
+- The teardown experiment deleted the server, which ended the experiment. No further LTR
+  backup can ever be produced from those databases.
+
+## Consequence
+
+The measurement is closed as abandoned. Anyone reviving it must stand up a new environment,
+seed first, then wait out the LTR backup availability delay (up to seven days) before
+attempting a timing run. The standing gate from the Tank entry still applies: verify restored
+row counts against the source before fitting any slope.
