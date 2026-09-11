@@ -10,8 +10,24 @@
     Order matters. Remove LTR policies first so no further backups are generated, then
     delete the existing LTR backups, then the resource group.
 
+    Confirmed empirically in this lab: LTR backups survive deletion of the resource
+    group and the logical server. They remain enumerable by location alone, without
+    the server that produced them. The binding scope is the SUBSCRIPTION, which is
+    why a subscription that cannot be moved forces a drain.
+
+    If the lab was extended with the cross-tenant drain, pass -CrossTenantResourceGroup,
+    -TargetSubscription and -AppDisplayName. The app registration, its federated
+    credential, and the target-tenant service principal live outside every resource
+    group, so deleting resource groups alone leaves a working cross-tenant trust in
+    place. That is a standing grant, not a stray resource.
+
 .EXAMPLE
     .\Remove-LtrLab.ps1 -ResourceGroup rg-ltr-lab -Location eastus -Server ltrlab1234-sql
+
+.EXAMPLE
+    .\Remove-LtrLab.ps1 -ResourceGroup rg-ltr-lab -Location swedencentral -Server ltrlab1234-sql `
+        -CrossTenantResourceGroup rg-ltr-xtenant -TargetSubscription $tgtSubId `
+        -AppDisplayName ltrlab-xtenant-drain
 #>
 [CmdletBinding(SupportsShouldProcess)]
 param(
@@ -19,6 +35,9 @@ param(
     [Parameter(Mandatory)][string] $Location,
     [Parameter(Mandatory)][string] $Server,
     [string] $ManagedInstance,
+    [string] $CrossTenantResourceGroup,
+    [string] $TargetSubscription,
+    [string] $AppDisplayName,
     [switch] $KeepResourceGroup
 )
 
@@ -70,7 +89,47 @@ if ($ManagedInstance) {
     }
 }
 
-# --- 3. Resource group ---------------------------------------------------------
+# --- 3. Cross-tenant footprint (Playbook G) -----------------------------------
+# The app registration, its federated credential, and the target-tenant service
+# principal are directory objects. They sit outside every resource group, so
+# deleting resource groups leaves a usable cross-tenant trust behind.
+if ($CrossTenantResourceGroup -or $AppDisplayName) {
+    Write-Host 'Removing cross-tenant footprint...' -ForegroundColor Cyan
+    $originalSub = & az account show --query id -o tsv 2>$null
+
+    if ($TargetSubscription) {
+        # The service principal lives in the TARGET tenant, so the CLI has to be
+        # pointed there before `az ad` will see it.
+        if (Try-Az @('account', 'set', '-s', $TargetSubscription) 'switch to target subscription') {
+            if ($CrossTenantResourceGroup -and $PSCmdlet.ShouldProcess($CrossTenantResourceGroup, 'delete target resource group')) {
+                Try-Az @('group', 'delete', '-n', $CrossTenantResourceGroup, '--yes', '--no-wait', '-o', 'none') `
+                       "delete RG $CrossTenantResourceGroup" | Out-Null
+            }
+            if ($AppDisplayName) {
+                $sps = & az ad sp list --display-name $AppDisplayName -o json 2>$null | ConvertFrom-Json
+                foreach ($sp in $sps) {
+                    if ($PSCmdlet.ShouldProcess($sp.id, 'delete target-tenant service principal')) {
+                        Try-Az @('ad', 'sp', 'delete', '--id', $sp.id) "delete SP $($sp.id)" | Out-Null
+                    }
+                }
+            }
+        }
+    }
+
+    # Back to the source tenant for the application object. Deleting the app also
+    # removes its federated identity credential.
+    if ($originalSub) { Try-Az @('account', 'set', '-s', $originalSub) 'restore subscription context' | Out-Null }
+    if ($AppDisplayName) {
+        $apps = & az ad app list --display-name $AppDisplayName -o json 2>$null | ConvertFrom-Json
+        foreach ($app in $apps) {
+            if ($PSCmdlet.ShouldProcess($app.id, 'delete app registration')) {
+                Try-Az @('ad', 'app', 'delete', '--id', $app.id) "delete app $($app.id)" | Out-Null
+            }
+        }
+    }
+}
+
+# --- 4. Resource group ---------------------------------------------------------
 if (-not $KeepResourceGroup -and $PSCmdlet.ShouldProcess($ResourceGroup, 'delete resource group')) {
     Write-Host "Deleting resource group $ResourceGroup ..." -ForegroundColor Cyan
     Try-Az @('group', 'delete', '-n', $ResourceGroup, '--yes', '--no-wait', '-o', 'none') 'delete RG' | Out-Null
