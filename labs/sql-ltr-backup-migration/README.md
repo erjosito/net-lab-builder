@@ -674,6 +674,14 @@ reasons that have nothing to do with the target tenant accepting the identity. V
 this path used a target storage account created with `--allow-shared-key-access false`, so it
 is confirmed to work on RBAC alone, with no account keys and no SAS.
 
+**Do not do any of this by hand.** Two scripts in `deploy/` cover it.
+`New-CrossTenantDrainIdentity.ps1` performs steps 1 to 4 and is idempotent, so it also serves
+as the pre-drain check that the configuration is still intact.
+`Test-CrossTenantDrainToken.ps1` performs steps 5 to 7 from the source-side compute and
+throws when the returned token's `tid` is not the target tenant. Invocation, the inlined token
+exchange, and their verification status are in
+[automating the drain](#automating-the-drain).
+
 **Check these prerequisites before you plan around this, because they are the usual
 blockers.**
 
@@ -1160,6 +1168,159 @@ compute, a private endpoint, DNS, and a staging disk.
 Managed Instance half is the one that will go smoothly and the SQL Database half is the one
 that needs the infrastructure.** That is the opposite of the intuitive ordering, and it is
 worth establishing early, because the SQL Database side is where the unbudgeted work lives.
+
+---
+
+## Automating the drain
+
+**Automate the loop. Do not automate the two verification gates.** That line is the whole
+design of this section, and it is worth drawing it before writing any code, because it is
+much harder to retrofit once a script exists that "just works".
+
+### What to automate
+
+Everything mechanical, which is to say the repeating loop:
+
+1. Set up the identity and storage credentials.
+2. Restore one LTR backup.
+3. Decrypt it, if playbook C applies.
+4. Export the BACPAC, or take the `COPY_ONLY` native backup.
+5. Upload the artifact and record its manifest row.
+6. Delete the temporary restored copy.
+
+Two reasons this must not be hand-run. It repeats **once per retained backup**, so a
+compliance scope of any size turns into dozens of near-identical multi-step sequences where a
+single skipped step produces a plausible-looking but wrong archive. And every temporary
+restored database **bills for as long as it exists**, so the cost of the drain is directly
+proportional to how long copies are left lying around between manual steps. Automation is a
+cost control here, not just a convenience.
+
+### What to leave as a human decision
+
+Two checks, and they are the two that caught silent failures in this lab:
+
+| Gate | What it asks | What it caught |
+|---|---|---|
+| **`backupTime` check** | Does this LTR backup's content actually postdate the data you need? | LTR backups holding content from **before** the source data was seeded. An LTR policy adopts an existing PITR full backup, so the backup can predate the policy. |
+| **Row-count check** | Does the restored database contain the rows you expect? | A restore that reported `Online`, produced no errors, and yielded a clean plausible linear fit while **carrying no data at all**. |
+
+Neither failure announces itself. Both produce green output. That is exactly why they belong
+to a person: **a script that auto-approves these gates does not remove the risk, it converts a
+caught problem into an archived one**, and the discovery moment moves from "during the drain,
+when it is fixable" to "after the source subscription is gone, when it is not".
+
+The useful pattern is **machine-prepared evidence, human decision**. Have the automation
+gather and print the `backupTime` values, the expected and actual row counts, and the artifact
+sizes, then stop and require an explicit acknowledgement before it deletes anything or moves
+to the next backup. `Verify-LtrRestoreContents.ps1` in `deploy/` exists for the second gate.
+Treat a status of `Online` as saying nothing whatsoever about content.
+
+### Snippets versus scripts
+
+Keep code in scripts, not in this document. The reason is mechanical: **a README snippet
+cannot be exercised by CI, whereas a script in `deploy/` can**, and this repository already
+follows that pattern with `Test-DrainHelpers.ps1`, which parses fixture output and fails the
+build when the helpers regress. Real logic belongs where it can be tested; the document should
+show the commands that invoke it and, sparingly, a fragment that is genuinely hard to
+reconstruct from prose.
+
+The lab already ships the mechanical half. See the phase table in
+[appendix D](#running-the-lab) rather than a second inventory here: `Deploy-LtrLab.ps1`,
+`Deploy-LtrLabPrivate.ps1` and `Deploy-LtrLabMi.ps1` build the three environments,
+`Test-LabSql.ps1` and `Test-DrainHelpers.ps1` are pre-flight, `Watch-LtrLabBackups.ps1` polls
+for backup appearance, `Measure-LtrCalibration.ps1` and `Measure-LtrRestore.ps1` produce the
+figures in appendix A, `Verify-LtrRestoreContents.ps1` is the row-count gate, and
+`Remove-LtrLab.ps1` tears down including the LTR backups themselves. The cross-tenant pair is
+described below.
+
+**There is no single end-to-end drain script in this repository, and you should not assume
+one.** The loop above is a **skeleton assembled from individually proven steps**, not a
+program that has been run start to finish. Build it for your own environment from the pieces,
+and keep the two gates in it.
+
+### The one fragment worth inlining: the cross-tenant token exchange
+
+This is inlined because it is hard to reconstruct from prose and easy to get subtly wrong in
+ways that still return a token. It belongs to
+[playbook G](#playbook-g-the-target-subscription-is-in-a-different-tenant). Run it **on the
+source-side compute that carries the managed identity**, not from a workstation.
+
+```powershell
+# Step 1: ask IMDS for a token whose AUDIENCE is the token-exchange endpoint.
+# The resource is api://AzureADTokenExchange, not the storage endpoint.
+$imdsUri = 'http://169.254.169.254/metadata/identity/oauth2/token' +
+           '?api-version=2018-02-01' +
+           '&resource=api://AzureADTokenExchange' +
+           '&client_id=<UAMI_CLIENT_ID>'
+$assertion = (curl.exe --noproxy '*' -s -H 'Metadata: true' $imdsUri |
+              ConvertFrom-Json).access_token
+
+# Step 2: present that token to the TARGET tenant as a client assertion.
+$token = (Invoke-RestMethod -Method Post `
+    -Uri "https://login.microsoftonline.com/<TARGET_TENANT_ID>/oauth2/v2.0/token" -Body @{
+        client_id             = '<APP_ID>'
+        grant_type            = 'client_credentials'
+        client_assertion_type = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
+        client_assertion      = $assertion
+        scope                 = 'https://storage.azure.com/.default'
+    }).access_token
+
+# Step 3: the check that matters. Not "did I get a token" but "who issued it".
+$payload = $token.Split('.')[1].Replace('-', '+').Replace('_', '/')
+while ($payload.Length % 4) { $payload += '=' }
+$claims = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($payload)) | ConvertFrom-Json
+if ($claims.tid -ne '<TARGET_TENANT_ID>') { throw 'Token was minted for the wrong tenant.' }
+```
+
+`Test-CrossTenantDrainToken.ps1` in `deploy/` does exactly this, including the base64url
+decode, and **throws when `tid` is not the target tenant**. Use it rather than retyping the
+above. Then confirm the written blob from **target-tenant context**, because a source-side
+read proves nothing about whether the target tenant accepted the identity.
+
+### The cross-tenant scripts
+
+| Script | What it does | Verification status |
+|---|---|---|
+| `New-CrossTenantDrainIdentity.ps1` | Creates the multi-tenant app registration, federates it to the user-assigned managed identity, provisions it into the target tenant, and assigns blob RBAC. Idempotent, so it doubles as a pre-drain configuration check. | **Detection paths verified**: run against a manually built configuration, all five steps detected existing state and created nothing. The **creation paths were exercised manually through the same CLI calls**, not by a clean-room run of the script. Not end-to-end tested. |
+| `Test-CrossTenantDrainToken.ps1` | Runs on source-side compute, performs the exchange, and throws if the returned token's `tid` is not the target tenant. | Exercised against the working configuration. |
+
+Run the identity script first, then the token script from the source-side compute:
+
+```powershell
+cd labs\sql-ltr-backup-migration\deploy
+
+# Idempotent. Safe to run repeatedly; use it as the pre-drain check.
+.\New-CrossTenantDrainIdentity.ps1 `
+    -SourceSubscriptionId <SOURCE_SUB_ID> -SourceTenantId <SOURCE_TENANT_ID> `
+    -IdentityResourceGroup <rg> -IdentityName <umi> `
+    -TargetSubscriptionId <TARGET_SUB_ID> -TargetTenantId <TARGET_TENANT_ID> `
+    -TargetResourceGroup <rg> -TargetStorageAccount <account>
+
+# On the source-side compute, NOT a workstation.
+.\Test-CrossTenantDrainToken.ps1 `
+    -UmiClientId <UAMI_CLIENT_ID> -TargetTenantId <TARGET_TENANT_ID> `
+    -AppId <APP_ID> -TargetStorageAccount <account> -WriteProbeBlob
+```
+
+**Cross-tenant throughput is unproven.** Only a small probe blob has been moved across the
+tenant boundary. No figure in appendix A describes the cross-tenant hop, and none should be
+inferred from the same-tenant export rates. If you are moving artifact-sized payloads across
+tenants, measure it yourself before you build a schedule on it.
+
+### Two automation traps that cost real time
+
+Both of these bit during this work, and neither is obvious from the failure.
+
+- **`Invoke-WebRequest` is pathologically slow on binary transfers in Windows PowerShell
+  unless you silence the progress bar.** Set `$ProgressPreference = 'SilentlyContinue'`, and
+  prefer `curl.exe` outright for artifact-sized payloads. Left at the default, a transfer that
+  should take seconds ran for over an hour and blocked the VM's run-command extension against
+  every retry, so the symptom presented as an unresponsive VM rather than as a slow download.
+- **PowerShell 7.6 defaults `$PSNativeCommandArgumentPassing` to `Windows`, which silently
+  drops empty-string arguments** on the way to the Azure CLI. Any `az` call that legitimately
+  passes `''` loses it, and the CLI then reports a different and misleading error. Set
+  `$PSNativeCommandArgumentPassing = 'Standard'` at the top of any script that shells out to
+  `az`. Both cross-tenant scripts do this.
 
 ---
 
@@ -2118,6 +2279,7 @@ take the admin password as a `SecureString` parameter rather than embedding one.
 | Phase | Script | Duration |
 |---|---|---|
 | 0. Pre-flight | `Test-LabSql.ps1`, `Test-DrainHelpers.ps1` | seconds |
+| 0b. Cross-tenant pre-flight, only if the target is in another tenant | `New-CrossTenantDrainIdentity.ps1`, then `Test-CrossTenantDrainToken.ps1` on source-side compute | minutes |
 | 1. Seed | `Deploy-LtrLab.ps1` | ~1 hour (data load) |
 | 2. Wait | `Watch-LtrLabBackups.ps1` | hours to 7 days |
 | 3. Execute | delete sources, then the drain scripts in `src/powershell/sql-ltr-export/` | ~2 hours |

@@ -805,3 +805,40 @@ ew_str did not
   failure mode is a reader adopting it as a drain substitute.
 - **Self-check.** 2164 lines, 5/5 Mermaid fences byte-identical, 0 dashes, 0 GUIDs,
   0 literal backslash-n, 16/16 anchors resolve, no measured constant changed.
+### 2026-09-11: automation section, gates versus loop
+
+- **The organising line for any "should we automate this?" section is mechanical loop versus
+  judgement gate.** Stated it as the opening sentence of ## Automating the drain rather than
+  letting it emerge, because the shape is much harder to retrofit once a script exists that
+  appears to work. Automate: identity setup, restore, decrypt, export, upload, delete temp
+  copy. Do not automate: the ackupTime check and the row-count check.
+- **Justify a non-automation gate with the failure it caught, not with caution.** Both gates
+  earned their place empirically: an LTR backup holding content from before the seed, and a
+  restore reporting Online with a clean linear fit and zero rows. The sharp formulation that
+  earned its keep: a script that auto-approves a gate "does not remove the risk, it converts a
+  caught problem into an archived one", and moves discovery past the point of no return.
+  Pattern to recommend is machine-prepared evidence, human decision.
+- **Argue snippet-versus-script on testability, not taste.** A README snippet cannot be
+  exercised by CI; a script in deploy/ can, and this repo already proves it with
+  Test-DrainHelpers.ps1. That reasoning survives disagreement about style. Inlined exactly
+  one fragment (the cross-tenant token exchange) on the grounds that it is hard to reconstruct
+  from prose and fails in ways that still return a token.
+- **Make inlined code actually parse.** First draft used $claims = ... # base64url-decode,
+  which is unrunnable filler a reader might paste. Replaced with the real four lines lifted
+  from the script, then parse-checked the fenced block with
+  [Management.Automation.Language.Parser]::ParseInput. Zero errors. Worth doing for every
+  inlined snippet; it is two lines of verification.
+- **Cross-reference inventories, never duplicate them.** The script list lives in appendix D's
+  phase table. The automation section names the scripts in prose and links to that table, and
+  the two new cross-tenant scripts were added as a phase 0b row rather than starting a rival
+  table that would drift.
+- **State verification status at the granularity it was earned.** For
+  New-CrossTenantDrainIdentity.ps1: detection paths verified by a real run against a manual
+  configuration (all five steps found existing state, created nothing); creation paths
+  exercised manually through the same CLI calls, not by a clean-room run. Said exactly that.
+  Also stated plainly that no end-to-end drain script exists and that the documented loop is a
+  skeleton assembled from individually proven steps.
+- **Verified every script name in the document resolves to a real file** by globbing the repo
+  for each *.ps1 mentioned. 15 of 15 exist. Cheap check, catches renames and inventions.
+- **Self-check.** 2326 lines, 5/5 Mermaid fences byte-identical, 34 code fences (even),
+  0 dashes, 0 GUIDs, 19/19 anchors resolve, no measured constant changed.
