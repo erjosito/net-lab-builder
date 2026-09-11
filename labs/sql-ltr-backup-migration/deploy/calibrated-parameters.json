@@ -1,11 +1,155 @@
 {
   "GeneratedUtc": "2026-09-10T09:30:54.2340485Z",
   "Source": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sql-ltr-backup-migration\\deploy\\ltr-export-manifest-2026-09-10.csv",
+  "RestoreUpdatedUtc": "2026-09-11T07:39:23.888242Z",
+  "RestoreSource": "Live Azure SQL Database LTR restore attempt on ltrlab552754-sql, executed by labs/sql-ltr-backup-migration/deploy/Measure-LtrRestore.ps1. Raw observations in labs/sql-ltr-backup-migration/research/ltr-restore-raw-20260911.json. Full write-up in labs/sql-ltr-backup-migration/research/ltr-restore-measurements.md.",
+  "RestoreMechanismProven": true,
+  "RestoreMechanismNote": "az sql db ltr-backup restore was exercised end to end for the first time in this lab. Three LTR backups were restored into three new databases and all three reached Online with no errors. The RESTORE MECHANISM works. The SIZE SCALING does not follow from this run; see RestoreMeasured below.",
   "RestoreMeasured": false,
   "RestoreFixedMin": null,
   "RestoreMinPerGb": null,
   "RestoreRSquared": null,
-  "RestoreNote": "Restore timing not measured. All RestoreMinutes were 0 in the source CSV. Re-run Measure-LtrCalibration.ps1 once LTR backups are available and restore durations have been captured.",
+  "RestoreNote": "INVALID SOURCE DATA. The per-GB restore rate is still NOT measured. The three LTR backups available on 2026-09-11 were copies of the FIRST automatic PITR full backups, taken minutes after database creation and BEFORE the payload table was seeded. Data-plane verification from ltrlab-vm confirmed all three restored databases are completely empty: sys.tables returned zero rows and dbo.LabPayload does not exist in any of them, against source row counts of 131072, 655360 and 2621440 which all matched. The three restores therefore all moved the same near-zero payload, so the observed durations carry NO size information and no slope can be derived from them. A provisional fit of 3.860445 + 0.037921*GB with R-squared 0.468043 was computed and has been DISCARDED as an artifact of this defect. Do not resurrect it.",
+  "RestoreInvalidationEvidence": {
+    "VerifiedUtc": "2026-09-11T07:55:00Z",
+    "Method": "sys.database_files and sys.partitions queried from ltrlab-vm via az vm run-command invoke, Entra-only auth using the ltrlab552754-umi user assigned identity which is the server Entra admin.",
+    "Script": "labs/sql-ltr-backup-migration/deploy/Verify-LtrRestoreContents.ps1",
+    "RestoredDatabasesTableCount": 0,
+    "RestoredDatabasesRowsFileGiB": 0.0313,
+    "RestoredDatabasesTotalFileGiB": 0.0391,
+    "SourceRowCountsMatchedSeed": true,
+    "Detail": [
+      {
+        "Database": "calib-1gb-ltrrestore-20260911",
+        "Tables": "(none)",
+        "RowCount": null,
+        "ExpectedRows": 131072,
+        "Verdict": "EMPTY"
+      },
+      {
+        "Database": "calib-5gb-ltrrestore-20260911",
+        "Tables": "(none)",
+        "RowCount": null,
+        "ExpectedRows": 655360,
+        "Verdict": "EMPTY"
+      },
+      {
+        "Database": "calib-20gb-ltrrestore-20260911",
+        "Tables": "(none)",
+        "RowCount": null,
+        "ExpectedRows": 2621440,
+        "Verdict": "EMPTY"
+      },
+      {
+        "Database": "ltrlab552754-calib-1gb",
+        "Tables": "dbo.LabPayload",
+        "RowCount": 131072,
+        "ExpectedRows": 131072,
+        "Verdict": "FULL_MATCH"
+      },
+      {
+        "Database": "ltrlab552754-calib-5gb",
+        "Tables": "dbo.LabPayload",
+        "RowCount": 655360,
+        "ExpectedRows": 655360,
+        "Verdict": "FULL_MATCH"
+      },
+      {
+        "Database": "ltrlab552754-calib-20gb",
+        "Tables": "dbo.LabPayload",
+        "RowCount": 2621440,
+        "ExpectedRows": 2621440,
+        "Verdict": "FULL_MATCH"
+      }
+    ]
+  },
+  "RestoreEmptyDbFloorMeasured": true,
+  "RestoreEmptyDbFloorMin": 3.86,
+  "RestoreEmptyDbFloorRangeMin": [
+    3.5483,
+    4.5332
+  ],
+  "RestoreEmptyDbFloorNote": "This is the ONLY timing constant this run legitimately produced: the wall clock cost of an LTR restore that carries essentially no data, that is, provisioning and control plane orchestration only. It is a LOWER BOUND for any real LTR restore and contains NO size information. It must never be used as RestoreFixedMin in a size model, because the intercept of a real size model can only be established once at least one non-empty LTR backup has been restored.",
+  "RestoreEmptyDbFloorPollIntervalSec": 15,
+  "RestoreEmptyDbFloorPrecisionNote": "Destination state was sampled every 15 seconds via az sql db show, not streamed. Every duration is accurate to plus or minus 15 seconds.",
+  "RestoreEmptyDbFloorSequential": true,
+  "RestoreEmptyDbFloorTargetServiceObjective": "GP_Gen5_4",
+  "RestoreEmptyDbFloorComputeNote": "All three restore targets used an identical provisioned GP_Gen5_4 service objective. The source databases are serverless GP_S_Gen5_4, but serverless auto-pause and auto-resume would inject non-restore latency. Restore into serverless was NOT measured.",
+  "RestoreSizeBasisIntended": "allocated_data_storage (Azure Monitor, Maximum aggregation), GiB. This basis was selected because it exactly reproduces the published SizesTestedGb from the export fit, whose SizeBasis was allocated_8kb_pages, and it was independently confirmed against ROWS-file GiB from sys.database_files on all three sources: 1.0781, 5.0781, 20.2031. The basis is sound and should be reused when the restore rate is eventually measured. It simply had nothing to act on in this run, because the restored payload was empty.",
+  "RestoreSourceSizes": [
+    {
+      "Database": "ltrlab552754-calib-1gb",
+      "AllocatedDataGiB": 1.0781,
+      "RowsFileGiB": 1.0781,
+      "TotalFileGiB": 2.2734,
+      "DataSpaceUsedGiB": 1.0287,
+      "RowCount": 131072
+    },
+    {
+      "Database": "ltrlab552754-calib-5gb",
+      "AllocatedDataGiB": 5.0781,
+      "RowsFileGiB": 5.0781,
+      "TotalFileGiB": 10.2109,
+      "DataSpaceUsedGiB": 5.0563,
+      "RowCount": 655360
+    },
+    {
+      "Database": "ltrlab552754-calib-20gb",
+      "AllocatedDataGiB": 20.2031,
+      "RowsFileGiB": 20.2031,
+      "TotalFileGiB": 26.7734,
+      "DataSpaceUsedGiB": 20.1595,
+      "RowCount": 2621440
+    }
+  ],
+  "RestoreObservations": [
+    {
+      "SourceDatabase": "ltrlab552754-calib-1gb",
+      "DestinationDatabase": "calib-1gb-ltrrestore-20260911",
+      "BackupTimeUtc": "2026-09-10T08:07:35Z",
+      "SourceAllocatedDataGiB": 1.0781,
+      "RestoredPayloadGiB": 0.0313,
+      "SubmitUtc": "2026-09-11T07:26:42.0198617Z",
+      "OnlineUtc": "2026-09-11T07:30:14.9188044Z",
+      "RestoreSeconds": 212.899,
+      "RestoreMinutes": 3.5483,
+      "Succeeded": true,
+      "PayloadPresent": false,
+      "Error": null
+    },
+    {
+      "SourceDatabase": "ltrlab552754-calib-5gb",
+      "DestinationDatabase": "calib-5gb-ltrrestore-20260911",
+      "BackupTimeUtc": "2026-09-10T08:06:45Z",
+      "SourceAllocatedDataGiB": 5.0781,
+      "RestoredPayloadGiB": 0.0313,
+      "SubmitUtc": "2026-09-11T07:30:18.584074Z",
+      "OnlineUtc": "2026-09-11T07:34:48.5485962Z",
+      "RestoreSeconds": 269.965,
+      "RestoreMinutes": 4.4994,
+      "Succeeded": true,
+      "PayloadPresent": false,
+      "Error": null
+    },
+    {
+      "SourceDatabase": "ltrlab552754-calib-20gb",
+      "DestinationDatabase": "calib-20gb-ltrrestore-20260911",
+      "BackupTimeUtc": "2026-09-10T08:06:46Z",
+      "SourceAllocatedDataGiB": 20.2031,
+      "RestoredPayloadGiB": 0.0313,
+      "SubmitUtc": "2026-09-11T07:34:51.8488252Z",
+      "OnlineUtc": "2026-09-11T07:39:23.8413287Z",
+      "RestoreSeconds": 271.993,
+      "RestoreMinutes": 4.5332,
+      "Succeeded": true,
+      "PayloadPresent": false,
+      "Error": null
+    }
+  ],
+  "RestoreNextStep": "The three existing LTR backups can NEVER yield a valid restore rate, because their content predates seeding and LTR backups are immutable copies. A valid measurement requires a NEW LTR backup whose backupTime is later than seed completion, roughly 2026-09-10T08:27Z. The sources were seeded on 2026-09-10 and remain full, so any future backup should capture real data. WHEN such a backup will appear is ASSUMED, not measured: this lab already recorded that LTR timing here does not follow documentation, see show-output/03-ltr-policy-findings.txt where no immediate copy appeared at 2 or 25 minutes, and LtrImmediateBackupCount 0 on the MI half. Do not schedule the next round on a predicted weekly boundary. Poll with Watch-LtrLabBackups.ps1 and trigger on backupTime, not on the calendar. Then run Verify-LtrRestoreContents.ps1 FIRST to confirm the payload landed before fitting anything.",
+  "RestoreVerificationGate": "Any future restore timing run MUST verify restored row counts against the source before a slope is fitted. This run demonstrates that a restore can succeed, report Online, and produce a clean linear-looking fit while carrying no data at all.",
+  "MiLtrRestoreMeasured": true,
+  "MiLtrRestoreNote": "These restore findings are for Azure SQL DATABASE only. Managed Instance LTR restore WAS measured separately on 2026-09-11 and is recorded in mi-calibrated-parameters.json, including a data-intact verification by row count and checksum. Do not borrow values between the two halves in either direction: the engines, the artifact formats and the restore paths all differ.",
   "ExportFixedMin": 0.36,
   "ExportMinPerGb": 0.1588,
   "ExportRSquared": 0.9995,
@@ -18,5 +162,6 @@
     5.0781,
     20.2031
   ],
-  "HeldOut": []
+  "HeldOut": [],
+  "RestoreNextBackupTimingMeasured": false
 }

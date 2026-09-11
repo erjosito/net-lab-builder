@@ -1554,3 +1554,82 @@ BACKUP DATABASE is terminating abnormally.
 - `labs/sql-ltr-backup-migration/research/mi-timing-measurements.md`
 - `labs/sql-ltr-backup-migration/deploy/mi-calibrated-parameters.json`
 - `.squad/decisions/inbox/tank-mi-timing.md`
+
+---
+
+## 2026-09-11 — LTR restore measured, and INVALIDATED by empty backups
+
+**Requested by:** Jose. Objective was to fit `RestoreMinPerGb` now that LTR backups
+had finally materialised.
+
+**Outcome: LTR restore MECHANISM proven. `RestoreMinPerGb` still null.**
+
+### What happened
+- Restored all three LTR backups sequentially into new DBs on `ltrlab552754-sql`
+  with `az sql db ltr-backup restore --no-wait`, polled `az sql db show` at 15 s.
+- All three succeeded: 212.899 s (1 GiB), 269.965 s (5 GiB), 271.993 s (20 GiB).
+- Fitted `minutes = 3.860445 + 0.037921*GB`, R-squared 0.468043.
+- Then found all three restored DBs held **zero tables**. Fit DISCARDED.
+
+### The lesson worth keeping
+**A restore can succeed, report `Online`, produce clean sequential timings, and yield
+a plausible linear fit while carrying no data at all. Timing cannot detect this. Only
+a row count can.**
+
+The tell was control-plane and I nearly missed it: `allocated_data_storage` was
+byte-identical at 0.0156 GiB across all three restored DBs for seven straight minutes.
+Three DBs of nominally 1/5/20 GiB reporting the SAME allocation is not metric lag.
+Identical values across supposedly different sizes = look harder.
+
+The second tell was in the data I already had: 5 GiB took 269.965 s and 20 GiB took
+271.993 s. A 2.028 s difference across a 4x size change. I initially wrote that up as
+"fixed cost dominates at small sizes", which was a plausible-sounding story that
+happened to be wrong. It was actually "both restores moved the same nothing". **When a
+result is suspiciously flat, suspect the input before theorising about the mechanism.**
+
+### Root cause
+LTR backups had `backupTime` ~08:06-08:07 on 2026-09-10, which is ~25 min after server
+creation and nearly an hour BEFORE the LTR policy was set at 09:03:35Z. They are copies
+of the FIRST automatic PITR full backup, taken while seeding was still running
+(`calib-20gb` seed alone took 23.27 min). So LTR captured pre-seed state.
+
+**Generalisable:** enabling an LTR policy copies a pre-existing PITR full backup. Its
+content reflects whenever THAT backup was taken, which can be long before the policy.
+Never assume an LTR backup's content matches the database's state at policy-set time.
+
+### Method notes worth reusing
+- `allocated_data_storage` Azure Monitor metric exactly reproduces both the published
+  `SizesTestedGb` (basis `allocated_8kb_pages`) AND `sys.database_files` ROWS GiB, to
+  4 dp on all three DBs. It is a **control-plane** way to get the fit basis with no VM
+  hop. Very useful given `publicNetworkAccess` is disabled.
+- Total file GiB is much larger than ROWS (26.77 vs 20.20 on the 20 GiB DB). Basis
+  choice is not cosmetic. Same trap that hit the MI decrypt rate at ~2x.
+- `ltrlab552754-umi` is the **server Entra admin**, so from `ltrlab-vm` it can reach
+  ANY database including freshly restored ones that have no contained users. That is
+  the reliable way to verify restore contents.
+- Held all three restore targets at identical provisioned `GP_Gen5_4`. Sources are
+  serverless `GP_S_Gen5_4`; auto-pause/resume would inject non-restore latency. A fit
+  across mixed compute models is not a fit.
+
+### Self-inflicted error
+Harness built DB names from the server name (`ltrlab552754-sql-calib-1gb`) instead of
+the prefix (`ltrlab552754-calib-1gb`). Convention is `<prefix>-sql` for server,
+`<prefix>-calib-<size>` for DBs, so the server name is NOT a usable stem. Caught on a
+guard clause before any restore was issued. Added an explicit `-Prefix` param.
+**Keep guard clauses that fail loudly before doing anything expensive.**
+
+### Standing gate added
+Any future restore timing run MUST verify restored row counts against the source before
+a slope is fitted.
+
+### Resources
+Nothing deleted. Three empty restored DBs left Online on provisioned compute (they will
+NOT auto-pause, so they accrue cost). `ltrlab-vm` was started for verification and
+returned to its prior `deallocated` state.
+
+### Artifacts
+- `labs/sql-ltr-backup-migration/deploy/Measure-LtrRestore.ps1` (new)
+- `labs/sql-ltr-backup-migration/deploy/Verify-LtrRestoreContents.ps1` (new)
+- `labs/sql-ltr-backup-migration/research/ltr-restore-measurements.md` (new)
+- `labs/sql-ltr-backup-migration/research/ltr-restore-raw-20260911.json` (new, fit flagged INVALID)
+- `labs/sql-ltr-backup-migration/deploy/calibrated-parameters.json` (updated)
