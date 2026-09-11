@@ -76,6 +76,10 @@ Caveats:
 - **An LTR-restored database arrives TDE-encrypted**, reflecting the encryption state at
   backup time rather than the current state of the source. The decrypt step therefore
   repeats for every retained backup and never amortises to a one-off.
+- **An LTR backup's retention cannot be extended after the backup exists.** A policy change
+  applies only to future backups, and there is no CLI path to change the expiry of a backup
+  already taken. The policy has to be right *before* the backups are generated, not after
+  you discover how long you needed them.
 
 ```mermaid
 flowchart LR
@@ -172,6 +176,14 @@ actually contains. This is measured behaviour in this lab; see the Caveats.
 If the database was TDE-encrypted when the adopted full backup was taken, the restored copy
 comes back encrypted even if encryption has since been turned off on the source.
 
+**Fourth critical property: the expiry date on a backup comes from the policy that was in
+force when it was taken, and cannot be changed afterwards.** The expiry you see on a backup
+is not a platform ceiling and carries no compliance meaning of its own; it is simply your own
+retention setting applied to that backup's `backupTime`. LTR supports retention of up to 10
+years, so a short expiry is a statement about the policy, not about what LTR can do. The
+consequence is unforgiving and is written up as its own caveat below: changing the policy
+later does not reach back into backups that already exist.
+
 ### What the portal's Backup blade shows
 
 Both PITR and LTR, on separate tabs. PITR backups appear on the "Available backups" tab.
@@ -258,6 +270,7 @@ created temporary databases.
 | **10. Which subset of LTR backups must you actually retain for compliance?** | Cost scales directly with count and size. Artifact storage dominates the multi-year total by roughly 50x over compute. A wide compliance scope is also a large and costly archive. | Narrowing the scope to the legally required minimum is the single largest cost lever available. Run `src/powershell/sql-ltr-export/Get-LtrExportCostEstimate.ps1` for each candidate scope before committing. |
 | **11. Do you have vCore and server quota headroom in the source subscription for the temporary restore targets?** | The drain creates temporary databases in the source subscription. SQL DB logical servers are free, but General Purpose vCores and MI vCores consume regional quota. | Check `az sql server list-usages` and MI vCore quota before starting. Running out of quota mid-drain leaves orphaned temporary databases that keep billing and require manual cleanup. |
 | **12. Can the Managed Instance stay running for the entire LTR retention wait (up to 7 days)?** | A stopped MI takes no automated backups at all. A skipped LTR backup is never backfilled. Stopping the instance during the wait destroys the backup you were waiting to produce. | The MI must stay running for the entire wait. The free MI offer defaults to a schedule that stops the instance outside working hours to conserve credits; that schedule is incompatible with a continuous retention wait. |
+| **13. How long must each retained backup actually be kept, and is the LTR policy already set to that figure?** | Answer this together with question 10: question 10 fixes *which* backups you keep, this one fixes *how long*. LTR retention is set by policy and applied at the moment a backup is taken. A policy change applies only to future backups, and there is no CLI operation that changes the expiry of a backup that already exists. A short policy chosen for convenience quietly becomes permanent for every backup taken under it. | Policy already matches the compliance figure: proceed. Policy shorter than the compliance figure: fix the policy **first** and wait for backups taken under the corrected policy, because the existing ones cannot be rescued. If you cannot wait, the drain to a customer-controlled storage account is the escape hatch, since artifact lifecycle is yours to set and to change later. |
 
 ### Storage tier recommendation
 
@@ -866,6 +879,72 @@ Two related traps follow from the same mechanism:
   detected it. See the standing verification gate in
   [Appendix A](#appendix-a-validation-evidence).
 
+#### LTR retention cannot be extended after the backup has been taken
+
+This is the companion to the `backupTime` caveat above, and together they are the two ways a
+compliance archive can be quietly wrong. That one is about *what* the backup contains. This
+one is about *how long* it survives.
+
+**A change to the LTR policy applies only to backups taken after the change. It does not
+reach back into backups that already exist.** From the LTR documentation, quoted verbatim:
+
+> Changes to the LTR policy apply only to future backups. For example, if you modify the
+> weekly backup retention (W), monthly backup retention (M), or yearly backup retention (Y),
+> the new retention setting only applies to new backups. The retention of existing backups
+> isn't modified.
+
+There is no CLI escape hatch either. The subcommands available on `az sql db ltr-backup` are
+`delete`, `list`, `restore`, `show`, `wait`, and the immutability commands
+(`lock-time-based-immutability`, `remove-time-based-immutability`, and the preview
+`set-legal-hold-immutability` and `remove-legal-hold-immutability`). There is no `update` and
+no set-retention subcommand; `az sql db ltr-backup update` is rejected as unrecognised. The
+expiry stamped on an existing backup is final.
+
+**Keep immutability and retention apart in your head.** The immutability commands *do* act on
+backups that already exist, but immutability prevents a backup being deleted early. It does
+not push the expiry date out. Nothing extends the retention period of an existing backup.
+
+**Do not read a short expiry as a platform limit.** This lab's backups carried an expiry of
+2026-12-03 against a `backupTime` of 2026-09-10, which is 84 days, exactly the `P12W` weekly
+retention set in `deploy/mi-calibrated-parameters.json` with monthly and yearly retention both
+at `PT0S`. Twelve weeks was a lab convenience chosen so the lab did not accrue years of
+storage; it says nothing whatever about what a compliance retention should be. LTR supports up
+to 10 years.
+
+**The trap in a real decommission.** If you drain an estate under a short policy and later
+discover the requirement was seven years, the backups taken under the short policy expire on
+schedule and cannot be rescued. Combine this with the `backupTime` behaviour above and the
+practical rule is a single ordering constraint:
+
+**Get the LTR policy right first, then verify what the backups actually contain.** Both
+checks have to happen before the backups you intend to rely on are generated; neither can be
+repaired retrospectively.
+
+This is also an argument for the drain rather than merely a consolation for it: see
+[what you end up with](#what-you-end-up-with).
+
+#### Managed Instance LTR backups cannot be made immutable
+
+The immutability capability is asymmetric between the two products, and the asymmetry lands
+squarely on the compliance case. Azure SQL Database supports immutable LTR backups. Azure SQL
+Managed Instance does not. From the documentation, quoted verbatim:
+
+> In Azure SQL Managed Instance, it's not currently possible to configure backups as
+> immutable. LTR backups are nonmodifiable, but you can delete them through Azure portal,
+> Azure CLI, PowerShell, or REST API. As a workaround in Azure SQL Managed Instance, you can
+> take copy-only database backups and retain them in your own Azure Storage account as an
+> immutable file.
+
+"Nonmodifiable" is not the same as immutable. Nobody can alter an MI LTR backup, but anyone
+with the rights can delete one, and this lab deleted four of them with two CLI calls during
+teardown. If your compliance requirement is write-once protection against deletion, MI LTR
+alone does not meet it.
+
+Note what the recommended workaround is. Microsoft's own answer for the MI immutability case
+is a `COPY_ONLY` backup written to a storage account you control, which is precisely the
+artifact this lab's Managed Instance drain produces. That is independent corroboration of the
+approach from the vendor, arrived at for a different reason.
+
 #### LTR backups cannot be created on demand, and the first one can take seven days
 
 The timing of individual LTR backups is controlled by Microsoft. From the LTR documentation:
@@ -902,7 +981,9 @@ logical server, the managed instance, its virtual cluster, the VM, storage, the 
 network and the private endpoints, removed every one of those resources and left **all four
 LTR backups in place**, with unchanged `backupTime` and an unchanged retention expiry of
 2026-12-03. They remained billable for the whole of that remaining retention period. Only
-`az sql db ltr-backup delete` and `az sql midb ltr-backup delete` removed them.
+`az sql db ltr-backup delete` and `az sql midb ltr-backup delete` removed them. That expiry
+is the lab's own `P12W` weekly retention applied to a `backupTime` of 2026-09-10, 84 days,
+not a platform cap; see the retention caveat above.
 
 **The symptom is that there is no symptom.** The portal shows no server, no instance and no
 resource group, so there is nothing left to click on that would reveal the backups. The only
@@ -1460,6 +1541,13 @@ If the source subscription survives (resources deleted but subscription kept emp
 nothing: the LTR backups persist and you pay only LTR storage. The drain pipeline is only
 necessary if the subscription itself is being deleted.
 
+Decide the retention *period* here too, not just the scope, and check the LTR policy already
+matches it. Retention is applied when a backup is taken and cannot be extended afterwards: a
+policy change applies only to future backups and no CLI operation changes the expiry of an
+existing one. If the policy is shorter than the compliance requirement, correct it and wait
+for backups taken under the corrected policy before you rely on anything. See the retention
+caveat in group 1.
+
 ### Step 0b: verify what each LTR backup actually contains, before deleting anything
 
 Enumerate the LTR backups and read the `backupTime` field on each one. Confirm it postdates
@@ -1591,6 +1679,24 @@ These files are restorable on demand. They will **not** appear in the new resour
 Backup blade. The Backup blade reflects only the new resource's own PITR and LTR chains.
 This is a real loss of convenience compared to the preferred outcome; it is the only viable
 alternative, and the reader should know it going in.
+
+**What you gain in exchange is worth stating positively, because it is not merely a
+consolation.** Once an artifact is a blob in a storage account you control, its lifecycle is
+yours:
+
+- **No 10-year ceiling.** LTR retention tops out at 10 years. A blob does not expire unless
+  you tell it to.
+- **No retroactive-change restriction.** An LTR backup's expiry is fixed when the backup is
+  taken and cannot be extended. Storage lifecycle management rules can be written, rewritten
+  and re-applied at any point in the life of the artifact, including after it exists.
+- **Immutability is available and adjustable.** Immutable blob policies can be applied to
+  artifacts you hold. On Azure SQL Managed Instance, LTR backups cannot be made immutable at
+  all, and Microsoft's documented workaround for that gap is exactly this: a `COPY_ONLY`
+  backup retained as an immutable file in your own storage account. See the MI immutability
+  caveat in group 1.
+
+So the drain trades Backup blade integration for control of the retention policy. For a
+compliance archive that is often the better side of the trade.
 
 This is not just an export claim. The lab has now consumed one artifact from each path
 back into a new database and matched row counts plus aggregate checksums against the
@@ -2120,7 +2226,10 @@ none at it. There is no resource-level manoeuvre that saves them, which is exact
 subscription that cannot change Entra directory leaves the drain as the only option.
 
 **The billing consequence, measured.** The four persisting backups remained billable to their
-full retention expiry of 2026-12-03 after the resource group was gone. They were removed only
+full retention expiry of 2026-12-03 after the resource group was gone. That date is 84 days
+after the `backupTime` of 2026-09-10, which is exactly the `P12W` weekly retention this lab
+configured, with monthly and yearly retention at `PT0S`. It is the lab's own short policy
+showing through, not a platform-imposed ceiling. They were removed only
 by explicit `az sql db ltr-backup delete` and `az sql midb ltr-backup delete` calls;
 `az sql midb ltr-backup delete` emits a CLI preview warning while doing so. This is the
 cleanup trap written up in group 1 of the Caveats.
