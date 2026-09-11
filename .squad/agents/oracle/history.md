@@ -673,3 +673,68 @@ Judgement calls worth remembering:
 Process note: the previous round staged without committing. Committed explicitly this time
 and verified with `git show --stat`. Also ran a dash sweep over the staged diff before
 committing; Jose is strict about em-dashes and en-dashes.
+
+## 2026-09-11: README restructure, lab diary to reader guidance
+
+Jose's ask: make `labs/sql-ltr-backup-migration/README.md` read as guidelines for somebody
+with a similar challenge, covering different scenarios per the decision tree, rather than a
+diary of our particular implementation. Restructuring and re-voicing pass, not new content.
+
+**What I did.** Split into Part 1 (guidance) and Part 2 (validation evidence and lab
+reference). 1555 lines to 1967. Nearly all the growth is the new `## Scenario playbooks`
+section, which was the actual ask; the appendix content moved rather than grew.
+
+**Technique worth reusing.** I assembled the new file with a throwaway Python script that
+interleaves hand-authored prose blocks with *verbatim line ranges* from the original, rather
+than editing 1555 lines in place. Two payoffs: the five mermaid fences came through
+byte-identical (verified by SHA-256 against a pre-edit baseline), and the evidence appendix
+could not silently drift, because it was never retyped. The script and its inputs lived in a
+`_rewrite/` scratch dir that I deleted before committing.
+
+**Baseline before editing, always.** I captured a heading inventory, per-token counts for 70
+measured constants, and SHA-256 of every mermaid fence body BEFORE touching anything. A
+post-edit "token not found" is meaningless without that. The sweep caught zero losses and
+five deliberate relocations (`195376932`, `11,862,016`, `2500`, `$102`, `RestoreMinPerGb`
+each dropped by one occurrence, all from the top-of-document narrative summary that now
+points at appendix A instead of restating it).
+
+**Line endings nearly cost me the fence guarantee.** First assembly normalised CRLF to LF and
+every fence hash changed. The content was identical; only `\r` had gone. Original is UTF-8
+BOM + CRLF with `core.autocrlf=false`, so I wrote with `newline="\r\n"` and
+`encoding="utf-8-sig"` and the hashes matched exactly. Check the byte-level conventions of a
+file before rewriting it wholesale, not after.
+
+**The editorial judgement that mattered most.** Jose warned that over- and under-
+generalising are both defects. I split the caveats into four groups and tagged the fourth
+explicitly as *governance constraints your tenant may impose*, with a standing note that a
+tenant without those policies has a materially simpler path. Product behaviour (Msg 41922,
+41938, 41901; 195 GB stripe cap; LTR not creatable on demand; stopped MI takes no backups)
+went in groups 1 to 3 as universal. Tenant policy (Entra-only auth, forced-off public
+endpoint, shared-key disabled) went in group 4 as conditional. The error codes stayed
+prominent in headings and body text because they are what a reader pastes into a search box.
+
+**Converting findings to constraints.** "We discovered our tenant forces Entra-only auth and
+it broke the toolkit" became "a tenant can deny SQL authentication outright; here is the
+compliant credential pattern; here is the preview dependency that follows". The constraint
+survives, the narrative moves to appendix B. The `### Finding:` headings stayed in the
+appendix, where first-person discovery voice is correct rather than intrusive.
+
+**Consolidation.** The forced-off-public-endpoint story appeared six times and the stopped-MI
+story five. I merged "LTR backups cannot be created on demand" with "enabling an LTR policy
+does not guarantee an immediate PITR copy", which were the same mechanism told twice, and
+moved the three-attempts table to appendix B with a prose pointer from Part 1.
+
+**Playbooks came from the decision tree, not the old `## Scenarios` table.** That table was a
+lab test matrix ("subscriptions needed", "never test scenario 8") and belonged in appendix D.
+The reader-facing playbooks are: 0 subscription survives, A SQL DB public endpoint reachable,
+B SQL DB endpoint disabled, C MI service-managed TDE, D MI CMK or no TDE, plus E (>195 GB)
+and F (locked-down storage) as overlays. Each has the same four-part shape: when it applies,
+which constraints bite, the path, what it costs you.
+
+**Untouched on purpose.** LTR survival after database deletion is being empirically tested in
+parallel; I did not move its framing in either direction. The corrected "a General Purpose MI
+CAN be stopped" claim was preserved. Jose's pruned question list was left alone.
+
+Process note: committed explicitly, and never staged with a path glob. `kid/history.md` was
+already dirty in the working tree; staging `.squad/agents/` broadly would have swept it in.
+Named both paths individually on `git add`.
