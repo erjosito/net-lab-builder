@@ -738,3 +738,41 @@ CAN be stopped" claim was preserved. Jose's pruned question list was left alone.
 Process note: committed explicitly, and never staged with a path glob. `kid/history.md` was
 already dirty in the working tree; staging `.squad/agents/` broadly would have swept it in.
 Named both paths individually on `git add`.
+
+### 2026-09-11: cross-tenant overlay (playbook G)
+
+- **Context.** The real customer behind the SQL LTR lab is exiting a CSP subscription in one
+  Entra tenant into a new subscription in a different tenant. The whole drain design had
+  implicitly assumed a single tenant. Jose validated the cross-tenant path and asked for it
+  to be documented.
+- **Editorial call: overlay, not a decision-tree branch.** The tree's three inputs (resource
+  type, TDE flavour, public endpoint reachability) select the extraction *pipeline*. A tenant
+  boundary changes destination *authorization*, not the pipeline, so it composes with A to E
+  exactly the way E and F do. I left the Mermaid untouched and instead added prose under the
+  tree naming all three overlays, which also fixed a pre-existing discoverability gap: E and F
+  were not in the tree either and nothing said so.
+- **Caveat placement matters for a stated invariant.** The Caveats preamble asserts
+  "Everything in the first three groups is product behaviour. The fourth group is governance."
+  "A managed identity is a single-tenant service principal" is product behaviour, so it went
+  in group 1. Filing it under group 4 would have silently falsified the preamble. When a
+  document states a grouping invariant, every insertion has to be checked against it.
+- **Document the untested *combination*, not just the untested item.** Playbook F says put a
+  private endpoint on the artifact storage account; playbook G was proven against a public
+  one. Neither caveat alone warns the reader that F composed with G is unproven. Called out
+  explicitly inside G. Overlay playbooks need pairwise validation notes, not just individual
+  ones.
+- **Lead a debunk with the misreading.** For Cross-Tenant Restore the useful sentence is
+  '"SQL Server in Azure VM" is not Azure SQL PaaS', not the supported-workload list. Readers
+  arrive already believing the wrong thing; state the correction first, then the durable
+  architectural reason (Recovery Services vault recovery points, and SQL PaaS LTR never lands
+  in a vault).
+- **Tooling gotcha.** An dit whose old_str ended in a newline and whose 
+ew_str did not
+  silently joined two lines, producing vailable:<https://...>. Caught by a targeted grep
+  with -A 3 on the edited region. Always re-read the region after an edit whose boundaries
+  include line breaks; the sweep for dashes and fences would never have caught it.
+- **Good news on encoding.** The dit tool preserves the file's existing CRLF and BOM. No
+  need for the Python assembler technique when changes are additive and local. Verified
+  bareLF = 0 immediately after the first edit rather than at the end.
+- **Self-check result.** 2108 lines, 5/5 Mermaid fences byte-identical, 0 dashes, 0 GUIDs,
+  0 literal backslash-n, 13/13 anchors resolve, no measured constant changed.

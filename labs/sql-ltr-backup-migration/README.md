@@ -257,6 +257,13 @@ else is a cost or a time-budget question layered on top.
 Walk the tree, then go straight to the matching playbook in the next section. You do not
 need to read the rest of this document to execute a single branch.
 
+The tree selects the **extraction pipeline**. Three further questions do not change the
+pipeline but do change what you have to build around it, so they are handled as overlay
+playbooks rather than as branches: whether the database exceeds the stripe limit (playbook
+E), whether the artifact storage account is locked down (playbook F), and whether the
+artifact storage account lives in a **different Entra tenant** from the source (playbook G).
+Answer the tree first, then check each overlay.
+
 ```mermaid
 flowchart TD
     START([LTR backup to drain])
@@ -297,8 +304,10 @@ other sections.
 | [D](#playbook-d-managed-instance-customer-managed-tde-or-no-tde) | Managed Instance, customer-managed TDE or no TDE | `.bak` | Yes |
 | [E](#playbook-e-any-database-larger-than-195-gb) | Any database larger than 195 GB | `.bak` striped, or `.bacpac` | Yes, if striped `.bak` |
 | [F](#playbook-f-the-artifact-storage-account-is-locked-down) | Artifact storage account is locked down | Overlay on C, D or E | Unchanged |
+| [G](#playbook-g-the-target-subscription-is-in-a-different-tenant) | Target subscription is in a different Entra tenant | Overlay on A, B, C, D or E | Unchanged |
 
-Playbooks E and F are overlays. They modify C or D rather than replacing them.
+Playbooks E, F and G are overlays. They modify the lettered playbooks rather than replacing
+them, and they can stack.
 
 ### Playbook 0: the source subscription is not being deleted
 
@@ -564,6 +573,103 @@ credential and networking problem. The SQL Database managed export service conne
 and has no equivalent workaround; on that half, storage lockdown stacks on top of the
 endpoint problem that already forced you into playbook B.
 
+### Playbook G: the target subscription is in a different tenant
+
+**When this applies.** Overlay on any lettered playbook. The source subscription is in one
+Entra tenant and the destination for the drained artifacts is in another. This is the normal
+shape of a Cloud Solution Provider exit, where the old subscription sits in the partner's or
+a legacy tenant and the new one is created under the organisation's own tenant.
+
+Everything in playbooks A to F still applies unchanged. The only thing this overlay changes
+is **how the source-side identity is authorised against target-tenant storage**.
+
+**Which constraints bite.**
+
+- **A managed identity is a single-tenant service principal.** It exists only in its home
+  tenant and cannot be granted an RBAC role in another one. The proven managed-identity path
+  from playbook F, `CREATE CREDENTIAL ... WITH IDENTITY = 'Managed Identity'` writing to
+  blob, therefore stops at the tenant boundary the moment the storage account moves to the
+  target tenant. This is product behaviour, not a policy you can ask someone to relax.
+- **Shared keys and SAS are not a way around it.** They may be disabled by policy on the
+  target account, and relying on them reintroduces exactly the secret-handling the drain was
+  supposed to avoid.
+
+**The path.** Use **managed identity as a federated credential**, which is generally
+available, not preview:
+<https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation-config-app-trust-managed-identity>.
+The shape is a multi-tenant application registered in the source tenant that trusts the
+managed identity, is provisioned into the target tenant, and holds the RBAC there. The
+managed identity proves who it is; the application carries that proof across the boundary.
+
+1. **In the source tenant**, create an app registration with
+   `--sign-in-audience AzureADMultipleOrgs`.
+2. **In the source tenant**, add a federated identity credential on that app: issuer
+   `https://login.microsoftonline.com/<SOURCE_TENANT_ID>/v2.0`, subject set to the
+   user-assigned managed identity's **`principalId`**, audience `api://AzureADTokenExchange`.
+3. **In the target tenant**, provision the application: `az ad sp create --id <APP_ID>`.
+4. **In the target tenant**, grant that service principal `Storage Blob Data Contributor` on
+   the target storage account.
+5. **On the source-side compute**, request an IMDS token with
+   `resource=api://AzureADTokenExchange` and the user-assigned managed identity's
+   `client_id`.
+6. **Exchange it for a target-tenant token** at
+   `https://login.microsoftonline.com/<TARGET_TENANT_ID>/oauth2/v2.0/token` with
+   `grant_type=client_credentials`,
+   `client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer`,
+   `client_assertion=<the IMDS token>` and `scope=https://storage.azure.com/.default`.
+7. **Use the result as an ordinary bearer token** against the target storage account.
+
+**How to confirm it actually crossed.** Decode the returned token and check that `tid` is the
+target tenant and `aud` is `https://storage.azure.com`. Then list and read the written blob
+**from target-tenant context**, not from the source side. A source-side read can succeed for
+reasons that have nothing to do with the target tenant accepting the identity. Validation of
+this path used a target storage account created with `--allow-shared-key-access false`, so it
+is confirmed to work on RBAC alone, with no account keys and no SAS.
+
+**Check these prerequisites before you plan around this, because they are the usual
+blockers.**
+
+- Creating the federated identity credential requires Application Administrator, Application
+  Developer, Cloud Application Administrator, or ownership of the application, in the
+  **source** tenant.
+- Provisioning the application and assigning the storage role requires sufficient rights in
+  the **target** tenant. In a CSP exit these are frequently two different people in two
+  different organisations, which makes this a scheduling dependency as much as a technical
+  one.
+- There is a ceiling of **20 federated identity credentials** per application and per
+  user-assigned managed identity. That is ample for a drain, but it constrains reuse of one
+  application across many identities.
+
+**What it costs you.** No additional Azure spend: an app registration, a federated credential
+and a role assignment are free. The cost is administrative rights in both tenants and the
+coordination to obtain them. Obtain them early; this is the step most likely to add calendar
+days to a drain that has a hard subscription-deletion deadline.
+
+**Two dead ends. Neither is a shortcut, and both cost time to rule out.**
+
+- **Transferring the subscription to the other tenant.** It looks like it would make the whole
+  problem disappear, and it does not. Moving a subscription between tenants breaks its
+  managed identities and every role assignment that references them; they have to be
+  recreated afterwards. That means the drain identity you rely on is one of the casualties.
+  CSP subscriptions carry their own transfer constraints on top, which is exactly the case
+  this overlay exists for.
+- **Cross-Tenant Restore (preview).** It reads as though it solves this and it does not apply
+  to Azure SQL PaaS at all. Its supported workloads are Azure VM, Azure Files, **SQL Server in
+  Azure VM**, SAP HANA in Azure VM and SAP ASE in Azure VM. Azure SQL Database and Azure SQL
+  Managed Instance are absent. **"SQL Server in Azure VM" is not Azure SQL PaaS**, and that is
+  precisely the misreading that sends people down this path. The reason is architectural and
+  therefore durable: the feature operates on Recovery Services vault recovery points, and
+  Azure SQL PaaS LTR backups never live in a vault.
+
+**Not validated: the private-endpoint end state.** This path was validated with the target
+storage account reachable over its **public endpoint**, deliberately, in order to isolate the
+identity question from the network question. A private-endpoint-only target storage account
+additionally needs network line of sight from source-tenant compute, which implies
+cross-tenant VNet peering. That was not built and is not proven here. **This is the untested
+combination of playbook F and playbook G**: F tells you to put a private endpoint on the
+artifact storage account, and G was proven only against a public one. If you need both, treat
+the networking as unproven work and budget for it.
+
 ---
 
 ## Caveats
@@ -744,6 +850,30 @@ the minimum serverless vCore level throughout the LTR wait even with zero activi
 lab, five GP_S_Gen5 serverless databases at minimum vCores cost roughly $0.38 per hour,
 adding approximately $64 over a seven-day wait. "Storage cost only during the wait" is not a
 safe assumption for serverless.
+
+#### A managed identity cannot be granted a role in another tenant
+
+This bites at planning time because it invalidates the architecture, not just a command. A
+managed identity, system-assigned or user-assigned, is a **single-tenant service principal**.
+It exists only in its home tenant and cannot hold an RBAC assignment in a different one.
+
+The consequence for this drain: the managed-identity path that survives every governance
+control inside one tenant stops dead if the artifact storage account lives in the target
+tenant. If your source subscription and your target subscription are in different tenants,
+which is the normal shape of a Cloud Solution Provider exit, discover this while you are
+drawing the design rather than when the first `BACKUP TO URL` fails.
+
+The supported fix is **managed identity as a federated credential**, which is generally
+available: a multi-tenant application registered in the source tenant trusts the managed
+identity, is provisioned into the target tenant, and holds the RBAC there. The full sequence,
+the verification steps and the prerequisites are in
+[playbook G](#playbook-g-the-target-subscription-is-in-a-different-tenant).
+
+Two apparent shortcuts are not shortcuts. **Transferring the subscription to the other
+tenant** breaks managed identities and every role assignment referencing them, so they must
+be recreated after the move; CSP subscriptions have additional transfer constraints.
+**Cross-Tenant Restore (preview)** does not cover Azure SQL Database or Managed Instance at
+all; see appendix C.
 
 ### Group 2: caveats that bite at restore time
 
@@ -1675,6 +1805,16 @@ behind too. This can solve a live database migration, not the compliance archive
 <https://learn.microsoft.com/en-us/azure/azure-sql/database/long-term-retention-overview>.
 The core conclusion is unchanged: LTR backups can only be restored under the same
 subscription as the original database.
+
+**Cross-Tenant Restore (preview) does not apply to Azure SQL PaaS.** Lead with the misreading,
+because it is the common one: the supported workload list includes **"SQL Server in Azure VM"**,
+and that is *not* Azure SQL Database or Azure SQL Managed Instance. It means SQL Server
+installed by you on an IaaS virtual machine. The full supported list is Azure VM, Azure Files,
+SQL Server in Azure VM, SAP HANA in Azure VM and SAP ASE in Azure VM. Azure SQL Database and
+Managed Instance are absent from it. The reason is architectural rather than a gap someone
+will close soon: the feature restores **Recovery Services vault recovery points**, and Azure
+SQL PaaS LTR backups never land in a vault. Do not plan a cross-tenant drain around this
+feature; use playbook G instead.
 
 **LTR immutability on Managed Instance** is not available on the same LTR overview page.
 Microsoft notes that Managed Instance LTR backups cannot currently be configured as
