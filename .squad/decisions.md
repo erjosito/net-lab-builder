@@ -460,3 +460,139 @@ rewriting the subnet, route table, or NSG.
 
 
 
+
+---
+
+# Scribe merge note: sql-ltr-backup-migration inbox backlog (merged 2026-09-11)
+
+**Merged by:** Scribe. **Requested by:** Jose.
+
+Three inbox entries written around 2026-09-10 and 2026-09-11 were merged late and are
+appended below verbatim, in the order they were written. Read them chronologically;
+they are a sequence, not a contradiction:
+
+1. `oracle-restore-proven.md` (2026-09-10) states that links 3 through 5 of the drain
+   chain (extract a portable artifact, store it, later restore or import it) are proven,
+   and that links 1 and 2 (an LTR backup exists, restore that LTR backup) were still
+   unverified at the time of writing because no LTR backup had existed yet.
+2. `tank-mi-timing.md` (2026-09-10T13:20) records the Managed Instance TDE decryption
+   and PITR proxy timings, plus the artifact consumability update for both the MI `.bak`
+   and the SQL Database BACPAC.
+3. `tank-ltr-restore-invalidation.md` (2026-09-11), written one day later, records that
+   the `az sql db ltr-backup restore` path did subsequently execute end to end, which
+   closes Oracle's link 2 as a mechanism, while the restored databases were empty, so the
+   timing measurement itself was discarded. Oracle's entry is preserved as written and has
+   not been back-edited.
+
+Standing conclusion for this lab is unchanged: LTR backups cannot be moved between servers
+or subscriptions, so the only route is a drain (restore the LTR backup to a temporary
+database, extract a portable artifact, write it to a storage account, delete the temporary
+copy).
+
+# Oracle decision: artifact restore proof is now first-class evidence
+
+Date: 2026-09-10
+
+## Decision
+
+Treat artifact consumption as proven for both halves of `sql-ltr-backup-migration`, and
+separate it explicitly from `RESTORE VERIFYONLY` and from LTR restore.
+
+## Rationale
+
+Jose challenged whether the lab had verified a restore or only an export. The answer before
+the second round was only export plus `.bak` readability. The second round restored or
+imported real archive artifacts into new databases and verified row counts plus aggregate
+checksums against the sources.
+
+## Evidence folded into README
+
+| Path | Result |
+|---|---|
+| Managed Instance `.bak` | Restored into a new database in 30.5 s. Row count 130000 matched, checksum -1557385128 matched, ROWS allocation 1056 MiB matched. |
+| SQL Database BACPAC | Imported with client-side sqlpackage in 198.6 s. Row count 131072 matched, checksum 12517530 matched, ROWS allocation 1104 MiB matched. |
+
+The SQL Database LOG allocation differed after import, 1224 MiB source vs 472 MiB imported.
+That is expected after a logical import and is not data loss.
+
+## Boundary kept explicit
+
+The production chain is:
+
+1. LTR backup exists.
+2. Restore the LTR backup.
+3. Extract a portable artifact.
+4. Store the artifact.
+5. Later, restore or import the artifact.
+
+Links 3 through 5 are now proven by the lab. Links 1 and 2 remain unverified and unmeasured
+because no LTR backup has existed yet.
+
+## Related documentation choices
+
+- Keep R-squared null on the MI two-point timing fits because any two-point fit would be
+  tautological.
+- State that the TDE decryption slope is fitted on ROWS file GiB from `sys.database_files`.
+  Using total file footprint including LOG changes the apparent rate by nearly 2x.
+- Document Msg 41901 for `RESTORE ... WITH STATS` on Managed Instance.
+- Document MI storage headroom as a hard planning constraint.
+- Do not publish the 347.8 s BACPAC download as a throughput planning rate. It was a
+  single-stream lab artifact; production should use `azcopy` or another parallel-capable
+  transfer tool.
+
+---
+
+# Tank MI timing measurements
+
+Date: 2026-09-10T13:20:00+02:00
+
+## Decision input
+
+The Managed Instance was kept running and used to close two timing gaps immediately, while avoiding the multi-day wait for an actual LTR backup.
+
+## Observations
+
+- LTR hedge policy was set on `mitest` at 2026-09-10T11:02:07Z with `az sql midb ltr-policy set -g rg-ltr-lab --mi ltrlab552754-mi -n mitest --weekly-retention P12W`.
+- Immediate LTR backup list check at 2026-09-10T11:02:34Z returned no backups.
+- TDE decryption was measured on service-managed TDE calibration databases seeded with mixed repeated text and `CRYPT_GEN_RANDOM` bytes.
+- `mi_tde_1gb_20260910`: 1.0313 GiB ROWS file, decryption 25.716 s, DEK drop 0.047 s, compressed backup 10.741 s, blob 250.5625 MiB.
+- `mi_tde_5gb_20260910`: 5.0156 GiB ROWS file, decryption 80.701 s, DEK drop 0.094 s, compressed backup 51.986 s, blob 1247.9375 MiB.
+- Decryption fit is a two-point slope only: fixed 0.1914 min, 0.2300 min/GiB, R-squared null because a two-point R-squared would overstate confidence.
+- Same-instance PITR restore of `mitest` to `mitest_pitr_proxy_20260910` completed in 55.549 s. This is a PROXY only, not a measured LTR restore duration.
+
+## Artifacts
+
+- `labs/sql-ltr-backup-migration/research/mi-timing-measurements.md`
+- `labs/sql-ltr-backup-migration/deploy/mi-calibrated-parameters.json`
+
+## Open items
+
+Managed Instance LTR backup availability delay and LTR restore duration remain unmeasured until an actual LTR backup exists.
+
+## 2026-09-10 artifact consumability update
+
+- Managed Instance `.bak` consumption is now proven with data intact.
+- Restored `mi_tde_1gb_20260910-20260910T110634Z.bak` to `mi_tde_1gb_restored` in 30.503 s.
+- Source and restored `dbo.Payload` both had 130000 rows, checksum -1557385128, 1056 MiB ROWS file, 88 MiB LOG file.
+- Initial MI restore attempt with `WITH STATS = 10` failed before artifact consumption with Msg 41901 because MI does not support that restore option. The same artifact restored successfully without `STATS`.
+- SQL Database BACPAC consumption is now proven with data intact.
+- Imported existing `ltrlab552754-calib-1gb.bacpac` into `ltrlab552754-calib-1gb-imported` using `C:\tools\sqlpackage\sqlpackage.exe` from `ltrlab-vm` with an Entra token from IMDS.
+- BACPAC download from private blob to VM took 347.754 s. sqlpackage import took 198.644 s.
+- Source and imported `dbo.LabPayload` both had 131072 rows, checksum 12517530, and 1104 MiB ROWS file. LOG allocation differed, 1224 MiB source vs 472 MiB imported, expected after import.
+- Three facts remain separate: `RESTORE VERIFYONLY` passed for the `.bak`; both portable artifact types now restore or import into working databases with data intact; LTR restore remains unmeasured and unverified until an LTR backup exists.
+
+---
+
+### 2026-09-11: LTR restore mechanism proven, but RestoreMinPerGb stays null
+**By:** Tank (requested by Jose)
+**What:** All three LTR backups restored successfully into new databases, proving the
+`az sql db ltr-backup restore` path end to end for the first time. However all three
+restored databases were verified EMPTY (zero tables, against source row counts
+131072 / 655360 / 2621440 which all matched). The LTR backups are copies of the first
+automatic PITR full backup, taken before seeding completed. `RestoreMinPerGb` and
+`RestoreRSquared` remain null; a provisional fit of 3.860445 + 0.037921*GB with
+R-squared 0.468043 was computed and DISCARDED as an artifact.
+**Why:** A restore can succeed, report Online, and produce a plausible linear fit while
+carrying no data. New standing gate: any future restore timing run must verify restored
+row counts against the source before a slope is fitted. A valid measurement needs an
+LTR backup taken AFTER seeding; the existing three can never provide one.
