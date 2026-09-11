@@ -171,10 +171,24 @@
   "MiColdStartNote": "Cold start from Stopped to Ready, measured 2026-09-11T07:10:54Z to approximately 07:31:27Z, polled at 60 to 90 second intervals. Budget roughly 20 minutes before any drain work can begin on a stopped instance.",
   "MiStoppedInstanceLtrPolicyQueryTrap": true,
   "MiStoppedInstanceLtrPolicyQueryTrapNote": "While the instance was stopped, az sql midb ltr-policy show failed with LongTermRetentionPolicyNotSupported and the misleading text 'Database mitest does not exist on server'. The database and the policy were both intact; the same command returned P12W once the instance reached Ready. Do not interpret this error on a stopped instance as loss of LTR configuration.",
-
   "SizesTestedGb": [
     1.0313,
     5.0156
   ],
-  "HeldOut": []
+  "HeldOut": [],
+  "CrossTenantTransferMeasured": true,
+  "CrossTenantTransferUtc": "2026-09-11T11:26:00Z",
+  "CrossTenantMechanism": "User-assigned managed identity federated to a multi-tenant app registration provisioned in the target tenant (workload identity federation, GA). No shared keys, no SAS; target storage created with allow-shared-key-access false.",
+  "CrossTenantTokenTidVerified": true,
+  "CrossTenantArtifactBytes": 1308557312,
+  "CrossTenantArtifactGiB": 1.219,
+  "CrossTenantDownloadSeconds": 7.9,
+  "CrossTenantUploadSeconds": 12.1,
+  "CrossTenantUploadMinPerGiB": 0.1655,
+  "CrossTenantUploadMiBPerSec": 103.1,
+  "CrossTenantIntegrityVerified": "MD5 identical on both sides: 4F5B8B350026C287CEF79B7EE1602E1B",
+  "CrossTenantVerifiedFromTarget": true,
+  "CrossTenantRSquared": null,
+  "CrossTenantNote": "Single data point at 1.219 GiB, so no slope and no R-squared. Upload crossed the tenant boundary to a PUBLIC target endpoint; the private-endpoint end state was deliberately not tested so that the identity question stayed separate from the network question. Download was from a source private endpoint.",
+  "CrossTenantTransferTrap": "Windows PowerShell Invoke-WebRequest is pathologically slow on binary payloads unless $ProgressPreference is SilentlyContinue. A 1.22 GiB transfer that takes 12 s with curl.exe ran for over an hour and blocked the VM run-command extension against every retry, presenting as an unresponsive VM rather than a slow download. Clearing it required a VM restart."
 }
