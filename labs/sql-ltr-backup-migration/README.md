@@ -50,7 +50,8 @@ delete the restored copy. This drain must run **while the source subscription is
 alive**, because deleting the subscription purges the LTR backups.
 
 **If the source subscription is not actually being deleted, stop here.** LTR backups
-survive deletion of the database, the logical server, and the managed instance. If you are
+survive deletion of the database, the logical server, the managed instance, and the whole
+resource group. If you are
 only decommissioning resources and the subscription stays (even empty), do nothing: the
 backups persist and you pay only LTR storage. The drain exists solely to beat a
 subscription-deletion deadline.
@@ -62,7 +63,8 @@ to URL, `RESTORE VERIFYONLY`, and confirmation of the resulting blob from inside
 against storage with shared-key access and public network access both disabled. On the SQL
 Database half the restore mechanism is proven and the BACPAC artifact has been imported
 back into a working database with matching row counts and checksums, but the LTR restore
-rate is not measured. Exact figures, and the list of what remains unmeasured, are in
+rate was never measured and this lab can no longer produce it. Exact figures, and the list of
+what remains unmeasured, are in
 [Appendix A](#appendix-a-validation-evidence).
 
 Two behaviours change how you should plan a real drain, and both are covered in the
@@ -136,10 +138,28 @@ from an LTR backup you land at the exact instant that backup was taken, nothing 
 **Purpose:** compliance and regulatory retention.
 
 **Critical property: LTR has its own lifecycle, independent of the resource that produced
-it.** An LTR backup survives deletion of the database, deletion of the logical server, and
-deletion of the managed instance. It is purged only when the **subscription** is deleted.
-This is why deleting the old database or instance is safe, but deleting the old subscription
-is not.
+it.** An LTR backup survives deletion of the database, deletion of the logical server,
+deletion of the managed instance, and deletion of the entire **resource group** that held
+them. The binding scope is the **subscription**, and the backup is purged only when the
+subscription is deleted. This is why deleting the old database, instance or resource group
+is safe, but deleting the old subscription is not. This lab has now tested the persistence
+half of that claim for both Azure SQL Database and Managed Instance by deleting the whole
+resource group and confirming all four LTR backups were still present and still enumerable
+afterwards, with unchanged `backupTime` and unchanged expiry; see
+[Appendix A](#appendix-a-validation-evidence).
+
+**Persisting is not the same as having been restored.** What this lab verified is that the
+orphaned backups continue to exist and enumerate after their parent resources are destroyed.
+Restoring one of those orphaned backups into a fresh server or managed instance was **not**
+done here. Microsoft documents that it works within the same subscription, and that
+documentation is quoted in appendix A, but treat it as documented rather than as verified by
+this lab.
+
+Note which way this cuts. Because the binding scope is the subscription, LTR backups
+tolerate almost any destruction below that scope, but they cannot outlive the subscription
+itself. That is exactly why a subscription which cannot be moved to another Entra directory
+(a common CSP constraint) forces the drain: there is no resource-level escape hatch,
+because the backups are not resource-level objects.
 
 **Second critical property: an LTR backup is a copy of a PITR full backup, not a fresh
 capture.** Enabling an LTR policy does not snapshot the database at the moment you enable
@@ -231,7 +251,7 @@ created temporary databases.
 
 | Question | Why it matters | What it rules in or out |
 |---|---|---|
-| **9. When is the source subscription being deleted?** | This is the hard deadline. LTR backups survive database, server, and instance deletion, but are purged permanently when the subscription is deleted. There is no recovery after that point. | Build in time for a full recovery drill (restore at least one artifact end to end) before the subscription is deleted. An untested compliance archive is not a compliance archive. |
+| **9. When is the source subscription being deleted?** | This is the hard deadline. LTR backups survive database, server, instance and resource group deletion, but are purged permanently when the subscription is deleted. There is no recovery after that point. | Build in time for a full recovery drill (restore at least one artifact end to end) before the subscription is deleted. An untested compliance archive is not a compliance archive. |
 | **10. Which subset of LTR backups must you actually retain for compliance?** | Cost scales directly with count and size. Artifact storage dominates the multi-year total by roughly 50x over compute. A wide compliance scope is also a large and costly archive. | Narrowing the scope to the legally required minimum is the single largest cost lever available. Run `src/powershell/sql-ltr-export/Get-LtrExportCostEstimate.ps1` for each candidate scope before committing. |
 | **11. Do you have vCore and server quota headroom in the source subscription for the temporary restore targets?** | The drain creates temporary databases in the source subscription. SQL DB logical servers are free, but General Purpose vCores and MI vCores consume regional quota. | Check `az sql server list-usages` and MI vCore quota before starting. Running out of quota mid-drain leaves orphaned temporary databases that keep billing and require manual cleanup. |
 | **12. Can the Managed Instance stay running for the entire LTR retention wait (up to 7 days)?** | A stopped MI takes no automated backups at all. A skipped LTR backup is never backfilled. Stopping the instance during the wait destroys the backup you were waiting to produce. | The MI must stay running for the entire wait. The free MI offer defaults to a schedule that stops the instance outside working hours to conserve credits; that schedule is incompatible with a continuous retention wait. |
@@ -315,16 +335,34 @@ them, and they can stack.
 managed instance, but the subscription itself is being kept, even as an empty shell.
 
 **Which constraints bite.** None. LTR backups are linked to the subscription, not to the
-resource that produced them. They survive deletion of the database, the server, and the
-instance.
+resource that produced them. They survive deletion of the database, the server, the
+instance, and the resource group that contained all of them.
 
 **The path.** Delete the resources. Leave the LTR policies and backups alone. Verify once,
-after the deletion, that the backups are still enumerable:
+**before** the deletion, that the backups enumerate by location alone, then again after the
+deletion that they are still there:
 
 ```powershell
+# Scoped to a server or instance. Only works while that server or instance still exists.
 az sql db ltr-backup list -l <region> -s <server> -g <rg> -o table
 az sql midb ltr-backup list -l <region> --mi <instance> -g <rg> -o table
+
+# Location only, no --server and no --mi. This is the handle that survives the deletion.
+az sql db ltr-backup list -l <region> --database-state All -o table
+az sql midb ltr-backup list -l <region> -o table
 ```
+
+**Location-only enumeration is the only practical way to find backups orphaned by a server
+that has already been deleted.** Prove it works in your subscription before you delete
+anything, because once the server or instance is gone it is the only handle you have left.
+The backups keep referencing a server or instance that no longer exists anywhere in the
+portal.
+
+**One link here is documented rather than verified in this lab.** Enumeration of orphaned
+backups was tested; **restoring** an orphaned backup into a fresh server or managed instance
+was not. Microsoft documents that it is supported within the same subscription (quoted in
+appendix A). If your compliance position depends on it, restore one orphaned backup as a
+drill while you still can, rather than assuming it on this document's authority.
 
 **What it costs you.** LTR storage only, for the configured retention period. This is by a
 wide margin the cheapest outcome. If there is any chance of keeping the subscription, price
@@ -334,6 +372,24 @@ that option before committing to a drain.
 subscription is being kept". If the deletion is merely deferred, you still need a drain and
 you now have a deadline you have not written down. Establish the deletion date before
 choosing this playbook.
+
+**The second trap: deleting the resource group does not stop LTR billing.** If you are
+decommissioning rather than retaining, deleting the resource group removes the servers and
+instances but leaves every LTR backup in place, billable to its full retention expiry,
+attached to resources that no longer appear anywhere in the portal. Deleting them is an
+explicit, separate act:
+
+```powershell
+az sql db ltr-backup delete -l <region> -s <server> -d <db> -n <backup-name> --yes
+az sql midb ltr-backup delete -l <region> --mi <instance> -d <db> -n <backup-name> --yes
+```
+
+Take `<backup-name>` from the `name` field of the corresponding `ltr-backup list` output and
+pass it verbatim; like the restore identifier, it is a composite value and a hand-assembled
+one will not resolve. The Managed Instance command also accepts `--id` with the full backup
+resource id instead of the four scoping arguments. `az sql midb ltr-backup delete` still
+emits a CLI preview warning; that is expected and is not a failure. See the cleanup caveat in
+group 1 for the full shape of this trap.
 
 **If the retained subscription is in a different tenant from the people who now operate it,
 use Azure Lighthouse.** This is the common shape after a tenant migration: the old
@@ -725,6 +781,15 @@ This is a single observation at a single size; see
   therefore durable: the feature operates on Recovery Services vault recovery points, and
   Azure SQL PaaS LTR backups never live in a vault.
 
+**Cleaning this up is not a resource-group delete.** The app registration, its federated
+identity credential, and the target-tenant service principal are **directory objects**. They
+live outside every resource group and outside every subscription, so deleting both resource
+groups leaves a fully working cross-tenant trust in place. That was observed directly during
+this lab's teardown: the resource groups were gone and the trust still worked until the
+directory objects were deleted explicitly. Remove them as a deliberate step when the drain is
+finished, in both tenants. `deploy/Remove-LtrLab.ps1` covers this (commit `f3c2911`); use the
+script rather than reconstructing the delete sequence by hand.
+
 **Not validated: the private-endpoint end state.** This path was validated with the target
 storage account reachable over its **public endpoint**, deliberately, in order to isolate the
 identity question from the network question. A private-endpoint-only target storage account
@@ -822,6 +887,30 @@ as the realistic wait, and check `backupTime` before relying on either property.
 
 If a `backupTime` turns out to be earlier than the data you need, the fix is to **wait for a
 later backup, not to re-enable the policy**. Re-enabling does not force a fresh capture.
+
+#### Deleting the resource group does not stop LTR billing
+
+This is the cleanup trap, and it is the mirror image of the survival property that makes LTR
+useful. Everything that makes an LTR backup outlive its database also makes it outlive your
+teardown.
+
+Measured in this lab on 2026-09-11: deleting the entire lab resource group, including the
+logical server, the managed instance, its virtual cluster, the VM, storage, the virtual
+network and the private endpoints, removed every one of those resources and left **all four
+LTR backups in place**, with unchanged `backupTime` and an unchanged retention expiry of
+2026-12-03. They remained billable for the whole of that remaining retention period. Only
+`az sql db ltr-backup delete` and `az sql midb ltr-backup delete` removed them.
+
+**The symptom is that there is no symptom.** The portal shows no server, no instance and no
+resource group, so there is nothing left to click on that would reveal the backups. The only
+way to find them is location-only enumeration (see playbook 0), and the only way to stop the
+charge is to delete each backup explicitly.
+
+**The rule:** when you decommission an estate by deleting resource groups, enumerate LTR
+backups by location first, delete the ones you are not keeping explicitly, and re-enumerate
+afterwards to confirm the list is empty. Treat a resource-group delete as a partial teardown
+whenever an LTR policy has ever been enabled in that subscription. `az sql midb ltr-backup
+delete` still emits a CLI preview warning when it runs; that is expected.
 
 #### Instance storage headroom is a hard planning constraint
 
@@ -1374,14 +1463,23 @@ Enumerate the LTR backups and read the `backupTime` field on each one. Confirm i
 the data you are required to retain.
 
 ```powershell
+# Scoped to a server or instance, while those still exist.
 az sql db ltr-backup list -l <region> -s <server> -g <rg> -o table
 az sql midb ltr-backup list -l <region> --mi <instance> -g <rg> -o table
+
+# Location only. Run this now, while you can still compare it against the scoped list.
+az sql db ltr-backup list -l <region> --database-state All -o table
+az sql midb ltr-backup list -l <region> -o table
 ```
 
-Do this **before** you delete the source database, the server, the instance, or the
-subscription. An LTR backup's content can predate the policy that created it by up to the
-full-backup interval, because the service adopts an existing PITR full backup rather than
-taking a new one. Once the source is gone the backup is immutable and there is no way to
+**Verify that location-only enumeration works before you delete anything.** After the server
+or instance is gone it is the only handle you have on the surviving backups, and it is not a
+good moment to discover that your region or CLI version behaves differently from this lab's.
+
+Do this **before** you delete the source database, the server, the instance, the resource
+group, or the subscription. An LTR backup's content can predate the policy that created it by
+up to the full-backup interval, because the service adopts an existing PITR full backup rather
+than taking a new one. Once the source is gone the backup is immutable and there is no way to
 establish what it was missing.
 
 If a `backupTime` is earlier than the data you need, the fix is to wait for a later backup,
@@ -1459,6 +1557,26 @@ artifact crosses the network and touches VM disk on the way out, and again on th
 if it is ever restored.
 
 See `src/powershell/sql-ltr-export/Export-SqlDbLtrBackups.ps1`.
+
+### Step 3: delete the drained LTR backups explicitly
+
+Deleting the source resource groups does not end LTR billing. Once the artifacts are
+verified durable, enumerate the LTR backups by location and delete each one you no longer
+need:
+
+```powershell
+az sql db ltr-backup list -l <region> --database-state All -o table
+az sql db ltr-backup delete -l <region> -s <server> -d <db> -n <backup-name> --yes
+
+az sql midb ltr-backup list -l <region> -o table
+az sql midb ltr-backup delete -l <region> --mi <instance> -d <db> -n <backup-name> --yes
+```
+
+Pass `<backup-name>` verbatim from the `name` field of the matching `list` output. Re-enumerate
+afterwards and confirm the list is empty. If the subscription is being deleted anyway the
+charge ends with it, but this step costs seconds and it is the only way to be sure nothing is
+still billing against a server that has already been destroyed. `az sql midb ltr-backup
+delete` still emits a CLI preview warning. See the cleanup caveat in group 1.
 
 ### What you end up with
 
@@ -1860,8 +1978,8 @@ because every LTR-sourced restore arrives encrypted.
 
 ### LTR restore: Azure SQL Database
 
-**Measured 2026-09-11. The restore mechanism is proven. The per-GB restore rate is still
-not measured, and `RestoreMinPerGb` remains null.**
+**Measured 2026-09-11. The restore mechanism is proven. The per-GB restore rate was never
+obtained, `RestoreMinPerGb` remains null, and this lab can no longer produce it.**
 
 `az sql db ltr-backup restore` was exercised end to end for the first time in this lab.
 Three LTR backups were restored into three new `GP_Gen5_4` databases, sequentially. All
@@ -1905,14 +2023,110 @@ against the source before anything is fitted.
 
 The three existing LTR backups can never yield a valid rate: their content predates seeding
 and LTR backups are immutable. A valid measurement needs a backup whose `backupTime` is later
-than seed completion. When such a backup appears is unknown; this lab has already recorded
-that LTR timing here does not follow the documentation. Poll with `Watch-LtrLabBackups.ps1`
+than seed completion.
+
+**`RestoreMinPerGb` is now permanently unresolved for this lab.** A calibration attempt was
+made and did not succeed. Three post-seed calibration databases were created on 2026-09-11
+specifically to obtain a backup whose `backupTime` postdated the payload seeding. After about
+five hours Azure had produced no LTR backups for any of them, which is consistent with the
+documented "up to seven days before the first LTR backup shows up" and is the same timing
+unpredictability recorded elsewhere in this document. Deleting the logical server as part of
+teardown ended that experiment. **Do not read any restore-rate figure into this lab: none was
+measured, and none is pending.**
+
+What a future run would need, stated so that the next attempt does not repeat this one:
+
+1. An LTR backup whose `backupTime` is **after** the data seed completed, confirmed by
+   reading `backupTime` rather than by assuming a weekly boundary.
+2. A **row count check on the restored copy** against the source, before any slope is fitted.
+   This is the standing verification gate above and it is not optional.
+3. At least two distinct database sizes, because one observation at one size cannot produce a
+   slope.
+4. A calendar allowance of the full seven-day LTR wait **after** seeding, not after resource
+   creation, and a teardown that does not run until the measurement is in hand.
+
+Poll with `Watch-LtrLabBackups.ps1`
 and trigger on `backupTime`, not on a predicted weekly boundary. Fit on the
 `allocated_data_storage` / ROWS GiB basis so the restore slope stays composable with
 `ExportMinPerGb`.
 
 Do not borrow values between the two halves in either direction. The engines, the artifact
 formats and the restore paths all differ.
+
+### Teardown experiment: LTR persistence after resource group deletion
+
+**Measured 2026-09-11. LTR backups persist, and remain enumerable, after deletion of the
+resource group, the logical server, and the managed instance. The binding scope is the
+subscription.** This was run as a controlled experiment during teardown rather than as an
+incidental observation, and it is the first time this lab has tested the Managed Instance
+side of the persistence claim at all.
+
+Read the section title literally. **Persistence and enumerability are what were measured.
+Restore from an orphaned backup was not attempted.** See "what this run did and did not
+establish" below before citing it.
+
+Sequence as executed:
+
+| Step | Action | Result |
+|---|---|---|
+| 1 | Record the LTR inventory before any deletion | 3 SQL Database LTR backups, 1 Managed Instance LTR backup |
+| 2 | Delete the entire lab resource group: logical server, managed instance, virtual cluster, VM, storage, virtual network, private endpoints | Completed in about 16 minutes, dominated by the managed instance and its virtual cluster |
+| 3 | Confirm the deletion: resource group absent, `az sql server list` returns no lab servers | Confirmed gone |
+| 4 | Re-enumerate LTR backups by location | **All four present**, unchanged `backupTime`, unchanged expiry of 2026-12-03 |
+| 5 | Delete the four orphaned backups explicitly | Removed; no restore was attempted from any of them, and they no longer exist |
+
+The persisting backups still referenced a logical server and a managed instance that no longer
+existed anywhere in the subscription. Enumeration was by **location alone**:
+`az sql db ltr-backup list --location <region> --database-state All` with no `--server`, and
+`az sql midb ltr-backup list --location <region>` with no `--mi`. That is the only practical
+handle on an orphaned backup, which is why playbook 0 and step 0b both tell you to prove
+location-only enumeration works before you delete anything.
+
+**What this run did and did not establish.**
+
+| Claim | Status |
+|---|---|
+| The backups still exist after resource group, server and instance deletion | **VERIFIED HERE** |
+| The backups are still enumerable, by location alone, with no surviving parent resource | **VERIFIED HERE** |
+| `backupTime` and expiry are unchanged by the deletion | **VERIFIED HERE** |
+| Deleting the resource group does not stop LTR billing | **VERIFIED HERE** |
+| An orphaned backup can be restored into a different server or managed instance in the same subscription | **DOCUMENTED ONLY, not verified here.** No restore was attempted from any of the four orphaned backups, and they were then deleted |
+
+**"Survived" in this document means persisted and enumerable. It does not mean a restore was
+demonstrated.** The distinction matters because the drain argument depends on knowing which
+links in the chain are proven and which are assumed, and this one is assumed, on Microsoft's
+authority rather than on this lab's. It is listed with the other open items in
+[deliberately out of scope](#deliberately-out-of-scope).
+
+The documented behaviour is in
+<https://learn.microsoft.com/en-us/azure/azure-sql/database/long-term-retention-overview>,
+quoted verbatim:
+
+> If you delete a logical server or a SQL managed instance, all databases on that server or
+> managed instance are also deleted... However, if you had configured LTR for a database, LTR
+> backups aren't deleted and can be used to restore databases to a different server or managed
+> instance in the same subscription.
+
+The first half of that quote, that the backups are not deleted, is what this run corroborates.
+The second half, that they can be used to restore into a different server or managed instance,
+is Microsoft's statement and remains untested here.
+
+**This reinforces the drain conclusion rather than weakening it.** Because the binding scope
+is the subscription, LTR backups tolerate essentially any destruction below that scope and
+none at it. There is no resource-level manoeuvre that saves them, which is exactly why a CSP
+subscription that cannot change Entra directory leaves the drain as the only option.
+
+**The billing consequence, measured.** The four persisting backups remained billable to their
+full retention expiry of 2026-12-03 after the resource group was gone. They were removed only
+by explicit `az sql db ltr-backup delete` and `az sql midb ltr-backup delete` calls;
+`az sql midb ltr-backup delete` emits a CLI preview warning while doing so. This is the
+cleanup trap written up in group 1 of the Caveats.
+
+**The cross-tenant footprint is invisible to a resource-group teardown as well.** The app
+registration, its federated identity credential and the target-tenant service principal are
+directory objects and belong to no resource group. Deleting both lab resource groups left a
+fully working cross-tenant trust standing until those objects were deleted explicitly.
+`Remove-LtrLab.ps1` was extended to cover them in commit `f3c2911`.
 
 ---
 
@@ -1932,7 +2146,8 @@ Phases 0 through 4 (pre-flight, seed, export, and calibrate) have been completed
 2026-09-10. Full command output is in `show-output/`. Key calibration results are in appendix A. A second-round artifact consumption proof has also
 completed for both extracted artifact types. On 2026-09-11 the LTR backups finally appeared
 and Phase 3 ran: the Managed Instance drain is now proven end to end from a real LTR backup,
-and the SQL Database LTR restore mechanism is proven. Phase 5 teardown remains pending.
+and the SQL Database LTR restore mechanism is proven. Phase 5 teardown has since completed,
+and was run as a controlled persistence experiment; see the teardown section in appendix A.
 
 Quotas below were read from the lab subscription in `swedencentral` at Phase 0.
 
@@ -2179,8 +2394,8 @@ and one of them must never be tested at all.
 
 | # | Scenario | Subscriptions needed |
 |---|---|---|
-| 1 | LTR backups survive deletion of database, server and managed instance | 1 |
-| 2 | Deleted-source backups are still enumerable and restorable | 1 |
+| 1 | LTR backups persist after deletion of database, server, managed instance and resource group | 1 |
+| 2 | Deleted-source backups are still enumerable by location alone (restore from an orphaned backup: documented, not tested here) | 1 |
 | 3 | SQL DB drain: LTR -> temp DB -> BACPAC -> blob, then artifact import with data checks | 1 |
 | 4 | MI drain: TDE blocker, workaround, COPY_ONLY, `RESTORE VERIFYONLY`, then artifact restore with data checks | 1 |
 | 5 | Striping path for databases above 195 GB | 1 (see trick below) |
@@ -2306,11 +2521,18 @@ checks. LTR restore was subsequently run on 2026-09-11; see the LTR restore sect
 
 ### Deliberately out of scope
 
+- **Restore of an orphaned LTR backup into a different server or managed instance.** The
+  2026-09-11 teardown verified that orphaned backups persist and enumerate after their parent
+  resources are destroyed; it did not restore one. The four orphaned backups were deleted
+  rather than restored. Microsoft documents that such a restore works within the same
+  subscription, so this is an assumed link, not a proven one. Anyone whose compliance position
+  depends on it should run that restore as a drill.
 - Subscription deletion behaviour (scenario 8).
 - Real-world LTR restore durations at scale. LTR restore itself is no longer out of scope:
   it is proven data-intact on the Managed Instance half and proven as a mechanism on the
   SQL Database half. What remains unmeasured is how restore time scales with database size,
-  on either half. Artifact consumption after extraction is also proven on both paths.
+  on either half, and the lab environment has now been torn down, so that measurement will
+  need a fresh run. Artifact consumption after extraction is proven on both paths.
 - Customer-managed-key TDE. The tooling defaults to `DisableOnStagedCopy` precisely to
   avoid introducing a Key Vault key that must outlive the old subscription; testing the CMK
   path is only worthwhile if you have decided to accept that key-custody burden.
@@ -2384,4 +2606,9 @@ lands in the per-GB slope if you ignore it.
 
 **Teardown is not just a resource-group delete.** LTR backups deliberately outlive their
 source resources, so `Remove-LtrLab.ps1` clears the policies and deletes the backups
-explicitly. Skipping it leaves them billing for the full 12-week retention.
+explicitly. Skipping it leaves them billing for the full 12-week retention. The same applies
+to the cross-tenant directory objects (app registration, federated identity credential,
+target-tenant service principal), which belong to no resource group at all; the script was
+extended to remove them in commit `f3c2911`. The 2026-09-11 teardown was run deliberately as
+a persistence experiment before the backups were deleted; the record is in appendix A. No
+restore was attempted from any of the orphaned backups.
