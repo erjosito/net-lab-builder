@@ -4,19 +4,20 @@
 
 ## Designs studied
 
-### Design D1: One floating BGP adjacency across private and public tunnels - evidence pending
+### Design D1: One floating BGP adjacency across private and public tunnels - rejected offline
 
-**Status:** _Pending evidence; teaching-only hypothesis._
-**Verdict:** No result is claimed until the supported Azure site/link model is attempted and the failure stage is isolated from configuration defects.
+**Status:** Teaching-only; rejected without a live D1 mutation.
+**Verdict:** VPN-over-ER requires a regular-private CPE BGP peer while connection-specific custom vWAN peers require APIPA, so one unchanged identity cannot float across both supported link models.
 
 **What it is:** Both the private VPN-over-ExpressRoute link and the public Internet VPN link attempt to use the same CPE BGP identity (`65050 / 10.250.254.242`). The experiment asks whether one unchanged adjacency can move between managed vWAN link endpoints.
 
 **Evidence:**
-- `show-output/d1-floating/` - pending API, IKE/IPsec, BGP, route, packet and probe captures
+- `show-output/deployment-blocker-2026-09-28/` - live peer-source discovery
+- `evidence-index.md` - audit coverage and transcript gaps
 - `validation-plan.md` - D1 prerequisite and verdict gates
 - `design.md` sections 4-6 - endpoint isolation, four XFRM slots and D1 experiment
 
-**Why this verdict:** Pending execution. An Azure API rejection or a failed BGP re-establishment is meaningful only after underlay reachability, endpoint mapping, PSKs, tunnel state, host routes and FRR syntax are independently proven correct.
+**Why this verdict:** The live deployment proved that regular-private peers collapse both path classes onto the same two default Azure BGP sources. Changing the ER peer to APIPA would violate the documented VPN-over-ER boundary. Trinity therefore rejected D1 offline and prohibited a live mutation.
 
 **Use this design when:**
 - Teaching why managed endpoint and link identity can prevent a traditional floating-neighbor pattern.
@@ -24,19 +25,20 @@
 **Avoid this design when:**
 - Production requires independently observable private and public failure domains.
 
-### Design D2: Separate BGP adjacencies with deterministic preference - provider limitation found
+### Design D2: Separate BGP adjacencies with deterministic preference - bounded correction failed
 
-**Status:** _Blocked before scenario execution._
-**Verdict:** The four IPsec SAs establish, but the frozen non-APIPA CPE BGP identities cannot produce four independent Azure peer tuples. Azure uses the two default gateway BGP addresses for regular private remote peers, even when four custom APIPA addresses are selected on the connection objects.
+**Status:** One authorized attempt completed and rolled back.
+**Verdict:** The corrected mixed private/APIPA model did not produce four unique sessions. Azure persisted the public APIPA peer and custom mappings but continued sourcing public TCP/179 from the default gateway addresses.
 
-**What it is:** The private and public sites use different CPE peer identities (`10.250.254.240` and `10.250.254.241`) and distinct active-active vWAN tunnel tuples. Route policy makes the ER-carried overlay primary and the Internet overlay backup in both directions.
+**What it is:** Private sessions use Azure defaults `10.240.0.12/.13` from CPE source `10.250.254.240`; public sessions use custom peers `169.254.22.2/.3` from CPE source `169.254.22.1`. Route policy makes the ER-carried overlay primary and Internet backup.
 
 **Evidence:**
-- `show-output/d2-separate/` - pending baseline, fault and restore captures
+- `show-output/d2-corrected/` - bounded correction, baseline, fault and restore captures
+- `evidence-index.md` - command-level audit ledger
 - `validation-plan.md` - D2 path-selection and fault matrix
 - `design.md` sections 5, 7 and 10 - four-neighbor model, AS-path/local-preference policy and faults
 
-**Why this verdict:** Live packet capture shows Azure initiating TCP/179 from the two default gateway addresses on both private and public XFRM paths. Microsoft documentation states that the corresponding custom Azure APIPA address is used only when the remote BGP peer is APIPA; regular private peers use the automatically assigned gateway address. This triggers the explicit `design.md` section 13 stop condition because four unique neighbor tuples cannot be routed through four distinct XFRM slots.
+**Why this verdict:** The CPE had the required APIPA loopback, XFRM routes, active FRR neighbors, and four healthy SAs. During the bounded capture, `169.254.22.2/.3` received no messages while public XFRM interfaces received BGP SYNs from `10.240.0.12/.13`. The attempt met its explicit rollback condition and was not retried.
 
 **Use this design when:**
 - Private and public transports must have independent health, policy and withdrawal.
@@ -65,14 +67,18 @@
 
 Azure, GCP, ExpressRoute, Partner Interconnect, the Amsterdam MCR, all three VXCs, and all four IKE/ESP SAs are live. The ignored `config/inventory.json` contains exact resource identifiers, versioned managed-route queries, effective and configured BGP peers, the read-only Megaport collector, application endpoints, and reviewed fault/restore commands.
 
-Niobe must not execute D1/D2/D3 faults against this deployment. The section-13 addressing blocker must first be resolved by an approved design change, such as APIPA CPE BGP identities paired per connection, or by reducing the requirement to the two effective Azure peer addresses. Neither change was authorized in the frozen design.
+Niobe must not execute D2/D3 faults. The bounded public-link APIPA correction failed its four-session assertion and the runtime inventory remains `validationAuthorized=false`. D1 remains prohibited.
 
 ## Evidence layout
 
-- `show-output/baseline/<timestamp>/`
-- `show-output/d1-floating/<timestamp>/`
-- `show-output/d2-separate/<fault-or-restore>/<timestamp>/`
+- `show-output/deployment-audit/<correlation-id>/`
+- `show-output/deployment-blocker-2026-09-28/`
+- `show-output/d1-rejected-offline/`
+- `show-output/d2-corrected/<correction-or-fault>/<before|action|during|restore|after|assertion>/`
 - `show-output/d3-prefix/<fault-or-restore>/<timestamp>/`
+- `show-output/compound/<timestamp>/`
 - `show-output/final-healthy/<timestamp>/`
 
 All committed evidence must pass `scripts/Confirm-Sanitization.ps1`.
+
+See `evidence-index.md` for the detailed local audit ledger. The eventual blog post should summarize findings rather than duplicate this command-level record.

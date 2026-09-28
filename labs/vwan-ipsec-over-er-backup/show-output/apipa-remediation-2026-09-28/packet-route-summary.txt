@@ -1,0 +1,13 @@
+Corrected route assertions
+
+10.240.0.13 from 10.250.254.240 -> xfrm-pri0
+10.240.0.12 from 10.250.254.240 -> xfrm-pri1
+169.254.22.2 from 169.254.22.1 -> xfrm-pub0
+169.254.22.3 from 169.254.22.1 -> xfrm-pub1
+
+Observed public BGP packets
+
+xfrm-pub0 and xfrm-pub1 received TCP/179 SYNs sourced from Azure default
+gateway addresses 10.240.0.12 or 10.240.0.13 and destined to
+169.254.22.1. No packets sourced from 169.254.22.2 or 169.254.22.3 were
+observed during the bounded capture.

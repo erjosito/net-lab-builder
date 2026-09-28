@@ -57,8 +57,8 @@ $inventory = [ordered]@{
     runId = $state.run_id
     deploymentStatus = 'deployed-ipsec-healthy-d2-bgp-blocked'
     blocker = [ordered]@{
-        code = 'azure-custom-apipa-requires-apipa-remote-peer'
-        detail = 'The site BGP peers are regular private addresses, so Azure uses its two default gateway BGP addresses rather than the four connection-selected custom APIPA addresses.'
+        code = 'azure-public-custom-apipa-not-used'
+        detail = 'A bounded correction set the public site peer to APIPA and selected dedicated custom Azure APIPA peers, but Azure still sourced public TCP/179 from its two default gateway addresses. The attempted change was rolled back.'
         validationAuthorized = $false
     }
     azure = [ordered]@{

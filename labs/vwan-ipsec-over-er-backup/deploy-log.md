@@ -50,6 +50,14 @@ This is documented Azure behavior: when the remote BGP peer uses a regular priva
 
 The result triggers `design.md` section 13: generated Azure BGP peer addressing cannot be routed through four distinct XFRM slots without collapsing private and public neighbor identity. No firewall relaxation, duplicate FRR neighbor, route leak, or unapproved APIPA redesign was used to bypass the stop condition.
 
+### Bounded APIPA correction attempt
+
+One authorized correction was applied without gateway recreation or IPsec changes. The private site remained on CPE peer `10.250.254.240`; the public site changed to `169.254.22.1`; the public connection selected Azure custom peers `169.254.22.2/.3`; and the CPE received the required APIPA loopback, XFRM host routes, FRR neighbors, and filters.
+
+Azure persisted all requested values and all four IKE/ESP SAs remained established. The acceptance gate still failed: public XFRM captures showed TCP/179 sourced from `10.240.0.12/.13`, while `169.254.22.2/.3` remained in Connect with no received messages. The attempt was stopped without retry.
+
+The public connection, public site, CPE state, and newly added gateway custom addresses were restored. Post-rollback checks confirmed four established SAs, ExpressRoute provider provisioning, Azure private peering, GCP Partner BGP, and the original neighbor definitions.
+
 ## Current health and smoke results
 
 - ExpressRoute provider state is provisioned and Azure private peering succeeded.
