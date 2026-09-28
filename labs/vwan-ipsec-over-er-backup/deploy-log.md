@@ -58,6 +58,14 @@ Azure persisted all requested values and all four IKE/ESP SAs remained establish
 
 The public connection, public site, CPE state, and newly added gateway custom addresses were restored. Post-rollback checks confirmed four established SAs, ExpressRoute provider provisioning, Azure private peering, GCP Partner BGP, and the original neighbor definitions.
 
+### Authorized retry after local GSA disablement
+
+One clean repeat used only the corrected successful operation forms from the first attempt. The local WSL GSA warning was absent and Azure/GCP authentication, DNS and REST operations succeeded. All four SAs remained established.
+
+After the same 60-second convergence window, both private peers `10.240.0.12/.13` were established, but public custom peers `169.254.22.2/.3` remained Connect with zero messages. Captures on all four XFRM interfaces again showed public TCP/179 sourced from Azure defaults `.12/.13` toward CPE APIPA `169.254.22.1`.
+
+The retry was rolled back once. Azure and CPE mappings returned to the pre-retry state, four SAs remained established, provider paths remained healthy, and a full authenticated Terraform plan reported no changes. Disabling local GSA changed the WSL warning only; it did not change Azure API semantics or effective BGP source selection. No further retry or Niobe fault validation is authorized.
+
 ## Current health and smoke results
 
 - ExpressRoute provider state is provisioned and Azure private peering succeeded.

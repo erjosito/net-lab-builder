@@ -35,6 +35,18 @@
       "status": "Captured failed bounded correction, explicit packet-source condition and complete rollback; no Niobe fault validation authorized"
     },
     {
+      "id": "Q-BGP-APIPA-GSA-RETRY",
+      "scenario": "apipa-gsa-off-retry",
+      "question": "Did disabling local Global Secure Access change Azure API behavior or allow the reviewed APIPA peer model to establish all four exact BGP sessions?",
+      "expectedPaths": [
+        "show-output/d2-corrected/apipa-gsa-off-retry/baseline/",
+        "show-output/d2-corrected/apipa-gsa-off-retry/action/",
+        "show-output/d2-corrected/apipa-gsa-off-retry/acceptance/",
+        "show-output/d2-corrected/apipa-gsa-off-retry/rollback/"
+      ],
+      "status": "Captured failed sole retry, identical Azure BGP source behavior and verified rollback; no further retry authorized"
+    },
+    {
       "id": "Q-D1-OFFLINE-REJECTION",
       "scenario": "d1-rejected-offline",
       "question": "Why is one floating adjacency outside the documented support boundary without a live mutation?",

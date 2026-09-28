@@ -1,0 +1,88 @@
+---SAS---
+ESTABLISHED=4
+pri0: #42, ESTABLISHED, IKEv2, c75c168a7fc9bb1a_i* b14d98622e8422f7_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.4' @ 10.240.0.4[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 4635s ago, rekeying in 8621s
+  pri0: #28, reqid 4, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 2836s ago, rekeying in 520s, expires in 1124s
+    in  cca26ae6 (-|0x0000019a),  75828 bytes,  1378 packets,   897s ago
+    out ef5a6eee (-|0x0000019a),  42854 bytes,   682 packets,    37s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pub0: #41, ESTABLISHED, IKEv2, fd55850c6466f426_i* 6a1c12684bdffa6f_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.47.254' @ 74.158.47.254[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 4878s ago, rekeying in 8866s
+  pub0: #27, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 3157s ago, rekeying in 153s, expires in 803s
+    in  c2aa5e2a (-|0x000001a4),  78801 bytes,  1479 packets,   918s ago
+    out 44290490 (-|0x000001a4),  18120 bytes,   302 packets,    37s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri1: #40, ESTABLISHED, IKEv2, 915e1226ac433edf_i* 25c3f2dfb5a4f7b3_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.5' @ 10.240.0.5[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 5078s ago, rekeying in 9220s
+  pri1: #29, reqid 3, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 2738s ago, rekeying in 562s, expires in 1222s
+    in  c701e267 (-|0x0000019b),  74479 bytes,  1342 packets,   949s ago
+    out 7df09f16 (-|0x0000019b), 333137 bytes,  6258 packets,    37s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pub1: #39, ESTABLISHED, IKEv2, 61cb36af4fa9e79c_i* 3c54284f8cc68d63_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.80.26' @ 74.158.80.26[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 5362s ago, rekeying in 8784s
+  pub1: #26, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 3168s ago, rekeying in 221s, expires in 792s
+    in  c8e495ce (-|0x000001a5), 368259 bytes,  7056 packets,   896s ago
+    out cd4f2418 (-|0x000001a5),  18120 bytes,   302 packets,    37s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+---BGP---
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 685
+RIB entries 7, using 1288 bytes of memory
+Peers 4, using 2892 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+169.254.21.1    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.22.1    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.21.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.22.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+
+Total number of neighbors 4
+---ROUTES---
+169.254.21.1 dev xfrm-pri0 scope link 
+169.254.21.5 dev xfrm-pub0 scope link 
+169.254.22.1 dev xfrm-pri1 scope link 
+169.254.22.5 dev xfrm-pub1 scope link 
+---LOOPBACK---
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet 10.250.254.240/32 scope global lo
+       valid_lft forever preferred_lft forever
+    inet 10.250.254.241/32 scope global lo
+       valid_lft forever preferred_lft forever
+    inet 10.250.254.242/32 scope global lo
+       valid_lft forever preferred_lft forever
+    inet 10.250.254.250/32 scope global lo
+       valid_lft forever preferred_lft forever
+    inet 10.253.2.10/32 scope global lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+---HASHES---
+57d7087bdb603b9b9e46300e1619f5b71981d1b0eb0834cee765094b1a999df7  /etc/frr/frr.conf
+714eaaa19096a8a34cf5c6b67e5ea00532389bd594369de1c9ea5e02fff2990f  /etc/vwan-lab/network.env
+5e0e805554a4373837deefc37d96992ac2c69308e46cdfd55604b3eaa852e84e  /etc/nftables.d-vwan-lab.conf
+f90add33da8909c8789eb9f4cdeb00cd68d614231a08bf59b31c6e6da91e3371  /etc/swanctl/conf.d/vwan.conf
+

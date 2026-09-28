@@ -1,0 +1,1 @@
+gcloud compute ssh cpe-ver-09281131 --project gcp-vwan-eripsec-09281131 --zone europe-north2-c --tunnel-through-iap --quiet --command "for i in xfrm-pri0 xfrm-pri1 xfrm-pub0 xfrm-pub1; do (echo ===`$i===; sudo timeout 60 tcpdump -ni `$i -s 128 -tttt -vv 'tcp port 179') & done; wait"

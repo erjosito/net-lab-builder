@@ -1,0 +1,50 @@
+apply-cpe-apipa.sh        | 4 kB |   4.0 kB/s | ETA: 00:00:00 |  88%apply-cpe-apipa.sh        | 4 kB |   4.5 kB/s | ETA: 00:00:00 | 100%
+
+Hello, this is FRRouting (version 8.1).
+Copyright 1996-2005 Kunihiro Ishiguro, et al.
+
+cpe-ver-09281131# configure terminal
+cpe-ver-09281131(config)# router bgp 65050
+cpe-ver-09281131(config-router)#  no neighbor 169.254.21.1
+cpe-ver-09281131(config-router)#  no neighbor 169.254.22.1
+cpe-ver-09281131(config-router)#  no neighbor 169.254.21.5
+cpe-ver-09281131(config-router)#  no neighbor 169.254.22.5
+cpe-ver-09281131(config-router)#  neighbor PRI update-source 10.250.254.240
+cpe-ver-09281131(config-router)#  neighbor PUB update-source 169.254.22.1
+cpe-ver-09281131(config-router)#  neighbor 10.240.0.13 peer-group PRI
+cpe-ver-09281131(config-router)#  neighbor 10.240.0.12 peer-group PRI
+cpe-ver-09281131(config-router)#  neighbor 169.254.22.2 peer-group PUB
+cpe-ver-09281131(config-router)#  neighbor 169.254.22.3 peer-group PUB
+cpe-ver-09281131(config-router)# end
+cpe-ver-09281131# write memory
+Note: this version of vtysh never writes vtysh.conf
+Building Configuration...
+Integrated configuration saved to /etc/frr/frr.conf
+[OK]
+cpe-ver-09281131# 
+---SAS---
+ESTABLISHED=4
+---BGP---
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 365
+RIB entries 7, using 1288 bytes of memory
+Peers 4, using 2892 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+10.240.0.12     4      65515         0         0        0    0    0    never         Idle        0 N/A
+10.240.0.13     4      65515         0         0        0    0    0    never         Idle        0 N/A
+169.254.22.2    4      65515         0         0        0    0    0    never         Idle        0 N/A
+169.254.22.3    4      65515         0         0        0    0    0    never         Idle        0 N/A
+
+Total number of neighbors 4
+---ROUTES---
+10.240.0.13 from 10.250.254.240 dev xfrm-pri0 uid 1002 
+    cache 
+10.240.0.12 from 10.250.254.240 dev xfrm-pri1 uid 1002 
+    cache 
+169.254.22.2 from 169.254.22.1 dev xfrm-pub0 uid 1002 
+    cache 
+169.254.22.3 from 169.254.22.1 dev xfrm-pub1 uid 1002 
+    cache 
+

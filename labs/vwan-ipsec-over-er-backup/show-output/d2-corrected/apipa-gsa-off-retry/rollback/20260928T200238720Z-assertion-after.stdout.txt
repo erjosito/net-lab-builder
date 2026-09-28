@@ -1,0 +1,51 @@
+---SITE---
+{
+  "asn": 65050,
+  "bgpPeeringAddress": "10.250.254.241"
+}
+---PUBLIC-CONNECTION---
+[
+  {
+    "customBgpIpAddress": "169.254.21.5",
+    "ipConfigurationId": "Instance0"
+  },
+  {
+    "customBgpIpAddress": "169.254.22.5",
+    "ipConfigurationId": "Instance1"
+  }
+]
+---PRIVATE-CONNECTION---
+[
+  {
+    "customBgpIpAddress": "169.254.21.1",
+    "ipConfigurationId": "Instance0"
+  },
+  {
+    "customBgpIpAddress": "169.254.22.1",
+    "ipConfigurationId": "Instance1"
+  }
+]
+---GATEWAY---
+[
+  {
+    "custom": [
+      "169.254.21.1",
+      "169.254.21.5"
+    ],
+    "default": [
+      "10.240.0.13"
+    ],
+    "instance": "Instance0"
+  },
+  {
+    "custom": [
+      "169.254.22.1",
+      "169.254.22.5"
+    ],
+    "default": [
+      "10.240.0.12"
+    ],
+    "instance": "Instance1"
+  }
+]
+

@@ -49,7 +49,7 @@ function Protect-Text {
     $safe = $safe -replace '(?i)(--(?:shared-key|psk|password|client-secret|api-key|api-secret)\s+)(?:"[^"]*"|''[^'']*''|\S+)', '$1<REDACTED>'
     $safe = $safe -replace '(?i)("(?:serviceKey|pairingKey|preSharedKey|sharedKey|access_token|client_secret|apiKey|apiSecret)"\s*:\s*")[^"]+(")', '$1<REDACTED>$2'
     $safe = $safe -replace '(?i)(\$?(?:psk|sharedKey|preSharedKey)\s*=\s*)(?:"[^"]*"|''[^'']*''|[^;\s,}''"]+)', '$1<REDACTED>'
-    $safe = $safe -replace '(?i)(MEGAPORT_API_(?:KEY|SECRET)\s*=\s*)(?:"[^"]*"|''[^'']*''|[^;\s,}]+)', '$1<REDACTED>'
+    $safe = $safe -replace '(?i)((?<![A-Za-z0-9_])MEGAPORT_API_(?:KEY|SECRET)\s*=\s*)(?:"[^"]*"|''[^'']*''|[^;\s,}]+)', '$1<REDACTED>'
     $safe = $safe -replace '(?i)(--billing-account(?:=|\s+))\S+', '$1<BILLING_ACCOUNT>'
     $safe = $safe -replace '(?i)(billingAccounts/)[0-9A-Za-z-]+', '$1<BILLING_ACCOUNT>'
     $safe = $safe -replace '(?i)(/subscriptions/)[^/\s,\]]+', '$1<SUBSCRIPTION>'

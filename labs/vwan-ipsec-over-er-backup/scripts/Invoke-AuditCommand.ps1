@@ -37,6 +37,8 @@ param(
     [string[]]$BeforeEvidence = @(),
     [string[]]$AfterEvidence = @(),
     [string]$ObservedEffect = '',
+    [ValidateRange(1, 86400)]
+    [int]$TimeoutSeconds = 1200,
     [switch]$AllowFailure
 )
 
@@ -50,7 +52,7 @@ function Protect-Text {
     $safe = $safe -replace '(?i)(--(?:shared-key|psk|password|client-secret|api-key|api-secret)\s+)(?:"[^"]*"|''[^'']*''|\S+)', '$1<REDACTED>'
     $safe = $safe -replace '(?i)("(?:serviceKey|pairingKey|preSharedKey|sharedKey|access_token|client_secret|apiKey|apiSecret)"\s*:\s*")[^"]+(")', '$1<REDACTED>$2'
     $safe = $safe -replace '(?i)(\$?(?:psk|sharedKey|preSharedKey)\s*=\s*)(?:"[^"]*"|''[^'']*''|[^;\s,}''"]+)', '$1<REDACTED>'
-    $safe = $safe -replace '(?i)(MEGAPORT_(?:API|ACCESS|SECRET)_(?:KEY|SECRET)\s*=\s*)(?:"[^"]*"|''[^'']*''|[^;\s,}]+)', '$1<REDACTED>'
+    $safe = $safe -replace '(?i)((?<![A-Za-z0-9_])MEGAPORT_(?:API|ACCESS|SECRET)_(?:KEY|SECRET)\s*=\s*)(?:"[^"]*"|''[^'']*''|[^;\s,}]+)', '$1<REDACTED>'
     $safe = $safe -replace '(?i)(/subscriptions/)[^/\s,\]]+', '$1<SUBSCRIPTION>'
     $safe = $safe -replace '(?i)(--billing-account(?:=|\s+))\S+', '$1<BILLING_ACCOUNT>'
     $safe = $safe -replace '(?i)(billingAccounts/)[0-9A-Za-z-]+', '$1<BILLING_ACCOUNT>'
@@ -88,13 +90,22 @@ $process.StartInfo = $psi
 $null = $process.Start()
 $stdoutTask = $process.StandardOutput.ReadToEndAsync()
 $stderrTask = $process.StandardError.ReadToEndAsync()
-$process.WaitForExit()
+$timedOut = -not $process.WaitForExit($TimeoutSeconds * 1000)
+if ($timedOut) {
+    $process.Kill($true)
+    $process.WaitForExit()
+}
 $stdoutTask.Wait()
 $stderrTask.Wait()
 $end = Get-Date
 
 $stdout = Protect-Text $stdoutTask.Result
 $stderr = Protect-Text $stderrTask.Result
+if ($timedOut) {
+    $stderr = @($stderr, "COMMAND TIMEOUT: exceeded $TimeoutSeconds seconds; process tree terminated.") |
+        Where-Object { $_ } |
+        Join-String -Separator [Environment]::NewLine
+}
 Set-Content -Path $stdoutPath -Value $stdout -Encoding utf8
 Set-Content -Path $stderrPath -Value $stderr -Encoding utf8
 
@@ -128,8 +139,10 @@ $metadata = [ordered]@{
     localEnded = $end.ToString('o')
     timezone = [System.TimeZoneInfo]::Local.Id
     durationMs = [math]::Round(($end - $start).TotalMilliseconds)
-    exitCode = $process.ExitCode
-    succeeded = ($process.ExitCode -eq 0)
+    exitCode = if ($timedOut) { 124 } else { $process.ExitCode }
+    succeeded = (-not $timedOut -and $process.ExitCode -eq 0)
+    timedOut = $timedOut
+    timeoutSeconds = $TimeoutSeconds
     host = [Environment]::MachineName
     os = [System.Runtime.InteropServices.RuntimeInformation]::OSDescription
     toolContext = $toolContext
@@ -138,6 +151,7 @@ $metadata = [ordered]@{
 Set-Content -Path $metadataPath -Value (Protect-Text ($metadata | ConvertTo-Json -Depth 8)) -Encoding utf8
 
 Write-Host $metadataPath
-if ($process.ExitCode -ne 0 -and -not $AllowFailure) {
-    exit $process.ExitCode
+$effectiveExitCode = if ($timedOut) { 124 } else { $process.ExitCode }
+if ($effectiveExitCode -ne 0 -and -not $AllowFailure) {
+    exit $effectiveExitCode
 }

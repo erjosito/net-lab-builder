@@ -1,0 +1,72 @@
+---GATEWAY---
+[
+  {
+    "custom": [
+      "169.254.21.1",
+      "169.254.22.2",
+      "169.254.21.5"
+    ],
+    "default": [
+      "10.240.0.13"
+    ],
+    "instance": "Instance0"
+  },
+  {
+    "custom": [
+      "169.254.22.1",
+      "169.254.22.3",
+      "169.254.22.5"
+    ],
+    "default": [
+      "10.240.0.12"
+    ],
+    "instance": "Instance1"
+  }
+]
+---SAS---
+ESTABLISHED=4
+pri0: #42, ESTABLISHED, IKEv2, c75c168a7fc9bb1a_i* b14d98622e8422f7_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.4' @ 10.240.0.4[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 3457s ago, rekeying in 9799s
+  pri0: #28, reqid 4, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 1658s ago, rekeying in 1698s, expires in 2302s
+    in  cca26ae6 (-|0x0000019a),  36608 bytes,   704 packets
+    out ef5a6eee (-|0x0000019a),   9240 bytes,   154 packets,     3s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pub0: #41, ESTABLISHED, IKEv2, fd55850c6466f426_i* 6a1c12684bdffa6f_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.47.254' @ 74.158.47.254[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 3700s ago, rekeying in 10044s
+  pub0: #27, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 1979s ago, rekeying in 1331s, expires in 1981s
+    in  c2aa5e2a (-|0x000001a4),  43888 bytes,   844 packets
+    out 44290490 (-|0x000001a4),  11160 bytes,   186 packets,     3s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri1: #40, ESTABLISHED, IKEv2, 915e1226ac433edf_i* 25c3f2dfb5a4f7b3_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.5' @ 10.240.0.5[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 3900s ago, rekeying in 10398s
+  pri1: #29, reqid 3, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 1560s ago, rekeying in 1740s, expires in 2400s
+    in  c701e267 (-|0x0000019b),  34580 bytes,   665 packets
+    out 7df09f16 (-|0x0000019b),   8580 bytes,   143 packets,     3s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pub1: #39, ESTABLISHED, IKEv2, 61cb36af4fa9e79c_i* 3c54284f8cc68d63_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.80.26' @ 74.158.80.26[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 4184s ago, rekeying in 9962s
+  pub1: #26, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 1990s ago, rekeying in 1399s, expires in 1970s
+    in  c8e495ce (-|0x000001a5),  44096 bytes,   848 packets
+    out cd4f2418 (-|0x000001a5),  11160 bytes,   186 packets,     3s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+

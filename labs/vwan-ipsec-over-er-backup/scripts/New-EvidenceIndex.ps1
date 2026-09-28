@@ -16,6 +16,22 @@ $questionsPath = Join-Path $LabRoot 'config\evidence-questions.json'
 $outputPath = Join-Path $LabRoot 'evidence-index.md'
 $questions = Get-Content $questionsPath -Raw | ConvertFrom-Json
 $metadataFiles = @(Get-ChildItem (Join-Path $LabRoot 'show-output') -Recurse -File -Filter '*.metadata.json' -ErrorAction SilentlyContinue)
+
+function Get-OptionalProperty {
+    param(
+        [Parameter(Mandatory)]
+        [object]$InputObject,
+        [Parameter(Mandatory)]
+        [string]$Name
+    )
+
+    $property = $InputObject.PSObject.Properties[$Name]
+    if ($null -ne $property) {
+        return $property.Value
+    }
+    return $null
+}
+
 $records = foreach ($file in $metadataFiles) {
     try {
         $record = Get-Content $file.FullName -Raw | ConvertFrom-Json
@@ -42,7 +58,8 @@ $lines.Add('| Question | Scenario | Audit question | Expected evidence | Current
 $lines.Add('|---|---|---|---|---:|---|')
 foreach ($question in $questions.questions) {
     $matches = @($records | Where-Object {
-        $_.Record.questionId -eq $question.id -or $_.Record.parentQuestionId -eq $question.id
+        $_.Record.questionId -eq $question.id -or
+            (Get-OptionalProperty -InputObject $_.Record -Name 'parentQuestionId') -eq $question.id
     })
     $paths = if ($matches.Count) {
         ($matches | Select-Object -ExpandProperty Directory -Unique | Select-Object -First 3 | ForEach-Object { "``$_/``" }) -join '<br>'
@@ -66,8 +83,9 @@ foreach ($item in ($records | Sort-Object { $_.Record.utcStarted })) {
     $r = $item.Record
     $utcStarted = ([datetimeoffset]$r.utcStarted).ToUniversalTime().ToString('o')
     $effect = ([string]$r.expectedEffect).Replace('|','\|')
-    $questionLabel = if ($r.parentQuestionId) {
-        "$($r.parentQuestionId) / $($r.questionId)"
+    $parentQuestionId = Get-OptionalProperty -InputObject $r -Name 'parentQuestionId'
+    $questionLabel = if ($parentQuestionId) {
+        "$parentQuestionId / $($r.questionId)"
     } else {
         [string]$r.questionId
     }
@@ -80,7 +98,7 @@ $lines.Add('')
 $lines.Add('- Deployment correlation `deployment-20260928-01` contains 341 reconstructed command records. Original blocker correlation `nonapipa-blocker-20260928-01` contains 81 records. Both preserve negative commands and exact sanitized combined tool output.')
 $lines.Add('- Historical Copilot CLI shell results were stored as combined streams. Their metadata marks stdout/stderr separation unavailable; all new live evidence must use `Invoke-AuditCommand.ps1` for separate streams.')
 $lines.Add('- The bounded APIPA correction is reconstructed under correlation `apipa-correction-20260928-01`. The source retained a combined command-result stream, so stdout/stderr separation is explicitly unavailable for those historical commands; exact sanitized combined output is preserved.')
-$lines.Add('- The correction failed because Azure still sourced public TCP/179 from the default peers. It was rolled back, so D2/D3 fault validation remains unauthorized.')
+$lines.Add('- The original correction and the sole GSA-disabled retry failed because Azure still sourced public TCP/179 from the default peers. Both were rolled back, so D2/D3 fault validation remains unauthorized.')
 $lines.Add('- A missing or failed command remains in the ledger; it is never removed to make a scenario look clean.')
 
 $utf8 = [System.Text.UTF8Encoding]::new($false)

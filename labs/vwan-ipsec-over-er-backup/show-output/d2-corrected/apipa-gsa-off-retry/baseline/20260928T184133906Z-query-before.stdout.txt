@@ -1,0 +1,145 @@
+---TIME---
+2026-09-28T18:41:40,689176515+00:00
+---RETRY-BACKUP---
+RETRY_BACKUP_ABSENT
+---SAS---
+pub0: #41, ESTABLISHED, IKEv2, fd55850c6466f426_i* 6a1c12684bdffa6f_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.47.254' @ 74.158.47.254[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 13s ago, rekeying in 13731s
+  pub0: #23, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 1520s ago, rekeying in 1990s, expires in 2440s
+    in  cb7e4b72 (-|0x000001a4),  33852 bytes,   651 packets
+    out 14b7372a (-|0x000001a4),   8580 bytes,   143 packets,     4s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri1: #40, ESTABLISHED, IKEv2, 915e1226ac433edf_i* 25c3f2dfb5a4f7b3_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.5' @ 10.240.0.5[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 213s ago, rekeying in 14085s
+  pri1: #25, reqid 3, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 1102s ago, rekeying in 2330s, expires in 2858s
+    in  c22593d8 (-|0x0000019b),  24284 bytes,   467 packets
+    out b403c9da (-|0x0000019b),   6000 bytes,   100 packets,     4s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pub1: #39, ESTABLISHED, IKEv2, 61cb36af4fa9e79c_i* 3c54284f8cc68d63_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.80.26' @ 74.158.80.26[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 497s ago, rekeying in 13649s
+  pub1: #22, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 1531s ago, rekeying in 1917s, expires in 2429s
+    in  cbeacf3e (-|0x000001a5),  33852 bytes,   651 packets
+    out 69d0905a (-|0x000001a5),   8580 bytes,   143 packets,     4s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri0: #35, ESTABLISHED, IKEv2, 58b307b9284e01e1_i* b7049faef87cbb1b_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.4' @ 10.240.0.4[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 13926s ago, rekeying in 230s
+  pri0: #24, reqid 4, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 1200s ago, rekeying in 2133s, expires in 2760s
+    in  c44a8d92 (-|0x0000019a),  26260 bytes,   505 packets
+    out 05e4c034 (-|0x0000019a),   6600 bytes,   110 packets,     4s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+---BGP---
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 365
+RIB entries 7, using 1288 bytes of memory
+Peers 4, using 2892 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+169.254.21.1    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.22.1    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.21.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.22.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+
+Total number of neighbors 4
+---ROUTES---
+unicast default via 10.250.0.1 dev ens4 table main proto dhcp scope global src 10.250.0.10 metric 100 
+blackhole 10.240.0.0/24 table main proto static scope global metric 20 
+unicast 10.240.0.4 via 10.250.0.1 dev ens4 table main proto boot scope global metric 5 
+unicast 10.240.0.5 via 10.250.0.1 dev ens4 table main proto boot scope global metric 5 
+blackhole 10.241.0.0/24 table main proto static scope global metric 20 
+unicast 10.250.0.1 dev ens4 table main proto dhcp scope link src 10.250.0.10 metric 100 
+blackhole 10.253.2.0/24 table main proto static scope global metric 20 
+unicast 74.158.47.254 via 10.250.0.1 dev ens4 table main proto boot scope global metric 5 
+unicast 74.158.80.26 via 10.250.0.1 dev ens4 table main proto boot scope global metric 5 
+unicast 169.254.21.1 dev xfrm-pri0 table main proto boot scope link 
+unicast 169.254.21.5 dev xfrm-pub0 table main proto boot scope link 
+unicast 169.254.22.1 dev xfrm-pri1 table main proto boot scope link 
+unicast 169.254.22.5 dev xfrm-pub1 table main proto boot scope link 
+unicast 169.254.169.254 via 10.250.0.1 dev ens4 table main proto dhcp scope global src 10.250.0.10 metric 100 
+local 10.250.0.10 dev ens4 table local proto kernel scope host src 10.250.0.10 
+local 10.250.254.240 dev ens4 table local proto 66 scope host 
+local 10.250.254.240 dev lo table local proto kernel scope host src 10.250.254.240 
+local 10.250.254.241 dev ens4 table local proto 66 scope host 
+local 10.250.254.241 dev lo table local proto kernel scope host src 10.250.254.241 
+local 10.250.254.242 dev ens4 table local proto 66 scope host 
+local 10.250.254.242 dev lo table local proto kernel scope host src 10.250.254.242 
+local 10.250.254.250 dev ens4 table local proto 66 scope host 
+local 10.250.254.250 dev lo table local proto kernel scope host src 10.250.254.250 
+local 10.253.2.10 dev lo table local proto kernel scope host src 10.253.2.10 
+local 127.0.0.0/8 dev lo table local proto kernel scope host src 127.0.0.1 
+local 127.0.0.1 dev lo table local proto kernel scope host src 127.0.0.1 
+broadcast 127.255.255.255 dev lo table local proto kernel scope link src 127.0.0.1 
+unicast ::1 dev lo table main proto kernel scope global metric 256 pref medium
+unicast fe80::/64 dev ens4 table main proto kernel scope global metric 256 pref medium
+unicast fe80::/64 dev xfrm-pri0 table main proto kernel scope global metric 256 pref medium
+unicast fe80::/64 dev xfrm-pri1 table main proto kernel scope global metric 256 pref medium
+unicast fe80::/64 dev xfrm-pub0 table main proto kernel scope global metric 256 pref medium
+unicast fe80::/64 dev xfrm-pub1 table main proto kernel scope global metric 256 pref medium
+local ::1 dev lo table local proto kernel scope global metric 0 pref medium
+anycast fe80:: dev ens4 table local proto kernel scope global metric 0 pref medium
+anycast fe80:: dev xfrm-pri0 table local proto kernel scope global metric 0 pref medium
+anycast fe80:: dev xfrm-pri1 table local proto kernel scope global metric 0 pref medium
+anycast fe80:: dev xfrm-pub0 table local proto kernel scope global metric 0 pref medium
+anycast fe80:: dev xfrm-pub1 table local proto kernel scope global metric 0 pref medium
+local fe80::3c15:738f:f75c:acdb dev xfrm-pri1 table local proto kernel scope global metric 0 pref medium
+local fe80::4001:aff:fefa:a dev ens4 table local proto kernel scope global metric 0 pref medium
+local fe80::8b97:c838:7074:89b4 dev xfrm-pub0 table local proto kernel scope global metric 0 pref medium
+local fe80::9fa2:e2d5:a47b:2a52 dev xfrm-pub1 table local proto kernel scope global metric 0 pref medium
+local fe80::cb9d:110d:6679:6083 dev xfrm-pri0 table local proto kernel scope global metric 0 pref medium
+multicast ff00::/8 dev ens4 table local proto kernel scope global metric 256 pref medium
+multicast ff00::/8 dev xfrm-pri0 table local proto kernel scope global metric 256 pref medium
+multicast ff00::/8 dev xfrm-pri1 table local proto kernel scope global metric 256 pref medium
+multicast ff00::/8 dev xfrm-pub0 table local proto kernel scope global metric 256 pref medium
+multicast ff00::/8 dev xfrm-pub1 table local proto kernel scope global metric 256 pref medium
+---LOOKUPS---
+169.254.21.1 dev xfrm-pri0 src 10.250.254.240 uid 1002 
+    cache 
+169.254.22.1 dev xfrm-pri1 src 10.250.254.240 uid 1002 
+    cache 
+169.254.21.5 dev xfrm-pub0 src 10.250.254.240 uid 1002 
+    cache 
+169.254.22.5 dev xfrm-pub1 src 10.250.254.240 uid 1002 
+    cache 
+---LOOPBACK---
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet 10.250.254.240/32 scope global lo
+       valid_lft forever preferred_lft forever
+    inet 10.250.254.241/32 scope global lo
+       valid_lft forever preferred_lft forever
+    inet 10.250.254.242/32 scope global lo
+       valid_lft forever preferred_lft forever
+    inet 10.250.254.250/32 scope global lo
+       valid_lft forever preferred_lft forever
+    inet 10.253.2.10/32 scope global lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+---HASHES---
+57d7087bdb603b9b9e46300e1619f5b71981d1b0eb0834cee765094b1a999df7  /etc/frr/frr.conf
+714eaaa19096a8a34cf5c6b67e5ea00532389bd594369de1c9ea5e02fff2990f  /etc/vwan-lab/network.env
+5e0e805554a4373837deefc37d96992ac2c69308e46cdfd55604b3eaa852e84e  /etc/nftables.d-vwan-lab.conf
+f90add33da8909c8789eb9f4cdeb00cd68d614231a08bf59b31c6e6da91e3371  /etc/swanctl/conf.d/vwan.conf
+
