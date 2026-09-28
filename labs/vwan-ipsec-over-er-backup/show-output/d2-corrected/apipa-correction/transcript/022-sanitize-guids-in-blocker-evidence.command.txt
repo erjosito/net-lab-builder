@@ -1,0 +1,1 @@
+$path='labs\vwan-ipsec-over-er-backup\show-output\deployment-blocker-2026-09-28\megaport-readonly.json'; $text=Get-Content $path -Raw; $text=$text -replace '(?i)\b[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\b','<GUID>'; Set-Content -Path $path -Value $text -Encoding utf8; Write-Host 'Sanitized provider GUIDs in existing blocker evidence.'

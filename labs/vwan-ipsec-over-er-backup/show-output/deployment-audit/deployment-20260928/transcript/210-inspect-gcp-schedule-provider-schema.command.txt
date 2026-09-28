@@ -1,0 +1,1 @@
+Push-Location 'src\terraform\vwan-ipsec-over-er-backup'; try { $schema=terraform providers schema -json | ConvertFrom-Json; $r=$schema.provider_schemas.'registry.terraform.io/hashicorp/google'.resource_schemas.google_compute_resource_policy.block.block_types.instance_schedule_policy; $r | ConvertTo-Json -Depth 12 } finally { Pop-Location }

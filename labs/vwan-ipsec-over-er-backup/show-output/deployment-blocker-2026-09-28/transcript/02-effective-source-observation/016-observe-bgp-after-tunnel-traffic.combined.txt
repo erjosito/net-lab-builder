@@ -1,0 +1,40 @@
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 1
+RIB entries 7, using 1288 bytes of memory
+Peers 4, using 2892 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+169.254.21.1    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.22.1    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.21.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.22.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+
+Total number of neighbors 4
+TCPDUMP
+14:51:57.782267 xfrm-pub0 In  IP 10.240.0.13.50493 > 10.250.254.241.179: Flags [S], seq 747761493, win 64240, options [mss 1360,nop,wscale 8,nop,nop,sackOK], length 0
+14:51:58.491340 xfrm-pri1 In  IP 10.240.0.12.61885 > 10.250.254.240.179: Flags [S], seq 870798620, win 64240, options [mss 1250,nop,wscale 8,nop,nop,sackOK], length 0
+14:51:58.656438 xfrm-pub1 In  IP 10.240.0.12.61892 > 10.250.254.241.179: Flags [SEW], seq 3620985176, win 64240, options [mss 1360,nop,wscale 8,nop,nop,sackOK], length 0
+14:51:59.254130 xfrm-pri0 In  IP 10.240.0.13.50494 > 10.250.254.240.179: Flags [S], seq 913487606, win 64240, options [mss 1250,nop,wscale 8,nop,nop,sackOK], length 0
+14:51:59.447651 xfrm-pri1 In  IP 10.240.0.12.61893 > 10.250.254.240.179: Flags [SEW], seq 2045882006, win 64240, options [mss 1250,nop,wscale 8,nop,nop,sackOK], length 0
+14:51:59.657604 xfrm-pub1 In  IP 10.240.0.12.61892 > 10.250.254.241.179: Flags [SEW], seq 3620985176, win 64240, options [mss 1360,nop,wscale 8,nop,nop,sackOK], length 0
+14:51:59.730651 xfrm-pub0 In  IP 10.240.0.13.50496 > 10.250.254.241.179: Flags [SEW], seq 2310363830, win 64240, options [mss 1360,nop,wscale 8,nop,nop,sackOK], length 0
+14:52:00.761019 xfrm-pri0 In  IP 10.240.0.13.50498 > 10.250.254.240.179: Flags [SEW], seq 1598331824, win 64240, options [mss 1250,nop,wscale 8,nop,nop,sackOK], length 0
+14:52:01.672680 xfrm-pub1 In  IP 10.240.0.12.61892 > 10.250.254.241.179: Flags [S], seq 3620985176, win 64240, options [mss 1360,nop,wscale 8,nop,nop,sackOK], length 0
+14:52:03.415005 xfrm-pub1 In  IP 10.240.0.12.61896 > 10.250.254.241.179: Flags [SEW], seq 1778232046, win 64240, options [mss 1360,nop,wscale 8,nop,nop,sackOK], length 0
+14:52:03.966670 xfrm-pri1 In  IP 10.240.0.12.61897 > 10.250.254.240.179: Flags [SEW], seq 2998651420, win 64240, options [mss 1250,nop,wscale 8,nop,nop,sackOK], length 0
+14:52:04.037555 xfrm-pub0 In  IP 10.240.0.13.50500 > 10.250.254.241.179: Flags [SEW], seq 595435174, win 64240, options [mss 1360,nop,wscale 8,nop,nop,sackOK], length 0
+14:52:04.973780 xfrm-pri1 In  IP 10.240.0.12.61897 > 10.250.254.240.179: Flags [SEW], seq 2998651420, win 64240, options [mss 1250,nop,wscale 8,nop,nop,sackOK], length 0
+14:52:05.045794 xfrm-pub0 In  IP 10.240.0.13.50500 > 10.250.254.241.179: Flags [SEW], seq 595435174, win 64240, options [mss 1360,nop,wscale 8,nop,nop,sackOK], length 0
+14:52:06.216470 xfrm-pri0 In  IP 10.240.0.13.50501 > 10.250.254.240.179: Flags [SEW], seq 2089788021, win 64240, options [mss 1250,nop,wscale 8,nop,nop,sackOK], length 0
+14:52:06.974690 xfrm-pri1 In  IP 10.240.0.12.61897 > 10.250.254.240.179: Flags [S], seq 2998651420, win 64240, options [mss 1250,nop,wscale 8,nop,nop,sackOK], length 0
+14:52:07.053684 xfrm-pub0 In  IP 10.240.0.13.50500 > 10.250.254.241.179: Flags [S], seq 595435174, win 64240, options [mss 1360,nop,wscale 8,nop,nop,sackOK], length 0
+14:52:07.223282 xfrm-pri0 In  IP 10.240.0.13.50501 > 10.250.254.240.179: Flags [SEW], seq 2089788021, win 64240, options [mss 1250,nop,wscale 8,nop,nop,sackOK], length 0
+14:52:08.415289 xfrm-pub1 In  IP 10.240.0.12.61901 > 10.250.254.241.179: Flags [SEW], seq 1790414718, win 64240, options [mss 1360,nop,wscale 8,nop,nop,sackOK], length 0
+14:52:08.745414 xfrm-pub0 In  IP 10.240.0.13.50508 > 10.250.254.241.179: Flags [SEW], seq 4261638359, win 64240, options [mss 1360,nop,wscale 8,nop,nop,sackOK], length 0
+14:52:08.837952 xfrm-pri1 In  IP 10.240.0.12.61902 > 10.250.254.240.179: Flags [SEW], seq 497157769, win 64240, options [mss 1250,nop,wscale 8,nop,nop,sackOK], length 0
+14:52:09.234982 xfrm-pri0 In  IP 10.240.0.13.50501 > 10.250.254.240.179: Flags [S], seq 2089788021, win 64240, options [mss 1250,nop,wscale 8,nop,nop,sackOK], length 0
+14:52:09.421514 xfrm-pub1 In  IP 10.240.0.12.61901 > 10.250.254.241.179: Flags [SEW], seq 1790414718, win 64240, options [mss 1360,nop,wscale 8,nop,nop,sackOK], length 0
+14:52:10.226679 xfrm-pri0 In  IP 10.240.0.13.50510 > 10.250.254.240.179: Flags [SEW], seq 1874272123, win 64240, options [mss 1250,nop,wscale 8,nop,nop,sackOK], length 0
+14:52:11.424581 xfrm-pub1 In  IP 10.240.0.12.61901 > 10.250.254.241.179: Flags [S], seq 1790414718, win 64240, options [mss 1360,nop,wscale 8,nop,nop,sackOK], length 0
+<shellId: bgp-observe completed with exit code 0>

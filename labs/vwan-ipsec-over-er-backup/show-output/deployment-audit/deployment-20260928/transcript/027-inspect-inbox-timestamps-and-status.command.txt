@@ -1,0 +1,1 @@
+Get-ChildItem -Path .squad\decisions\inbox -File | Sort-Object LastWriteTime | Select-Object Name,LastWriteTime,Length | Format-Table -AutoSize; Write-Output '---STATUS---'; git status --short

@@ -1,0 +1,85 @@
+ERROR: 
+The request may be blocked by network rules of storage account. Please check network rule set using 'az storage account show -n accountname --query networkRuleSet'.
+If you want to change the default action to apply when no rule matches, please use 'az storage account update'.
+                    
+ERROR: 
+The request may be blocked by network rules of storage account. Please check network rule set using 'az storage account show -n accountname --query networkRuleSet'.
+If you want to change the default action to apply when no rule matches, please use 'az storage account update'.
+                    
+ERROR: The command failed with an unexpected error. Here is the traceback:
+ERROR: (', DeserializationError: (", AttributeError: \'str\' object has no attribute \'get\'", \'Unable to deserialize to object: type\', AttributeError("\'str\' object has no attribute \'get\'"))', 'Unable to build a model: (", AttributeError: \'str\' object has no attribute \'get\'", \'Unable to deserialize to object: type\', AttributeError("\'str\' object has no attribute \'get\'"))', DeserializationError(", AttributeError: 'str' object has no attribute 'get'", 'Unable to deserialize to object: type', AttributeError("'str' object has no attribute 'get'")))
+Traceback (most recent call last):
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1430, in _deserialize
+    found_value = key_extractor(attr, attr_desc, data)
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1199, in rest_key_case_insensitive_extractor
+    return attribute_key_case_insensitive_extractor(key, None, working_data)
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1231, in attribute_key_case_insensitive_extractor
+    return data.get(found_key)
+           ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 684, in body
+    data = deserializer._deserialize(data_type, data)
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1445, in _deserialize
+    raise_with_traceback(DeserializationError, msg, err)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/core/exceptions.py", line 100, in raise_with_traceback
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1430, in _deserialize
+    found_value = key_extractor(attr, attr_desc, data)
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1199, in rest_key_case_insensitive_extractor
+    return attribute_key_case_insensitive_extractor(key, None, working_data)
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1231, in attribute_key_case_insensitive_extractor
+    return data.get(found_key)
+           ^^^^^^^^
+azure.core.exceptions.DeserializationError: (", AttributeError: 'str' object has no attribute 'get'", 'Unable to deserialize to object: type', AttributeError("'str' object has no attribute 'get'"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\knack/cli.py", line 233, in invoke
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/cli/core/commands/__init__.py", line 677, in execute
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/cli/core/commands/__init__.py", line 820, in _run_jobs_serially
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/cli/core/commands/__init__.py", line 789, in _run_job
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/cli/core/commands/__init__.py", line 335, in __call__
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/cli/core/commands/command_operation.py", line 120, in handler
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/core/tracing/decorator.py", line 119, in wrapper_use_tracer
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\v2022_07_01\operations\_operations.py", line 83381, in begin_download
+    raw_result = self._download_initial(  # type: ignore
+        resource_group_name=resource_group_name,
+    ...<7 lines>...
+        **kwargs
+    )
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\v2022_07_01\operations\_operations.py", line 83234, in _download_initial
+    _json = self._serialize.body(request, "GetVpnSitesConfigurationRequest")
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 686, in body
+    raise_with_traceback(SerializationError, "Unable to build a model: " + str(err), err)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/core/exceptions.py", line 100, in raise_with_traceback
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 684, in body
+    data = deserializer._deserialize(data_type, data)
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1445, in _deserialize
+    raise_with_traceback(DeserializationError, msg, err)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/core/exceptions.py", line 100, in raise_with_traceback
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1430, in _deserialize
+    found_value = key_extractor(attr, attr_desc, data)
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1199, in rest_key_case_insensitive_extractor
+    return attribute_key_case_insensitive_extractor(key, None, working_data)
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1231, in attribute_key_case_insensitive_extractor
+    return data.get(found_key)
+           ^^^^^^^^
+azure.core.exceptions.SerializationError: (', DeserializationError: (", AttributeError: \'str\' object has no attribute \'get\'", \'Unable to deserialize to object: type\', AttributeError("\'str\' object has no attribute \'get\'"))', 'Unable to build a model: (", AttributeError: \'str\' object has no attribute \'get\'", \'Unable to deserialize to object: type\', AttributeError("\'str\' object has no attribute \'get\'"))', DeserializationError(", AttributeError: 'str' object has no attribute 'get'", 'Unable to deserialize to object: type', AttributeError("'str' object has no attribute 'get'")))
+To check existing issues, please visit: https://github.com/Azure/azure-cli/issues
+ERROR: 
+The request may be blocked by network rules of storage account. Please check network rule set using 'az storage account show -n accountname --query networkRuleSet'.
+If you want to change the default action to apply when no rule matches, please use 'az storage account update'.
+                    
+Exception: C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy\Get-VpnRuntimeConfig.ps1:28
+Line |
+  28 |  … rawPath)) { throw 'VPN configuration download did not produce a file. …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | VPN configuration download did not produce a file.
+<shellId: vpn-download completed with exit code 1>

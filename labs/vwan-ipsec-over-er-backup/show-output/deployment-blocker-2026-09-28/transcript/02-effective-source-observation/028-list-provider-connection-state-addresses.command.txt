@@ -1,0 +1,1 @@
+terraform -chdir=src\terraform\vwan-ipsec-over-er-backup state list | Select-String -Pattern 'express_route_connection|megaport_'

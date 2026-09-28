@@ -1,0 +1,1 @@
+$head = git show HEAD:.squad/agents/tank/history.md; $tmp=Join-Path $env:TEMP 'tank-head-history.bin'; [IO.File]::WriteAllLines($tmp,$head,[Text.UTF8Encoding]::new($false)); $bytes=[IO.File]::ReadAllBytes($tmp); ($bytes[0..160]|Format-Hex|Out-String); Remove-Item $tmp

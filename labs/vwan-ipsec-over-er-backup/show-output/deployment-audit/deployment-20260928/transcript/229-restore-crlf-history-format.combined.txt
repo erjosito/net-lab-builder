@@ -1,0 +1,53 @@
+.squad/agents/tank/history.md | 26 +++++++++++++++++++++++++-
+ 1 file changed, 25 insertions(+), 1 deletion(-)
+.squad/agents/tank/history.md:1287: trailing whitespace.
++
+.squad/agents/tank/history.md:1289: trailing whitespace.
++
+.squad/agents/tank/history.md:1290: trailing whitespace.
++---
+.squad/agents/tank/history.md:1291: trailing whitespace.
++
+.squad/agents/tank/history.md:1292: trailing whitespace.
++## TANK-020 -- vwan-ipsec-over-er-backup preflight (2026-09-28)
+.squad/agents/tank/history.md:1293: trailing whitespace.
++
+.squad/agents/tank/history.md:1294: trailing whitespace.
++- Sweden Central supports Standard vWAN virtual hubs, vWAN ExpressRoute gateways, and vWAN VPN gateways for the active subscription; `Microsoft.Network` and `Microsoft.Compute` are registered.
+.squad/agents/tank/history.md:1295: trailing whitespace.
++- `Standard_B1ls` and `Standard_B1s` were absent from the Sweden Central catalog. `Standard_B2ts_v2` was the first skill-ladder SKU to pass both catalog and live `az vm create --validate` gates. Temporary RG `rg-vwan-ipsec-er-preflight-20260928` was deleted and absence verified.
+.squad/agents/tank/history.md:1296: trailing whitespace.
++- Megaport OAuth authentication succeeded through the established environment credential path without changing Key Vault ACLs. The account exposes active Stockholm locations and live MCR2 entitlement; Azure advertises Megaport ExpressRoute in Stockholm at 50 Mbps and above.
+.squad/agents/tank/history.md:1297: trailing whitespace.
++- GCP authentication and one open billing account were visible, but the configured project was stale/inaccessible. Live Compute, quota, API, Cloud Router, and Partner Interconnect validation must wait for the policy-required new isolated project. Read-only checks could not conclusively prove project-create or billing-link permission.
+.squad/agents/tank/history.md:1298: trailing whitespace.
++
+.squad/agents/tank/history.md:1299: trailing whitespace.
++---
+.squad/agents/tank/history.md:1300: trailing whitespace.
++
+.squad/agents/tank/history.md:1301: trailing whitespace.
++## TANK-021 -- vwan-ipsec-over-er-backup foundation deployment (2026-09-28)
+.squad/agents/tank/history.md:1302: trailing whitespace.
++
+.squad/agents/tank/history.md:1303: trailing whitespace.
++- Created a new isolated GCP project, linked the sole active billing account, enabled required APIs, and deployed the GCP foundation.
+.squad/agents/tank/history.md:1304: trailing whitespace.
++- `e2-small` hit capacity failures in `europe-north2-a` and `europe-north2-b`, then succeeded in `europe-north2-c`; no `e2-medium` fallback was used.
+.squad/agents/tank/history.md:1305: trailing whitespace.
++- Deployed Azure Standard vWAN/vHub, VPN and ER gateways, 50-Mbps Standard Metered ER circuit, workload VNet/connection, and `Standard_B2ts_v2` probe VM.
+.squad/agents/tank/history.md:1306: trailing whitespace.
++- Corrected Windows CRLF startup-script failure by moving CPE startup to an LF-normalized external shell file; corrected StrongSwan service enablement. Final CPE startup, forwarding, StrongSwan, FRR, and package smoke checks passed.
+.squad/agents/tank/history.md:1307: trailing whitespace.
++- Implemented D1/D2/D3 CPE bundles with four XFRM interfaces, endpoint and BGP-peer host routes, fail-closed routes, FRR policy, D3 distance-250 public fallback, endpoint-scoped nftables filtering, reboot-safe systemd ordering, reset, and bounded fault controls.
+.squad/agents/tank/history.md:1308: trailing whitespace.
++- Kept PSKs out of Terraform and committed artifacts. Megaport purchase remains gated by `deploy_megaport=false`.
+.squad/agents/tank/history.md:1309: trailing whitespace.
++- Added daily 23:00 Europe/Stockholm stop schedules to both VMs; managed gateway/circuit costs continue until approved cleanup.
+.squad/agents/tank/history.md:1310: trailing whitespace.
++- Megaport OAuth succeeded, but live non-billable Stockholm validation failed with HTTP 400 `Missing markets: Sweden`. Per Morpheus's design-review hard stop, no alternate market was substituted and no MCR/VXC was purchased.
+.squad/agents/tank/history.md:1311: trailing whitespace.
++- Final state: Azure/GCP foundations converged; ER provider state `NotProvisioned`; GCP attachment `PENDING_PARTNER`; no VPN connections/PSKs/overlay sessions; Megaport commitment `$0`.
+.squad/agents/tank/history.md:1312: trailing whitespace.
++- Sanitized closure evidence and Niobe handoff are in `labs/vwan-ipsec-over-er-backup/deploy-log.md` and `show-output/deployment-blocker-2026-09-28/README.md`.
+<shellId: 177 completed with exit code 2>

@@ -1,0 +1,161 @@
+Sep 28 13:41:28 cpe-ver-09281131 charon-systemd[2722]: received packet: from 10.240.0.5[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:41:28 cpe-ver-09281131 charon-systemd[2722]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:41:28 cpe-ver-09281131 charon-systemd[2722]: no IKE config found for 10.250.0.10...10.240.0.5, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:41:28 cpe-ver-09281131 charon-systemd[2722]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:41:28 cpe-ver-09281131 charon-systemd[2722]: sending packet: from 10.250.0.10[500] to 10.240.0.5[500] (36 bytes)
+Sep 28 13:41:29 cpe-ver-09281131 charon-systemd[2722]: received packet: from 10.240.0.4[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:41:29 cpe-ver-09281131 charon-systemd[2722]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:41:29 cpe-ver-09281131 charon-systemd[2722]: no IKE config found for 10.250.0.10...10.240.0.4, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:41:29 cpe-ver-09281131 charon-systemd[2722]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:41:29 cpe-ver-09281131 charon-systemd[2722]: sending packet: from 10.250.0.10[500] to 10.240.0.4[500] (36 bytes)
+Sep 28 13:41:33 cpe-ver-09281131 charon-systemd[2722]: received packet: from 74.158.80.26[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:41:33 cpe-ver-09281131 charon-systemd[2722]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:41:33 cpe-ver-09281131 charon-systemd[2722]: no IKE config found for 10.250.0.10...74.158.80.26, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:41:33 cpe-ver-09281131 charon-systemd[2722]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:41:33 cpe-ver-09281131 charon-systemd[2722]: sending packet: from 10.250.0.10[500] to 74.158.80.26[500] (36 bytes)
+Sep 28 13:41:36 cpe-ver-09281131 charon-systemd[2722]: received packet: from 74.158.47.254[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:41:36 cpe-ver-09281131 charon-systemd[2722]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:41:36 cpe-ver-09281131 charon-systemd[2722]: no IKE config found for 10.250.0.10...74.158.47.254, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:41:36 cpe-ver-09281131 charon-systemd[2722]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:41:36 cpe-ver-09281131 charon-systemd[2722]: sending packet: from 10.250.0.10[500] to 74.158.47.254[500] (36 bytes)
+Sep 28 13:41:36 cpe-ver-09281131 systemd[1]: vwan-lab-ipsec.service: Deactivated successfully.
+Sep 28 13:41:36 cpe-ver-09281131 systemd[1]: Stopped Load vWAN lab StrongSwan connections.
+Sep 28 13:41:36 cpe-ver-09281131 systemd[1]: Stopping Load vWAN lab StrongSwan connections...
+Sep 28 13:41:36 cpe-ver-09281131 systemd[1]: Stopping strongSwan IPsec IKEv1/IKEv2 daemon using swanctl...
+Sep 28 13:41:36 cpe-ver-09281131 charon-systemd[2722]: SIGTERM received, shutting down
+Sep 28 13:41:36 cpe-ver-09281131 systemd[1]: strongswan.service: Deactivated successfully.
+Sep 28 13:41:36 cpe-ver-09281131 systemd[1]: Stopped strongSwan IPsec IKEv1/IKEv2 daemon using swanctl.
+Sep 28 13:41:36 cpe-ver-09281131 systemd[1]: Starting strongSwan IPsec IKEv1/IKEv2 daemon using swanctl...
+Sep 28 13:41:36 cpe-ver-09281131 charon-systemd[3201]: providers loaded by OpenSSL: legacy default
+Sep 28 13:41:36 cpe-ver-09281131 charon-systemd[3201]: loaded plugins: charon-systemd aesni aes rc2 sha2 sha1 md5 mgf1 random nonce x509 revocation constraints pubkey pkcs1 pkcs7 pkcs8 pkcs12 pgp dnskey sshkey pem openssl fips-prf gmp agent xcbc hmac gcm drbg attr kernel-netlink resolve socket-default connmark vici updown eap-mschapv2 xauth-generic counters
+Sep 28 13:41:36 cpe-ver-09281131 charon-systemd[3201]: dropped capabilities, running as uid 0, gid 0
+Sep 28 13:41:36 cpe-ver-09281131 charon-systemd[3201]: spawning 16 worker threads
+Sep 28 13:41:36 cpe-ver-09281131 swanctl[3219]: /etc/swanctl/conf.d/vwan.conf:2: syntax error, unexpected NAME, expecting : or '{' or '='
+Sep 28 13:41:36 cpe-ver-09281131 swanctl[3219]: invalid config file '/etc/swanctl/swanctl.conf'
+Sep 28 13:41:36 cpe-ver-09281131 swanctl[3219]: no authorities found, 0 unloaded
+Sep 28 13:41:36 cpe-ver-09281131 swanctl[3219]: no pools found, 0 unloaded
+Sep 28 13:41:36 cpe-ver-09281131 swanctl[3219]: no connections found, 0 unloaded
+Sep 28 13:41:36 cpe-ver-09281131 systemd[1]: Started strongSwan IPsec IKEv1/IKEv2 daemon using swanctl.
+Sep 28 13:41:37 cpe-ver-09281131 systemd[1]: Starting Load vWAN lab StrongSwan connections...
+Sep 28 13:41:37 cpe-ver-09281131 swanctl[3232]: /etc/swanctl/conf.d/vwan.conf:2: syntax error, unexpected NAME, expecting : or '{' or '='
+Sep 28 13:41:37 cpe-ver-09281131 swanctl[3232]: invalid config file '/etc/swanctl/swanctl.conf'
+Sep 28 13:41:37 cpe-ver-09281131 swanctl[3232]: no authorities found, 0 unloaded
+Sep 28 13:41:37 cpe-ver-09281131 swanctl[3232]: no pools found, 0 unloaded
+Sep 28 13:41:37 cpe-ver-09281131 swanctl[3232]: no connections found, 0 unloaded
+Sep 28 13:41:37 cpe-ver-09281131 systemd[1]: Finished Load vWAN lab StrongSwan connections.
+Sep 28 13:41:38 cpe-ver-09281131 charon-systemd[3201]: received packet: from 10.240.0.4[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:41:38 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:41:38 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...10.240.0.4, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:41:38 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:41:38 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 10.240.0.4[500] (36 bytes)
+Sep 28 13:41:47 cpe-ver-09281131 charon-systemd[3201]: received packet: from 10.240.0.5[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:41:47 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:41:47 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...10.240.0.5, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:41:47 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:41:47 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 10.240.0.5[500] (36 bytes)
+Sep 28 13:41:52 cpe-ver-09281131 charon-systemd[3201]: received packet: from 74.158.80.26[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:41:52 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:41:52 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...74.158.80.26, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:41:52 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:41:52 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 74.158.80.26[500] (36 bytes)
+Sep 28 13:41:54 cpe-ver-09281131 charon-systemd[3201]: received packet: from 74.158.47.254[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:41:54 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:41:54 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...74.158.47.254, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:41:54 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:41:54 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 74.158.47.254[500] (36 bytes)
+Sep 28 13:41:55 cpe-ver-09281131 charon-systemd[3201]: received packet: from 10.240.0.4[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:41:55 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:41:55 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...10.240.0.4, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:41:55 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:41:55 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 10.240.0.4[500] (36 bytes)
+Sep 28 13:42:06 cpe-ver-09281131 charon-systemd[3201]: received packet: from 10.240.0.5[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:42:06 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:42:06 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...10.240.0.5, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:42:06 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:42:06 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 10.240.0.5[500] (36 bytes)
+Sep 28 13:42:09 cpe-ver-09281131 charon-systemd[3201]: received packet: from 74.158.80.26[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:42:09 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:42:09 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...74.158.80.26, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:42:09 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:42:09 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 74.158.80.26[500] (36 bytes)
+Sep 28 13:42:11 cpe-ver-09281131 charon-systemd[3201]: received packet: from 74.158.47.254[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:42:11 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:42:11 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...74.158.47.254, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:42:11 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:42:11 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 74.158.47.254[500] (36 bytes)
+Sep 28 13:42:14 cpe-ver-09281131 charon-systemd[3201]: received packet: from 10.240.0.4[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:42:14 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:42:14 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...10.240.0.4, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:42:14 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:42:14 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 10.240.0.4[500] (36 bytes)
+Sep 28 13:42:24 cpe-ver-09281131 charon-systemd[3201]: received packet: from 10.240.0.5[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:42:24 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:42:24 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...10.240.0.5, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:42:24 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:42:24 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 10.240.0.5[500] (36 bytes)
+Sep 28 13:42:26 cpe-ver-09281131 charon-systemd[3201]: received packet: from 74.158.80.26[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:42:26 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:42:26 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...74.158.80.26, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:42:26 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:42:26 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 74.158.80.26[500] (36 bytes)
+Sep 28 13:42:32 cpe-ver-09281131 charon-systemd[3201]: received packet: from 74.158.47.254[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:42:32 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:42:32 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...74.158.47.254, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:42:32 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:42:32 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 74.158.47.254[500] (36 bytes)
+Sep 28 13:42:32 cpe-ver-09281131 charon-systemd[3201]: received packet: from 10.240.0.4[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:42:32 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:42:32 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...10.240.0.4, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:42:32 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:42:32 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 10.240.0.4[500] (36 bytes)
+Sep 28 13:42:43 cpe-ver-09281131 charon-systemd[3201]: received packet: from 10.240.0.5[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:42:43 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:42:43 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...10.240.0.5, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:42:43 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:42:43 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 10.240.0.5[500] (36 bytes)
+Sep 28 13:42:45 cpe-ver-09281131 charon-systemd[3201]: received packet: from 74.158.80.26[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:42:45 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:42:45 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...74.158.80.26, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:42:45 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:42:45 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 74.158.80.26[500] (36 bytes)
+Sep 28 13:42:51 cpe-ver-09281131 charon-systemd[3201]: received packet: from 74.158.47.254[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:42:51 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:42:51 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...74.158.47.254, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:42:51 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:42:51 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 74.158.47.254[500] (36 bytes)
+Sep 28 13:42:52 cpe-ver-09281131 charon-systemd[3201]: received packet: from 10.240.0.4[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:42:52 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:42:52 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...10.240.0.4, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:42:52 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:42:52 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 10.240.0.4[500] (36 bytes)
+Sep 28 13:43:02 cpe-ver-09281131 charon-systemd[3201]: received packet: from 10.240.0.5[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:43:02 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:43:02 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...10.240.0.5, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:43:02 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:43:02 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 10.240.0.5[500] (36 bytes)
+Sep 28 13:43:03 cpe-ver-09281131 charon-systemd[3201]: received packet: from 74.158.80.26[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:43:03 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:43:03 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...74.158.80.26, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:43:03 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:43:03 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 74.158.80.26[500] (36 bytes)
+Sep 28 13:43:11 cpe-ver-09281131 charon-systemd[3201]: received packet: from 10.240.0.4[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:43:11 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:43:11 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...10.240.0.4, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:43:11 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:43:11 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 10.240.0.4[500] (36 bytes)
+Sep 28 13:43:11 cpe-ver-09281131 charon-systemd[3201]: received packet: from 74.158.47.254[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:43:11 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:43:11 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...74.158.47.254, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:43:11 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:43:11 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 74.158.47.254[500] (36 bytes)
+Sep 28 13:43:21 cpe-ver-09281131 charon-systemd[3201]: received packet: from 10.240.0.5[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:43:21 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:43:21 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...10.240.0.5, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:43:21 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:43:21 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 10.240.0.5[500] (36 bytes)
+Sep 28 13:43:21 cpe-ver-09281131 charon-systemd[3201]: received packet: from 74.158.80.26[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:43:21 cpe-ver-09281131 charon-systemd[3201]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:43:21 cpe-ver-09281131 charon-systemd[3201]: no IKE config found for 10.250.0.10...74.158.80.26, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:43:21 cpe-ver-09281131 charon-systemd[3201]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:43:21 cpe-ver-09281131 charon-systemd[3201]: sending packet: from 10.250.0.10[500] to 74.158.80.26[500] (36 bytes)
+<shellId: 260 completed with exit code 0>

@@ -1,0 +1,16 @@
+● vwan-health.service - vWAN lab HTTP health listener
+     Loaded: loaded (/etc/systemd/system/vwan-health.service; enabled; vendor preset: enabled)
+     Active: active (running) since Mon 2026-09-28 12:13:58 UTC; 12s ago
+   Main PID: 1791 (python3)
+      Tasks: 1 (limit: 2283)
+     Memory: 8.6M
+        CPU: 62ms
+     CGroup: /system.slice/vwan-health.service
+             └─1791 /usr/bin/python3 -m http.server 8080 --bind 0.0.0.0 --directory /opt/vwan-health
+
+Sep 28 12:13:58 cpe-ver-09281131 systemd[1]: Started vWAN lab HTTP health listener.
+Sep 28 12:13:58 cpe-ver-09281131 systemd[1]: Started vWAN lab HTTP health listener.
+/usr/bin/python3
+State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+LISTEN 0      5            0.0.0.0:8080      0.0.0.0:*    users:(("python3",pid=1791,fd=3))
+<shellId: 210 completed with exit code 0>

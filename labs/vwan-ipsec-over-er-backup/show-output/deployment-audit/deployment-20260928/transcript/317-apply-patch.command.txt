@@ -1,0 +1,2 @@
+apply_patch
+"*** Begin Patch\n*** Update File: C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-ipsec-over-er-backup\\deploy\\New-VpnConnections.ps1\n@@\n     $link = $Site.vpnSiteLinks[0]\n     az network vpn-gateway connection create -g $ResourceGroup --gateway-name $VpnGatewayName -n $Name `\n-        --remote-vpn-site $Site.id --with-link false --enable-bgp $EnableBgp --protocol-type IKEv2 `\n+        --remote-vpn-site $Site.id --with-link false --protocol-type IKEv2 `\n         --only-show-errors -o none\n*** End Patch\n"

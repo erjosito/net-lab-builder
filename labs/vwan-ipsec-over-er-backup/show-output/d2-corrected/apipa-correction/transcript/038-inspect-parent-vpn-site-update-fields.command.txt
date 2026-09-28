@@ -1,0 +1,1 @@
+$s=Get-Content 'C:\Users\jomore\.copilot\session-state\<GUID>\files\apipa-remediation\public-site-before.json' -Raw|ConvertFrom-Json; $s | Select-Object name,addressSpace,deviceProperties,ipAddress,isSecuritySite,o365Policy,virtualWan,vpnSiteLinks | ConvertTo-Json -Depth 12

@@ -1,0 +1,20 @@
+Enable succeeded: 
+[stdout]
+status: error
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+eth0             UP             10.241.0.4/26 metric 100 fe80::6245:bdff:fec9:133f/64 
+enP56500s1       UP             
+default via 10.241.0.1 dev eth0 proto dhcp src 10.241.0.4 metric 100 
+10.241.0.0/26 dev eth0 proto kernel scope link src 10.241.0.4 metric 100 
+10.241.0.1 dev eth0 proto dhcp scope link src 10.241.0.4 metric 100 
+168.63.129.16 via 10.241.0.1 dev eth0 proto dhcp src 10.241.0.4 metric 100 
+169.254.169.254 via 10.241.0.1 dev eth0 proto dhcp src 10.241.0.4 metric 100 
+/usr/bin/tcpdump
+PING 168.63.129.16 (168.63.129.16) 56(84) bytes of data.
+
+--- 168.63.129.16 ping statistics ---
+2 packets transmitted, 0 received, 100% packet loss, time 1055ms
+
+
+[stderr]
+<shellId: 148 completed with exit code 0>

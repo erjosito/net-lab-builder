@@ -1,0 +1,32 @@
+{
+  "name": "site-gcp-inet",
+  "links": {
+    "name": "site-gcp-inet",
+    "bgp": {
+      "asn": 65050,
+      "bgpPeeringAddress": "10.250.254.241"
+    },
+    "ip": "34.51.158.147",
+    "prefixes": null
+  }
+}
+{
+  "name": "conn-gcp-inet-link",
+  "vpnGatewayCustomBgpAddresses": [
+    {
+      "customBgpIpAddress": "169.254.21.5",
+      "ipConfigurationId": "Instance0"
+    },
+    {
+      "customBgpIpAddress": "169.254.22.5",
+      "ipConfigurationId": "Instance1"
+    }
+  ],
+  "enableBgp": true,
+  "useLocalAzureIpAddress": false,
+  "vpnSiteLink": {
+    "id": "/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnSites/site-gcp-inet/vpnSiteLinks/site-gcp-inet",
+    "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+  }
+}
+<shellId: 311 completed with exit code 0>

@@ -1,0 +1,21 @@
+$ErrorActionPreference='Stop'; foreach($n in 'MEGAPORT_ACCESS_KEY','MEGAPORT_SECRET_KEY'){ $v=[Environment]::GetEnvironmentVariable($n,'User'); if($v){ [Environment]::SetEnvironmentVariable($n,$v,'Process') } }; @'
+import os, requests, json
+key=os.environ['MEGAPORT_ACCESS_KEY']; sec=os.environ['MEGAPORT_SECRET_KEY']
+r=requests.post('https://auth-m2m.megaport.com/oauth2/token',auth=(key,sec),data={'grant_type':'client_credentials'},timeout=30); r.raise_for_status(); token=r.json()['access_token']
+payload=[{'locationId':95,'contractTerm':1,'productName':'mcr-ver-09281131','productType':'MCR2','portSpeed':1000}]
+v=requests.post('https://api.megaport.com/v3/networkdesign/validate',headers={'Authorization':'Bearer '+token,'Content-Type':'application/json'},json=payload,timeout=60)
+print('HTTP='+str(v.status_code))
+obj=v.json()
+# Print only quote-shaped fields and validation messages; never auth material.
+def walk(x,path=''):
+    if isinstance(x,dict):
+        for k,val in x.items():
+            p=f'{path}.{k}' if path else k
+            if any(s in k.lower() for s in ('price','cost','rate','currency','monthly','total','term','message','error')) and not isinstance(val,(dict,list)):
+                print(f'{p}={val}')
+            walk(val,p)
+    elif isinstance(x,list):
+        for i,val in enumerate(x): walk(val,f'{path}[{i}]')
+walk(obj)
+if v.status_code>=400: raise SystemExit(1)
+'@ | python -

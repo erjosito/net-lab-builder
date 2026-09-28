@@ -1,0 +1,65 @@
+[main 3572b79] Deploy vWAN IPsec-over-ER lab foundations
+ 22 files changed, 1287 insertions(+), 1 deletion(-)
+ create mode 100644 labs/vwan-ipsec-over-er-backup/deploy-log.md
+ create mode 100644 labs/vwan-ipsec-over-er-backup/deploy/.gitignore
+ create mode 100644 labs/vwan-ipsec-over-er-backup/deploy/Get-VpnRuntimeConfig.ps1
+ create mode 100644 labs/vwan-ipsec-over-er-backup/deploy/New-VpnConnections.ps1
+ create mode 100644 labs/vwan-ipsec-over-er-backup/deploy/Reset-Lab.ps1
+ create mode 100644 labs/vwan-ipsec-over-er-backup/deploy/cleanup.ps1
+ create mode 100644 labs/vwan-ipsec-over-er-backup/deploy/cpe/apply-design.sh
+ create mode 100644 labs/vwan-ipsec-over-er-backup/deploy/cpe/fault-control.sh
+ create mode 100644 labs/vwan-ipsec-over-er-backup/deploy/example.tfvars
+ create mode 100644 labs/vwan-ipsec-over-er-backup/show-output/deployment-blocker-2026-09-28/README.md
+ create mode 100644 src/terraform/vwan-ipsec-over-er-backup/.terraform.lock.hcl
+ create mode 100644 src/terraform/vwan-ipsec-over-er-backup/azure.tf
+ create mode 100644 src/terraform/vwan-ipsec-over-er-backup/cpe-startup.sh
+ create mode 100644 src/terraform/vwan-ipsec-over-er-backup/gcp.tf
+ create mode 100644 src/terraform/vwan-ipsec-over-er-backup/locals.tf
+ create mode 100644 src/terraform/vwan-ipsec-over-er-backup/megaport.tf
+ create mode 100644 src/terraform/vwan-ipsec-over-er-backup/outputs.tf
+ create mode 100644 src/terraform/vwan-ipsec-over-er-backup/providers.tf
+ create mode 100644 src/terraform/vwan-ipsec-over-er-backup/variables.tf
+ create mode 100644 src/terraform/vwan-ipsec-over-er-backup/versions.tf
+3572b79 (HEAD -> main) Deploy vWAN IPsec-over-ER lab foundations
+ .gitattributes                                     |   1 +
+ .squad/agents/tank/history.md                      |  26 ++-
+ labs/vwan-ipsec-over-er-backup/deploy-log.md       | 102 ++++++++++
+ labs/vwan-ipsec-over-er-backup/deploy/.gitignore   |   5 +
+ .../deploy/Get-VpnRuntimeConfig.ps1                |  40 ++++
+ .../deploy/New-VpnConnections.ps1                  |  56 ++++++
+ .../vwan-ipsec-over-er-backup/deploy/Reset-Lab.ps1 |  12 ++
+ labs/vwan-ipsec-over-er-backup/deploy/cleanup.ps1  |   9 +
+ .../deploy/cpe/apply-design.sh                     | 220 +++++++++++++++++++++
+ .../deploy/cpe/fault-control.sh                    |  56 ++++++
+ .../deploy/example.tfvars                          |   3 +
+ .../deployment-blocker-2026-09-28/README.md        |  96 +++++++++
+ .../vwan-ipsec-over-er-backup/.terraform.lock.hcl  |  63 ++++++
+ src/terraform/vwan-ipsec-over-er-backup/azure.tf   | 178 +++++++++++++++++
+ .../vwan-ipsec-over-er-backup/cpe-startup.sh       |  15 ++
+ src/terraform/vwan-ipsec-over-er-backup/gcp.tf     | 141 +++++++++++++
+ src/terraform/vwan-ipsec-over-er-backup/locals.tf  |  14 ++
+ .../vwan-ipsec-over-er-backup/megaport.tf          |  88 +++++++++
+ src/terraform/vwan-ipsec-over-er-backup/outputs.tf |  59 ++++++
+ .../vwan-ipsec-over-er-backup/providers.tf         |  17 ++
+ .../vwan-ipsec-over-er-backup/variables.tf         |  69 +++++++
+ .../vwan-ipsec-over-er-backup/versions.tf          |  18 ++
+ 22 files changed, 1287 insertions(+), 1 deletion(-)
+ M .squad/agents/morpheus/history.md
+ M .squad/agents/niobe/history.md
+ M .squad/agents/oracle/history.md
+ M .squad/agents/trinity/history.md
+ M labs/afd-edge-actions-response-behavior/README.md
+ M labs/afd-edge-actions-response-behavior/deploy/Cleanup.ps1
+?? labs/afd-edge-actions-response-behavior/build/jwt-route-demo/
+?? labs/afd-edge-actions-response-behavior/deploy/Add-JwtRouteDemo.ps1
+?? labs/afd-edge-actions-response-behavior/edge-actions/jwt-route-demo.js
+?? labs/afd-edge-actions-response-behavior/evidence/public-protected-result.json
+?? labs/vwan-ipsec-over-er-backup/.gitignore
+?? labs/vwan-ipsec-over-er-backup/README.md
+?? labs/vwan-ipsec-over-er-backup/config/
+?? labs/vwan-ipsec-over-er-backup/design.md
+?? labs/vwan-ipsec-over-er-backup/diagrams/
+?? labs/vwan-ipsec-over-er-backup/manifest.md
+?? labs/vwan-ipsec-over-er-backup/scripts/
+?? labs/vwan-ipsec-over-er-backup/validation-plan.md
+<shellId: 187 completed with exit code 0>

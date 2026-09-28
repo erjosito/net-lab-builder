@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "questions": [
+    {
+      "id": "Q-DEPLOYMENT-TRANSCRIPT",
+      "scenario": "deployment",
+      "question": "Can every Azure, GCP, Megaport and CPE deployment/configuration action be reconstructed with command, timestamps, context, exit code, stdout and stderr?",
+      "expectedPaths": [
+        "show-output/deployment-audit/deployment-20260928/transcript/"
+      ],
+      "status": "Captured with 341 reconstructed deployment/configuration command records"
+    },
+    {
+      "id": "Q-BGP-NONAPIPA-BLOCKER",
+      "scenario": "baseline-captured",
+      "question": "Did regular-private peers cause both path classes to use the same two default Azure BGP sources despite selected custom APIPA addresses?",
+      "expectedPaths": [
+        "show-output/deployment-blocker-2026-09-28/README.md",
+        "show-output/deployment-blocker-2026-09-28/megaport-readonly.json",
+        "show-output/deployment-blocker-2026-09-28/transcript/"
+      ],
+      "status": "Captured with 81 reconstructed command records, four-SA packet proof and Azure configuration queries"
+    },
+    {
+      "id": "Q-BGP-APIPA-CORRECTION",
+      "scenario": "d2-corrected",
+      "question": "Did the bounded public-link-only APIPA correction produce peers 169.254.22.2 and 169.254.22.3 while private peers remained unchanged?",
+      "expectedPaths": [
+        "show-output/d2-corrected/apipa-correction/before/",
+        "show-output/d2-corrected/apipa-correction/action/",
+        "show-output/d2-corrected/apipa-correction/after/",
+        "show-output/d2-corrected/apipa-correction/assertion/",
+        "show-output/d2-corrected/apipa-correction/transcript/"
+      ],
+      "status": "Captured failed bounded correction, explicit packet-source condition and complete rollback; no Niobe fault validation authorized"
+    },
+    {
+      "id": "Q-D1-OFFLINE-REJECTION",
+      "scenario": "d1-rejected-offline",
+      "question": "Why is one floating adjacency outside the documented support boundary without a live mutation?",
+      "expectedPaths": [
+        "design.md#6-d1---rejected",
+        "show-output/deployment-blocker-2026-09-28/"
+      ],
+      "status": "Documented; no live D1 mutation authorized"
+    },
+    {
+      "id": "Q-D2-PREFERENCE",
+      "scenario": "d2-corrected",
+      "question": "Are four unique BGP sessions established with ER-overlay primary and Internet backup in both directions?",
+      "expectedPaths": [
+        "show-output/d2-corrected/baseline/"
+      ],
+      "status": "Pending corrected baseline"
+    },
+    {
+      "id": "Q-D2-FAULTS",
+      "scenario": "d2-corrected",
+      "question": "Do single-path, full-ER, IPsec-only, BGP-only, workload-drop and Internet faults produce the expected isolated control/data-plane effects and deterministic failback?",
+      "expectedPaths": [
+        "show-output/d2-corrected/faults/"
+      ],
+      "status": "Pending authorization and execution"
+    },
+    {
+      "id": "Q-D3-PREFIX-BLACKHOLE",
+      "scenario": "d3-prefix",
+      "question": "Do ER more-specifics beat the Internet aggregate, and does Internet-down-then-primary-down withdraw safely or produce the predicted blackhole?",
+      "expectedPaths": [
+        "show-output/d3-prefix/",
+        "show-output/compound/"
+      ],
+      "status": "Pending D2 completion"
+    },
+    {
+      "id": "Q-APPLICATION-PROBES",
+      "scenario": "all live scenarios",
+      "question": "What was the timestamped bidirectional ICMP and HTTP behavior before, during and after each action?",
+      "expectedPaths": [
+        "show-output/**/timed-probes-*.metadata.json"
+      ],
+      "status": "Pending scenario execution"
+    },
+    {
+      "id": "Q-RESET-CONTAMINATION",
+      "scenario": "restore",
+      "question": "Is each restore healthy, prefix-clean and configuration-hash-correlated before the next design?",
+      "expectedPaths": [
+        "show-output/restore/",
+        "show-output/final-healthy/"
+      ],
+      "status": "Pending execution"
+    }
+  ]
+}

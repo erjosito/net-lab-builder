@@ -1,0 +1,1 @@
+git --no-pager diff --check -- .squad\agents\morpheus\history.md; if (Test-Path '.squad\decisions\inbox\morpheus-vwan-ipsec-er-design-review.md') { Write-Output 'DECISION_FILE=present' } else { throw 'Decision file missing' }; git check-ignore -v .squad\decisions\inbox\morpheus-vwan-ipsec-er-design-review.md; git --no-pager status --short -- .squad\agents\morpheus\history.md

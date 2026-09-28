@@ -1,0 +1,1 @@
+terraform providers schema -json 2>$null | Out-Null; if ($LASTEXITCODE -ne 0) { Write-Output 'NO_INIT_SCHEMA' } else { Write-Output 'SCHEMA_OK' }; az network vwan --help | Select-Object -First 40; az network vhub connection --help | Select-Object -First 20; az network vpn-gateway --help | Select-Object -First 50

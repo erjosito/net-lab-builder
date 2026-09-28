@@ -1,0 +1,53 @@
+M .squad/agents/morpheus/history.md
+ M .squad/agents/niobe/history.md
+ M .squad/agents/oracle/history.md
+ M .squad/agents/trinity/history.md
+ M labs/afd-edge-actions-response-behavior/README.md
+ M labs/afd-edge-actions-response-behavior/deploy/Cleanup.ps1
+A  labs/vwan-ipsec-over-er-backup/README.md
+M  labs/vwan-ipsec-over-er-backup/config/inventory.template.json
+M  labs/vwan-ipsec-over-er-backup/deploy-log.md
+M  labs/vwan-ipsec-over-er-backup/deploy/Collect-MegaportReadOnly.ps1
+M  labs/vwan-ipsec-over-er-backup/deploy/Get-VpnRuntimeConfig.ps1
+M  labs/vwan-ipsec-over-er-backup/deploy/New-ValidationInventory.ps1
+M  labs/vwan-ipsec-over-er-backup/deploy/New-VpnConnections.ps1
+M  labs/vwan-ipsec-over-er-backup/deploy/cpe/apply-design.sh
+A  labs/vwan-ipsec-over-er-backup/design.md
+A  labs/vwan-ipsec-over-er-backup/diagrams/01-physical-logical-topology.drawio
+A  labs/vwan-ipsec-over-er-backup/diagrams/01-physical-logical-topology.png
+A  labs/vwan-ipsec-over-er-backup/diagrams/02-d1-floating-session-mismatch.drawio
+A  labs/vwan-ipsec-over-er-backup/diagrams/02-d1-floating-session-mismatch.png
+A  labs/vwan-ipsec-over-er-backup/diagrams/03-d2-four-active-active-adjacencies.drawio
+A  labs/vwan-ipsec-over-er-backup/diagrams/03-d2-four-active-active-adjacencies.png
+A  labs/vwan-ipsec-over-er-backup/diagrams/04-d3-prefix-selection-blackhole.drawio
+A  labs/vwan-ipsec-over-er-backup/diagrams/04-d3-prefix-selection-blackhole.png
+A  labs/vwan-ipsec-over-er-backup/diagrams/05-experiment-reset-contamination-flow.drawio
+A  labs/vwan-ipsec-over-er-backup/diagrams/05-experiment-reset-contamination-flow.png
+A  labs/vwan-ipsec-over-er-backup/diagrams/06-cleanup-dependency-order.drawio
+A  labs/vwan-ipsec-over-er-backup/diagrams/06-cleanup-dependency-order.png
+A  labs/vwan-ipsec-over-er-backup/manifest.md
+M  labs/vwan-ipsec-over-er-backup/scripts/Confirm-Sanitization.ps1
+M  labs/vwan-ipsec-over-er-backup/show-output/deployment-blocker-2026-09-28/README.md
+A  labs/vwan-ipsec-over-er-backup/show-output/deployment-blocker-2026-09-28/megaport-readonly.json
+M  src/terraform/vwan-ipsec-over-er-backup/azure.tf
+?? labs/afd-edge-actions-response-behavior/build/jwt-route-demo/
+?? labs/afd-edge-actions-response-behavior/deploy/Add-JwtRouteDemo.ps1
+?? labs/afd-edge-actions-response-behavior/edge-actions/jwt-route-demo.js
+?? labs/afd-edge-actions-response-behavior/evidence/public-protected-result.json
+labs/vwan-ipsec-over-er-backup/manifest.md:3: trailing whitespace.
++**Owner:** Morpheus  
+labs/vwan-ipsec-over-er-backup/manifest.md:4: trailing whitespace.
++**Status:** **DEPLOYED / DESIGN BLOCKER RECORDED**  
+labs/vwan-ipsec-over-er-backup/manifest.md:5: trailing whitespace.
++**Locked:** 2026-09-28  
+labs/vwan-ipsec-over-er-backup/manifest.md:113: trailing whitespace.
++**Trinity:** exact tunnel/link model, CPE ASN, APIPA/tunnel endpoints, route-policy attributes, prefix hierarchy, GCP firewall rules and failure injections.  
+labs/vwan-ipsec-over-er-backup/manifest.md:114: trailing whitespace.
++**Tank:** one dependency graph across Azure/GCP/Megaport, secret-safe deploy/resume/cleanup, generated-key handoffs, dual Azure VXC enforcement and live cost capture.  
+labs/vwan-ipsec-over-er-backup/manifest.md:115: trailing whitespace.
++**Niobe:** assertions, timed probes, route/session collection, packet captures, sanitized raw output and scenario verdicts.  
+labs/vwan-ipsec-over-er-backup/manifest.md:141: trailing whitespace.
++**Deployment/convergence:** approximately 60-120 minutes, with vWAN gateways and provider provisioning as long poles.  
+labs/vwan-ipsec-over-er-backup/manifest.md:142: trailing whitespace.
++**Validation:** 2-4 hours for baseline, three designs, faults, restores and evidence.
+<shellId: stage-lab completed with exit code 2>

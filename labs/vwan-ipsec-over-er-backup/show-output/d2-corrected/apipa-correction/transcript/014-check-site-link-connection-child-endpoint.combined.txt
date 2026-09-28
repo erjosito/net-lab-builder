@@ -1,0 +1,37 @@
+{
+  "etag": "W/\"<GUID>\"",
+  "id": "/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131/vpnConnections/conn-gcp-inet/vpnLinkConnections/conn-gcp-inet-link",
+  "name": "conn-gcp-inet-link",
+  "properties": {
+    "connectionBandwidth": 50,
+    "connectionStatusDetails": [],
+    "dpdTimeoutSeconds": 0,
+    "egressBytesTransferred": 0,
+    "enableBgp": true,
+    "enableRateLimiting": false,
+    "ingressBytesTransferred": 0,
+    "ipsecPolicies": [],
+    "packetCaptureDiagnosticState": "None",
+    "provisioningState": "Succeeded",
+    "routingWeight": 0,
+    "useLocalAzureIpAddress": false,
+    "usePolicyBasedTrafficSelectors": false,
+    "vpnConnectionProtocolType": "IKEv2",
+    "vpnGatewayCustomBgpAddresses": [
+      {
+        "customBgpIpAddress": "169.254.21.5",
+        "ipConfigurationId": "Instance0"
+      },
+      {
+        "customBgpIpAddress": "169.254.22.5",
+        "ipConfigurationId": "Instance1"
+      }
+    ],
+    "vpnLinkConnectionMode": "Default",
+    "vpnSiteLink": {
+      "id": "/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnSites/site-gcp-inet/vpnSiteLinks/site-gcp-inet"
+    }
+  },
+  "type": "Microsoft.Network/vpnGateways/vpnConnections/vpnLinkConnections"
+}
+<shellId: link-connection-endpoint completed with exit code 0>

@@ -1,0 +1,81 @@
+diff --git a/.squad/agents/morpheus/history.md b/.squad/agents/morpheus/history.md
+index 8202a0b..e330a43 100644
+--- a/.squad/agents/morpheus/history.md
++++ b/.squad/agents/morpheus/history.md
+@@ -1,5 +1,5 @@
+ **Archived entries:** see \history-archive.md\
+~
+ 
+~
+ # Project Context
+~
+ 
+~
+ - **Owner:** Jose Moreno
+~
+@@ -10,7 +10,7 @@
+ 
+~
+ ## Learnings
+~
+ 
+~
+ 
+~
+ 📌 2026-08-17 — Edge Actions JWT lab design (design-only, pre-manifest). Key findings for reuse:
+~
+ 
+~
+ **Edge Actions JS API surface (confirmed from sample repo README + request-rejection sample).**  
+~
+@@ -26,23 +26,23 @@
+ 
+~
+ **Phase 0 VM preflight is inapplicable for PaaS-only topologies.** Always document this explicitly in the lab card; it prevents checklist confusion.
+~
+ 
+~
+ <!-- Append new learnings below. Each entry is something lasting about the project. -->
+~
+ 
+~
+ 📌 2026-08-19 — Lab #4 dual-hub-vnra-udr-transit Stage-1 lab card LOCKED.
+~
+ 
+~
+ **Design gist.** Two hubs (swedencentral + northeurope) globally peered. One Ubuntu 22.04 VM-based NVA ("VNRA VM") in `VirtualNetworkApplianceSubnet` per hub with NIC enableIPForwarding=true and OS net.ipv4.ip_forward=1. Four UDRs stitch spoke->hub-NVA->global-peering->hub-NVA->spoke for symmetric east-west transit. 4 VMs total. No public IPs. No ARS. No gateways. ~$1.50/day -- well clear of $50 guardrail.
+~
+ 
+~
+ **Azure VNRA managed resource is NOT a VM.** The Azure Virtual Network Routing Appliance (https://learn.microsoft.com/azure/virtual-network/virtual-network-routing-appliance-overview) is a managed network device, not an Ubuntu VM. It lives in `VirtualNetworkApplianceSubnet`, has bandwidth tiers (50/100/200 Gbps), max 2/subscription/region, and has NO user-accessible NIC. When a task says "VNRA VM" it means VM-based NVA acting as a routing appliance. The distinction matters for observability: VM NVA has a queryable NIC; VNRA managed resource does not.
+~
+ 
+~
+ **Observability gap for actual Azure VNRA.** Microsoft Learn documents effective routes exclusively at NIC scope (az network nic show-effective-route-table, Get-AzEffectiveRouteTable). No subnet-scope effective route CLI or documented REST endpoint exists as of 2026-08-19. For the actual VNRA managed resource (no VM NIC), there is no standard tool to query what routes the appliance uses for forwarding. S5 in this lab empirically probes undocumented REST endpoints (effectiveRouteTable, listEffectiveRoutes on subnet) and portal to measure the gap. This is the lab's headline observability investigation.
+~
+ 
+~
+ **UDR on VirtualNetworkApplianceSubnet is the design's critical stitch.** Without a UDR on the hub NVA subnet pointing the remote spoke prefix to the remote hub's NVA IP, the NVA has no route to the far spoke (VNet peering is non-transitive). This is the mechanism that makes cross-hub spoke transit work.
+~
+ 
+~
+ **Phase-0 preflight: swedencentral CLEAN, northeurope Zone restriction Zone 1+2 only.** B2ts_v2 in northeurope has blockedZones=[1,2], Zone 3 free; non-zonal deploy valid. Both catalog and live-capacity gates PASSED. Validation used existing RG rg-foundry-reserved-8d532edd (swedencentral) with --validate dry-run against northeurope location -- this is valid (RG location != VM location for validation).
+~
+ 
+~
+ **Process note.** When task has 4 Ubuntu VMs but the VNRA concept is relevant, design with VM-based NVAs, name the subnet VirtualNetworkApplianceSubnet, and document the actual managed resource as D3 (Teaching-only) with explicit observability gap analysis. This preserves the lab's value for both immediate (VM NVA) and forward-looking (managed VNRA) use cases.
+~
+ 
+~
+ 
+~
+ 📌 2026-08-03 — Lab #3 scoped: `dual-hub-hubless-region-ars`. Stage-1 lab card locked at `labs/dual-hub-hubless-region-ars/manifest.md` (~6.8 KB — mild overrun on the ≤5 KB budget because the mandated content list this time was atypically dense: mechanism, scope in/out, four regions with resource counts, address plan, subnet plan, ASN plan, 10 BGP sessions, full peering + UDR + route-policy split, connection-model decision with justification, secrets flow, five pass/fail scenarios, deployment duration, defensible daily cost breakdown, cleanup boundary, four `## Designs studied` entries, six MS Learn URLs, and lock statement). This is a **new Stage-1 card, not a revision of the rejected initial review** (`morpheus-dual-hub-design-review.md` from 2026-08-03T11:16 stays untouched); the user-approved design pivoted the topology after Trinity's before-DR reviewer pass and the four subsequent locked-intent corrections in this session's prompt.
+~
+ 
+~
+ **Design gist.** One workload-aligned Azure Route Server (ARS) VNet in `polandcentral` (hubless) is the shared BGP control-plane extension for many spokes toward two remote regional hubs `swedencentral` and `switzerlandnorth`, with a simulated on-prem in `norwayeast`. Set-C spokes are triple-peered (Poland ARS VNet + hub1 + hub2) with no transit flags on the two hub peerings — those exist only so the fabric can deliver packets to the NVA next-hop IP the Poland ARS advertises. Both NVAs multi-hop-eBGP into the Poland ARS across direct global VNet peerings; three-way route-policy split (Δ1 65515 strip on both NVAs, Δ2 NVA2 prepends its ASN on set-C prefixes toward hub2 ARS, Δ3 inbound ARS route map preview on Poland ARS↔NVA2 for default-route best-path). Reversible hub1 outage injection via wrong PSK + `vpn-connection reset` on both hub1↔on-prem halves + `systemctl stop bird` on NVA1.
+~
+@@ -66,7 +66,7 @@
+ 
+~
+<shellId: 64 completed with exit code 0>

@@ -1,0 +1,137 @@
+[
+  {
+    "sequence": 1,
+    "utcStarted": "2026-09-28T13:22:40.4470000+00:00",
+    "description": "Extract custom BGP documentation",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "001-extract-custom-bgp-documentation.metadata.json"
+  },
+  {
+    "sequence": 2,
+    "utcStarted": "2026-09-28T13:22:51.5160000+00:00",
+    "description": "Inspect VPN gateway custom BGP support",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 0,
+    "metadataFile": "002-inspect-vpn-gateway-custom-bgp-support.metadata.json"
+  },
+  {
+    "sequence": 3,
+    "utcStarted": "2026-09-28T13:23:07.3990000+00:00",
+    "description": "Inspect Terraform VPN gateway schema",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "003-inspect-terraform-vpn-gateway-schema.metadata.json"
+  },
+  {
+    "sequence": 4,
+    "utcStarted": "2026-09-28T13:23:43.8410000+00:00",
+    "description": "apply_patch",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 0,
+    "metadataFile": "004-apply-patch.metadata.json"
+  },
+  {
+    "sequence": 5,
+    "utcStarted": "2026-09-28T13:23:52.3100000+00:00",
+    "description": "Plan custom VPN BGP addresses",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "005-plan-custom-vpn-bgp-addresses.metadata.json"
+  },
+  {
+    "sequence": 6,
+    "utcStarted": "2026-09-28T13:24:26.0160000+00:00",
+    "description": "Add custom VPN BGP addresses",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 0,
+    "metadataFile": "006-add-custom-vpn-bgp-addresses.metadata.json"
+  },
+  {
+    "sequence": 7,
+    "utcStarted": "2026-09-28T13:34:54.9610000+00:00",
+    "description": "Bind D2 connections to custom BGP peers",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "007-bind-d2-connections-to-custom-bgp-peers.metadata.json"
+  },
+  {
+    "sequence": 8,
+    "utcStarted": "2026-09-28T13:40:15.6000000+00:00",
+    "description": "Regenerate D2 runtime with custom peers",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "008-regenerate-d2-runtime-with-custom-peers.metadata.json"
+  },
+  {
+    "sequence": 9,
+    "utcStarted": "2026-09-28T13:41:15.5730000+00:00",
+    "description": "Apply D2 custom-peer runtime to CPE",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 0,
+    "metadataFile": "009-apply-d2-custom-peer-runtime-to-cpe.metadata.json"
+  },
+  {
+    "sequence": 10,
+    "utcStarted": "2026-09-28T13:41:47.2560000+00:00",
+    "description": "Verify four D2 tunnels and BGP peers",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "010-verify-four-d2-tunnels-and-bgp-peers.metadata.json"
+  },
+  {
+    "sequence": 11,
+    "utcStarted": "2026-09-28T13:41:47.2580000+00:00",
+    "description": "Verify Azure D2 connection health",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "011-verify-azure-d2-connection-health.metadata.json"
+  },
+  {
+    "sequence": 12,
+    "utcStarted": "2026-09-28T13:41:47.2630000+00:00",
+    "description": "Verify gateway custom BGP addresses",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "012-verify-gateway-custom-bgp-addresses.metadata.json"
+  },
+  {
+    "sequence": 13,
+    "utcStarted": "2026-09-28T13:43:15.7150000+00:00",
+    "description": "Inspect loaded StrongSwan connections",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "013-inspect-loaded-strongswan-connections.metadata.json"
+  },
+  {
+    "sequence": 14,
+    "utcStarted": "2026-09-28T13:43:15.7210000+00:00",
+    "description": "Inspect StrongSwan load and IKE errors",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "014-inspect-strongswan-load-and-ike-errors.metadata.json"
+  },
+  {
+    "sequence": 15,
+    "utcStarted": "2026-09-28T13:43:38.1370000+00:00",
+    "description": "Inspect StrongSwan syntax error lines",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "015-inspect-strongswan-syntax-error-lines.metadata.json"
+  }
+]

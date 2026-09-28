@@ -1,0 +1,1 @@
+$p='C:\Users\jomore\Repos\net-lab-builder\.squad\agents\trinity\history.md'; (Get-Content $p).Count; Select-String -Path $p -Pattern 'vwan-ipsec-over-er|single-floating|floating adjacency|D3|VPN-over-ER|VPN over ER' -Context 5,20 | ForEach-Object { $_.ToString() }

@@ -1,0 +1,21 @@
+IKE=4
+ROUTES
+169.254.21.1 dev xfrm-pri0 scope link 
+169.254.21.5 dev xfrm-pub0 scope link 
+169.254.22.1 dev xfrm-pri1 scope link 
+169.254.22.5 dev xfrm-pub1 scope link 
+BGP
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 365
+RIB entries 7, using 1288 bytes of memory
+Peers 4, using 2892 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+169.254.21.1    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.22.1    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.21.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.22.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+
+Total number of neighbors 4
+<shellId: 354 completed with exit code 0>

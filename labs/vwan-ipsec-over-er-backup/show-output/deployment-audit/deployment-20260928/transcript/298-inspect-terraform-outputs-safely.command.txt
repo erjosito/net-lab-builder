@@ -1,0 +1,1 @@
+terraform -chdir=src\terraform\vwan-ipsec-over-er-backup output -json | ConvertFrom-Json | Select-Object -Property * | ConvertTo-Json -Depth 5

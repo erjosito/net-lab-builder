@@ -1,0 +1,8 @@
+$message=@'
+Align VPN controls with final network design
+
+Enforce the authoritative D1/D2/D3 activation, reset, PSK binding, anti-contamination, and reboot-ordering contract while preserving the existing provider stop condition.
+
+Co-authored-by: Copilot <<ACCOUNT>>
+Copilot-Session: <GUID>
+'@; $path=Join-Path $env:TEMP 'tank-binding-commit.txt'; [IO.File]::WriteAllText($path,$message,[Text.UTF8Encoding]::new($false)); git commit -F $path; $code=$LASTEXITCODE; Remove-Item $path; if($code -ne 0){exit $code}; git --no-pager show -s --format='%h %s%n%(trailers)' HEAD; git --no-pager status --short

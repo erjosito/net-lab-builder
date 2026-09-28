@@ -52,3 +52,27 @@ Microsoft documentation states that a regular private remote peer causes VPN Gat
 ## Commitment
 
 The pre-order Megaport rack-rate quote was EUR 991.80/month. Azure and GCP managed networking and compute charges remain live. Cleanup was not run.
+
+## Audit transcript
+
+**Correlation:** `nonapipa-blocker-20260928-01`
+
+The historical command transcript is reconstructed from the local append-only session event log under `transcript/`:
+
+- `01-custom-peer-config/` contains 15 records covering documentation/schema checks, gateway custom-address configuration, per-connection custom mappings, generated runtime and the first CPE application.
+- `02-effective-source-observation/` contains 66 records covering CPE control installation, four-SA recovery, packet/BGP observation, Azure object queries, provider-health capture, sanitization and Terraform closure.
+
+Each record preserves the exact sanitized command, UTC/local timestamps, duration, exit code, combined output, expected effect and tool context. The historical shell runner retained stdout and stderr as a combined stream; the transcript explicitly records that limitation rather than inventing stream attribution. Failed commands remain in the ledger.
+
+### Finding correlation
+
+| Evidence | Assertion |
+|---|---|
+| `01-custom-peer-config/006-*` through `012-*` | Four custom gateway addresses were added and selected by the two connections. |
+| `02-effective-source-observation/010-*` | All four IKEv2/ESP paths were established after aligning the Azure-compatible IKE proposal; all four configured APIPA FRR neighbors remained non-established. |
+| `02-effective-source-observation/016-*` | Header-only packet capture showed both private and public XFRM interfaces receiving TCP/179 from only default Azure peers `10.240.0.12/.13`. Public packets targeted the regular-private CPE identity rather than using the selected Azure custom APIPA sources. |
+| `02-effective-source-observation/020-*` | Gateway state contained both default peers and the four configured custom APIPA addresses. |
+| `02-effective-source-observation/021-*` | Private and public connection objects persisted their distinct custom BGP selections. |
+| `02-effective-source-observation/063-*` and `064-*` | Final pre-commit assertion recorded four established SAs, zero established overlay BGP sessions and healthy provider routing. |
+
+This evidence demonstrates that missing custom configuration, failed IPsec or provider-path degradation did not explain the blocker. Azure's effective source selection collapsed the intended four BGP tuples to its two default peers when the CPE site peers were regular-private addresses.

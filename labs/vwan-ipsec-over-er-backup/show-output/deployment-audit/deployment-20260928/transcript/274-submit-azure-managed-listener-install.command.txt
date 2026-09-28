@@ -1,0 +1,22 @@
+$i=Get-Content 'labs\vwan-ipsec-over-er-backup\config\inventory.json' -Raw|ConvertFrom-Json; $script=@'
+set -euo pipefail
+install -d -m 0755 /opt/vwan-health
+printf 'ok\n' >/opt/vwan-health/health
+cat >/etc/systemd/system/vwan-health.service <<'EOF'
+[Unit]
+Description=vWAN lab HTTP health listener
+After=network-online.target
+Wants=network-online.target
+[Service]
+ExecStart=/usr/bin/python3 -m http.server 8080 --bind 0.0.0.0 --directory /opt/vwan-health
+Restart=always
+RestartSec=2
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl daemon-reload
+systemctl enable --now vwan-health.service
+for attempt in 1 2 3 4 5; do curl -fsS http://127.0.0.1:8080/health && break || sleep 1; done
+curl -fsS http://127.0.0.1:8080/health >/dev/null
+echo LISTENER_READY
+'@.Replace("`r`n","`n"); az vm run-command create -g $i.azure.resourceGroup --vm-name $i.azure.workloadVmName --run-command-name install-vwan-health --location swedencentral --script $script --async-execution false --timeout-in-seconds 300 --no-wait --only-show-errors -o none; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; 'AZURE_MANAGED_COMMAND_SUBMITTED=true'

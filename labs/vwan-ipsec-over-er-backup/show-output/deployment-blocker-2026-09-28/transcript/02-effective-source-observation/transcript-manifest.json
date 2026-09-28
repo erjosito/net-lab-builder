@@ -1,0 +1,596 @@
+[
+  {
+    "sequence": 1,
+    "utcStarted": "2026-09-28T14:46:00.9350000+00:00",
+    "description": "Install corrected CPE controls",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 0,
+    "metadataFile": "001-install-corrected-cpe-controls.metadata.json"
+  },
+  {
+    "sequence": 2,
+    "utcStarted": "2026-09-28T14:46:00.9370000+00:00",
+    "description": "Rotate and render D2 runtime PSKs",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "002-rotate-and-render-d2-runtime-psks.metadata.json"
+  },
+  {
+    "sequence": 3,
+    "utcStarted": "2026-09-28T14:47:05.4990000+00:00",
+    "description": "Apply corrected StrongSwan D2 runtime",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 0,
+    "metadataFile": "003-apply-corrected-strongswan-d2-runtime.metadata.json"
+  },
+  {
+    "sequence": 4,
+    "utcStarted": "2026-09-28T14:47:26.2040000+00:00",
+    "description": "Verify corrected D2 overlay",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "004-verify-corrected-d2-overlay.metadata.json"
+  },
+  {
+    "sequence": 5,
+    "utcStarted": "2026-09-28T14:47:26.2050000+00:00",
+    "description": "Check Azure tunnel counters",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "005-check-azure-tunnel-counters.metadata.json"
+  },
+  {
+    "sequence": 6,
+    "utcStarted": "2026-09-28T14:48:41.9150000+00:00",
+    "description": "Inspect IKE negotiation failures",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "006-inspect-ike-negotiation-failures.metadata.json"
+  },
+  {
+    "sequence": 7,
+    "utcStarted": "2026-09-28T14:49:01.9100000+00:00",
+    "description": "Read recent full IKE log",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "007-read-recent-full-ike-log.metadata.json"
+  },
+  {
+    "sequence": 8,
+    "utcStarted": "2026-09-28T14:49:21.8440000+00:00",
+    "description": "apply_patch",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 0,
+    "metadataFile": "008-apply-patch.metadata.json"
+  },
+  {
+    "sequence": 9,
+    "utcStarted": "2026-09-28T14:49:28.6660000+00:00",
+    "description": "Reload Azure-compatible IKE proposals",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 0,
+    "metadataFile": "009-reload-azure-compatible-ike-proposals.metadata.json"
+  },
+  {
+    "sequence": 10,
+    "utcStarted": "2026-09-28T14:49:46.2210000+00:00",
+    "description": "Check overlay after IKE alignment",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "010-check-overlay-after-ike-alignment.metadata.json"
+  },
+  {
+    "sequence": 11,
+    "utcStarted": "2026-09-28T14:49:46.2220000+00:00",
+    "description": "Check post-alignment IKE results",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "011-check-post-alignment-ike-results.metadata.json"
+  },
+  {
+    "sequence": 12,
+    "utcStarted": "2026-09-28T14:50:30.8760000+00:00",
+    "description": "Inspect XFRM interfaces and routes",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "012-inspect-xfrm-interfaces-and-routes.metadata.json"
+  },
+  {
+    "sequence": 13,
+    "utcStarted": "2026-09-28T14:50:30.8830000+00:00",
+    "description": "Inspect XFRM states and policies",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "013-inspect-xfrm-states-and-policies.metadata.json"
+  },
+  {
+    "sequence": 14,
+    "utcStarted": "2026-09-28T14:50:30.8920000+00:00",
+    "description": "Probe each BGP tunnel peer",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "014-probe-each-bgp-tunnel-peer.metadata.json"
+  },
+  {
+    "sequence": 15,
+    "utcStarted": "2026-09-28T14:50:55.7240000+00:00",
+    "description": "Probe four tunnel BGP peers",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "015-probe-four-tunnel-bgp-peers.metadata.json"
+  },
+  {
+    "sequence": 16,
+    "utcStarted": "2026-09-28T14:51:19.7350000+00:00",
+    "description": "Observe BGP after tunnel traffic",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "016-observe-bgp-after-tunnel-traffic.metadata.json"
+  },
+  {
+    "sequence": 17,
+    "utcStarted": "2026-09-28T14:52:26.6940000+00:00",
+    "description": "Inspect gateway custom BGP addresses",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 1,
+    "metadataFile": "017-inspect-gateway-custom-bgp-addresses.metadata.json"
+  },
+  {
+    "sequence": 18,
+    "utcStarted": "2026-09-28T14:52:26.6950000+00:00",
+    "description": "Inspect connection BGP bindings",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 1,
+    "metadataFile": "018-inspect-connection-bgp-bindings.metadata.json"
+  },
+  {
+    "sequence": 19,
+    "utcStarted": "2026-09-28T14:52:40.9910000+00:00",
+    "description": "Locate live lab Azure resources",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "019-locate-live-lab-azure-resources.metadata.json"
+  },
+  {
+    "sequence": 20,
+    "utcStarted": "2026-09-28T14:52:53.3920000+00:00",
+    "description": "Inspect gateway custom BGP addresses",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "020-inspect-gateway-custom-bgp-addresses.metadata.json"
+  },
+  {
+    "sequence": 21,
+    "utcStarted": "2026-09-28T14:52:53.3940000+00:00",
+    "description": "Inspect connection BGP bindings",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "021-inspect-connection-bgp-bindings.metadata.json"
+  },
+  {
+    "sequence": 22,
+    "utcStarted": "2026-09-28T14:53:42.6760000+00:00",
+    "description": "Review scoped deployment changes",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 0,
+    "metadataFile": "022-review-scoped-deployment-changes.metadata.json"
+  },
+  {
+    "sequence": 23,
+    "utcStarted": "2026-09-28T14:53:51.3000000+00:00",
+    "description": "Extract Azure BGP documentation results",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 1,
+    "metadataFile": "023-extract-azure-bgp-documentation-results.metadata.json"
+  },
+  {
+    "sequence": 24,
+    "utcStarted": "2026-09-28T14:54:42.4710000+00:00",
+    "description": "Inspect vHub ExpressRoute connection",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "024-inspect-vhub-expressroute-connection.metadata.json"
+  },
+  {
+    "sequence": 25,
+    "utcStarted": "2026-09-28T14:54:42.4730000+00:00",
+    "description": "Read non-secret Terraform outputs",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "025-read-non-secret-terraform-outputs.metadata.json"
+  },
+  {
+    "sequence": 26,
+    "utcStarted": "2026-09-28T14:54:42.4740000+00:00",
+    "description": "Inspect vHub VPN connections",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "026-inspect-vhub-vpn-connections.metadata.json"
+  },
+  {
+    "sequence": 27,
+    "utcStarted": "2026-09-28T14:54:56.3500000+00:00",
+    "description": "Locate vHub ExpressRoute connection ID",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 1,
+    "metadataFile": "027-locate-vhub-expressroute-connection-id.metadata.json"
+  },
+  {
+    "sequence": 28,
+    "utcStarted": "2026-09-28T14:55:02.4020000+00:00",
+    "description": "List provider connection state addresses",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "028-list-provider-connection-state-addresses.metadata.json"
+  },
+  {
+    "sequence": 29,
+    "utcStarted": "2026-09-28T14:55:08.9440000+00:00",
+    "description": "Read vHub ExpressRoute connection ID",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "029-read-vhub-expressroute-connection-id.metadata.json"
+  },
+  {
+    "sequence": 30,
+    "utcStarted": "2026-09-28T14:55:30.8380000+00:00",
+    "description": "apply_patch",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 1,
+    "metadataFile": "030-apply-patch.metadata.json"
+  },
+  {
+    "sequence": 31,
+    "utcStarted": "2026-09-28T14:55:40.2960000+00:00",
+    "description": "apply_patch",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 1,
+    "metadataFile": "031-apply-patch.metadata.json"
+  },
+  {
+    "sequence": 32,
+    "utcStarted": "2026-09-28T14:55:47.2690000+00:00",
+    "description": "Generate live validation inventory",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "032-generate-live-validation-inventory.metadata.json"
+  },
+  {
+    "sequence": 33,
+    "utcStarted": "2026-09-28T14:56:40.6300000+00:00",
+    "description": "Collect sanitized Megaport state",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "033-collect-sanitized-megaport-state.metadata.json"
+  },
+  {
+    "sequence": 34,
+    "utcStarted": "2026-09-28T14:56:57.9300000+00:00",
+    "description": "Check draw.io export command",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 1,
+    "metadataFile": "034-check-draw-io-export-command.metadata.json"
+  },
+  {
+    "sequence": 35,
+    "utcStarted": "2026-09-28T14:57:08.8190000+00:00",
+    "description": "apply_patch",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 0,
+    "metadataFile": "035-apply-patch.metadata.json"
+  },
+  {
+    "sequence": 36,
+    "utcStarted": "2026-09-28T14:57:51.9260000+00:00",
+    "description": "apply_patch",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 0,
+    "metadataFile": "036-apply-patch.metadata.json"
+  },
+  {
+    "sequence": 37,
+    "utcStarted": "2026-09-28T14:58:14.1150000+00:00",
+    "description": "Locate draw.io desktop executable",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "037-locate-draw-io-desktop-executable.metadata.json"
+  },
+  {
+    "sequence": 38,
+    "utcStarted": "2026-09-28T14:58:22.6540000+00:00",
+    "description": "apply_patch",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 0,
+    "metadataFile": "038-apply-patch.metadata.json"
+  },
+  {
+    "sequence": 39,
+    "utcStarted": "2026-09-28T14:58:33.5040000+00:00",
+    "description": "Refresh provider evidence and topology PNG",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "039-refresh-provider-evidence-and-topology-png.metadata.json"
+  },
+  {
+    "sequence": 40,
+    "utcStarted": "2026-09-28T14:58:33.5060000+00:00",
+    "description": "Validate scripts XML and JSON",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "040-validate-scripts-xml-and-json.metadata.json"
+  },
+  {
+    "sequence": 41,
+    "utcStarted": "2026-09-28T14:58:33.5080000+00:00",
+    "description": "Validate CPE shell syntax",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 0,
+    "metadataFile": "041-validate-cpe-shell-syntax.metadata.json"
+  },
+  {
+    "sequence": 42,
+    "utcStarted": "2026-09-28T14:58:33.5100000+00:00",
+    "description": "Run Terraform closure validation",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 1,
+    "metadataFile": "042-run-terraform-closure-validation.metadata.json"
+  },
+  {
+    "sequence": 43,
+    "utcStarted": "2026-09-28T14:58:53.0870000+00:00",
+    "description": "Check PNG export and evidence GUID removal",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "043-check-png-export-and-evidence-guid-removal.metadata.json"
+  },
+  {
+    "sequence": 44,
+    "utcStarted": "2026-09-28T14:58:53.0890000+00:00",
+    "description": "Run Terraform no-change plan",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 1,
+    "metadataFile": "044-run-terraform-no-change-plan.metadata.json"
+  },
+  {
+    "sequence": 45,
+    "utcStarted": "2026-09-28T14:59:09.8260000+00:00",
+    "description": "Run parameterized Terraform closure plan",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 1,
+    "metadataFile": "045-run-parameterized-terraform-closure-plan.metadata.json"
+  },
+  {
+    "sequence": 46,
+    "utcStarted": "2026-09-28T14:59:09.8270000+00:00",
+    "description": "Scan lab artifacts for secrets",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 1,
+    "metadataFile": "046-scan-lab-artifacts-for-secrets.metadata.json"
+  },
+  {
+    "sequence": 47,
+    "utcStarted": "2026-09-28T14:59:09.8320000+00:00",
+    "description": "Check scoped worktree and whitespace",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 2,
+    "metadataFile": "047-check-scoped-worktree-and-whitespace.metadata.json"
+  },
+  {
+    "sequence": 48,
+    "utcStarted": "2026-09-28T14:59:52.0300000+00:00",
+    "description": "apply_patch",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 0,
+    "metadataFile": "048-apply-patch.metadata.json"
+  },
+  {
+    "sequence": 49,
+    "utcStarted": "2026-09-28T14:59:58.6140000+00:00",
+    "description": "Normalize scoped text files to LF",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "049-normalize-scoped-text-files-to-lf.metadata.json"
+  },
+  {
+    "sequence": 50,
+    "utcStarted": "2026-09-28T14:59:58.6150000+00:00",
+    "description": "Run authenticated Terraform closure plan",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "050-run-authenticated-terraform-closure-plan.metadata.json"
+  },
+  {
+    "sequence": 51,
+    "utcStarted": "2026-09-28T14:59:58.6180000+00:00",
+    "description": "Rescan committed lab artifacts",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "051-rescan-committed-lab-artifacts.metadata.json"
+  },
+  {
+    "sequence": 52,
+    "utcStarted": "2026-09-28T15:00:37.3560000+00:00",
+    "description": "List all scoped changes",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "052-list-all-scoped-changes.metadata.json"
+  },
+  {
+    "sequence": 53,
+    "utcStarted": "2026-09-28T15:00:37.3570000+00:00",
+    "description": "Check scoped diff whitespace",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 2,
+    "metadataFile": "053-check-scoped-diff-whitespace.metadata.json"
+  },
+  {
+    "sequence": 54,
+    "utcStarted": "2026-09-28T15:00:37.3600000+00:00",
+    "description": "Summarize scoped tracked changes",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "054-summarize-scoped-tracked-changes.metadata.json"
+  },
+  {
+    "sequence": 55,
+    "utcStarted": "2026-09-28T15:00:37.3690000+00:00",
+    "description": "Verify provider evidence omits identifiers",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "055-verify-provider-evidence-omits-identifiers.metadata.json"
+  },
+  {
+    "sequence": 56,
+    "utcStarted": "2026-09-28T15:00:48.2700000+00:00",
+    "description": "Inspect line-ending diff behavior",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "056-inspect-line-ending-diff-behavior.metadata.json"
+  },
+  {
+    "sequence": 57,
+    "utcStarted": "2026-09-28T15:00:59.6190000+00:00",
+    "description": "Detect original line-ending conventions",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 0,
+    "metadataFile": "057-detect-original-line-ending-conventions.metadata.json"
+  },
+  {
+    "sequence": 58,
+    "utcStarted": "2026-09-28T15:01:09.8920000+00:00",
+    "description": "Restore tracked Windows line endings",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "058-restore-tracked-windows-line-endings.metadata.json"
+  },
+  {
+    "sequence": 59,
+    "utcStarted": "2026-09-28T15:01:14.9030000+00:00",
+    "description": "Verify scoped diff and whitespace",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "059-verify-scoped-diff-and-whitespace.metadata.json"
+  },
+  {
+    "sequence": 60,
+    "utcStarted": "2026-09-28T15:01:14.9040000+00:00",
+    "description": "Confirm sanitization after formatting",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "060-confirm-sanitization-after-formatting.metadata.json"
+  },
+  {
+    "sequence": 61,
+    "utcStarted": "2026-09-28T15:01:26.6590000+00:00",
+    "description": "Stage only scoped lab changes",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 2,
+    "metadataFile": "061-stage-only-scoped-lab-changes.metadata.json"
+  },
+  {
+    "sequence": 62,
+    "utcStarted": "2026-09-28T15:01:37.4870000+00:00",
+    "description": "Remove manifest trailing whitespace",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "062-remove-manifest-trailing-whitespace.metadata.json"
+  },
+  {
+    "sequence": 63,
+    "utcStarted": "2026-09-28T15:01:48.4560000+00:00",
+    "description": "Confirm final IPsec and BGP state",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "063-confirm-final-ipsec-and-bgp-state.metadata.json"
+  },
+  {
+    "sequence": 64,
+    "utcStarted": "2026-09-28T15:01:48.4570000+00:00",
+    "description": "Confirm provider routing health",
+    "actionType": "assertion",
+    "state": "assertion",
+    "exitCode": 0,
+    "metadataFile": "064-confirm-provider-routing-health.metadata.json"
+  },
+  {
+    "sequence": 65,
+    "utcStarted": "2026-09-28T15:01:48.4620000+00:00",
+    "description": "Review staged commit scope",
+    "actionType": "query",
+    "state": "during",
+    "exitCode": 0,
+    "metadataFile": "065-review-staged-commit-scope.metadata.json"
+  },
+  {
+    "sequence": 66,
+    "utcStarted": "2026-09-28T15:02:03.5030000+00:00",
+    "description": "Commit scoped lab deployment",
+    "actionType": "configuration",
+    "state": "action",
+    "exitCode": 0,
+    "metadataFile": "066-commit-scoped-lab-deployment.metadata.json"
+  }
+]

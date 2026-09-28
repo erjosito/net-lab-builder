@@ -1,0 +1,1 @@
+$site=Get-Content 'C:\Users\jomore\.copilot\session-state\<GUID>\files\apipa-remediation\public-site-before.json' -Raw|ConvertFrom-Json; $id=$site.vpnSiteLinks[0].id; az rest --method get --url "https://management.azure.com${id}?api-version=2025-09-01" -o json

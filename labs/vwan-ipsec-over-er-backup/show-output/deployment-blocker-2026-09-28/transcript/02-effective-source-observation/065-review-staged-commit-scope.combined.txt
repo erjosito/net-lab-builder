@@ -1,0 +1,54 @@
+labs/vwan-ipsec-over-er-backup/README.md           |  78 ++++++
+ .../config/inventory.template.json                 |  31 ++-
+ labs/vwan-ipsec-over-er-backup/deploy-log.md       | 132 ++++-------
+ .../deploy/Collect-MegaportReadOnly.ps1            |   1 -
+ .../deploy/Get-VpnRuntimeConfig.ps1                | 151 +++++++++---
+ .../deploy/New-ValidationInventory.ps1             |  64 +++--
+ .../deploy/New-VpnConnections.ps1                  |  61 ++++-
+ .../deploy/cpe/apply-design.sh                     | 122 +++++++++-
+ labs/vwan-ipsec-over-er-backup/design.md           | 264 +++++++++++++++++++++
+ .../diagrams/01-physical-logical-topology.drawio   |  52 ++++
+ .../diagrams/01-physical-logical-topology.png      | Bin 0 -> 381222 bytes
+ .../02-d1-floating-session-mismatch.drawio         |  30 +++
+ .../diagrams/02-d1-floating-session-mismatch.png   | Bin 0 -> 389572 bytes
+ .../03-d2-four-active-active-adjacencies.drawio    |  33 +++
+ .../03-d2-four-active-active-adjacencies.png       | Bin 0 -> 399441 bytes
+ .../04-d3-prefix-selection-blackhole.drawio        |  38 +++
+ .../diagrams/04-d3-prefix-selection-blackhole.png  | Bin 0 -> 444547 bytes
+ .../05-experiment-reset-contamination-flow.drawio  |  30 +++
+ .../05-experiment-reset-contamination-flow.png     | Bin 0 -> 390095 bytes
+ .../diagrams/06-cleanup-dependency-order.drawio    |  28 +++
+ .../diagrams/06-cleanup-dependency-order.png       | Bin 0 -> 395665 bytes
+ labs/vwan-ipsec-over-er-backup/manifest.md         | 166 +++++++++++++
+ .../scripts/Confirm-Sanitization.ps1               |   3 +-
+ .../deployment-blocker-2026-09-28/README.md        | 114 +++------
+ .../megaport-readonly.json                         | 186 +++++++++++++++
+ src/terraform/vwan-ipsec-over-er-backup/azure.tf   |   8 +
+ 26 files changed, 1354 insertions(+), 238 deletions(-)
+labs/vwan-ipsec-over-er-backup/README.md
+labs/vwan-ipsec-over-er-backup/config/inventory.template.json
+labs/vwan-ipsec-over-er-backup/deploy-log.md
+labs/vwan-ipsec-over-er-backup/deploy/Collect-MegaportReadOnly.ps1
+labs/vwan-ipsec-over-er-backup/deploy/Get-VpnRuntimeConfig.ps1
+labs/vwan-ipsec-over-er-backup/deploy/New-ValidationInventory.ps1
+labs/vwan-ipsec-over-er-backup/deploy/New-VpnConnections.ps1
+labs/vwan-ipsec-over-er-backup/deploy/cpe/apply-design.sh
+labs/vwan-ipsec-over-er-backup/design.md
+labs/vwan-ipsec-over-er-backup/diagrams/01-physical-logical-topology.drawio
+labs/vwan-ipsec-over-er-backup/diagrams/01-physical-logical-topology.png
+labs/vwan-ipsec-over-er-backup/diagrams/02-d1-floating-session-mismatch.drawio
+labs/vwan-ipsec-over-er-backup/diagrams/02-d1-floating-session-mismatch.png
+labs/vwan-ipsec-over-er-backup/diagrams/03-d2-four-active-active-adjacencies.drawio
+labs/vwan-ipsec-over-er-backup/diagrams/03-d2-four-active-active-adjacencies.png
+labs/vwan-ipsec-over-er-backup/diagrams/04-d3-prefix-selection-blackhole.drawio
+labs/vwan-ipsec-over-er-backup/diagrams/04-d3-prefix-selection-blackhole.png
+labs/vwan-ipsec-over-er-backup/diagrams/05-experiment-reset-contamination-flow.drawio
+labs/vwan-ipsec-over-er-backup/diagrams/05-experiment-reset-contamination-flow.png
+labs/vwan-ipsec-over-er-backup/diagrams/06-cleanup-dependency-order.drawio
+labs/vwan-ipsec-over-er-backup/diagrams/06-cleanup-dependency-order.png
+labs/vwan-ipsec-over-er-backup/manifest.md
+labs/vwan-ipsec-over-er-backup/scripts/Confirm-Sanitization.ps1
+labs/vwan-ipsec-over-er-backup/show-output/deployment-blocker-2026-09-28/README.md
+labs/vwan-ipsec-over-er-backup/show-output/deployment-blocker-2026-09-28/megaport-readonly.json
+src/terraform/vwan-ipsec-over-er-backup/azure.tf
+<shellId: 299 completed with exit code 0>

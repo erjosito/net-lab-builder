@@ -1,0 +1,1 @@
+gcloud compute ssh cpe-ver-09281131 --project gcp-vwan-eripsec-09281131 --zone europe-north2-c --tunnel-through-iap --quiet --command "sudo sed -i 's/\r$//' /run/vwan-lab/runtime.env; sudo /opt/vwan-lab/apply-design.sh"

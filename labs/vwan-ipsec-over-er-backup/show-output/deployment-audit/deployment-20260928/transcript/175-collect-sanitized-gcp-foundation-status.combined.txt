@@ -1,0 +1,81 @@
+{
+  "canIpForward": true,
+  "machineType": "e2-small",
+  "name": "cpe-ver-09281131",
+  "networkInterfaces": [
+    {
+      "aliasIpRanges": [
+        {
+          "ipCidrRange": "10.250.254.240/32",
+          "subnetworkRangeName": "cpe-peer-identities"
+        },
+        {
+          "ipCidrRange": "10.250.254.241/32",
+          "subnetworkRangeName": "cpe-peer-identities"
+        },
+        {
+          "ipCidrRange": "10.250.254.242/32",
+          "subnetworkRangeName": "cpe-peer-identities"
+        },
+        {
+          "ipCidrRange": "10.250.254.250/32",
+          "subnetworkRangeName": "cpe-peer-identities"
+        }
+      ],
+      "networkIP": "10.250.0.10"
+    }
+  ],
+  "status": "RUNNING"
+}
+<command with shellId: 136 is still running after 30 seconds. The command is still running. Use read_powershell to continue waiting for output, or stop_powershell to stop it.>
+{
+  "canIpForward": true,
+  "machineType": "e2-small",
+  "name": "cpe-ver-09281131",
+  "networkInterfaces": [
+    {
+      "aliasIpRanges": [
+        {
+          "ipCidrRange": "10.250.254.240/32",
+          "subnetworkRangeName": "cpe-peer-identities"
+        },
+        {
+          "ipCidrRange": "10.250.254.241/32",
+          "subnetworkRangeName": "cpe-peer-identities"
+        },
+        {
+          "ipCidrRange": "10.250.254.242/32",
+          "subnetworkRangeName": "cpe-peer-identities"
+        },
+        {
+          "ipCidrRange": "10.250.254.250/32",
+          "subnetworkRangeName": "cpe-peer-identities"
+        }
+      ],
+      "networkIP": "10.250.0.10"
+    }
+  ],
+  "status": "RUNNING"
+}
+{
+  "adminEnabled": true,
+  "edgeAvailabilityDomain": "AVAILABILITY_DOMAIN_1",
+  "name": "att-ver-09281131",
+  "state": "PENDING_PARTNER",
+  "type": "PARTNER"
+}
+{
+  "bgp": {
+    "advertiseMode": "CUSTOM",
+    "advertisedIpRanges": [
+      {
+        "description": "Private CPE endpoint only",
+        "range": "10.250.0.10/32"
+      }
+    ],
+    "asn": 16550,
+    "keepaliveInterval": 20
+  },
+  "name": "cr-ver-09281131"
+}
+<shellId: 136 completed with exit code 0>

@@ -1,0 +1,2 @@
+apply_patch
+"*** Begin Patch\n*** Update File: labs/vwan-ipsec-over-er-backup/deploy/Install-ApplicationListeners.ps1\n@@\n systemctl daemon-reload\n systemctl enable --now vwan-health.service\n-curl -fsS http://127.0.0.1:8080/health\n+for attempt in 1 2 3 4 5; do\n+  if curl -fsS http://127.0.0.1:8080/health; then break; fi\n+  sleep 1\n+done\n+curl -fsS http://127.0.0.1:8080/health >/dev/null\n echo LISTENER_READY\n*** End Patch\n"

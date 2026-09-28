@@ -1,0 +1,1 @@
+gcloud compute ssh cpe-ver-09281131 --project=gcp-vwan-eripsec-09281131 --zone=europe-north2-c --command="cloud-init status --wait; systemctl is-active frr; systemctl is-enabled strongswan; sysctl -n net.ipv4.ip_forward; command -v tcpdump; command -v swanctl" --quiet

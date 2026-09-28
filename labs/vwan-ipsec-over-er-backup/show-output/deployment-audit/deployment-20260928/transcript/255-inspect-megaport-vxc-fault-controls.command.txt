@@ -1,0 +1,1 @@
+Push-Location 'src\terraform\vwan-ipsec-over-er-backup'; try { $schema=terraform providers schema -json|ConvertFrom-Json; $schema.provider_schemas.'registry.terraform.io/megaport/megaport'.resource_schemas.megaport_vxc.block.attributes | ConvertTo-Json -Depth 8 } finally { Pop-Location }

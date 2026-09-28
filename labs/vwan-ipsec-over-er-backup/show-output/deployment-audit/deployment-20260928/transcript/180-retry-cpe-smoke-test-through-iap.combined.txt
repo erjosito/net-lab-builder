@@ -1,0 +1,29 @@
+The host key is not cached for this server:
+  compute.1160893241807601067 (port 22)
+You have no guarantee that the server is the computer you
+think it is.
+The server's ssh-ed25519 key fingerprint is:
+  ssh-ed25519 255 SHA256:ezyYHn2KbtamLT9CAzTxssLnTLXpL8Ag04ShfSn8zGI
+If you trust this host, enter "y" to add the key to Plink's
+cache and carry on connecting.
+If you want to carry on connecting just once, without adding
+the key to the cache, enter "n".
+If you do not trust this host, press Return to abandon the
+connection.
+status: done
+inactive
+Store key in cache? (y/n, Return cancels connection, i for more info) Failed to get unit file state for strongswan.service: No such file or directory
+0
+/usr/bin/tcpdump
+
+Recommendation: To check for possible causes of SSH connectivity issues and get
+recommendations, rerun the ssh command with the --troubleshoot option.
+
+gcloud compute ssh cpe-ver-09281131 --project=gcp-vwan-eripsec-09281131 --zone=europe-north2-c --troubleshoot
+
+Or, to investigate an IAP tunneling issue:
+
+gcloud compute ssh cpe-ver-09281131 --project=gcp-vwan-eripsec-09281131 --zone=europe-north2-c --troubleshoot --tunnel-through-iap
+
+ERROR: (gcloud.compute.ssh) [C:\Users\jomore\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\sdk\plink.exe] exited with return code [1].
+<shellId: 141 completed with exit code 1>

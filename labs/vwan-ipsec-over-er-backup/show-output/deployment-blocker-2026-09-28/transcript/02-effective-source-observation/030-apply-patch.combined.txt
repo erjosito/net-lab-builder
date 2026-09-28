@@ -1,0 +1,6 @@
+@{message=Error: Failed to find expected lines in C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy\Collect-MegaportReadOnly.ps1:
+$tokenResponse = Invoke-RestMethod -Method Post -Uri 'https://auth-m2m.megaport.com/oauth2/token' `
+    -Headers @{ Authorization = "Basic $basic" } `
+    -ContentType 'application/x-www-form-urlencoded' `
+    -Body 'grant_type=client_credentials'
+$headers = @{ Authorization = "******" }; code=failure}

@@ -1,0 +1,44 @@
+ERROR: (Forbidden) Public network access is disabled and request is not from a trusted service nor via an approved private link.
+Caller: appid=<GUID>;oid=<GUID>;iss=https://sts.windows.net/<GUID>/
+Vault: platform-secrets-1138;location=swedencentral
+Code: Forbidden
+Message: Public network access is disabled and request is not from a trusted service nor via an approved private link.
+Caller: appid=<GUID>;oid=<GUID>;iss=https://sts.windows.net/<GUID>/
+Vault: platform-secrets-1138;location=swedencentral
+Inner error: {
+    "code": "ForbiddenByConnection"
+}
+ERROR: (Forbidden) Public network access is disabled and request is not from a trusted service nor via an approved private link.
+Caller: appid=<GUID>;oid=<GUID>;iss=https://sts.windows.net/<GUID>/
+Vault: platform-secrets-1138;location=swedencentral
+Code: Forbidden
+Message: Public network access is disabled and request is not from a trusted service nor via an approved private link.
+Caller: appid=<GUID>;oid=<GUID>;iss=https://sts.windows.net/<GUID>/
+Vault: platform-secrets-1138;location=swedencentral
+Inner error: {
+    "code": "ForbiddenByConnection"
+}
+Traceback (most recent call last):
+  File "C:\Users\jomore\.copilot\session-state\<GUID>\files\megaport_discover_quote.py", line 248, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\jomore\.copilot\session-state\<GUID>\files\megaport_discover_quote.py", line 93, in main
+    locations = unwrap(client.get_locations())
+                       ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jomore\.copilot\skills\azure-lab\lib\megaport_client.py", line 254, in get_locations
+    return self._request("GET", "/v3/locations")
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.copilot\skills\azure-lab\lib\megaport_client.py", line 144, in _request
+    self.authenticate()
+    ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jomore\.copilot\skills\azure-lab\lib\megaport_client.py", line 225, in authenticate
+    raise MegaportAuthError(
+    ...<2 lines>...
+    )
+megaport_client.MegaportAuthError: Authentication failed (HTTP 400): {"error":"invalid_client","error_description":null}
+Exception: C:\Users\jomore\.copilot\session-state\<GUID>\files\Invoke-MegaportDiscovery.ps1:57
+Line |
+  57 |      if ($LASTEXITCODE -ne 0) { throw "Megaport discovery failed" }
+     |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Megaport discovery failed
+<shellId: mp-discovery completed with exit code 1>

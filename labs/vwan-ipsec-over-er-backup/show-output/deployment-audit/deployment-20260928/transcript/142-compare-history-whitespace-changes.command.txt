@@ -1,0 +1,1 @@
+$head = git show HEAD:.squad/agents/niobe/history.md; $work = Get-Content '.squad\agents\niobe\history.md'; foreach($n in 370,381,407,410,443,446){ $h=$head[$n-1]; $w=$work[$n+6]; Write-Host "HEAD $n len=$($h.Length) [$($h -replace ' ','·')]"; Write-Host "WORK $($n+7) len=$($w.Length) [$($w -replace ' ','·')]" }

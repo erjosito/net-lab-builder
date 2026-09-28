@@ -1,0 +1,18 @@
+diff --git a/.squad/agents/niobe/history.md b/.squad/agents/niobe/history.md
+index efca921..d9ac9d8 100644
+--- a/.squad/agents/niobe/history.md
++++ b/.squad/agents/niobe/history.md
+@@ -1,5 +1,12 @@
+ **Archived entries:** see \history-archive.md\
+ 
++## Learnings (2026-09-28 - vwan-ipsec-over-er-backup validation harness)
++
++- A negative managed-network experiment needs an explicit prerequisite ladder. For a floating BGP-neighbor test, API rejection or BGP failure is not evidence until endpoint reachability, supported address ownership, PSKs, IKE/IPsec, host routes, interface identity and routing-daemon syntax are independently healthy.
++- Cross-design route experiments need disjoint prefixes plus a machine-enforced contamination gate. Checking only the intended prefix is insufficient; the reset must reject every prefix, neighbor, static route and policy artifact belonging to the previous design.
++- Keep evidence collection read-only and make the mutation owner publish a paired, tested restore before fault injection. This preserves Niobe's diagnostic boundary and prevents an evidence script from becoming an unreviewed deployment/fault tool.
++- vWAN managed route views can require API-specific POST requests rather than a stable single CLI command. Treat those requests as versioned deployment-inventory inputs from Trinity/Tank, capture their failures verbatim, and never substitute resource provisioning state for route evidence.
++
+ ## Learnings (2026-08-18 — afd-edge-actions-jwt-validation live validation)
+ 
+ - **Hyperlight sandbox: `crypto`, `fetch`, `atob`, `TextEncoder` all `undefined`.** S1-GATE = CONDITIONAL. Claims-only enforcement only. Origin `jose` RS256 is the only cryptographic security boundary. Results are deterministic across all AFD PoPs.
+<shellId: 111 completed with exit code 0>

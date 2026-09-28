@@ -1,0 +1,1 @@
+az vm run-command create --help | Select-String -Pattern 'script|source|run-command-name|async-execution' -Context 1,2 | Out-String

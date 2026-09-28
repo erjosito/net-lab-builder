@@ -1,0 +1,81 @@
+### azurerm_vpn_gateway ATTRS
+bgp_route_translation_for_nat_enabled: required= optional=True computed=
+id: required= optional=True computed=True
+ip_configuration: required= optional= computed=True
+location: required=True optional= computed=
+name: required=True optional= computed=
+resource_group_name: required=True optional= computed=
+routing_preference: required= optional=True computed=
+scale_unit: required= optional=True computed=
+tags: required= optional=True computed=
+virtual_hub_id: required=True optional= computed=
+BLOCKS
+bgp_settings: mode=list
+  asn: required=True optional= computed=
+  bgp_peering_address: required= optional= computed=True
+  peer_weight: required=True optional= computed=
+timeouts: mode=single
+  create: required= optional=True computed=
+  delete: required= optional=True computed=
+  read: required= optional=True computed=
+  update: required= optional=True computed=
+### azurerm_vpn_site ATTRS
+address_cidrs: required= optional=True computed=
+device_model: required= optional=True computed=
+device_vendor: required= optional=True computed=
+id: required= optional=True computed=True
+location: required=True optional= computed=
+name: required=True optional= computed=
+resource_group_name: required=True optional= computed=
+tags: required= optional=True computed=
+virtual_wan_id: required=True optional= computed=
+BLOCKS
+link: mode=list
+  fqdn: required= optional=True computed=
+  id: required= optional= computed=True
+  ip_address: required= optional=True computed=
+  name: required=True optional= computed=
+  provider_name: required= optional=True computed=
+  speed_in_mbps: required= optional=True computed=
+o365_policy: mode=list
+  : required= optional= computed=
+timeouts: mode=single
+  create: required= optional=True computed=
+  delete: required= optional=True computed=
+  read: required= optional=True computed=
+  update: required= optional=True computed=
+### azurerm_vpn_gateway_connection ATTRS
+id: required= optional=True computed=True
+internet_security_enabled: required= optional=True computed=
+name: required=True optional= computed=
+remote_vpn_site_id: required=True optional= computed=
+vpn_gateway_id: required=True optional= computed=
+BLOCKS
+routing: mode=list
+  associated_route_table: required=True optional= computed=
+  inbound_route_map_id: required= optional=True computed=
+  outbound_route_map_id: required= optional=True computed=
+timeouts: mode=single
+  create: required= optional=True computed=
+  delete: required= optional=True computed=
+  read: required= optional=True computed=
+  update: required= optional=True computed=
+traffic_selector_policy: mode=set
+  local_address_ranges: required=True optional= computed=
+  remote_address_ranges: required=True optional= computed=
+vpn_link: mode=list
+  bandwidth_mbps: required= optional=True computed=
+  bgp_enabled: required= optional=True computed=
+  connection_mode: required= optional=True computed=
+  dpd_timeout_seconds: required= optional=True computed=
+  egress_nat_rule_ids: required= optional=True computed=
+  ingress_nat_rule_ids: required= optional=True computed=
+  local_azure_ip_address_enabled: required= optional=True computed=
+  name: required=True optional= computed=
+  policy_based_traffic_selector_enabled: required= optional=True computed=
+  protocol: required= optional=True computed=
+  ratelimit_enabled: required= optional=True computed=
+  route_weight: required= optional=True computed=
+  shared_key: required= optional=True computed=True
+  vpn_site_link_id: required=True optional= computed=
+<shellId: 116 completed with exit code 0>

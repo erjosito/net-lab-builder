@@ -1,0 +1,1 @@
+$candidates=@('C:\Program Files\draw.io\draw.io.exe','C:\Program Files (x86)\draw.io\draw.io.exe','$env:LOCALAPPDATA\Programs\draw.io\draw.io.exe'); $candidates | ForEach-Object { $p=$<REDACTED_TOKEN>($_); if(Test-Path $p){$p} }

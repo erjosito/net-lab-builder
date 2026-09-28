@@ -1,0 +1,1 @@
+(Get-Content 'C:\Users\jomore\AppData\Local\Temp\1790584848668-copilot-tool-output-1b38f238ea744487aa2c990f6cdee7d4.txt' -TotalCount 1 | ConvertFrom-Json).results | ForEach-Object { '{0} | {1} | {2}' -f $_.title,$_.contentUrl,($_.content -replace "`n",' ' | Select-Object -First 1) }

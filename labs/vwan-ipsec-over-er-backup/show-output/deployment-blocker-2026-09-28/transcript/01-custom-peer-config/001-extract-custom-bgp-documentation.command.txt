@@ -1,0 +1,1 @@
+$line=[System.IO.File]::ReadLines('C:\Users\jomore\AppData\Local\Temp\1790601753044-copilot-tool-output-4be6bbde720f479e88b403649385e6f1.txt') | Select-Object -First 1; $r=$line | ConvertFrom-Json; $r.results | Where-Object { $_.content -match 'custom BGP|customBgp|VpnGatewayCustomBgp|BGP IP' } | Select-Object title,contentUrl,content | ConvertTo-Json -Depth 3

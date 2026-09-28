@@ -1,0 +1,1 @@
+$line = Get-Content 'C:\Users\jomore\AppData\Local\Temp\1790584847616-copilot-tool-output-31284e1e13af4f9d9f374028aba464db.txt' -TotalCount 1; $r = $line | ConvertFrom-Json; $r.results | ForEach-Object { "TITLE: $($_.title)`nURL: $($_.contentUrl)`n$($_.content)`n---" } | Set-Content 'C:\Users\jomore\AppData\Local\Temp\vwan-static-routes.txt'

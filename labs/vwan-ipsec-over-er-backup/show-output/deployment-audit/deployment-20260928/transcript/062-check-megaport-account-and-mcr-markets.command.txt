@@ -1,0 +1,20 @@
+$env:MEGAPORT_API_KEY=<REDACTED>; $env:MEGAPORT_API_SECRET=<REDACTED>; @'
+import json, os, sys
+sys.path.insert(0, r'C:\Users\jomore\.copilot\skills\azure-lab\lib')
+from megaport_client import MegaportClient
+c=MegaportClient(os.environ['MEGAPORT_API_KEY'], os.environ['MEGAPORT_API_SECRET'])
+c.authenticate()
+locs=c.get_locations()
+cands=[]
+for x in locs:
+    if x.get('metro') in ('Stockholm','Frankfurt','Amsterdam') and x.get('status') in ('Active','Restricted'):
+        cands.append({k:x.get(k) for k in ('id','name','metro','market','status','diversityZone','vRouterAvailable','mcrAvailable') if k in x})
+checks={}
+for path in ('/v2/products','/v2/account','/v2/users/current'):
+    try:
+        data=c._request('GET',path)
+        checks[path]={'ok':True,'type':type(data).__name__,'count':len(data) if isinstance(data,list) else None,'keys':sorted(list(data.keys()))[:15] if isinstance(data,dict) else None}
+    except Exception as e:
+        checks[path]={'ok':False,'errorType':type(e).__name__,'status':getattr(e,'status_code',None)}
+print(json.dumps({'accessibleCandidateLocations':cands,'endpointChecks':checks},default=str))
+'@ | python -

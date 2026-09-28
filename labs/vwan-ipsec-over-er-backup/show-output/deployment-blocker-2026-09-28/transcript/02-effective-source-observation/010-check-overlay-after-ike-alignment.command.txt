@@ -1,0 +1,1 @@
+Start-Sleep -Seconds 30; gcloud compute ssh cpe-ver-09281131 --project gcp-vwan-eripsec-09281131 --zone europe-north2-c --tunnel-through-iap --quiet --command "sudo swanctl --list-sas; echo '---BGP---'; sudo vtysh -c 'show bgp ipv4 unicast summary'"

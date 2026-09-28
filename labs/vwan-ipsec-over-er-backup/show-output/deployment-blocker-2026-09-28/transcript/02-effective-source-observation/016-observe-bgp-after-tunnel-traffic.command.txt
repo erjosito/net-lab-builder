@@ -1,0 +1,1 @@
+Start-Sleep -Seconds 30; gcloud compute ssh cpe-ver-09281131 --project gcp-vwan-eripsec-09281131 --zone europe-north2-c --tunnel-through-iap --quiet --command "sudo vtysh -c 'show bgp ipv4 unicast summary'; echo TCPDUMP; sudo timeout 15 tcpdump -ni any tcp port 179 2>/dev/null || true"

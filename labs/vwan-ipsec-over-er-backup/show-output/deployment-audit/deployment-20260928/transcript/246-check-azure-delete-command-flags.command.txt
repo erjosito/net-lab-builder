@@ -1,0 +1,1 @@
+$connHelp=az network vpn-gateway connection delete --help | Out-String; $siteHelp=az network vpn-site delete --help | Out-String; [ordered]@{connectionSupportsYes=($connHelp -match '--yes');siteSupportsYes=($siteHelp -match '--yes')}|ConvertTo-Json

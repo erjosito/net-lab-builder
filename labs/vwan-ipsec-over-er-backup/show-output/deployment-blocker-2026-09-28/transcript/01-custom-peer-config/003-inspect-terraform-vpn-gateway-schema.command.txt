@@ -1,0 +1,1 @@
+Set-Location 'src\terraform\vwan-ipsec-over-er-backup'; $s=terraform providers schema -json | ConvertFrom-Json; $attrs=$s.provider_schemas.'registry.terraform.io/hashicorp/azurerm'.resource_schemas.azurerm_vpn_gateway.block; $attrs | ConvertTo-Json -Depth 20 | Select-String -Pattern 'bgp_peering|custom_bgp|bgp_settings' -Context 1,5

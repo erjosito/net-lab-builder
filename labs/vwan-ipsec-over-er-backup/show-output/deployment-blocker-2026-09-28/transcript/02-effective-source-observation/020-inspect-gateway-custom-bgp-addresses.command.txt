@@ -1,0 +1,1 @@
+$sub=(az account show --query id -o tsv); $rg='rg-vwan-ipsec-over-er-09281131'; $gw='vpngw-ver-09281131'; $url="https://management.azure.com/subscriptions/<SUBSCRIPTION>/resourceGroups/$rg/providers/Microsoft.Network/vpnGateways/${gw}?api-version=2025-09-01"; az rest --method get --url $url --query "properties.bgpSettings" -o json

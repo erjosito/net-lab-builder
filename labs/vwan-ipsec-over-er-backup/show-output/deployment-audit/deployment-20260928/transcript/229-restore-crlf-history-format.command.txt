@@ -1,0 +1,1 @@
+$path=(Resolve-Path '.squad\agents\tank\history.md').Path; $text=[IO.File]::ReadAllText($path).Replace("`r`n","`n").Replace("`n","`r`n"); [IO.File]::WriteAllText($path,$text,[Text.UTF8Encoding]::new($false)); git --no-pager diff --stat -- .squad/agents/tank/history.md; git --no-pager diff --check -- .squad/agents/tank/history.md

@@ -1,0 +1,1 @@
+$env:GOOGLE_OAUTH_ACCESS_TOKEN=(gcloud auth print-access-token --quiet); terraform -chdir=src\terraform\vwan-ipsec-over-er-backup apply -input=false -no-color -auto-approve 'C:\Users\jomore\.copilot\session-state\<GUID>\files\apipa-remediation\gateway.tfplan'

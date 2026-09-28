@@ -1,0 +1,15 @@
+$env:MEGAPORT_API_KEY=<REDACTED>; $env:MEGAPORT_API_SECRET=<REDACTED>; @'
+import json, os, sys
+sys.path.insert(0, r'C:\Users\jomore\.copilot\skills\azure-lab\lib')
+from megaport_client import MegaportClient
+c=MegaportClient(os.environ['MEGAPORT_API_KEY'], os.environ['MEGAPORT_API_SECRET'])
+c.authenticate()
+locs=c.get_locations()
+terms=('Frankfurt','Stockholm','Amsterdam','Copenhagen','Helsinki','Oslo')
+out=[]
+for x in locs:
+    text=' '.join(str(x.get(k,'')) for k in ('name','metro','country','market','siteCode')).lower()
+    if any(t.lower() in text for t in terms):
+        out.append({k:x.get(k) for k in ('id','name','metro','country','market','status','products') if k in x})
+print(json.dumps({'auth':'PASS','candidateLocations':out[:40]}, default=str))
+'@ | python -

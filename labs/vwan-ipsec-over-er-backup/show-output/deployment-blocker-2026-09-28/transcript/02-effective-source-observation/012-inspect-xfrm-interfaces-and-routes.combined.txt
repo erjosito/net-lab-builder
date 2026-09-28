@@ -1,0 +1,29 @@
+xfrm-pri0@ens4   UNKNOWN        <NOARP,UP,LOWER_UP> 
+xfrm-pri1@ens4   UNKNOWN        <NOARP,UP,LOWER_UP> 
+xfrm-pub0@ens4   UNKNOWN        <NOARP,UP,LOWER_UP> 
+xfrm-pub1@ens4   UNKNOWN        <NOARP,UP,LOWER_UP> 
+xfrm-pri0@ens4   UNKNOWN        fe80::cb9d:110d:6679:6083/64 
+xfrm-pri1@ens4   UNKNOWN        fe80::3c15:738f:f75c:acdb/64 
+xfrm-pub0@ens4   UNKNOWN        fe80::8b97:c838:7074:89b4/64 
+xfrm-pub1@ens4   UNKNOWN        fe80::9fa2:e2d5:a47b:2a52/64 
+ROUTES
+default via 10.250.0.1 dev ens4 proto dhcp src 10.250.0.10 metric 100 
+blackhole 10.240.0.0/24 proto static metric 20 
+10.240.0.4 via 10.250.0.1 dev ens4 metric 5 
+10.240.0.5 via 10.250.0.1 dev ens4 metric 5 
+blackhole 10.241.0.0/24 proto static metric 20 
+10.250.0.1 dev ens4 proto dhcp scope link src 10.250.0.10 metric 100 
+blackhole 10.253.2.0/24 proto static metric 20 
+74.158.47.254 via 10.250.0.1 dev ens4 metric 5 
+74.158.80.26 via 10.250.0.1 dev ens4 metric 5 
+169.254.21.1 dev xfrm-pri0 scope link 
+169.254.21.5 dev xfrm-pub0 scope link 
+169.254.22.1 dev xfrm-pri1 scope link 
+169.254.22.5 dev xfrm-pub1 scope link 
+169.254.169.254 via 10.250.0.1 dev ens4 proto dhcp src 10.250.0.10 metric 100 
+RULES
+0:	from all lookup local
+220:	from all lookup 220
+32766:	from all lookup main
+32767:	from all lookup default
+<shellId: 270 completed with exit code 0>

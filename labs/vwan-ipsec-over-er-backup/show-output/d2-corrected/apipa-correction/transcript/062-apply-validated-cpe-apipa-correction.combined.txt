@@ -1,0 +1,25 @@
+apply-cpe-apipa.sh        | 4 kB |   4.0 kB/s | ETA: 00:00:00 |  88%apply-cpe-apipa.sh        | 4 kB |   4.5 kB/s | ETA: 00:00:00 | 100%
+
+Hello, this is FRRouting (version 8.1).
+Copyright 1996-2005 Kunihiro Ishiguro, et al.
+
+cpe-ver-09281131# configure terminal
+cpe-ver-09281131(config)# router bgp 65050
+cpe-ver-09281131(config-router)#  no neighbor 169.254.21.1
+cpe-ver-09281131(config-router)#  no neighbor 169.254.22.1
+cpe-ver-09281131(config-router)#  no neighbor 169.254.21.5
+cpe-ver-09281131(config-router)#  no neighbor 169.254.22.5
+cpe-ver-09281131(config-router)#  neighbor PRI update-source 10.250.254.240
+cpe-ver-09281131(config-router)#  neighbor PUB update-source 169.254.22.1
+cpe-ver-09281131(config-router)#  neighbor 10.240.0.13 peer-group PRI
+cpe-ver-09281131(config-router)#  neighbor 10.240.0.12 peer-group PRI
+cpe-ver-09281131(config-router)#  neighbor 169.254.22.2 peer-group PUB
+cpe-ver-09281131(config-router)#  neighbor 169.254.22.3 peer-group PUB
+cpe-ver-09281131(config-router)# end
+cpe-ver-09281131# write memory
+Note: this version of vtysh never writes vtysh.conf
+Building Configuration...
+Integrated configuration saved to /etc/frr/frr.conf
+[OK]
+cpe-ver-09281131#
+<shellId: cpe-apipa-apply completed with exit code 0>

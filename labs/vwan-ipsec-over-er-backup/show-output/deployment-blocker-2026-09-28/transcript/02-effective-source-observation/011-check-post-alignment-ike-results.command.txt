@@ -1,0 +1,1 @@
+Start-Sleep -Seconds 30; gcloud compute ssh cpe-ver-09281131 --project gcp-vwan-eripsec-09281131 --zone europe-north2-c --tunnel-through-iap --quiet --command "sudo journalctl -u strongswan --since '-3 min' --no-pager | grep -E 'established|AUTH|CHILD|proposal|failed|no shared|TS_UNACCEPTABLE' | tail -100"

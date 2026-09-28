@@ -1,0 +1,29 @@
+data.megaport_location.stockholm: Reading...
+data.megaport_location.stockholm: Read complete after 2s [name=Equinix Amsterdam AM1]
+megaport_mcr.lab[0]: Refreshing state...
+azurerm_resource_group.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131]
+azurerm_virtual_wan.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualWans/vwan-ver-09281131]
+azurerm_express_route_circuit.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteCircuits/er-ver-09281131]
+azurerm_network_security_group.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/networkSecurityGroups/nsg-workload-ver-09281131]
+azurerm_virtual_network.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualNetworks/vnet-workload-ver-09281131]
+azurerm_virtual_hub.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131]
+azurerm_subnet.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualNetworks/vnet-workload-ver-09281131/subnets/snet-workload]
+megaport_vxc.azure_primary[0]: Refreshing state...
+megaport_vxc.azure_secondary[0]: Refreshing state...
+azurerm_subnet_network_security_group_association.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualNetworks/vnet-workload-ver-09281131/subnets/snet-workload]
+azurerm_network_interface.probe: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/networkInterfaces/nic-probe-ver-09281131]
+azurerm_express_route_gateway.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteGateways/ergw-ver-09281131]
+azurerm_vpn_gateway.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131]
+azurerm_virtual_hub_connection.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubVirtualNetworkConnections/conn-workload]
+azurerm_linux_virtual_machine.probe: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Compute/virtualMachines/vm-probe-ver-09281131]
+azurerm_dev_test_global_vm_shutdown_schedule.probe: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.DevTestLab/schedules/shutdown-computevm-vm-probe-ver-09281131]
+
+Planning failed. Terraform encountered an error while generating this plan.
+
+
+Error: Attempted to load application default credentials since neither `credentials` nor `access_token` was set in the provider block.  No credentials loaded. To use your gcloud credentials, run 'gcloud auth application-default login'.  Original error: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information
+
+  with provider["registry.terraform.io/hashicorp/google"],
+  on providers.tf line 5, in provider "google":
+   5: provider "google" {
+<shellId: 287 completed with exit code 1>

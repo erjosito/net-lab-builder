@@ -1,0 +1,1 @@
+$files=@('.squad\agents\trinity\history.md','labs\vwan-ipsec-over-er-backup\design.md','.squad\decisions\inbox\trinity-vwan-ipsec-over-er-network-design-20260928.md'); foreach($f in $files){$s=[IO.File]::ReadAllText((Resolve-Path $f)); $crlf=([regex]::Matches($s,"`r`n")).Count; $lf=([regex]::Matches($s,"(?<!`r)`n")).Count; [pscustomobject]@{File=$f;CRLF=$crlf;LF=$lf}}

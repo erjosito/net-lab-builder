@@ -1,0 +1,1 @@
+$tmp=Join-Path $env:TEMP 'tank-head-raw'; & $env:ComSpec /c "git show HEAD:.squad/agents/tank/history.md > `"$tmp`""; $bytes=[IO.File]::ReadAllBytes($tmp); ($bytes[0..160]|Format-Hex|Out-String); Remove-Item $tmp

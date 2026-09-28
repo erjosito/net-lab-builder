@@ -1,0 +1,8 @@
+$message=@'
+Deploy vWAN IPsec-over-ER lab foundations
+
+Provision the Azure and GCP foundation, add secret-safe runtime VPN and CPE controls, and record the Stockholm Megaport market blocker without purchasing provider services.
+
+Co-authored-by: Copilot <<ACCOUNT>>
+Copilot-Session: <GUID>
+'@; $path=Join-Path $env:TEMP 'tank-vwan-commit.txt'; [IO.File]::WriteAllText($path,$message,[Text.UTF8Encoding]::new($false)); git commit -F $path; $code=$LASTEXITCODE; Remove-Item $path; if($code -ne 0){exit $code}; git --no-pager show --stat --oneline --decorate=short HEAD; git --no-pager status --short

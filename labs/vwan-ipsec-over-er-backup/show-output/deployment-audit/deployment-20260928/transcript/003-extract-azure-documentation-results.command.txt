@@ -1,0 +1,1 @@
+$r = Get-Content 'C:\Users\jomore\AppData\Local\Temp\1790584435836-copilot-tool-output-2aeb39e1f0044865b3045b3b1abe789f.txt' -Raw | ConvertFrom-Json; $r.results | Select-Object title,url | Format-Table -AutoSize; "`nFIRST RESULT:`n"; $r.results[0].content

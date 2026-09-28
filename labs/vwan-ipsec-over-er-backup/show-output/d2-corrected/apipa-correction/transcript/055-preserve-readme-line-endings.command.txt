@@ -1,0 +1,1 @@
+$p=(Resolve-Path 'labs\vwan-ipsec-over-er-backup\README.md').Path; $utf8=[Text.UTF8Encoding]::new($false); $text=[IO.File]::ReadAllText($p) -replace "`r`n","`n"; [IO.File]::WriteAllText($p,$text,$utf8)

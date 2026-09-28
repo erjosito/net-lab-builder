@@ -1,0 +1,1 @@
+pwsh -NoProfile -File 'labs\vwan-ipsec-over-er-backup\scripts\Confirm-Sanitization.ps1' -Path 'labs\vwan-ipsec-over-er-backup\show-output'; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; pwsh -NoProfile -File 'labs\vwan-ipsec-over-er-backup\scripts\New-EvidenceIndex.ps1' -LabRoot 'labs\vwan-ipsec-over-er-backup' *> $null

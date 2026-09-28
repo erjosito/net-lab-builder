@@ -1,0 +1,1 @@
+$rg='rg-vwan-ipsec-over-er-09281131'; $er='er-ver-09281131'; az network express-route show -g $rg -n $er --query "{circuitState:circuitProvisioningState,providerState:serviceProviderProvisioningState,peerings:peerings[].{name:name,provisioningState:provisioningState,primaryStatus:primaryAzurePort,secondaryStatus:secondaryAzurePort,azureAsn:azureASN}}" -o json

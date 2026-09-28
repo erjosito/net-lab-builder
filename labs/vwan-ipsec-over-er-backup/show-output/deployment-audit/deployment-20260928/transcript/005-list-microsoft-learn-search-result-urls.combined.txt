@@ -1,0 +1,6 @@
+ConvertFrom-Json: 
+Line |
+   2 |  … each ($f in $files) { (Get-Content $f -Raw | ConvertFrom-Json).result …
+     |                                                 ~~~~~~~~~~~~~~~~
+     | Conversion from JSON failed with error: Additional text encountered after finished reading JSON content: {. Path '', line 3, position 0.
+<shellId: 4 completed with exit code 1>

@@ -1,0 +1,14 @@
+21	1	.squad/agents/morpheus/history.md
+diff --git a/.squad/agents/morpheus/history.md b/.squad/agents/morpheus/history.md
+index 8202a0b..c0a5a97 100644
+--- a/.squad/agents/morpheus/history.md
++++ b/.squad/agents/morpheus/history.md
+@@ -365,3 +365,23 @@
+ 📌 Team update (2026-08-20T11:20:05+02:00): Foundry decisions consolidated and merged into decisions.md; Tower verification complete; ready for Gate B approval — decided by Scribe
+ 
+ 📌 Team update (2026-08-21T15:35:00+02:00): Foundry ingress/egress comparison matrix finalized (D-29). Architectural pattern mapping (hosted ≈ Functions, prompt ≈ Logic Apps). Lab ready for publication. Decided by Scribe (session orchestration).
++
++📌 2026-09-28 -- MCR can be a minimal dual-underlay IPsec CPE for vWAN VPN-over-ER evaluation.
++
++**Durable feasibility finding.** Current Megaport MCR supports IPsec tunnel interfaces on VXC interfaces (up to 30 tunnels per MCR), BGP policy controls including AS-path prepend, Azure ExpressRoute VXCs, and a Megaport Internet connection on the same MCR. This enables a compact provider-hosted topology with one MCR acting as the simulated branch router: one IPsec/BGP overlay to the vWAN VPN gateway private IP across ER private peering, and one to the gateway public IP across Megaport Internet. It faithfully exercises real ER and public-IP underlays plus vWAN route selection, but it does not validate StrongSwan/BIRD/FRR behavior, a customer LAN payload path, or independent-provider failure domains because both underlays share the MCR/Megaport edge. Use a GCP Linux CPE behind Partner Interconnect when those fidelity requirements matter.
+<shellId: 66 completed with exit code 0>

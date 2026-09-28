@@ -1,0 +1,247 @@
+> TITLE: Configure custom IPsec/IKE connection policies for S2S VPN and VNet-to-VNet: PowerShell
+> URL: https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-ipsecikepolicy-rm-powershell#update-ipsec-ike-policy-f
+or-a-connection
+> # Configure custom IPsec/IKE connection policies for S2S VPN and VNet-to-VNet: PowerShell
+> ## Update IPsec/IKE policy for a connection
+  To enable "UsePolicyBasedTrafficSelectors" when connecting to an on-premises policy-based VPN device, add the 
+"-UsePolicyBaseTrafficSelectors" parameter to the cmdlet, or set it to $False to disable the option:
+  ```azurepowershell
+> Set-AzVirtualNetworkGatewayConnection -VirtualNetworkGatewayConnection $connection6 -IpsecPolicies $newpolicy6 
+-UsePolicyBasedTrafficSelectors $True
+  ```
+> Similar to "UsePolicyBasedTrafficSelectors", configuring DPD timeout can be performed outside of the IPsec policy 
+being applied:
+  ```azurepowershell
+> Set-AzVirtualNetworkGatewayConnection -VirtualNetworkGatewayConnection $connection6 -IpsecPolicies $newpolicy6 
+-DpdTimeoutInSeconds 30
+  ```
+> Either/both **Policy-based traffic selector** and **DPD timeout** options can be specified with **Default** policy, 
+without a custom IPsec/IKE policy, if desired.
+  ```azurepowershell
+> Set-AzVirtualNetworkGatewayConnection -VirtualNetworkGatewayConnection $connection6 -UsePolicyBasedTrafficSelectors 
+$True -DpdTimeoutInSeconds 30
+  ```
+> You can get the connection again to check if the policy is updated. To check the connection for the updated policy, 
+run the following command.
+  ```azurepowershell
+> $connection6  = Get-AzVirtualNetworkGatewayConnection -Name $Connection16 -ResourceGroupName $RG1
+> $connection6.IpsecPolicies
+  ```
+  Example output:
+  ```azurepowershell
+  PfsGroup            : None
+  ```
+> ### 3. Remove an IPsec/IKE policy from a connection
+> Once you remove the custom policy from a connection, the Azure VPN gateway reverts back to the [default list of 
+IPsec/IKE proposals](https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-about-vpn-devices) and renegotiates 
+again with your on-premises VPN device.
+  ---
+> TITLE: Configure custom IPsec/IKE connection policies for S2S VPN and VNet-to-VNet: Azure portal
+> URL: 
+https://learn.microsoft.com/azure/vpn-gateway/ipsec-ike-policy-howto#create-s2s-vpn-connection-with-custom-policy
+> # Configure custom IPsec/IKE connection policies for S2S VPN and VNet-to-VNet: Azure portal
+> ## Create S2S VPN connection with custom policy
+  1.1. **Name:** Site6
+  1.2. **Resource Group:** TestRG1
+  1.3. **Location:** East US
+  1.4. **Local gateway IP address:** 5.4.3.2 (example value only - use the IP address of your on-premises device)
+  1.5. **Address Spaces** 10.61.0.0/16, 10.62.0.0/16 (example value only)
+> 2. From the virtual network gateway, add a connection to the local network gateway using the following values.
+> 2.1. **Connection name:** VNet1toSite6
+> 2.2. **Connection type:** IPsec
+  2.3. **Local network gateway:** Site6
+  2.4. **Shared key:** abc123 (example value - must match the on-premises device key used)
+  2.5. **IKE protocol:** IKEv2
+> ### Step 3: Configure a custom IPsec/IKE policy on the S2S VPN connection
+  Configure a custom IPsec/IKE policy with the following algorithms and parameters:
+  1. IKE Phase 1: AES256, SHA384, DHGroup24
+  2. IKE Phase 2(IPsec): AES256, SHA256, PFS None
+  3. IPsec SA Lifetime in KB: 102400000
+  4. IPsec SA lifetime in seconds: 30000
+> 5. DPD timeout: 45 seconds
+> 6. Go to the **Connection** resource you created, **VNet1toSite6**. Open the **Configuration** page. Select 
+**Custom** IPsec/IKE policy to show all configuration options. The following screenshot shows the configuration 
+according to the list:
+>  [![Screenshot shows the Site 6 connection configuration.](https://learn.microsoft.com/azure/vpn-gateway/media/ipsec-
+ike-policy-howto/configuration-connection.png)](media/ipsec-ike-policy-howto/configuration-connection.png#lightbox)
+   If you use GCMAES for IPsec, you must use the same GCMAES algorithm and key length for both IPsec encryption and 
+integrity. For example, the following screenshot specifies GCMAES128 for both IPsec encryption and IPsec integrity:
+   [![Screenshot shows GCMAES for IPsec.](https://learn.microsoft.com/azure/vpn-gateway/media/ipsec-ike-policy-howto/gc
+maes.png)](media/ipsec-ike-policy-howto/gcmaes.png#lightbox)
+  ---
+> TITLE: Configure a custom IPsec policy for Virtual WAN using the portal
+> URL: https://learn.microsoft.com/azure/virtual-wan/virtual-wan-custom-ipsec-portal#configure-a-policy
+> # Configure a custom IPsec policy for Virtual WAN using the portal
+  ## Configure a policy
+> 1. **Locate the virtual hub**. In the Azure portal, go to your Virtual WAN resource and locate the virtual hub that 
+your VPN site is connected to.
+  2. **Select the VPN site**. From the hub overview page, click **VPN (Site to site)** and select the VPN Site for 
+which you want to set up a custom IPsec policy.
+> 3. **Edit the VPN connection**. From the **Context menu** **...**, select **Edit VPN Connection**.
+   [![Screenshot shows how to use the context menu to edit the policy.](https://learn.microsoft.com/azure/virtual-wan/m
+edia/virtual-wan-custom-ipsec-portal/contextmenu.png)](media/virtual-wan-custom-ipsec-portal/contextmenu.png#lightbox)
+> 4. **Configure the settings**. On the **Edit VPN connection** page, change the IPsec setting from default to custom 
+and customize the IPsec policy. Select **Save** to save your settings.
+   [![Screenshot shows how to configure and save the policy.](https://learn.microsoft.com/azure/virtual-wan/media/virtu
+al-wan-custom-ipsec-portal/edit.png)](media/virtual-wan-custom-ipsec-portal/edit.png#lightbox)
+  ---
+> TITLE: VPN Gateway FAQ
+> URL: https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-vpn-faq#ipsec-ike-policy
+  # VPN Gateway FAQ
+  ## IPsec/IKE policy
+> You can also choose to apply custom policies on a subset of connections. The remaining ones use the Azure default 
+IPsec/IKE policy sets.
+> ### Can I use a custom policy on VNet-to-VNet connections?
+> Yes. You can apply a custom policy on both IPsec cross-premises connections and VNet-to-VNet connections.
+> ### Do I need to specify the same policy on both VNet-to-VNet connection resources?
+> Yes. A VNet-to-VNet tunnel consists of two connection resources in Azure, one for each direction. Make sure both 
+connection resources have the same policy. Otherwise, the VNet-to-VNet connection won't be established.
+> ### What is the default DPD timeout value? Can I specify a different DPD timeout?
+> The default DPD timeout is 45 seconds on VPN gateways. You can specify a different DPD timeout value on each IPsec 
+or VNet-to-VNet connection, from 9 seconds to 3,600 seconds.
+  Note
+> Setting the timeout to shorter periods causes IKE to rekey more aggressively. The connection can then appear to be 
+disconnected in some instances. This situation might not be desirable if your on-premises locations are farther away 
+from the Azure region where the VPN gateway resides, or if the physical link condition could incur packet loss. We 
+generally recommend that you set the timeout to *between 30 and 45* seconds.
+> ### Does a custom IPsec/IKE policy work on ExpressRoute connections?
+> No. An IPsec/IKE policy works only on S2S VPN and VNet-to-VNet connections via the VPN gateways.
+> ### How do I create connections with the IKEv1 or IKEv2 protocol type?
+> You can create IKEv1 connections on all route-based VPN-type SKUs, except the Basic SKU, Standard SKU, and other 
+[earlier SKUs](https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-about-skus-legacy#gwsku).
+> You can specify a connection protocol type of IKEv1 or IKEv2 while creating connections. If you don't specify a 
+connection protocol type, IKEv2 is used as default option where applicable. For more information, see the [Azure 
+PowerShell 
+cmdlet](https://learn.microsoft.com/en-us/powershell/module/az.network/new-azvirtualnetworkgatewayconnection) 
+documentation.
+  ---
+> TITLE: Configure custom IPsec/IKE connection policies for S2S VPN and VNet-to-VNet: PowerShell
+> URL: https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-ipsecikepolicy-rm-powershell#policy-parameters
+> # Configure custom IPsec/IKE connection policies for S2S VPN and VNet-to-VNet: PowerShell
+  ## Policy parameters
+  | IPsec/IKEv2 | Options| 
+  |  --- | ---  |
+  | Quick Mode SA lifetime | (Optional; default values if not specified)Seconds (integer; minimum 300, default 
+27,000)Kilobytes (integer; minimum 1,024, default 102,400,000) |
+  | Traffic selector | `UsePolicyBasedTrafficSelectors` (`$True` or `$False`, but optional; default `$False` if not 
+specified) |
+> | DPD timeout | Seconds (integer; minimum 9, maximum 3,600, default 45) |
+  
+  1. Your on-premises VPN device configuration must match or contain the following algorithms and parameters that you 
+specify on the Azure IPsec or IKE policy:
+  1.1. IKE encryption algorithm (Main Mode, Phase 1)
+  2. If you use GCMAES for the IPsec encryption algorithm, you must select the same GCMAES algorithm and key length 
+for IPsec integrity. For example, use GCMAES128 for both.
+  ---
+> TITLE: Configure custom IPsec/IKE connection policies for S2S VPN and VNet-to-VNet: Azure portal
+> URL: https://learn.microsoft.com/azure/vpn-gateway/ipsec-ike-policy-howto#policy-parameters
+> # Configure custom IPsec/IKE connection policies for S2S VPN and VNet-to-VNet: Azure portal
+  ## Policy parameters
+  | IPsec/IKEv2 | Options| 
+  |  --- | ---  |
+  | Quick Mode SA lifetime | (Optional; default values if not specified)Seconds (integer; minimum 300, default 
+27,000)Kilobytes (integer; minimum 1,024, default 102,400,000) |
+  | Traffic selector | `UsePolicyBasedTrafficSelectors` (`$True` or `$False`, but optional; default `$False` if not 
+specified) |
+> | DPD timeout | Seconds (integer; minimum 9, maximum 3,600, default 45) |
+  
+  1. Your on-premises VPN device configuration must match or contain the following algorithms and parameters that you 
+specify on the Azure IPsec or IKE policy:
+  1.1. IKE encryption algorithm (Main Mode, Phase 1)
+  2. If you use GCMAES for the IPsec encryption algorithm, you must select the same GCMAES algorithm and key length 
+for IPsec integrity. For example, use GCMAES128 for both.
+  ---
+> TITLE: Configure custom IPsec/IKE connection policies for S2S VPN and VNet-to-VNet: Azure portal
+> URL: 
+https://learn.microsoft.com/azure/vpn-gateway/ipsec-ike-policy-howto#create-vnet-to-vnet-connection-with-custom-policy
+> # Configure custom IPsec/IKE connection policies for S2S VPN and VNet-to-VNet: Azure portal
+> ## Create VNet-to-VNet connection with custom policy
+> 2. Next, from the VNet2GW, add a VNet-to-VNet connection to VNet1GW named **VNet2toVNet1**.
+> 3. After you add the connections, you'll see the VNet-to-VNet connections as shown in the following screenshot from 
+the VNet2GW resource:
+>  [![Screenshot shows VNet-to-VNet connections.](https://learn.microsoft.com/azure/vpn-gateway/media/ipsec-ike-policy-
+howto/vnet-connections.png)](media/ipsec-ike-policy-howto/vnet-connections.png#lightbox)
+  ### Step 3: Configure a custom IPsec/IKE policy on VNet1toVNet2
+> 1. From the **VNet1toVNet2** connection resource, go to the **Configuration** page.
+> 2. For **IPsec / IKE policy**, select **Custom** to show the custom policy options. Select the cryptographic 
+algorithms with the corresponding key lengths. This policy doesn't need to match the previous policy you created for 
+the VNet1toSite6 connection.
+   Example values:
+  2.1. IKE Phase 1: AES128, SHA1, DHGroup14
+  2.2. IKE Phase 2(IPsec): GCMAES128, GCMAES128, PFS2048
+  2.3. IPsec SA Lifetime in KB: 102400000
+  2.4. IPsec SA lifetime in seconds: 14400
+> 2.5. DPD timeout: 45 seconds
+> 3. Select **Save** at the top of the page to apply the policy changes on the connection resource.
+  ### Step 4: Configure a custom IPsec/IKE policy on VNet2toVNet1
+> 1. Apply the same policy to the VNet2toVNet1 connection, VNet2toVNet1. If you don't, the IPsec/IKE VPN tunnel won't 
+connect due to policy mismatch.
+   Important
+>  Once an IPsec/IKE policy is specified on a connection, the Azure VPN gateway will only send or accept the IPsec/IKE 
+proposal with specified cryptographic algorithms and key strengths on that particular connection. Make sure the IPsec 
+policies for both connections are the same, otherwise the VNet-to-VNet connection will not establish.
+> 2. After you complete these steps, the connection is established in a few minutes, and you'll have the following 
+network topology.
+   [![Diagram shows IPsec/IKE policy for VNet-to-VNet and S2S VPN.](https://learn.microsoft.com/azure/vpn-gateway/media
+/ipsec-ike-policy-howto/policy-diagram.png)](media/ipsec-ike-policy-howto/policy-diagram.png#lightbox)
+  ---
+> TITLE: Configure a custom IPsec policy for Virtual WAN using the portal
+> URL: https://learn.microsoft.com/azure/virtual-wan/virtual-wan-custom-ipsec-portal
+> # Configure a custom IPsec policy for Virtual WAN using the portal
+> You can configure a custom IPsec policy for a Virtual WAN VPN connection in the Azure portal. Custom policies are 
+helpful when you want both sides (on-premises and Azure VPN gateway) to use the same settings for IKE Phase 1 and IKE 
+Phase 2.
+  ## Working with custom policies
+  When working with custom IPsec policies, keep in mind the following requirements:
+  1. **IKE** - For IKE, you can select any parameter from IKE Encryption, plus any parameter from IKE Integrity, plus 
+any parameter from DH Group.
+  
+  ---
+> TITLE: About cryptographic requirements and Azure VPN gateways
+> URL: https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-about-compliance-crypto#ipsec-ike-policy-faq
+  # About cryptographic requirements and Azure VPN gateways
+  ## IPsec/IKE policy FAQ
+> You can also choose to apply custom policies on a subset of connections. The remaining ones use the Azure default 
+IPsec/IKE policy sets.
+> ### Can I use a custom policy on VNet-to-VNet connections?
+> Yes. You can apply a custom policy on both IPsec cross-premises connections and VNet-to-VNet connections.
+> ### Do I need to specify the same policy on both VNet-to-VNet connection resources?
+> Yes. A VNet-to-VNet tunnel consists of two connection resources in Azure, one for each direction. Make sure both 
+connection resources have the same policy. Otherwise, the VNet-to-VNet connection won't be established.
+> ### What is the default DPD timeout value? Can I specify a different DPD timeout?
+> The default DPD timeout is 45 seconds on VPN gateways. You can specify a different DPD timeout value on each IPsec 
+or VNet-to-VNet connection, from 9 seconds to 3,600 seconds.
+  Note
+> Setting the timeout to shorter periods causes IKE to rekey more aggressively. The connection can then appear to be 
+disconnected in some instances. This situation might not be desirable if your on-premises locations are farther away 
+from the Azure region where the VPN gateway resides, or if the physical link condition could incur packet loss. We 
+generally recommend that you set the timeout to *between 30 and 45* seconds.
+> ### Does a custom IPsec/IKE policy work on ExpressRoute connections?
+> No. An IPsec/IKE policy works only on S2S VPN and VNet-to-VNet connections via the VPN gateways.
+> ### How do I create connections with the IKEv1 or IKEv2 protocol type?
+> You can create IKEv1 connections on all route-based VPN-type SKUs, except the Basic SKU, Standard SKU, and other 
+[earlier SKUs](https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-about-skus-legacy#gwsku).
+> You can specify a connection protocol type of IKEv1 or IKEv2 while creating connections. If you don't specify a 
+connection protocol type, IKEv2 is used as default option where applicable. For more information, see the [Azure 
+PowerShell 
+cmdlet](https://learn.microsoft.com/en-us/powershell/module/az.network/new-azvirtualnetworkgatewayconnection) 
+documentation.
+  ---
+> TITLE: Configure custom IPsec/IKE connection policies for S2S VPN and VNet-to-VNet: Azure portal
+> URL: 
+https://learn.microsoft.com/azure/vpn-gateway/ipsec-ike-policy-howto#create-s2s-vpn-connection-with-custom-policy
+> # Configure custom IPsec/IKE connection policies for S2S VPN and VNet-to-VNet: Azure portal
+> ## Create S2S VPN connection with custom policy
+  7. If you want to enable Azure VPN gateway to connect to policy-based on-premises VPN devices, you can select 
+**Enable** for the **Use policy based traffic selectors** option.
+> 8. Once all the options are selected, select **Save** to commit the changes to the connection resource. The policy 
+will be enforced in about a minute.
+   Important
+> 8.1. Once an IPsec/IKE policy is specified on a connection, the Azure VPN gateway will only send or accept the 
+IPsec/IKE proposal with specified cryptographic algorithms and key strengths on that particular connection. Make sure 
+your on-premises VPN device for the connection uses or accepts the exact policy combination, otherwise the S2S VPN 
+tunnel will not establish.
+> 8.2. **Policy-based traffic selector** and **DPD timeout** options can be specified with **Default** policy, without 
+the custom IPsec/IKE policy.
+  ---
+<shellId: 14 completed with exit code 0>

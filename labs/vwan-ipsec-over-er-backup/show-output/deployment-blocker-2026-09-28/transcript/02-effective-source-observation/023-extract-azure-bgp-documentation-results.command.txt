@@ -1,0 +1,1 @@
+$r=Get-Content 'C:\Users\jomore\AppData\Local\Temp\1790607211441-copilot-tool-output-6900b6501a7a4579bf9ac41a793088a7.txt' -Raw | ConvertFrom-Json; $r.results | ForEach-Object { [pscustomobject]@{Title=$_.title; Url=$_.url; Snippet=($_.content -replace "`n",' ')} } | Format-List

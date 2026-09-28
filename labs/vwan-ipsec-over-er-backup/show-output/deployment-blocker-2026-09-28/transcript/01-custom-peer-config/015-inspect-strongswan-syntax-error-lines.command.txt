@@ -1,0 +1,1 @@
+gcloud compute ssh cpe-ver-09281131 --project gcp-vwan-eripsec-09281131 --zone europe-north2-c --tunnel-through-iap --quiet --command "sudo sed -n '1,12p' /etc/swanctl/conf.d/vwan.conf"

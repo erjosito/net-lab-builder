@@ -1,0 +1,1 @@
+$bytes=[IO.File]::ReadAllBytes((Resolve-Path '.squad\agents\tank\history.md')); $tail=$bytes[([Math]::Max(0,$bytes.Length-1200))..($bytes.Length-1)]; ($tail|Format-Hex|Out-String)

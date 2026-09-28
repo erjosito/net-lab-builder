@@ -1,0 +1,94 @@
+[   48.188885] google_metadata_script_runner[1404]: startup-script: No containers need to be restarted.
+[   48.188934] google_metadata_script_runner[1404]: startup-script:
+[   48.188978] google_metadata_script_runner[1404]: startup-script: No user sessions are running outdated binaries.
+[   48.189055] google_metadata_script_runner[1404]: startup-script:
+[   48.189191] google_metadata_script_runner[1404]: startup-script: No VM guests are running outdated hypervisor 
+(qemu) binaries on this host.
+[   49.955404] google_metadata_script_runner[1404]: startup-script: + cat
+[   49.956888] google_metadata_script_runner[1404]: startup-script: + sysctl --system
+[   49.958913] google_metadata_script_runner[1404]: startup-script: * Applying /etc/sysctl.d/10-console-messages.conf 
+...
+[   49.959095] google_metadata_script_runner[1404]: startup-script: kernel.printk = 4 4 1 7
+[   49.959205] google_metadata_script_runner[1404]: startup-script: * Applying /etc/sysctl.d/10-ipv6-privacy.conf ...
+[   49.959308] google_metadata_script_runner[1404]: startup-script: net.ipv6.conf.all.use_tempaddr = 2
+[   49.959411] google_metadata_script_runner[1404]: startup-script: net.ipv6.conf.default.use_tempaddr = 2
+[   49.959523] google_metadata_script_runner[1404]: startup-script: * Applying /etc/sysctl.d/10-kernel-hardening.conf 
+...
+[   49.959626] google_metadata_script_runner[1404]: startup-script: kernel.kptr_restrict = 1
+[   49.959745] google_metadata_script_runner[1404]: startup-script: * Applying /etc/sysctl.d/10-magic-sysrq.conf ...
+[   49.959850] google_metadata_script_runner[1404]: startup-script: kernel.sysrq = 176
+[   49.960046] google_metadata_script_runner[1404]: startup-script: * Applying /etc/sysctl.d/10-network-security.conf 
+...
+[   49.960255] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.default.rp_filter = 2
+[   49.960464] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.all.rp_filter = 2
+[   49.960689] google_metadata_script_runner[1404]: startup-script: * Applying /etc/sysctl.d/10-ptrace.conf ...
+[   49.960892] google_metadata_script_runner[1404]: startup-script: kernel.yama.ptrace_scope = 1
+[   49.961088] google_metadata_script_runner[1404]: startup-script: * Applying /etc/sysctl.d/10-zeropage.conf ...
+[   49.961199] google_metadata_script_runner[1404]: startup-script: vm.mmap_min_addr = 65536
+[   49.961268] google_metadata_script_runner[1404]: startup-script: * Applying /usr/lib/sysctl.d/50-default.conf ...
+[   49.961329] google_metadata_script_runner[1404]: startup-script: kernel.core_uses_pid = 1
+[   49.961402] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.default.rp_filter = 2
+[   49.961450] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.default.accept_source_route = 0
+[   49.961518] google_metadata_script_runner[1404]: startup-script: sysctl: setting key 
+"net.ipv4.conf.all.accept_source_route": Invalid argument
+[   49.961573] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.default.promote_secondaries = 1
+[   49.961627] google_metadata_script_runner[1404]: startup-script: sysctl: setting key 
+"net.ipv4.conf.all.promote_secondaries": Invalid argument
+[   49.961708] google_metadata_script_runner[1404]: startup-script: net.ipv4.ping_group_range = 0 2147483647
+[   49.961762] google_metadata_script_runner[1404]: startup-script: net.core.default_qdisc = fq_codel
+[   49.961816] google_metadata_script_runner[1404]: startup-script: fs.protected_hardlinks = 1
+[   49.961868] google_metadata_script_runner[1404]: startup-script: fs.protected_symlinks = 1
+[   49.961917] google_metadata_script_runner[1404]: startup-script: fs.protected_regular = 1
+[   49.961973] google_metadata_script_runner[1404]: startup-script: fs.protected_fifos = 1
+[   49.963040] google_metadata_script_runner[1404]: startup-script: * Applying /usr/lib/sysctl.d/50-pid-max.conf ...
+[   49.963250] google_metadata_script_runner[1404]: startup-script: kernel.pid_max = 4194304
+[   49.963501] google_metadata_script_runner[1404]: startup-script: * Applying 
+/etc/sysctl.d/60-gce-network-security.conf ...
+[   49.963744] google_metadata_script_runner[1404]: startup-script: net.ipv4.tcp_syncookies = 1
+[   49.963980] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.all.accept_source_route = 0
+[   49.964219] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.default.accept_source_route = 0
+[   49.964446] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.all.accept_redirects = 0
+[   49.964560] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.default.accept_redirects = 0
+[   49.964740] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.all.secure_redirects = 1
+[   50.302199] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.default.secure_redirects = 1
+[   50.302280] google_metadata_script_runner[1404]: startup-script: net.ipv4.ip_forward = 0
+[   50.302332] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.all.send_redirects = 0
+[   50.302389] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.default.send_redirects = 0
+[   50.302433] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.all.rp_filter = 1
+[   50.302492] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.default.rp_filter = 1
+[   50.302550] google_metadata_script_runner[1404]: startup-script: net.ipv4.icmp_echo_ignore_broadcasts = 1
+[   50.302596] google_metadata_script_runner[1404]: startup-script: net.ipv4.icmp_ignore_bogus_error_responses = 1
+[   50.302644] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.all.log_martians = 1
+[   50.302692] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.default.log_martians = 1
+[   50.302739] google_metadata_script_runner[1404]: startup-script: kernel.randomize_va_space = 2
+[   50.302795] google_metadata_script_runner[1404]: startup-script: kernel.panic = 10
+[   50.302847] google_metadata_script_runner[1404]: startup-script: * Applying /etc/sysctl.d/90-cpe-forwarding.conf ...
+[   50.302902] google_metadata_script_runner[1404]: startup-script: net.ipv4.ip_forward = 1
+[   50.304262] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.all.rp_filter = 0
+[   50.304392] google_metadata_script_runner[1404]: startup-script: net.ipv4.conf.default.rp_filter = 0
+[   50.304501] google_metadata_script_runner[1404]: startup-script: * Applying /etc/sysctl.d/99-cloudimg-ipv6.conf ...
+[   50.304684] google_metadata_script_runner[1404]: startup-script: net.ipv6.conf.all.use_tempaddr = 0
+[   50.304802] google_metadata_script_runner[1404]: startup-script: net.ipv6.conf.default.use_tempaddr = 0
+[   50.304921] google_metadata_script_runner[1404]: startup-script: * Applying 
+/etc/sysctl.d/99-gce-strict-reverse-path-filtering.conf ...
+[   50.305048] google_metadata_script_runner[1404]: startup-script: * Applying /usr/lib/sysctl.d/99-protect-links.conf 
+...
+[   50.305146] google_metadata_script_runner[1404]: startup-script: fs.protected_fifos = 1
+[   50.305239] google_metadata_script_runner[1404]: startup-script: fs.protected_hardlinks = 1
+[   50.305332] google_metadata_script_runner[1404]: startup-script: fs.protected_regular = 2
+[   50.305444] google_metadata_script_runner[1404]: startup-script: fs.protected_symlinks = 1
+[   50.305539] google_metadata_script_runner[1404]: startup-script: * Applying /etc/sysctl.d/99-sysctl.conf ...
+[   50.305644] google_metadata_script_runner[1404]: startup-script: * Applying /etc/sysctl.conf ...
+[   50.305748] google_metadata_script_runner[1404]: startup-script: + sed -i 
+'s/bgpd=no/bgpd=yes/;s/staticd=no/staticd=yes/' /etc/frr/daemons
+[   50.306030] google_metadata_script_runner[1404]: startup-script: + systemctl enable --now frr
+[   50.306094] google_metadata_script_runner[1404]: startup-script: Synchronizing state of frr.service with SysV 
+service script with /lib/systemd/systemd-sysv-install.
+[   50.306152] google_metadata_script_runner[1404]: startup-script: Executing: /lib/systemd/systemd-sysv-install 
+enable frr
+[   50.719138] google_metadata_script_runner[1404]: startup-script: + systemctl enable --now strongswan-swanctl
+[   50.724113] google_metadata_script_runner[1404]: startup-script: Failed to enable unit: Refusing to operate on 
+alias name or linked unit file: strongswan-swanctl.service
+[   50.724617] google_metadata_script_runner[1404]: Script "startup-script" failed with error: exit status 1
+[   50.724808] google_metadata_script_runner[1404]: Finished running startup scripts.
+<shellId: 145 completed with exit code 0>

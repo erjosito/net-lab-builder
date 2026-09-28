@@ -1,0 +1,1 @@
+$line=[System.IO.File]::ReadLines('C:\Users\jomore\AppData\Local\Temp\1790601422231-copilot-tool-output-74535effdfaa4c34b3a0e697e06d278f.txt') | Select-Object -First 1; $r=$line | ConvertFrom-Json; $r.results | Where-Object { $_.content -match 'outputBlobSasUrl|GetVpnSitesConfiguration|vpnSites' } | Select-Object title,contentUrl,content | ConvertTo-Json -Depth 3

@@ -1,0 +1,40 @@
+WARNING: This command is from the following extension: virtual-wan
+
+      --vhub                 : Name or ID of a virtual hub.
+  
+> BGP Peering Arguments
+>     --asn                  : BGP speaker's ASN.
+>     --bgp-peering-address  : Peering address and BGP identifier of this BGP speaker.
+>     --peer-weight          : Weight added to routes learned from this BGP speaker.
+  
+  Generic Update Arguments
+      --add                  : Add an object to a list of objects by specifying a path and key value
+{
+  "asn": 65515,
+  "bgpPeeringAddresses": [
+    {
+      "customBgpIpAddresses": [],
+      "defaultBgpIpAddresses": [
+        "10.240.0.13"
+      ],
+      "ipconfigurationId": "Instance0",
+      "tunnelIpAddresses": [
+        "74.158.47.254",
+        "10.240.0.4"
+      ]
+    },
+    {
+      "customBgpIpAddresses": [],
+      "defaultBgpIpAddresses": [
+        "10.240.0.12"
+      ],
+      "ipconfigurationId": "Instance1",
+      "tunnelIpAddresses": [
+        "74.158.80.26",
+        "10.240.0.5"
+      ]
+    }
+  ],
+  "peerWeight": 0
+}
+<shellId: 254 completed with exit code 0>

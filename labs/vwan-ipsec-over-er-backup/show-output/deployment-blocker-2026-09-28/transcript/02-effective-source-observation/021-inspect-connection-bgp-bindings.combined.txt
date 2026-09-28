@@ -1,0 +1,37 @@
+---conn-gcp-er---
+[
+  {
+    "customBgp": [
+      {
+        "customBgpIpAddress": "169.254.21.1",
+        "ipConfigurationId": "Instance0"
+      },
+      {
+        "customBgpIpAddress": "169.254.22.1",
+        "ipConfigurationId": "Instance1"
+      }
+    ],
+    "enableBgp": true,
+    "link": "/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnSites/site-gcp-er/vpnSiteLinks/site-gcp-er",
+    "name": "conn-gcp-er-link"
+  }
+]
+---conn-gcp-inet---
+[
+  {
+    "customBgp": [
+      {
+        "customBgpIpAddress": "169.254.21.5",
+        "ipConfigurationId": "Instance0"
+      },
+      {
+        "customBgpIpAddress": "169.254.22.5",
+        "ipConfigurationId": "Instance1"
+      }
+    ],
+    "enableBgp": true,
+    "link": "/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnSites/site-gcp-inet/vpnSiteLinks/site-gcp-inet",
+    "name": "conn-gcp-inet-link"
+  }
+]
+<shellId: 276 completed with exit code 0>

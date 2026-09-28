@@ -1,0 +1,1 @@
+Start-Sleep -Seconds 90; $o=gcloud compute instances get-serial-port-output cpe-ver-09281131 --project=gcp-vwan-eripsec-09281131 --zone=europe-north2-c --port=1 --start=0 2>$null; $o | Select-String -Pattern 'startup-script|strongswan|frr|failed|error|Finished running startup scripts' -CaseSensitive:$false | Select-Object -Last 80

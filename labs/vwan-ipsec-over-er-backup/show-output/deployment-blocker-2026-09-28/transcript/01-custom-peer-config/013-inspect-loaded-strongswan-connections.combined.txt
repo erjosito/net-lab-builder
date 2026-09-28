@@ -1,0 +1,15 @@
+● vwan-lab-ipsec.service - Load vWAN lab StrongSwan connections
+     Loaded: loaded (/etc/systemd/system/vwan-lab-ipsec.service; enabled; vendor preset: enabled)
+     Active: active (exited) since Mon 2026-09-28 13:41:37 UTC; 1min 47s ago
+    Process: 3232 ExecStart=/usr/sbin/swanctl --load-all (code=exited, status=0/SUCCESS)
+   Main PID: 3232 (code=exited, status=0/SUCCESS)
+        CPU: 14ms
+
+Sep 28 13:41:37 cpe-ver-09281131 systemd[1]: Starting Load vWAN lab StrongSwan connections...
+Sep 28 13:41:37 cpe-ver-09281131 swanctl[3232]: /etc/swanctl/conf.d/vwan.conf:2: syntax error, unexpected NAME, expecting : or '{' or '='
+Sep 28 13:41:37 cpe-ver-09281131 swanctl[3232]: invalid config file '/etc/swanctl/swanctl.conf'
+Sep 28 13:41:37 cpe-ver-09281131 swanctl[3232]: no authorities found, 0 unloaded
+Sep 28 13:41:37 cpe-ver-09281131 swanctl[3232]: no pools found, 0 unloaded
+Sep 28 13:41:37 cpe-ver-09281131 swanctl[3232]: no connections found, 0 unloaded
+Sep 28 13:41:37 cpe-ver-09281131 systemd[1]: Finished Load vWAN lab StrongSwan connections.
+<shellId: 259 completed with exit code 0>

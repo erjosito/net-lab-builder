@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "captureMode": "retrospective",
+  "capturedUtc": "2026-09-28T18:28:01.1481492Z",
+  "capturedLocal": "2026-09-28T20:28:01.1481492+02:00",
+  "timezone": "W. Europe Standard Time",
+  "host": "<LAB_OPERATOR_HOST>",
+  "os": "Microsoft Windows 10.0.26200",
+  "workingDirectory": "<REPOSITORY_ROOT>",
+  "source": "<SESSION_STATE>/events.jsonl",
+  "versions": {
+    "powershell": "7.6.6",
+    "azureCli": "2.85.0",
+    "gcloud": "578.0.0",
+    "terraform": "1.12.0",
+    "git": "2.55.0.windows.3"
+  },
+  "limitations": [
+    "Tool versions were captured after the bounded attempt from the same host and session; the session event schema did not persist a separate version snapshot per command.",
+    "The Copilot CLI shell tool retained a combined result stream. The importer preserves that stream exactly after sanitization and explicitly marks stdout and stderr as not separately recoverable.",
+    "Secrets, account emails, subscription identifiers, GUIDs, service and pairing keys, tokens, and PSKs are redacted before evidence is written."
+  ]
+}

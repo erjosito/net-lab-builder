@@ -1,0 +1,130 @@
+{
+  "result": {
+    "bestRoutesForRouter": [
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65060,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-09-28T05:56:37.357-07:00",
+        "destRange": "10.240.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131",
+        "nextHopIp": "169.254.113.250",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65060,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-09-28T05:56:37.357-07:00",
+        "destRange": "10.241.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131",
+        "nextHopIp": "169.254.113.250",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65060
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-09-28T05:38:26.606-07:00",
+        "destRange": "169.254.113.248/29",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131",
+        "nextHopIp": "169.254.113.250",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65060
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-09-28T05:38:26.606-07:00",
+        "destRange": "169.254.148.88/30",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131",
+        "nextHopIp": "169.254.113.250",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65060
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-09-28T05:38:26.607-07:00",
+        "destRange": "169.254.148.92/30",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131",
+        "nextHopIp": "169.254.113.250",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      }
+    ],
+    "bgpPeerStatus": [
+      {
+        "advertisedRoutes": [
+          {
+            "destRange": "10.250.0.10/32",
+            "kind": "compute#route",
+            "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131",
+            "nextHopIp": "169.254.113.249",
+            "nextHopOrigin": "INCOMPLETE",
+            "priority": 100,
+            "routeType": "BGP"
+          }
+        ],
+        "enableIpv4": true,
+        "enableIpv6": false,
+        "ipAddress": "169.254.113.249",
+        "md5AuthEnabled": false,
+        "name": "auto-ia-bgp-att-ver-0928113-d10467cd1e72b46",
+        "numLearnedRoutes": 5,
+        "peerIpAddress": "169.254.113.250",
+        "state": "Established",
+        "status": "UP",
+        "uptime": "43 minutes, 29 seconds",
+        "uptimeSeconds": "2609"
+      }
+    ]
+  }
+}
+<shellId: 252 completed with exit code 0>

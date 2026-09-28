@@ -1,0 +1,1 @@
+terraform -chdir=src\terraform\vwan-ipsec-over-er-backup state show azurerm_express_route_connection.lab | Select-String -Pattern '^\s*(id|name|provisioning_status)\s*='

@@ -1,0 +1,16 @@
+$env:MEGAPORT_API_KEY=<REDACTED>; $env:MEGAPORT_API_SECRET=<REDACTED>; @'
+import collections, json, os, sys
+sys.path.insert(0, r'C:\Users\jomore\.copilot\skills\azure-lab\lib')
+from megaport_client import MegaportClient
+c=MegaportClient(os.environ['MEGAPORT_API_KEY'], os.environ['MEGAPORT_API_SECRET'])
+c.authenticate()
+products=c._request('GET','/v2/products')
+summary=collections.Counter()
+markets=collections.Counter()
+for p in products:
+    summary[(p.get('productType','unknown'),p.get('provisioningStatus','unknown'))]+=1
+    loc=p.get('location') or {}
+    if isinstance(loc,dict) and loc.get('metro'): markets[loc['metro']]+=1
+loc=[x for x in c.get_locations() if x.get('id') in (95,98,1501)]
+print(json.dumps({'productStatusCounts':[{'type':k[0],'status':k[1],'count':v} for k,v in sorted(summary.items())], 'existingProductMetroCounts':dict(markets), 'stockholmLocationFields':[{k:x.get(k) for k in ('id','name','metro','market','status','diversityZone')} for x in loc]},default=str))
+'@ | python -

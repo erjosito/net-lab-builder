@@ -1,0 +1,2 @@
+apply_patch
+"*** Begin Patch\n*** Update File: src/terraform/vwan-ipsec-over-er-backup/azure.tf\n@@\n   custom_data = base64encode(<<-CLOUD\n     #cloud-config\n     runcmd:\n       - echo \"vwan-ipsec-over-er-backup probe\" > /etc/motd\n   CLOUD\n   )\n+\n+  lifecycle {\n+    ignore_changes = [custom_data]\n+  }\n }\n*** End Patch\n"

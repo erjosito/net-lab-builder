@@ -1,0 +1,66 @@
+M .gitattributes
+ M .squad/agents/morpheus/history.md
+ M .squad/agents/niobe/history.md
+ M .squad/agents/oracle/history.md
+ M .squad/agents/tank/history.md
+ M .squad/agents/trinity/history.md
+ M labs/afd-edge-actions-response-behavior/README.md
+ M labs/afd-edge-actions-response-behavior/deploy/Cleanup.ps1
+?? labs/afd-edge-actions-response-behavior/build/jwt-route-demo/
+?? labs/afd-edge-actions-response-behavior/deploy/Add-JwtRouteDemo.ps1
+?? labs/afd-edge-actions-response-behavior/edge-actions/jwt-route-demo.js
+?? labs/afd-edge-actions-response-behavior/evidence/public-protected-result.json
+?? labs/vwan-ipsec-over-er-backup/
+?? src/terraform/vwan-ipsec-over-er-backup/
+ .gitattributes                                     |   1 +
+ .squad/agents/morpheus/history.md                  |  22 ++-
+ .squad/agents/niobe/history.md                     |  19 ++-
+ .squad/agents/oracle/history.md                    |  27 +++-
+ .squad/agents/tank/history.md                      |  11 +-
+ .squad/agents/trinity/history.md                   |   8 +-
+ labs/afd-edge-actions-response-behavior/README.md  | 153 +++++++++++++--------
+ .../deploy/Cleanup.ps1                             | 124 +++++++++++------
+ 8 files changed, 254 insertions(+), 111 deletions(-)
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\.gitignore
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\design.md
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\manifest.md
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\README.md
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\validation-plan.md
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\config\inventory.template.json
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\config\scenarios.json
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy\.gitignore
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy\.lab-state.json
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy\.runtime.auto.tfvars.json
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy\cleanup.ps1
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy\example.tfvars
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy\foundation.tfplan
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy\Get-VpnRuntimeConfig.ps1
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy\New-VpnConnections.ps1
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy\plan-sanitized.txt
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy\Reset-Lab.ps1
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy\tfplan
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy\cpe\apply-design.sh
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy\cpe\fault-control.sh
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\diagrams\01-physical-logical-topology.drawio
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\diagrams\01-physical-logical-topology.png
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\diagrams\02-d1-floating-session-mismatch.drawio
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\diagrams\02-d1-floating-session-mismatch.png
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\diagrams\03-d2-four-active-active-adjacencies.drawio
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\diagrams\03-d2-four-active-active-adjacencies.png
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\diagrams\04-d3-prefix-selection-blackhole.drawio
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\diagrams\04-d3-prefix-selection-blackhole.png
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\diagrams\05-experiment-reset-contamination-flow.drawio
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\diagrams\05-experiment-reset-contamination-flow.png
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\diagrams\06-cleanup-dependency-order.drawio
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\diagrams\06-cleanup-dependency-order.png
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\scripts\Assert-ResetGate.ps1
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\scripts\Collect-Evidence.ps1
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\scripts\Confirm-Sanitization.ps1
+C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\scripts\Invoke-TimedProbes.ps1
+
+Name               FullName
+----               --------
+charter.md         C:\Users\jomore\Repos\net-lab-builder\.squad\agents\tank\charter.md
+history-archive.md C:\Users\jomore\Repos\net-lab-builder\.squad\agents\tank\history-archive.md
+history.md         C:\Users\jomore\Repos\net-lab-builder\.squad\agents\tank\history.md
+<shellId: 151 completed with exit code 0>

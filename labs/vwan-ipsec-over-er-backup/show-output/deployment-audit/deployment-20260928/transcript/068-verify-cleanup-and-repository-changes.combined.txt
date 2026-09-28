@@ -1,0 +1,32 @@
+PREFLIGHT_RG_EXISTS=false
+ M .squad/agents/morpheus/history.md
+ M .squad/agents/tank/history.md
+ M .squad/agents/trinity/history.md
+ M labs/afd-edge-actions-response-behavior/README.md
+ M labs/afd-edge-actions-response-behavior/deploy/Cleanup.ps1
+?? labs/afd-edge-actions-response-behavior/build/jwt-route-demo/
+?? labs/afd-edge-actions-response-behavior/deploy/Add-JwtRouteDemo.ps1
+?? labs/afd-edge-actions-response-behavior/edge-actions/jwt-route-demo.js
+?? labs/afd-edge-actions-response-behavior/evidence/public-protected-result.json
+?? labs/vwan-ipsec-over-er-backup/
+diff --git a/.squad/agents/tank/history.md b/.squad/agents/tank/history.md
+index 4f1cc3e..e676197 100644
+--- a/.squad/agents/tank/history.md
++++ b/.squad/agents/tank/history.md
+@@ -1284,5 +1284,14 @@ Design.md + README.md edits only. All lab scenarios previously completed.
+ probe_hosted_rest() fetched a bearer token but used literal "******" in both streaming
+ and non-streaming request headers (sanitization artifact). Fixed to f"******".
+ All three files pass py_compile; 10/10 unit tests pass.
+-
++
+ 📌 Team update (2026-08-21T15:35:00+02:00): Foundry prompt-vs-hosted networking lab PUBLICATION-READY. Echo-probe-agent deployed, SDK testing complete (8 invocations, all empirical outcomes confirmed). Hypothesis H1 baseline-only, H2-H3 confirmed. Documentation, test scripts, diagrams all finalized. Niobe approval granted. Decided by Scribe (session orchestration).
++
++---
++
++## TANK-020 -- vwan-ipsec-over-er-backup preflight (2026-09-28)
++
++- Sweden Central supports Standard vWAN virtual hubs, vWAN ExpressRoute gateways, and vWAN VPN gateways for the active subscription; `Microsoft.Network` and `Microsoft.Compute` are registered.
++- `Standard_B1ls` and `Standard_B1s` were absent from the Sweden Central catalog. `Standard_B2ts_v2` was the first skill-ladder SKU to pass both catalog and live `az vm create --validate` gates. Temporary RG `rg-vwan-ipsec-er-preflight-20260928` was deleted and absence verified.
++- Megaport OAuth authentication succeeded through the established environment credential path without changing Key Vault ACLs. The account exposes active Stockholm locations and live MCR2 entitlement; Azure advertises Megaport ExpressRoute in Stockholm at 50 Mbps and above.
++- GCP authentication and one open billing account were visible, but the configured project was stale/inaccessible. Live Compute, quota, API, Cloud Router, and Partner Interconnect validation must wait for the policy-required new isolated project. Read-only checks could not conclusively prove project-create or billing-link permission.
+<shellId: 58 completed with exit code 0>

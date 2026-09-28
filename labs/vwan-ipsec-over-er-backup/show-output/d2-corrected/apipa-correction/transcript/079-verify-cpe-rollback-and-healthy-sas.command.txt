@@ -1,0 +1,1 @@
+gcloud compute ssh cpe-ver-09281131 --project gcp-vwan-eripsec-09281131 --zone europe-north2-c --tunnel-through-iap --quiet --command "echo -n IKE=; sudo swanctl --list-sas | grep -c ESTABLISHED; echo ROUTES; ip route show | grep -E '169.254.(21|22)|10.240.0.1[23]'; echo BGP; sudo vtysh -c 'show bgp ipv4 unicast summary'"

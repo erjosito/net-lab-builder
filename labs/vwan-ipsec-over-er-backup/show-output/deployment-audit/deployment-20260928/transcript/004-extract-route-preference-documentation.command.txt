@@ -1,0 +1,1 @@
+$line = Get-Content 'C:\Users\jomore\AppData\Local\Temp\1790584478553-copilot-tool-output-186c09657c6949049e349da21d019b42.txt' -TotalCount 1; $r = $line | ConvertFrom-Json; $r.results | ForEach-Object { "TITLE: $($_.title)`nURL: $($_.contentUrl)`n$($_.content)`n---" }

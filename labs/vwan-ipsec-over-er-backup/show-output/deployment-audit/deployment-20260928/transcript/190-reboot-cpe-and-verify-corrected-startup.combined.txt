@@ -1,0 +1,70 @@
+Updated [https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/zones/europe-north2-c/instances/cpe-ver-09281131].
+
+[   20.839953] google_metadata_script_runner[792]: startup-script: kernel.panic = 10
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: kernel.panic = 10
+[   20.840065] google_metadata_script_runner[792]: startup-script: * Applying /etc/sysctl.d/90-cpe-forwarding.conf ...
+[   20.840122] google_metadata_script_runner[792]: startup-script: net.ipv4.ip_forward = 1
+[   20.840232] google_metadata_script_runner[792]: startup-script: net.ipv4.conf.all.rp_filter = 0
+[   20.840284] google_metadata_script_runner[792]: startup-script: net.ipv4.conf.default.rp_filter = 0
+[   20.840334] google_metadata_script_runner[792]: startup-script: * Applying /etc/sysctl.d/99-cloudimg-ipv6.conf ...
+[   20.840378] google_metadata_script_runner[792]: startup-script: net.ipv6.conf.all.use_tempaddr = 0
+[   20.840424] google_metadata_script_runner[792]: startup-script: net.ipv6.conf.default.use_tempaddr = 0
+[   20.840467] google_metadata_script_runner[792]: startup-script: * Applying 
+/etc/sysctl.d/99-gce-strict-reverse-path-filtering.conf ...
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: * Applying 
+/etc/sysctl.d/90-cpe-forwarding.conf ...
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: net.ipv4.ip_forward = 1
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: net.ipv4.conf.all.rp_filter = 0
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: net.ipv4.conf.default.rp_filter = 
+0
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: * Applying 
+/etc/sysctl.d/99-cloudimg-ipv6.conf ...
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: net.ipv6.conf.all.use_tempaddr = 0
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: 
+net.ipv6.conf.default.use_tempaddr = 0
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: * Applying 
+/etc/sysctl.d/99-gce-strict-reverse-path-filtering.conf ...
+[   21.181418] google_metadata_script_runner[792]: startup-script: * Applying /usr/lib/sysctl.d/99-protect-links.conf 
+...
+[   21.181497] google_metadata_script_runner[792]: startup-script: fs.protected_fifos = 1
+[   21.181550] google_metadata_script_runner[792]: startup-script: fs.protected_hardlinks = 1
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: * Applying 
+/usr/lib/sysctl.d/99-protect-links.conf ...
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: fs.protected_fifos = 1
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: fs.protected_hardlinks = 1
+[   21.182174] google_metadata_script_runner[792]: startup-script: fs.protected_regular = 2
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: fs.protected_regular = 2
+[   21.182258] google_metadata_script_runner[792]: startup-script: fs.protected_symlinks = 1
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: fs.protected_symlinks = 1
+[   21.182317] google_metadata_script_runner[792]: startup-script: * Applying /etc/sysctl.d/99-sysctl.conf ...
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: * Applying 
+/etc/sysctl.d/99-sysctl.conf ...
+[   21.182440] google_metadata_script_runner[792]: startup-script: * Applying /etc/sysctl.conf ...
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: * Applying /etc/sysctl.conf ...
+[   21.182499] google_metadata_script_runner[792]: startup-script: + sed -i 
+'s/bgpd=no/bgpd=yes/;s/staticd=no/staticd=yes/' /etc/frr/daemons
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: + sed -i 
+'s/bgpd=no/bgpd=yes/;s/staticd=no/staticd=yes/' /etc/frr/daemons
+[   21.182562] google_metadata_script_runner[792]: startup-script: + systemctl enable --now frr
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: + systemctl enable --now frr
+[   21.182618] google_metadata_script_runner[792]: startup-script: Synchronizing state of frr.service with SysV 
+service script with /lib/systemd/systemd-sysv-install.
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: Synchronizing state of 
+frr.service with SysV service script with /lib/systemd/systemd-sysv-install.
+[   21.182690] google_metadata_script_runner[792]: startup-script: Executing: /lib/systemd/systemd-sysv-install enable 
+frr
+[   21.182751] google_metadata_script_runner[792]: startup-script: + systemctl enable --now strongswan
+[   21.182807] google_metadata_script_runner[792]: startup-script: + mkdir -p /opt/vwan-lab /var/log/vwan-lab
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: Executing: 
+/lib/systemd/systemd-sysv-install enable frr
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: + systemctl enable --now 
+strongswan
+Sep 28 11:36:03 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script: + mkdir -p /opt/vwan-lab 
+/var/log/vwan-lab
+[   21.527365] google_metadata_script_runner[792]: startup-script exit status 0
+Sep 28 11:36:04 cpe-ver-09281131 google_metadata_script_runner[792]: startup-script exit status 0
+[   21.527502] google_metadata_script_runner[792]: Finished running startup scripts.
+Sep 28 11:36:04 cpe-ver-09281131 google_metadata_script_runner[792]: Finished running startup scripts.
+Sep 28 11:36:04 cpe-ver-09281131 systemd[1]: google-startup-scripts.service: Deactivated successfully.
+Sep 28 11:36:04 cpe-ver-09281131 systemd[1]: google-startup-scripts.service: Consumed 3.756s CPU time.
+<shellId: 147 completed with exit code 0>

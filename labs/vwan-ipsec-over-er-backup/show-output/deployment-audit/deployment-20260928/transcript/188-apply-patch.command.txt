@@ -1,0 +1,2 @@
+apply_patch
+"*** Begin Patch\n*** Update File: src/terraform/vwan-ipsec-over-er-backup/gcp.tf\n@@\n   metadata = {\n-    ssh-keys = \"azurelabuser:${var.ssh_public_key}\"\n+    ssh-keys      = \"azurelabuser:${var.ssh_public_key}\"\n+    startup-script = file(\"${path.module}/cpe-startup.sh\")\n   }\n-\n-  metadata_startup_script = file(\"${path.module}/cpe-startup.sh\")\n }\n*** End Patch\n"

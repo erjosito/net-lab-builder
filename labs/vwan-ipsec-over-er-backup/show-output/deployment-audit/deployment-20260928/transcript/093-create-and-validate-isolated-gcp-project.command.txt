@@ -1,0 +1,25 @@
+$ErrorActionPreference='Stop'
+$labDir='C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup'
+$deployDir=Join-Path $labDir 'deploy'
+New-Item -ItemType Directory -Force -Path $deployDir | Out-Null
+$statePath=Join-Path $deployDir '.lab-state.json'
+if (Test-Path $statePath) { $state=Get-Content $statePath -Raw | ConvertFrom-Json; $projectId=$state.gcp_project_id; $runId=$state.run_id } else { $runId=(Get-Date -Format 'MMddHHmm'); $projectId="gcp-vwan-eripsec-$runId" }
+$billingLines=@(gcloud billing accounts list --filter='open=true' --format='value(name)' 2>$null | Where-Object { $_ -and $_.Trim() })
+if ($billingLines.Count -ne 1) { throw "Expected exactly one open billing account; found $($billingLines.Count)." }
+$billing=$billingLines[0].Trim()
+$exists=(gcloud projects describe $projectId --format='value(projectId)' 2>$null)
+if (-not $exists) { gcloud projects create $projectId --name='vWAN IPsec over ER lab' --quiet | Out-Null }
+gcloud billing projects link $projectId --billing-account=<BILLING_ACCOUNT> --quiet | Out-Null
+gcloud services enable compute.googleapis.com serviceusage.googleapis.com cloudresourcemanager.googleapis.com cloudbilling.googleapis.com --project=$projectId --quiet
+$zones=@(gcloud compute zones list --project=$projectId --filter='region:(europe-north2)' --format='value(name,status)' | Where-Object { $_ -match 'UP' })
+if ($zones.Count -eq 0) { throw 'No UP zones in europe-north2.' }
+$types=@(gcloud compute machine-types list --project=$projectId --filter='zone:(europe-north2) AND (name=e2-small OR name=e2-medium)' --format='csv[no-heading](name,zone.basename(),guestCpus,memoryMb)' 2>$null)
+if (-not ($types -match '^e2-small,')) { throw 'e2-small is not in the live europe-north2 catalog.' }
+$stateObj=[ordered]@{run_id=$runId;gcp_project_id=$projectId;gcp_region='europe-north2';gcp_machine_type='e2-small';created_at=(Get-Date).ToString('o')}
+$stateObj | ConvertTo-Json | Set-Content -Path $statePath -Encoding utf8
+Write-Output "GCP_PROJECT_CREATED=true"
+Write-Output "BILLING_LINKED=true"
+Write-Output "APIS_ENABLED=true"
+Write-Output "REGION_UP_ZONES=$($zones.Count)"
+Write-Output "E2_SMALL_CATALOG=true"
+Write-Output "RUN_ID=$runId"

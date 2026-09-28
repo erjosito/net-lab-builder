@@ -1,0 +1,170 @@
+google_compute_network.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131]
+google_compute_address.cpe: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/addresses/pip-cpe-ver-09281131]
+google_compute_subnetwork.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/subnetworks/subnet-ver-09281131]
+google_compute_firewall.lab_private: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/global/firewalls/fw-private-ver-09281131]
+google_compute_firewall.ike: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/global/firewalls/fw-ike-ver-09281131]
+google_compute_router.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/routers/cr-ver-09281131]
+google_compute_interconnect_attachment.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/interconnectAttachments/att-ver-09281131]
+data.megaport_location.stockholm: Reading...
+data.megaport_location.stockholm: Read complete after 2s [name=Equinix Stockholm SK1]
+azurerm_resource_group.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131]
+azurerm_express_route_circuit.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteCircuits/er-ver-09281131]
+azurerm_network_security_group.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/networkSecurityGroups/nsg-workload-ver-09281131]
+azurerm_virtual_wan.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualWans/vwan-ver-09281131]
+azurerm_virtual_network.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualNetworks/vnet-workload-ver-09281131]
+azurerm_virtual_hub.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131]
+azurerm_subnet.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualNetworks/vnet-workload-ver-09281131/subnets/snet-workload]
+azurerm_express_route_gateway.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteGateways/ergw-ver-09281131]
+azurerm_virtual_hub_connection.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubVirtualNetworkConnections/conn-workload]
+azurerm_vpn_gateway.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131]
+azurerm_subnet_network_security_group_association.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualNetworks/vnet-workload-ver-09281131/subnets/snet-workload]
+azurerm_network_interface.probe: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/networkInterfaces/nic-probe-ver-09281131]
+azurerm_linux_virtual_machine.probe: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Compute/virtualMachines/vm-probe-ver-09281131]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # google_compute_instance.cpe will be created
+  + resource "google_compute_instance" "cpe" {
+      + allow_stopping_for_update = true
+      + can_ip_forward            = true
+      + cpu_platform              = (known after apply)
+      + creation_timestamp        = (known after apply)
+      + current_status            = (known after apply)
+      + deletion_protection       = false
+      + effective_labels          = {
+          + "goog-terraform-provisioned" = "true"
+        }
+      + id                        = (known after apply)
+      + instance_id               = (known after apply)
+      + label_fingerprint         = (known after apply)
+      + machine_type              = "e2-small"
+      + metadata                  = {
+          + "ssh-keys" = (sensitive value)
+        }
+      + metadata_fingerprint      = (known after apply)
+      + metadata_startup_script   = <<-EOT
+            #!/bin/bash
+            set -euxo pipefail
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update
+            apt-get install -y strongswan-swanctl charon-systemd frr frr-pythontools tcpdump jq curl nftables iproute2
+            cat >/etc/sysctl.d/90-cpe-forwarding.conf <<'EOF'
+            net.ipv4.ip_forward=1
+            net.ipv4.conf.all.rp_filter=0
+            net.ipv4.conf.default.rp_filter=0
+            EOF
+            sysctl --system
+            sed -i 's/bgpd=no/bgpd=yes/;s/staticd=no/staticd=yes/' /etc/frr/daemons
+            systemctl enable frr strongswan
+            systemctl restart frr
+            mkdir -p /opt/vwan-lab /var/log/vwan-lab
+        EOT
+      + min_cpu_platform          = (known after apply)
+      + name                      = "cpe-ver-09281131"
+      + project                   = "gcp-vwan-eripsec-09281131"
+      + self_link                 = (known after apply)
+      + tags                      = [
+          + "ipsec-cpe",
+        ]
+      + tags_fingerprint          = (known after apply)
+      + terraform_labels          = {
+          + "goog-terraform-provisioned" = "true"
+        }
+      + zone                      = "europe-north2-c"
+
+      + boot_disk {
+          + auto_delete                = true
+          + device_name                = (known after apply)
+          + disk_encryption_key_sha256 = (known after apply)
+          + guest_os_features          = (known after apply)
+          + kms_key_self_link          = (known after apply)
+          + mode                       = "READ_WRITE"
+          + source                     = (known after apply)
+
+          + initialize_params {
+              + architecture           = (known after apply)
+              + image                  = "ubuntu-os-cloud/ubuntu-2204-lts"
+              + labels                 = (known after apply)
+              + provisioned_iops       = (known after apply)
+              + provisioned_throughput = (known after apply)
+              + resource_policies      = (known after apply)
+              + size                   = 20
+              + snapshot               = (known after apply)
+              + type                   = "pd-balanced"
+            }
+        }
+
+      + confidential_instance_config (known after apply)
+
+      + guest_accelerator (known after apply)
+
+      + network_interface {
+          + internal_ipv6_prefix_length = (known after apply)
+          + ipv6_access_type            = (known after apply)
+          + ipv6_address                = (known after apply)
+          + name                        = (known after apply)
+          + network                     = (known after apply)
+          + network_attachment          = (known after apply)
+          + network_ip                  = "10.250.0.10"
+          + stack_type                  = (known after apply)
+          + subnetwork                  = "projects/gcp-vwan-eripsec-09281131/regions/europe-north2/subnetworks/subnet-ver-09281131"
+          + subnetwork_project          = (known after apply)
+
+          + access_config {
+              + nat_ip       = "34.51.158.147"
+              + network_tier = (known after apply)
+            }
+
+          + alias_ip_range {
+              + ip_cidr_range         = "10.250.254.240/32"
+              + subnetwork_range_name = "cpe-peer-identities"
+            }
+          + alias_ip_range {
+              + ip_cidr_range         = "10.250.254.241/32"
+              + subnetwork_range_name = "cpe-peer-identities"
+            }
+          + alias_ip_range {
+              + ip_cidr_range         = "10.250.254.242/32"
+              + subnetwork_range_name = "cpe-peer-identities"
+            }
+          + alias_ip_range {
+              + ip_cidr_range         = "10.250.254.250/32"
+              + subnetwork_range_name = "cpe-peer-identities"
+            }
+        }
+
+      + reservation_affinity (known after apply)
+
+      + scheduling (known after apply)
+    }
+
+Plan: 1 to add, 0 to change, 0 to destroy.
+google_compute_instance.cpe: Creating...
+google_compute_instance.cpe: Still creating... [00m10s elapsed]
+google_compute_instance.cpe: Creation complete after 18s [id=projects/gcp-vwan-eripsec-09281131/zones/europe-north2-c/instances/cpe-ver-09281131]
+
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+er_circuit_name = "er-ver-09281131"
+gcp_attachment_name = "att-ver-09281131"
+gcp_cpe_name = "cpe-ver-09281131"
+gcp_cpe_public_ip = "34.51.158.147"
+gcp_project_id = "gcp-vwan-eripsec-09281131"
+gcp_router_name = "cr-ver-09281131"
+resource_group_name = "rg-vwan-ipsec-over-er-09281131"
+sensitive_generated_keys = <sensitive>
+vhub_name = "vhub-ver-09281131"
+vpn_gateway_name = "vpngw-ver-09281131"
+vwan_name = "vwan-ver-09281131"
+vxc_uids = {
+  "azure_primary" = null
+  "azure_secondary" = null
+  "gcp" = null
+}
+<shellId: 134 completed with exit code 0>

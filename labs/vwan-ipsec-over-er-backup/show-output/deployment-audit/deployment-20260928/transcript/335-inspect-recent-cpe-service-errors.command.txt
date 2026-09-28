@@ -1,0 +1,1 @@
+gcloud compute ssh cpe-ver-09281131 --project gcp-vwan-eripsec-09281131 --zone europe-north2-c --tunnel-through-iap --quiet --command "sudo journalctl -u vwan-lab-network.service -u vwan-lab-ipsec.service -u strongswan -u frr --since '-15 min' --no-pager | tail -120"

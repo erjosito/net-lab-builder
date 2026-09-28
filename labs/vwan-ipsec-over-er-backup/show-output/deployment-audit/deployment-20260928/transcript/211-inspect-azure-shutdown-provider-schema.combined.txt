@@ -1,0 +1,105 @@
+{
+  "attributes": {
+    "daily_recurrence_time": {
+      "type": "string",
+      "description_kind": "plain",
+      "required": true
+    },
+    "enabled": {
+      "type": "bool",
+      "description_kind": "plain",
+      "optional": true
+    },
+    "id": {
+      "type": "string",
+      "description_kind": "plain",
+      "optional": true,
+      "computed": true
+    },
+    "location": {
+      "type": "string",
+      "description_kind": "plain",
+      "required": true
+    },
+    "tags": {
+      "type": [
+        "map",
+        "string"
+      ],
+      "description_kind": "plain",
+      "optional": true
+    },
+    "timezone": {
+      "type": "string",
+      "description_kind": "plain",
+      "required": true
+    },
+    "virtual_machine_id": {
+      "type": "string",
+      "description_kind": "plain",
+      "required": true
+    }
+  },
+  "block_types": {
+    "notification_settings": {
+      "nesting_mode": "list",
+      "block": {
+        "attributes": {
+          "email": {
+            "type": "string",
+            "description_kind": "plain",
+            "optional": true
+          },
+          "enabled": {
+            "type": "bool",
+            "description_kind": "plain",
+            "required": true
+          },
+          "time_in_minutes": {
+            "type": "number",
+            "description_kind": "plain",
+            "optional": true
+          },
+          "webhook_url": {
+            "type": "string",
+            "description_kind": "plain",
+            "optional": true
+          }
+        },
+        "description_kind": "plain"
+      },
+      "min_items": 1,
+      "max_items": 1
+    },
+    "timeouts": {
+      "nesting_mode": "single",
+      "block": {
+        "attributes": {
+          "create": {
+            "type": "string",
+            "description_kind": "plain",
+            "optional": true
+          },
+          "delete": {
+            "type": "string",
+            "description_kind": "plain",
+            "optional": true
+          },
+          "read": {
+            "type": "string",
+            "description_kind": "plain",
+            "optional": true
+          },
+          "update": {
+            "type": "string",
+            "description_kind": "plain",
+            "optional": true
+          }
+        },
+        "description_kind": "plain"
+      }
+    }
+  },
+  "description_kind": "plain"
+}
+<shellId: 164 completed with exit code 0>

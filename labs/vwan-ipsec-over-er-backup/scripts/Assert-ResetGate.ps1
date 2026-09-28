@@ -21,6 +21,7 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+$assertStarted = Get-Date
 
 $Inventory = Get-Content (Resolve-Path $InventoryPath) -Raw | ConvertFrom-Json
 $EvidencePath = (Resolve-Path $EvidencePath).Path
@@ -86,10 +87,41 @@ $verdict = [ordered]@{
 }
 $verdictPath = Join-Path $EvidencePath 'reset-gate-verdict.json'
 $verdict | ConvertTo-Json -Depth 5 | Set-Content -Path $verdictPath -Encoding utf8
+$assertEnded = Get-Date
+$command = "pwsh .\scripts\Assert-ResetGate.ps1 -InventoryPath '<RUNTIME_INVENTORY>' -EvidencePath '$EvidencePath' -ExpectedDesign $ExpectedDesign -MinimumExpectedPrefixObservations $MinimumExpectedPrefixObservations"
+$stderr = if ($failures.Count) { $failures -join [Environment]::NewLine } else { '' }
+$stdout = if ($failures.Count) { 'RESET GATE FAIL' } else { "RESET GATE PASS: $ExpectedDesign; no cross-design prefix contamination found." }
+Set-Content (Join-Path $EvidencePath 'reset-gate.command.txt') $command -Encoding utf8
+Set-Content (Join-Path $EvidencePath 'reset-gate.stdout.txt') $stdout -Encoding utf8
+Set-Content (Join-Path $EvidencePath 'reset-gate.stderr.txt') $stderr -Encoding utf8
+$assertMetadata = [ordered]@{
+    schemaVersion = 1
+    correlationId = [string]$Inventory.runId
+    scenario = 'restore'
+    questionId = 'Q-RESET-CONTAMINATION'
+    plane = 'cross-plane'
+    actionType = 'assertion'
+    state = 'assertion'
+    expectedEffect = "Only $ExpectedDesign experiment prefixes remain and all mandatory health signals and bidirectional probes pass."
+    observedEffect = $stdout
+    commandFile = 'reset-gate.command.txt'
+    stdoutFile = 'reset-gate.stdout.txt'
+    stderrFile = 'reset-gate.stderr.txt'
+    combinedFile = 'reset-gate-verdict.json'
+    utcStarted = $assertStarted.ToUniversalTime().ToString('o')
+    utcEnded = $assertEnded.ToUniversalTime().ToString('o')
+    localStarted = $assertStarted.ToString('o')
+    localEnded = $assertEnded.ToString('o')
+    durationMs = [math]::Round(($assertEnded - $assertStarted).TotalMilliseconds)
+    exitCode = if ($failures.Count) { 1 } else { 0 }
+    succeeded = ($failures.Count -eq 0)
+    workingDirectory = '<REPOSITORY_ROOT>'
+}
+$assertMetadata | ConvertTo-Json -Depth 8 | Set-Content (Join-Path $EvidencePath 'reset-gate.metadata.json') -Encoding utf8
 
 if ($failures.Count -gt 0) {
     $failures | ForEach-Object { Write-Error $_ }
     exit 1
 }
 
-Write-Host "RESET GATE PASS: $ExpectedDesign; no cross-design prefix contamination found."
+Write-Host $stdout

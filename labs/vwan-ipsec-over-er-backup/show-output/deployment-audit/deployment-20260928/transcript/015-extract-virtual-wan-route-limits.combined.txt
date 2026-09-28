@@ -1,0 +1,288 @@
+> TITLE: About virtual hub routing
+> URL: https://learn.microsoft.com/azure/virtual-wan/about-virtual-hub-routing
+  # About virtual hub routing
+> The routing capabilities in a virtual hub are provided by a router that manages all routing between gateways using 
+Border Gateway Protocol (BGP). A virtual hub can contain multiple gateways such as a Site-to-site VPN gateway, 
+ExpressRoute gateway, Point-to-site gateway, Azure Firewall. This router also provides transit connectivity between 
+virtual networks that connect to a virtual hub and can support up to an aggregate throughput of 50 Gbps. These routing 
+capabilities apply to Standard Virtual WAN customers.
+  To configure routing, see [How to configure virtual hub 
+routing](https://learn.microsoft.com/azure/virtual-wan/how-to-virtual-hub-routing).
+  ---
+> TITLE: Scenario: BGP peering with a virtual hub
+> URL: https://learn.microsoft.com/azure/virtual-wan/scenario-bgp-peering-hub#benefits-and-considerations
+  # Scenario: BGP peering with a virtual hub
+  ## Benefits and considerations
+  5. You can use your own public ASNs or private ASNs in your network virtual appliance. You can't use the ranges 
+reserved by Azure or IANA. The following ASNs are reserved by Azure or IANA:
+  5.1.2. Private ASNs: 65515, 65517, 65518, 65519, 65520
+  5.2. ASNs reserved by IANA: 23456, 64496-64511, 65535-65551
+> 6. While the virtual hub router exchanges BGP routes with your NVA and propagates them to your virtual network, it 
+directly facilitates propagating routes from on-premises via the virtual hub hosted gateways (VPN gateway/ExpressRoute 
+gateway/Managed NVA gateways).
+  7. BGP peering is only supported with an IP address that is assigned to an interface of the NVA. Peering with 
+loopbacks isn't supported.
+>   The virtual hub router has the following limits:
+>   | Resource | Limit |
+    | --- | --- |
+>   | Number of routes each BGP peer can advertise to the virtual hub. | The hub can only accept a maximum number of 
+10,000 routes (total) from its connected resources. For example, if a virtual hub has a total of 6000 routes from the 
+connected virtual networks, branches, virtual hubs etc., then when a new BGP peering is configured with an NVA, the 
+NVA can only advertise up to 4000 routes. |
+    | Number of BGP peers | A maximum of 8 BGP peers can be connected to a single Virtual WAN Hub |
+> 8. Routes from NVA in a virtual network that are more specific than the virtual network address space, when 
+advertised to the virtual hub through BGP aren't propagated further to on-premises.
+> 9. Currently we only support 4,000 routes from the NVA to the virtual hub.
+  ---
+> TITLE: Azure subscription and service limits, quotas, and constraints
+> URL: https://learn.microsoft.com/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-netw
+orking-limits
+> # Azure subscription and service limits, quotas, and constraints
+> ## Azure networking limits
+> | Resource | Limit| 
+  |  --- | ---  |
+> | VNet Address Prefixes | 600 per VPN gateway |
+> | Aggregate BGP routes | 4,000 per VPN gateway |
+> | Local Network Gateway address prefixes | 1000 per local network gateway |
+> | S2S connections | Limit depends on the gateway SKU. See the Limits by gateway SKU table. |
+> | P2S connections | Limit depends on the gateway SKU. See the Limits by gateway SKU table. |
+> | P2S route limit - IKEv2 | 256 for non-Windows **/** 25 for Windows |
+> | P2S route limit - OpenVPN | 1000 |
+  | Max. flows | 500K inbound and 500K outbound for VpnGw1-5/AZ |
+  | Traffic Selector Policies | 100 |
+  | Custom APIPA BGP addresses | 32 |
+> | Supported number of VMs in the virtual network | Limit depends on the gateway SKU. See the Limits by gateway SKU 
+table. |
+  
+> #### Limits by gateway SKU
+  The following SKUs can be used to deploy new VPN gateways. They have zone-redundant options and are recommended for 
+all new deployments.
+  ---
+> TITLE: Virtual WAN FAQ
+> URL: https://learn.microsoft.com/azure/virtual-wan/virtual-wan-faq#retirement-of-preview-azure-vpn-client-for-linux
+  # Virtual WAN FAQ
+  ## Retirement of (Preview) Azure VPN Client for Linux
+> Yes, branch-to-branch connectivity is available in Virtual WAN. Branch is conceptually applicable to VPN site, 
+ExpressRoute circuits, or point-to-site/User VPN users. Enabling branch-to-branch is enabled by default and can be 
+located in WAN **Configuration** settings. This lets VPN branches/users connect to other VPN branches and transit 
+connectivity is also enabled between VPN and ExpressRoute users.
+  ### Does branch-to-branch traffic traverse through the Azure Virtual WAN?
+  Yes. Branch-to-branch traffic traverses through Azure Virtual WAN.
+> ### Does Virtual WAN require ExpressRoute from each site?
+> No. Virtual WAN doesn't require ExpressRoute from each site. Your sites might be connected to a provider network 
+using an ExpressRoute circuit. For sites that are connected using ExpressRoute to a virtual hub and IPsec VPN into the 
+same hub, virtual hub provides transit connectivity between the VPN and ExpressRoute user.
+> ### Is there a network throughput or connection limit when using Azure Virtual WAN?
+> Network throughput is per service in a virtual WAN hub. In each hub, the VPN aggregate throughput is up to 20 Gbps, 
+the ExpressRoute aggregate throughput is up to 20 Gbps, and the User VPN/point-to-site VPN aggregate throughput is up 
+to 200 Gbps. The router in virtual hub supports up to 50 Gbps for VNet-to-VNet traffic flows and assumes a total of 
+2000 VM workload across all VNets connected to a single virtual hub.
+  To secure upfront capacity without waiting for the virtual hub to scale out when more throughput is needed, you can 
+set the minimum capacity or modify as needed. See [About virtual hub settings - hub 
+capacity](https://learn.microsoft.com/azure/virtual-wan/hub-settings#capacity). For cost implications, see *Routing 
+Infrastructure Unit* cost in the [Azure Virtual WAN Pricing](https://azure.microsoft.com/pricing/details/virtual-wan/) 
+page.
+  When VPN sites connect into a hub, they do so with connections. Virtual WAN supports up to 1,000 connections or 
+2,000 IPsec tunnels per virtual hub. When remote users connect into virtual hub, they connect to the P2S VPN gateway, 
+which supports up to 100,000 users depending on the scale unit(bandwidth) chosen for the P2S VPN gateway in the 
+virtual hub.
+  ### Can I use NAT-T on my VPN connections?
+  ---
+> TITLE: Getting Started with Troubleshooting Virtual WAN
+> URL: https://learn.microsoft.com/azure/virtual-wan/virtual-wan-troubleshooting-overview
+  # Getting Started with Troubleshooting Virtual WAN
+  There are various built-in tools and dashboards for diagnosing and resolving issues within Azure Virtual WAN 
+environments. These resources help pinpoint problems in routing, connectivity, performance, and overall health.
+  The following sections outline key troubleshooting and monitoring tools, providing guidance for analyzing routing 
+and BGP sessions, validating datapath connectivity, monitoring resource health and logs, and managing maintenance 
+activities.
+> ## Known Issues & Limitations
+> Review known issues and limitations that may impact your Virtual WAN deployment.
+> 1. [Virtual WAN Known Issues](https://learn.microsoft.com/azure/virtual-wan/whats-new#knownissues) - A list of known 
+issues and limitations for Azure Virtual WAN. Validate that your Virtual WAN is not affected by any documented issues 
+before proceeding with troubleshooting.
+> 2. Review the service limits for Virtual WAN resources to ensure your deployment is within supported thresholds.
+> | Resource | Limit| 
+  |  --- | ---  |
+  | VPN (branch) connections per hub | 1,000 |
+  | Aggregate throughput per Virtual WAN Site-to-site VPN gateway | 20 Gbps |
+  | Point-to-site users per hub | 100,000 |
+  | Aggregate throughput per Virtual WAN User VPN (Point-to-site) gateway | 200 Gbps |
+> | Aggregate throughput per Virtual WAN ExpressRoute gateway | 20 Gbps |
+> | ExpressRoute circuit connections per hub | 8 - [Read more 
+here](https://learn.microsoft.com/azure/virtual-wan/virtual-wan-expressroute-about#expressroute-limits-in-virtual-wan) 
+|
+  | VNet connections per hub without Routing Intent enabled | 500 minus total number of hubs in Virtual WAN |
+> | Address spaces across all VNets directly connected to single hub with Routing Intent with private routing policies 
+enabled | 600 per Virtual WAN hub - [Read more 
+here](https://learn.microsoft.com/azure/virtual-wan/how-to-routing-policies#address-limits) |
+> | Aggregate throughput per Virtual WAN hub router | 50 Gbps for VNet to VNet transit |
+> | VM workload across all VNets connected to a single Virtual WAN hub | 2000 (If you want to raise the limit or quota 
+above the default limit, see [hub settings](https://learn.microsoft.com/azure/virtual-wan/hub-settings)). |
+> | Total number of routes the hub can accept from its connected resources (virtual networks, branches, other virtual 
+hubs, etc.) | 10,000 |
+  
+  ---
+> TITLE: Troubleshoot BGP issues for Azure VPN Gateway
+> URL: https://learn.microsoft.com/troubleshoot/azure/vpn-gateway/vpn-gateway-troubleshoot-bgp#routes-not-being-learned
+  # Troubleshoot BGP issues for Azure VPN Gateway
+> ## Routes not being learned
+> If the BGP session is connected but routes aren't being learned from the on-premises peer, check the following items.
+> ### Check route counts
+  **Azure portal**
+  Follow these steps:
+  1. Go to virtual network gateway > **Monitoring** > **BGP peers**.
+> 2. Review the **Routes received** column. A value of `0` indicates that the peer isn't sending any routes.
+  **Azure PowerShell**
+  Run the following command.
+  ```azurepowershell
+> Get-AzVirtualNetworkGatewayLearnedRoute -ResourceGroupName <resource-group> -VirtualNetworkGatewayName <gateway-name>
+  ```
+> Review the output. Routes that show `Origin: EBgp` come from the on-premises peer. If no external BGP (eBGP) routes 
+appear, the on-premises device isn't advertising routes.
+> ### Verify on-premises device is advertising routes
+> Check your on-premises VPN device or router to verify that it meets the following conditions:
+  1. BGP is enabled on the correct interface.
+> 2. The route table or network statements include the prefixes you intend to advertise.
+> 3. No outbound route filters block the prefixes.
+> ### Check GatewaySubnet route propagation
+> If `GatewaySubnet` has an associated route table, verify that gateway route propagation is enabled.
+  Follow these steps:
+  1. In the Azure portal, go to the virtual network that contains the VPN gateway.
+  2. Select **Subnets**, and then select **GatewaySubnet**.
+> 3. Check whether **Route table** lists an associated route table.
+> 4. If a route table is associated, open it and verify that **Propagate gateway routes** is set to **Yes**.
+> Don't disable gateway route propagation on `GatewaySubnet`. Disabling this setting prevents BGP routes learned by 
+the VPN gateway from propagating into the virtual network. As a result, the VPN gateway doesn't function, and 
+site-to-site connectivity can fail. For more information, see [Create, change, or delete a route 
+table](https://learn.microsoft.com/en-us/azure/virtual-network/manage-route-table#create-a-route-table).
+> ### Check prefix limit
+> VPN Gateway supports up to 4,000 prefixes per BGP peer. If the on-premises device advertises more than 4,000 
+prefixes, Azure drops the BGP session entirely. Reduce the number of advertised prefixes to stay within the limit.
+  Look for sudden session drops by querying the diagnostic log.
+  Run the following query.
+  ```kusto
+  AzureDiagnostics
+> | where Category == "RouteDiagnosticLog"
+  | where OperationName == "BgpDisconnectedEvent"
+  | project TimeGenerated, Message, Resource
+  | order by TimeGenerated desc
+  ```
+  ---
+> TITLE: Azure Virtual WAN network topology (lift-shift)
+> URL: https://learn.microsoft.com/azure/networking/design-guide/virtual-wan#how-to-choose
+  # Azure Virtual WAN network topology (lift-shift)
+  ## How to choose
+  | Configuration | Use when | Benefit| 
+  
+  ## Routing intent
+> Routing intent simplifies traffic control in Virtual WAN by automatically steering traffic through a security 
+solution (Azure Firewall or supported NVA) without custom route tables or UDRs.
+  When you enable routing intent, you declare policies for two traffic types:
+> 1. **Internet traffic:** All internet-bound traffic from connected virtual networks routes through the security 
+solution in the hub.
+> 2. **Private traffic:** All traffic between virtual networks, branches, and other hubs routes through the security 
+solution.
+> Routing intent removes the need to manage route tables manually. The Virtual WAN control plane configures all 
+necessary routes automatically across all connected hubs and spoke virtual networks.
+  Note
+  Routing intent requires a Secured Virtual Hub with Azure Firewall or a supported NVA partner. It's only available on 
+the Standard tier.
+  Warning
+> The route table modifications that routing intent makes are irreversible. You can remove routing intent, but 
+removing it doesn't restore your previous defaultRouteTable configuration automatically. Save a snapshot of your 
+configuration before you enable routing intent, because you need to manually restore any previous routes if you later 
+remove it.
+> ## Connection limits and scalability
+  Virtual WAN supports large-scale deployments:
+  1. Up to 1,000 site-to-site VPN connections per virtual hub.
+  2. Multiple hubs per Virtual WAN (one per region, or multiple per region for isolation).
+> 3. Up to 50 Gbps aggregate throughput per hub router (requires maximum 50 routing infrastructure units. Default is 2 
+units at 3 Gbps).
+> 4. Any-to-any connectivity across all VNet connections, VPN branches, and ExpressRoute circuits within the same hub.
+> For organizations that exceed the limits of a single hub, deploy additional hubs in the same or different regions. 
+The Virtual WAN automatically handles inter-hub routing.
+  ---
+> TITLE: Azure Virtual WAN network topology (modernize)
+> URL: https://learn.microsoft.com/azure/networking/design-guide/virtual-wan#how-to-choose
+  # Azure Virtual WAN network topology (modernize)
+  ## How to choose
+  | Configuration | Use when | Benefit| 
+  
+  ## Routing intent
+> Routing intent simplifies traffic control in Virtual WAN by automatically steering traffic through a security 
+solution (Azure Firewall or supported NVA) without custom route tables or UDRs.
+  When you enable routing intent, you declare policies for two traffic types:
+> 1. **Internet traffic:** All internet-bound traffic from connected virtual networks routes through the security 
+solution in the hub.
+> 2. **Private traffic:** All traffic between virtual networks, branches, and other hubs routes through the security 
+solution.
+> Routing intent removes the need to manage route tables manually. The Virtual WAN control plane configures all 
+necessary routes automatically across all connected hubs and spoke virtual networks.
+  Note
+  Routing intent requires a Secured Virtual Hub with Azure Firewall or a supported NVA partner. It's only available on 
+the Standard tier.
+  Warning
+> The route table modifications that routing intent makes are irreversible. You can remove routing intent, but 
+removing it doesn't restore your previous defaultRouteTable configuration automatically. Save a snapshot of your 
+configuration before you enable routing intent, because you need to manually restore any previous routes if you later 
+remove it.
+> ## Connection limits and scalability
+  Virtual WAN supports large-scale deployments:
+  1. Up to 1,000 site-to-site VPN connections per virtual hub.
+  2. Multiple hubs per Virtual WAN (one per region, or multiple per region for isolation).
+> 3. Up to 50 Gbps aggregate throughput per hub router (requires maximum 50 routing infrastructure units. Default is 2 
+units at 3 Gbps).
+> 4. Any-to-any connectivity across all VNet connections, VPN branches, and ExpressRoute circuits within the same hub.
+> For organizations that exceed the limits of a single hub, deploy additional hubs in the same or different regions. 
+The Virtual WAN automatically handles inter-hub routing.
+  ---
+> TITLE: Azure Virtual WAN network topology (cross-cloud)
+> URL: https://learn.microsoft.com/azure/networking/design-guide/virtual-wan#how-to-choose
+  # Azure Virtual WAN network topology (cross-cloud)
+  ## How to choose
+  | Configuration | Use when | Benefit| 
+  
+  ## Routing intent
+> Routing intent simplifies traffic control in Virtual WAN by automatically steering traffic through a security 
+solution (Azure Firewall or supported NVA) without custom route tables or UDRs.
+  When you enable routing intent, you declare policies for two traffic types:
+> 1. **Internet traffic:** All internet-bound traffic from connected virtual networks routes through the security 
+solution in the hub.
+> 2. **Private traffic:** All traffic between virtual networks, branches, and other hubs routes through the security 
+solution.
+> Routing intent removes the need to manage route tables manually. The Virtual WAN control plane configures all 
+necessary routes automatically across all connected hubs and spoke virtual networks.
+  Note
+  Routing intent requires a Secured Virtual Hub with Azure Firewall or a supported NVA partner. It's only available on 
+the Standard tier.
+  Warning
+> The route table modifications that routing intent makes are irreversible. You can remove routing intent, but 
+removing it doesn't restore your previous defaultRouteTable configuration automatically. Save a snapshot of your 
+configuration before you enable routing intent, because you need to manually restore any previous routes if you later 
+remove it.
+> ## Connection limits and scalability
+  Virtual WAN supports large-scale deployments:
+  1. Up to 1,000 site-to-site VPN connections per virtual hub.
+  2. Multiple hubs per Virtual WAN (one per region, or multiple per region for isolation).
+> 3. Up to 50 Gbps aggregate throughput per hub router (requires maximum 50 routing infrastructure units. Default is 2 
+units at 3 Gbps).
+> 4. Any-to-any connectivity across all VNet connections, VPN branches, and ExpressRoute circuits within the same hub.
+> For organizations that exceed the limits of a single hub, deploy additional hubs in the same or different regions. 
+The Virtual WAN automatically handles inter-hub routing.
+  ---
+> TITLE: Virtual WAN FAQ
+> URL: https://learn.microsoft.com/azure/virtual-wan/virtual-wan-faq#retirement-of-preview-azure-vpn-client-for-linux
+  # Virtual WAN FAQ
+  ## Retirement of (Preview) Azure VPN Client for Linux
+> The maximum number of address spaces across all Virtual Networks directly connected to a single Virtual WAN hub is 
+600. This limit is applied individually to each Virtual WAN hub in a Virtual WAN deployment. Virtual Network address 
+spaces connected to remote (other Virtual WAN hubs in the same Virtual WAN) hubs are not counted towards this limit.
+> For more information on the limit and sample scripts to determine the number of address spaces across Virtual 
+Networks connected to a Virtual WAN hub, see [routing intent virtual network address space 
+limits](https://learn.microsoft.com/azure/virtual-wan/how-to-routing-policies#address-limits).
+  ### Can I use Azure Bastion with Virtual WAN?
+> Yes but there are limitations. See the [Azure Bastion 
+FAQ](https://learn.microsoft.com/azure/bastion/bastion-faq#vwan) for more details.
+  ---
+<shellId: 13 completed with exit code 0>

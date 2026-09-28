@@ -1,0 +1,58 @@
+diff --git a/.squad/agents/niobe/history.md b/.squad/agents/niobe/history.md
+index efca921..d9ac9d8 100644
+--- a/.squad/agents/niobe/history.md
++++ b/.squad/agents/niobe/history.md
+@@ -1,5 +1,12 @@
+ **Archived entries:** see \history-archive.md\
+ 
++## Learnings (2026-09-28 - vwan-ipsec-over-er-backup validation harness)
++
++- A negative managed-network experiment needs an explicit prerequisite ladder. For a floating BGP-neighbor test, API rejection or BGP failure is not evidence until endpoint reachability, supported address ownership, PSKs, IKE/IPsec, host routes, interface identity and routing-daemon syntax are independently healthy.
++- Cross-design route experiments need disjoint prefixes plus a machine-enforced contamination gate. Checking only the intended prefix is insufficient; the reset must reject every prefix, neighbor, static route and policy artifact belonging to the previous design.
++- Keep evidence collection read-only and make the mutation owner publish a paired, tested restore before fault injection. This preserves Niobe's diagnostic boundary and prevents an evidence script from becoming an unreviewed deployment/fault tool.
++- vWAN managed route views can require API-specific POST requests rather than a stable single CLI command. Treat those requests as versioned deployment-inventory inputs from Trinity/Tank, capture their failures verbatim, and never substitute resource provisioning state for route evidence.
++
+ ## Learnings (2026-08-18 — afd-edge-actions-jwt-validation live validation)
+ 
+ - **Hyperlight sandbox: `crypto`, `fetch`, `atob`, `TextEncoder` all `undefined`.** S1-GATE = CONDITIONAL. Claims-only enforcement only. Origin `jose` RS256 is the only cryptographic security boundary. Results are deterministic across all AFD PoPs.
+@@ -370,7 +377,7 @@ completed (Tank's final response was lost). Nothing in Azure or on the NVAs is u
+   Minimum recovery: **Tank, docs-only** — do **not** re-run U1.5 or U2.
+ 
+ 📌 Decision inbox written: `.squad/decisions/inbox/niobe-u15-u2-verification.md`
+-
++
+ 
+ ## Learnings (2026-08-19 -- dual-hub-vnra-udr-transit final validation)
+ 
+@@ -381,7 +388,7 @@ completed (Tank's final response was lost). Nothing in Azure or on the NVAs is u
+ - **E2 (subnet effectiveRoute API) confirmed 404** from regional backend for VirtualNetworkApplianceSubnet. The full observability toolkit is: configured UDRs, spoke NIC effective routes, Network Watcher (spoke), VNRA resource GET, Monitor metrics, peering GET (all legs), end-to-end ping/tracepath.
+ - **Retry evidence path:** `show-output/validation/retry-20260819T185118+0200/` files 01-13. File 06-07 = pre-fix still 100% loss; 09 = pre-fix zeros; 10-11 = peering correction + verification; 12-13 = post-fix PASS.
+ - **Artifacts updated:** validation.md (stage 1-v3 final), lessons-learned.md (L1 revised + L11 added), README.md (E1 PASS, diagrams index, status table), `.squad/decisions/inbox/niobe-dual-hub-vnra-final-validation.md`.
+-- **Lab ready for teardown.** No Azure writes beyond the peering flag correction. No commit or cleanup performed.
++- **Lab ready for teardown.** No Azure writes beyond the peering flag correction. No commit or cleanup performed.
+ 
+ ---
+ 
+@@ -407,10 +414,10 @@ artifacts without creating or modifying any Azure resource.
+ - README approval strings match the exact `Read-Host` gates.
+ 
+ Record filed: `.squad/decisions/inbox/niobe-foundry-iac-review.md`.
+-Verdict: **APPROVE**. No revisions required before Gate B (`DEPLOY APPROVED`).
++Verdict: **APPROVE**. No revisions required before Gate B (`DEPLOY APPROVED`).
+ 
+ 
+-📌 Team update (2026-08-20T11:20:05+02:00): IaC review verdict: APPROVE; all foundry inbox entries processed and merged into decisions.md — decided by Scribe
++📌 Team update (2026-08-20T11:20:05+02:00): IaC review verdict: APPROVE; all foundry inbox entries processed and merged into decisions.md — decided by Scribe
+ 
+ 
+ ## 2026-08-20T13:53+02:00 -- Hosted-Agent Correction Review (Morpheus)
+@@ -443,6 +450,6 @@ Morpheus must add real tests or retract the claim.
+   (`--runtime python_3_13`). None push Jose into an unsafe flow, so per criterion 11 I did not edit
+   the guide; flagged as a follow-up doc PR.
+ 
+-No Azure calls; no writes to `deploy/` or `raw-output/`.
++No Azure calls; no writes to `deploy/` or `raw-output/`.
+ 
+-📌 Team update (2026-08-21T15:35:00+02:00): Foundry lab review cycle complete. First review REJECTED (B1-B4); Trinity revision APPROVED in second review. All blockers resolved; sanitization verified; VM state confirmed. Lab PUBLICATION-READY. Decided by Scribe (session orchestration).
++📌 Team update (2026-08-21T15:35:00+02:00): Foundry lab review cycle complete. First review REJECTED (B1-B4); Trinity revision APPROVED in second review. All blockers resolved; sanitization verified; VM state confirmed. Lab PUBLICATION-READY. Decided by Scribe (session orchestration).
+<shellId: 107 completed with exit code 0>

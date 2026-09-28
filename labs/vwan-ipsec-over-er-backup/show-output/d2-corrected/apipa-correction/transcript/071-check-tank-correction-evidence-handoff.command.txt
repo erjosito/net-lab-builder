@@ -1,0 +1,1 @@
+$correction=Test-Path 'labs\vwan-ipsec-over-er-backup\show-output\d2-corrected\apipa-correction'; $metadata=@(Get-ChildItem 'labs\vwan-ipsec-over-er-backup\show-output' -Recurse -Filter '*.metadata.json' -ErrorAction SilentlyContinue).Count; [pscustomobject]@{CorrectionBundlePresent=$correction;AuditMetadataRecords=$metadata} | ConvertTo-Json -Compress

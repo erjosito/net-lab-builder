@@ -1,0 +1,338 @@
+google_compute_resource_policy.cpe_stop: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/resourcePolicies/stop-cpe-ver-09281131]
+google_compute_network.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131]
+google_compute_address.cpe: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/addresses/pip-cpe-ver-09281131]
+google_compute_router.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/routers/cr-ver-09281131]
+google_compute_firewall.lab_private: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/global/firewalls/fw-private-ver-09281131]
+google_compute_subnetwork.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/subnetworks/subnet-ver-09281131]
+google_compute_firewall.ike: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/global/firewalls/fw-ike-ver-09281131]
+google_compute_instance.cpe: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/zones/europe-north2-c/instances/cpe-ver-09281131]
+google_compute_interconnect_attachment.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/interconnectAttachments/att-ver-09281131]
+data.megaport_location.stockholm: Reading...
+data.megaport_location.stockholm: Read complete after 2s [name=Equinix Amsterdam AM1]
+azurerm_resource_group.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131]
+azurerm_virtual_wan.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualWans/vwan-ver-09281131]
+azurerm_express_route_circuit.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteCircuits/er-ver-09281131]
+azurerm_virtual_network.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualNetworks/vnet-workload-ver-09281131]
+azurerm_network_security_group.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/networkSecurityGroups/nsg-workload-ver-09281131]
+azurerm_subnet.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualNetworks/vnet-workload-ver-09281131/subnets/snet-workload]
+azurerm_virtual_hub.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131]
+azurerm_subnet_network_security_group_association.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualNetworks/vnet-workload-ver-09281131/subnets/snet-workload]
+azurerm_network_interface.probe: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/networkInterfaces/nic-probe-ver-09281131]
+azurerm_express_route_gateway.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteGateways/ergw-ver-09281131]
+azurerm_virtual_hub_connection.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubVirtualNetworkConnections/conn-workload]
+azurerm_vpn_gateway.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131]
+azurerm_linux_virtual_machine.probe: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Compute/virtualMachines/vm-probe-ver-09281131]
+azurerm_dev_test_global_vm_shutdown_schedule.probe: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.DevTestLab/schedules/shutdown-computevm-vm-probe-ver-09281131]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # azurerm_express_route_connection.lab[0] will be created
+  + resource "azurerm_express_route_connection" "lab" {
+      + enable_internet_security             = (known after apply)
+      + express_route_circuit_peering_id     = "/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteCircuits/er-ver-09281131/peerings/AzurePrivatePeering"
+      + express_route_gateway_bypass_enabled = false
+      + express_route_gateway_id             = "/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteGateways/ergw-ver-09281131"
+      + id                                   = (known after apply)
+      + internet_security_enabled            = false
+      + name                                 = "conn-er"
+      + routing_weight                       = 0
+
+      + routing (known after apply)
+    }
+
+  # megaport_mcr.lab[0] will be created
+  + resource "megaport_mcr" "lab" {
+      + admin_locked           = (known after apply)
+      + aggregation_id         = (known after apply)
+      + asn                    = 65060
+      + attribute_tags         = (known after apply)
+      + buyout_port            = (known after apply)
+      + cancelable             = (known after apply)
+      + company_name           = (known after apply)
+      + company_uid            = (known after apply)
+      + contract_end_date      = (known after apply)
+      + contract_start_date    = (known after apply)
+      + contract_term_months   = 1
+      + cost_centre            = (known after apply)
+      + create_date            = (known after apply)
+      + created_by             = (known after apply)
+      + diversity_zone         = (known after apply)
+      + lag_id                 = (known after apply)
+      + lag_primary            = (known after apply)
+      + last_updated           = (known after apply)
+      + live_date              = (known after apply)
+      + location_id            = 85
+      + locked                 = (known after apply)
+      + market                 = (known after apply)
+      + marketplace_visibility = (known after apply)
+      + port_speed             = 1000
+      + prefix_filter_lists    = []
+      + product_id             = (known after apply)
+      + product_name           = "mcr-ver-09281131"
+      + product_type           = (known after apply)
+      + product_uid            = (known after apply)
+      + provisioning_status    = (known after apply)
+      + resource_tags          = {
+          + "correlation_id" = "09281131"
+          + "created_by"     = "copilot-lab"
+          + "ephemeral"      = "true"
+          + "lab"            = "true"
+          + "lab_name"       = "vwan-ipsec-over-er-backup"
+          + "owner"          = "jose"
+          + "run_id"         = "09281131"
+        }
+      + secondary_name         = (known after apply)
+      + terminate_date         = (known after apply)
+      + usage_algorithm        = (known after apply)
+      + virtual                = (known after apply)
+      + vxc_auto_approval      = (known after apply)
+      + vxc_permitted          = (known after apply)
+    }
+
+  # megaport_vxc.azure_primary[0] will be created
+  + resource "megaport_vxc" "azure_primary" {
+      + a_end                = {
+          + current_product_uid   = (known after apply)
+          + inner_vlan            = (known after apply)
+          + location              = (known after apply)
+          + location_id           = (known after apply)
+          + ordered_vlan          = (known after apply)
+          + owner_uid             = (known after apply)
+          + product_name          = (known after apply)
+          + requested_product_uid = (known after apply)
+          + secondary_name        = (known after apply)
+          + vlan                  = (known after apply)
+          + vnic_index            = (known after apply)
+        }
+      + admin_locked         = (known after apply)
+      + attribute_tags       = (known after apply)
+      + b_end                = {
+          + current_product_uid   = (known after apply)
+          + inner_vlan            = (known after apply)
+          + location              = (known after apply)
+          + location_id           = (known after apply)
+          + ordered_vlan          = (known after apply)
+          + owner_uid             = (known after apply)
+          + product_name          = (known after apply)
+          + requested_product_uid = (known after apply)
+          + secondary_name        = (known after apply)
+          + vlan                  = (known after apply)
+          + vnic_index            = (known after apply)
+        }
+      + b_end_partner_config = {
+          + azure_config = {
+              + peers       = [
+                  + {
+                      + type = "private"
+                    },
+                ]
+              + port_choice = "primary"
+              + service_key = (sensitive value)
+            }
+          + partner      = "azure"
+        }
+      + cancelable           = (known after apply)
+      + company_name         = (known after apply)
+      + company_uid          = (known after apply)
+      + contract_end_date    = (known after apply)
+      + contract_start_date  = (known after apply)
+      + contract_term_months = 1
+      + cost_centre          = (known after apply)
+      + create_date          = (known after apply)
+      + created_by           = (known after apply)
+      + csp_connections      = (known after apply)
+      + distance_band        = (known after apply)
+      + last_updated         = (known after apply)
+      + live_date            = (known after apply)
+      + locked               = (known after apply)
+      + product_id           = (known after apply)
+      + product_name         = "vxc-azure-primary-ver-09281131"
+      + product_type         = (known after apply)
+      + product_uid          = (known after apply)
+      + provisioning_status  = (known after apply)
+      + rate_limit           = 50
+      + resource_tags        = {
+          + "correlation_id" = "09281131"
+          + "created_by"     = "copilot-lab"
+          + "ephemeral"      = "true"
+          + "lab"            = "true"
+          + "lab_name"       = "vwan-ipsec-over-er-backup"
+          + "owner"          = "jose"
+          + "run_id"         = "09281131"
+        }
+      + secondary_name       = (known after apply)
+      + service_id           = (known after apply)
+      + shutdown             = false
+      + usage_algorithm      = (known after apply)
+    }
+
+  # megaport_vxc.azure_secondary[0] will be created
+  + resource "megaport_vxc" "azure_secondary" {
+      + a_end                = {
+          + current_product_uid   = (known after apply)
+          + inner_vlan            = (known after apply)
+          + location              = (known after apply)
+          + location_id           = (known after apply)
+          + ordered_vlan          = (known after apply)
+          + owner_uid             = (known after apply)
+          + product_name          = (known after apply)
+          + requested_product_uid = (known after apply)
+          + secondary_name        = (known after apply)
+          + vlan                  = (known after apply)
+          + vnic_index            = (known after apply)
+        }
+      + admin_locked         = (known after apply)
+      + attribute_tags       = (known after apply)
+      + b_end                = {
+          + current_product_uid   = (known after apply)
+          + inner_vlan            = (known after apply)
+          + location              = (known after apply)
+          + location_id           = (known after apply)
+          + ordered_vlan          = (known after apply)
+          + owner_uid             = (known after apply)
+          + product_name          = (known after apply)
+          + requested_product_uid = (known after apply)
+          + secondary_name        = (known after apply)
+          + vlan                  = (known after apply)
+          + vnic_index            = (known after apply)
+        }
+      + b_end_partner_config = {
+          + azure_config = {
+              + peers       = [
+                  + {
+                      + type = "private"
+                    },
+                ]
+              + port_choice = "secondary"
+              + service_key = (sensitive value)
+            }
+          + partner      = "azure"
+        }
+      + cancelable           = (known after apply)
+      + company_name         = (known after apply)
+      + company_uid          = (known after apply)
+      + contract_end_date    = (known after apply)
+      + contract_start_date  = (known after apply)
+      + contract_term_months = 1
+      + cost_centre          = (known after apply)
+      + create_date          = (known after apply)
+      + created_by           = (known after apply)
+      + csp_connections      = (known after apply)
+      + distance_band        = (known after apply)
+      + last_updated         = (known after apply)
+      + live_date            = (known after apply)
+      + locked               = (known after apply)
+      + product_id           = (known after apply)
+      + product_name         = "vxc-azure-secondary-ver-09281131"
+      + product_type         = (known after apply)
+      + product_uid          = (known after apply)
+      + provisioning_status  = (known after apply)
+      + rate_limit           = 50
+      + resource_tags        = {
+          + "correlation_id" = "09281131"
+          + "created_by"     = "copilot-lab"
+          + "ephemeral"      = "true"
+          + "lab"            = "true"
+          + "lab_name"       = "vwan-ipsec-over-er-backup"
+          + "owner"          = "jose"
+          + "run_id"         = "09281131"
+        }
+      + secondary_name       = (known after apply)
+      + service_id           = (known after apply)
+      + shutdown             = false
+      + usage_algorithm      = (known after apply)
+    }
+
+  # megaport_vxc.gcp[0] will be created
+  + resource "megaport_vxc" "gcp" {
+      + a_end                = {
+          + current_product_uid   = (known after apply)
+          + inner_vlan            = (known after apply)
+          + location              = (known after apply)
+          + location_id           = (known after apply)
+          + ordered_vlan          = (known after apply)
+          + owner_uid             = (known after apply)
+          + product_name          = (known after apply)
+          + requested_product_uid = (known after apply)
+          + secondary_name        = (known after apply)
+          + vlan                  = (known after apply)
+          + vnic_index            = (known after apply)
+        }
+      + admin_locked         = (known after apply)
+      + attribute_tags       = (known after apply)
+      + b_end                = {
+          + current_product_uid   = (known after apply)
+          + inner_vlan            = (known after apply)
+          + location              = (known after apply)
+          + location_id           = (known after apply)
+          + ordered_vlan          = (known after apply)
+          + owner_uid             = (known after apply)
+          + product_name          = (known after apply)
+          + requested_product_uid = (known after apply)
+          + secondary_name        = (known after apply)
+          + vlan                  = (known after apply)
+          + vnic_index            = (known after apply)
+        }
+      + b_end_partner_config = {
+          + google_config = {
+              + pairing_key = "<GUID>/europe-north2/1"
+            }
+          + partner       = "google"
+        }
+      + cancelable           = (known after apply)
+      + company_name         = (known after apply)
+      + company_uid          = (known after apply)
+      + contract_end_date    = (known after apply)
+      + contract_start_date  = (known after apply)
+      + contract_term_months = 1
+      + cost_centre          = (known after apply)
+      + create_date          = (known after apply)
+      + created_by           = (known after apply)
+      + csp_connections      = (known after apply)
+      + distance_band        = (known after apply)
+      + last_updated         = (known after apply)
+      + live_date            = (known after apply)
+      + locked               = (known after apply)
+      + product_id           = (known after apply)
+      + product_name         = "vxc-gcp-ver-09281131"
+      + product_type         = (known after apply)
+      + product_uid          = (known after apply)
+      + provisioning_status  = (known after apply)
+      + rate_limit           = 50
+      + resource_tags        = {
+          + "correlation_id" = "09281131"
+          + "created_by"     = "copilot-lab"
+          + "ephemeral"      = "true"
+          + "lab"            = "true"
+          + "lab_name"       = "vwan-ipsec-over-er-backup"
+          + "owner"          = "jose"
+          + "run_id"         = "09281131"
+        }
+      + secondary_name       = (known after apply)
+      + service_id           = (known after apply)
+      + shutdown             = false
+      + usage_algorithm      = (known after apply)
+    }
+
+Plan: 5 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + mcr_uid                  = (known after apply)
+  ~ vxc_uids                 = {
+      + azure_primary   = (known after apply)
+      + azure_secondary = (known after apply)
+      + gcp             = (known after apply)
+    }
+
+─────────────────────────────────────────────────────────────────────────────
+
+Saved the plan to:
+../../../labs/vwan-ipsec-over-er-backup/deploy/megaport.tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "../../../labs/vwan-ipsec-over-er-backup/deploy/megaport.tfplan"
+<shellId: tf-mp-plan2 completed with exit code 0>

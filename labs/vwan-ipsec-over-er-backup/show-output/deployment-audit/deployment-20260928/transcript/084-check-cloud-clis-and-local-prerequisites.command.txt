@@ -1,0 +1,1 @@
+$ErrorActionPreference='Continue'; Write-Output 'AZ'; az version --output json; az account show --query '{name:name,state:state}' -o json; Write-Output 'GCLOUD'; gcloud version; gcloud auth list --filter=status:ACTIVE --format='value(account)'; Write-Output 'TF'; terraform version; Write-Output 'SSH'; Test-Path "$HOME\.ssh\id_rsa.pub"; Write-Output 'WSL'; wsl --status

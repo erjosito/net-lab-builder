@@ -1,0 +1,1 @@
+$p='C:\Users\jomore\AppData\Local\Temp\1790586322800-copilot-tool-output-10176-<GUID>.txt'; Select-String -Path $p -Pattern 'Virtual WAN|Virtual Hub|ExpressRoute|Gateway|Standard BS|Total Regional|Megaport|Stockholm|Frankfurt|Amsterdam' -Context 0,3 | ForEach-Object {$_.ToString()}

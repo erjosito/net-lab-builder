@@ -1,0 +1,8 @@
+$message=@'
+Prepare Niobe validation handoff
+
+Populate the runtime inventory contract, add versioned route polling, read-only provider evidence, application listeners, source-bound probes, and reviewed reversible faults without committing live identifiers or secrets.
+
+Co-authored-by: Copilot <<ACCOUNT>>
+Copilot-Session: <GUID>
+'@; $path=Join-Path $env:TEMP 'tank-niobe-handoff.txt'; [IO.File]::WriteAllText($path,$message,[Text.UTF8Encoding]::new($false)); git commit -F $path; $code=$LASTEXITCODE; Remove-Item $path; if($code -ne 0){exit $code}; git --no-pager show --stat --oneline HEAD; git --no-pager status --short

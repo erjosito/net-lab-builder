@@ -1,0 +1,52 @@
+[main 8d2de63] Prepare Niobe validation handoff
+ 20 files changed, 1615 insertions(+), 1 deletion(-)
+ create mode 100644 labs/vwan-ipsec-over-er-backup/.gitignore
+ create mode 100644 labs/vwan-ipsec-over-er-backup/config/inventory.template.json
+ create mode 100644 labs/vwan-ipsec-over-er-backup/config/scenarios.json
+ create mode 100644 labs/vwan-ipsec-over-er-backup/deploy/Collect-MegaportReadOnly.ps1
+ create mode 100644 labs/vwan-ipsec-over-er-backup/deploy/Install-ApplicationListeners.ps1
+ create mode 100644 labs/vwan-ipsec-over-er-backup/deploy/Install-CpeControls.ps1
+ create mode 100644 labs/vwan-ipsec-over-er-backup/deploy/Invoke-LabFault.ps1
+ create mode 100644 labs/vwan-ipsec-over-er-backup/deploy/New-ValidationInventory.ps1
+ create mode 100644 labs/vwan-ipsec-over-er-backup/scripts/Assert-ResetGate.ps1
+ create mode 100644 labs/vwan-ipsec-over-er-backup/scripts/Collect-Evidence.ps1
+ create mode 100644 labs/vwan-ipsec-over-er-backup/scripts/Confirm-Sanitization.ps1
+ create mode 100644 labs/vwan-ipsec-over-er-backup/scripts/Invoke-TimedProbes.ps1
+ create mode 100644 labs/vwan-ipsec-over-er-backup/validation-plan.md
+8d2de63 Prepare Niobe validation handoff
+ .squad/agents/tank/history.md                      |  14 +
+ labs/vwan-ipsec-over-er-backup/.gitignore          |   4 +
+ .../config/inventory.template.json                 | 162 +++++++++++
+ .../config/scenarios.json                          |  71 +++++
+ labs/vwan-ipsec-over-er-backup/deploy-log.md       |  10 +
+ .../deploy/Collect-MegaportReadOnly.ps1            | 130 +++++++++
+ .../deploy/Install-ApplicationListeners.ps1        |  78 +++++
+ .../deploy/Install-CpeControls.ps1                 |  22 ++
+ .../deploy/Invoke-LabFault.ps1                     |  68 +++++
+ .../deploy/New-ValidationInventory.ps1             | 114 ++++++++
+ .../deploy/cpe/apply-design.sh                     |  10 +
+ .../deploy/cpe/fault-control.sh                    |  65 +++++
+ .../scripts/Assert-ResetGate.ps1                   |  95 ++++++
+ .../scripts/Collect-Evidence.ps1                   | 317 +++++++++++++++++++++
+ .../scripts/Confirm-Sanitization.ps1               |  46 +++
+ .../scripts/Invoke-TimedProbes.ps1                 | 135 +++++++++
+ labs/vwan-ipsec-over-er-backup/validation-plan.md  | 255 +++++++++++++++++
+ src/terraform/vwan-ipsec-over-er-backup/gcp.tf     |   2 +-
+ .../vwan-ipsec-over-er-backup/megaport.tf          |   3 +
+ .../vwan-ipsec-over-er-backup/variables.tf         |  15 +
+ 20 files changed, 1615 insertions(+), 1 deletion(-)
+ M .squad/agents/morpheus/history.md
+ M .squad/agents/niobe/history.md
+ M .squad/agents/oracle/history.md
+ M .squad/agents/trinity/history.md
+ M labs/afd-edge-actions-response-behavior/README.md
+ M labs/afd-edge-actions-response-behavior/deploy/Cleanup.ps1
+?? labs/afd-edge-actions-response-behavior/build/jwt-route-demo/
+?? labs/afd-edge-actions-response-behavior/deploy/Add-JwtRouteDemo.ps1
+?? labs/afd-edge-actions-response-behavior/edge-actions/jwt-route-demo.js
+?? labs/afd-edge-actions-response-behavior/evidence/public-protected-result.json
+?? labs/vwan-ipsec-over-er-backup/README.md
+?? labs/vwan-ipsec-over-er-backup/design.md
+?? labs/vwan-ipsec-over-er-backup/diagrams/
+?? labs/vwan-ipsec-over-er-backup/manifest.md
+<shellId: 228 completed with exit code 0>

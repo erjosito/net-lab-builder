@@ -1,0 +1,1 @@
+$p='labs\vwan-ipsec-over-er-backup\manifest.md'; $f=Get-Item $p; Write-Output ("bytes={0}" -f $f.Length); $files=Get-ChildItem 'labs\vwan-ipsec-over-er-backup' -File -Recurse; $files | ForEach-Object { $_.FullName }; Write-Output ("file_count={0}" -f $files.Count); git status --short -- labs\vwan-ipsec-over-er-backup .squad\agents\morpheus\history.md

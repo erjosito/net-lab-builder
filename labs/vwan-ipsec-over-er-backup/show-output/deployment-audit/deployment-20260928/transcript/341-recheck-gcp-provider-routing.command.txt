@@ -1,0 +1,1 @@
+Start-Sleep -Seconds 45; gcloud compute routers get-status cr-ver-09281131 --region europe-north2 --project gcp-vwan-eripsec-09281131 --format="json(result.bgpPeerStatus,result.bestRoutesForRouter)"

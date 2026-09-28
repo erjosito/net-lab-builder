@@ -1,0 +1,14 @@
+git add -f -- .squad/orchestration-log/2026-09-28T10-32-23-834-02-00-trinity.md .squad/orchestration-log/2026-09-28T10-32-23-834-02-00-morpheus.md .squad/log/2026-09-28T10-32-23-834-02-00-vwan-dual-underlay-research.md; $staged = git diff --cached --name-only; if (($staged.Count -ne 3) -or ($staged -contains '.squad/agents/morpheus/history.md') -or ($staged -contains '.squad/agents/trinity/history.md')) { Write-Error "Unexpected staged files: $($staged -join ', ')"; exit 1 }; $msg = @"
+docs(ai-team): log vWAN dual-underlay research
+
+Session: 2026-09-28T10-32-23-834-02-00-vwan-dual-underlay-research
+Requested by: Jose Moreno
+
+Changes:
+- Log Trinity's vWAN dual-underlay routing research
+- Log Morpheus's candidate topology comparison
+- Record the combined research batch outcome
+
+Co-authored-by: Copilot <<ACCOUNT>>
+Copilot-Session: <GUID>
+"@; $msgFile = [System.IO.Path]::GetTempFileName(); Set-Content -Path $msgFile -Value $msg -Encoding utf8; git commit -F $msgFile; $commitExit = $LASTEXITCODE; Remove-Item -LiteralPath $msgFile; exit $commitExit

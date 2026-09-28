@@ -1,0 +1,2 @@
+apply_patch
+"*** Begin Patch\n*** Update File: labs/vwan-ipsec-over-er-backup/scripts/New-EvidenceIndex.ps1\n@@\n-Set-Content -Path $outputPath -Value $lines -Encoding utf8\n+$utf8 = [System.Text.UTF8Encoding]::new($false)\n+[System.IO.File]::WriteAllText($outputPath, (($lines -join \"`n\") + \"`n\"), $utf8)\n Write-Host $outputPath\n*** End Patch\n"

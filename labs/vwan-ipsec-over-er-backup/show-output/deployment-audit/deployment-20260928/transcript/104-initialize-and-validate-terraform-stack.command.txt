@@ -1,0 +1,1 @@
+$tf='C:\Users\jomore\Repos\net-lab-builder\src\terraform\vwan-ipsec-over-er-backup'; Push-Location $tf; try { terraform fmt -recursive; terraform init -upgrade -input=false; terraform validate } finally { Pop-Location }

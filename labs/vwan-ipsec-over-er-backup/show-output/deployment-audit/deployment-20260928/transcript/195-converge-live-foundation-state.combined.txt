@@ -1,0 +1,108 @@
+gcp.tf
+Success! The configuration is valid.
+
+google_compute_network.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131]
+google_compute_address.cpe: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/addresses/pip-cpe-ver-09281131]
+google_compute_router.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/routers/cr-ver-09281131]
+google_compute_firewall.ike: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/global/firewalls/fw-ike-ver-09281131]
+google_compute_firewall.lab_private: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/global/firewalls/fw-private-ver-09281131]
+google_compute_subnetwork.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/subnetworks/subnet-ver-09281131]
+google_compute_instance.cpe: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/zones/europe-north2-c/instances/cpe-ver-09281131]
+google_compute_interconnect_attachment.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/interconnectAttachments/att-ver-09281131]
+data.megaport_location.stockholm: Reading...
+data.megaport_location.stockholm: Read complete after 2s [name=Equinix Stockholm SK1]
+azurerm_resource_group.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131]
+azurerm_virtual_wan.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualWans/vwan-ver-09281131]
+azurerm_express_route_circuit.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteCircuits/er-ver-09281131]
+azurerm_network_security_group.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/networkSecurityGroups/nsg-workload-ver-09281131]
+azurerm_virtual_network.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualNetworks/vnet-workload-ver-09281131]
+azurerm_subnet.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualNetworks/vnet-workload-ver-09281131/subnets/snet-workload]
+azurerm_virtual_hub.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131]
+azurerm_subnet_network_security_group_association.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualNetworks/vnet-workload-ver-09281131/subnets/snet-workload]
+azurerm_network_interface.probe: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/networkInterfaces/nic-probe-ver-09281131]
+azurerm_express_route_gateway.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteGateways/ergw-ver-09281131]
+azurerm_virtual_hub_connection.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubVirtualNetworkConnections/conn-workload]
+azurerm_vpn_gateway.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131]
+azurerm_linux_virtual_machine.probe: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Compute/virtualMachines/vm-probe-ver-09281131]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  ~ update in-place
+
+Terraform will perform the following actions:
+
+  # google_compute_instance.cpe will be updated in-place
+  ~ resource "google_compute_instance" "cpe" {
+        id                         = "projects/gcp-vwan-eripsec-09281131/zones/europe-north2-c/instances/cpe-ver-09281131"
+      ~ metadata                   = {
+          + "startup-script" = <<-EOT
+                #!/usr/bin/env bash
+                set -euxo pipefail
+                export DEBIAN_FRONTEND=noninteractive
+                apt-get update
+                apt-get install -y strongswan-swanctl charon-systemd frr frr-pythontools tcpdump jq curl nftables iproute2
+                cat >/etc/sysctl.d/90-cpe-forwarding.conf <<'EOF'
+                net.ipv4.ip_forward=1
+                net.ipv4.conf.all.rp_filter=0
+                net.ipv4.conf.default.rp_filter=0
+                EOF
+                sysctl --system
+                sed -i 's/bgpd=no/bgpd=yes/;s/staticd=no/staticd=yes/' /etc/frr/daemons
+                systemctl enable --now frr
+                systemctl enable --now strongswan
+                mkdir -p /opt/vwan-lab /var/log/vwan-lab
+            EOT
+            # (1 unchanged element hidden)
+        }
+      - metadata_startup_script    = <<-EOT
+            #!/usr/bin/env bash
+            set -euxo pipefail
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update
+            apt-get install -y strongswan-swanctl charon-systemd frr frr-pythontools tcpdump jq curl nftables iproute2
+            cat >/etc/sysctl.d/90-cpe-forwarding.conf <<'EOF'
+            net.ipv4.ip_forward=1
+            net.ipv4.conf.all.rp_filter=0
+            net.ipv4.conf.default.rp_filter=0
+            EOF
+            sysctl --system
+            sed -i 's/bgpd=no/bgpd=yes/;s/staticd=no/staticd=yes/' /etc/frr/daemons
+            systemctl enable --now frr
+            systemctl enable --now strongswan
+            mkdir -p /opt/vwan-lab /var/log/vwan-lab
+        EOT -> null
+        name                       = "cpe-ver-09281131"
+        tags                       = [
+            "ipsec-cpe",
+        ]
+        # (23 unchanged attributes hidden)
+
+        # (4 unchanged blocks hidden)
+    }
+
+Plan: 0 to add, 1 to change, 0 to destroy.
+google_compute_instance.cpe: Modifying... [id=projects/gcp-vwan-eripsec-09281131/zones/europe-north2-c/instances/cpe-ver-09281131]
+google_compute_instance.cpe: Still modifying... [id=projects/gcp-vwan-eripsec-09281131/zone...pe-north2-c/instances/cpe-ver-09281131, 00m10s elapsed]
+google_compute_instance.cpe: Modifications complete after 12s [id=projects/gcp-vwan-eripsec-09281131/zones/europe-north2-c/instances/cpe-ver-09281131]
+
+Apply complete! Resources: 0 added, 1 changed, 0 destroyed.
+
+Outputs:
+
+er_circuit_name = "er-ver-09281131"
+gcp_attachment_name = "att-ver-09281131"
+gcp_cpe_name = "cpe-ver-09281131"
+gcp_cpe_public_ip = "34.51.158.147"
+gcp_project_id = "gcp-vwan-eripsec-09281131"
+gcp_router_name = "cr-ver-09281131"
+resource_group_name = "rg-vwan-ipsec-over-er-09281131"
+sensitive_generated_keys = <sensitive>
+vhub_name = "vhub-ver-09281131"
+vpn_gateway_name = "vpngw-ver-09281131"
+vwan_name = "vwan-ver-09281131"
+vxc_uids = {
+  "azure_primary" = null
+  "azure_secondary" = null
+  "gcp" = null
+}
+<shellId: 150 completed with exit code 0>

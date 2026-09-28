@@ -1,0 +1,1 @@
+Start-Sleep -Seconds 45; az network vpn-gateway connection list -g rg-vwan-ipsec-over-er-09281131 --gateway-name vpngw-ver-09281131 --query "[].{name:name,provisioningState:provisioningState,links:vpnLinkConnections[].{name:name,status:connectionStatus,ingress:ingressBytesTransferred,egress:egressBytesTransferred,provisioningState:provisioningState}}" -o json

@@ -1,0 +1,1 @@
+$p='C:\Users\jomore\AppData\Local\Temp\1790601422231-copilot-tool-output-74535effdfaa4c34b3a0e697e06d278f.txt'; Select-String -Path $p -Pattern 'outputBlobSasUrl|GetVpnSitesConfiguration|download|vpnSites' | Select-Object -First 20 | ForEach-Object { $_.Line }

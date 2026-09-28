@@ -1,0 +1,51 @@
+runtime-present
+Unit vwan-lab-network.service could not be found.
+Unit vwan-lab-ipsec.service could not be found.
+● strongswan.service - strongSwan IPsec IKEv1/IKEv2 daemon using swanctl
+     Loaded: loaded (/lib/systemd/system/strongswan.service; enabled; vendor preset: enabled)
+     Active: active (running) since Mon 2026-09-28 11:35:56 UTC; 1h 44min ago
+   Main PID: 678 (charon-systemd)
+     Status: "charon-systemd running, strongSwan 5.9.5, Linux 6.8.0-1069-gcp, x86_64"
+      Tasks: 17 (limit: 2283)
+     Memory: 6.5M
+        CPU: 79ms
+     CGroup: /system.slice/strongswan.service
+             └─678 /usr/sbin/charon-systemd
+
+Sep 28 13:20:05 cpe-ver-09281131 charon-systemd[678]: received packet: from 10.240.0.4[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:20:05 cpe-ver-09281131 charon-systemd[678]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:20:05 cpe-ver-09281131 charon-systemd[678]: no IKE config found for 10.250.0.10...10.240.0.4, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:20:05 cpe-ver-09281131 charon-systemd[678]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:20:05 cpe-ver-09281131 charon-systemd[678]: sending packet: from 10.250.0.10[500] to 10.240.0.4[500] (36 bytes)
+Sep 28 13:20:11 cpe-ver-09281131 charon-systemd[678]: received packet: from 74.158.47.254[500] to 10.250.0.10[500] (620 bytes)
+Sep 28 13:20:11 cpe-ver-09281131 charon-systemd[678]: parsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]
+Sep 28 13:20:11 cpe-ver-09281131 charon-systemd[678]: no IKE config found for 10.250.0.10...74.158.47.254, sending NO_PROPOSAL_CHOSEN
+Sep 28 13:20:11 cpe-ver-09281131 charon-systemd[678]: generating IKE_SA_INIT response 0 [ N(NO_PROP) ]
+Sep 28 13:20:11 cpe-ver-09281131 charon-systemd[678]: sending packet: from 10.250.0.10[500] to 74.158.47.254[500] (36 bytes)
+
+● frr.service - FRRouting
+     Loaded: loaded (/lib/systemd/system/frr.service; enabled; vendor preset: enabled)
+     Active: active (running) since Mon 2026-09-28 11:35:52 UTC; 1h 44min ago
+       Docs: https://frrouting.readthedocs.io/en/latest/setup.html
+   Main PID: 448 (watchfrr)
+     Status: "FRR Operational"
+      Tasks: 13 (limit: 2283)
+     Memory: 30.6M
+        CPU: 2.301s
+     CGroup: /system.slice/frr.service
+             ├─448 /usr/lib/frr/watchfrr -d -F traditional zebra bgpd staticd
+             ├─522 /usr/lib/frr/zebra -d -F traditional -A 127.0.0.1 -s 90000000
+             ├─539 /usr/lib/frr/bgpd -d -F traditional -A 127.0.0.1
+             └─546 /usr/lib/frr/staticd -d -F traditional -A 127.0.0.1
+
+Sep 28 11:35:49 cpe-ver-09281131 watchfrr.sh[459]: Cannot stop staticd: pid file not found
+Sep 28 11:35:52 cpe-ver-09281131 zebra[522]: [VTVCM-Y2NW3] Configuration Read in Took: 00:00:00
+Sep 28 11:35:52 cpe-ver-09281131 bgpd[539]: [VTVCM-Y2NW3] Configuration Read in Took: 00:00:00
+Sep 28 11:35:52 cpe-ver-09281131 staticd[546]: [VTVCM-Y2NW3] Configuration Read in Took: 00:00:00
+Sep 28 11:35:52 cpe-ver-09281131 watchfrr[448]: [QDG3Y-BY5TN] zebra state -> up : connect succeeded
+Sep 28 11:35:52 cpe-ver-09281131 watchfrr[448]: [QDG3Y-BY5TN] bgpd state -> up : connect succeeded
+Sep 28 11:35:52 cpe-ver-09281131 watchfrr[448]: [QDG3Y-BY5TN] staticd state -> up : connect succeeded
+Sep 28 11:35:52 cpe-ver-09281131 watchfrr[448]: [KWE5Q-QNGFC] all daemons up, doing startup-complete notify
+Sep 28 11:35:52 cpe-ver-09281131 frrinit.sh[403]:  * Started watchfrr
+Sep 28 11:35:52 cpe-ver-09281131 systemd[1]: Started FRRouting.
+<shellId: 248 completed with exit code 0>

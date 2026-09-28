@@ -1,0 +1,83 @@
+pub1: #38, ESTABLISHED, IKEv2, fa5cd9525e4a8034_i* 328ef489eaf482f9_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.80.26' @ 74.158.80.26[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 47s ago, rekeying in 13382s
+  pub1: #2, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 47s ago, rekeying in 3504s, expires in 3913s
+    in  c40ced80 (-|0x000001a5),     52 bytes,     1 packets
+    out 39712a2e (-|0x000001a5),      0 bytes,     0 packets
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+  pub1: #8, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 46s ago, rekeying in 3264s, expires in 3914s
+    in  cce304c3 (-|0x000001a5),    988 bytes,    19 packets
+    out ffc6418c (-|0x000001a5),      0 bytes,     0 packets
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pub0: #37, ESTABLISHED, IKEv2, b6116052532c775d_i* 87e39fa342cbb572_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.47.254' @ 74.158.47.254[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 47s ago, rekeying in 13866s
+  pub0: #1, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 47s ago, rekeying in 3431s, expires in 3913s
+    in  c8c71509 (-|0x000001a4),     52 bytes,     1 packets
+    out 7df3e90a (-|0x000001a4),      0 bytes,     0 packets
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+  pub0: #7, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 46s ago, rekeying in 3294s, expires in 3914s
+    in  c7c1d766 (-|0x000001a4),    988 bytes,    19 packets
+    out d9bbb50c (-|0x000001a4),      0 bytes,     0 packets
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri1: #36, ESTABLISHED, IKEv2, e1db33b05bfa7750_i* 38dd656fb6cc6003_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.5' @ 10.240.0.5[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 47s ago, rekeying in 13666s
+  pri1: #3, reqid 3, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 47s ago, rekeying in 3300s, expires in 3913s
+    in  c4e3457e (-|0x0000019b),      0 bytes,     0 packets
+    out 9cb3053c (-|0x0000019b),      0 bytes,     0 packets
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+  pri1: #6, reqid 3, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 47s ago, rekeying in 3367s, expires in 3914s
+    in  ca33f60a (-|0x0000019b),    936 bytes,    18 packets
+    out 772b4fd0 (-|0x0000019b),      0 bytes,     0 packets
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri0: #35, ESTABLISHED, IKEv2, 58b307b9284e01e1_i* b7049faef87cbb1b_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.4' @ 10.240.0.4[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 47s ago, rekeying in 14109s
+  pri0: #4, reqid 4, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 47s ago, rekeying in 3405s, expires in 3913s
+    in  c595246e (-|0x0000019a),      0 bytes,     0 packets
+    out c3b47cd0 (-|0x0000019a),      0 bytes,     0 packets
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+  pri0: #5, reqid 4, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 47s ago, rekeying in 3457s, expires in 3913s
+    in  c0169c5e (-|0x0000019a),   1092 bytes,    21 packets
+    out 524a30a4 (-|0x0000019a),      0 bytes,     0 packets
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+---BGP---
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 1
+RIB entries 7, using 1288 bytes of memory
+Peers 4, using 2892 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+169.254.21.1    4      65515         0         0        0    0    0    never       Active        0 N/A
+169.254.22.1    4      65515         0         0        0    0    0    never       Active        0 N/A
+169.254.21.5    4      65515         0         0        0    0    0    never       Active        0 N/A
+169.254.22.5    4      65515         0         0        0    0    0    never       Active        0 N/A
+
+Total number of neighbors 4
+<shellId: 268 completed with exit code 0>

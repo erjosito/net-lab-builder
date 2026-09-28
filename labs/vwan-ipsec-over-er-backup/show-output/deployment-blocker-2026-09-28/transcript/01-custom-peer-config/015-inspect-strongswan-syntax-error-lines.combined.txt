@@ -1,0 +1,11 @@
+connections {
+  pri0 { version=2; local_addrs=10.250.0.10; remote_addrs=10.240.0.4; proposals=aes256-sha256-modp2048; local { auth=psk; id=10.250.0.10; }; remote { auth=psk; id=10.240.0.4; }; children { pri0 { local_ts=0.0.0.0/0; remote_ts=0.0.0.0/0; if_id_in=410; if_id_out=410; esp_proposals=aes256-sha256; start_action=start; dpd_action=restart; } } }
+  pri1 { version=2; local_addrs=10.250.0.10; remote_addrs=10.240.0.5; proposals=aes256-sha256-modp2048; local { auth=psk; id=10.250.0.10; }; remote { auth=psk; id=10.240.0.5; }; children { pri1 { local_ts=0.0.0.0/0; remote_ts=0.0.0.0/0; if_id_in=411; if_id_out=411; esp_proposals=aes256-sha256; start_action=start; dpd_action=restart; } } }
+  pub0 { version=2; local_addrs=10.250.0.10; remote_addrs=74.158.47.254; mobike=no; encap=yes; proposals=aes256-sha256-modp2048; local { auth=psk; id=34.51.158.147; }; remote { auth=psk; id=74.158.47.254; }; children { pub0 { local_ts=0.0.0.0/0; remote_ts=0.0.0.0/0; if_id_in=420; if_id_out=420; esp_proposals=aes256-sha256; start_action=start; dpd_action=restart; } } }
+  pub1 { version=2; local_addrs=10.250.0.10; remote_addrs=74.158.80.26; mobike=no; encap=yes; proposals=aes256-sha256-modp2048; local { auth=psk; id=34.51.158.147; }; remote { auth=psk; id=74.158.80.26; }; children { pub1 { local_ts=0.0.0.0/0; remote_ts=0.0.0.0/0; if_id_in=421; if_id_out=421; esp_proposals=aes256-sha256; start_action=start; dpd_action=restart; } } }
+}
+secrets {
+  ike-pri { id-1=10.250.0.10; secret="qFnBzLS4-VveGGHX5uSWsX5yBMijLWuukA5p7rJrJes"; }
+  ike-pub { id-1=34.51.158.147; secret="mgiddX-TChWlLNpSpmscUXoKPZfndpEG0hoPldjxJDU"; }
+}
+<shellId: 261 completed with exit code 0>

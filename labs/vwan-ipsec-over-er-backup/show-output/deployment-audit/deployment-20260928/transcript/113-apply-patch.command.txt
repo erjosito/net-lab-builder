@@ -1,0 +1,2 @@
+apply_patch
+"*** Begin Patch\n*** Update File: src/terraform/vwan-ipsec-over-er-backup/variables.tf\n@@\n   validation {\n     condition     = !contains([65050, 16550, 65515, 12076], var.mcr_asn)\n     error_message = \"MCR ASN collides with a frozen lab ASN.\"\n   }\n+}\n \n-  variable \"deploy_megaport\" {\n-    type    = bool\n-    default = false\n-  }\n+variable \"deploy_megaport\" {\n+  type    = bool\n+  default = false\n }\n*** End Patch\n"

@@ -1,0 +1,208 @@
+Success! The configuration is valid.
+
+google_compute_network.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131]
+google_compute_address.cpe: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/addresses/pip-cpe-ver-09281131]
+google_compute_firewall.ike: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/global/firewalls/fw-ike-ver-09281131]
+google_compute_router.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/routers/cr-ver-09281131]
+google_compute_firewall.lab_private: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/global/firewalls/fw-private-ver-09281131]
+google_compute_subnetwork.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/subnetworks/subnet-ver-09281131]
+data.megaport_location.stockholm: Reading...
+google_compute_instance.cpe: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/zones/europe-north2-c/instances/cpe-ver-09281131]
+google_compute_interconnect_attachment.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/interconnectAttachments/att-ver-09281131]
+data.megaport_location.stockholm: Read complete after 3s [name=Equinix Stockholm SK1]
+<command with shellId: 144 is still running after 300 seconds. The command is still running. Use read_powershell to continue waiting for output, or stop_powershell to stop it.>
+Success! The configuration is valid.
+
+google_compute_network.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131]
+google_compute_address.cpe: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/addresses/pip-cpe-ver-09281131]
+google_compute_firewall.ike: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/global/firewalls/fw-ike-ver-09281131]
+google_compute_router.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/routers/cr-ver-09281131]
+google_compute_firewall.lab_private: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/global/firewalls/fw-private-ver-09281131]
+google_compute_subnetwork.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/subnetworks/subnet-ver-09281131]
+data.megaport_location.stockholm: Reading...
+google_compute_instance.cpe: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/zones/europe-north2-c/instances/cpe-ver-09281131]
+google_compute_interconnect_attachment.lab: Refreshing state... [id=projects/gcp-vwan-eripsec-09281131/regions/europe-north2/interconnectAttachments/att-ver-09281131]
+data.megaport_location.stockholm: Read complete after 3s [name=Equinix Stockholm SK1]
+azurerm_resource_group.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131]
+azurerm_virtual_wan.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualWans/vwan-ver-09281131]
+azurerm_virtual_network.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualNetworks/vnet-workload-ver-09281131]
+azurerm_network_security_group.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/networkSecurityGroups/nsg-workload-ver-09281131]
+azurerm_express_route_circuit.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteCircuits/er-ver-09281131]
+azurerm_subnet.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualNetworks/vnet-workload-ver-09281131/subnets/snet-workload]
+azurerm_virtual_hub.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131]
+azurerm_network_interface.probe: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/networkInterfaces/nic-probe-ver-09281131]
+azurerm_subnet_network_security_group_association.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualNetworks/vnet-workload-ver-09281131/subnets/snet-workload]
+azurerm_virtual_hub_connection.workload: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubVirtualNetworkConnections/conn-workload]
+azurerm_vpn_gateway.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131]
+azurerm_express_route_gateway.lab: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteGateways/ergw-ver-09281131]
+azurerm_linux_virtual_machine.probe: Refreshing state... [id=/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Compute/virtualMachines/vm-probe-ver-09281131]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+-/+ destroy and then create replacement
+
+Terraform will perform the following actions:
+
+  # google_compute_instance.cpe must be replaced
+-/+ resource "google_compute_instance" "cpe" {
+      ~ cpu_platform               = "AMD Rome" -> (known after apply)
+      ~ creation_timestamp         = "2026-09-28T03:36:52.316-07:00" -> (known after apply)
+      ~ current_status             = "RUNNING" -> (known after apply)
+      - enable_display             = false -> null
+      ~ id                         = "projects/gcp-vwan-eripsec-09281131/zones/europe-north2-c/instances/cpe-ver-09281131" -> (known after apply)
+      ~ instance_id                = "1160893241807601067" -> (known after apply)
+      ~ label_fingerprint          = "vezUS-42LLM=" -> (known after apply)
+      - labels                     = {} -> null
+      ~ metadata_fingerprint       = "Y-FKT_ArYfo=" -> (known after apply)
+      ~ metadata_startup_script    = <<-EOT # forces replacement
+          - #!/bin/bash
+          + #!/usr/bin/env bash
+          - set -euxo pipefail
+          + set -euxo pipefail
+          - export DEBIAN_FRONTEND=noninteractive
+          + export DEBIAN_FRONTEND=noninteractive
+          - apt-get update
+          + apt-get update
+          - apt-get install -y strongswan-swanctl charon-systemd frr frr-pythontools tcpdump jq curl nftables iproute2
+          + apt-get install -y strongswan-swanctl charon-systemd frr frr-pythontools tcpdump jq curl nftables iproute2
+          - cat >/etc/sysctl.d/90-cpe-forwarding.conf <<'EOF'
+          + cat >/etc/sysctl.d/90-cpe-forwarding.conf <<'EOF'
+          - net.ipv4.ip_forward=1
+          + net.ipv4.ip_forward=1
+          - net.ipv4.conf.all.rp_filter=0
+          + net.ipv4.conf.all.rp_filter=0
+          - net.ipv4.conf.default.rp_filter=0
+          + net.ipv4.conf.default.rp_filter=0
+          - EOF
+          + EOF
+          - sysctl --system
+          + sysctl --system
+          - sed -i 's/bgpd=no/bgpd=yes/;s/staticd=no/staticd=yes/' /etc/frr/daemons
+          + sed -i 's/bgpd=no/bgpd=yes/;s/staticd=no/staticd=yes/' /etc/frr/daemons
+          - systemctl enable frr strongswan
+          + systemctl enable --now frr
+          - systemctl restart frr
+          + systemctl enable --now strongswan-swanctl
+            mkdir -p /opt/vwan-lab /var/log/vwan-lab
+        EOT
+      + min_cpu_platform           = (known after apply)
+        name                       = "cpe-ver-09281131"
+      - resource_policies          = [] -> null
+      ~ self_link                  = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/zones/europe-north2-c/instances/cpe-ver-09281131" -> (known after apply)
+        tags                       = [
+            "ipsec-cpe",
+        ]
+      ~ tags_fingerprint           = "O7yUKzCxnvU=" -> (known after apply)
+        # (12 unchanged attributes hidden)
+
+      ~ boot_disk {
+          ~ device_name                     = "persistent-disk-0" -> (known after apply)
+          + disk_encryption_key_sha256      = (known after apply)
+          - force_attach                    = false -> null
+          ~ guest_os_features               = [
+              - "VIRTIO_SCSI_MULTIQUEUE",
+              - "SEV_CAPABLE",
+              - "SEV_SNP_CAPABLE",
+              - "SEV_LIVE_MIGRATABLE",
+              - "SEV_LIVE_MIGRATABLE_V2",
+              - "IDPF",
+              - "TDX_CAPABLE",
+              - "UEFI_COMPATIBLE",
+              - "GVNIC",
+            ] -> (known after apply)
+          + kms_key_self_link               = (known after apply)
+          ~ source                          = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/zones/europe-north2-c/disks/cpe-ver-09281131" -> (known after apply)
+            # (6 unchanged attributes hidden)
+
+          ~ initialize_params {
+              ~ architecture                = "X86_64" -> (known after apply)
+              - enable_confidential_compute = false -> null
+              ~ image                       = "https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2204-jammy-v20260923" -> "ubuntu-os-cloud/ubuntu-2204-lts"
+              ~ labels                      = {} -> (known after apply)
+              ~ provisioned_iops            = 0 -> (known after apply)
+              ~ provisioned_throughput      = 0 -> (known after apply)
+              - resource_manager_tags       = {} -> null
+              ~ resource_policies           = [] -> (known after apply)
+              + snapshot                    = (known after apply)
+                # (3 unchanged attributes hidden)
+            }
+        }
+
+      ~ confidential_instance_config (known after apply)
+
+      ~ guest_accelerator (known after apply)
+
+      ~ network_interface {
+          ~ internal_ipv6_prefix_length = 0 -> (known after apply)
+          + ipv6_access_type            = (known after apply)
+          + ipv6_address                = (known after apply)
+          ~ name                        = "nic0" -> (known after apply)
+          ~ network                     = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131" -> (known after apply)
+          + network_attachment          = (known after apply)
+          - queue_count                 = 0 -> null
+          ~ stack_type                  = "IPV4_ONLY" -> (known after apply)
+          ~ subnetwork                  = "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/regions/europe-north2/subnetworks/subnet-ver-09281131" -> "projects/gcp-vwan-eripsec-09281131/regions/europe-north2/subnetworks/subnet-ver-09281131"
+          ~ subnetwork_project          = "gcp-vwan-eripsec-09281131" -> (known after apply)
+            # (2 unchanged attributes hidden)
+
+          ~ access_config {
+              ~ network_tier           = "PREMIUM" -> (known after apply)
+                # (2 unchanged attributes hidden)
+            }
+
+            # (4 unchanged blocks hidden)
+        }
+
+      ~ reservation_affinity (known after apply)
+
+      ~ scheduling (known after apply)
+      - scheduling {
+          - automatic_restart           = true -> null
+          - availability_domain         = 0 -> null
+          - min_node_cpus               = 0 -> null
+          - on_host_maintenance         = "MIGRATE" -> null
+          - preemptible                 = false -> null
+          - provisioning_model          = "STANDARD" -> null
+            # (2 unchanged attributes hidden)
+        }
+
+      - shielded_instance_config {
+          - enable_integrity_monitoring = true -> null
+          - enable_secure_boot          = false -> null
+          - enable_vtpm                 = true -> null
+        }
+    }
+
+Plan: 1 to add, 0 to change, 1 to destroy.
+google_compute_instance.cpe: Destroying... [id=projects/gcp-vwan-eripsec-09281131/zones/europe-north2-c/instances/cpe-ver-09281131]
+google_compute_instance.cpe: Still destroying... [id=projects/gcp-vwan-eripsec-09281131/zone...pe-north2-c/instances/cpe-ver-09281131, 00m10s elapsed]
+google_compute_instance.cpe: Still destroying... [id=projects/gcp-vwan-eripsec-09281131/zone...pe-north2-c/instances/cpe-ver-09281131, 00m20s elapsed]
+google_compute_instance.cpe: Still destroying... [id=projects/gcp-vwan-eripsec-09281131/zone...pe-north2-c/instances/cpe-ver-09281131, 00m30s elapsed]
+google_compute_instance.cpe: Still destroying... [id=projects/gcp-vwan-eripsec-09281131/zone...pe-north2-c/instances/cpe-ver-09281131, 00m40s elapsed]
+google_compute_instance.cpe: Still destroying... [id=projects/gcp-vwan-eripsec-09281131/zone...pe-north2-c/instances/cpe-ver-09281131, 00m50s elapsed]
+google_compute_instance.cpe: Destruction complete after 52s
+google_compute_instance.cpe: Creating...
+google_compute_instance.cpe: Still creating... [00m10s elapsed]
+google_compute_instance.cpe: Creation complete after 18s [id=projects/gcp-vwan-eripsec-09281131/zones/europe-north2-c/instances/cpe-ver-09281131]
+
+Apply complete! Resources: 1 added, 0 changed, 1 destroyed.
+
+Outputs:
+
+er_circuit_name = "er-ver-09281131"
+gcp_attachment_name = "att-ver-09281131"
+gcp_cpe_name = "cpe-ver-09281131"
+gcp_cpe_public_ip = "34.51.158.147"
+gcp_project_id = "gcp-vwan-eripsec-09281131"
+gcp_router_name = "cr-ver-09281131"
+resource_group_name = "rg-vwan-ipsec-over-er-09281131"
+sensitive_generated_keys = <sensitive>
+vhub_name = "vhub-ver-09281131"
+vpn_gateway_name = "vpngw-ver-09281131"
+vwan_name = "vwan-ver-09281131"
+vxc_uids = {
+  "azure_primary" = null
+  "azure_secondary" = null
+  "gcp" = null
+}
+<shellId: 144 completed with exit code 0>

@@ -1,0 +1,1 @@
+$root='C:\Program Files\draw.io\resources\app.asar.unpacked'; Get-ChildItem $root -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -match 'Virtual_WAN|VPN_Gateway|ExpressRoute|Virtual_Machine|Router|Interconnect|Internet|Cloud_Router|Virtual_Network' } | Select-Object -First 120 -ExpandProperty FullName

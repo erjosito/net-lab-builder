@@ -1,0 +1,1 @@
+gcloud compute ssh cpe-ver-09281131 --project gcp-vwan-eripsec-09281131 --zone europe-north2-c --tunnel-through-iap --quiet --command "sudo swanctl --list-conns; sudo systemctl --no-pager --full status vwan-lab-ipsec.service | sed -n '1,80p'"

@@ -1,0 +1,47 @@
+{
+  "name": "site-gcp-inet",
+  "addressSpace": {
+    "addressPrefixes": [
+      "10.253.2.0/24"
+    ]
+  },
+  "deviceProperties": {
+    "deviceModel": "StrongSwan-FRR",
+    "deviceVendor": "Linux",
+    "linkSpeedInMbps": 50
+  },
+  "ipAddress": null,
+  "isSecuritySite": false,
+  "o365Policy": {
+    "breakOutCategories": {
+      "allow": false,
+      "default": false,
+      "optimize": false
+    }
+  },
+  "virtualWan": {
+    "id": "/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualWans/vwan-ver-09281131",
+    "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+  },
+  "vpnSiteLinks": [
+    {
+      "bgpProperties": {
+        "asn": 65050,
+        "bgpPeeringAddress": "10.250.254.241"
+      },
+      "etag": "W/\"<GUID>\"",
+      "fqdn": null,
+      "id": "/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnSites/site-gcp-inet/vpnSiteLinks/site-gcp-inet",
+      "ipAddress": "34.51.158.147",
+      "linkProperties": {
+        "linkProviderName": null,
+        "linkSpeedInMbps": 0
+      },
+      "name": "site-gcp-inet",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+      "type": "Microsoft.Network/vpnSites/vpnSiteLinks"
+    }
+  ]
+}
+<shellId: site-parent-fields completed with exit code 0>

@@ -1,0 +1,1 @@
+$exists=(az group exists -n rg-vwan-ipsec-er-preflight-20260928 -o tsv).Trim(); "PREFLIGHT_RG_EXISTS=$exists"; git --no-pager status --short; git --no-pager diff -- .squad\agents\tank\history.md | Select-Object -Last 40

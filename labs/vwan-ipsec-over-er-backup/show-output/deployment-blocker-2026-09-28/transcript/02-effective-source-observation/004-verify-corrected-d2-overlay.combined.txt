@@ -1,0 +1,67 @@
+---CONNS---
+pri0: IKEv2, no reauthentication, rekeying every 14400s
+  local:  10.250.0.10
+  remote: 10.240.0.4
+  local pre-shared key authentication:
+    id: 10.250.0.10
+  remote pre-shared key authentication:
+    id: 10.240.0.4
+  pri0: TUNNEL, rekeying every 3600s
+    local:  0.0.0.0/0
+    remote: 0.0.0.0/0
+pri1: IKEv2, no reauthentication, rekeying every 14400s
+  local:  10.250.0.10
+  remote: 10.240.0.5
+  local pre-shared key authentication:
+    id: 10.250.0.10
+  remote pre-shared key authentication:
+    id: 10.240.0.5
+  pri1: TUNNEL, rekeying every 3600s
+    local:  0.0.0.0/0
+    remote: 0.0.0.0/0
+pub0: IKEv2, no reauthentication, rekeying every 14400s
+  local:  10.250.0.10
+  remote: 74.158.47.254
+  local pre-shared key authentication:
+    id: 34.51.158.147
+  remote pre-shared key authentication:
+    id: 74.158.47.254
+  pub0: TUNNEL, rekeying every 3600s
+    local:  0.0.0.0/0
+    remote: 0.0.0.0/0
+pub1: IKEv2, no reauthentication, rekeying every 14400s
+  local:  10.250.0.10
+  remote: 74.158.80.26
+  local pre-shared key authentication:
+    id: 34.51.158.147
+  remote pre-shared key authentication:
+    id: 74.158.80.26
+  pub1: TUNNEL, rekeying every 3600s
+    local:  0.0.0.0/0
+    remote: 0.0.0.0/0
+---SAS---
+---BGP---
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 1
+RIB entries 7, using 1288 bytes of memory
+Peers 4, using 2892 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+169.254.21.1    4      65515         0         0        0    0    0    never       Active        0 N/A
+169.254.22.1    4      65515         0         0        0    0    0    never       Active        0 N/A
+169.254.21.5    4      65515         0         0        0    0    0    never       Active        0 N/A
+169.254.22.5    4      65515         0         0        0    0    0    never       Active        0 N/A
+
+Total number of neighbors 4
+---ROUTES---
+blackhole 10.240.0.0/24 proto static metric 20 
+10.240.0.4 via 10.250.0.1 dev ens4 metric 5 
+10.240.0.5 via 10.250.0.1 dev ens4 metric 5 
+blackhole 10.241.0.0/24 proto static metric 20 
+blackhole 10.253.2.0/24 proto static metric 20 
+169.254.21.1 dev xfrm-pri0 scope link 
+169.254.21.5 dev xfrm-pub0 scope link 
+169.254.22.1 dev xfrm-pri1 scope link 
+169.254.22.5 dev xfrm-pub1 scope link
+<shellId: 264 completed with exit code 0>

@@ -1,0 +1,2 @@
+apply_patch
+"*** Begin Patch\n*** Update File: C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-ipsec-over-er-backup\\deploy\\Collect-MegaportReadOnly.ps1\n@@\n-$headers = @{ Authorization = \"******\" }\n+if (-not $tokenResponse.access_token) {\n+    throw 'Megaport authentication succeeded without returning an access token.'\n+}\n+$headers = @{ Authorization = ('Bearer ' + $tokenResponse.access_token) }\n*** End Patch\n"

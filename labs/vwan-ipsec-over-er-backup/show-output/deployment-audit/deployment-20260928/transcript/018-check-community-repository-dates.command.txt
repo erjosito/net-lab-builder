@@ -1,0 +1,1 @@
+$repos=@('colinweiner111/azure-vwan-vpn-failover','dmauser/azure-expressroute'); foreach($repo in $repos){$r=gh api "repos/$repo" | ConvertFrom-Json; '{0}`tcreated={1}`tupdated={2}`tpushed={3}' -f $repo,$r.created_at,$r.updated_at,$r.pushed_at}

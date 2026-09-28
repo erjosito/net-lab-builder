@@ -1,0 +1,198 @@
+WARNING: This command is from the following extension: virtual-wan
+
+Command
+    az network vpn-site create : Create a VPN site configuration.
+
+Arguments
+    --ip-address        [Required] : IP address of the VPN site.
+    --name -n           [Required] : Name of the VPN site config.
+    --resource-group -g [Required] : Name of resource group. You can configure the default group
+                                     using `az configure --defaults group=<name>`.
+    --address-prefixes             : Space-separated list of CIDR address prefixes.
+    --location -l                  : Location. Values from: `az account list-locations`. You can
+                                     configure the default location using `az configure --defaults
+                                     location=<location>`.
+    --no-wait                      : Do not wait for the long-running operation to finish.
+    --security-site                : Whether the VPN site is security-related.  Allowed values:
+                                     false, true.
+    --site-key                     : Key for the VPN site that can be used for connections.
+    --tags                         : Space-separated tags: key[=value] [key[=value] ...]. Use "" to
+                                     clear existing tags.
+    --virtual-wan                  : Name or ID of the virtual WAN.
+    --with-link                    : Create VPN site with default link.  Allowed values: false,
+                                     true.
+
+BGP Peering Arguments
+    --asn                          : BGP speaker's ASN.
+    --bgp-peering-address          : Peering address and BGP identifier of this BGP speaker.
+    --peer-weight                  : Weight added to routes learned from this BGP speaker.
+
+Device Property Arguments
+    --device-model                 : Model of the device.
+    --device-vendor                : Name of the device vendor.
+    --link-speed                   : Link speed in Mbps.
+
+Global Policy Arguments
+    --acquire-policy-token         : Acquiring an Azure Policy token automatically for this resource
+                                     operation.
+    --change-reference             : The related change reference ID for this resource operation.
+
+Global Arguments
+    --debug                        : Increase logging verbosity to show all debug logs.
+    --help -h                      : Show this help message and exit.
+    --only-show-errors             : Only show errors, suppressing warnings.
+    --output -o                    : Output format.  Allowed values: json, jsonc, none, table, tsv,
+                                     yaml, yamlc.  Default: json.
+    --query                        : JMESPath query string. See http://jmespath.org/ for more
+                                     information and examples.
+    --subscription                 : Name or ID of subscription. You can configure the default
+                                     subscription using `az account set -s NAME_OR_ID`.
+    --verbose                      : Increase logging verbosity. Use --debug for full debug logs.
+
+To search AI knowledge base for examples, use: az find "az network vpn-site create"
+
+WARNING: This command is from the following extension: virtual-wan
+
+Command
+    az network vpn-site link add : Add a VPN site link to VPN site configuration.
+
+Arguments
+    --ip-address [Required] : IP address of the VPN site.
+    --name -n    [Required] : The name of vpn site link.
+    --fqdn                  : FQDN of vpn-site-link.
+    --link-provider-name    : Name of the link provider.
+    --link-speed-in-mbps    : Link speed.
+    --no-wait               : Do not wait for the long-running operation to finish.
+
+BGP Peering Arguments
+    --asn                   : BGP speaker's ASN.
+    --bgp-peering-address   : Peering address and BGP identifier of this BGP speaker.
+
+Global Policy Arguments
+    --acquire-policy-token  : Acquiring an Azure Policy token automatically for this resource
+                              operation.
+    --change-reference      : The related change reference ID for this resource operation.
+
+Resource Id Arguments
+    --ids                   : One or more resource IDs (space-delimited). It should be a complete
+                              resource ID containing all information of 'Resource Id' arguments. You
+                              should provide either --ids or other 'Resource Id' arguments.
+    --resource-group -g     : Name of resource group. You can configure the default group using `az
+                              configure --defaults group=<name>`.
+    --site-name             : Name of the VPN site config.
+    --subscription          : Name or ID of subscription. You can configure the default subscription
+                              using `az account set -s NAME_OR_ID`.
+
+Global Arguments
+    --debug                 : Increase logging verbosity to show all debug logs.
+    --help -h               : Show this help message and exit.
+    --only-show-errors      : Only show errors, suppressing warnings.
+    --output -o             : Output format.  Allowed values: json, jsonc, none, table, tsv, yaml,
+                              yamlc.  Default: json.
+    --query                 : JMESPath query string. See http://jmespath.org/ for more information
+                              and examples.
+    --verbose               : Increase logging verbosity. Use --debug for full debug logs.
+
+Examples
+    Add a VPN site link to VPN site configuration
+        az network vpn-site link add -g MyRG --site-name VpnSite -n VpnSiteLinkName --ip-address
+        10.0.1.111 --asn 1234 --bgp-peering-address 192.168.0.0
+
+
+To search AI knowledge base for examples, use: az find "az network vpn-site link add"
+
+WARNING: This command is from the following extension: virtual-wan
+
+Command
+    az network vpn-gateway connection vpn-site-link-conn add : Add a VPN site link connection to a
+    site-to-site VPN gateway connection.
+
+Arguments
+    --vpn-site-link           [Required] : The resource ID of VPN Site Link.
+    --connection-bandwidth               : Expected bandwidth in Mbps.
+    --enable-bgp                         : Enable BGP.  Allowed values: false, true.
+    --no-wait                            : Do not wait for the long-running operation to finish.
+    --rate-limiting                      : Enable rate limiting.  Allowed values: false, true.
+    --routing-weight                     : Routing weight.
+    --shared-key                         <REDACTED> Shared key.
+    --use-local-azure-ip-address         : Use local azure ip to initiate connection.  Allowed
+                                           values: false, true.
+    --use-policy-based-traffic-selectors : Enable policy-based traffic selectors.  Allowed values:
+                                           false, true.
+    --vpn-connection-protocol-type       : Connection protocol used for this connection.  Allowed
+                                           values: IKEv1, IKEv2.
+    --vpn-link-connection-mode           : Vpn link connection mode.  Allowed values: Default,
+                                           InitiatorOnly, ResponderOnly.
+
+Global Policy Arguments
+    --acquire-policy-token               : Acquiring an Azure Policy token automatically for this
+                                           resource operation.
+    --change-reference                   : The related change reference ID for this resource
+                                           operation.
+
+Resource Id Arguments
+    --connection-name                    : Name of the VPN gateway connection.
+    --gateway-name                       : Name of the VPN gateway.
+    --ids                                : One or more resource IDs (space-delimited). It should be
+                                           a complete resource ID containing all information of
+                                           'Resource Id' arguments. You should provide either --ids
+                                           or other 'Resource Id' arguments.
+    --name -n                            : Name of the VPN site link connection.
+    --resource-group -g                  : Name of resource group. You can configure the default
+                                           group using `az configure --defaults group=<name>`.
+    --subscription                       : Name or ID of subscription. You can configure the default
+                                           subscription using `az account set -s NAME_OR_ID`.
+
+Global Arguments
+    --debug                              : Increase logging verbosity to show all debug logs.
+    --help -h                            : Show this help message and exit.
+    --only-show-errors                   : Only show errors, suppressing warnings.
+    --output -o                          : Output format.  Allowed values: json, jsonc, none, table,
+                                           tsv, yaml, yamlc.  Default: json.
+    --query                              : JMESPath query string. See http://jmespath.org/ for more
+                                           information and examples.
+    --verbose                            : Increase logging verbosity. Use --debug for full debug
+                                           logs.
+
+Examples
+    Add a VPN site link connection to site-to-site VPN gateway connection
+        az network vpn-gateway connection vpn-site-link-conn add -g MyRG --connection-name
+        MyConnection --gateway-name MyGateway -n MyVPNSiteLinkConn --vpn-site-link /subscriptions/<SUBSCRIPTION>
+        Sub/resourceGroups/MyRG/providers/Microsoft.Network/vpnSites/MyVPNSite/vpnSiteLinks/vpnsitel
+        ink --vpn-connection-protocol-type IKEv2
+
+
+To search AI knowledge base for examples, use: az find "az network vpn-gateway connection vpn-site-
+link-conn add"
+
+WARNING: This command is from the following extension: virtual-wan
+
+Command
+    az network vpn-site download : Provide a SAS-URL to download the configuration for a VPN site.
+
+Arguments
+    --request           [Required] : Parameters supplied to download vpn-sites configuration. Is
+                                     either a model type or a IO type. Required.
+    --resource-group -g [Required] : Name of resource group. You can configure the default group
+                                     using `az configure --defaults group=<name>`.
+    --vwan-name         [Required] : Name of the virtual WAN.
+
+Global Policy Arguments
+    --acquire-policy-token         : Acquiring an Azure Policy token automatically for this resource
+                                     operation.
+    --change-reference             : The related change reference ID for this resource operation.
+
+Global Arguments
+    --debug                        : Increase logging verbosity to show all debug logs.
+    --help -h                      : Show this help message and exit.
+    --only-show-errors             : Only show errors, suppressing warnings.
+    --output -o                    : Output format.  Allowed values: json, jsonc, none, table, tsv,
+                                     yaml, yamlc.  Default: json.
+    --query                        : JMESPath query string. See http://jmespath.org/ for more
+                                     information and examples.
+    --subscription                 : Name or ID of subscription. You can configure the default
+                                     subscription using `az account set -s NAME_OR_ID`.
+    --verbose                      : Increase logging verbosity. Use --debug for full debug logs.
+
+To search AI knowledge base for examples, use: az find "az network vpn-site download"
+<shellId: 109 completed with exit code 0>

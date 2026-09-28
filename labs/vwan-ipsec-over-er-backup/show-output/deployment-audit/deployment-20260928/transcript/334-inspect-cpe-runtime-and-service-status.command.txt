@@ -1,0 +1,1 @@
+gcloud compute ssh cpe-ver-09281131 --project gcp-vwan-eripsec-09281131 --zone europe-north2-c --tunnel-through-iap --quiet --command "sudo test -f /run/vwan-lab/runtime.env && echo runtime-present || echo runtime-absent; sudo systemctl --no-pager --full status vwan-lab-network.service vwan-lab-ipsec.service strongswan frr | sed -n '1,100p'"

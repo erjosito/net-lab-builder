@@ -1,0 +1,1 @@
+$r=Get-Content 'C:\Users\jomore\AppData\Local\Temp\1790600994311-copilot-tool-output-8f77d4bba1f649089b6d2bd9af153233.txt' -Raw | ConvertFrom-Json; $r.results | Where-Object { $_.content -match 'VpnSiteLinkConnection|vpnLinkConnections|useLocalAzureIpAddress' } | ForEach-Object { "TITLE: $($_.title)`nURL: $($_.url)`n$($_.content)`n---" }

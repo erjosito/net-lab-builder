@@ -1,0 +1,22 @@
+╷
+│ Error: Unsupported block type
+│ 
+│   on gcp.tf line 112, in resource "google_compute_instance" "cpe":
+│  112:   resource "google_compute_instance_resource_policy_attachment" "cpe_stop" {
+│ 
+│ Blocks of type "resource" are not expected here.
+╵
+╷
+│ Error: Too many command line arguments
+│ 
+│ To specify a working directory for the plan, use the global -chdir flag.
+╵
+
+For more help on using this command, run:
+  terraform plan -help
+Exception: 
+Line |
+   2 |  … ers.tfplan; if($LASTEXITCODE -ne 0){throw 'timer plan failed'}; $plan …
+     |                                        ~~~~~~~~~~~~~~~~~~~~~~~~~
+     | timer plan failed
+<shellId: 165 completed with exit code 1>

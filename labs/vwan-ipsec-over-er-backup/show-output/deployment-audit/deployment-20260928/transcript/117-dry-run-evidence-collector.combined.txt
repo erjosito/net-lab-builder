@@ -1,0 +1,24 @@
+[DRY-RUN] 01-vhub-effective-routes.json :: az network vhub get-effective-routes -g <AZURE_RESOURCE_GROUP> -n <VWAN_HUB_NAME> --resource-type RouteTable --resource-id <VWAN_ROUTE_TABLE_RESOURCE_ID> -o json
+[DRY-RUN] 02-vpn-gateway.json :: az resource show --ids <VWAN_VPN_GATEWAY_RESOURCE_ID> -o json
+[DRY-RUN] 03-private-vpn-site.json :: az resource show --ids <PRIVATE_VPN_SITE_RESOURCE_ID> -o json
+[DRY-RUN] 04-public-vpn-site.json :: az resource show --ids <PUBLIC_VPN_SITE_RESOURCE_ID> -o json
+[DRY-RUN] 05-private-vpn-connection.json :: az resource show --ids <PRIVATE_VPN_CONNECTION_RESOURCE_ID> -o json
+[DRY-RUN] 06-public-vpn-connection.json :: az resource show --ids <PUBLIC_VPN_CONNECTION_RESOURCE_ID> -o json
+[DRY-RUN] 07-er-gateway.json :: az resource show --ids <VWAN_ER_GATEWAY_RESOURCE_ID> -o json
+[DRY-RUN] 08-er-connection.json :: az resource show --ids <VWAN_ER_CONNECTION_RESOURCE_ID> -o json
+[DRY-RUN] 09-er-circuit.json :: az network express-route show -g <AZURE_RESOURCE_GROUP> -n <ER_CIRCUIT_NAME> -o json
+[DRY-RUN] 10-er-route-table-primary.json :: az network express-route list-route-tables -g <AZURE_RESOURCE_GROUP> -n <ER_CIRCUIT_NAME> --peering-name AzurePrivatePeering --path primary -o json
+[DRY-RUN] 11-er-route-table-secondary.json :: az network express-route list-route-tables -g <AZURE_RESOURCE_GROUP> -n <ER_CIRCUIT_NAME> --peering-name AzurePrivatePeering --path secondary -o json
+[DRY-RUN] 12-workload-nic-effective-routes.json :: az network nic show-effective-route-table -g <AZURE_RESOURCE_GROUP> -n <AZURE_WORKLOAD_NIC_NAME> -o json
+[DRY-RUN] 13-gcp-cloud-router-status.json :: gcloud compute routers get-status <GCP_CLOUD_ROUTER_NAME> --region europe-north2 --project <GCP_PROJECT_ID> --format=json
+[DRY-RUN] 15-cpe-frr-summary.txt :: gcloud compute ssh <GCP_CPE_VM_NAME> --zone <GCP_CPE_ZONE> --project <GCP_PROJECT_ID> --command 'sudo vtysh -c "show bgp summary json"'
+[DRY-RUN] 16-cpe-frr-routes.txt :: gcloud compute ssh <GCP_CPE_VM_NAME> --zone <GCP_CPE_ZONE> --project <GCP_PROJECT_ID> --command 'sudo vtysh -c "show bgp ipv4 unicast json"'
+[DRY-RUN] 17-cpe-bird-protocols.txt :: gcloud compute ssh <GCP_CPE_VM_NAME> --zone <GCP_CPE_ZONE> --project <GCP_PROJECT_ID> --command 'command -v birdc >/dev/null && sudo birdc show protocols all || echo "BIRD_NOT_INSTALLED"'
+[DRY-RUN] 18-cpe-bird-routes.txt :: gcloud compute ssh <GCP_CPE_VM_NAME> --zone <GCP_CPE_ZONE> --project <GCP_PROJECT_ID> --command 'command -v birdc >/dev/null && sudo birdc show route all || echo "BIRD_NOT_INSTALLED"'
+[DRY-RUN] 19-cpe-kernel-routes.txt :: gcloud compute ssh <GCP_CPE_VM_NAME> --zone <GCP_CPE_ZONE> --project <GCP_PROJECT_ID> --command 'ip -details route show table all; ip rule show; ip route get 10.241.0.4'
+[DRY-RUN] 20-cpe-links-xfrm.txt :: gcloud compute ssh <GCP_CPE_VM_NAME> --zone <GCP_CPE_ZONE> --project <GCP_PROJECT_ID> --command 'ip -details link show; ip xfrm state; ip xfrm policy'
+[DRY-RUN] 21-cpe-strongswan.txt :: gcloud compute ssh <GCP_CPE_VM_NAME> --zone <GCP_CPE_ZONE> --project <GCP_PROJECT_ID> --command 'sudo swanctl --list-sas --raw; sudo swanctl --list-conns --raw'
+[DRY-RUN] 22-cpe-sockets.txt :: gcloud compute ssh <GCP_CPE_VM_NAME> --zone <GCP_CPE_ZONE> --project <GCP_PROJECT_ID> --command 'sudo ss -Hlnup; sudo ss -Htnp state established'
+[DRY-RUN] 23-cpe-packet-capture.txt :: gcloud compute ssh <GCP_CPE_VM_NAME> --zone <GCP_CPE_ZONE> --project <GCP_PROJECT_ID> --command 'sudo timeout 20s tcpdump -ni any -s 128 -tttt -vv '(udp port 500 or udp port 4500 or esp or tcp port 179 or icmp)''
+[DRY-RUN] 24-megaport-collector-missing.txt :: <Tank read-only Megaport collector required>
+<shellId: 85 completed with exit code 0>

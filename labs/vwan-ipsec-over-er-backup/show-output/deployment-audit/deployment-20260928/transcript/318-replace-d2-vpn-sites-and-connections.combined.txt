@@ -1,0 +1,10 @@
+<command with shellId: vpn-d2-retry is still running after 300 seconds. The command is still running but hasn't produced output yet. Use read_powershell to continue waiting, or stop_powershell to stop it.>
+ERROR: (VpnConnectionPropertyIsDeprecated) Update request for VpnConnection /subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131/vpnConnections/conn-gcp-er contains deprecated property ConnectionBandwidth. Please use corresponding VpnSiteLinkConnection property instead.
+Code: VpnConnectionPropertyIsDeprecated
+Message: Update request for VpnConnection /subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131/vpnConnections/conn-gcp-er contains deprecated property ConnectionBandwidth. Please use corresponding VpnSiteLinkConnection property instead.
+Exception: C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy\New-VpnConnections.ps1:74
+Line |
+  74 |  … STEXITCODE -ne 0) { throw "Failed to add link connection for $Name" }
+     |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Failed to add link connection for conn-gcp-er
+<shellId: vpn-d2-retry completed with exit code 1>

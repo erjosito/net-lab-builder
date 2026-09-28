@@ -35,6 +35,78 @@ $AzureOutputFile = Join-Path $OutputDir 'timed-application-probes-azure-to-gcp.t
 $GcpOutputFile = Join-Path $OutputDir 'timed-application-probes-gcp-to-azure.txt'
 $targets = @($Inventory.probe.designTargets.$Design)
 
+function Protect-Text {
+    param([AllowEmptyString()][string]$Text)
+    $safe = $Text
+    $safe = $safe -replace '(?i)(authorization:\s*bearer\s+)\S+', '$1<REDACTED>'
+    $safe = $safe -replace '(?i)(/subscriptions/)[^/\s,\]]+', '$1<SUBSCRIPTION_ID>'
+    $safe = $safe -replace '(?i)(--billing-account(?:=|\s+))\S+', '$1<BILLING_ACCOUNT>'
+    $safe = $safe -replace '(?i)(billingAccounts/)[0-9A-Za-z-]+', '$1<BILLING_ACCOUNT>'
+    $safe = $safe -replace '(?<![A-Za-z0-9_.-])eyJ[A-Za-z0-9_-]{7,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}(?![A-Za-z0-9_.-])', '<REDACTED_TOKEN>'
+    $safe = $safe -replace '(?i)\b[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\b', '<GUID>'
+    $safe = $safe -replace '(?i)([\w.+-]+)@([\w.-]+\.[A-Za-z]{2,})', '<ACCOUNT>'
+    if ($Inventory.gcp.projectId -and $Inventory.gcp.projectId -notmatch '^<') {
+        $safe = $safe -replace [regex]::Escape([string]$Inventory.gcp.projectId), '<GCP_PROJECT_ID>'
+    }
+    return $safe
+}
+
+function Save-ProbeBundle {
+    param(
+        [string]$BaseName,
+        [string]$Direction,
+        [string]$Command,
+        [string]$Stdout,
+        [string]$Stderr,
+        [int]$ExitCode,
+        [datetime]$Started,
+        [datetime]$Ended
+    )
+    $parentQuestionId = if ($Phase -match '^d2-corrected/.+(fault|during|restore|after|assertion)') {
+        'Q-D2-FAULTS'
+    } elseif ($Phase -match '^d2-corrected') {
+        'Q-D2-PREFERENCE'
+    } elseif ($Phase -match '^(d3-prefix|compound)') {
+        'Q-D3-PREFIX-BLACKHOLE'
+    } elseif ($Phase -match '^(restore|final-healthy)') {
+        'Q-RESET-CONTAMINATION'
+    } else {
+        'Q-APPLICATION-PROBES'
+    }
+    $safeCommand = Protect-Text $Command
+    $safeStdout = Protect-Text $Stdout
+    $safeStderr = Protect-Text $Stderr
+    Set-Content (Join-Path $OutputDir "$BaseName.command.txt") $safeCommand -Encoding utf8
+    Set-Content (Join-Path $OutputDir "$BaseName.stdout.txt") $safeStdout -Encoding utf8
+    Set-Content (Join-Path $OutputDir "$BaseName.stderr.txt") $safeStderr -Encoding utf8
+    $metadata = [ordered]@{
+        schemaVersion = 1
+        correlationId = [string]$Inventory.runId
+        scenario = $Phase
+        questionId = 'Q-APPLICATION-PROBES'
+        parentQuestionId = $parentQuestionId
+        plane = 'application'
+        actionType = 'query'
+        state = ($Phase -split '/')[-1]
+        direction = $Direction
+        expectedEffect = 'Timestamped ICMP and HTTP results correlate application reachability with the active route and fault state.'
+        observedEffect = ''
+        commandFile = "$BaseName.command.txt"
+        stdoutFile = "$BaseName.stdout.txt"
+        stderrFile = "$BaseName.stderr.txt"
+        utcStarted = $Started.ToUniversalTime().ToString('o')
+        utcEnded = $Ended.ToUniversalTime().ToString('o')
+        localStarted = $Started.ToString('o')
+        localEnded = $Ended.ToString('o')
+        durationMs = [math]::Round(($Ended - $Started).TotalMilliseconds)
+        exitCode = $ExitCode
+        succeeded = ($ExitCode -eq 0)
+        workingDirectory = '<REPOSITORY_ROOT>'
+    }
+    Set-Content (Join-Path $OutputDir "$BaseName.metadata.json") `
+        (Protect-Text ($metadata | ConvertTo-Json -Depth 8)) -Encoding utf8
+}
+
 if ($DryRun) {
     Write-Host "[DRY-RUN] Every ${IntervalSeconds}s for ${DurationSeconds}s:"
     foreach ($target in $targets) {
@@ -93,6 +165,7 @@ while [ `$SECONDS -lt `$end ]; do
 done
 "@
 
+$probeStarted = Get-Date
 $azureJob = Start-Job -ArgumentList @(
     [string]$Inventory.azure.resourceGroup,
     [string]$Inventory.azure.workloadVmName,
@@ -100,7 +173,7 @@ $azureJob = Start-Job -ArgumentList @(
 ) -ScriptBlock {
     param($ResourceGroup, $VmName, $Command)
     az vm run-command invoke -g $ResourceGroup -n $VmName --command-id RunShellScript `
-        --scripts $Command --query 'value[0].message' -o tsv 2>&1
+        --scripts $Command --query 'value[0].message' -o tsv
     Write-Output "collector_exit=$LASTEXITCODE"
 }
 $gcpJob = Start-Job -ArgumentList @(
@@ -110,26 +183,28 @@ $gcpJob = Start-Job -ArgumentList @(
     $gcpCommand
 ) -ScriptBlock {
     param($VmName, $Zone, $Project, $Command)
-    gcloud compute ssh $VmName --zone $Zone --project $Project --quiet --command $Command 2>&1
+    gcloud compute ssh $VmName --zone $Zone --project $Project --quiet --command $Command
     Write-Output "collector_exit=$LASTEXITCODE"
 }
 
 Wait-Job -Job $azureJob, $gcpJob | Out-Null
 $azureRaw = Receive-Job -Job $azureJob | Out-String
 $gcpRaw = Receive-Job -Job $gcpJob | Out-String
+$azureError = ($azureJob.ChildJobs[0].Error | Out-String)
+$gcpError = ($gcpJob.ChildJobs[0].Error | Out-String)
+$probeEnded = Get-Date
+$azureExit = if ($azureRaw -match 'collector_exit=(\d+)') { [int]$Matches[1] } else { 1 }
+$gcpExit = if ($gcpRaw -match 'collector_exit=(\d+)') { [int]$Matches[1] } else { 1 }
 Remove-Job -Job $azureJob, $gcpJob -Force
+Set-Content -Path $AzureOutputFile -Value (Protect-Text $azureRaw) -Encoding utf8
+Set-Content -Path $GcpOutputFile -Value (Protect-Text $gcpRaw) -Encoding utf8
+Save-ProbeBundle -BaseName 'timed-probes-azure-to-gcp' -Direction 'azure-to-gcp' `
+    -Command "az vm run-command invoke -g $($Inventory.azure.resourceGroup) -n $($Inventory.azure.workloadVmName) --command-id RunShellScript --scripts '<TIMED_PROBE_SCRIPT>'" `
+    -Stdout $azureRaw -Stderr $azureError -ExitCode $azureExit -Started $probeStarted -Ended $probeEnded
+Save-ProbeBundle -BaseName 'timed-probes-gcp-to-azure' -Direction 'gcp-to-azure' `
+    -Command "gcloud compute ssh $($Inventory.gcp.cpeVmName) --zone $($Inventory.gcp.zone) --project $($Inventory.gcp.projectId) --command '<TIMED_PROBE_SCRIPT>'" `
+    -Stdout $gcpRaw -Stderr $gcpError -ExitCode $gcpExit -Started $probeStarted -Ended $probeEnded
 
-function Protect-ProbeOutput {
-    param([string]$Text)
-    $safe = $Text -replace '(?i)(/subscriptions/)[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}', '$1<SUBSCRIPTION_ID>'
-    if ($Inventory.gcp.projectId -and $Inventory.gcp.projectId -notmatch '^<') {
-        $safe = $safe -replace [regex]::Escape([string]$Inventory.gcp.projectId), '<GCP_PROJECT_ID>'
-    }
-    return $safe
-}
-
-Set-Content -Path $AzureOutputFile -Value (Protect-ProbeOutput $azureRaw) -Encoding utf8
-Set-Content -Path $GcpOutputFile -Value (Protect-ProbeOutput $gcpRaw) -Encoding utf8
-
+& (Join-Path $PSScriptRoot 'New-EvidenceIndex.ps1') -LabRoot $LabRoot
 & (Join-Path $PSScriptRoot 'Confirm-Sanitization.ps1') -Path $OutputDir
 Write-Host $OutputDir

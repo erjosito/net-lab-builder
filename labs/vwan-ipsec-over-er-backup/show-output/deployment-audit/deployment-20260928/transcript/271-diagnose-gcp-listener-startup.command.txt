@@ -1,0 +1,1 @@
+$i=Get-Content 'labs\vwan-ipsec-over-er-backup\config\inventory.json' -Raw|ConvertFrom-Json; gcloud compute ssh $i.gcp.cpeVmName --project $i.gcp.projectId --zone $i.gcp.zone --tunnel-through-iap --quiet --command "sudo systemctl status vwan-health --no-pager -l; sudo journalctl -u vwan-health -n 30 --no-pager; command -v python3; sudo ss -ltnp '( sport = :8080 )'"

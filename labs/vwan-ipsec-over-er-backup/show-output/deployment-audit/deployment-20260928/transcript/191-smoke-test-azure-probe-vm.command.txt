@@ -1,0 +1,1 @@
+az vm run-command invoke -g rg-vwan-ipsec-over-er-09281131 -n vm-probe-ver-09281131 --command-id RunShellScript --scripts "cloud-init status --wait; ip -brief address; ip route; command -v tcpdump; ping -c 2 168.63.129.16" --query "value[0].message" -o tsv

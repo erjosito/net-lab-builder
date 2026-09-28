@@ -1,0 +1,1 @@
+$f='C:\Users\jomore\AppData\Local\Temp\1790585350588-copilot-tool-output-0f9d389a0886460daab2ff21045fbfac.txt'; (Get-Content $f -TotalCount 1|ConvertFrom-Json).results|ForEach-Object{'{0}`t{1}`t{2}'-f $_.title,$_.contentUrl,(($_.content-replace"`n",' ') -replace '\s+',' ')}

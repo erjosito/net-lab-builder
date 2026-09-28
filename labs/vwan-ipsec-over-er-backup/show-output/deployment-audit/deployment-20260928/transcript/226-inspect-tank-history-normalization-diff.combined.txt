@@ -1,0 +1,84 @@
+.squad/agents/tank/history.md | 2600 +++++++++++++++++++++--------------------
+ 1 file changed, 1312 insertions(+), 1288 deletions(-)
+1312	1288	.squad/agents/tank/history.md
+diff --git a/.squad/agents/tank/history.md b/.squad/agents/tank/history.md
+index 4f1cc3e..67b5b21 100644
+--- a/.squad/agents/tank/history.md
++++ b/.squad/agents/tank/history.md
+@@ -1,1288 +1,1312 @@
+-**Archived entries:** see \history-archive.md\
+-
+-# Project Context
+-
+-## 2026-08-20 -- dual-hub-vnra-udr-transit Cleanup
+-
+-### TANK-009 -- Lab Deletion: rg-dual-hub-vnra-udr-transit
+-
+-**Action:** Deleted resource group `rg-dual-hub-vnra-udr-transit` on Jose Moreno's explicit approval following 22-resource preview.
+-
+-**Pre-delete inventory:** 22 resources (2 VNets hub, 2 VNets spoke, 2 managed VNRAs, 4 route tables, 2 VMs + NICs + OS disks, 4 auto-created NSGs, 2 MDE.Linux extensions). No ExpressRoute or Megaport resources.
+-
+-**Command:** `az group delete -n rg-dual-hub-vnra-udr-transit --yes --no-wait` with bounded 30-second polling.
+-
+-**Elapsed:** ~7 min 54 sec (12:41:17 to 12:49:11 +02:00). VNRA deprovisioning completed within that window.
+-
+-**Verification:** `az group exists` → false; subscription resource count → 0; tagged straggler scan (correlation_id: vnra-c7e2a3f1) → 0. All clean.
+-
+-**Evidence:** `labs/dual-hub-vnra-udr-transit/show-output/cleanup/cleanup-evidence.md`, `validation.md` updated with CLEANUP STATUS: COMPLETE.
+-
+-**Decision:** No inbox entry required beyond this history -- deletion was straightforward and fully authorized. VNRA deletion speed (~8 min for 2x 50 Gbps managed appliances) is consistent with platform behavior and can be used as a baseline estimate for future VNRA labs.
+-
+-## 2026-08-19 -- dual-hub-vnra-udr-transit Peering Fix
+-
+-### TANK-008 -- allowVirtualNetworkAccess=false: Silent Drop Root Cause
+-
+-**Problem:** deploy.ps1 Step 4 called `az network vnet peering create --allow-forwarded-traffic` without `--allow-vnet-access`. On this tenant/CLI version, omitting the flag causes `allowVirtualNetworkAccess` to default to `false`. All 6 peering objects were created with `allowVirtualNetworkAccess=false`, causing 100% packet loss and zero VNRA metrics.
+-
+-**Live correction:** Coordinator updated all 6 peerings via `az network vnet peering update --set allowVirtualNetworkAccess=true` while lab was live. Peerings converged to Connected/FullyInSync immediately.
+-
+-**Post-fix connectivity:** test1->test2 10/10 avg 33.094 ms; test2->test1 10/10 avg 31.372 ms. Tracepath shows 1 visible hop (managed VNRA is TTL-invisible, as designed).
+-
+-**Script fix (deploy.ps1):**
+-- `--allow-vnet-access` added to `az network vnet peering create`.
+-- Idempotent correction: on re-run, existing peerings with either flag false are updated before continuing.
+-- Step 10 added: post-deploy assertions that `throw` if any of the 6 peerings has incorrect flags or is not Connected/FullyInSync.
+-
+-**Doc fix (manifest.md, design.md):** Peering tables updated to include `allowVirtualNetworkAccess` column (was omitted). Note updated: both flags must be explicit; CLI does not default `allowVirtualNetworkAccess` to true.
+-
+-**Rule:** For all future labs with VNet peerings, always pass BOTH `--allow-forwarded-traffic` AND `--allow-vnet-access` explicitly. Never rely on CLI defaults for either flag.
+-
+-Evidence: `labs/dual-hub-vnra-udr-transit/show-output/validation/retry-20260819T185118+0200/` files 10-13.
+-
+-## 2026-08-18 — Session 8: Key Vault + Loader Script
+-
+-### TANK-007 — ARM Management Plane KV Secret Write Pattern
+-
+-**Problem:** Tenant Azure Policy enforces `publicNetworkAccess=Disabled` on all Key Vaults. Data-plane (`vault.azure.net`) returns `ForbiddenByConnection` from local machines. `az keyvault update --public-network-access Enabled` silently fails.
+-
+-**Solution:** Write secrets via ARM management plane:
+-```
+-PUT https://management.azure.com/subscriptions/<SUBSCRIPTION>/resourceGroups/{rg}/providers/Microsoft.KeyVault/vaults/{name}/secrets/{secretName}?api-version=2023-07-01
+-Body: { "tags": {...}, "properties": { "value": "...", "contentType": "...", "attributes": { "enabled": true } } }
+-```
+-- Tags must be at TOP LEVEL (not inside `properties`). Tags inside properties are silently ignored.
+-- `az rest --body` with inline JSON is mangled on Windows — always use `@filepath` pattern.
+-- Use `$env:TEMP` for temp body file; delete immediately after the call regardless of success/failure.
+-- GET via management plane returns metadata only (no value) — reading values still requires data-plane / Cloud Shell.
+-
+-**Reading secrets:** `az keyvault secret show` uses data-plane. Require Cloud Shell (AzureServices bypass) or private-endpoint network. Document this prominently in loader scripts.
+-
+-**PATCH limitation:** Updating secret metadata-only (tags) via management plane requires `value` in body — impossible without current value. Accept as cosmetic deviation.
+-
+-## 2026-08-18 — afd-edge-actions-jwt-validation COMPLETE — S1-S9 ALL PASS ✅
+-
+-- **S7 and S9 PASS with real Entra tokens.** `edge_jwt_status=VALIDATED` in responses confirms EA intercepted; `jose` RS256/JWKS verified on origin. Full E2E flow working.
+-- **Admin consent workaround**: `az ad app permission admin-consent` requires Global Admin. Workaround: `POST /graph.microsoft.com/v1.0/servicePrincipals/{clientSpId}/appRoleAssignments` with `principalId`/`resourceId`/`appRoleId` — succeeds with Application Administrator or lower if assignment is to your own SP. Jose has Global Reader which was sufficient for this cross-app assignment.
+-- **Entra v2 client_credentials aud format**: `accessTokenAcceptedVersion=2` on API app → `iss` changes to `login.microsoftonline.com/v2.0`. But `aud` remains bare appId GUID (not `api://appId`) for client_credentials flow. Always use bare GUID as expected audience for machine-to-machine tokens, even if identifier URI is `api://`.
+-- **EA swapDefault is broken**: Cannot promote a non-default version. `provisioningState` on non-default EA versions stays `Provisioning` indefinitely. Workaround: create a new EA resource with v1 as default from the start with correct code. Use `deployVersionCode` on v1 immediately.
+-- **F1 App Service Plan has 60-min/day CPU quota**: Lab App Service Plans may be F1 by default. The quota exhaustion manifests as `QuotaExceeded` state and 403 "Web App is stopped." Fix: `az appservice plan update --name <plan> --resource-group <rg> --sku B1`.
+-- **Credential replication lag**: New Entra client secrets may take 30-60s to replicate. Retry with `Start-Sleep 30` + backoff loop if `AADSTS7000215: Invalid client secret provided` occurs.
+-
+-### TANK-006 — Entra App Roles + swapDefault Learnings
+-
+-| Item | Finding |
+<shellId: 174 completed with exit code 0>

@@ -1,0 +1,1 @@
+az network express-route gateway connection list -g rg-vwan-ipsec-over-er-09281131 --gateway-name ergw-ver-09281131 --query "[].{name:name,id:id,provisioningState:provisioningState}" -o json

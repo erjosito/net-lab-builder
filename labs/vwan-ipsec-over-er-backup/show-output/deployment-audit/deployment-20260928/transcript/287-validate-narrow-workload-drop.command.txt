@@ -1,0 +1,7 @@
+$i=Get-Content 'labs\vwan-ipsec-over-er-backup\config\inventory.json' -Raw|ConvertFrom-Json; $nft=@'
+table inet test_workload_fault {
+ set targets { type ipv4_addr; elements = { 10.253.3.10, 10.253.3.138 } }
+ chain input { type filter hook input priority -20; policy accept; ip saddr 10.241.0.4 ip daddr @targets icmp type echo-request counter drop; ip saddr 10.241.0.4 ip daddr @targets tcp dport 8080 counter drop; }
+ chain output { type filter hook output priority -20; policy accept; ip saddr @targets ip daddr 10.241.0.4 icmp type echo-request counter drop; ip saddr @targets ip daddr 10.241.0.4 tcp dport 8080 counter drop; }
+}
+'@.Replace("`r`n","`n"); $b=[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($nft)); gcloud compute ssh $i.gcp.cpeVmName --project $i.gcp.projectId --zone $i.gcp.zone --tunnel-through-iap --quiet --command "echo $b | base64 -d | sudo nft -c -f - && echo PARTIAL_DROP_NFT=PASS"

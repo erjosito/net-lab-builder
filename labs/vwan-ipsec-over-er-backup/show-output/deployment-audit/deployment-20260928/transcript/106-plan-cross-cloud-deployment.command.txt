@@ -1,0 +1,14 @@
+$ErrorActionPreference='Stop'
+$lab='C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy'
+$tf='C:\Users\jomore\Repos\net-lab-builder\src\terraform\vwan-ipsec-over-er-backup'
+$state=Get-Content (Join-Path $lab '.lab-state.json') -Raw | ConvertFrom-Json
+foreach($n in 'MEGAPORT_ACCESS_KEY','MEGAPORT_SECRET_KEY','TF_VAR_megaport_access_key','TF_VAR_megaport_secret_key'){ $v=[Environment]::GetEnvironmentVariable($n,'User'); if($v){ [Environment]::SetEnvironmentVariable($n,$v,'Process') } }
+if(-not $env:TF_VAR_megaport_access_key -and $env:MEGAPORT_ACCESS_KEY){$env:TF_VAR_megaport_access_key=$env:MEGAPORT_ACCESS_KEY}
+if(-not $env:TF_VAR_megaport_secret_key -and $env:MEGAPORT_SECRET_KEY){$env:TF_VAR_megaport_secret_key=$env:MEGAPORT_SECRET_KEY}
+if(-not $env:TF_VAR_megaport_access_key -or -not $env:TF_VAR_megaport_secret_key){ throw 'Approved Megaport environment credential path is unavailable.' }
+$env:GOOGLE_OAUTH_ACCESS_TOKEN=(gcloud auth print-access-token).Trim()
+$runtime=Join-Path $lab '.runtime.auto.tfvars.json'
+@{run_id=$state.run_id;gcp_project_id=$state.gcp_project_id;ssh_public_key=(Get-Content "$HOME\.ssh\id_rsa.pub" -Raw).Trim()} | ConvertTo-Json | Set-Content $runtime -Encoding utf8
+Push-Location $tf
+try { terraform plan -input=false -var-file=$runtime -out=(Join-Path $lab 'tfplan') -parallelism=20; terraform show -no-color (Join-Path $lab 'tfplan') | Set-Content (Join-Path $lab 'plan-sanitized.txt') -Encoding utf8 } finally { Pop-Location }
+Write-Output 'PLAN_OK=true'

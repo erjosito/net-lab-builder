@@ -1,0 +1,49 @@
+Arguments
+>     --name --run-command-name [Required] : The name of the virtual machine run command.
+>     --resource-group -g       [Required] : Name of resource group. You can configure the default
+                                             group using `az configure --defaults group=<name>`.
+      --vm-name                 [Required] : The name of the virtual machine.
+>     --async-execution                    : Optional. If set to true, provisioning will complete as
+>                                            soon as the script starts and will not wait for script to
+                                             complete.  Allowed values: false, true.
+>     --command-id                         : Specify a commandId of predefined built-in script.
+>     --error-blob-uri                     : Specify the Azure storage blob where script error stream
+                                             will be uploaded.
+      --location -l                        : Location. Values from: `az account list-locations`. You
+      --no-wait                            : Do not wait for the long-running operation to finish.
+>     --output-blob-uri                    : Specify the Azure storage blob (SAS URI) where script
+                                             output stream will be uploaded.
+>     --parameters                         : The parameters used by the script.
+          Usage: --parameters arg1=XX arg2=XX.
+>     --protected-parameters               : The parameters used by the script.
+          Usage: --protected-parameters credentials=somefoo secret=somebar.
+      --run-as-password                    : Password if needed for using run-as-user parameter. It
+                                             will be encrypted and not logged.
+>     --run-as-user                        : By default script process runs under system/root user.
+                                             Specify custom user to host the process.
+>     --script                             : Specify the script content to be executed on the VM.
+>     --script-uri                         : Specify the script download location.
+      --tags                               : Space-separated tags: key[=value] [key[=value] ...]. Use
+                                             "" to clear existing tags.
+      --acquire-policy-token               : Acquiring an Azure Policy token automatically for this
+>                                            resource operation.
+>     --change-reference                   : The related change reference ID for this resource
+                                             operation.
+  
+                                             information and examples.
+>     --subscription                       : Name or ID of subscription. You can configure the default
+>                                            subscription using `az account set -s NAME_OR_ID`.
+      --verbose                            : Increase logging verbosity. Use --debug for full debug
+                                             logs.
+      Create a run command.
+>         az vm run-command create --resource-group "myResourceGroup" --location "West US" --async-
+          execution false --parameters arg1=param1 arg2=value1 --run-as-password "<runAsPassword>"
+>         --run-as-user "user1" --script "Write-Host Hello World!" --timeout-in-seconds 3600 --run-
+          command-name "myRunCommand" --vm-name "myVM"
+  
+>     Create a run command with uploading script output stream to Azure storage blob (SAS URI).
+>         az vm run-command create --resource-group "myResourceGroup" --location "West US" --script
+>         "Write-Host Hello World!" --run-command-name "myRunCommand" --vm-name "myVM" --output-blob-
+          uri "https://mystorageaccount.blob.core.windows.net/mycontainer/RuncommandOutput.txt?sp=racw
+          &st=2022-10-17T19:02:15Z&se=2022-10-18T03:02:15Z&spr=https&sv=2021-06-
+<shellId: 208 completed with exit code 0>

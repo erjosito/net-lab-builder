@@ -1,0 +1,1 @@
+$p=(Resolve-Path 'labs\vwan-ipsec-over-er-backup\manifest.md').Path; $lines=[IO.File]::ReadAllLines($p); $clean=$lines | ForEach-Object { $_.TrimEnd() }; [IO.File]::WriteAllText($p,([string]::Join("`r`n",$clean)+"`r`n"),[Text.UTF8Encoding]::new($false)); git add -- 'labs\vwan-ipsec-over-er-backup\manifest.md'; git -c core.whitespace=cr-at-eol --no-pager diff --cached --check

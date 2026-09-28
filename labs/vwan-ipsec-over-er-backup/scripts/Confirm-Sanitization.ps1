@@ -14,11 +14,17 @@ $ErrorActionPreference = 'Stop'
 $Path = (Resolve-Path $Path).Path
 $patterns = [ordered]@{
     'Azure subscription ID' = '(?i)/subscriptions/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}'
+    'Unredacted subscription segment' = '(?i)/subscriptions/(?!<)[^/\s"]+'
     'Tenant ID in Entra URL' = '(?i)login\.microsoftonline\.com/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}'
     'Bearer token' = '(?i)authorization:\s*bearer\s+(?!<REDACTED>)\S+'
-    'JWT-shaped token' = '[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}'
+    'JWT-shaped token' = '(?<![A-Za-z0-9_.-])eyJ[A-Za-z0-9_-]{7,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}(?![A-Za-z0-9_.-])'
     'Unredacted secret JSON field' = '(?i)"(?:serviceKey|pairingKey|preSharedKey|sharedKey|access_token|client_secret|apiKey|apiSecret)"\s*:\s*"(?!<REDACTED>)[^"]+"'
     'Private key material' = '-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----'
+    'Unredacted GUID' = '(?i)\b[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\b'
+    'Account email' = '(?i)[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}'
+    'GCP billing account' = '(?i)billingAccounts/(?!<)[0-9A-Za-z-]+'
+    'Billing account argument' = '(?i)--billing-account(?:=|\s+)(?!<)\S+'
+    'Shell secret assignment' = '(?i)(?:\$?(?:psk|sharedKey|preSharedKey)|MEGAPORT_(?:API|ACCESS|SECRET)_(?:KEY|SECRET))\s*=\s*(?![<$])(?:"[^"]+"|''[^'']+''|[A-Za-z0-9+/=_-]{16,})'
 }
 
 $violations = [System.Collections.Generic.List[string]]::new()

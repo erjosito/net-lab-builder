@@ -39,10 +39,54 @@ function Protect-Text {
     $safe = $safe -replace '(?i)(login\.microsoftonline\.com/)[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}', '$1<TENANT_ID>'
     $safe = $safe -replace '(?i)("(?:serviceKey|pairingKey|preSharedKey|sharedKey|access_token|client_secret)"\s*:\s*")[^"]+(")', '$1<REDACTED>$2'
     $safe = $safe -replace '(?i)(authorization:\s*bearer\s+)\S+', '$1<REDACTED>'
+    $safe = $safe -replace '(?i)(\$?(?:psk|sharedKey|preSharedKey)\s*=\s*)(?:"[^"]*"|''[^'']*''|[^;\s,}''"]+)', '$1<REDACTED>'
+    $safe = $safe -replace '(?i)(MEGAPORT_(?:API|ACCESS|SECRET)_(?:KEY|SECRET)\s*=\s*)(?:"[^"]*"|''[^'']*''|[^;\s,}]+)', '$1<REDACTED>'
+    $safe = $safe -replace '(?i)(/subscriptions/)[^/\s,\]]+', '$1<SUBSCRIPTION_ID>'
+    $safe = $safe -replace '(?i)(--billing-account(?:=|\s+))\S+', '$1<BILLING_ACCOUNT>'
+    $safe = $safe -replace '(?i)(billingAccounts/)[0-9A-Za-z-]+', '$1<BILLING_ACCOUNT>'
+    $safe = $safe -replace '(?<![A-Za-z0-9_.-])eyJ[A-Za-z0-9_-]{7,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}(?![A-Za-z0-9_.-])', '<REDACTED_TOKEN>'
+    $safe = $safe -replace '(?i)\b[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\b', '<GUID>'
+    $safe = $safe -replace '(?i)(--(?:shared-key|psk|password|client-secret|api-key|api-secret)\s+)(?:"[^"]*"|''[^'']*''|\S+)', '$1<REDACTED>'
+    $safe = $safe -replace '(?i)([\w.+-]+)@([\w.-]+\.[A-Za-z]{2,})', '<ACCOUNT>'
     if ($Inventory.gcp.projectId -and $Inventory.gcp.projectId -notmatch '^<') {
         $safe = $safe -replace [regex]::Escape([string]$Inventory.gcp.projectId), '<GCP_PROJECT_ID>'
     }
     return $safe
+}
+
+function Get-EvidenceDescriptor {
+    param([string]$FileName)
+    switch -Regex ($FileName) {
+        '^01-' { return @{ questionId = 'Q-ROUTE-VHUB'; plane = 'azure-vhub'; expectedEffect = 'vHub effective routes match the active design and fault state.' } }
+        '^0[2-6]-' { return @{ questionId = 'Q-VPN-MANAGED-STATE'; plane = 'azure-vpn'; expectedEffect = 'Managed VPN gateway, site and connection state matches the intended private/public link state.' } }
+        '^0[7-8]-' { return @{ questionId = 'Q-ER-GATEWAY-STATE'; plane = 'azure-er-gateway'; expectedEffect = 'vHub ExpressRoute gateway and connection remain consistent with the intended underlay state.' } }
+        '^09-' { return @{ questionId = 'Q-ER-PROVIDER-GATE'; plane = 'azure-er-circuit'; expectedEffect = 'ExpressRoute circuit is enabled and provider-provisioned unless the scenario intentionally faults it.' } }
+        '^1[01]-' { return @{ questionId = 'Q-MSEE-ROUTES'; plane = 'azure-msee'; expectedEffect = 'Primary and secondary MSEE route tables expose the expected underlay routes and no overlay shortcut.' } }
+        '^12b-' { return @{ questionId = 'Q-MANAGED-CONNECTION-ROUTES'; plane = 'azure-vwan-routes'; expectedEffect = 'Managed connection route view correlates with the active design, withdrawal or restore.' } }
+        '^12' { return @{ questionId = 'Q-AZURE-WORKLOAD-PATH'; plane = 'azure-workload'; expectedEffect = 'Workload effective routes, kernel FIB and packet headers match the selected encrypted overlay path.' } }
+        '^13-' { return @{ questionId = 'Q-GCP-CLOUD-ROUTER'; plane = 'gcp-router'; expectedEffect = 'Cloud Router sessions and best routes match the intended ER or Internet path preference.' } }
+        '^14' { return @{ questionId = 'Q-GCP-UNDERLAY'; plane = 'gcp-underlay'; expectedEffect = 'Partner attachment, instance aliases, VPC routes and firewall state match the intended underlay.' } }
+        '^1[5-8]-' { return @{ questionId = 'Q-CPE-BGP'; plane = 'cpe-bgp'; expectedEffect = 'FRR or BIRD neighbors and routes match the expected design, fault and restore state.' } }
+        '^19-' { return @{ questionId = 'Q-CPE-FIB'; plane = 'cpe-kernel'; expectedEffect = 'Kernel route lookups are non-recursive, fail closed, and use the expected XFRM interface.' } }
+        '^20-' { return @{ questionId = 'Q-CPE-XFRM'; plane = 'cpe-xfrm'; expectedEffect = 'XFRM interfaces, state and policy match the intended tunnel slots.' } }
+        '^21-' { return @{ questionId = 'Q-CPE-IPSEC'; plane = 'cpe-ipsec'; expectedEffect = 'StrongSwan connections and SAs match the intended private/public overlay health.' } }
+        '^22a-' { return @{ questionId = 'Q-CPE-FIREWALL'; plane = 'cpe-firewall'; expectedEffect = 'nftables rules and counters correlate with allowed or intentionally dropped traffic.' } }
+        '^22b-' { return @{ questionId = 'Q-CPE-CONFIG-INTEGRITY'; plane = 'cpe-config'; expectedEffect = 'Configuration hashes correlate before and after configuration, fault and restore operations.' } }
+        '^22-' { return @{ questionId = 'Q-CPE-SOCKETS'; plane = 'cpe-sockets'; expectedEffect = 'IKE/NAT-T and BGP sockets match the expected session state.' } }
+        '^23-' { return @{ questionId = 'Q-PACKET-PATH'; plane = 'packet'; expectedEffect = 'Packet headers identify the exact underlay, XFRM slot, BGP source and payload behavior.' } }
+        '^24-' { return @{ questionId = 'Q-MEGAPORT-STATE'; plane = 'megaport'; expectedEffect = 'MCR and all VXCs expose the expected path selection and provider/BGP state.' } }
+        default { return @{ questionId = 'Q-GENERAL'; plane = 'cross-plane'; expectedEffect = 'Captured state answers the scenario question without an unrecorded fallback.' } }
+    }
+}
+
+function Get-ParentQuestionId {
+    if ($Phase -match '^d2-corrected/apipa-correction') { return 'Q-BGP-APIPA-CORRECTION' }
+    if ($Phase -match '^d2-corrected/.+(fault|during|restore|after|assertion)') { return 'Q-D2-FAULTS' }
+    if ($Phase -match '^d2-corrected') { return 'Q-D2-PREFERENCE' }
+    if ($Phase -match '^(d3-prefix|compound)') { return 'Q-D3-PREFIX-BLACKHOLE' }
+    if ($Phase -match '^(restore|final-healthy)') { return 'Q-RESET-CONTAMINATION' }
+    if ($Phase -match '^deployment') { return 'Q-DEPLOYMENT-TRANSCRIPT' }
+    return 'Q-GENERAL'
 }
 
 function Assert-InventoryValue {
@@ -59,25 +103,82 @@ function Save-CommandOutput {
         [scriptblock]$Action
     )
     $display = Protect-Text $DisplayCommand
+    $descriptor = Get-EvidenceDescriptor $FileName
     if ($DryRun) {
         Write-Host "[DRY-RUN] $FileName :: $display"
         return
     }
-    $started = (Get-Date).ToUniversalTime().ToString('o')
+    $startDate = Get-Date
+    $startedUtc = $startDate.ToUniversalTime().ToString('o')
+    $startedLocal = $startDate.ToString('o')
+    $stdoutRecords = [System.Collections.Generic.List[string]]::new()
+    $stderrRecords = [System.Collections.Generic.List[string]]::new()
     try {
         $global:LASTEXITCODE = 0
-        $raw = & $Action 2>&1 | Out-String
+        $records = @(& $Action 2>&1)
+        foreach ($record in $records) {
+            if ($record -is [System.Management.Automation.ErrorRecord]) {
+                $stderrRecords.Add(($record | Out-String).TrimEnd())
+            } else {
+                $stdoutRecords.Add(($record | Out-String).TrimEnd())
+            }
+        }
         $exit = $LASTEXITCODE
     } catch {
-        $raw = $_ | Out-String
+        $stderrRecords.Add(($_ | Out-String).TrimEnd())
         $exit = 1
     }
+    $endDate = Get-Date
+    $endedUtc = $endDate.ToUniversalTime().ToString('o')
+    $endedLocal = $endDate.ToString('o')
+    $stdout = Protect-Text ($stdoutRecords -join [Environment]::NewLine)
+    $stderr = Protect-Text ($stderrRecords -join [Environment]::NewLine)
+    $baseName = [System.IO.Path]::GetFileNameWithoutExtension($FileName)
+    Set-Content -Path (Join-Path $OutputDir "$baseName.command.txt") -Value $display -Encoding utf8
+    Set-Content -Path (Join-Path $OutputDir "$baseName.stdout.txt") -Value $stdout -Encoding utf8
+    Set-Content -Path (Join-Path $OutputDir "$baseName.stderr.txt") -Value $stderr -Encoding utf8
+    $metadata = [ordered]@{
+        schemaVersion = 1
+        correlationId = [string]$Inventory.runId
+        scenario = $Phase
+        questionId = $descriptor.questionId
+        parentQuestionId = Get-ParentQuestionId
+        plane = $descriptor.plane
+        actionType = if ($FileName -match 'packet-capture') { 'capture' } else { 'query' }
+        state = ($Phase -split '/')[-1]
+        expectedEffect = $descriptor.expectedEffect
+        observedEffect = ''
+        commandFile = "$baseName.command.txt"
+        stdoutFile = "$baseName.stdout.txt"
+        stderrFile = "$baseName.stderr.txt"
+        combinedFile = $FileName
+        utcStarted = $startedUtc
+        utcEnded = $endedUtc
+        localStarted = $startedLocal
+        localEnded = $endedLocal
+        durationMs = [math]::Round(($endDate - $startDate).TotalMilliseconds)
+        exitCode = $exit
+        succeeded = ($exit -eq 0)
+        toolContext = '00-run-context.json'
+        workingDirectory = '<REPOSITORY_ROOT>'
+    }
+    $metadataText = Protect-Text ($metadata | ConvertTo-Json -Depth 8)
+    Set-Content -Path (Join-Path $OutputDir "$baseName.metadata.json") -Value $metadataText -Encoding utf8
     $body = @"
 # action: read-only evidence capture
-# utc_started: $started
+# question_id: $($descriptor.questionId)
+# plane: $($descriptor.plane)
+# expected_effect: $($descriptor.expectedEffect)
+# utc_started: $startedUtc
+# utc_ended: $endedUtc
+# local_started: $startedLocal
+# local_ended: $endedLocal
 # command: $display
 # exit_code: $exit
-$(Protect-Text $raw)
+# stdout:
+$stdout
+# stderr:
+$stderr
 "@
     Set-Content -Path (Join-Path $OutputDir $FileName) -Value $body -Encoding utf8
 }
@@ -155,6 +256,25 @@ if (-not $DryRun) {
 
 if (-not $DryRun) {
     New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
+    $runContext = [ordered]@{
+        schemaVersion = 1
+        correlationId = [string]$Inventory.runId
+        scenario = $Phase
+        utc = (Get-Date).ToUniversalTime().ToString('o')
+        local = (Get-Date).ToString('o')
+        timezone = [System.TimeZoneInfo]::Local.Id
+        host = [Environment]::MachineName
+        os = [System.Runtime.InteropServices.RuntimeInformation]::OSDescription
+        powershell = $PSVersionTable.PSVersion.ToString()
+        azureCli = ((az version -o json 2>&1 | Out-String).Trim())
+        gcloud = ((gcloud version --format=json 2>&1 | Out-String).Trim())
+        git = ((git --version 2>&1 | Out-String).Trim())
+        repository = 'erjosito/net-lab-builder'
+        workingDirectory = '<REPOSITORY_ROOT>'
+        inventory = 'config/inventory.json (runtime, ignored)'
+    }
+    Set-Content -Path (Join-Path $OutputDir '00-run-context.json') `
+        -Value (Protect-Text ($runContext | ConvertTo-Json -Depth 10)) -Encoding utf8
 }
 
 $rg = [string]$Inventory.azure.resourceGroup
@@ -312,6 +432,7 @@ if ($megaportCollector -and $megaportCollector -notmatch '^<') {
 }
 
 if (-not $DryRun) {
+    & (Join-Path $PSScriptRoot 'New-EvidenceIndex.ps1') -LabRoot $LabRoot
     & (Join-Path $PSScriptRoot 'Confirm-Sanitization.ps1') -Path $OutputDir
     Write-Host $OutputDir
 }

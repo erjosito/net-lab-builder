@@ -1,0 +1,1 @@
+az resource list --query "[?contains(name, 'ver') || contains(name, 'gcp')].{rg:resourceGroup,name:name,type:type}" -o table

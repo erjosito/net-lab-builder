@@ -1,0 +1,1 @@
+$i=Get-Content 'labs\vwan-ipsec-over-er-backup\config\inventory.json' -Raw|ConvertFrom-Json; az vm get-instance-view -g $i.azure.resourceGroup -n $i.azure.workloadVmName --query "instanceView.extensions[].{name:name,status:statuses[0].displayStatus}" -o json; az vm run-command list -g $i.azure.resourceGroup --vm-name $i.azure.workloadVmName -o table

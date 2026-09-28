@@ -1,0 +1,1 @@
+terraform -chdir=src\terraform\vwan-ipsec-over-er-backup fmt -check && terraform -chdir=src\terraform\vwan-ipsec-over-er-backup validate && terraform -chdir=src\terraform\vwan-ipsec-over-er-backup plan -detailed-exitcode -input=false -no-color -out=../../../labs/vwan-ipsec-over-er-backup/deploy/final-closure.tfplan

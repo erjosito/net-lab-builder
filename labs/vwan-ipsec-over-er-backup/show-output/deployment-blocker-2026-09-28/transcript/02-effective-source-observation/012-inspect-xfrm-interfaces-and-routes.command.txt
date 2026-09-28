@@ -1,0 +1,1 @@
+gcloud compute ssh cpe-ver-09281131 --project gcp-vwan-eripsec-09281131 --zone europe-north2-c --tunnel-through-iap --quiet --command "ip -br link show type xfrm; ip -br addr show type xfrm; echo ROUTES; ip route show table main; echo RULES; ip rule show"

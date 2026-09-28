@@ -1,0 +1,1 @@
+$rg='rg-vwan-ipsec-over-er-09281131'; $er='er-ver-09281131'; az network express-route list-route-tables -g $rg -n $er --peering-name AzurePrivatePeering --path secondary -o json

@@ -1,0 +1,1 @@
+$candidates = @('draw.io','drawio','C:\Program Files\draw.io\draw.io.exe','C:\Program Files\draw.io\draw.io'); foreach ($c in $candidates) { try { $cmd = Get-Command $c -ErrorAction Stop; Write-Output $cmd.Source } catch {} }; Get-Command magick -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source

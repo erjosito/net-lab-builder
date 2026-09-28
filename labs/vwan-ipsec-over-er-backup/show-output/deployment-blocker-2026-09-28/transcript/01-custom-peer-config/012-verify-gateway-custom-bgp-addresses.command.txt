@@ -1,0 +1,1 @@
+Start-Sleep -Seconds 60; az network vpn-gateway show -g rg-vwan-ipsec-over-er-09281131 -n vpngw-ver-09281131 --query "bgpSettings.bgpPeeringAddresses[].{instance:ipconfigurationId,custom:customBgpIpAddresses}" -o json

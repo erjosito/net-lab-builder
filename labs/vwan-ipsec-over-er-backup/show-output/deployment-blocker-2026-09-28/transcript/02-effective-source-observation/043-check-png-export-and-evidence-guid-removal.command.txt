@@ -1,0 +1,1 @@
+Get-Item 'labs\vwan-ipsec-over-er-backup\diagrams\01-physical-logical-topology.png' | Select-Object Length,LastWriteTime; Select-String -Path 'labs\vwan-ipsec-over-er-backup\show-output\deployment-blocker-2026-09-28\megaport-readonly.json' -Pattern '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}'

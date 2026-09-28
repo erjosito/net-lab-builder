@@ -1,0 +1,1 @@
+$s=Get-Content 'labs\vwan-ipsec-over-er-backup\deploy\.lab-state.json'|ConvertFrom-Json; $p="ver-$($s.run_id)"; $rg="rg-vwan-ipsec-over-er-$($s.run_id)"; az network vpn-gateway show -g $rg -n "vpngw-$p" --query "{bgp:bgpSettings.bgpPeeringAddresses,ips:ipConfigurations[].publicIpAddress}" -o json

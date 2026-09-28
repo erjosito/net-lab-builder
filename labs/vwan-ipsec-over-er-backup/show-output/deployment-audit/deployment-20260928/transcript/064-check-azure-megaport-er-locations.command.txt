@@ -1,0 +1,1 @@
+$ErrorActionPreference='Stop'; az network express-route list-service-providers --query "[?name=='Megaport'].{name:name,peeringLocations:peeringLocations,bandwidths:bandwidthsOffered}" -o json
