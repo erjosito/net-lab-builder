@@ -1,0 +1,255 @@
+# Validation plan - vWAN IPsec over ExpressRoute with Internet backup
+
+**Status:** Pre-deployment executable plan. No infrastructure has been provisioned or queried by this work.
+
+**Authority:** Locked `manifest.md`, Morpheus design-review contract, Trinity's authoritative `design.md`, Niobe charter and Azure lab evidence rules.
+
+## 1. Outcome and boundaries
+
+This plan proves the deployed topology from the application flow down through the kernel, IPsec, BGP, provider and Azure control planes. It does not deploy, reconfigure or delete resources.
+
+- Niobe runs `scripts/Collect-Evidence.ps1`, `scripts/Invoke-TimedProbes.ps1`, `scripts/Assert-ResetGate.ps1` and `scripts/Confirm-Sanitization.ps1`.
+- Tank supplies `config/inventory.json`, a secret-safe read-only Megaport collector, and a tested fault/restore operation for every mutation.
+- Trinity supplies the exact two-site/two-link endpoint map, route-policy attributes, D3 route ownership, application endpoints and fault ordering in `design.md`.
+- Tank performs faults and restores. Niobe captures before, during and after. Niobe does not improvise live mutations.
+- A failed restore, secret leak, prefix contamination, unexpected ECMP/asymmetry or loss of both MSEE paths stops the run.
+
+## 2. Evidence folders and naming
+
+Each capture is timestamped UTC:
+
+```text
+show-output/
+  baseline/<timestamp>/
+  d1-floating/<attempt-or-fault>/<timestamp>/
+  restore-after-d1/<timestamp>/
+  d2-separate/<fault>/<before|during|after>/<timestamp>/
+  restore-after-d2/<timestamp>/
+  d3-prefix/<fault>/<before|during|after>/<timestamp>/
+  restore-after-d3/<timestamp>/
+  final-healthy/<timestamp>/
+```
+
+Every text/JSON file contains the UTC start time, sanitized command and exit code. Raw PSKs, downloaded VPN configuration, ER service keys, GCP pairing keys, credentials, tokens, billing IDs and subscription IDs never enter the lab folder. Packet evidence committed to the repository is header-only `tcpdump` text (`snaplen 128`); any binary PCAP is staged outside the repository and reviewed before use.
+
+## 3. Runtime dependencies
+
+### Tank handoff gate
+
+`config/inventory.json`, copied from `config/inventory.template.json`, must contain:
+
+- Azure resource group; vHub/route-table, VPN gateway/sites/connections, ER gateway/connection/circuit, workload VM and NIC identifiers.
+- Trinity/Tank-supplied read-only route API requests for the private VPN connection, public VPN connection and ER connection. Each request pins its API version.
+- GCP project, region, zone, Cloud Router, Partner attachment and CPE VM.
+- A read-only Megaport collector path that emits MCR inventory, all three VXCs, both Azure path selections, BGP connection state and looking-glass output when available.
+- Bidirectional HTTP health URLs.
+- No secrets.
+
+Tank must also publish one reviewed fault and one tested restore for every row in `config/scenarios.json`. Restore commands must be usable before the matching fault is authorized.
+
+### Trinity design contract
+
+`design.md` fixes four StrongSwan/XFRM slots: `pri0`/410, `pri1`/411, `pub0`/420 and `pub1`/421. D2 uses three extra `65050` prepends on the public advertisements for Azure-to-GCP selection and FRR local preference 200 private / 100 public for GCP-to-Azure selection. D3 uses private BGP `/25`s, an Azure public-site static `/24`, and a CPE reverse static route at distance 250. Convergence is measured against discovered timers; no tighter SLA is invented.
+
+Tank still supplies generated endpoint values, the exact narrow partial-workload drop, runtime application listeners and reviewed reversible commands.
+
+## 4. Mandatory capture set
+
+`Collect-Evidence.ps1` captures the same set before, during and after every fault.
+
+| Layer | Required evidence | Primary artifact |
+|---|---|---|
+| Azure vHub | Effective routes for the selected route table, with origin and next hop | `01-vhub-effective-routes.json` |
+| vWAN VPN | Gateway, both sites and both connections; link/tunnel endpoint identity and provisioning state | `02`-`06` |
+| vWAN ER | ER gateway and connection state | `07`-`08` |
+| ER circuit/MSEE | Circuit state and primary plus secondary private-peering route tables in JSON | `09`-`11` |
+| Azure workload | NIC effective routes | `12-workload-nic-effective-routes.json` |
+| Azure workload OS | Kernel routes/rules and header-only packet capture | `12a`, `12c` |
+| Managed connection route APIs | Private VPN, public VPN and ER connection learned/advertised/effective route views defined by Trinity/Tank | `12b-*.json` |
+| GCP control plane | Cloud Router status, learned/advertised/best routes, Partner VLAN attachment state | `13`-`14` |
+| Linux overlay | FRR summary/RIB; BIRD protocols/RIB when installed | `15`-`18` |
+| Linux forwarding | Kernel routes, rules, anti-recursion route lookups, link/XFRM state, nftables rules and configuration hashes | `19`-`20`, `22a`-`22b` |
+| StrongSwan | IKE/child SAs and loaded connection definitions, without PSKs | `21-cpe-strongswan.txt` |
+| Transport sockets | IKE/NAT-T and established BGP sockets | `22-cpe-sockets.txt` |
+| Packets | Timestamped IKE, NAT-T, ESP, BGP and ICMP headers | `23-cpe-packet-capture.txt` |
+| Megaport | MCR/VXC inventory, path selection, BGP neighbor state and looking-glass fallback | `24-megaport-mcr-vxcs.json` |
+| Application | Concurrent timestamped ICMP plus HTTP status/connect/total time in both directions; one target per active prefix (`D3` has two) | `timed-application-probes-*.txt` |
+
+MCR looking-glass output is supplemental. Empty looking-glass output does not prove absence of routes; VXC BGP connection state and the adjacent Azure/GCP tables are the fallback.
+
+## 5. Baseline: underlay, overlay and no unencrypted ER shortcut
+
+Baseline must pass before D1.
+
+### Underlay proof
+
+1. ER circuit is `Enabled` and provider state is `Provisioned`.
+2. Both Azure VXCs are live and explicitly target different primary/secondary MSEE paths.
+3. Both ER route tables expose expected Partner/GCP reachability; Cloud Router and Partner attachment are operational.
+4. The private CPE endpoint and each Azure private VPN endpoint are mutually reachable only through the Partner Interconnect/MCR/ER underlay.
+5. The public CPE endpoint and Azure public VPN endpoints use the Internet underlay.
+
+### Overlay proof
+
+1. All expected private and public active-active IKE/child SAs are installed and individually identifiable.
+2. Expected FRR neighbors are `Established`; the exact number follows Trinity's design.
+3. `10.241.0.0/24` and the active experiment prefix appear at the expected vHub, CPE and workload layers.
+4. Bidirectional probes succeed for two consecutive intervals.
+
+### Exclude an unencrypted ER shortcut
+
+The ER underlay may carry only VPN endpoint reachability and infrastructure prefixes. The following is a hard fail:
+
+- `10.241.0.0/24`, `10.253.1.0/24`, `10.253.2.0/24`, `10.253.3.0/24` or either D3 `/25` appears as a directly usable cleartext ER route that bypasses the IPsec overlay; or
+- workload traffic continues over ER after the private IPsec SAs and overlay BGP routes are removed, without using the public VPN overlay.
+
+Proof combines MSEE/MCR/GCP tables, CPE `ip route get`, XFRM policies and packet capture. During a controlled private-IPsec-only failure, packets for an overlay test prefix must not appear as cleartext payload on the ER-facing interface. ESP/NAT-T headers are expected; application TCP/ICMP outside the XFRM policy is not.
+
+## 6. D1 - floating single-adjacency attempt
+
+### Prerequisite gates
+
+Before interpreting a D1 failure:
+
+- Baseline passed with both MSEE paths.
+- The D1-only prefix `10.253.1.0/24` is the only experiment prefix present.
+- `10.250.254.242` is implemented using the supported GCP alias/secondary-range construct.
+- Private and public endpoint slots, PSKs, host routes, VTI/XFRM identities and firewall rules are correct.
+- Each tunnel can establish independently with BGP disabled.
+- Azure peer reachability is proven on each intended underlay.
+- FRR configuration parses successfully and no duplicate local VTI/interface address exists.
+
+### Attempt and evidence ladder
+
+1. **Azure API validation:** Tank attempts the same CPE ASN/peer address on the two supported site/link definitions. Capture sanitized request shape, HTTP status/error code and response.
+2. **If accepted, private active:** Enable only the private underlay; capture IKE/IPsec, BGP, routes, packets and probes.
+3. **Move without identity change:** Withdraw private underlay, confirm its routes leave, then enable public underlay without changing `65050 / 10.250.254.242`.
+4. **Reverse move:** Repeat public-to-private.
+5. Run two consecutive cycles only if the first cycle is clean and restorable.
+
+### Verdict
+
+**Hypothesis confirmed / teaching-only** when supported Azure validation rejects the duplicate identity, or when the unchanged neighbor cannot re-form on the alternate managed endpoint while that endpoint's reachability and IKE/IPsec are independently healthy, or when stale routes survive transport withdrawal.
+
+**Implementation failure, no verdict** when any prerequisite is false: wrong PSK/endpoint, absent route, blocked IKE/ESP/BGP, bad FRR syntax, interface collision, degraded ER/GCP/Megaport state or missing active-active slot.
+
+**Hypothesis rejected** when the same adjacency moves private-to-public and public-to-private in two clean cycles with correct withdrawal, bounded measured loss and no stale routes.
+
+## 7. D2 - separate adjacencies, ER primary and Internet backup
+
+The private peer is `10.250.254.240`; the public peer is `10.250.254.241`. Peer tuples must be unique across all four gateway slots.
+
+### Healthy-state pass
+
+- Every expected neighbor is `Established`.
+- The D2-only prefix `10.253.2.0/24` has an eligible path over both overlays.
+- Azure-to-GCP selects private because the public advertisements carry three extra `65050` prepends.
+- GCP-to-Azure selects private because FRR applies local preference 200 private / 100 public.
+- No unintended ECMP exists for stateful application traffic.
+- Packet capture and kernel lookups agree with the control-plane choice.
+
+### Fault pass criteria
+
+| Fault | Required D2 result |
+|---|---|
+| Single MSEE/VXC | ER overlay remains usable through the surviving MSEE path; no route moves to Internet solely because one provider leg failed. |
+| Full ER failure | Private overlay withdraws; public overlay becomes best in both directions; probes recover and stay symmetric. |
+| Private IPsec-only | Private SAs disappear while ER underlay remains; private BGP routes withdraw and public overlay wins. |
+| Private BGP-only | Private SAs remain installed; only private BGP routes withdraw; public overlay wins. |
+| Public IPsec/BGP-only | Private ER overlay remains best and probes continue; only backup state changes. |
+| Partial workload-plane drop | Control plane remains healthy and no route failover is falsely claimed; packet counters/captures locate the drop. |
+| Internet failure | Public overlay withdraws or becomes unusable; private overlay remains best and healthy. |
+| Failback | Restored ER path becomes primary in both directions without stale Internet preference, ECMP or sustained probe loss. |
+
+Measure withdrawal, first failed probe, first recovered probe, route convergence and failback. Trinity's target determines timing pass/fail; otherwise report measured values only.
+
+## 8. D3 - ER more-specifics and Internet static aggregate
+
+### Healthy-state pass
+
+- ER/BGP advertises `10.253.3.0/25` and `10.253.3.128/25`.
+- Internet backup installs `10.253.3.0/24` as a static covering route.
+- CPE reverse forwarding keeps an Internet-XFRM `10.241.0.0/24` static route at distance 250 behind eBGP distance 20.
+- Both `/25`s win by longest-prefix match in both directions.
+- Probes to one address in each `/25` use the ER overlay.
+
+### Normal failover
+
+Withdraw the ER/BGP more-specifics while Internet is healthy. PASS when both probe destinations use the `/24` Internet path and recover. Restore the `/25`s; PASS when traffic returns to ER.
+
+### Required compound blackhole test
+
+1. Fail Internet transport first.
+2. Prove the static `/24` remains installed unless Trinity's health automation removes it.
+3. Confirm ER `/25`s still carry probes.
+4. Withdraw ER/BGP `/25`s.
+5. Capture vHub, CPE, FIB, SAs, packets and probes during the resulting state.
+
+**Predicted health-blind result:** the `/24` remains selected but its Internet next hop is unusable; both probe destinations fail and packets follow or attempt the dead backup. This is a documented blackhole, not a harness failure.
+
+If automation withdraws the `/24`, capture that behavior and reject the predicted blackhole hypothesis. Do not claim a blackhole from route tables alone; packet/probe loss and the selected dead next hop are both required.
+
+## 9. Strict reset and contamination gate
+
+Order is fixed:
+
+`baseline -> D1 -> restore -> D2 -> restore -> D3 -> restore -> final healthy`
+
+Before the next design:
+
+1. Tank applies the last-known-good bundle and reverts every fault.
+2. Niobe captures the complete mandatory set plus at least two bidirectional probe intervals.
+3. `Assert-ResetGate.ps1` requires the next design's prefix set and rejects any D1/D2/D3 prefix from another design.
+4. Manual checks confirm no stale static route, route-map, AS-path action, BGP neighbor, VTI/XFRM interface/state or fault rule remains.
+5. Both MSEE/VXC paths, Partner attachment, managed gateways, expected SAs and expected BGP neighbors are healthy.
+
+Any contamination stops the experiment. Do not "continue and account for it" in analysis.
+
+## 10. Execution pattern
+
+Dry-run the collectors before deployment values exist:
+
+```powershell
+pwsh .\scripts\Collect-Evidence.ps1 `
+  -InventoryPath .\config\inventory.template.json `
+  -Phase baseline `
+  -DryRun
+
+pwsh .\scripts\Invoke-TimedProbes.ps1 `
+  -InventoryPath .\config\inventory.template.json `
+  -Phase baseline `
+  -DryRun
+```
+
+At runtime, after Tank publishes `config/inventory.json`:
+
+```powershell
+pwsh .\scripts\Invoke-TimedProbes.ps1 `
+  -InventoryPath .\config\inventory.json `
+  -Phase d2-separate/full-er/during `
+  -Design D2 `
+  -DurationSeconds 180 `
+  -IntervalSeconds 5
+
+pwsh .\scripts\Collect-Evidence.ps1 `
+  -InventoryPath .\config\inventory.json `
+  -Phase d2-separate/full-er/during `
+  -CaptureSeconds 30
+
+pwsh .\scripts\Assert-ResetGate.ps1 `
+  -InventoryPath .\config\inventory.json `
+  -EvidencePath .\show-output\restore-after-d2\<timestamp> `
+  -ExpectedDesign D3
+```
+
+The timed probe should start before Tank injects a fault and remain active through restore. Collect snapshots immediately before the fault, after the expected convergence window, and after restore.
+
+## 11. Pass/fail publication rules
+
+- README statuses remain pending until execution.
+- A design verdict cites exact evidence paths and quotes route/session/probe facts.
+- D1 cannot be called unsupported from expectation or documentation alone; the observed supported API/control-plane failure is authoritative.
+- D2 cannot be recommended without deterministic preference in both directions and successful failure plus failback evidence.
+- D3 cannot be called a blackhole without the backup-down-then-primary-down packet and probe result.
+- Missing provider/MCR evidence makes the affected route claim inconclusive, not pass.
+- A failed diagnostic command is preserved with its exit code; it is never silently replaced with a success-shaped fallback.

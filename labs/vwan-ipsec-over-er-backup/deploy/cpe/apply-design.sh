@@ -14,6 +14,7 @@ case "$DESIGN" in
     local_private=10.250.254.242
     local_public=10.250.254.242
     advertised=10.253.1.0/24
+    target_ips="10.253.1.10"
     public_prepend=""
     d3_fallback=""
     public_bgp_enabled=true
@@ -36,6 +37,7 @@ case "$DESIGN" in
     local_private=10.250.254.240
     local_public=10.250.254.241
     advertised=10.253.2.0/24
+    target_ips="10.253.2.10"
     public_prepend="set as-path prepend 65050 65050 65050"
     d3_fallback=""
     public_bgp_enabled=true
@@ -48,6 +50,7 @@ case "$DESIGN" in
     local_private=10.250.254.240
     local_public=10.250.254.241
     advertised="10.253.3.0/25 10.253.3.128/25"
+    target_ips="10.253.3.10 10.253.3.138"
     public_prepend=""
     d3_fallback=$'ip route 10.241.0.0/24 xfrm-pub0 250\nip route 10.241.0.0/24 xfrm-pub1 250'
     public_bgp_enabled=false
@@ -65,6 +68,7 @@ install -d -m 0700 /etc/vwan-lab
 cat >/etc/vwan-lab/network.env <<EOF
 DESIGN=$DESIGN
 D1_PHASE=$D1_PHASE
+TARGET_IPS="$target_ips"
 PRI0_IKE=$PRI0_IKE
 PRI1_IKE=$PRI1_IKE
 PUB0_IKE=$PUB0_IKE
@@ -99,6 +103,12 @@ source /etc/vwan-lab/network.env
 
 for addr in 10.250.254.240 10.250.254.241 10.250.254.242 10.250.254.250; do
   ip address replace "$addr/32" dev lo
+done
+for addr in 10.253.1.10 10.253.2.10 10.253.3.10 10.253.3.138; do
+  ip address del "$addr/32" dev lo 2>/dev/null || true
+done
+for addr in $TARGET_IPS; do
+  ip address add "$addr/32" dev lo
 done
 
 for spec in pri0:410 pri1:411 pub0:420 pub1:421; do

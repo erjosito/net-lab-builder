@@ -86,7 +86,7 @@ resource "google_compute_firewall" "lab_private" {
 
   allow {
     protocol = "tcp"
-    ports    = ["179", "22"]
+    ports    = ["179", "22", "8080"]
   }
 
   source_ranges = ["10.240.0.0/15", "10.250.0.0/16", "10.253.0.0/16", "35.235.240.0/20"]

@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "sequence": [
+    "baseline",
+    "d1-floating",
+    "restore-after-d1",
+    "d2-separate",
+    "restore-after-d2",
+    "d3-prefix",
+    "restore-after-d3",
+    "final-healthy"
+  ],
+  "faults": [
+    {
+      "id": "single-msee-vxc",
+      "designs": ["D2", "D3"],
+      "owner": "Tank",
+      "fault": "Disable exactly one Azure VXC/MSEE path without changing overlay configuration.",
+      "restore": "Re-enable the same VXC and wait for provider and BGP state to return.",
+      "pass": "The ER service remains usable through the surviving MSEE path and probes have no sustained failure."
+    },
+    {
+      "id": "full-er",
+      "designs": ["D1", "D2", "D3"],
+      "owner": "Tank",
+      "fault": "Disable both Azure VXCs or the vHub ER connection using the reviewed reversible operation.",
+      "restore": "Restore both paths and prove serviceProviderProvisioningState=Provisioned before proceeding.",
+      "pass": "D2 moves to the Internet overlay; D3 uses the Internet aggregate when healthy; D1 behavior is classified at the exact failed layer."
+    },
+    {
+      "id": "ipsec-only",
+      "designs": ["D2", "D3"],
+      "owner": "Tank",
+      "fault": "Stop or administratively disable only the selected StrongSwan child/IKE association.",
+      "restore": "Reload and initiate only the affected connection; do not alter BGP policy.",
+      "pass": "Only routes dependent on that IPsec path withdraw and the surviving design path carries probes."
+    },
+    {
+      "id": "bgp-only",
+      "designs": ["D1", "D2", "D3"],
+      "owner": "Tank",
+      "fault": "Administratively shut only the selected FRR neighbor while leaving IKE/IPsec established.",
+      "restore": "No-shut the same neighbor and wait for the original route set.",
+      "pass": "Captures prove SAs stay up while BGP routes withdraw; forwarding follows the remaining eligible route."
+    },
+    {
+      "id": "partial-workload-plane-drop",
+      "designs": ["D2", "D3"],
+      "owner": "Tank",
+      "fault": "Apply the reviewed narrow drop to the application flow while underlay, IKE/IPsec and BGP stay healthy.",
+      "restore": "Remove the exact drop rule and verify counters stop increasing.",
+      "pass": "The harness distinguishes application/data-plane loss from control-plane health; no false route failover is claimed."
+    },
+    {
+      "id": "internet",
+      "designs": ["D1", "D2", "D3"],
+      "owner": "Tank",
+      "fault": "Remove or block only the CPE public underlay reachability using the reviewed reversible operation.",
+      "restore": "Restore public reachability and both public active-active tunnel slots.",
+      "pass": "The private ER overlay remains healthy; only Internet-dependent routes and probes change."
+    },
+    {
+      "id": "d3-internet-then-primary",
+      "designs": ["D3"],
+      "owner": "Tank",
+      "fault": "First fail the Internet backup, prove the static aggregate remains installed, then withdraw the ER/BGP more-specifics.",
+      "restore": "Restore ER more-specifics first, then Internet, then run the full reset gate.",
+      "pass": "The expected blackhole is proved by route presence plus packet/probe loss, or health automation withdraws the aggregate and that behavior is captured."
+    }
+  ]
+}

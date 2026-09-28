@@ -67,3 +67,18 @@ variable "deploy_megaport" {
   type    = bool
   default = false
 }
+
+variable "megaport_azure_primary_shutdown" {
+  type    = bool
+  default = false
+}
+
+variable "megaport_azure_secondary_shutdown" {
+  type    = bool
+  default = false
+}
+
+variable "megaport_gcp_shutdown" {
+  type    = bool
+  default = false
+}

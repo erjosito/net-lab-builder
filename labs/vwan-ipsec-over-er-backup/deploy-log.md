@@ -102,3 +102,13 @@ The VM stop schedules reduce compute exposure only. The managed gateways, ER cir
 - no XFRM SAs or overlay BGP sessions.
 
 After the Stockholm decision is resolved, Tank must resume provider ordering, wait for both Azure MSEE paths and the GCP attachment, create the vHub ER connection, create the private/public VPN connections, retrieve runtime values, apply the CPE bundle, narrow endpoint filtering, and establish a healthy D2 baseline. Niobe then follows `validation-plan.md` and the reset order in `design.md`; smoke results above are not scenario evidence.
+
+### Harness preparation completed
+
+- `config/inventory.json` is populated and ignored by Git. It contains the live foundation identifiers and all four deployment-generated VPN gateway IKE/BGP endpoint mappings without PSKs or provider keys.
+- Provider-dependent VPN site/connection, ER connection, MCR, and VXC identifiers are explicitly null until those resources exist; collectors therefore fail closed rather than inventing values.
+- The three managed-route requests use the official Virtual Hub `effectiveRoutes` API pinned to `2025-09-01`, with `VpnConnection` or `ExpressRouteConnection` resource types. The evidence collector polls the asynchronous Location URL to completion.
+- `deploy/Collect-MegaportReadOnly.ps1` emits only selected product, path-selection, and BGP-session fields and omits service/pairing keys. Before deployment it returns `not-deployed`.
+- HTTP health listeners are installed and active on the Azure workload and GCP CPE. Reverse probes bind to the active experiment address so they cannot silently use the cleartext CPE endpoint identity.
+- Reviewed fault/restore commands are recorded in runtime inventory and implemented by `deploy/Invoke-LabFault.ps1`. CPE controls are installed under `/opt/vwan-lab`.
+- The partial workload-plane drop is limited to ICMP echo requests and TCP/8080 between `10.241.0.4` and only the active design target address(es). It does not match IKE, ESP, BGP, provider underlay, or unrelated payload traffic.

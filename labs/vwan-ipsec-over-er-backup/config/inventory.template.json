@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "runId": "<RUN_ID>",
+  "deploymentStatus": "<DEPLOYMENT_STATUS>",
+  "azure": {
+    "resourceGroup": "<AZURE_RESOURCE_GROUP>",
+    "vhubName": "<VWAN_HUB_NAME>",
+    "vhubRouteTableId": "<VWAN_ROUTE_TABLE_RESOURCE_ID>",
+    "vpnGatewayId": "<VWAN_VPN_GATEWAY_RESOURCE_ID>",
+    "privateVpnSiteId": "<PRIVATE_VPN_SITE_RESOURCE_ID>",
+    "publicVpnSiteId": "<PUBLIC_VPN_SITE_RESOURCE_ID>",
+    "privateVpnConnectionId": "<PRIVATE_VPN_CONNECTION_RESOURCE_ID>",
+    "publicVpnConnectionId": "<PUBLIC_VPN_CONNECTION_RESOURCE_ID>",
+    "expressRouteGatewayId": "<VWAN_ER_GATEWAY_RESOURCE_ID>",
+    "expressRouteConnectionId": "<VWAN_ER_CONNECTION_RESOURCE_ID>",
+    "expressRouteCircuitName": "<ER_CIRCUIT_NAME>",
+    "expressRoutePeeringName": "AzurePrivatePeering",
+    "workloadVmName": "<AZURE_WORKLOAD_VM_NAME>",
+    "workloadNicName": "<AZURE_WORKLOAD_NIC_NAME>",
+    "routeQueries": [
+      {
+        "name": "vpn-private-routes",
+        "method": "POST",
+        "url": "https://management.azure.com<AZURE_VHUB_RESOURCE_ID>/effectiveRoutes?api-version=2025-09-01",
+        "body": {
+          "resourceId": "<PRIVATE_VPN_CONNECTION_RESOURCE_ID>",
+          "virtualWanResourceType": "VpnConnection"
+        }
+      },
+      {
+        "name": "vpn-public-routes",
+        "method": "POST",
+        "url": "https://management.azure.com<AZURE_VHUB_RESOURCE_ID>/effectiveRoutes?api-version=2025-09-01",
+        "body": {
+          "resourceId": "<PUBLIC_VPN_CONNECTION_RESOURCE_ID>",
+          "virtualWanResourceType": "VpnConnection"
+        }
+      },
+      {
+        "name": "er-connection-routes",
+        "method": "POST",
+        "url": "https://management.azure.com<AZURE_VHUB_RESOURCE_ID>/effectiveRoutes?api-version=2025-09-01",
+        "body": {
+          "resourceId": "<VWAN_ER_CONNECTION_RESOURCE_ID>",
+          "virtualWanResourceType": "ExpressRouteConnection"
+        }
+      }
+    ]
+  },
+  "gcp": {
+    "projectId": "<GCP_PROJECT_ID>",
+    "region": "europe-north2",
+    "zone": "<GCP_CPE_ZONE>",
+    "routerName": "<GCP_CLOUD_ROUTER_NAME>",
+    "attachmentName": "<GCP_VLAN_ATTACHMENT_NAME>",
+    "cpeVmName": "<GCP_CPE_VM_NAME>"
+  },
+  "generatedTunnelSlots": [
+    {
+      "name": "pri0",
+      "ikeEndpoint": "<AZURE_PRIVATE_INSTANCE0_IKE_IP>",
+      "bgpPeer": "<AZURE_PRIVATE_INSTANCE0_BGP_IP>",
+      "localBgpSource": "10.250.254.240",
+      "xfrmInterface": "xfrm-pri0",
+      "xfrmId": 410
+    },
+    {
+      "name": "pri1",
+      "ikeEndpoint": "<AZURE_PRIVATE_INSTANCE1_IKE_IP>",
+      "bgpPeer": "<AZURE_PRIVATE_INSTANCE1_BGP_IP>",
+      "localBgpSource": "10.250.254.240",
+      "xfrmInterface": "xfrm-pri1",
+      "xfrmId": 411
+    },
+    {
+      "name": "pub0",
+      "ikeEndpoint": "<AZURE_PUBLIC_INSTANCE0_IKE_IP>",
+      "bgpPeer": "<AZURE_PUBLIC_INSTANCE0_BGP_IP>",
+      "localBgpSource": "10.250.254.241",
+      "xfrmInterface": "xfrm-pub0",
+      "xfrmId": 420
+    },
+    {
+      "name": "pub1",
+      "ikeEndpoint": "<AZURE_PUBLIC_INSTANCE1_IKE_IP>",
+      "bgpPeer": "<AZURE_PUBLIC_INSTANCE1_BGP_IP>",
+      "localBgpSource": "10.250.254.241",
+      "xfrmInterface": "xfrm-pub1",
+      "xfrmId": 421
+    }
+  ],
+  "megaport": {
+    "collectorScript": "<TANK_MEGAPORT_READ_ONLY_COLLECTOR_PATH>",
+    "mcrUid": null,
+    "vxcUids": {
+      "azurePrimary": null,
+      "azureSecondary": null,
+      "gcp": null
+    }
+  },
+  "operations": {
+    "faultScript": "<TANK_FAULT_SCRIPT_PATH>",
+    "reviewed": [
+      {
+        "scenarioId": "single-msee-vxc",
+        "faultName": "single-msee-primary",
+        "faultCommand": "<FAULT_SCRIPT> -Fault single-msee-primary -Operation Fault -InventoryPath <INVENTORY>",
+        "restoreCommand": "<FAULT_SCRIPT> -Fault single-msee-primary -Operation Restore -InventoryPath <INVENTORY>"
+      },
+      {
+        "scenarioId": "partial-workload-plane-drop",
+        "faultName": "partial-workload-plane-drop",
+        "faultCommand": "<FAULT_SCRIPT> -Fault partial-workload-plane-drop -Operation Fault -InventoryPath <INVENTORY>",
+        "restoreCommand": "<FAULT_SCRIPT> -Fault partial-workload-plane-drop -Operation Restore -InventoryPath <INVENTORY>"
+      }
+    ]
+  },
+  "probe": {
+    "azureWorkloadIp": "<AZURE_WORKLOAD_PRIVATE_IP>",
+    "azureUrlFromGcp": "http://<AZURE_WORKLOAD_PRIVATE_IP>:8080/health",
+    "designTargets": {
+      "D1": [
+        {
+          "ip": "10.253.1.10",
+          "url": "http://10.253.1.10:8080/health"
+        }
+      ],
+      "D2": [
+        {
+          "ip": "10.253.2.10",
+          "url": "http://10.253.2.10:8080/health"
+        }
+      ],
+      "D3": [
+        {
+          "ip": "10.253.3.10",
+          "url": "http://10.253.3.10:8080/health"
+        },
+        {
+          "ip": "10.253.3.138",
+          "url": "http://10.253.3.138:8080/health"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "baselinePrefix": "10.241.0.0/24",
+    "designPrefixes": {
+      "D1": [
+        "10.253.1.0/24"
+      ],
+      "D2": [
+        "10.253.2.0/24"
+      ],
+      "D3": [
+        "10.253.3.0/24",
+        "10.253.3.0/25",
+        "10.253.3.128/25"
+      ]
+    }
+  }
+}

@@ -1355,3 +1355,17 @@ All three files pass py_compile; 10/10 unit tests pass.
 - Added explicit Azure VPN bundle replacement semantics so D1/D2/D3 switches cannot silently reuse stale site prefixes or BGP identity.
 - Corrected reset ordering to flush XFRM state before invoking the complete persisted restore.
 - Re-ran non-billable Stockholm validation after the binding review; Megaport still returned HTTP 400 `Missing markets: Sweden`. This now maps directly to Trinity section 13's stop condition for an unapproved topology-changing quote substitution. No order was submitted.
+
+---
+
+## TANK-023 -- Niobe harness deployment handoff (2026-09-28)
+
+- Read `validation-plan.md`, all evidence/reset/probe scripts, the inventory schema, and scenario contract.
+- Generated ignored `config/inventory.json` with live foundation identifiers and four generated VPN gateway slot mappings. Provider-dependent connection/Megaport IDs remain null until those resources exist.
+- Replaced placeholder managed-route shapes with the official Virtual Hub `effectiveRoutes` API pinned to `2025-09-01`; live testing confirmed HTTP 202 behavior, so the collector now polls the Location URL and returns the completed route list.
+- Added a read-only Megaport collector that selects MCR/VXC state, Azure path selection, and BGP sessions without emitting service keys, pairing keys, tokens, or credentials. Its pre-order smoke result is `not-deployed`.
+- Installed persistent HTTP/8080 health listeners on the Azure workload and GCP CPE. Updated reverse probes to bind each active experiment source address.
+- Added reviewed reversible fault operations for individual/both Azure VXCs, the GCP VXC, IPsec-only, BGP-only, Internet-only, and the application-only workload drop. Terraform VXC `shutdown` flags provide reversible provider faults.
+- The partial workload fault uses a dedicated nftables table and matches only ICMP echo requests and TCP/8080 between the Azure workload and active experiment targets; control-plane traffic remains untouched. Syntax was validated on the live CPE.
+- Updated evidence config hashes to the deployed `vwan-lab-network` and `vwan-lab-ipsec` units and installed current CPE controls under `/opt/vwan-lab`.
+- Opened GCP TCP/8080 in place with zero destructive actions. Harness and timed-probe dry runs pass against the populated inventory.

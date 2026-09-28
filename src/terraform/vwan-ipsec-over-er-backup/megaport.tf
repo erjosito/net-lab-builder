@@ -17,6 +17,7 @@ resource "megaport_vxc" "azure_primary" {
   product_name         = "vxc-azure-primary-${local.prefix}"
   rate_limit           = 50
   contract_term_months = 1
+  shutdown             = var.megaport_azure_primary_shutdown
   resource_tags        = local.tags
 
   a_end = {
@@ -38,6 +39,7 @@ resource "megaport_vxc" "azure_secondary" {
   product_name         = "vxc-azure-secondary-${local.prefix}"
   rate_limit           = 50
   contract_term_months = 1
+  shutdown             = var.megaport_azure_secondary_shutdown
   resource_tags        = local.tags
 
   a_end = {
@@ -59,6 +61,7 @@ resource "megaport_vxc" "gcp" {
   product_name         = "vxc-gcp-${local.prefix}"
   rate_limit           = 50
   contract_term_months = 1
+  shutdown             = var.megaport_gcp_shutdown
   resource_tags        = local.tags
 
   a_end = {
