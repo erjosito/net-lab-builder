@@ -28,7 +28,7 @@
 ### Design D2: Separate BGP adjacencies with deterministic preference - correction and authorized retry failed
 
 **Status:** The original bounded attempt and one user-authorized clean retry after local GSA disablement both completed and rolled back.
-**Verdict:** Neither attempt produced four unique sessions. Azure persisted the public APIPA peer and custom mappings but continued sourcing public TCP/179 from the default gateway addresses.
+**Verdict:** Neither attempt produced four unique sessions. Azure persisted the public APIPA peer and custom mappings, but the custom peers did not answer CPE-initiated SYNs while Azure continued initiating public TCP/179 from the default gateway addresses. This is a configuration/API association unresolved pending Trinity review, not a demonstrated platform limitation.
 
 **What it is:** Private sessions use Azure defaults `10.240.0.12/.13` from CPE source `10.250.254.240`; public sessions use custom peers `169.254.22.2/.3` from CPE source `169.254.22.1`. Route policy makes the ER-carried overlay primary and Internet backup.
 
@@ -38,7 +38,7 @@
 - `validation-plan.md` - D2 path-selection and fault matrix
 - `design.md` sections 5, 7 and 10 - four-neighbor model, AS-path/local-preference policy and faults
 
-**Why this verdict:** The CPE had the required APIPA loopback, XFRM routes, active FRR neighbors, and four healthy SAs. During both bounded captures, `169.254.22.2/.3` received no messages while public XFRM interfaces received BGP from `10.240.0.12/.13`. Disabling local GSA removed the WSL DNS warning but did not change Azure API behavior or effective BGP source selection. The authorized retry met its explicit rollback condition and no further retry is allowed.
+**Why this verdict:** The CPE had the required APIPA loopback, XFRM routes, active FRR neighbors, and four healthy SAs. During both bounded captures, `169.254.22.2/.3` received no BGP messages while public XFRM interfaces received BGP from `10.240.0.12/.13`. The retry additionally proves that CPE SYNs reached both custom peers without SYN-ACK or RST. Disabling local GSA removed the WSL DNS warning but did not change the observed result. The exact configuration/API association remains unresolved, the retry met its explicit rollback condition, and no further retry is allowed without Trinity review.
 
 **Use this design when:**
 - Private and public transports must have independent health, policy and withdrawal.

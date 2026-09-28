@@ -1,0 +1,15 @@
+$sub = az account show --query id -o tsv
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+$base = "https://management.azure.com/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network"
+$requests = @(
+    @{ label = 'vpnGateway'; path = '/vpnGateways/vpngw-ver-09281131'; api = '2025-09-01' },
+    @{ label = 'publicVpnSite'; path = '/vpnSites/site-gcp-inet'; api = '2025-09-01' },
+    @{ label = 'publicVpnConnectionWithEmbeddedLink'; path = '/vpnGateways/vpngw-ver-09281131/vpnConnections/conn-gcp-inet'; api = '2025-09-01' },
+    @{ label = 'privateVpnConnectionWithEmbeddedLink'; path = '/vpnGateways/vpngw-ver-09281131/vpnConnections/conn-gcp-er'; api = '2025-09-01' },
+    @{ label = 'virtualHub'; path = '/virtualHubs/vhub-ver-09281131'; api = '2025-09-01' }
+)
+foreach ($request in $requests) {
+    Write-Output "=== GET $($request.label) api-version=$($request.api) post-rollback-closure ==="
+    az rest --method get --url "$base$($request.path)?api-version=$($request.api)" --only-show-errors -o json
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+}

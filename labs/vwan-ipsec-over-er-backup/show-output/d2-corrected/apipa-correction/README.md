@@ -36,7 +36,7 @@ The `transcript/` directory contains 89 command records reconstructed from the l
 | 15:23:36 | `062` | LF-normalized CPE correction succeeded: APIPA loopback, four source-specific XFRM routes, FRR neighbors and filtering were applied without restarting StrongSwan. |
 | 15:24:08 | `065` | Bounded convergence capture showed `.12` Established, `.13` Active, and both custom public peers Connect with zero messages. Four SAs and all intended route lookups remained healthy. |
 | 15:24:08 | `066` | Packet capture proved both public tunnels still received Azure TCP/179 sourced from default peers `10.240.0.12/.13`, not custom peers `.22.2/.3`. This triggered the explicit rollback condition. |
-| 15:24:08 | `067` | Confirmed configured Azure mappings and unchanged provider health, isolating the failure to Azure's effective BGP source behavior. |
+| 15:24:08 | `067` | Confirmed configured Azure mappings and unchanged provider health, narrowing the unresolved configuration/API association without establishing a platform limitation. |
 | 15:26:03 | `074`-`075` | Restored the public Azure connection/site mapping and the original CPE loopback, XFRM routes, FRR neighbors and filter state. |
 | 15:27:00 | `077` | Removed only the newly added gateway APIPA addresses; operation completed after 10m55s. |
 | 15:38:04 | `078`-`080` | Verified restored Azure objects, four established SAs, original CPE configuration, ER/private peering health, GCP Partner BGP Up and unchanged Megaport products. |
@@ -45,6 +45,6 @@ The `transcript/` directory contains 89 command records reconstructed from the l
 
 ## Control-plane and data-plane conclusion
 
-The authorized correction successfully persisted the intended configuration and preserved every underlay/IPsec dependency, but Azure continued initiating public BGP from its default gateway addresses. The corrected custom public sessions therefore never formed. The acceptance condition required four established sessions with unique private and public tuples, so the attempt failed and rollback was mandatory.
+The authorized correction successfully persisted the intended configuration and preserved every underlay/IPsec dependency, but Azure continued initiating public BGP from its default gateway addresses and the corrected custom public sessions never formed. The acceptance condition required four established sessions with unique private and public tuples, so the attempt failed and rollback was mandatory. This evidence leaves the configuration/API association unresolved; it does not demonstrate that custom APIPA is unsupported.
 
 Post-rollback evidence confirms four established IKE/ESP SAs, healthy Azure/GCP/Megaport provider paths, original public-site and connection mappings, original CPE routes/FRR state, and Terraform closure. No validation fault, retry, resource order or cleanup followed.

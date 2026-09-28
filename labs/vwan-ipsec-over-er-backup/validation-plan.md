@@ -147,7 +147,7 @@ The correction changes only the public BGP identity/mapping and CPE public neigh
 
 Correlation `apipa-correction-20260928-01` now supplies 89 sanitized command records under `show-output/d2-corrected/apipa-correction/transcript/`, including all failed commands, the additive gateway operation, Azure site/connection updates, CPE application, bounded BGP/packet captures, rollback and closure checks. The source session retained a combined shell-result stream, so the historical importer preserves that exact stream and explicitly records that stdout/stderr cannot be separated retrospectively.
 
-The assertion failed: Azure continued sourcing public TCP/179 from default peers `10.240.0.12/.13` rather than custom peers `169.254.22.2/.3`. All four SAs and provider paths remained healthy. Rollback restored the pre-attempt state and a full Terraform plan reported no changes. Therefore `validationAuthorized` remains false and Niobe must not execute the D2/D3 fault matrix.
+The assertion failed: the custom peers `169.254.22.2/.3` did not answer CPE-initiated SYNs, while Azure continued initiating public TCP/179 from default peers `10.240.0.12/.13`. All four SAs and provider paths remained healthy. Rollback restored the pre-attempt state and a full Terraform plan reported no changes. This is a configuration/API association unresolved pending Trinity review, not a demonstrated platform limitation. Therefore `validationAuthorized` remains false and Niobe must not execute the D2/D3 fault matrix.
 
 ## 7. D2 - separate adjacencies, ER primary and Internet backup
 

@@ -40,7 +40,7 @@ Provider and gateway operations were resumed in place rather than rebuilt. Notab
 - The active StrongSwan service name and canonical multiline `swanctl.conf` syntax were used.
 - VPN site-link connections and PSKs were applied with versioned REST API `2025-09-01` because the CLI emitted deprecated parent properties.
 - StrongSwan IKE was aligned to Azure's strongest observed compatible default offer: AES-256/SHA-256 with MODP1024. ESP negotiated AES-256/SHA-256.
-- Four custom Azure APIPA addresses were configured and selected on the two connection objects, exposing the provider limitation described below.
+- Four custom Azure APIPA addresses were configured and selected on the two connection objects, exposing the configuration/API association question described below.
 
 ## Explicit design blocker
 
@@ -64,7 +64,9 @@ One clean repeat used only the corrected successful operation forms from the fir
 
 After the same 60-second convergence window, both private peers `10.240.0.12/.13` were established, but public custom peers `169.254.22.2/.3` remained Connect with zero messages. Captures on all four XFRM interfaces again showed public TCP/179 sourced from Azure defaults `.12/.13` toward CPE APIPA `169.254.22.1`.
 
-The retry was rolled back once. Azure and CPE mappings returned to the pre-retry state, four SAs remained established, provider paths remained healthy, and a full authenticated Terraform plan reported no changes. Disabling local GSA changed the WSL warning only; it did not change Azure API semantics or effective BGP source selection. No further retry or Niobe fault validation is authorized.
+The retry was rolled back once. Azure and CPE mappings returned to the pre-retry state, four SAs remained established, provider paths remained healthy, and a full authenticated Terraform plan reported no changes. Disabling local GSA changed the WSL warning only; it did not change the observed session outcome.
+
+This result is not classified as a vWAN platform limitation. Custom APIPA is intended for remote APIPA-only devices, and the retry persisted the intended gateway, site-link and connection-link values. CPE SYNs reached `.22.2/.3` without SYN-ACK or RST while Azure independently initiated from `.12/.13`. The configuration/API association is unresolved pending Trinity review. Full active-state GET bodies were not captured before rollback; a later explicit-version full GET records only the restored closure state. No further retry or Niobe fault validation is authorized.
 
 ## Current health and smoke results
 

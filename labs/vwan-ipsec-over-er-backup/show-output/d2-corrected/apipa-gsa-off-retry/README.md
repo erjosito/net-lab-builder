@@ -60,10 +60,10 @@ The reviewed capture included TCP flags and sequence/acknowledgement values, but
 
 ## GSA assessment
 
-Disabling local Global Secure Access changed the local WSL symptom: the prior DNS-tunneling warning disappeared and name resolution succeeded. It did **not** change Azure API/CLI semantics or the effective vWAN BGP behavior:
+Disabling local Global Secure Access changed the local WSL symptom: the prior DNS-tunneling warning disappeared and name resolution succeeded. It did **not** change the observed API/CLI operation success or session outcome:
 
 - the same corrected Azure REST `PUT` operations succeeded without authentication or transport errors;
 - the gateway update succeeded but took 57m36s, longer than the first attempt; rollback took 14m15s;
-- the resulting public BGP sessions still used Azure defaults `.12/.13`, exactly matching the first attempt.
+- Azure still initiated public BGP from defaults `.12/.13`, while the custom sessions did not establish, exactly matching the first attempt.
 
-The evidence therefore does not support GSA as the cause of the Azure custom-APIPA source behavior.
+The evidence therefore does not support GSA as the cause. It also does not establish a platform limitation: the configuration/API association is unresolved pending Trinity review. See `api-association-review.md` for API-version coverage, ordering and evidence gaps.

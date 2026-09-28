@@ -56,6 +56,19 @@
       "status": "Mandatory retrospective analysis of the existing bounded capture; FRR event/debug logs are an explicit unrecoverable evidence gap"
     },
     {
+      "id": "Q-BGP-APIPA-API-ASSOCIATION",
+      "scenario": "apipa-gsa-off-retry",
+      "question": "Were the gateway custom BGP addresses, VPN site-link BGP peer, VPN connection/link mappings, provisioning states, API versions and mutation order associated as intended during the bounded retry?",
+      "expectedPaths": [
+        "show-output/d2-corrected/apipa-gsa-off-retry/api-association-review.md",
+        "show-output/d2-corrected/apipa-gsa-off-retry/baseline/",
+        "show-output/d2-corrected/apipa-gsa-off-retry/action/",
+        "show-output/d2-corrected/apipa-gsa-off-retry/acceptance/",
+        "show-output/d2-corrected/apipa-gsa-off-retry/rollback/"
+      ],
+      "status": "Configuration/API association unresolved pending Trinity review; full active-state GET bodies were not captured before rollback"
+    },
+    {
       "id": "Q-D1-OFFLINE-REJECTION",
       "scenario": "d1-rejected-offline",
       "question": "Why is one floating adjacency outside the documented support boundary without a live mutation?",
