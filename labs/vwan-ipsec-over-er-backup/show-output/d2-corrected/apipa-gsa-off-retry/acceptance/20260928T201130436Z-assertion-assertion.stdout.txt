@@ -1,0 +1,64 @@
+{
+  "sourceCapture": ".\\labs\\vwan-ipsec-over-er-backup\\show-output\\d2-corrected\\apipa-gsa-off-retry\\acceptance\\20260928T194504391Z-assertion-assertion.stdout.txt",
+  "sourceFrrSummary": ".\\labs\\vwan-ipsec-over-er-backup\\show-output\\d2-corrected\\apipa-gsa-off-retry\\acceptance\\20260928T194504623Z-assertion-assertion.stdout.txt",
+  "captureCommandLimitation": "Four concurrent tcpdump processes wrote to one merged stdout stream without per-packet interface labels. Peer-to-interface attribution uses the contemporaneous route evidence: .2 via xfrm-pub0 and .3 via xfrm-pub1.",
+  "peers": [
+    {
+      "peer": "169.254.22.2",
+      "expectedInterface": "xfrm-pub0",
+      "cpeSynObserved": true,
+      "cpeSynCount": 2,
+      "cpeSynTimestamps": [
+        "2026-09-28T19:45:18.737169",
+        "2026-09-28T19:45:50.993019"
+      ],
+      "cpeSynSequences": [
+        433883428,
+        433883428
+      ],
+      "azureSynAckObserved": false,
+      "azureSynAckCount": 0,
+      "azureRstObserved": false,
+      "azureRstCount": 0,
+      "retransmissionCount": 1,
+      "retransmissionOffsetsSeconds": 32.25585,
+      "simultaneousDefaultAzurePeer": "10.240.0.13",
+      "simultaneousAzureOriginatedSynObserved": true,
+      "simultaneousAzureOriginatedSynCount": 12,
+      "nearestAzureOriginatedSynTimestamp": "2026-09-28T19:45:20.166505",
+      "nearestAzureOriginatedSynOffsetSeconds": 1.429336,
+      "frrSummary": "169.254.22.2    4      65515         0         0        0    0    0    never      Connect        0 N/A",
+      "frrEventDebugLogsCaptured": false,
+      "frrEventDebugLogsNote": "The bounded-window command captured FRR summary only; event/debug logging was not enabled or collected. The CPE has since been rolled back, so retrospective collection cannot recover those events."
+    },
+    {
+      "peer": "169.254.22.3",
+      "expectedInterface": "xfrm-pub1",
+      "cpeSynObserved": true,
+      "cpeSynCount": 2,
+      "cpeSynTimestamps": [
+        "2026-09-28T19:45:18.737064",
+        "2026-09-28T19:45:50.993087"
+      ],
+      "cpeSynSequences": [
+        3469601763,
+        3469601763
+      ],
+      "azureSynAckObserved": false,
+      "azureSynAckCount": 0,
+      "azureRstObserved": false,
+      "azureRstCount": 0,
+      "retransmissionCount": 1,
+      "retransmissionOffsetsSeconds": 32.256023,
+      "simultaneousDefaultAzurePeer": "10.240.0.12",
+      "simultaneousAzureOriginatedSynObserved": true,
+      "simultaneousAzureOriginatedSynCount": 12,
+      "nearestAzureOriginatedSynTimestamp": "2026-09-28T19:45:21.189018",
+      "nearestAzureOriginatedSynOffsetSeconds": 2.451954,
+      "frrSummary": "169.254.22.3    4      65515         0         0        0    0    0    never      Connect        0 N/A",
+      "frrEventDebugLogsCaptured": false,
+      "frrEventDebugLogsNote": "The bounded-window command captured FRR summary only; event/debug logging was not enabled or collected. The CPE has since been rolled back, so retrospective collection cannot recover those events."
+    }
+  ]
+}
+

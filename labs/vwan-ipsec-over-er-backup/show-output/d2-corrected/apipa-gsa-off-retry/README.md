@@ -38,6 +38,17 @@ The four route lookups were correct, and the vWAN site/connection/gateway object
 
 This met the explicit rollback condition.
 
+### Mandatory TCP/179 response question
+
+Offline analysis of the existing bounded capture confirms that the CPE initiated TCP/179 to both custom peers:
+
+- `.22.2`: initial SYN plus one same-sequence retransmission 32.255850 seconds later;
+- `.22.3`: initial SYN plus one same-sequence retransmission 32.256023 seconds later.
+
+Neither custom peer returned a SYN-ACK or RST. During the same window, Azure repeatedly initiated TCP/179 from `.13` on the `.22.2` path and `.12` on the `.22.3` path. See `acceptance/tcp179-apipa-response-analysis.md`.
+
+The reviewed capture included TCP flags and sequence/acknowledgement values, but the bounded command did not enable or collect FRR event/debug logs. Those historical daemon events are unrecoverable after rollback without an unauthorized retry; this is recorded as an explicit evidence gap.
+
 ## Rollback and closure
 
 - Restored the original public connection mappings and regular-private site peer.

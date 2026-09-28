@@ -47,6 +47,15 @@
       "status": "Captured failed sole retry, identical Azure BGP source behavior and verified rollback; no further retry authorized"
     },
     {
+      "id": "Q-BGP-APIPA-TCP179-RESPONSE",
+      "scenario": "apipa-gsa-off-retry",
+      "question": "Did Azure answer CPE-initiated TCP/179 SYNs addressed to custom APIPA peers 169.254.22.2 and 169.254.22.3 while Azure independently initiated from 10.240.0.12 and 10.240.0.13?",
+      "expectedPaths": [
+        "show-output/d2-corrected/apipa-gsa-off-retry/acceptance/"
+      ],
+      "status": "Mandatory retrospective analysis of the existing bounded capture; FRR event/debug logs are an explicit unrecoverable evidence gap"
+    },
+    {
       "id": "Q-D1-OFFLINE-REJECTION",
       "scenario": "d1-rejected-offline",
       "question": "Why is one floating adjacency outside the documented support boundary without a live mutation?",
