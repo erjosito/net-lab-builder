@@ -1,7 +1,12 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "runId": "<RUN_ID>",
   "deploymentStatus": "<DEPLOYMENT_STATUS>",
+  "blocker": {
+    "code": "<BLOCKER_CODE_OR_NULL>",
+    "detail": "<BLOCKER_DETAIL_OR_NULL>",
+    "validationAuthorized": false
+  },
   "azure": {
     "resourceGroup": "<AZURE_RESOURCE_GROUP>",
     "vhubName": "<VWAN_HUB_NAME>",
@@ -59,34 +64,42 @@
     {
       "name": "pri0",
       "ikeEndpoint": "<AZURE_PRIVATE_INSTANCE0_IKE_IP>",
-      "bgpPeer": "<AZURE_PRIVATE_INSTANCE0_BGP_IP>",
+      "bgpPeer": "<AZURE_EFFECTIVE_PRIVATE_INSTANCE0_BGP_IP>",
+      "configuredCustomBgpPeer": "<AZURE_CONFIGURED_PRIVATE_INSTANCE0_CUSTOM_BGP_IP>",
       "localBgpSource": "10.250.254.240",
       "xfrmInterface": "xfrm-pri0",
-      "xfrmId": 410
+      "xfrmId": 410,
+      "effectivePeerClass": "<EFFECTIVE_PEER_CLASS>"
     },
     {
       "name": "pri1",
       "ikeEndpoint": "<AZURE_PRIVATE_INSTANCE1_IKE_IP>",
-      "bgpPeer": "<AZURE_PRIVATE_INSTANCE1_BGP_IP>",
+      "bgpPeer": "<AZURE_EFFECTIVE_PRIVATE_INSTANCE1_BGP_IP>",
+      "configuredCustomBgpPeer": "<AZURE_CONFIGURED_PRIVATE_INSTANCE1_CUSTOM_BGP_IP>",
       "localBgpSource": "10.250.254.240",
       "xfrmInterface": "xfrm-pri1",
-      "xfrmId": 411
+      "xfrmId": 411,
+      "effectivePeerClass": "<EFFECTIVE_PEER_CLASS>"
     },
     {
       "name": "pub0",
       "ikeEndpoint": "<AZURE_PUBLIC_INSTANCE0_IKE_IP>",
-      "bgpPeer": "<AZURE_PUBLIC_INSTANCE0_BGP_IP>",
+      "bgpPeer": "<AZURE_EFFECTIVE_PUBLIC_INSTANCE0_BGP_IP>",
+      "configuredCustomBgpPeer": "<AZURE_CONFIGURED_PUBLIC_INSTANCE0_CUSTOM_BGP_IP>",
       "localBgpSource": "10.250.254.241",
       "xfrmInterface": "xfrm-pub0",
-      "xfrmId": 420
+      "xfrmId": 420,
+      "effectivePeerClass": "<EFFECTIVE_PEER_CLASS>"
     },
     {
       "name": "pub1",
       "ikeEndpoint": "<AZURE_PUBLIC_INSTANCE1_IKE_IP>",
-      "bgpPeer": "<AZURE_PUBLIC_INSTANCE1_BGP_IP>",
+      "bgpPeer": "<AZURE_EFFECTIVE_PUBLIC_INSTANCE1_BGP_IP>",
+      "configuredCustomBgpPeer": "<AZURE_CONFIGURED_PUBLIC_INSTANCE1_CUSTOM_BGP_IP>",
       "localBgpSource": "10.250.254.241",
       "xfrmInterface": "xfrm-pub1",
-      "xfrmId": 421
+      "xfrmId": 421,
+      "effectivePeerClass": "<EFFECTIVE_PEER_CLASS>"
     }
   ],
   "megaport": {

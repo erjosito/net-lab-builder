@@ -75,7 +75,6 @@ function Get-ProductSummary {
             ForEach-Object { $_.type }
     )
     return [ordered]@{
-        productUid = $data.productUid
         productName = $data.productName
         productType = $data.productType
         provisioningStatus = $data.provisioningStatus

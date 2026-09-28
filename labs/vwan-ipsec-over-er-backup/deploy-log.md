@@ -1,114 +1,78 @@
 # vWAN IPsec-over-ER backup - deployment log
 
-> **Status (2026-09-28): BLOCKED at the Megaport Stockholm market gate.** Azure and GCP foundations are deployed and converged. No Megaport product was ordered, no vHub ExpressRoute connection exists, and VPN sites/connections were intentionally not created.
+> **Status (2026-09-28): DEPLOYED; D2 BGP baseline blocked by the frozen peer-address model.** Azure, GCP, ExpressRoute, Partner Interconnect, Megaport, and all four IPsec SAs are live. Niobe validation is stopped before fault execution.
 
 ## Deployment result
 
 | Plane | Result |
 |---|---|
-| Azure | Standard vWAN, `10.240.0.0/24` vHub with `ASPath` routing preference, VPN gateway, ExpressRoute gateway, 50-Mbps Standard Metered circuit, workload VNet/connection, and `Standard_B2ts_v2` probe VM deployed in Sweden Central |
-| GCP | New isolated billing-linked project, required APIs, custom VPC, Cloud Router ASN `16550`, Partner attachment, reserved public IP, and forwarding-enabled Ubuntu CPE deployed in `europe-north2-c` |
-| CPE | `e2-small`; StrongSwan, FRR, tcpdump, nftables, forwarding, and the four required alias `/32`s installed |
-| Megaport | Not deployed. Non-billable Stockholm order validation failed before purchase |
-| Overlay | Not deployed. VPN connections, generated PSKs, XFRM interfaces, and BGP sessions remain pending the provider blocker |
+| Azure | Standard vWAN and `10.240.0.0/24` vHub with `ASPath`, VPN and ExpressRoute gateways, 50-Mbps Standard Metered circuit, vHub ER connection, workload VNet connection, and `Standard_B2ts_v2` probe VM are deployed in Sweden Central |
+| GCP | New isolated billing-linked project, required APIs, custom VPC, Cloud Router ASN `16550`, active Partner attachment, reserved public IP, and forwarding-enabled Ubuntu `e2-small` CPE are deployed in `europe-north2-c` |
+| Megaport | 1000-Mbps MCR at Equinix Amsterdam AM1, two 50-Mbps VXCs to distinct Stockholm MSEE paths, and one 50-Mbps GCP VXC are live |
+| Underlay | Both MSEE route tables learn only the CPE endpoint `/32`; GCP learns the Azure vHub and workload prefixes through the MCR |
+| IPsec | Four IKEv2/ESP SAs are established: two over the ER-carried private endpoints and two over public Internet/NAT-T |
+| Overlay BGP | Blocked. Azure sources both path classes from the same two default gateway BGP addresses rather than the four connection-selected custom APIPA addresses |
 
-Terraform converged with no destructive actions. The latest closure plan reported **no changes** after the VM safety schedules were applied.
+## Megaport fallback and commitment
 
-## Capacity and recovery record
+Live non-billable validation was performed in distance order. Stockholm, Helsinki, Oslo, Copenhagen, Warsaw, Hamburg, and Berlin did not expose an account-usable 1000-Mbps MCR. Amsterdam was the nearest enabled metro; Equinix Amsterdam AM1 was selected because it supported the MCR, both Stockholm Azure ER endpoints, and a compatible Google endpoint.
 
-The requested `e2-small` size returned explicit capacity/resource failures in `europe-north2-a` and `europe-north2-b`. The same size then deployed successfully in `europe-north2-c`; the authorized `e2-medium` fallback was not used.
+The location change preserves Azure Sweden Central, ExpressRoute Stockholm peering, GCP `europe-north2`, product tiers, bandwidths, and topology. It adds an Amsterdam-to-Stockholm provider segment of roughly 1,100 km great-circle distance. No unsupported latency estimate is claimed.
 
-The first CPE startup attempt failed because a Windows-authored inline startup script reached Linux with CRLF (`/bin/bash^M`). Startup logic was moved to an external LF-normalized shell file and `*.sh text eol=lf` was added. A second startup issue was fixed by enabling the real `strongswan` service rather than its `strongswan-swanctl` alias. The final startup service is healthy.
+The pre-order rack-rate quote was **EUR 991.80/month**:
 
-## Hard blocker
-
-Megaport OAuth authentication succeeded through the approved credential path. The public location catalog and Terraform data source both exposed `Equinix Stockholm SK1`, but the live non-billable `/v3/networkdesign/validate` request returned:
-
-```text
-HTTP 400
-Validation failed
-Missing markets: Sweden
-```
-
-This is a design-review hard stop: catalog visibility does not establish account market entitlement, and substituting Frankfurt or another market would change the explicitly authorized Stockholm design. No MCR or VXC purchase was attempted.
-
-The validation was repeated after Trinity finalized the binding network specification. It returned the same HTTP 400 `Missing markets: Sweden`. Trinity section 13 permits MCR placement to remain deployment-discovered, but requires Tank to stop when the live quote would need an unapproved topology-changing location substitution. The provider blocker therefore remains active even though the network design itself is complete.
-
-Resume only after one of these decisions:
-
-1. Megaport enables Sweden for the current account, preserving Stockholm.
-2. Jose explicitly authorizes a different market/PoP after reviewing the quote and design impact.
-
-## Current provider states
-
-| Check | State |
-|---|---|
-| vHub | `Succeeded`, `ASPath`, `10.240.0.0/24` |
-| vWAN VPN gateway | `Succeeded` |
-| vWAN ExpressRoute gateway | `Succeeded` |
-| Workload vHub connection | `Succeeded` |
-| ExpressRoute circuit | `Enabled`; provider state `NotProvisioned` |
-| GCP CPE | `RUNNING`, `e2-small`, IP forwarding enabled |
-| GCP Partner attachment | `PENDING_PARTNER` |
-| Cloud Router advertisement | Custom mode; only `10.250.0.10/32` |
-| Megaport MCR/VXCs | Absent |
-| VPN sites/connections | Absent |
-
-The ER and Partner states are expected until the three Megaport VXCs are created and paired.
-
-## Safety controls
-
-- Megaport resources are guarded by `deploy_megaport = false`.
-- Azure-generated PSKs are excluded from Terraform and committed files.
-- Runtime VPN output, state, plans, rendered configs, and secret-bearing files are ignored.
-- Azure and GCP VMs have daily 23:00 Europe/Stockholm stop schedules. Managed vWAN gateways, the ER circuit, and the Partner attachment cannot be paused by those VM schedules.
-- Cleanup remains separately approval-gated; `deploy/cleanup.ps1` refuses execution without a future authorized implementation.
-
-## Cost and commitment exposure
-
-These are planning estimates, not invoice values:
-
-| Item | Approximate exposure |
+| Product | Rack rate |
 |---|---:|
-| Azure vWAN VPN gateway | `$0.361/hour` |
-| Azure vWAN ExpressRoute gateway | `$0.42/hour` |
-| Azure 50-Mbps Standard Metered ER circuit | about `$55/month` |
-| GCP `e2-small` | about `$0.052/hour` while running |
-| GCP Partner attachment | about `$0.10/hour` |
-| vHub, VM disks, public IP, and minor networking | additional usage |
-| Combined live foundation | roughly `$1.2-$1.4/hour` or `$29-$34/day`, excluding traffic and tax |
-| Megaport commitment | **`$0`** |
+| MCR | EUR 600.00/month |
+| Azure primary VXC | EUR 135.60/month |
+| Azure secondary VXC | EUR 135.60/month |
+| GCP VXC | EUR 120.60/month |
 
-The VM stop schedules reduce compute exposure only. The managed gateways, ER circuit, and Partner attachment continue billing until separately authorized cleanup.
+The account response displayed a promotional discount, but the rack rate is retained as the conservative live commitment.
 
-## Smoke results
+## Capacity and deployment recovery
 
-- Azure vHub, both managed gateways, ER circuit resource, and workload connection report successful control-plane provisioning.
-- GCP CPE reports startup success, forwarding `1`, StrongSwan active, FRR active, and required packages installed.
-- The CPE NIC has `10.250.254.240/32`, `.241/32`, `.242/32`, and `.250/32`.
-- Azure VM Run Command management access succeeded during deployment; NIC addressing/routes and `tcpdump` were present.
-- The Azure probe cloud-init run reported an error because the private subnet intentionally has no default outbound access and the original cloud-init attempted package retrieval. IaC no longer requests those packages, but the deployed VM was not replaced solely to clear historical cloud-init state.
-- No cross-cloud, IPsec, BGP, route-preference, failover, or D1/D2/D3 validation was run.
+The requested GCP `e2-small` returned explicit capacity/resource failures in `europe-north2-a` and `europe-north2-b`, then deployed successfully in `europe-north2-c`. The authorized `e2-medium` fallback was not used.
+
+Provider and gateway operations were resumed in place rather than rebuilt. Notable corrections were:
+
+- Windows CRLF was removed from Linux runtime files.
+- The active StrongSwan service name and canonical multiline `swanctl.conf` syntax were used.
+- VPN site-link connections and PSKs were applied with versioned REST API `2025-09-01` because the CLI emitted deprecated parent properties.
+- StrongSwan IKE was aligned to Azure's strongest observed compatible default offer: AES-256/SHA-256 with MODP1024. ESP negotiated AES-256/SHA-256.
+- Four custom Azure APIPA addresses were configured and selected on the two connection objects, exposing the provider limitation described below.
+
+## Explicit design blocker
+
+The frozen design requires non-APIPA CPE BGP identities `10.250.254.240` and `10.250.254.241`, four unique Azure peer tuples, and one XFRM slot per tuple. The live connection objects correctly select four custom Azure APIPA addresses, but packet capture shows Azure initiating BGP from only its two default gateway-subnet addresses on both the private and public tunnels.
+
+This is documented Azure behavior: when the remote BGP peer uses a regular private address, VPN Gateway uses its automatically assigned gateway BGP address; the corresponding custom Azure APIPA address is used when the remote peer is APIPA. The frozen design also states that the CPE peer cannot be APIPA.
+
+The result triggers `design.md` section 13: generated Azure BGP peer addressing cannot be routed through four distinct XFRM slots without collapsing private and public neighbor identity. No firewall relaxation, duplicate FRR neighbor, route leak, or unapproved APIPA redesign was used to bypass the stop condition.
+
+## Current health and smoke results
+
+- ExpressRoute provider state is provisioned and Azure private peering succeeded.
+- Both primary and secondary MSEE route tables carry the expected CPE endpoint route.
+- GCP Partner attachment is active and Cloud Router BGP is established.
+- The MCR and all three VXCs report live/up; the Azure VXCs terminate on distinct primary and secondary Stockholm endpoints.
+- Four StrongSwan connection definitions load and four IKE/ESP SAs establish.
+- XFRM packet capture proves BGP SYNs arrive on each intended private/public interface, but their source addresses collapse to two Azure defaults.
+- FRR remains non-established by design because accepting those two sources would violate the required four-neighbor model.
+- No D1, D2 fault, D3, route-preference, failover, or restore scenario was run.
+
+## Cost exposure
+
+The live lab continues to incur:
+
+- Megaport rack-rate commitment: EUR 991.80/month.
+- Azure vWAN VPN gateway, ExpressRoute gateway, vHub, 50-Mbps Standard Metered circuit, VM/disk, public IP, and traffic charges.
+- GCP `e2-small`, disk, reserved public IPv4, Partner attachment, and traffic charges.
+
+VM stop schedules run daily at 23:00 Europe/Stockholm, but managed gateways, the ER circuit, Partner attachment, MCR, and VXCs continue billing. Cleanup remains separately approval-gated and was not run.
 
 ## Niobe handoff
 
-**Do not begin final validation.** The required baseline does not exist:
+Do not run the validation fault matrix against the current deployment. Use the ignored `config/inventory.json` only for inspection: it contains the generated IKE endpoints, effective default BGP peers, configured custom APIPA peers, versioned vHub route queries, live provider identifiers, application listeners, and reviewed fault/restore commands.
 
-- no MCR or VXCs;
-- ER private peering/provider provisioning incomplete;
-- GCP attachment unpaired;
-- no vHub ER connection;
-- no VPN sites/connections or Azure-generated runtime PSKs;
-- no XFRM SAs or overlay BGP sessions.
-
-After the Stockholm decision is resolved, Tank must resume provider ordering, wait for both Azure MSEE paths and the GCP attachment, create the vHub ER connection, create the private/public VPN connections, retrieve runtime values, apply the CPE bundle, narrow endpoint filtering, and establish a healthy D2 baseline. Niobe then follows `validation-plan.md` and the reset order in `design.md`; smoke results above are not scenario evidence.
-
-### Harness preparation completed
-
-- `config/inventory.json` is populated and ignored by Git. It contains the live foundation identifiers and all four deployment-generated VPN gateway IKE/BGP endpoint mappings without PSKs or provider keys.
-- Provider-dependent VPN site/connection, ER connection, MCR, and VXC identifiers are explicitly null until those resources exist; collectors therefore fail closed rather than inventing values.
-- The three managed-route requests use the official Virtual Hub `effectiveRoutes` API pinned to `2025-09-01`, with `VpnConnection` or `ExpressRouteConnection` resource types. The evidence collector polls the asynchronous Location URL to completion.
-- `deploy/Collect-MegaportReadOnly.ps1` emits only selected product, path-selection, and BGP-session fields and omits service/pairing keys. Before deployment it returns `not-deployed`.
-- HTTP health listeners are installed and active on the Azure workload and GCP CPE. Reverse probes bind to the active experiment address so they cannot silently use the cleartext CPE endpoint identity.
-- Reviewed fault/restore commands are recorded in runtime inventory and implemented by `deploy/Invoke-LabFault.ps1`. CPE controls are installed under `/opt/vwan-lab`.
-- The partial workload-plane drop is limited to ICMP echo requests and TCP/8080 between `10.241.0.4` and only the active design target address(es). It does not match IKE, ESP, BGP, provider underlay, or unrelated payload traffic.
+The deployment is suitable for blocker review and underlay/IPsec inspection. Scenario execution requires an approved design amendment that either pairs APIPA CPE identities with the four custom Azure addresses or changes the four-unique-neighbor requirement to the two effective gateway peers. After amendment, regenerate runtime configuration and inventory, restore a healthy overlay baseline twice, then begin `validation-plan.md`.

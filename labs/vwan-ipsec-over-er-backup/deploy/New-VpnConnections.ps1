@@ -16,6 +16,8 @@ $privatePrefixes = if ($Design -eq 'D1') { @('10.253.1.0/24') } elseif ($Design 
 $publicPrefixes  = if ($Design -eq 'D1') { @('10.253.1.0/24') } elseif ($Design -eq 'D3') { @('10.253.3.0/24') } else { @('10.253.2.0/24') }
 $publicBgp = $Design -ne 'D3'
 $tags = @('lab=true','created_by=copilot-lab','lab_name=vwan-ipsec-over-er-backup')
+$vpnGatewayId = az network vpn-gateway show -g $ResourceGroup -n $VpnGatewayName --query id -o tsv
+if (-not $vpnGatewayId) { throw "VPN gateway $VpnGatewayName was not found." }
 
 $existingConnections = @(
     az network vpn-gateway connection list -g $ResourceGroup --gateway-name $VpnGatewayName `
@@ -58,24 +60,57 @@ $privateSite = az network vpn-site show -g $ResourceGroup -n site-gcp-er -o json
 $publicSite = az network vpn-site show -g $ResourceGroup -n site-gcp-inet -o json | ConvertFrom-Json
 
 function Ensure-Connection {
-    param([string]$Name,[object]$Site,[bool]$EnableBgp,[bool]$UsePrivateAzureIp)
+    param(
+        [string]$Name,
+        [object]$Site,
+        [bool]$EnableBgp,
+        [bool]$UsePrivateAzureIp,
+        [string[]]$AzureBgpPeers
+    )
     $existing = az network vpn-gateway connection show -g $ResourceGroup --gateway-name $VpnGatewayName -n $Name --query id -o tsv 2>$null
     if ($existing) { return }
     $link = $Site.vpnSiteLinks[0]
-    az network vpn-gateway connection create -g $ResourceGroup --gateway-name $VpnGatewayName -n $Name `
-        --remote-vpn-site $Site.id --with-link false --enable-bgp $EnableBgp --protocol-type IKEv2 `
-        --only-show-errors -o none
-    if ($LASTEXITCODE -ne 0) { throw "Failed to create VPN connection $Name" }
-
-    az network vpn-gateway connection vpn-site-link-conn add -g $ResourceGroup --gateway-name $VpnGatewayName `
-        --connection-name $Name -n "$Name-link" --vpn-site-link $link.id --enable-bgp $EnableBgp `
-        --use-local-azure-ip-address $UsePrivateAzureIp --vpn-connection-protocol-type IKEv2 `
-        --connection-bandwidth 50 --only-show-errors -o none
-    if ($LASTEXITCODE -ne 0) { throw "Failed to add link connection for $Name" }
+    $bodyPath = Join-Path $env:TEMP "$Name-$([guid]::NewGuid().ToString('N')).json"
+    try {
+        [ordered]@{
+            properties = [ordered]@{
+                enableInternetSecurity = $false
+                remoteVpnSite = [ordered]@{ id = $Site.id }
+                vpnLinkConnections = @(
+                    [ordered]@{
+                        name = "$Name-link"
+                        properties = [ordered]@{
+                            connectionBandwidth = 50
+                            enableBgp = $EnableBgp
+                            enableRateLimiting = $false
+                            routingWeight = 0
+                            useLocalAzureIpAddress = $UsePrivateAzureIp
+                            usePolicyBasedTrafficSelectors = $false
+                            vpnConnectionProtocolType = 'IKEv2'
+                            vpnLinkConnectionMode = 'Default'
+                            vpnSiteLink = [ordered]@{ id = $link.id }
+                            vpnGatewayCustomBgpAddresses = @(
+                                [ordered]@{ ipConfigurationId = 'Instance0'; customBgpIpAddress = $AzureBgpPeers[0] },
+                                [ordered]@{ ipConfigurationId = 'Instance1'; customBgpIpAddress = $AzureBgpPeers[1] }
+                            )
+                        }
+                    }
+                )
+            }
+        } | ConvertTo-Json -Depth 12 | Set-Content $bodyPath -Encoding utf8
+        az rest --method put --url "https://management.azure.com$vpnGatewayId/vpnConnections/$($Name)?api-version=2025-09-01" `
+            --body "@$bodyPath" --only-show-errors -o none
+        if ($LASTEXITCODE -ne 0) { throw "Failed to create VPN connection $Name with its site-link properties." }
+    }
+    finally {
+        Remove-Item $bodyPath -Force -ErrorAction SilentlyContinue
+    }
 }
 
-Ensure-Connection -Name 'conn-gcp-er' -Site $privateSite -EnableBgp $true -UsePrivateAzureIp $true
-Ensure-Connection -Name 'conn-gcp-inet' -Site $publicSite -EnableBgp $publicBgp -UsePrivateAzureIp $false
+Ensure-Connection -Name 'conn-gcp-er' -Site $privateSite -EnableBgp $true -UsePrivateAzureIp $true `
+    -AzureBgpPeers @('169.254.21.1','169.254.22.1')
+Ensure-Connection -Name 'conn-gcp-inet' -Site $publicSite -EnableBgp $publicBgp -UsePrivateAzureIp $false `
+    -AzureBgpPeers @('169.254.21.5','169.254.22.5')
 
 Write-Output "VPN_CONNECTIONS_READY=true"
 Write-Output "VPN_DESIGN=$Design"

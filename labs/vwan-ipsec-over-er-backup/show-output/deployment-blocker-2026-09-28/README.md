@@ -1,96 +1,54 @@
-# Sanitized foundation and blocker evidence
+# Sanitized deployed-state and design-blocker evidence
 
-Captured on 2026-09-28. Identifiers, service keys, pairing keys, public IPs, credentials, tokens, PSKs, and GUIDs are intentionally omitted.
+Captured on 2026-09-28. Subscription IDs, service and pairing keys, provider product IDs, credentials, tokens, PSKs, and other GUIDs are intentionally omitted.
 
-## Azure foundation
-
-```text
-vHub:
-  provisioningState: Succeeded
-  hubRoutingPreference: ASPath
-  addressPrefix: 10.240.0.0/24
-
-VPN gateway:
-  provisioningState: Succeeded
-
-ExpressRoute gateway:
-  provisioningState: Succeeded
-
-Workload vHub connection:
-  provisioningState: Succeeded
-
-ExpressRoute circuit:
-  provisioningState: Succeeded
-  circuitProvisioningState: Enabled
-  serviceProviderProvisioningState: NotProvisioned
-  tier: Standard
-  family: MeteredData
-  bandwidth: 50 Mbps
-```
-
-## GCP foundation
+## Healthy deployed layers
 
 ```text
-CPE:
-  status: RUNNING
-  machineType: e2-small
-  zone: europe-north2-c
-  canIpForward: true
-  internalIp: 10.250.0.10
-  aliasRanges:
-    - 10.250.254.240/32
-    - 10.250.254.241/32
-    - 10.250.254.242/32
-    - 10.250.254.250/32
+Azure vHub: Succeeded; ASPath; 10.240.0.0/24
+Azure VPN gateway: Succeeded
+Azure ExpressRoute gateway and connection: Succeeded
+ExpressRoute circuit: Provisioned; private peering Succeeded
+Azure workload: 10.241.0.4
 
-Startup smoke:
-  startup service: inactive (successful completed oneshot)
-  forwarding: 1
-  strongswan: active
-  frr: active
-  required package checks: 3/3
+GCP CPE: RUNNING; e2-small; europe-north2-c; forwarding enabled
+GCP Partner attachment: ACTIVE
+GCP Cloud Router BGP: Established
+GCP advertisement toward Megaport: 10.250.0.10/32 only
 
-Partner attachment:
-  type: PARTNER
-  state: PENDING_PARTNER
-  adminEnabled: true
-  edgeAvailabilityDomain: AVAILABILITY_DOMAIN_1
-
-Cloud Router:
-  ASN: 16550
-  advertiseMode: CUSTOM
-  advertisedRanges:
-    - 10.250.0.10/32
+Megaport MCR: LIVE/UP; Equinix Amsterdam AM1; 1000 Mbps
+Azure primary VXC: LIVE/UP; 50 Mbps; Stockholm primary endpoint
+Azure secondary VXC: LIVE/UP; 50 Mbps; Stockholm secondary endpoint
+GCP VXC: LIVE/UP; 50 Mbps
 ```
 
-## Capacity retries
+## IPsec smoke
+
+All four IKEv2 SAs and route-based ESP children established. The negotiated suites were:
 
 ```text
-europe-north2-a / e2-small: resource capacity failure
-europe-north2-b / e2-small: resource capacity failure
-europe-north2-c / e2-small: deployed
-e2-medium fallback: not used
+IKE: AES-256 / SHA-256 / MODP1024
+ESP: AES-256 / SHA-256
+private paths: native ESP
+public paths: ESP-in-UDP NAT-T
 ```
 
-## Megaport validation
+## BGP blocker proof
 
-Request type: non-billable network-design validation.
+The two connection objects selected four distinct custom Azure APIPA addresses, one per instance and path class. The remote site peers remained the frozen regular private identities.
+
+Packet capture on the four XFRM interfaces showed Azure TCP/179 SYNs arriving on every intended tunnel, but sourced from only the two automatically assigned gateway BGP addresses:
 
 ```text
-location: Equinix Stockholm SK1
-HTTP status: 400
-message: Validation failed
-detail: Missing markets: Sweden
+private instance 0 and public instance 0: same effective Azure source
+private instance 1 and public instance 1: same effective Azure source
+configured custom APIPA sources: not used
 ```
 
-No MCR or VXC order was submitted. Megaport commitment is `$0`.
+Microsoft documentation states that a regular private remote peer causes VPN Gateway to use its automatically assigned gateway BGP address; the corresponding custom Azure APIPA address is used when the remote peer is APIPA. This conflicts with the frozen design's non-APIPA CPE identities and four-unique-tuple requirement.
 
-## Terraform closure
+`design.md` section 13 therefore stops experiment execution. FRR was not weakened to accept ambiguous duplicate neighbors, and no D1/D2/D3 fault was run.
 
-```text
-terraform fmt -check: pass
-terraform validate: pass
-terraform plan: no changes
-destructive actions during metadata convergence: 0
-destructive actions during stop-schedule deployment: 0
-```
+## Commitment
+
+The pre-order Megaport rack-rate quote was EUR 991.80/month. Azure and GCP managed networking and compute charges remain live. Cleanup was not run.

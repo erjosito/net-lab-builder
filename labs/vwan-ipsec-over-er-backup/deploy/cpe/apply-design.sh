@@ -155,14 +155,120 @@ EOF
 
 cat >/etc/swanctl/conf.d/vwan.conf <<EOF
 connections {
-  pri0 { version=2; local_addrs=10.250.0.10; remote_addrs=$PRI0_IKE; proposals=aes256-sha256-modp2048; local { auth=psk; id=10.250.0.10; }; remote { auth=psk; id=$PRI0_IKE; }; children { pri0 { local_ts=0.0.0.0/0; remote_ts=0.0.0.0/0; if_id_in=410; if_id_out=410; esp_proposals=aes256-sha256; start_action=$private_start_action; dpd_action=restart; } } }
-  pri1 { version=2; local_addrs=10.250.0.10; remote_addrs=$PRI1_IKE; proposals=aes256-sha256-modp2048; local { auth=psk; id=10.250.0.10; }; remote { auth=psk; id=$PRI1_IKE; }; children { pri1 { local_ts=0.0.0.0/0; remote_ts=0.0.0.0/0; if_id_in=411; if_id_out=411; esp_proposals=aes256-sha256; start_action=$private_start_action; dpd_action=restart; } } }
-  pub0 { version=2; local_addrs=10.250.0.10; remote_addrs=$PUB0_IKE; mobike=no; encap=yes; proposals=aes256-sha256-modp2048; local { auth=psk; id=$PUBLIC_CPE_IP; }; remote { auth=psk; id=$PUB0_IKE; }; children { pub0 { local_ts=0.0.0.0/0; remote_ts=0.0.0.0/0; if_id_in=420; if_id_out=420; esp_proposals=aes256-sha256; start_action=$public_start_action; dpd_action=restart; } } }
-  pub1 { version=2; local_addrs=10.250.0.10; remote_addrs=$PUB1_IKE; mobike=no; encap=yes; proposals=aes256-sha256-modp2048; local { auth=psk; id=$PUBLIC_CPE_IP; }; remote { auth=psk; id=$PUB1_IKE; }; children { pub1 { local_ts=0.0.0.0/0; remote_ts=0.0.0.0/0; if_id_in=421; if_id_out=421; esp_proposals=aes256-sha256; start_action=$public_start_action; dpd_action=restart; } } }
+  pri0 {
+    version = 2
+    local_addrs = 10.250.0.10
+    remote_addrs = $PRI0_IKE
+    proposals = aes256-sha256-modp1024
+    local {
+      auth = psk
+      id = 10.250.0.10
+    }
+    remote {
+      auth = psk
+      id = $PRI0_IKE
+    }
+    children {
+      pri0 {
+        local_ts = 0.0.0.0/0
+        remote_ts = 0.0.0.0/0
+        if_id_in = 410
+        if_id_out = 410
+        esp_proposals = aes256-sha256
+        start_action = $private_start_action
+        dpd_action = restart
+      }
+    }
+  }
+  pri1 {
+    version = 2
+    local_addrs = 10.250.0.10
+    remote_addrs = $PRI1_IKE
+    proposals = aes256-sha256-modp1024
+    local {
+      auth = psk
+      id = 10.250.0.10
+    }
+    remote {
+      auth = psk
+      id = $PRI1_IKE
+    }
+    children {
+      pri1 {
+        local_ts = 0.0.0.0/0
+        remote_ts = 0.0.0.0/0
+        if_id_in = 411
+        if_id_out = 411
+        esp_proposals = aes256-sha256
+        start_action = $private_start_action
+        dpd_action = restart
+      }
+    }
+  }
+  pub0 {
+    version = 2
+    local_addrs = 10.250.0.10
+    remote_addrs = $PUB0_IKE
+    mobike = no
+    encap = yes
+    proposals = aes256-sha256-modp1024
+    local {
+      auth = psk
+      id = $PUBLIC_CPE_IP
+    }
+    remote {
+      auth = psk
+      id = $PUB0_IKE
+    }
+    children {
+      pub0 {
+        local_ts = 0.0.0.0/0
+        remote_ts = 0.0.0.0/0
+        if_id_in = 420
+        if_id_out = 420
+        esp_proposals = aes256-sha256
+        start_action = $public_start_action
+        dpd_action = restart
+      }
+    }
+  }
+  pub1 {
+    version = 2
+    local_addrs = 10.250.0.10
+    remote_addrs = $PUB1_IKE
+    mobike = no
+    encap = yes
+    proposals = aes256-sha256-modp1024
+    local {
+      auth = psk
+      id = $PUBLIC_CPE_IP
+    }
+    remote {
+      auth = psk
+      id = $PUB1_IKE
+    }
+    children {
+      pub1 {
+        local_ts = 0.0.0.0/0
+        remote_ts = 0.0.0.0/0
+        if_id_in = 421
+        if_id_out = 421
+        esp_proposals = aes256-sha256
+        start_action = $public_start_action
+        dpd_action = restart
+      }
+    }
+  }
 }
 secrets {
-  ike-pri { id-1=10.250.0.10; secret="$PRIVATE_PSK"; }
-  ike-pub { id-1=$PUBLIC_CPE_IP; secret="$PUBLIC_PSK"; }
+  ike-pri {
+    id-1 = 10.250.0.10
+    secret = "$PRIVATE_PSK"
+  }
+  ike-pub {
+    id-1 = $PUBLIC_CPE_IP
+    secret = "$PUBLIC_PSK"
+  }
 }
 EOF
 chmod 0600 /etc/swanctl/conf.d/vwan.conf
@@ -277,5 +383,9 @@ nft -f /etc/nftables.d-vwan-lab.conf
 systemctl daemon-reload
 systemctl enable vwan-lab-network.service vwan-lab-ipsec.service
 systemctl restart vwan-lab-network.service strongswan vwan-lab-ipsec.service frr
+loaded_connections="$(swanctl --list-conns)"
+for connection in pri0 pri1 pub0 pub1; do
+  grep -q "^$connection:" <<<"$loaded_connections"
+done
 rm -f "$runtime"
 logger -t vwan-lab "Applied $DESIGN configuration"

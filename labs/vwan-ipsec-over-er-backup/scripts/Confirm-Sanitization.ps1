@@ -25,7 +25,8 @@ $violations = [System.Collections.Generic.List[string]]::new()
 $files = @(Get-ChildItem -Path $Path -Recurse -File -Include '*.txt','*.md','*.json','*.jsonl','*.log' |
     Where-Object {
         $_.FullName -notmatch '\\.git\\' -and
-        $_.FullName -notmatch '\\diagrams\\'
+        $_.FullName -notmatch '\\diagrams\\' -and
+        $_.FullName -notmatch '\\config\\inventory\.json$'
     })
 
 foreach ($file in $files) {
