@@ -69,14 +69,14 @@
       "status": "Configuration/API association unresolved pending Trinity review; full active-state GET bodies were not captured before rollback"
     },
     {
-      "id": "Q-D1-OFFLINE-REJECTION",
-      "scenario": "d1-rejected-offline",
-      "question": "Why is one floating adjacency outside the documented support boundary without a live mutation?",
+      "id": "Q-D1-SINGLE-ADJACENCY-RECIPE",
+      "scenario": "d1-single-adjacency",
+      "question": "Can one normal CPE loopback and one Azure default vWAN BGP neighbor keep the same tuple while the Azure-neighbor /32 route moves between ER/private and Internet/public XFRM tunnels?",
       "expectedPaths": [
-        "design.md#6-d1---rejected",
-        "show-output/deployment-blocker-2026-09-28/"
+        "design.md#6-d1---one-ordinary-adjacency-moved-between-underlays",
+        "show-output/d1-single-adjacency/"
       ],
-      "status": "Documented; no live D1 mutation authorized"
+      "status": "Pending Trinity corrected D1 recipe and explicit execution authorization; D2 APIPA evidence is excluded from the verdict"
     },
     {
       "id": "Q-D2-PREFERENCE",

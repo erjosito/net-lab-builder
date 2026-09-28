@@ -43,14 +43,14 @@ Azure-managed vWAN BGP uses ASN `65515`. Trinity assigns the CPE-side VPN ASN an
 
 | Design | Status hypothesis | Deciding evidence |
 |---|---|---|
-| D1 - one BGP adjacency intended to float across both tunnels | Teaching-only: managed vWAN is expected to bind a neighbor/link to distinct VPN endpoints, preventing clean private/public migration. | Azure site/connection validation, FRR state, packet capture and route withdrawal/re-establishment during both path faults |
+| D1 - one ordinary BGP adjacency moved between underlays | Pending Trinity recipe: one normal CPE loopback and one Azure default vWAN neighbor keep the same tuple while only the neighbor `/32` switches between ER/private and Internet/public XFRM paths. No custom APIPA is involved. | FRR state, `/32` route before/after evidence, per-XFRM packet capture and route withdrawal/re-establishment during both moves |
 | D2 - separate BGP adjacencies with unique endpoints | Recommended candidate: independent health, withdrawal and preference. | Both peers Established, unique tuples, preferred ER path and bounded single-fault convergence |
 | D3 - ER/BGP more-specifics plus Internet static covering aggregate | Deterministic but health-blind candidate: longest prefix selects ER; a stale static backup can blackhole. | Full route chain, normal failover, restore and compound-fault evidence |
 
 ### Scenarios
 
 1. **S1 baseline:** PASS when Partner Interconnect, MCR, both ER MSEE paths, both IPsec tunnels and probes are healthy with evidence at every layer. FAIL if either ER provider path is missing/degraded or the tunnels cannot be independently identified.
-2. **S2 floating adjacency:** PASS (hypothesis confirmed) when Azure rejects the endpoint model or one unchanged neighbor cannot survive/re-form across private/public path movement, with the mechanism proven. FAIL if it reliably preserves routes across either underlay fault.
+2. **S2 single adjacency movement:** Execute only after Trinity supplies the corrected recipe. PASS when the unchanged ordinary BGP tuple establishes after each reviewed `/32` move and preserves or relearns the expected routes. FAIL when healthy SAs, correct `/32` routing and visible CPE SYNs still do not produce the required session. D2 APIPA observations are out of scope.
 3. **S3 separate peers:** PASS when both unique peers establish, ER is preferred, and either tunnel withdrawal removes only its routes and converges through the survivor within the measured target. FAIL on endpoint collision, unintended ECMP/asymmetry, stale routes or sustained probe loss.
 4. **S4 prefix hierarchy:** PASS when ER more-specifics win, their withdrawal moves covered probes to the Internet aggregate, and restore returns them to ER. Also run "Internet down first, then ER/BGP withdrawal": either automation withdraws the aggregate or evidence explicitly demonstrates the predicted blackhole. FAIL if normal routing is non-deterministic or contradicts longest-prefix selection.
 

@@ -68,6 +68,10 @@ The retry was rolled back once. Azure and CPE mappings returned to the pre-retry
 
 This result is not classified as a vWAN platform limitation. Custom APIPA is intended for remote APIPA-only devices, and the retry persisted the intended gateway, site-link and connection-link values. CPE SYNs reached `.22.2/.3` without SYN-ACK or RST while Azure independently initiated from `.12/.13`. The configuration/API association is unresolved pending Trinity review. Full active-state GET bodies were not captured before rollback; a later explicit-version full GET records only the restored closure state. No further retry or Niobe fault validation is authorized.
 
+### D1 interpretation correction
+
+D1 is separate from the D2 custom-APIPA investigation. It requires no custom APIPA peer: one normal CPE loopback and one Azure default vWAN BGP neighbor retain the same tuple while only the Azure-neighbor `/32` route moves between the ER/private and Internet/public XFRM paths. Existing APIPA captures remain preserved as D2 evidence and are not negative evidence for D1. D1 was not run and remains blocked pending Trinity's corrected recipe.
+
 ## Current health and smoke results
 
 - ExpressRoute provider state is provisioned and Azure private peering succeeded.
@@ -93,4 +97,4 @@ VM stop schedules run daily at 23:00 Europe/Stockholm, but managed gateways, the
 
 Do not run the validation fault matrix against the current deployment. Use the ignored `config/inventory.json` only for inspection: it contains the generated IKE endpoints, effective default BGP peers, configured custom APIPA peers, versioned vHub route queries, live provider identifiers, application listeners, and reviewed fault/restore commands.
 
-The deployment is suitable for blocker review and underlay/IPsec inspection. Scenario execution requires an approved design amendment that either pairs APIPA CPE identities with the four custom Azure addresses or changes the four-unique-neighbor requirement to the two effective gateway peers. After amendment, regenerate runtime configuration and inventory, restore a healthy overlay baseline twice, then begin `validation-plan.md`.
+The deployment is suitable for blocker review and underlay/IPsec inspection. D2 scenario execution requires an approved amendment resolving the custom-peer association or changing the four-unique-neighbor requirement. D1 is an independent ordinary-peer `/32` movement experiment and must await Trinity's corrected recipe. After the applicable amendment, regenerate runtime configuration and inventory, restore a healthy overlay baseline twice, then begin `validation-plan.md`.

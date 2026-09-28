@@ -4,23 +4,22 @@
 
 ## Designs studied
 
-### Design D1: One floating BGP adjacency across private and public tunnels - rejected offline
+### Design D1: One ordinary BGP adjacency moved between underlays - recipe pending
 
-**Status:** Teaching-only; rejected without a live D1 mutation.
-**Verdict:** VPN-over-ER requires a regular-private CPE BGP peer while connection-specific custom vWAN peers require APIPA, so one unchanged identity cannot float across both supported link models.
+**Status:** Not executed. Awaiting Trinity's corrected D1 recipe.
+**Verdict:** No result is claimed. D1 does not require custom APIPA and is evaluated independently from the D2 APIPA evidence.
 
-**What it is:** Both the private VPN-over-ExpressRoute link and the public Internet VPN link attempt to use the same CPE BGP identity (`65050 / 10.250.254.242`). The experiment asks whether one unchanged adjacency can move between managed vWAN link endpoints.
+**What it is:** Configure one normal CPE loopback (`65050 / 10.250.254.242`) and one Azure default vWAN BGP neighbor. Keep the BGP tuple unchanged while switching only the Azure-neighbor `/32` route between the ER/private and Internet/public XFRM tunnels.
 
 **Evidence:**
-- `show-output/deployment-blocker-2026-09-28/` - live peer-source discovery
-- `evidence-index.md` - audit coverage and transcript gaps
-- `validation-plan.md` - D1 prerequisite and verdict gates
-- `design.md` sections 4-6 - endpoint isolation, four XFRM slots and D1 experiment
+- `design.md` section 6 - current D1 concept, subject to Trinity's corrected recipe
+- `validation-plan.md` - D1 isolation and future evidence requirements
+- `evidence-index.md` - audit coverage once D1 is authorized
 
-**Why this verdict:** The live deployment proved that regular-private peers collapse both path classes onto the same two default Azure BGP sources. Changing the ER peer to APIPA would violate the documented VPN-over-ER boundary. Trinity therefore rejected D1 offline and prohibited a live mutation.
+**Why this status:** The APIPA correction attempts answer D2 questions only. They are preserved but are neither pass nor fail evidence for D1. No D1 mutation is authorized until Trinity publishes the corrected operation and reset recipe.
 
 **Use this design when:**
-- Teaching why managed endpoint and link identity can prevent a traditional floating-neighbor pattern.
+- Testing whether one unchanged ordinary BGP tuple can reconnect when only its Azure-neighbor `/32` reachability moves between same-instance XFRM paths.
 
 **Avoid this design when:**
 - Production requires independently observable private and public failure domains.
@@ -67,13 +66,13 @@
 
 Azure, GCP, ExpressRoute, Partner Interconnect, the Amsterdam MCR, all three VXCs, and all four IKE/ESP SAs are live. The ignored `config/inventory.json` contains exact resource identifiers, versioned managed-route queries, effective and configured BGP peers, the read-only Megaport collector, application endpoints, and reviewed fault/restore commands.
 
-Niobe must not execute D2/D3 faults. The public-link APIPA correction and its sole authorized retry both failed the four-session assertion; the runtime inventory remains `validationAuthorized=false`. D1 remains prohibited.
+Niobe must not execute D2/D3 faults. The public-link APIPA correction and its sole authorized retry both failed the four-session assertion; the runtime inventory remains `validationAuthorized=false`. D1 remains unexecuted pending Trinity's corrected recipe.
 
 ## Evidence layout
 
 - `show-output/deployment-audit/<correlation-id>/`
 - `show-output/deployment-blocker-2026-09-28/`
-- `show-output/d1-rejected-offline/`
+- `show-output/d1-single-adjacency/`
 - `show-output/d2-corrected/<correction-or-fault>/<before|action|during|restore|after|assertion>/`
 - `show-output/d3-prefix/<fault-or-restore>/<timestamp>/`
 - `show-output/compound/<timestamp>/`

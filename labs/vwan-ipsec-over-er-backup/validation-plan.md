@@ -22,7 +22,7 @@ Each capture is timestamped in UTC and local time:
 show-output/
   deployment-audit/<correlation-id>/
   deployment-blocker-2026-09-28/
-  d1-rejected-offline/
+  d1-single-adjacency/
   d2-corrected/apipa-correction/<before|action|after|assertion>/
   d2-corrected/apipa-correction/transcript/
   d2-corrected/<fault>/<before|action|during|restore|after|assertion>/
@@ -127,13 +127,13 @@ The ER underlay may carry only VPN endpoint reachability and infrastructure pref
 
 Proof combines MSEE/MCR/GCP tables, CPE `ip route get`, XFRM policies and packet capture. During a controlled private-IPsec-only failure, packets for an overlay test prefix must not appear as cleartext payload on the ER-facing interface. ESP/NAT-T headers are expected; application TCP/ICMP outside the XFRM policy is not.
 
-## 6. Original non-APIPA failure and D1 offline rejection
+## 6. Original non-APIPA failure and D1 evidence isolation
 
 The original deployment used regular-private CPE peers on both path classes. Azure therefore sourced BGP from the same default gateway peers on private and public tunnels, despite connection-selected custom APIPA addresses. Preserve the negative commands and packet captures that established this mechanism under question `Q-BGP-NONAPIPA-BLOCKER`.
 
 Correlation `nonapipa-blocker-20260928-01` reconstructs 81 sanitized command records under `show-output/deployment-blocker-2026-09-28/transcript/` without rerunning destructive or billable steps. It includes custom gateway/connection configuration, CPE runtime application, four-SA recovery, FRR state, packet capture, Azure object queries, provider checks, negative commands and Terraform closure. The historical source retained a combined shell-result stream, so separate stdout/stderr attribution is explicitly unavailable.
 
-D1 is now **rejected offline**. VPN-over-ER requires a non-APIPA CPE peer, while connection-specific custom vWAN peers require APIPA. No live D1 mutation is authorized. Evidence is the corrected `design.md` section 6 plus the original blocker dataset.
+D1 is not an APIPA design and is not rejected by this evidence. Its separate model is one normal CPE loopback, one Azure default vWAN BGP neighbor and one unchanged BGP tuple. Only the Azure-neighbor `/32` reachability moves between the ER/private and Internet/public XFRM tunnels. The APIPA datasets remain D2 evidence only and must not be cited as a D1 pass or failure. No live D1 mutation is authorized until Trinity supplies the corrected operation and reset recipe.
 
 ### Bounded APIPA correction audit
 
@@ -207,7 +207,7 @@ If automation withdraws the `/24`, capture that behavior and reject the predicte
 
 Order is fixed:
 
-`baseline-captured -> d1-rejected-offline -> d2-corrected -> restore -> d3-prefix -> compound -> final-healthy`
+`baseline-captured -> d1-single-adjacency (only after corrected recipe) -> restore -> d2-corrected -> restore -> d3-prefix -> compound -> final-healthy`
 
 Before the next design:
 
@@ -278,7 +278,7 @@ pwsh .\scripts\New-EvidenceIndex.ps1
 
 - README statuses remain pending until execution.
 - A design verdict cites exact evidence paths and quotes route/session/probe facts.
-- D1 is an offline rejected design after the live peer-source discovery and corrected design review; no live D1 mutation is permitted.
+- D1 has no verdict and must not use D2 APIPA observations as negative evidence. Execute it only after Trinity supplies the corrected ordinary-peer `/32` movement and reset recipe.
 - D2 cannot be recommended without deterministic preference in both directions and successful failure plus failback evidence.
 - D3 cannot be called a blackhole without the backup-down-then-primary-down packet and probe result.
 - Missing provider/MCR evidence makes the affected route claim inconclusive, not pass.
