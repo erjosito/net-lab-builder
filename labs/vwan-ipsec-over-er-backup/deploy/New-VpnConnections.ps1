@@ -5,7 +5,8 @@ param(
     [Parameter(Mandatory)] [string]$VirtualWanName,
     [Parameter(Mandatory)] [string]$VpnGatewayName,
     [Parameter(Mandatory)] [string]$PublicCpeIp,
-    [Parameter()] [ValidateSet('D1','D2','D3')] [string]$Design = 'D2'
+    [Parameter()] [ValidateSet('D1','D2','D3')] [string]$Design = 'D2',
+    [Parameter()] [switch]$ReplaceExisting
 )
 
 $ErrorActionPreference = 'Stop'
@@ -15,6 +16,29 @@ $privatePrefixes = if ($Design -eq 'D1') { @('10.253.1.0/24') } elseif ($Design 
 $publicPrefixes  = if ($Design -eq 'D1') { @('10.253.1.0/24') } elseif ($Design -eq 'D3') { @('10.253.3.0/24') } else { @('10.253.2.0/24') }
 $publicBgp = $Design -ne 'D3'
 $tags = @('lab=true','created_by=copilot-lab','lab_name=vwan-ipsec-over-er-backup')
+
+$existingConnections = @(
+    az network vpn-gateway connection list -g $ResourceGroup --gateway-name $VpnGatewayName `
+        --query "[?name=='conn-gcp-er' || name=='conn-gcp-inet'].name" -o tsv
+)
+$existingSites = @(
+    az network vpn-site list -g $ResourceGroup `
+        --query "[?name=='site-gcp-er' || name=='site-gcp-inet'].name" -o tsv
+)
+if (($existingConnections.Count -gt 0 -or $existingSites.Count -gt 0) -and -not $ReplaceExisting) {
+    throw 'Existing lab VPN objects found. Re-run with -ReplaceExisting for an explicit D1/D2/D3 bundle switch.'
+}
+if ($ReplaceExisting) {
+    foreach ($name in $existingConnections) {
+        az network vpn-gateway connection delete -g $ResourceGroup --gateway-name $VpnGatewayName `
+            -n $name --only-show-errors -o none
+        if ($LASTEXITCODE -ne 0) { throw "Failed to delete VPN connection $name" }
+    }
+    foreach ($name in $existingSites) {
+        az network vpn-site delete -g $ResourceGroup -n $name --only-show-errors -o none
+        if ($LASTEXITCODE -ne 0) { throw "Failed to delete VPN site $name" }
+    }
+}
 
 function Ensure-Site {
     param([string]$Name,[string]$Ip,[string]$Peer,[string[]]$Prefixes,[bool]$EnableBgp)
@@ -54,3 +78,4 @@ Ensure-Connection -Name 'conn-gcp-er' -Site $privateSite -EnableBgp $true -UsePr
 Ensure-Connection -Name 'conn-gcp-inet' -Site $publicSite -EnableBgp $publicBgp -UsePrivateAzureIp $false
 
 Write-Output "VPN_CONNECTIONS_READY=true"
+Write-Output "VPN_DESIGN=$Design"

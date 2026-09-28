@@ -32,6 +32,8 @@ Missing markets: Sweden
 
 This is a design-review hard stop: catalog visibility does not establish account market entitlement, and substituting Frankfurt or another market would change the explicitly authorized Stockholm design. No MCR or VXC purchase was attempted.
 
+The validation was repeated after Trinity finalized the binding network specification. It returned the same HTTP 400 `Missing markets: Sweden`. Trinity section 13 permits MCR placement to remain deployment-discovered, but requires Tank to stop when the live quote would need an unapproved topology-changing location substitution. The provider blocker therefore remains active even though the network design itself is complete.
+
 Resume only after one of these decisions:
 
 1. Megaport enables Sweden for the current account, preserving Stockholm.

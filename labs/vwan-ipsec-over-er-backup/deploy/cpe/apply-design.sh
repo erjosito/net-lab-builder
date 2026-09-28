@@ -7,6 +7,7 @@ test -f "$runtime"
 source "$runtime"
 : "${PUB0_BGP:=}"
 : "${PUB1_BGP:=}"
+: "${D1_PHASE:=private}"
 
 case "$DESIGN" in
   D1)
@@ -16,6 +17,20 @@ case "$DESIGN" in
     public_prepend=""
     d3_fallback=""
     public_bgp_enabled=true
+    if [[ "$D1_PHASE" == private ]]; then
+      private_start_action=start
+      public_start_action=none
+      private_neighbor_shutdown=false
+      public_neighbor_shutdown=true
+    elif [[ "$D1_PHASE" == public ]]; then
+      private_start_action=none
+      public_start_action=start
+      private_neighbor_shutdown=true
+      public_neighbor_shutdown=false
+    else
+      echo "D1_PHASE must be private or public" >&2
+      exit 2
+    fi
     ;;
   D2)
     local_private=10.250.254.240
@@ -24,6 +39,10 @@ case "$DESIGN" in
     public_prepend="set as-path prepend 65050 65050 65050"
     d3_fallback=""
     public_bgp_enabled=true
+    private_start_action=start
+    public_start_action=start
+    private_neighbor_shutdown=false
+    public_neighbor_shutdown=false
     ;;
   D3)
     local_private=10.250.254.240
@@ -32,6 +51,10 @@ case "$DESIGN" in
     public_prepend=""
     d3_fallback=$'ip route 10.241.0.0/24 xfrm-pub0 250\nip route 10.241.0.0/24 xfrm-pub1 250'
     public_bgp_enabled=false
+    private_start_action=start
+    public_start_action=start
+    private_neighbor_shutdown=false
+    public_neighbor_shutdown=false
     ;;
   *) exit 2 ;;
 esac
@@ -41,6 +64,7 @@ install -d -m 0700 /etc/vwan-lab
 
 cat >/etc/vwan-lab/network.env <<EOF
 DESIGN=$DESIGN
+D1_PHASE=$D1_PHASE
 PRI0_IKE=$PRI0_IKE
 PRI1_IKE=$PRI1_IKE
 PUB0_IKE=$PUB0_IKE
@@ -49,6 +73,22 @@ PRI0_BGP=$PRI0_BGP
 PRI1_BGP=$PRI1_BGP
 PUB0_BGP=$PUB0_BGP
 PUB1_BGP=$PUB1_BGP
+EOF
+
+cat >/etc/systemd/system/vwan-lab-ipsec.service <<'EOF'
+[Unit]
+Description=Load vWAN lab StrongSwan connections
+After=vwan-lab-network.service strongswan.service
+Requires=vwan-lab-network.service strongswan.service
+Before=frr.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/swanctl --load-all
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
 EOF
 chmod 0600 /etc/vwan-lab/network.env
 
@@ -105,19 +145,28 @@ EOF
 
 cat >/etc/swanctl/conf.d/vwan.conf <<EOF
 connections {
-  pri0 { version=2; local_addrs=10.250.0.10; remote_addrs=$PRI0_IKE; proposals=aes256-sha256-modp2048; local { auth=psk; id=10.250.0.10; }; remote { auth=psk; id=$PRI0_IKE; }; children { pri0 { local_ts=0.0.0.0/0; remote_ts=0.0.0.0/0; if_id_in=410; if_id_out=410; esp_proposals=aes256-sha256; start_action=start; dpd_action=restart; } } }
-  pri1 { version=2; local_addrs=10.250.0.10; remote_addrs=$PRI1_IKE; proposals=aes256-sha256-modp2048; local { auth=psk; id=10.250.0.10; }; remote { auth=psk; id=$PRI1_IKE; }; children { pri1 { local_ts=0.0.0.0/0; remote_ts=0.0.0.0/0; if_id_in=411; if_id_out=411; esp_proposals=aes256-sha256; start_action=start; dpd_action=restart; } } }
-  pub0 { version=2; local_addrs=10.250.0.10; remote_addrs=$PUB0_IKE; mobike=no; encap=yes; proposals=aes256-sha256-modp2048; local { auth=psk; id=$PUBLIC_CPE_IP; }; remote { auth=psk; id=$PUB0_IKE; }; children { pub0 { local_ts=0.0.0.0/0; remote_ts=0.0.0.0/0; if_id_in=420; if_id_out=420; esp_proposals=aes256-sha256; start_action=start; dpd_action=restart; } } }
-  pub1 { version=2; local_addrs=10.250.0.10; remote_addrs=$PUB1_IKE; mobike=no; encap=yes; proposals=aes256-sha256-modp2048; local { auth=psk; id=$PUBLIC_CPE_IP; }; remote { auth=psk; id=$PUB1_IKE; }; children { pub1 { local_ts=0.0.0.0/0; remote_ts=0.0.0.0/0; if_id_in=421; if_id_out=421; esp_proposals=aes256-sha256; start_action=start; dpd_action=restart; } } }
+  pri0 { version=2; local_addrs=10.250.0.10; remote_addrs=$PRI0_IKE; proposals=aes256-sha256-modp2048; local { auth=psk; id=10.250.0.10; }; remote { auth=psk; id=$PRI0_IKE; }; children { pri0 { local_ts=0.0.0.0/0; remote_ts=0.0.0.0/0; if_id_in=410; if_id_out=410; esp_proposals=aes256-sha256; start_action=$private_start_action; dpd_action=restart; } } }
+  pri1 { version=2; local_addrs=10.250.0.10; remote_addrs=$PRI1_IKE; proposals=aes256-sha256-modp2048; local { auth=psk; id=10.250.0.10; }; remote { auth=psk; id=$PRI1_IKE; }; children { pri1 { local_ts=0.0.0.0/0; remote_ts=0.0.0.0/0; if_id_in=411; if_id_out=411; esp_proposals=aes256-sha256; start_action=$private_start_action; dpd_action=restart; } } }
+  pub0 { version=2; local_addrs=10.250.0.10; remote_addrs=$PUB0_IKE; mobike=no; encap=yes; proposals=aes256-sha256-modp2048; local { auth=psk; id=$PUBLIC_CPE_IP; }; remote { auth=psk; id=$PUB0_IKE; }; children { pub0 { local_ts=0.0.0.0/0; remote_ts=0.0.0.0/0; if_id_in=420; if_id_out=420; esp_proposals=aes256-sha256; start_action=$public_start_action; dpd_action=restart; } } }
+  pub1 { version=2; local_addrs=10.250.0.10; remote_addrs=$PUB1_IKE; mobike=no; encap=yes; proposals=aes256-sha256-modp2048; local { auth=psk; id=$PUBLIC_CPE_IP; }; remote { auth=psk; id=$PUB1_IKE; }; children { pub1 { local_ts=0.0.0.0/0; remote_ts=0.0.0.0/0; if_id_in=421; if_id_out=421; esp_proposals=aes256-sha256; start_action=$public_start_action; dpd_action=restart; } } }
 }
 secrets {
-  ike-pri { secret="$PRIVATE_PSK"; }
-  ike-pub { secret="$PUBLIC_PSK"; }
+  ike-pri { id-1=10.250.0.10; secret="$PRIVATE_PSK"; }
+  ike-pub { id-1=$PUBLIC_CPE_IP; secret="$PUBLIC_PSK"; }
 }
 EOF
 chmod 0600 /etc/swanctl/conf.d/vwan.conf
 
 public_neighbor_base=""
+private_neighbor_instances=$(cat <<EOF
+ neighbor $PRI0_BGP peer-group PRI
+ neighbor $PRI1_BGP peer-group PRI
+EOF
+)
+if $private_neighbor_shutdown; then
+  private_neighbor_instances+=$'\n'" neighbor "$PRI0_BGP shutdown"
+  private_neighbor_instances+=$'\n'" neighbor "$PRI1_BGP shutdown"
+fi
 public_neighbor_instances=""
 public_address_family=""
 public_policy=""
@@ -135,6 +184,10 @@ EOF
  neighbor $PUB1_BGP peer-group PUB
 EOF
 )
+  if $public_neighbor_shutdown; then
+    public_neighbor_instances+=$'\n'" neighbor "$PUB0_BGP shutdown"
+    public_neighbor_instances+=$'\n'" neighbor "$PUB1_BGP shutdown"
+  fi
   public_address_family=$(cat <<EOF
   neighbor PUB route-map IMPORT-PUB in
   neighbor PUB prefix-list AZURE-IN in
@@ -170,8 +223,7 @@ router bgp 65050
  neighbor PRI ebgp-multihop 2
  neighbor PRI update-source $local_private
 $public_neighbor_base
- neighbor $PRI0_BGP peer-group PRI
- neighbor $PRI1_BGP peer-group PRI
+$private_neighbor_instances
 $public_neighbor_instances
  address-family ipv4 unicast
   network 10.253.1.0/24
@@ -213,8 +265,7 @@ nft delete table inet vwan_lab 2>/dev/null || true
 nft -f /etc/nftables.d-vwan-lab.conf
 
 systemctl daemon-reload
-systemctl enable vwan-lab-network.service
-systemctl restart vwan-lab-network.service strongswan frr
-swanctl --load-all >/dev/null
+systemctl enable vwan-lab-network.service vwan-lab-ipsec.service
+systemctl restart vwan-lab-network.service strongswan vwan-lab-ipsec.service frr
 rm -f "$runtime"
 logger -t vwan-lab "Applied $DESIGN configuration"

@@ -1343,3 +1343,15 @@ All three files pass py_compile; 10/10 unit tests pass.
 - Megaport OAuth succeeded, but live non-billable Stockholm validation failed with HTTP 400 `Missing markets: Sweden`. Per Morpheus's design-review hard stop, no alternate market was substituted and no MCR/VXC was purchased.
 - Final state: Azure/GCP foundations converged; ER provider state `NotProvisioned`; GCP attachment `PENDING_PARTNER`; no VPN connections/PSKs/overlay sessions; Megaport commitment `$0`.
 - Sanitized closure evidence and Niobe handoff are in `labs/vwan-ipsec-over-er-backup/deploy-log.md` and `show-output/deployment-blocker-2026-09-28/README.md`.
+
+---
+
+## TANK-022 -- Trinity binding reconciliation (2026-09-28)
+
+- Read the finalized authoritative `design.md` and Trinity decision inbox and reconciled the deployed scaffolding against sections 3-10 and 13-14.
+- Corrected D1 so only the selected private or public pair is active, added explicit `d1-private`/`d1-public` switching, and made restore honor the persisted D1 phase.
+- Corrected D3 so the public site remains static-only with no public BGP neighbors or peer routes.
+- Bound the private and public StrongSwan secrets to their distinct local identities and added a separate ordered `vwan-lab-ipsec.service` for reboot-safe `swanctl --load-all`.
+- Added explicit Azure VPN bundle replacement semantics so D1/D2/D3 switches cannot silently reuse stale site prefixes or BGP identity.
+- Corrected reset ordering to flush XFRM state before invoking the complete persisted restore.
+- Re-ran non-billable Stockholm validation after the binding review; Megaport still returned HTTP 400 `Missing markets: Sweden`. This now maps directly to Trinity section 13's stop condition for an unapproved topology-changing quote substitution. No order was submitted.
