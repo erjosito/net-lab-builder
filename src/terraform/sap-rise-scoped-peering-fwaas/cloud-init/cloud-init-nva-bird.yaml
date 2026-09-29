@@ -1,0 +1,95 @@
+#cloud-config
+# NVA with BIRD BGP — for peering with Azure Route Server or Virtual WAN
+# Used by azure-lab skill for Linux NVA VMs (Ubuntu 22.04)
+#
+# After deployment, configure BIRD peering by editing /etc/bird/bird.conf:
+#   - Set PEER_IP_1 / PEER_IP_2 to the Route Server or VWAN BGP peer IPs
+#   - Set LOCAL_IP to the VM's private IP
+#   - Set LOCAL_ASN to the NVA's ASN (e.g., 65001)
+#   - Set PEER_ASN to Route Server ASN (65515) or VWAN ASN
+
+package_update: true
+package_upgrade: false
+
+packages:
+  - bird2
+  - iptables-persistent
+  - traceroute
+  - tcpdump
+  - net-tools
+
+write_files:
+  - path: /etc/sysctl.d/99-ip-forward.conf
+    content: |
+      net.ipv4.ip_forward = 1
+      net.ipv6.conf.all.forwarding = 1
+    permissions: '0644'
+
+  - path: /etc/bird/bird.conf
+    content: |
+      # BIRD 2 configuration for Azure Route Server / VWAN peering
+      # Edit LOCAL_IP, PEER_IP_1, PEER_IP_2, LOCAL_ASN, PEER_ASN after deploy
+
+      log syslog all;
+      router id LOCAL_IP;
+
+      protocol device {
+          scan time 10;
+      }
+
+      protocol direct {
+          ipv4;
+          interface "eth0";
+      }
+
+      protocol kernel {
+          ipv4 {
+              import all;
+              export all;
+          };
+          learn;
+          scan time 15;
+      }
+
+      # Static routes to advertise to Azure (edit as needed)
+      protocol static static_bgp {
+          ipv4;
+          # Example: advertise a summary route
+          # route 10.100.0.0/16 via LOCAL_IP;
+      }
+
+      # BGP template for Azure peers
+      template bgp azure_peer {
+          local LOCAL_IP as LOCAL_ASN;
+          multihop 2;
+          ipv4 {
+              import all;
+              export where proto = "static_bgp";
+          };
+          graceful restart on;
+          connect retry time 10;
+          hold time 60;
+          keepalive time 20;
+      }
+
+      # Azure Route Server / VWAN peer 1
+      protocol bgp azure_rs_1 from azure_peer {
+          neighbor PEER_IP_1 as PEER_ASN;
+      }
+
+      # Azure Route Server / VWAN peer 2
+      protocol bgp azure_rs_2 from azure_peer {
+          neighbor PEER_IP_2 as PEER_ASN;
+      }
+    permissions: '0644'
+
+runcmd:
+  - sysctl -p /etc/sysctl.d/99-ip-forward.conf
+  # NAT masquerade
+  - export PRIMARY_IF=$(ip route show default | awk '{print $5}' | head -1)
+  - iptables -t nat -A POSTROUTING -o $PRIMARY_IF -j MASQUERADE
+  - iptables -A FORWARD -j ACCEPT
+  - netfilter-persistent save
+  # BIRD will be configured post-deploy via az vm run-command
+  - systemctl enable bird
+  - echo "BIRD installed. Edit /etc/bird/bird.conf with peer IPs, then: systemctl restart bird"

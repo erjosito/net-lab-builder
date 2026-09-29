@@ -1,0 +1,47 @@
+#cloud-config
+# NVA base setup: IP forwarding + iptables NAT (dual-stack)
+# Used by azure-lab skill for Linux NVA VMs (Ubuntu 22.04)
+#
+# MASQUERADE policy: SNAT only traffic destined to the PUBLIC internet
+# (i.e., NOT to RFC1918 for IPv4, NOT to ULA fc00::/7 for IPv6). This
+# preserves original source IPs for hub-spoke / spoke-spoke transit while
+# still giving spokes internet egress through the NVA + outbound LB rule.
+
+package_update: true
+package_upgrade: false
+
+packages:
+  - iptables-persistent
+  - traceroute
+  - tcpdump
+  - net-tools
+
+write_files:
+  - path: /etc/sysctl.d/99-ip-forward.conf
+    content: |
+      net.ipv4.ip_forward = 1
+      net.ipv6.conf.all.forwarding = 1
+    permissions: '0644'
+
+runcmd:
+  - sysctl -p /etc/sysctl.d/99-ip-forward.conf
+  - export PRIMARY_IF=$(ip route show default | awk '{print $5}' | head -1)
+  # IPv4 SNAT: chain returns early for RFC1918 dests (iptables forbids
+  # multiple -d flags in one rule), then MASQUERADEs the rest.
+  - iptables -t nat -N SNAT_PUBLIC
+  - iptables -t nat -A SNAT_PUBLIC -d 10.0.0.0/8 -j RETURN
+  - iptables -t nat -A SNAT_PUBLIC -d 172.16.0.0/12 -j RETURN
+  - iptables -t nat -A SNAT_PUBLIC -d 192.168.0.0/16 -j RETURN
+  - iptables -t nat -A SNAT_PUBLIC -j MASQUERADE
+  - iptables -t nat -A POSTROUTING -o $PRIMARY_IF -j SNAT_PUBLIC
+  # IPv6 SNAT: same pattern, return early for ULA (fc00::/7)
+  - ip6tables -t nat -N SNAT_PUBLIC6
+  - ip6tables -t nat -A SNAT_PUBLIC6 -d fc00::/7 -j RETURN
+  - ip6tables -t nat -A SNAT_PUBLIC6 -j MASQUERADE
+  - ip6tables -t nat -A POSTROUTING -o $PRIMARY_IF -j SNAT_PUBLIC6
+  # FORWARD: permit transit both ways for both families
+  - iptables -A FORWARD -i $PRIMARY_IF -j ACCEPT
+  - iptables -A FORWARD -o $PRIMARY_IF -m state --state RELATED,ESTABLISHED -j ACCEPT
+  - ip6tables -A FORWARD -i $PRIMARY_IF -j ACCEPT
+  - ip6tables -A FORWARD -o $PRIMARY_IF -m state --state RELATED,ESTABLISHED -j ACCEPT
+  - netfilter-persistent save
