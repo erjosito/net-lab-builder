@@ -1,0 +1,8 @@
+$ az network nsg rule show -g rg-saprise-swedencentral --nsg-name nsg-hub-nva -n Allow-Workload-In -o table
+
+Name               ResourceGroup             Priority    SourcePortRanges    SourceAddressPrefixes    SourceASG    Access    Protocol    Direction    DestinationPortRanges    DestinationAddressPrefixes    DestinationASG
+-----------------  ------------------------  ----------  ------------------  -----------------------  -----------  --------  ----------  -----------  -----------------------  ----------------------------  ----------------
+Allow-Workload-In  rg-saprise-swedencentral  115         *                   10.60.1.0/24             None         Allow     *           Inbound      *                        VirtualNetwork                None
+
+[exit_code]=0
+

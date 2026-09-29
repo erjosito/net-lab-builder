@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "20260929T172057Z",
+  "outputDir": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-ce-reachability-fix-retry3-20260929T172057Z",
+  "apply": {
+    "pass": true,
+    "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-ce-reachability-fix-retry3-20260929T172057Z\\01-defect-e-apply.txt",
+    "exitCode": 0
+  },
+  "stoppedAtStage": 4,
+  "allPassed": false,
+  "stages": {
+    "stage2": {
+      "pass": true,
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-ce-reachability-fix-retry3-20260929T172057Z\\02-stage-2-hub-route.txt",
+      "exitCode": 0
+    },
+    "stage3": {
+      "pass": true,
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-ce-reachability-fix-retry3-20260929T172057Z\\03-stage-3-ce-ping-hub.txt",
+      "exitCode": 0
+    },
+    "stage4": {
+      "pass": false,
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-ce-reachability-fix-retry3-20260929T172057Z\\04-stage-4-ce-ping-spoke-nva.txt",
+      "exitCode": 0
+    }
+  },
+  "reason": "stage4 failed: CE could not ping 10.60.0.4 with 0% loss after Defect E apply; stage5-stage7 are non-authoritative extra captures from a local regex bug in the evidence harness and should not be treated as ordered verification results"
+}

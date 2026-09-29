@@ -1,0 +1,15 @@
+$ az vm run-command invoke -g rg-saprise-swedencentral -n vm-hub-nva --command-id RunShellScript --scripts @"C:\Users\jomore\Repos\net-lab-builder\labs\sap-rise-scoped-peering-fwaas\show-output\s1-ce-reachability-fix-20260929T165357Z\hub-bird-fix.sh" -o json
+
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\n\n[stderr]\n  File \"<stdin>\", line 10\n    birdc configure\n          ^^^^^^^^^\nSyntaxError: invalid syntax\n"
+    }
+  ]
+}
+
+[exit_code]=0
+

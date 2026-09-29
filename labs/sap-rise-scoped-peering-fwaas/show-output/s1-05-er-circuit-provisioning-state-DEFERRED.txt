@@ -1,0 +1,6 @@
+# az_cli: az network express-route show -g rg-saprise-swedencentral -n er-sap-rise --query "{provisioningState:provisioningState,serviceProviderProvisioningState:serviceProviderProperties.serviceProviderProvisioningStatus}" -o json
+# NOTE: Not independently re-verified in this pass (deployed-resources.md already records
+# provisioningState: Succeeded for the gateway and does not flag circuit provisioning as an
+# open item). Deferred -- see "Open items" in validation.md; this is a Layer-2 capture that should
+# be re-run alongside the BIRD fix re-validation, not repeated here since it does not change the
+# S1 verdict (the failure is upstream of the circuit, inside BIRD on vm-hub-nva).

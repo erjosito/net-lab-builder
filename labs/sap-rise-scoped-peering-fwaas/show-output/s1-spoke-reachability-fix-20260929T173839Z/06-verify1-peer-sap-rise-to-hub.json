@@ -1,0 +1,47 @@
+{
+  "allowForwardedTraffic": true,
+  "allowGatewayTransit": false,
+  "allowVirtualNetworkAccess": true,
+  "doNotVerifyRemoteGateways": false,
+  "etag": "W/\"e4022c52-e661-4928-887a-b70f3c279645\"",
+  "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub",
+  "localAddressSpace": {
+    "addressPrefixes": [
+      "10.60.0.0/27"
+    ]
+  },
+  "localSubnetNames": [
+    "snet-spoke-nva"
+  ],
+  "localVirtualNetworkAddressSpace": {
+    "addressPrefixes": [
+      "10.60.0.0/27"
+    ]
+  },
+  "name": "peer-sap-rise-to-hub",
+  "peerCompleteVnets": false,
+  "peeringState": "Connected",
+  "peeringSyncLevel": "FullyInSync",
+  "provisioningState": "Succeeded",
+  "remoteAddressSpace": {
+    "addressPrefixes": [
+      "10.40.1.0/27"
+    ]
+  },
+  "remoteSubnetNames": [
+    "snet-hub-nva"
+  ],
+  "remoteVirtualNetwork": {
+    "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub",
+    "resourceGroup": "rg-saprise-swedencentral"
+  },
+  "remoteVirtualNetworkAddressSpace": {
+    "addressPrefixes": [
+      "10.40.1.0/27"
+    ]
+  },
+  "resourceGroup": "rg-saprise-swedencentral",
+  "resourceGuid": "5a30113f-96ac-0a1b-1b02-7b5e601a4be6",
+  "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+  "useRemoteGateways": false
+}

@@ -1,0 +1,29 @@
+# vm_run_command: az vm run-command invoke -g rg-saprise-swedencentral -n vm-spoke-nva --command-id RunShellScript --scripts "sysctl net.ipv4.ip_forward; iptables -t nat -L -n -v; ip route show"
+# Captured 2026-09-29T14:49:12+02:00 by Niobe
+===IPFWD===
+net.ipv4.ip_forward = 1
+===IPTABLES (nat table)===
+Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+ 1334 88924 SNAT_PUBLIC  all  --  *      eth0    0.0.0.0/0            0.0.0.0/0
+
+Chain SNAT_PUBLIC (1 references)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 RETURN     all  --  *      *       0.0.0.0/0            10.0.0.0/8
+    0     0 RETURN     all  --  *      *       0.0.0.0/0            172.16.0.0/12
+    0     0 RETURN     all  --  *      *       0.0.0.0/0            192.168.0.0/16
+ 1334 88924 MASQUERADE  all  --  *      *       0.0.0.0/0            0.0.0.0/0
+===IPROUTE===
+default via 10.60.0.1 dev eth0 proto dhcp src 10.60.0.4 metric 100
+10.60.0.0/27 dev eth0 proto kernel scope link src 10.60.0.4 metric 100
+10.60.0.1 dev eth0 proto dhcp scope link src 10.60.0.4 metric 100
+
+# INTERPRETATION (secondary observation, NOT the primary root cause): IP forwarding is correctly
+# enabled. The SNAT_PUBLIC chain RETURNs (no NAT) traffic to RFC1918 ranges only
+# (10/8, 172.16/12, 192.168/16), then MASQUERADEs everything else. The simulated on-prem prefix
+# 172.40.100.0/24 is deliberately a "public-looking" (non-RFC1918) range and therefore DOES get
+# source-NATted to the spoke NVA's own address on egress. This does not, by itself, explain the
+# 100% packet loss observed (conntrack would still allow the return leg), but it is a real
+# side effect worth Tank/Trinity's attention: any traffic from snet-workload toward the simulated
+# on-prem range loses its original source IP at the spoke NVA. Flagged as a secondary open item,
+# not the primary blocker.

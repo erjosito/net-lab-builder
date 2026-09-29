@@ -1,0 +1,33 @@
+# vm_run_command: az vm run-command invoke -g rg-saprise-swedencentral -n vm-hub-nva --command-id RunShellScript --scripts "birdc show protocols; echo '---ROUTES---'; birdc show route"
+# Captured 2026-09-29T14:49:12+02:00 by Niobe (first poll)
+BIRD 2.0.8 ready.
+Name       Proto      Table      State  Since         Info
+device1    Device     ---        up     13:31:57.734
+direct1    Direct     ---        up     13:31:57.734
+kernel1    Kernel     master4    up     13:31:57.734
+static_bgp Static     master4    up     13:31:57.734
+ce_onprem  BGP        ---        start  13:38:34.054  Active        Socket: Connection reset by peer
+azure_rs_1 BGP        ---        start  13:38:48.280  Idle          BGP Error: Hold timer expired
+azure_rs_2 BGP        ---        up     13:41:35.606  Established
+---ROUTES---
+BIRD 2.0.8 ready.
+Table master4:
+0.0.0.0/0            unicast [kernel1 13:31:57.735] * (10)
+	via 10.40.1.1 on eth0
+168.63.129.16/32     unicast [kernel1 13:31:57.735] * (10)
+	via 10.40.1.1 on eth0
+169.254.169.254/32   unicast [kernel1 13:31:57.735] * (10)
+	via 10.40.1.1 on eth0
+10.40.1.0/27         unicast [direct1 13:31:57.735] * (240)
+	dev eth0
+10.40.1.1/32         unicast [kernel1 13:31:57.735] * (10)
+	dev eth0
+10.40.0.0/16         unreachable [azure_rs_2 13:41:35.607 from 10.40.0.36] * (100) [AS65515i]
+
+# INTERPRETATION: at this poll, ce_onprem session is Active/down ("Connection reset by peer"),
+# azure_rs_1 is Idle/down ("Hold timer expired"), only azure_rs_2 is Established. NO 10.60.0.0/16
+# route present anywhere in Table master4 -- the static_bgp protocol that is supposed to originate
+# it has not installed it (see s1-10-bird-static-route-and-config.txt for root cause). A SECOND
+# poll ~2 minutes later (s1-11-bird-second-poll-flap-evidence.txt) shows the sessions flapped again
+# in the opposite pattern, confirming Tank's noted instability is real and ongoing, not a one-time
+# convergence blip.

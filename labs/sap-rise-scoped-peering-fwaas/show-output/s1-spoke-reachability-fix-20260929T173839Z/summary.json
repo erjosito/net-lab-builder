@@ -1,0 +1,73 @@
+{
+  "timestampUtc": "20260929T173839Z",
+  "outDir": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-spoke-reachability-fix-20260929T173839Z",
+  "status": "stopped-on-failure",
+  "stopStage": "verify-step-5",
+  "stopReason": "CE to 10.60.0.4 ping still failed after F1/F2; fallback diagnostics captured for Trinity",
+  "steps": {
+    "00-preflight-account-show": {
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-spoke-reachability-fix-20260929T173839Z\\00-preflight-account-show.json",
+      "exitCode": 0
+    },
+    "01-f1-create-nsg-rule": {
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-spoke-reachability-fix-20260929T173839Z\\01-f1-create-nsg-rule.json",
+      "exitCode": 0
+    },
+    "02-f2-create-route-table": {
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-spoke-reachability-fix-20260929T173839Z\\02-f2-create-route-table.json",
+      "exitCode": 0
+    },
+    "03-f2-create-route": {
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-spoke-reachability-fix-20260929T173839Z\\03-f2-create-route.json",
+      "exitCode": 0
+    },
+    "04-f2-associate-subnet-route-table": {
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-spoke-reachability-fix-20260929T173839Z\\04-f2-associate-subnet-route-table.json",
+      "exitCode": 0
+    },
+    "05-verify1-peer-hub-to-sap-rise": {
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-spoke-reachability-fix-20260929T173839Z\\05-verify1-peer-hub-to-sap-rise.json",
+      "exitCode": 0
+    },
+    "06-verify1-peer-sap-rise-to-hub": {
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-spoke-reachability-fix-20260929T173839Z\\06-verify1-peer-sap-rise-to-hub.json",
+      "exitCode": 0
+    },
+    "07-verify2-spoke-nsg-rule-table": {
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-spoke-reachability-fix-20260929T173839Z\\07-verify2-spoke-nsg-rule-table.txt",
+      "exitCode": 0
+    },
+    "08-verify2-spoke-nsg-rule-json": {
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-spoke-reachability-fix-20260929T173839Z\\08-verify2-spoke-nsg-rule-json.json",
+      "exitCode": 0
+    },
+    "09-verify3-route-table": {
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-spoke-reachability-fix-20260929T173839Z\\09-verify3-route-table.json",
+      "exitCode": 0
+    },
+    "10-verify3-route": {
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-spoke-reachability-fix-20260929T173839Z\\10-verify3-route.json",
+      "exitCode": 0
+    },
+    "11-verify3-subnet": {
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-spoke-reachability-fix-20260929T173839Z\\11-verify3-subnet.json",
+      "exitCode": 0
+    },
+    "12-verify4-effective-routes-table": {
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-spoke-reachability-fix-20260929T173839Z\\12-verify4-effective-routes-table.txt",
+      "exitCode": 0
+    },
+    "13-verify4-effective-routes-json": {
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-spoke-reachability-fix-20260929T173839Z\\13-verify4-effective-routes-json.json",
+      "exitCode": 0
+    },
+    "14-verify5-ce-to-spoke-nva": {
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-spoke-reachability-fix-20260929T173839Z\\14-verify5-ce-to-spoke-nva.json",
+      "exitCode": 0
+    },
+    "15c-fallback-ce-diag": {
+      "file": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-spoke-reachability-fix-20260929T173839Z\\15c-fallback-ce-diag.json",
+      "exitCode": 0
+    }
+  }
+}

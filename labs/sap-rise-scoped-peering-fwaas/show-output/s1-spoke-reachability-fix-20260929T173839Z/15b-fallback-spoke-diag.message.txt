@@ -1,0 +1,21 @@
+Enable succeeded:
+[stdout]
+=== ip route get 172.40.100.4 ===
+172.40.100.4 via 10.60.0.1 dev eth0 src 10.60.0.4 uid 0
+    cache
+=== ip route ===
+default via 10.60.0.1 dev eth0 proto dhcp src 10.60.0.4 metric 100
+10.60.0.0/27 dev eth0 proto kernel scope link src 10.60.0.4 metric 100
+10.60.0.1 dev eth0 proto dhcp scope link src 10.60.0.4 metric 100
+168.63.129.16 via 10.60.0.1 dev eth0 proto dhcp src 10.60.0.4 metric 100
+169.254.169.254 via 10.60.0.1 dev eth0 proto dhcp src 10.60.0.4 metric 100
+=== tcpdump for CE and hub traffic ===
+
+
+[stderr]
+tcpdump: data link type LINUX_SLL2
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes
+0 packets captured
+0 packets received by filter
+0 packets dropped by kernel

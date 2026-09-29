@@ -1,0 +1,105 @@
+# vm_run_command: az vm run-command invoke -g rg-saprise-swedencentral -n vm-hub-nva --command-id RunShellScript --scripts "cat /etc/bird/bird.conf"
+# Captured 2026-09-29T14:49:12+02:00 by Niobe
+log syslog all;
+router id 10.40.1.4;
+
+protocol device {
+    scan time 10;
+}
+
+protocol direct {
+    ipv4;
+    interface "eth0";
+}
+
+protocol kernel {
+    ipv4 {
+        import all;
+        export all;
+    };
+    learn;
+    scan time 15;
+}
+
+protocol static static_bgp {
+    ipv4;
+    route 10.60.0.0/16 via 10.60.0.4;
+}
+
+protocol bgp ce_onprem {
+    local 10.40.1.4 as 65001;
+    neighbor 172.40.100.4 as 65000;
+    multihop 2;
+    ipv4 {
+        import all;
+        export none;
+    };
+    graceful restart on;
+    connect retry time 10;
+    hold time 60;
+    keepalive time 20;
+}
+
+template bgp azure_peer {
+    local 10.40.1.4 as 65001;
+    multihop 2;
+    ipv4 {
+        import all;
+        export where proto = "static_bgp" || proto = "ce_onprem";
+    };
+    graceful restart on;
+    connect retry time 10;
+    hold time 60;
+    keepalive time 20;
+}
+
+protocol bgp azure_rs_1 from azure_peer {
+    neighbor 10.40.0.37 as 65515;
+}
+
+protocol bgp azure_rs_2 from azure_peer {
+    neighbor 10.40.0.36 as 65515;
+}
+
+# ---
+# vm_run_command follow-up: "birdc show route protocol static_bgp all" -> EMPTY (zero routes,
+# BIRD 2.0.8 ready. banner only, no route lines).
+#
+# vm_run_command follow-up: "birdc show route export azure_rs_1" / "azure_rs_2" -> "No valid tables"
+# (both, at the moment of this specific poll -- because whichever azure_rs_x session happened to be
+# down at that instant has no export table to query).
+#
+# vm_run_command follow-up: "birdc show route all" (Table master4) -> only 0.0.0.0/0,
+# 168.63.129.16/32, 169.254.169.254/32 (all kernel1-learned, next-hop 10.40.1.1) and 10.40.1.0/27,
+# 10.40.1.1/32 (direct1). NO 10.60.0.0/16, and critically, NO 10.60.0.0/27 (the peered spoke NVA
+# subnet) either.
+#
+# vm_run_command follow-up: "ip route show" on vm-hub-nva -> only default via 10.40.1.1,
+# 10.40.1.0/27 local, and the Azure metadata/wireserver host routes. NO route to 10.60.0.0/27.
+#
+# vm_run_command follow-up: "ping -c 2 10.60.0.4" from vm-hub-nva -> SUCCEEDS (2/2, ~0.7-1.9ms).
+#
+# ROOT CAUSE (Niobe's diagnosis, not a fix): BIRD's static route
+#   "route 10.60.0.0/16 via 10.60.0.4;"
+# is a *recursive* next-hop static route: BIRD requires an existing route to the gateway IP
+# (10.60.0.4, in the peered subnet 10.60.0.0/27) inside its OWN route table before it will install
+# and export the static route. Azure's subnet-peering fabric delivers packets to 10.60.0.0/27
+# transparently at the hypervisor/SDN layer -- it does NOT inject a corresponding route into the
+# guest OS's kernel routing table (confirmed: NIC effective-route-table for nic-hub-nva DOES show
+# 10.60.0.0/27 as a VNetPeering system route at the Azure fabric level -- see s1-12 -- but "ip route
+# show" inside the VM has no such entry, and BIRD's kernel1 protocol, which "learn"s from the kernel
+# table, therefore never sees it either). Result: the data plane can reach 10.60.0.4 fine (ping
+# proves it), but BIRD's own RIB considers the static route's next hop unresolved, so static_bgp
+# never installs the route and therefore never has anything to export toward ARS -- independent of
+# whether the azure_rs_x BGP sessions are up or down. This is a BIRD-on-Azure config gap, not an
+# Azure platform limitation: the fix (for Tank/Trinity, out of Niobe's scope) is to either add an
+# explicit onlink/interface-scoped static route for 10.60.0.0/27 in bird.conf or a
+# cloud-init-injected host route so BIRD's kernel-learn protocol has something to resolve against.
+#
+# SEPARATE FINDING: even if static_bgp resolved, "protocol bgp ce_onprem { ... export none; }"
+# means the hub NVA is configured to NEVER advertise anything (including 10.60.0.0/16) directly to
+# the simulated on-prem CE peer. Given the CE is peered to vnet-hub via a FULL VNet peering (not
+# through the real ExpressRoute/Megaport path -- deviation #1), the CE's only possible route to the
+# spoke supernet in this topology is a direct BGP advertisement from the hub NVA. With export none,
+# there is no such path even in principle. This looks like a bird.conf authoring gap relative to
+# the design's intent, separate from the recursive-route issue above.

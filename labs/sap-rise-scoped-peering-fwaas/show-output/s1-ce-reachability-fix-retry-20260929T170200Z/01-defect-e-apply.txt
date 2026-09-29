@@ -1,0 +1,19 @@
+COMMAND
+az vm run-command invoke -g rg-saprise-swedencentral -n vm-hub-nva --command-id RunShellScript --scripts "set -eu\ncp /etc/bird/bird.conf /etc/bird/bird.conf.bak-ce-reachability-20260929-retry\ncat > /tmp/bird-kernel-export-fix.py <<'\"'\"'PY'\"'\"'\nfrom pathlib import Path\npath = Path('/etc/bird/bird.conf')\nold = 'protocol kernel { ipv4 { import all; export none; }; learn; scan time 15; }\n'\nnew = 'protocol kernel { ipv4 { import all; export where proto = \"static_bgp\"; }; learn; scan time 15; }\n'\ntext = path.read_text()\nif old not in text:\n    raise SystemExit('expected kernel export-none line not found exactly; stop and escalate to Trinity')\npath.write_text(text.replace(old, new, 1))\nPY\npython3 /tmp/bird-kernel-export-fix.py\nrm -f /tmp/bird-kernel-export-fix.py\nbirdc configure\ngrep -n \"protocol kernel\" /etc/bird/bird.conf\nbirdc show route 10.60.0.0/16 all\nip route get 10.60.1.4" -o json
+
+OUTPUT
+
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\n\n[stderr]\n"
+    }
+  ]
+}
+
+
+EXIT_CODE=0
+

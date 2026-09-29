@@ -1,0 +1,25 @@
+$ az network nsg rule create -g rg-saprise-swedencentral --nsg-name nsg-hub-nva -n Allow-OnpremSim-Data-In --priority 125 --direction Inbound --access Allow --protocol * --source-address-prefixes 172.40.100.0/24 --source-port-ranges * --destination-address-prefixes VirtualNetwork --destination-port-ranges * -o json
+
+{
+  "access": "Allow",
+  "destinationAddressPrefix": "VirtualNetwork",
+  "destinationAddressPrefixes": [],
+  "destinationPortRange": "*",
+  "destinationPortRanges": [],
+  "direction": "Inbound",
+  "etag": "W/\"ea109cb7-edaf-4bec-aac7-6e23eb3a51d9\"",
+  "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/securityRules/Allow-OnpremSim-Data-In",
+  "name": "Allow-OnpremSim-Data-In",
+  "priority": 125,
+  "protocol": "*",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-saprise-swedencentral",
+  "sourceAddressPrefix": "172.40.100.0/24",
+  "sourceAddressPrefixes": [],
+  "sourcePortRange": "*",
+  "sourcePortRanges": [],
+  "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+}
+
+[exit_code]=0
+

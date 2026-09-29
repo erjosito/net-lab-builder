@@ -1,0 +1,29 @@
+# az_cli: az network nic list-effective-nsg -g rg-saprise-swedencentral -n nic-workload-probe -o json
+# Captured 2026-09-29T14:49:12+02:00 by Niobe
+{
+  "value": [
+    {
+      "association": {},
+      "networkSecurityGroup": {},
+      "effectiveSecurityRules": [
+        {
+          "access": "Allow", "direction": "Inbound", "priority": 0,
+          "name": "defaultSecurityRules/AllowAzureLoadBalancerInbound",
+          "sourceAddressPrefix": "AzureLoadBalancer", "destinationPortRange": "16001-16001"
+        },
+        {
+          "access": "Allow", "direction": "Inbound", "priority": 65534,
+          "name": "defaultSecurityRules/AllowVirtualNetwork",
+          "sourceAddressPrefix": "VirtualNetwork", "destinationPortRange": "0-65535"
+        }
+      ]
+    }
+  ]
+}
+
+# INTERPRETATION -- ASSERTION S1.D4 (NSG rules on workload NIC do not block the test traffic):
+# No NSG is actually associated to nic-workload-probe ("association": {}, "networkSecurityGroup":
+# {} are both empty) -- only the two implicit platform defaults are in effect, and neither would
+# block inbound ICMP from an on-prem-simulated source (AllowVirtualNetwork covers RFC1918-style
+# intra-fabric traffic; there is no explicit Deny). ASSERTION: PASS (NSG is not the blocker for the
+# observed reachability failures; the failures trace entirely to BIRD/BGP -- see s1-11).

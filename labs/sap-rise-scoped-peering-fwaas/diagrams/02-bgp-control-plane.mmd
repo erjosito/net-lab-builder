@@ -1,0 +1,36 @@
+flowchart LR
+    subgraph S1["Scenario 1: NVA-Driven Route Propagation (S1)"]
+        direction LR
+        HubNVA1["Hub NVA<br/>ASN 65001"]
+        ARS["Azure Route Server<br/>ASN 65515"]
+        ErGw1["ER Gateway"]
+        MSEE1["MSEE"]
+        MCR1["MCR<br/>Megaport"]
+        CE1["CE Router<br/>ASN 65000"]
+
+        HubNVA1 -->|eBGP Advertise<br/>10.60.0.0/16<br/>Origin: hub NVA| ARS
+        ARS -->|BGP<br/>Prepend 65515<br/>10.60.0.0/16| ErGw1
+        ErGw1 -->|BGP<br/>10.60.0.0/16| MSEE1
+        MSEE1 -->|BGP<br/>10.60.0.0/16| MCR1
+        MCR1 -->|eBGP<br/>10.60.0.0/16| CE1
+    end
+
+    subgraph S2["Scenario 2: Advertised Gateway Prefixes (S2)"]
+        direction LR
+        SpokeVNet2["Spoke VNet Config<br/>summarizedGatewayPrefixes<br/>= true"]
+        GW2["ER Gateway"]
+        MSEE2["MSEE"]
+        MCR2["MCR<br/>Megaport"]
+        CE2["CE Router<br/>ASN 65000"]
+
+        SpokeVNet2 -->|Gateway Property<br/>Forces Full /16<br/>10.60.0.0/16| GW2
+        GW2 -->|BGP<br/>Aggregate Prefix<br/>10.60.0.0/16| MSEE2
+        MSEE2 -->|BGP<br/>10.60.0.0/16| MCR2
+        MCR2 -->|eBGP<br/>10.60.0.0/16| CE2
+    end
+
+    style S1 fill:#e3f2fd
+    style S2 fill:#fff3e0
+    style HubNVA1 fill:#bbdefb
+    style ARS fill:#c8e6c9
+    style SpokeVNet2 fill:#ffe0b2

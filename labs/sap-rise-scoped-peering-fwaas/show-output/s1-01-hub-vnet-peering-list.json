@@ -1,0 +1,39 @@
+# az_cli: az network vnet peering list -g rg-saprise-swedencentral --vnet-name vnet-hub -o json
+# Captured 2026-09-29T14:49:12+02:00 by Niobe
+[
+  {
+    "allowForwardedTraffic": true,
+    "allowGatewayTransit": false,
+    "allowVirtualNetworkAccess": true,
+    "name": "peer-hub-to-onprem-sim",
+    "peerCompleteVnets": true,
+    "peeringState": "Connected",
+    "peeringSyncLevel": "FullyInSync",
+    "provisioningState": "Succeeded",
+    "remoteAddressSpace": { "addressPrefixes": ["172.40.100.0/24"] },
+    "remoteVirtualNetwork": { "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-onprem-sim" },
+    "useRemoteGateways": false
+  },
+  {
+    "allowForwardedTraffic": true,
+    "allowGatewayTransit": false,
+    "allowVirtualNetworkAccess": true,
+    "localAddressSpace": { "addressPrefixes": ["10.40.1.0/27"] },
+    "localSubnetNames": ["snet-hub-nva"],
+    "name": "peer-hub-to-sap-rise",
+    "peerCompleteVnets": false,
+    "peeringState": "Connected",
+    "peeringSyncLevel": "FullyInSync",
+    "provisioningState": "Succeeded",
+    "remoteAddressSpace": { "addressPrefixes": ["10.60.0.0/27"] },
+    "remoteSubnetNames": ["snet-spoke-nva"],
+    "remoteVirtualNetwork": { "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise" },
+    "useRemoteGateways": false
+  }
+]
+
+# INTERPRETATION: peer-hub-to-sap-rise is confirmed subnet-scoped (peerCompleteVnets:false,
+# localSubnetNames:[snet-hub-nva], remoteSubnetNames:[snet-spoke-nva]) -- matches design.md and
+# decisions.md exactly. peer-hub-to-onprem-sim is intentionally a FULL VNet peering (deviation #1:
+# simulated on-prem CE realized as a plain Azure VM peered directly to vnet-hub, not routed through
+# the actual ExpressRoute/Megaport data path). ASSERTION S1 SUBNET-PEERING SCOPE: PASS.

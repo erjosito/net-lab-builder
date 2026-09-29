@@ -1,0 +1,44 @@
+graph TB
+    subgraph Azure["Azure (swedencentral)"]
+        subgraph HubVNet["Hub VNet (10.40.0.0/16)"]
+            GW["GatewaySubnet<br/>10.40.0.0/27"]
+            RS["RouteServerSubnet<br/>10.40.0.32/27<br/>ASN 65515"]
+            HubNVA["snet-hub-nva<br/>10.40.1.0/27<br/>Linux NVA<br/>ASN 65001"]
+        end
+
+        subgraph SpokeVNet["Spoke VNet: vnet-sap-rise (10.60.0.0/16)"]
+            SpokeNVA["snet-spoke-nva<br/>10.60.0.0/27<br/>Linux NVA<br/>ASN 65002"]
+            Workload["snet-workload<br/>10.60.1.0/24<br/>Probe VM"]
+        end
+
+        GW -->|BGP| RS
+        RS <-->|eBGP 65001↔65515| HubNVA
+    end
+
+    subgraph OnPrem["Simulated On-Prem"]
+        CE["CE Router<br/>172.40.100.0/24<br/>ASN 65000"]
+    end
+
+    subgraph Megaport["Megaport"]
+        VXC["VXC<br/>Single Circuit"]
+        MCR["MCR<br/>MCR-1"]
+    end
+
+    ErGw["ER Gateway<br/>ErGw1AZ"]
+    MSEE["MSEE<br/>Microsoft Edge"]
+
+    %% Peering: ONLY subnet-to-subnet
+    HubNVA -.->|Subnet-Level Peering<br/>Only NVA Subnets| SpokeNVA
+
+    %% Data path
+    GW -->|Gateway Transit| ErGw
+    ErGw -->|ER Connection| MSEE
+    MSEE -->|ER Circuit| VXC
+    VXC -->|VXC Link| MCR
+    MCR -->|BGP| CE
+
+    style HubNVA fill:#e1f5ff
+    style SpokeNVA fill:#fff3e0
+    style Workload fill:#f3e5f5
+    style CE fill:#e8f5e9
+    style RS fill:#c8e6c9

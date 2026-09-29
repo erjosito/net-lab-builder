@@ -1,0 +1,20 @@
+# vm_run_command: az vm run-command invoke -g rg-saprise-swedencentral -n vm-ce-onprem --command-id RunShellScript --scripts "ping -c 3 -W 2 10.60.0.4; ping -c 3 -W 2 10.60.1.4"
+# Captured 2026-09-29T14:49:12+02:00 by Niobe
+===PING SPOKE NVA 10.60.0.4===
+PING 10.60.0.4 (10.60.0.4) 56(84) bytes of data.
+
+--- 10.60.0.4 ping statistics ---
+3 packets transmitted, 0 received, 100% packet loss, time 2080ms
+
+===PING WORKLOAD 10.60.1.4===
+PING 10.60.1.4 (10.60.1.4) 56(84) bytes of data.
+
+--- 10.60.1.4 ping statistics ---
+3 packets transmitted, 0 received, 100% packet loss, time 2030ms
+
+# INTERPRETATION -- ASSERTION S1.D1 (on-prem CE -> spoke NVA subnet AND workload subnet, BOTH
+# should be reachable in S1): FAIL on BOTH targets, not just the workload subnet.
+# This is worse than the S2-only asymmetric failure the lab is designed to teach -- in the CURRENT
+# deployment state, S1 has NOT achieved its "complete fix" claim at all. Root cause: vm-ce-onprem
+# has no route to 10.60.0.0/16 in its own kernel/BIRD table (see s1-12) because the redistribution
+# chain never delivered one, so the packets never even leave the CE's own interface toward the hub.

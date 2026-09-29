@@ -1,0 +1,8 @@
+$ az network nsg rule show -g rg-saprise-swedencentral --nsg-name nsg-hub-nva -n Allow-OnpremSim-Data-In -o table
+
+Name                     ResourceGroup             Priority    SourcePortRanges    SourceAddressPrefixes    SourceASG    Access    Protocol    Direction    DestinationPortRanges    DestinationAddressPrefixes    DestinationASG
+-----------------------  ------------------------  ----------  ------------------  -----------------------  -----------  --------  ----------  -----------  -----------------------  ----------------------------  ----------------
+Allow-OnpremSim-Data-In  rg-saprise-swedencentral  125         *                   172.40.100.0/24          None         Allow     *           Inbound      *                        VirtualNetwork                None
+
+[exit_code]=0
+

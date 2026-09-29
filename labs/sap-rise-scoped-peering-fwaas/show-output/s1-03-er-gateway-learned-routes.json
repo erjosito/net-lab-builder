@@ -1,0 +1,29 @@
+# az_cli: az network vnet-gateway list-learned-routes -g rg-saprise-swedencentral -n ergw-sap-rise -o json
+# Captured 2026-09-29T14:49:12+02:00 by Niobe
+{
+  "value": [
+    {
+      "asPath": "",
+      "localAddress": "10.40.0.13",
+      "network": "10.40.0.0/16",
+      "origin": "Network",
+      "sourcePeer": "10.40.0.13",
+      "weight": 32768
+    },
+    {
+      "asPath": "12076-64512",
+      "localAddress": "10.40.0.13",
+      "network": "169.254.170.152/30",
+      "nextHop": "10.40.0.4",
+      "origin": "EBgp",
+      "sourcePeer": "10.40.0.4",
+      "weight": 32769
+    }
+  ]
+}
+
+# INTERPRETATION -- ASSERTION S1.L1.1 (ER Gateway learned routes contain 10.60.0.0/16): FAIL.
+# The ER Gateway's learned-routes table contains only its own hub network (10.40.0.0/16, a local
+# "Network" origin route) and the point-to-point link to the Megaport MCR (169.254.170.152/30).
+# The spoke supernet 10.60.0.0/16 is ABSENT. Combined with s1-02 (routesReceived:0 from ARS), this
+# confirms the NVA -> ARS -> ER GW redistribution path is not delivering the route at all.

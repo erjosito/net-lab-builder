@@ -1,0 +1,53 @@
+# az_cli: az network vnet-gateway list-bgp-peer-status -g rg-saprise-swedencentral -n ergw-sap-rise -o json
+# Captured 2026-09-29T14:49:12+02:00 by Niobe
+{
+  "value": [
+    {
+      "asn": 12076,
+      "connectedDuration": "00:22:28.5251967",
+      "localAddress": "10.40.0.12",
+      "messagesReceived": 165,
+      "messagesSent": 156,
+      "neighbor": "10.40.0.4",
+      "routesReceived": 1,
+      "state": "Connected"
+    },
+    {
+      "asn": 12076,
+      "connectedDuration": "00:22:31.3877511",
+      "localAddress": "10.40.0.12",
+      "messagesReceived": 164,
+      "messagesSent": 157,
+      "neighbor": "10.40.0.5",
+      "routesReceived": 0,
+      "state": "Connected"
+    },
+    {
+      "asn": 65515,
+      "connectedDuration": "00:22:37.4502364",
+      "localAddress": "10.40.0.12",
+      "messagesReceived": 30,
+      "messagesSent": 43,
+      "neighbor": "10.40.0.37",
+      "routesReceived": 0,
+      "state": "Connected"
+    },
+    {
+      "asn": 65515,
+      "connectedDuration": "00:22:37.3564875",
+      "localAddress": "10.40.0.12",
+      "messagesReceived": 30,
+      "messagesSent": 155,
+      "neighbor": "10.40.0.36",
+      "routesReceived": 0,
+      "state": "Connected"
+    }
+  ]
+}
+
+# INTERPRETATION: BGP sessions ARE up (Connected) between the ER Gateway and both ARS peer IPs
+# (10.40.0.36/.37, ASN 65515), and between the ER Gateway and the two Megaport MSEE peers
+# (10.40.0.4/.5, ASN 12076). BUT routesReceived is 0 on BOTH ARS sessions -- the gateway has
+# established BGP with ARS but has learned nothing from it. This is the first hard signal that
+# the redistribution chain (BIRD -> ARS -> ER GW) is not delivering routes. See s1-06/s1-09/s1-10
+# for the root cause traced into BIRD.

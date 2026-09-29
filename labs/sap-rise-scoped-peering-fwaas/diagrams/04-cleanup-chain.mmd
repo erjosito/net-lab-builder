@@ -1,0 +1,25 @@
+flowchart TD
+    Start([Start Cleanup]) --> Step1["1. Disable/Delete ER Connection<br/>ErGw1AZ ↔ MSEE"]
+    Step1 --> Step2["2. Remove Peering Link<br/>snet-hub-nva ↔ snet-spoke-nva<br/>subnet-scoped peering"]
+    Step2 --> Step3["3. Delete VXC<br/>Megaport circuit deprovisioning"]
+    Step3 --> Step4["4. Delete MCR<br/>Megaport MCR-1"]
+    Step4 --> Step5["5. Delete ER Gateway<br/>ErGw1AZ"]
+    Step5 --> Step6["6. Delete Route Server<br/>Remove ARS from RouteServerSubnet"]
+    Step6 --> Step7["7. Delete VMs<br/>Hub NVA, Spoke NVA, Workload Probe"]
+    Step7 --> Step8["8. Delete VNets<br/>vnet-hub (10.40.0.0/16)<br/>vnet-sap-rise (10.60.0.0/16)"]
+    Step8 --> Step9["9. Delete Resource Group<br/>sap-rise-scoped-peering-fwaas-rg"]
+    Step9 --> End([Cleanup Complete])
+
+    style Start fill:#c8e6c9
+    style Step1 fill:#ffcdd2
+    style Step2 fill:#ffcdd2
+    style Step3 fill:#f8bbd0
+    style Step4 fill:#f8bbd0
+    style Step5 fill:#e1bee7
+    style Step6 fill:#c5cae9
+    style Step7 fill:#b3e5fc
+    style Step8 fill:#b3e5fc
+    style Step9 fill:#b3e5fc
+    style End fill:#c8e6c9
+
+    classDef note fill:#fff9c4,stroke:#f57f17

@@ -1,0 +1,24 @@
+{
+  "evidenceDir": "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-ce-reachability-fix-20260929T165357Z",
+  "failureStage": 2,
+  "failureReason": "VERIFICATION_STAGE_2_FAILED",
+  "stageResults": [
+    {
+      "stage": 1,
+      "name": "NSG rules exist",
+      "status": "PASS",
+      "evidence": [
+        "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-ce-reachability-fix-20260929T165357Z\\05-05-verify-stage1-allow-workload.txt",
+        "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-ce-reachability-fix-20260929T165357Z\\06-06-verify-stage1-allow-onpremsim-data.txt"
+      ]
+    },
+    {
+      "stage": 2,
+      "name": "Hub kernel route",
+      "status": "FAIL",
+      "evidence": [
+        "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\sap-rise-scoped-peering-fwaas\\show-output\\s1-ce-reachability-fix-20260929T165357Z\\07-07-verify-stage2-hub-route.txt"
+      ]
+    }
+  ]
+}

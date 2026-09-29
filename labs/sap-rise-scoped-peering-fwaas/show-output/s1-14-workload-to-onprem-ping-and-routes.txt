@@ -1,0 +1,22 @@
+# vm_run_command: az vm run-command invoke -g rg-saprise-swedencentral -n vm-workload-probe --command-id RunShellScript --scripts "ip route show; ping -c 3 -W 2 172.40.100.4"
+# Captured 2026-09-29T14:49:12+02:00 by Niobe
+===IPROUTE===
+default via 10.60.1.1 dev eth0 proto dhcp src 10.60.1.4 metric 100
+10.60.1.0/24 dev eth0 proto kernel scope link src 10.60.1.4 metric 100
+10.60.1.1 dev eth0 proto dhcp scope link src 10.60.1.4 metric 100
+168.63.129.16 via 10.60.1.1 dev eth0 proto dhcp src 10.60.1.4 metric 100
+169.254.169.254 via 10.60.1.1 dev eth0 proto dhcp src 10.60.1.4 metric 100
+===PING CE 172.40.100.4===
+PING 172.40.100.4 (172.40.100.4) 56(84) bytes of data.
+
+--- 172.40.100.4 ping statistics ---
+3 packets transmitted, 0 received, 100% packet loss, time 2047ms
+
+# INTERPRETATION -- ASSERTION S1.D2 (reverse: spoke workload -> on-prem CE): FAIL, 100% loss.
+# Workload VM correctly has no local route to 172.40.100.0/24 (expected -- it relies entirely on
+# the UDR default route to vm-spoke-nva, confirmed present in s1-14). The failure is downstream:
+# vm-spoke-nva forwards toward vm-hub-nva fine (same subnet-peering link as S1.D1 uses in reverse),
+# but vm-hub-nva has no return path back to the CE (ce_onprem BGP session down at time of test,
+# per s1-12) and, separately, applies unconditional MASQUERADE/SNAT on egress for any destination
+# outside RFC1918 space (see s1-15) -- 172.40.100.0/0 is NOT RFC1918, so traffic toward the CE gets
+# source-NATted on vm-spoke-nva, an unrelated but real secondary observation worth a look by Tank.

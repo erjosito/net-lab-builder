@@ -1,0 +1,44 @@
+# vm_run_command: az vm run-command invoke -g rg-saprise-swedencentral -n vm-hub-nva --command-id RunShellScript --scripts "birdc show protocols all"
+# Captured 2026-09-29T14:49:12+02:00 by Niobe (second poll, ~2 minutes after poll1)
+ce_onprem  BGP        ---        up     13:42:19.831  Established
+  BGP state:          Established
+    Neighbor address: 172.40.100.4
+    Neighbor AS:      65000
+    Local AS:         65001
+    Session:          external multihop AS4
+    Source address:   10.40.1.4
+    Hold timer:       11.070/60
+  Channel ipv4
+    State:          UP
+    Routes:         1 imported, 0 exported, 1 preferred
+    Export updates:             10          2          8        ---          0
+
+azure_rs_1 BGP        ---        up     13:42:28.475  Established
+  BGP state:          Established
+    Neighbor address: 10.40.0.37
+    Neighbor AS:      65515
+    Local AS:         65001
+    Session:          external multihop AS4
+    Source address:   10.40.1.4
+    Hold timer:       2.950/60
+  Channel ipv4
+    State:          UP
+    Routes:         1 imported, 1 exported, 1 preferred
+    Export updates:              8          2          5        ---          1
+
+azure_rs_2 BGP        ---        start  13:42:27.736  Idle          BGP Error: Hold timer expired
+  BGP state:          Idle
+    Neighbor address: 10.40.0.36
+    Neighbor AS:      65515
+    Error wait:       244.712/300
+    Last error:       BGP Error: Hold timer expired
+  Channel ipv4
+    State:          DOWN
+
+# INTERPRETATION -- CONFIRMS ONGOING FLAP: compared to poll1 (s1-09), ce_onprem and azure_rs_1 are
+# now UP/Established, but azure_rs_2 has FLIPPED to Idle/down with the identical "Hold timer
+# expired" error the OTHER session had in poll1. This is a genuine alternating flap across polls
+# taken ~2 minutes apart, not a one-off convergence transient -- matches Tank's note in
+# deployed-resources.md verbatim. azure_rs_1's Channel shows "1 imported, 1 exported" -- so when a
+# session IS up, exactly one route is being exported (per s1-10, that is the static_bgp route once
+# it manages to resolve -- but it does NOT reliably stay resolved/exported, see s1-10).

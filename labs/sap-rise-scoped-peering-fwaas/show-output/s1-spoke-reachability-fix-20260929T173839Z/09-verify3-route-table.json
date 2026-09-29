@@ -1,0 +1,31 @@
+{
+  "disableBgpRoutePropagation": true,
+  "etag": "W/\"c6c82026-9c6c-4455-a76d-7e23dde79ddb\"",
+  "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-spoke-nva-return",
+  "location": "swedencentral",
+  "name": "rt-spoke-nva-return",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-saprise-swedencentral",
+  "resourceGuid": "e7a3cb0c-237f-4a1d-98a9-720a0fd0bdb2",
+  "routes": [
+    {
+      "addressPrefix": "172.40.100.0/24",
+      "etag": "W/\"c6c82026-9c6c-4455-a76d-7e23dde79ddb\"",
+      "hasBgpOverride": false,
+      "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-spoke-nva-return/routes/route-to-onprem-sim-via-hub",
+      "name": "route-to-onprem-sim-via-hub",
+      "nextHopIpAddress": "10.40.1.4",
+      "nextHopType": "VirtualAppliance",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "type": "Microsoft.Network/routeTables/routes"
+    }
+  ],
+  "subnets": [
+    {
+      "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/subnets/snet-spoke-nva",
+      "resourceGroup": "rg-saprise-swedencentral"
+    }
+  ],
+  "type": "Microsoft.Network/routeTables"
+}

@@ -1,0 +1,108 @@
+{
+  "diagnosticsProfile": {
+    "bootDiagnostics": {
+      "enabled": false
+    }
+  },
+  "etag": "\"2\"",
+  "extensionsTimeBudget": "PT1H30M",
+  "hardwareProfile": {
+    "vmSize": "Standard_B2s_v2"
+  },
+  "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-ce-onprem",
+  "location": "swedencentral",
+  "name": "vm-ce-onprem",
+  "networkProfile": {
+    "networkInterfaces": [
+      {
+        "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-ce-onprem",
+        "primary": true,
+        "resourceGroup": "rg-saprise-swedencentral"
+      }
+    ]
+  },
+  "osProfile": {
+    "adminUsername": "azurelabuser",
+    "allowExtensionOperations": true,
+    "computerName": "vm-ce-onprem",
+    "linuxConfiguration": {
+      "disablePasswordAuthentication": true,
+      "enableVMAgentPlatformUpdates": true,
+      "patchSettings": {
+        "assessmentMode": "ImageDefault",
+        "patchMode": "ImageDefault"
+      },
+      "provisionVMAgent": true,
+      "ssh": {
+        "publicKeys": [
+          {
+            "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDX6SO8Wpo21BDhUYHWqYfMiWPyfgpEMhVMEeJNLHk30q48DumZKSDsBvQrkOdtg67vPlng/uu5GqRKLaFIAiCJSxLp1yDcRtdXOlAMXgKh9A+JKq6O9ExkEfsqQ4NKCBrrhGPNlOWEvPSFbhE4RhNJeWxASEDrxvpbsSDj+3E/YGSI7GHPuvs5DMH/G4SF4bF4N7c4x2NwLn9lKHIiFgNfE3wivgP1lZjfH088SHO33Yyxl5qGGiB9A0pP11sslpqBBEYAVYHTQTCJS44ddj7Vsopyxn8RUn81ZsacRQMINfZGjw5iRsIJ6+SHCpdtq3/KltPppxcOOccm3Vd0EgYZ",
+            "path": "/home/azurelabuser/.ssh/authorized_keys"
+          }
+        ]
+      }
+    },
+    "requireGuestProvisionSignal": true,
+    "secrets": []
+  },
+  "priority": "Regular",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-saprise-swedencentral",
+  "resources": [
+    {
+      "autoUpgradeMinorVersion": true,
+      "forceUpdateTag": "9853f981-c064-4295-bc31-14ece3ddb035",
+      "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-ce-onprem/extensions/MDE.Linux",
+      "location": "swedencentral",
+      "name": "MDE.Linux",
+      "provisioningState": "Succeeded",
+      "publisher": "Microsoft.Azure.AzureDefenderForServers",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "settings": {
+        "autoUpdate": true,
+        "azureResourceId": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/virtualMachines/vm-ce-onprem",
+        "forceReOnboarding": false,
+        "vNextEnabled": false
+      },
+      "typeHandlerVersion": "1.0",
+      "typePropertiesType": "MDE.Linux"
+    }
+  ],
+  "storageProfile": {
+    "dataDisks": [],
+    "diskControllerType": "SCSI",
+    "imageReference": {
+      "exactVersion": "22.04.202608060",
+      "offer": "0001-com-ubuntu-server-jammy",
+      "publisher": "Canonical",
+      "sku": "22_04-lts-gen2",
+      "version": "latest"
+    },
+    "osDisk": {
+      "caching": "ReadWrite",
+      "createOption": "FromImage",
+      "deleteOption": "Detach",
+      "diskSizeGB": 30,
+      "managedDisk": {
+        "id": "/subscriptions/a8fbd8e1-fb5a-4411-804a-4ac80929c93c/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/vm-ce-onprem_OsDisk_1_f6af06eefc9c41f1b8b10250bfaa2a36",
+        "resourceGroup": "rg-saprise-swedencentral",
+        "storageAccountType": "StandardSSD_LRS"
+      },
+      "name": "vm-ce-onprem_OsDisk_1_f6af06eefc9c41f1b8b10250bfaa2a36",
+      "osType": "Linux",
+      "writeAcceleratorEnabled": false
+    }
+  },
+  "tags": {
+    "correlation_id": "7bb27d99",
+    "created_by": "copilot-lab",
+    "ephemeral": "true",
+    "lab": "sap-rise-scoped-peering-fwaas",
+    "owner": "jose",
+    "run_id": "7bb27d99"
+  },
+  "timeCreated": "2026-09-29T13:27:05.2258445+00:00",
+  "type": "Microsoft.Compute/virtualMachines",
+  "vmId": "c8537624-abe6-4de7-a766-9ace5ff62731"
+}
+

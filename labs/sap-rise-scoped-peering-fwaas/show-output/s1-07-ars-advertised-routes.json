@@ -1,0 +1,11 @@
+# az_cli: az network routeserver peering list-advertised-routes -g rg-saprise-swedencentral --routeserver ars-hub -n ars-hub-nva-peering -o json
+# Captured 2026-09-29T14:49:12+02:00 by Niobe
+{
+  "RouteServiceRole_IN_0": [],
+  "RouteServiceRole_IN_1": []
+}
+
+# INTERPRETATION -- ASSERTION S1.L3.2 (ARS advertises routes back to hub NVA): FAIL / EMPTY.
+# ARS has nothing to advertise back to the hub NVA either (expected, since the ER Gateway side
+# has learned nothing to redistribute -- see s1-03). No spoke or on-prem-side visibility flows
+# from the ER Gateway back through ARS to the NVA in this deployment state.

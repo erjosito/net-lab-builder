@@ -1,0 +1,18 @@
+COMMAND
+az vm run-command invoke -g rg-saprise-swedencentral -n vm-ce-onprem --command-id RunShellScript --scripts "set -eu; ping -c 5 10.40.1.4" -o json
+
+OUTPUT
+
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\nPING 10.40.1.4 (10.40.1.4) 56(84) bytes of data.\n64 bytes from 10.40.1.4: icmp_seq=1 ttl=64 time=1.60 ms\n64 bytes from 10.40.1.4: icmp_seq=2 ttl=64 time=2.11 ms\n64 bytes from 10.40.1.4: icmp_seq=3 ttl=64 time=1.40 ms\n64 bytes from 10.40.1.4: icmp_seq=4 ttl=64 time=0.904 ms\n64 bytes from 10.40.1.4: icmp_seq=5 ttl=64 time=1.06 ms\n\n--- 10.40.1.4 ping statistics ---\n5 packets transmitted, 5 received, 0% packet loss, time 4028ms\nrtt min/avg/max/mdev = 0.904/1.413/2.105/0.423 ms\n\n[stderr]\n"
+    }
+  ]
+}
+
+EXIT_CODE=0
+

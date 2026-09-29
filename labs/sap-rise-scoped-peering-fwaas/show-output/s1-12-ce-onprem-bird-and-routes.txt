@@ -1,0 +1,42 @@
+# vm_run_command: az vm run-command invoke -g rg-saprise-swedencentral -n vm-ce-onprem --command-id RunShellScript --scripts "birdc show protocols; echo '===ROUTES==='; birdc show route; echo '===IPROUTE==='; ip route show"
+# Captured 2026-09-29T14:49:12+02:00 by Niobe
+===PROTO===
+BIRD 2.0.8 ready.
+Name       Proto      Table      State  Since         Info
+device1    Device     ---        up     13:32:48.480
+direct1    Direct     ---        up     13:32:48.480
+kernel1    Kernel     master4    up     13:32:48.480
+static_bgp Static     master4    up     13:32:48.480
+hub_nva    BGP        ---        start  13:43:24.130  Idle          BGP Error: Hold timer expired
+===ROUTES===
+BIRD 2.0.8 ready.
+Table master4:
+0.0.0.0/0            unicast [kernel1 13:32:48.481] * (10)
+	via 172.40.100.1 on eth0
+172.40.100.0/25      unicast [direct1 13:32:48.481] * (240)
+	dev eth0
+172.40.100.0/24      unicast [static_bgp 13:32:48.480] ! (200)
+	via 172.40.100.4 on eth0
+168.63.129.16/32     unicast [kernel1 13:32:48.481] * (10)
+	via 172.40.100.1 on eth0
+172.40.100.1/32      unicast [kernel1 13:32:48.481] * (10)
+	dev eth0
+169.254.169.254/32   unicast [kernel1 13:32:48.481] * (10)
+	via 172.40.100.1 on eth0
+===IPROUTE===
+default via 172.40.100.1 dev eth0 proto dhcp src 172.40.100.4 metric 100
+168.63.129.16 via 172.40.100.1 dev eth0 proto dhcp src 172.40.100.4 metric 100
+169.254.169.254 via 172.40.100.1 dev eth0 proto dhcp src 172.40.100.4 metric 100
+172.40.100.0/25 dev eth0 proto bird scope link metric 32
+172.40.100.0/25 dev eth0 proto kernel scope link src 172.40.100.4 metric 100
+172.40.100.0/24 via 172.40.100.4 dev eth0 proto bird metric 32
+172.40.100.1 dev eth0 proto dhcp scope link src 172.40.100.4 metric 100
+
+# INTERPRETATION -- ASSERTION S1.L4 (simulated CE has a BGP-learned route to the spoke supernet):
+# FAIL. The hub_nva BGP session on vm-ce-onprem is DOWN (Idle, "Hold timer expired" -- the same
+# flap pattern seen on the hub NVA side). Even setting the flap aside, the CE's own route table
+# contains ONLY its own advertised prefix (172.40.100.0/24, self-originated by its static_bgp
+# protocol) and default/link-local routes. There is no 10.60.0.0/0 route present at any point,
+# confirming the CE has never received the spoke supernet via BGP -- consistent with hub NVA's
+# ce_onprem protocol being configured "export none" (s1-11) and/or with static_bgp on the hub side
+# never resolving (s1-11).

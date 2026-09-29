@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -eu
+
+cp /etc/bird/bird.conf /etc/bird/bird.conf.bak-ce-reachability-20260929
+
+cat > /tmp/bird-kernel-export-fix.py <<'PY'
+from pathlib import Path
+import re
+
+path = Path('/etc/bird/bird.conf')
+text = path.read_text()
+pattern = re.compile(
+    r'(?ms)^protocol kernel \{\s*'
+    r'ipv4 \{\s*'
+    r'import all;\s*'
+    r'export none;\s*'
+    r'\};\s*'
+    r'learn;\s*'
+    r'scan time 15;\s*'
+    r'\}\s*'
+)
+replacement = '''protocol kernel {
+    ipv4 {
+        import all;
+        export where proto = "static_bgp";
+    };
+    learn;
+    scan time 15;
+}
+'''
+new_text, count = pattern.subn(replacement, text, count=1)
+if count != 1:
+    raise SystemExit(f'expected exactly one export-none kernel block, matched {count}; stop and escalate to Trinity')
+path.write_text(new_text)
+PY
+
+python3 /tmp/bird-kernel-export-fix.py
+bird -p -c /etc/bird/bird.conf
+birdc configure check
+birdc configure
+grep -n -A6 "^protocol kernel" /etc/bird/bird.conf
+birdc show route 10.60.0.0/16 all
+ip route show 10.60.0.0/16
+ip route flush cache
+ip route get 10.60.1.4
+rm -f /tmp/bird-kernel-export-fix.py

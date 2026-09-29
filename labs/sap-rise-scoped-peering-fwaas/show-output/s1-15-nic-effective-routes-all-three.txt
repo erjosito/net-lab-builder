@@ -1,0 +1,42 @@
+# az_cli: az network nic show-effective-route-table -g rg-saprise-swedencentral -n nic-workload-probe -o json
+# az_cli: az network nic show-effective-route-table -g rg-saprise-swedencentral -n nic-hub-nva -o json
+# az_cli: az network nic show-effective-route-table -g rg-saprise-swedencentral -n nic-spoke-nva -o json
+# Captured 2026-09-29T14:49:12+02:00 by Niobe
+
+## nic-workload-probe (Assertion S1.E1)
+10.60.0.0/16      -> VnetLocal
+10.40.1.0/27      -> VNetPeering            (reaches snet-hub-nva; workload is NOT itself peered,
+                                              this route exists because vnet-sap-rise's whole
+                                              address space is a valid VnetLocal/peering match set
+                                              even though only snet-spoke-nva is fabric-peered --
+                                              see note below)
+0.0.0.0/0         -> Internet (state: Invalid -- overridden by the UDR below)
+0.0.0.0/0         -> VirtualAppliance, nextHop 10.60.0.4, source: User, name "default-via-spoke-nva"
+                     (state: Active)
+
+INTERPRETATION: UDR is present and active exactly as design.md/deployed-resources.md describe --
+default route forced via the spoke NVA (10.60.0.4). ASSERTION S1.E1: PASS (routing intent is
+correctly configured on the workload NIC; the reachability failure lies further upstream at the
+hub NVA / BGP layer, not here).
+
+## nic-hub-nva (Assertion S1.E2)
+10.40.0.0/16      -> VnetLocal
+172.40.100.0/24   -> VNetPeering  (full-VNet peering to vnet-onprem-sim)
+10.60.0.0/27      -> VNetPeering  (subnet-scoped peering to snet-spoke-nva)
+0.0.0.0/0         -> Internet
+
+INTERPRETATION: hub NVA's Azure-fabric effective routes correctly include a system route to
+10.60.0.0/27 (confirms the subnet-peering delivers reachability at the platform/SDN layer). This
+route is INVISIBLE inside the guest OS's own "ip route show" and BIRD's kernel-learn table (see
+s1-11) -- that mismatch (fabric-level reachability vs. guest-OS-level route table) is the exact
+mechanism behind the BIRD recursive-route resolution failure documented in s1-11. ASSERTION
+S1.E2: PASS for Azure-fabric routing; FLAGGED for the BIRD-visibility gap.
+
+## nic-spoke-nva (Assertion S1.E3)
+10.60.0.0/16      -> VnetLocal
+10.40.1.0/27      -> VNetPeering  (subnet-scoped peering back to snet-hub-nva)
+0.0.0.0/0         -> Internet
+
+INTERPRETATION: matches design.md exactly -- no direct route exists from snet-spoke-nva toward
+172.40.100.0/24 (on-prem), confirming that path can only ever be reached indirectly, through the
+hub NVA. ASSERTION S1.E3: PASS.

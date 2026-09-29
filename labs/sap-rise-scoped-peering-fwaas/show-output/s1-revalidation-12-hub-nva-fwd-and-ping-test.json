@@ -1,0 +1,10 @@
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\n--- ping spoke nva 10.60.0.4 from hub ---\nPING 10.60.0.4 (10.60.0.4) 56(84) bytes of data.\n64 bytes from 10.60.0.4: icmp_seq=1 ttl=64 time=1.52 ms\n64 bytes from 10.60.0.4: icmp_seq=2 ttl=64 time=1.45 ms\n64 bytes from 10.60.0.4: icmp_seq=3 ttl=64 time=0.644 ms\n\n--- 10.60.0.4 ping statistics ---\n3 packets transmitted, 3 received, 0% packet loss, time 2003ms\nrtt min/avg/max/mdev = 0.644/1.205/1.522/0.397 ms\n--- ping workload 10.60.1.4 from hub ---\nPING 10.60.1.4 (10.60.1.4) 56(84) bytes of data.\n\n--- 10.60.1.4 ping statistics ---\n3 packets transmitted, 0 received, 100% packet loss, time 2069ms\n\n--- sysctl ip_forward ---\nnet.ipv4.ip_forward = 0\n\n[stderr]\n"
+    }
+  ]
+}

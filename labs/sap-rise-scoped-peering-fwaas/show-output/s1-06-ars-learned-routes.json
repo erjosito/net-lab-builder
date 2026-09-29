@@ -1,0 +1,22 @@
+# az_cli: az network routeserver peering list-learned-routes -g rg-saprise-swedencentral --routeserver ars-hub -n ars-hub-nva-peering -o json
+# Captured 2026-09-29T14:49:12+02:00 by Niobe
+{
+  "RouteServiceRole_IN_0": [
+    {
+      "asPath": "65001-65000",
+      "localAddress": "10.40.0.37",
+      "network": "172.40.100.0/24",
+      "nextHop": "10.40.1.4",
+      "origin": "EBgp",
+      "sourcePeer": "10.40.1.4",
+      "weight": 32768
+    }
+  ],
+  "RouteServiceRole_IN_1": []
+}
+
+# INTERPRETATION -- ASSERTION S1.L3.1 (ARS learns 10.60.0.0/16 from hub NVA): FAIL.
+# ARS only learns 172.40.100.0/24 (the simulated on-prem CE's own advertised prefix, redistributed
+# through the hub NVA's ce_onprem BGP session) -- it never learns 10.60.0.0/16. This is consistent
+# with s1-09/s1-10: BIRD's static_bgp protocol (which is supposed to originate 10.60.0.0/16) has
+# ZERO installed routes on vm-hub-nva.

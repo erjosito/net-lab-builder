@@ -1,0 +1,25 @@
+# az_cli: az network vnet peering list -g rg-saprise-swedencentral --vnet-name vnet-sap-rise -o json
+# Captured 2026-09-29T14:49:12+02:00 by Niobe
+[
+  {
+    "allowForwardedTraffic": true,
+    "allowGatewayTransit": false,
+    "allowVirtualNetworkAccess": true,
+    "localAddressSpace": { "addressPrefixes": ["10.60.0.0/27"] },
+    "localSubnetNames": ["snet-spoke-nva"],
+    "name": "peer-sap-rise-to-hub",
+    "peerCompleteVnets": false,
+    "peeringState": "Connected",
+    "peeringSyncLevel": "FullyInSync",
+    "provisioningState": "Succeeded",
+    "remoteAddressSpace": { "addressPrefixes": ["10.40.1.0/27"] },
+    "remoteSubnetNames": ["snet-hub-nva"],
+    "remoteVirtualNetwork": { "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub" },
+    "useRemoteGateways": false
+  }
+]
+
+# INTERPRETATION: mirror-image confirmation of the subnet-scoped peering from the spoke side.
+# Only snet-spoke-nva is exposed to the hub; snet-workload (10.60.1.0/24) is NOT part of any
+# peering scope, exactly as design.md intends (that subnet must reach on-prem only via BGP-
+# redistributed routes at the hub, not via direct fabric reachability). ASSERTION: PASS.

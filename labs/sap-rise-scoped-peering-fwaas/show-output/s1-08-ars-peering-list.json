@@ -1,0 +1,14 @@
+# az_cli: az network routeserver peering list -g rg-saprise-swedencentral --routeserver ars-hub -o json
+# Captured 2026-09-29T14:49:12+02:00 by Niobe
+[
+  {
+    "name": "ars-hub-nva-peering",
+    "peerAsn": 65001,
+    "peerIp": "10.40.1.4",
+    "provisioningState": "Succeeded"
+  }
+]
+
+# INTERPRETATION: single ARS BGP peering to the hub NVA (10.40.1.4, ASN 65001), matching design.md
+# exactly. Peering object itself is healthy (Succeeded); the problem is upstream in BIRD, not in
+# the ARS resource configuration.

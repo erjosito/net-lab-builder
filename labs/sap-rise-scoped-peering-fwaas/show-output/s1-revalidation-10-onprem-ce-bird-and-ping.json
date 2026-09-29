@@ -1,0 +1,10 @@
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\n--- birdc show route ---\nBIRD 2.0.8 ready.\nTable master4:\n0.0.0.0/0            unicast [kernel1 13:32:48.481] * (10)\n\tvia 172.40.100.1 on eth0\n172.40.100.0/25      unicast [direct1 13:32:48.481] * (240)\n\tdev eth0\n172.40.100.0/24      unicast [static_bgp 13:32:48.480] ! (200)\n\tvia 172.40.100.4 on eth0\n168.63.129.16/32     unicast [kernel1 13:32:48.481] * (10)\n\tvia 172.40.100.1 on eth0\n172.40.100.1/32      unicast [kernel1 13:32:48.481] * (10)\n\tdev eth0\n10.60.0.0/16         unicast [hub_nva 15:41:28.487 from 10.40.1.4] * (100/?) [AS65001i]\n\tvia 172.40.100.1 on eth0\n169.254.169.254/32   unicast [kernel1 13:32:48.481] * (10)\n\tvia 172.40.100.1 on eth0\n--- ping spoke NVA subnet 10.60.0.4 ---\nPING 10.60.0.4 (10.60.0.4) 56(84) bytes of data.\n\n--- 10.60.0.4 ping statistics ---\n4 packets transmitted, 0 received, 100% packet loss, time 3069ms\n\n--- ping workload subnet 10.60.1.4 ---\nPING 10.60.1.4 (10.60.1.4) 56(84) bytes of data.\n\n--- 10.60.1.4 ping statistics ---\n4 packets transmitted, 0 received, 100% packet loss, time 3054ms\n\n--- ip route ---\ndefault via 172.40.100.1 dev eth0 proto dhcp src 172.40.100.4 metric 100 \n10.60.0.0/16 via 172.40.100.1 dev eth0 proto bird metric 32 \n168.63.129.16 via 172.40.100.1 dev eth0 proto dhcp src 172.40.100.4 metric 100 \n169.254.169.254 via 172.40.100.1 dev eth0 proto dhcp src 172.40.100.4 metric 100 \n172.40.100.0/25 dev eth0 proto bird scope link metric 32 \n172.40.100.0/25 dev eth0 proto kernel scope link src 172.40.100.4 metric 100 \n172.40.100.0/24 via 172.40.100.4 dev eth0 proto bird metric 32 \n172.40.100.1 dev eth0 proto dhcp scope link src 172.40.100.4 metric 100 \n\n[stderr]\n"
+    }
+  ]
+}

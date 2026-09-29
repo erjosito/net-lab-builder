@@ -1,0 +1,20 @@
+# az_cli: az network vnet-gateway list-advertised-routes -g rg-saprise-swedencentral -n ergw-sap-rise --peer 10.40.0.4 -o json
+# Captured 2026-09-29T14:49:12+02:00 by Niobe
+{
+  "value": [
+    {
+      "asPath": "65515",
+      "localAddress": "10.40.0.12",
+      "network": "10.40.0.0/16",
+      "nextHop": "10.40.0.12",
+      "origin": "Igp",
+      "weight": 0
+    }
+  ]
+}
+
+# INTERPRETATION -- ASSERTION S1.L1.2 (ER Gateway advertises 10.60.0.0/16 toward the circuit): FAIL.
+# Only the hub's own supernet (10.40.0.0/16) is advertised toward the Megaport MSEE peer. The
+# spoke supernet 10.60.0.0/16 never appears because it was never learned in the first place
+# (s1-03). There is nothing to advertise onward to the simulated on-prem CE via the real
+# ExpressRoute/Megaport path.

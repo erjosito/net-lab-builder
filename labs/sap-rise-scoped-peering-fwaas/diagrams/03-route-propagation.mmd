@@ -1,0 +1,32 @@
+sequenceDiagram
+    participant Spoke as Spoke Subnet<br/>10.60.0.0/27
+    participant HubNVA as Hub NVA<br/>65001
+    participant ARS as ARS<br/>65515
+    participant ErGw as ER Gateway
+    participant MSEE as MSEE
+    participant MCR as MCR
+    participant CE as CE Router<br/>65000
+
+    rect rgb(200, 220, 255)
+    note over Spoke,CE: Scenario 1: NVA-Driven Route Propagation
+    Spoke->>HubNVA: Prefix origin<br/>10.60.0.0/16
+    HubNVA->>ARS: eBGP UPDATE<br/>10.60.0.0/16<br/>NextHop: HubNVA
+    ARS->>ErGw: BGP<br/>10.60.0.0/16<br/>AS_PATH: 65001
+    ErGw->>MSEE: BGP<br/>10.60.0.0/16
+    MSEE->>MCR: BGP<br/>10.60.0.0/16
+    MCR->>CE: eBGP UPDATE<br/>10.60.0.0/16<br/>AS_PATH: 65515 65001
+    CE->>CE: Route learned<br/>10.60.0.0/16 via MCR
+    end
+
+    rect rgb(255, 240, 200)
+    note over Spoke,CE: Scenario 2: Advertised Gateway Prefixes (S2)
+    Spoke->>ErGw: Config Signal<br/>summarizedGatewayPrefixes<br/>= true on spoke VNet
+    ErGw->>ErGw: Aggregate Check<br/>Force advertisement of<br/>full supernet 10.60.0.0/16
+    ErGw->>MSEE: BGP UPDATE<br/>10.60.0.0/16<br/>NextHop: MSEE
+    MSEE->>MCR: BGP<br/>10.60.0.0/16
+    MCR->>CE: eBGP UPDATE<br/>10.60.0.0/16
+    CE->>CE: Route learned<br/>10.60.0.0/16 via MCR
+    rect rgb(255, 200, 200)
+    note right of CE: ⚠️ Data-plane caveat:<br/>S2 fixes BGP advertisement<br/>but may not restore reachability<br/>to 10.60.1.0/24 without UDR
+    end
+    end

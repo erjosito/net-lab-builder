@@ -1,0 +1,18 @@
+COMMAND
+az vm run-command invoke -g rg-saprise-swedencentral -n vm-hub-nva --command-id RunShellScript --scripts @C:\Users\jomore\Repos\net-lab-builder\labs\sap-rise-scoped-peering-fwaas\deploy\scripts\hub-bird-kernel-export-fix.sh -o json
+
+OUTPUT
+
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\nBIRD 2.0.8 ready.\nReading configuration from /etc/bird/bird.conf\nConfiguration OK\nBIRD 2.0.8 ready.\nReading configuration from /etc/bird/bird.conf\nReconfigured\n13:protocol kernel {\n14-    ipv4 {\n15-        import all;\n16-        export where proto = \"static_bgp\";\n17-    };\n18-    learn;\n19-    scan time 15;\nBIRD 2.0.8 ready.\nTable master4:\n10.60.0.0/16         unicast [static_bgp 14:23:58.158] * (200)\n\tvia 10.60.0.4 on eth0 onlink\n\tType: static univ\n10.60.0.0/16 via 10.60.0.4 dev eth0 proto bird metric 32 onlink \n10.60.1.4 via 10.60.0.4 dev eth0 src 10.40.1.4 uid 0 \n    cache \n\n[stderr]\n"
+    }
+  ]
+}
+
+EXIT_CODE=0
+
