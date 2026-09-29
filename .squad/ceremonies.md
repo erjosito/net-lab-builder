@@ -43,6 +43,34 @@
 
 ---
 
+## Live Scenario Handoff
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | auto |
+| **When** | before and between every live scenario phase |
+| **Condition** | any live deployment, mutation, validation, or restore |
+| **Facilitator** | Morpheus |
+| **Participants** | Trinity, Tank, Niobe, Ralph; one active owner at a time |
+| **Time budget** | 2 minutes |
+| **Enabled** | yes |
+
+**Action gate:**
+1. Trinity states one scenario, decisive signal, minimum viable evidence, stop
+   criteria, clean baseline, and restore.
+2. Morpheus creates one lease with elapsed/tool/mutation/command/restore limits.
+3. Ralph confirms owner, expiry, cost clock, and checkpoint deadline.
+4. Tank receives only deployment/mutation scope. After Tank is confirmed idle,
+   Niobe receives only one read-only validation scenario.
+5. Niobe returns `PASS`, `FAIL`, `INCONCLUSIVE`, or `BLOCKED` within 5 minutes
+   of decisive output and verifies restore before another scenario begins.
+
+No checklist document is produced. The lease and checkpoint line are the record.
+Oracle, Kid, Scribe bulk work, and incident review are excluded until mutation
+is idle and evidence is stable.
+
+---
+
 ## Retrospective with Enforcement
 
 | Field | Value |
@@ -101,13 +129,13 @@ On lab #1 (`expressroute-megaport-bgp`), Scenario 2 (BGP community tagging) list
 
 ---
 
-## Vault Backfill (lab close gate)
+## Vault Backfill (post-verdict close gate)
 
 | Field | Value |
 |-------|-------|
 | **Trigger** | auto |
 | **When** | after |
-| **Condition** | Niobe validation completed; before Phase 3.4 cleanup gate |
+| **Condition** | Niobe verdict returned, scenario restored, and all live mutation owners confirmed idle; before final lab teardown |
 | **Facilitator** | Trinity |
 | **Participants** | Trinity (writer); Scribe (logs dispatch + project-journal milestone) |
 | **Time budget** | focused |
@@ -123,18 +151,20 @@ On lab #1 (`expressroute-megaport-bgp`), Scenario 2 (BGP community tagging) list
 7. Trinity returns a JSON envelope to Squad listing every vault path written + the essence per entry
 8. Squad flips Phase 3.3.x to `[x]` only after sanitization verification; Scribe logs a project-journal milestone
 
-**Why this is a hard gate:**
-Cleanup destroys the live lab — if vault backfill hasn't happened, the lessons disappear with the resources. The vault is the only artifact that survives the ephemeral lab.
+**Hard sequencing:** Vault backfill never runs during live mutation and never
+delays a scenario verdict or restore. It uses stable, already captured evidence.
+If the final teardown deadline arrives first, preserve the minimum evidence and
+perform backfill offline rather than extending a live mutation lease.
 
 ---
 
-## Blog Publication (lab close gate)
+## Blog Publication (post-verdict close gate)
 
 | Field | Value |
 |-------|-------|
 | **Trigger** | auto |
 | **When** | after |
-| **Condition** | Niobe validation completed AND Oracle diagram catalogue published; before Phase 3.4 cleanup gate |
+| **Condition** | Niobe verdict returned, scenario restored, live owners confirmed idle, AND Oracle diagram catalogue published; before final lab teardown when practical |
 | **Facilitator** | Kid |
 | **Participants** | Kid (writer); back-request targets as needed (Morpheus / Tank / Trinity / Niobe / Oracle); Jose (approval); Scribe (logs dispatch + project-journal milestone) |
 | **Time budget** | focused |
@@ -144,7 +174,10 @@ Cleanup destroys the live lab — if vault backfill hasn't happened, the lessons
 1. Kid reads `labs/<lab>/manifest.md`, `validation.md`, `lessons-learned.md`, `README.md`, `diagrams/*`, and `show-output/*`.
 2. Kid names the **one headline finding** in a single sentence. If no headline emerges, Kid waives publication (recorded in `history.md`) and the lab is cleared for cleanup.
 3. Kid runs the quality gate: do I have evidence (screenshot / output) for the headline? Do I have a diagram for the mechanism? Is the scenario rich enough to surprise the reader?
-4. If any answer is "no," Kid back-requests from the appropriate squad member (Morpheus for scenario tweaks, Niobe for screenshots/outputs, Tank for re-runs, Oracle for diagrams). Squad treats the request as in-scope; Tank may need to re-deploy (lab is still live at this point).
+4. If any answer is "no," Kid back-requests from the appropriate squad member.
+   The request becomes a new scoped lease; it is never appended to an active
+   live lease. Re-deployment requires a new approval and Tank instance after all
+   prior owners are confirmed idle.
 5. Kid drafts the post using the inverted-pyramid template (charter — "Inverted-Pyramid Template" section).
 6. Kid runs sanitization grep on the post directory: forbidden GUIDs, ER service keys, Megaport credentials, VM passwords, customer names. Any hit blocks publication until redacted.
 7. Kid presents the draft to Jose for approval (unless Jose has waived review for this post).
@@ -154,8 +187,10 @@ Cleanup destroys the live lab — if vault backfill hasn't happened, the lessons
 11. Squad flips the lab to "shipped externally" only after Kid returns `ship_status: published` or `ship_status: waived`. Scribe logs a project-journal milestone.
 12. **Local README back-fill (Niobe).** Coordinator extracts `post_repo_url` + `post_title` (or `waiver_reason`) from Kid's envelope and dispatches Niobe to replace the "Blog post: pending publication" placeholder at the top of `labs/<lab>/README.md` with a real link (or waiver pointer). Niobe edits the single line, Scribe commits with a conventional message (`docs(lab/<slug>): Link Kid's blog post in local README` or `docs(lab/<slug>): Record Kid's blog-post waiver`). This step preserves Kid's boundary against committing to `net-lab-builder` while satisfying Jose's reverse-discoverability rule (local lab → public blog).
 
-**Why this is a hard gate:**
-The lab is ephemeral; the blog post is what survives the cleanup and reaches readers who weren't in the room. Cleanup destroys the live resources — if Kid hasn't drafted (or explicitly waived) by then, requesting a refreshed screenshot or command output requires re-deployment, which is wasteful. Run this ceremony BEFORE Phase 3.4 cleanup approval. The local README back-fill (step 12) is a hard requirement — without it the squad's symmetric discoverability rule fails: Kid's post links back to the lab, but the lab doesn't link forward to the post.
+**Hard sequencing:** Publication quality remains mandatory, but drafting,
+diagram work, and back-requests cannot delay the requested verdict or scenario
+restore. Kid works only from stable evidence after live mutation is idle. The
+local README back-fill remains mandatory.
 
 ---
 

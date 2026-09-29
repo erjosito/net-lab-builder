@@ -260,6 +260,18 @@ The routing table determines **WHO** handles work. After routing, use Response M
 
 If a matching skill exists, add to the spawn prompt: `Relevant skill: {path}/SKILL.md — read before starting.` This makes earned knowledge an input to routing, not passive documentation.
 
+### Mandatory Live-Lab Routing
+
+For any live lab, read `.squad/live-lab-policy.md` and
+`.squad/skills/live-lab-execution/SKILL.md` before dispatch. The coordinator
+must enforce result-first ordering, one objective/phase/owner per lease, hard
+elapsed/tool/mutation/command/restore budgets, 15-minute-or-25-call checkpoints,
+STOP queue drain, and external cancellation/replacement after expiry. Never
+append scope to an active lease, reuse an agent across unrelated phases, or
+start Oracle/Kid/Scribe bulk work while mutation is active. A final response is
+not proof of idle: confirm both runtime and child-process state before replacing
+an owner or starting the next phase.
+
 ### Consult Mode Detection
 
 When a user addresses a personal agent by name:

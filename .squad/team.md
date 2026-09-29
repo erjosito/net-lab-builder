@@ -23,6 +23,12 @@
 
 ## Member Notes
 
+> **Mandatory live-lab policy:** Every active member and the coordinator follows
+> [`live-lab-policy.md`](live-lab-policy.md) and the
+> [`live-lab-execution` skill](skills/live-lab-execution/SKILL.md). Result first,
+> one objective/owner/lease, hard budgets, STOP queue drain, bounded restore,
+> and no live-phase evidence expansion are team-wide requirements.
+
 > **🌐 Trinity vault link:** Reads and writes `C:\Users\jomore\OneDrive - Microsoft\ObsidianVaults\AzureNetworking\` — Jose's curated Azure Networking Obsidian vault. Trinity is the **only** squad member with write access; vault touches by other members must route through Trinity. See Trinity's charter, **"Vault Stewardship"** section, for the full read/write protocol and sanitization rules. The vault has its own `AGENTS.md` schema that Trinity reloads on every dispatch.
 
 > **📝 Kid publishing target:** Publishes blog posts to public repos under `github.com/erjosito` only — same org as `net-lab-builder`. Default pattern: rolling repo `azure-networking-blog` (one folder per post). Alternate: per-lab standalone repo `azure-net-blog-<lab-slug>`. Kid has **standing authority** to request scenario changes (from Morpheus), additional screenshots (from Niobe), command outputs (from Tank/Trinity/Niobe), and additional or revised diagrams (from Oracle) to make a post publishable. A lab is considered "shipped externally" only after Kid publishes the post or explicitly waives it. See Kid's charter for the full back-request protocol.
