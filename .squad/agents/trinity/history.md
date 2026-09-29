@@ -1,4 +1,4 @@
-**Archived entries:** see \history-archive.md\
+﻿**Archived entries:** see \history-archive.md\
 
 # Project Context
 
@@ -325,3 +325,11 @@ Cross-agent impact: Morpheus, Oracle, Tank (manifest §4/§6 NSG rules, prefligh
 📌 Team update (2026-08-21T15:35:00+02:00): Foundry lab revision cycle complete. Independent revision resolved all B1-B4 blockers per Morpheus lockout. Foundry Networking Architecture Primer added (D-27). Lab PUBLICATION-READY after Niobe second review APPROVED. Decided by Scribe (session orchestration).
 
 📌 Team update (2026-09-29T10:52:25Z): New lab sap-rise-scoped-peering-fwaas initiated (SAP RISE ExpressRoute FWaaS prefix-advertisement). Stage 1 scope locked (subnet peering, two scenarios: S1 ARS+NVA, S2 advertised-prefix). Key finding: S2 control-plane fixed (advertised gateway prefixes), data-plane unresolved for non-peered workload subnet — asymmetry now explicit teaching point. Lab-card correction flagged (summarizedGatewayPrefixes location). Phase 4 Jose review gate pending Tank deployment.
+
+📌 2026-09-29T13:42:03Z - Team update (Tank SAP RISE deployment): 4 deviations flagged for architectural review (Frankfurt PoP substitution high-priority).
+- D1: Simulated CE deployed as Azure VM (cost/complexity trade-off; no teaching impact)
+- D2: No Azure Bastion (access via az vm run-command; no teaching impact)
+- D3 (HIGH-PRIORITY): Megaport MCR PoP moved from Stockholm to Frankfurt (account market entitlement restriction; adds cross-region latency; affects design.md resiliency assumptions - recommend account audit or PoP strategy update)
+- D4: VM SKU fallback to Standard_B2s_v2 (transient capacity; no teaching impact)
+- Implementation fix (non-deviation): use_remote_gateways/allow_gateway_transit corrected to false on subnet-scoped peerings (design never specified these; Azure rejects for non-GatewaySubnet peerings).
+- Full details: .squad/orchestration-log/2026-09-29T134203Z-tank.md and .squad/decisions.md (merged Tank deployment decision).

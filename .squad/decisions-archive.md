@@ -1,4 +1,4 @@
-## Archived Decisions
+﻿## Archived Decisions
 
 > Decisions archived per Scribe Tier-2 (7-day) archival rule applied 2026-08-20T08:04:51Z.
 > Archive criterion: entries dated on/before 2026-08-13.
@@ -9157,4 +9157,96 @@ The post was flagged by the user as unreadable and unengaging.
 
 ---
 
+## 2026-09-10 artifact consumability update
 
+- Managed Instance `.bak` consumption is now proven with data intact.
+- Restored `mi_tde_1gb_20260910-20260910T110634Z.bak` to `mi_tde_1gb_restored` in 30.503 s.
+- Source and restored `dbo.Payload` both had 130000 rows, checksum -1557385128, 1056 MiB ROWS file, 88 MiB LOG file.
+- Initial MI restore attempt with `WITH STATS = 10` failed before artifact consumption with Msg 41901 because MI does not support that restore option. The same artifact restored successfully without `STATS`.
+- SQL Database BACPAC consumption is now proven with data intact.
+- Imported existing `ltrlab552754-calib-1gb.bacpac` into `ltrlab552754-calib-1gb-imported` using `C:\tools\sqlpackage\sqlpackage.exe` from `ltrlab-vm` with an Entra token from IMDS.
+- BACPAC download from private blob to VM took 347.754 s. sqlpackage import took 198.644 s.
+- Source and imported `dbo.LabPayload` both had 131072 rows, checksum 12517530, and 1104 MiB ROWS file. LOG allocation differed, 1224 MiB source vs 472 MiB imported, expected after import.
+- Three facts remain separate: `RESTORE VERIFYONLY` passed for the `.bak`; both portable artifact types now restore or import into working databases with data intact; LTR restore remains unmeasured and unverified until an LTR backup exists.
+
+---
+
+
+### 2026-09-11: LTR restore mechanism proven, but RestoreMinPerGb stays null
+**By:** Tank (requested by Jose)
+**What:** All three LTR backups restored successfully into new databases, proving the
+`az sql db ltr-backup restore` path end to end for the first time. However all three
+restored databases were verified EMPTY (zero tables, against source row counts
+131072 / 655360 / 2621440 which all matched). The LTR backups are copies of the first
+automatic PITR full backup, taken before seeding completed. `RestoreMinPerGb` and
+`RestoreRSquared` remain null; a provisional fit of 3.860445 + 0.037921*GB with
+R-squared 0.468043 was computed and DISCARDED as an artifact.
+**Why:** A restore can succeed, report Online, and produce a plausible linear fit while
+carrying no data. New standing gate: any future restore timing run must verify restored
+row counts against the source before a slope is fitted. A valid measurement needs an
+LTR backup taken AFTER seeding; the existing three can never provide one.
+
+---
+
+# Decision: Cross-tenant drain is possible, and the CSP subscription is the root cause
+
+Date: 2026-09-11
+
+**By:** Jose (via Copilot), recorded by Scribe. **Status:** accepted. Reframes the premise
+of `labs/sql-ltr-backup-migration/`.
+
+
+## Teardown addendum (2026-09-11): the cross-tenant footprint is invisible to RG deletion
+
+The teardown experiment surfaced a cleanup gap specific to this mechanism. The app
+registration, its federated identity credential, and the target-tenant service principal are
+DIRECTORY objects. They live outside every resource group, so deleting both resource groups
+left a working cross-tenant trust standing until those objects were removed explicitly.
+
+Treat the cross-tenant trust as a separate teardown step, never as something an infrastructure
+cleanup will sweep up. `Remove-LtrLab.ps1` now covers this, commit `f3c2911`.
+
+---
+
+# Decision: LTR backup binding scope is the subscription, not the server
+
+Date: 2026-09-11
+
+**By:** Jose (via Copilot), recorded by Scribe. **Status:** accepted and now LAB-PROVEN.
+Originally written 2026-09-11 with the teardown verification still in progress; the
+teardown result was appended the same day (see "Teardown experiment" below).
+
+
+## Teardown experiment (EMPIRICALLY VERIFIED, 2026-09-11)
+
+Run as a controlled experiment by Jose. This fills the slot left open above; the documented
+behaviour is now lab-proven.
+
+Sequence:
+
+1. Recorded the inventory before touching anything: 3 Azure SQL Database LTR backups and
+   1 Managed Instance LTR backup.
+2. Deleted the WHOLE resource group, containing the logical server, the managed instance,
+   its virtual cluster, a VM, storage, the VNet and private endpoints. Elapsed time about
+   16 minutes, dominated by the managed instance and the virtual cluster.
+3. Confirmed the resource group was gone and that `az sql server list` returned zero lab
+   servers.
+4. Re-enumerated by location. **ALL FOUR LTR BACKUPS SURVIVED**, with unchanged
+   `backupTime` and unchanged expiry of 2026-12-03, still naming a server and a managed
+   instance that no longer exist.
+5. Deleted all four explicitly, then verified the count is zero for both SQL Database and
+   Managed Instance.
+
+Three findings newly established by this run:
+
+- **MI-side LTR survival is proven for the first time.** This lab had previously shown
+  survival only for Azure SQL Database after DATABASE deletion. Survival after deletion of
+  the server, the managed instance, and the entire resource group is new, and the Managed
+  Instance case had never been tested at all.
+- **Location-only enumeration is the orphan handle.**
+  `az sql db ltr-backup list --location <loc> --database-state All` and the `midb`
+  equivalent both work with no `--server` argument. Once the server is deleted, this is the
+  ONLY way to find the backups.
+- **The cleanup trap is confirmed, not theoretical.** Resource group deletion does not stop
+  LTR billing. The four backups stayed billable to their full 2026-12-03 expiry and required
+  explicit deletion.

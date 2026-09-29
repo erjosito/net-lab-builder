@@ -1,4 +1,4 @@
-## Active Decisions
+﻿## Active Decisions
 
 > Active decisions from all agents (merged by Scribe).
 > Previous decisions archived to decisions-archive.md on 2026-09-10 (Tier-2 archive: >50KB threshold, entries >7 days).
@@ -569,43 +569,6 @@ The Managed Instance was kept running and used to close two timing gaps immediat
 
 Managed Instance LTR backup availability delay and LTR restore duration remain unmeasured until an actual LTR backup exists.
 
-## 2026-09-10 artifact consumability update
-
-- Managed Instance `.bak` consumption is now proven with data intact.
-- Restored `mi_tde_1gb_20260910-20260910T110634Z.bak` to `mi_tde_1gb_restored` in 30.503 s.
-- Source and restored `dbo.Payload` both had 130000 rows, checksum -1557385128, 1056 MiB ROWS file, 88 MiB LOG file.
-- Initial MI restore attempt with `WITH STATS = 10` failed before artifact consumption with Msg 41901 because MI does not support that restore option. The same artifact restored successfully without `STATS`.
-- SQL Database BACPAC consumption is now proven with data intact.
-- Imported existing `ltrlab552754-calib-1gb.bacpac` into `ltrlab552754-calib-1gb-imported` using `C:\tools\sqlpackage\sqlpackage.exe` from `ltrlab-vm` with an Entra token from IMDS.
-- BACPAC download from private blob to VM took 347.754 s. sqlpackage import took 198.644 s.
-- Source and imported `dbo.LabPayload` both had 131072 rows, checksum 12517530, and 1104 MiB ROWS file. LOG allocation differed, 1224 MiB source vs 472 MiB imported, expected after import.
-- Three facts remain separate: `RESTORE VERIFYONLY` passed for the `.bak`; both portable artifact types now restore or import into working databases with data intact; LTR restore remains unmeasured and unverified until an LTR backup exists.
-
----
-
-### 2026-09-11: LTR restore mechanism proven, but RestoreMinPerGb stays null
-**By:** Tank (requested by Jose)
-**What:** All three LTR backups restored successfully into new databases, proving the
-`az sql db ltr-backup restore` path end to end for the first time. However all three
-restored databases were verified EMPTY (zero tables, against source row counts
-131072 / 655360 / 2621440 which all matched). The LTR backups are copies of the first
-automatic PITR full backup, taken before seeding completed. `RestoreMinPerGb` and
-`RestoreRSquared` remain null; a provisional fit of 3.860445 + 0.037921*GB with
-R-squared 0.468043 was computed and DISCARDED as an artifact.
-**Why:** A restore can succeed, report Online, and produce a plausible linear fit while
-carrying no data. New standing gate: any future restore timing run must verify restored
-row counts against the source before a slope is fitted. A valid measurement needs an
-LTR backup taken AFTER seeding; the existing three can never provide one.
-
----
-
-# Decision: Cross-tenant drain is possible, and the CSP subscription is the root cause
-
-Date: 2026-09-11
-
-**By:** Jose (via Copilot), recorded by Scribe. **Status:** accepted. Reframes the premise
-of `labs/sql-ltr-backup-migration/`.
-
 ## Reframing (the headline)
 
 The drain exists because the SUBSCRIPTION cannot move, not because LTR backups are
@@ -662,26 +625,6 @@ limitation is a hypothesis, not a fact, and the distinction is the reusable less
 | Azure Lighthouse | Grants cross-tenant access; moves nothing. Delegation is not migration. |
 | Backup Cross-Tenant Restore | Covers "SQL Server in Azure VM" but NOT Azure SQL PaaS. It operates on Recovery Services vault recovery points, and PaaS LTR backups never land in a vault. |
 
-## Teardown addendum (2026-09-11): the cross-tenant footprint is invisible to RG deletion
-
-The teardown experiment surfaced a cleanup gap specific to this mechanism. The app
-registration, its federated identity credential, and the target-tenant service principal are
-DIRECTORY objects. They live outside every resource group, so deleting both resource groups
-left a working cross-tenant trust standing until those objects were removed explicitly.
-
-Treat the cross-tenant trust as a separate teardown step, never as something an infrastructure
-cleanup will sweep up. `Remove-LtrLab.ps1` now covers this, commit `f3c2911`.
-
----
-
-# Decision: LTR backup binding scope is the subscription, not the server
-
-Date: 2026-09-11
-
-**By:** Jose (via Copilot), recorded by Scribe. **Status:** accepted and now LAB-PROVEN.
-Originally written 2026-09-11 with the teardown verification still in progress; the
-teardown result was appended the same day (see "Teardown experiment" below).
-
 ## Documented behaviour (quoted from Microsoft Learn, long-term-retention-overview)
 
 > If you delete a logical server or a SQL managed instance, all databases on that server or
@@ -704,40 +647,6 @@ mechanism by which you find backups orphaned by a deleted server.
 2. Conversely, this is exactly why the drain is mandatory when the SUBSCRIPTION itself is
    going away. Within a subscription the backups survive a server deletion; across
    subscriptions they do not survive at all.
-
-## Teardown experiment (EMPIRICALLY VERIFIED, 2026-09-11)
-
-Run as a controlled experiment by Jose. This fills the slot left open above; the documented
-behaviour is now lab-proven.
-
-Sequence:
-
-1. Recorded the inventory before touching anything: 3 Azure SQL Database LTR backups and
-   1 Managed Instance LTR backup.
-2. Deleted the WHOLE resource group, containing the logical server, the managed instance,
-   its virtual cluster, a VM, storage, the VNet and private endpoints. Elapsed time about
-   16 minutes, dominated by the managed instance and the virtual cluster.
-3. Confirmed the resource group was gone and that `az sql server list` returned zero lab
-   servers.
-4. Re-enumerated by location. **ALL FOUR LTR BACKUPS SURVIVED**, with unchanged
-   `backupTime` and unchanged expiry of 2026-12-03, still naming a server and a managed
-   instance that no longer exist.
-5. Deleted all four explicitly, then verified the count is zero for both SQL Database and
-   Managed Instance.
-
-Three findings newly established by this run:
-
-- **MI-side LTR survival is proven for the first time.** This lab had previously shown
-  survival only for Azure SQL Database after DATABASE deletion. Survival after deletion of
-  the server, the managed instance, and the entire resource group is new, and the Managed
-  Instance case had never been tested at all.
-- **Location-only enumeration is the orphan handle.**
-  `az sql db ltr-backup list --location <loc> --database-state All` and the `midb`
-  equivalent both work with no `--server` argument. Once the server is deleted, this is the
-  ONLY way to find the backups.
-- **The cleanup trap is confirmed, not theoretical.** Resource group deletion does not stop
-  LTR billing. The four backups stayed billable to their full 2026-12-03 expiry and required
-  explicit deletion.
 
 ## Evidence status
 
@@ -861,3 +770,72 @@ The locked lab card states `summarizedGatewayPrefixes` is "set on the SAP RISE s
 
 Simulated on-prem/CE (172.40.100.0/24, ASN 65000) realization mechanism is unspecified in the lab card beyond prefix+ASN — needs a call on whether it's a 4th VM acting as a BGP speaker or a Megaport-side simulation, before Tank can finalize the resource list.
 
+# Tank → decisions inbox: sap-rise-scoped-peering-fwaas deploy deviations
+
+**Date:** 2026-09-29
+**From:** Tank (IaC Engineer)
+**Lab:** `sap-rise-scoped-peering-fwaas`
+**Status:** Deployed successfully; four deviations from design.md/manifest.md, all forced by real platform/account constraints, none architectural choices on my part. Flagging back to Trinity/Morpheus per charter, proceeding since Jose is not synchronously available and each has a smallest-safe-substitution fix that preserves the lab's teaching point.
+
+## 1. Simulated on-prem CE deployed as Azure VM with full VNet peering (not a Megaport MVE / physical CE)
+
+design.md specifies a simulated on-prem/CE BGP speaker (ASN 65000). Rather than a Megaport MVE
+or a genuinely separate physical/virtual CE router product, I deployed it as a plain Azure Linux
+VM (`vm-ce-onprem`) in its own VNet (`vnet-onprem-sim`, 172.40.100.0/24), connected via ordinary
+full-mesh VNet peering (not subnet-scoped — that scoping is reserved for the hub↔spoke peering
+per design.md's spec). It runs BIRD and peers directly with the hub NVA over that peering,
+advertising 172.40.100.0/24. This is a cost/complexity substitution: a Megaport MVE is a
+billable, provisioned network appliance, adding cost and lead time without changing the BGP/route
+propagation mechanics the lab is teaching (subnet-scoped peering + ARS + summarizedGatewayPrefixes
+behavior). No teaching-point impact identified.
+
+## 2. No Azure Bastion — VM access via `az vm run-command` only
+
+manifest.md's resource list does not explicitly require Bastion, and the lab's actual mechanism
+(BIRD BGP config, route verification) doesn't need interactive shell access. Using
+`az vm run-command invoke` for all VM configuration and diagnostics avoids Bastion's hourly cost
+and an extra subnet. If Niobe needs true interactive access for deeper diagnostics, Bastion can be
+added later without disturbing the rest of the topology.
+
+## 3. Megaport MCR + ExpressRoute peering location moved from Stockholm to Frankfurt (HIGH PRIORITY — changes physical PoP geography)
+
+design.md specifies Stockholm (Equinix Stockholm SK1) as the Megaport PoP, matching the
+`swedencentral` Azure region for latency/locality. During deploy, Megaport MCR creation failed
+with a hard `400 Validation error ... Missing markets: Sweden` — **this Megaport account is not
+entitled to the Sweden market at all**, independent of any Azure-side configuration. This is an
+account-level commercial/market-entitlement restriction on the Megaport side, not a bug or a
+choice.
+
+I confirmed (via the prior working lab `src/terraform/expressroute-megaport-bgp`) that this same
+account IS entitled to the Germany/Frankfurt market, and verified via
+`az network express-route list-service-providers` that Frankfurt is a valid Megaport-supported
+ExpressRoute peering location in Azure's catalog. I substituted:
+- `megaport_location`: `Equinix Stockholm SK1` → `Equinix Frankfurt FR5`
+- `expressroute_peering_location`: `Stockholm` → `Frankfurt`
+
+**Impact:** adds cross-region latency between `swedencentral` and the Frankfurt PoP that
+design.md's resiliency analysis did not model. The BGP/route-propagation teaching mechanism
+(subnet-scoped peering, ARS, BIRD, summarizedGatewayPrefixes) is unaffected — this is a pure
+physical-geography substitution. **Ask for Trinity/Morpheus:** either get this Megaport account
+entitled to the Sweden market for future labs, or update design.md's default PoP assumption to
+Frankfurt (or another entitled market) so future re-deploys don't need this same discovery cycle.
+
+## 4. VM SKU fallback to `Standard_B2s_v2` (from `Standard_B2als_v2`)
+
+All 4 VMs initially failed with `AllocationFailed` on `Standard_B2als_v2` in `swedencentral` —
+confirmed transient regional capacity (not a subscription SKU restriction; the preflight
+restriction check had passed clean). Terraform's `use_vm_size_fallback` variable (already present
+in the module for exactly this contingency) was flipped to `true`, switching all 4 VMs to the
+more broadly available `Standard_B2s_v2`. No teaching-point impact — same vCPU/RAM class, only the
+underlying Ampere/legacy silicon differs.
+
+## Not a deviation, but worth recording
+
+A genuine implementation bug (mine, not a design ambiguity) was found and fixed during deploy:
+`use_remote_gateways`/`allow_gateway_transit` were incorrectly set to `true` on the subnet-scoped
+peerings, which Azure rejects unless `GatewaySubnet` is included in the subnet-scoped peering's
+`remote_subnet_names`. design.md never specifies these flags (grepped, zero matches) — the lab's
+route-advertisement mechanism (BIRD in S1, `summarizedGatewayPrefixes` in S2) never needed classic
+VNet-peering gateway transit. Fixed by setting both flags to `false` on both peering directions.
+This is purely an implementation correction, not a design deviation, and needs no sign-off — noted
+here only for completeness/traceability.
