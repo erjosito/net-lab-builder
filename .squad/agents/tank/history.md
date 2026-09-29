@@ -1247,6 +1247,109 @@ is the lowest supported runtime.
 **No dependency constraint blocks 3.13:** requirements.txt uses agent-framework-foundry,
 agent-framework-foundry-hosting>=1.0.0a260630, requests>=2.32<3, debugpy -- all support Python 3.13.
 
+## 2026-09-29 -- sap-rise-scoped-peering-fwaas Full Deploy (ER + Megaport + ARS + BIRD)
+
+### TANK-015 -- Real Azure + Megaport deploy on explicit go-ahead from Jose
+
+**Objective:** Deploy the full 38-resource `sap-rise-scoped-peering-fwaas` lab per Trinity's
+design.md / Morpheus's manifest.md, on Jose's explicit go-ahead (~$28.4/day Azure + ~$101-120
+one-time Megaport, pre-approved, both under $50/day guardrail). Result: **deployed successfully**
+into `rg-saprise-swedencentral` (`swedencentral`), all 38 resources healthy, BIRD BGP configured
+and verified post-deploy.
+
+## Learnings — sap-rise-scoped-peering-fwaas Full Deploy (2026-09-29)
+
+### C1 -- IaC tool choice: Terraform, matching established precedent
+Chose Terraform over Bicep because the established prior lab (`src/terraform/expressroute-megaport-bgp`)
+already had a working Megaport provider module (MCR/VXC/ER auth pattern) -- state-based diffs
+matter for the Megaport resources specifically, and consistency with the existing pattern beat a
+fresh Bicep rewrite. New module lives at `src/terraform/sap-rise-scoped-peering-fwaas/`.
+
+### C2 -- azurerm v4.81 forbids explicit ExpressRoute gateway public IPs
+`azurerm_virtual_network_gateway` with `type = "ExpressRoute"` now rejects any
+`public_ip_address_id` in `ip_configuration` -- Azure always auto-assigns a "HOBO" IP for new ER
+gateways since a provider behavior change. Fix: drop the managed `azurerm_public_ip` resource
+entirely and the `ip_configuration` reference; query the actual IP post-deploy if needed (it isn't
+independently visible via `az network public-ip list` -- it's managed internally by the ER
+gateway's control plane). Reference: hashicorp/terraform-provider-azurerm#31730.
+
+### C3 -- Megaport account market entitlement is a real, hard, undetectable-in-advance blocker
+The Megaport account behind `MEGAPORT_ACCESS_KEY`/`MEGAPORT_SECRET_KEY` is **not entitled to the
+Sweden market** -- MCR creation at "Equinix Stockholm SK1" failed with
+`400 Validation error ... Missing markets: Sweden`. This is an account-level commercial
+restriction, invisible from Azure-side preflight checks. Megaport's `/v2/company` endpoint (which
+would show entitled markets directly) requires an `X-Call-Context` header not derivable from the
+OAuth2 client-credentials JWT -- abandoned that diagnostic path. Instead cross-referenced the
+prior working lab, which used Frankfurt successfully, confirming that market IS entitled.
+**Substituted megaport_location/expressroute_peering_location: Stockholm -> Frankfurt** (documented
+deviation, see decisions inbox). **Gotcha for future labs:** always verify Megaport market
+entitlement against a known-working prior lab before committing to a PoP in design.md, since there
+is no cheap preflight check for this.
+
+### C4 -- Clean SKU-restriction preflight does not guarantee VM allocation success
+`az vm list-skus --query "restrictions"` showed no restriction for `Standard_B2als_v2` in
+`swedencentral`, yet all 4 VM creates failed with `AllocationFailed` (transient regional capacity,
+not a subscription restriction). Fallback to `Standard_B2s_v2` (established B-series, broader
+availability) resolved it immediately. Gotcha: a green SKU-restriction check is necessary but not
+sufficient evidence of deployability -- keep a fallback SKU variable (already present in this
+module as `use_vm_size_fallback`) for every VM-heavy lab.
+
+### C5 -- Subnet-scoped peering does NOT need allowlisting on this subscription
+No allowlisting blocker was hit for `peer_complete_virtual_networks_enabled = false` with scoped
+`local_subnet_names`/`remote_subnet_names` -- the feature worked on the first clean apply attempt
+once the gateway-transit bug (C6) was fixed. Worth confirming this remains true for future
+subscriptions/tenants, since Trinity's design.md flagged it as a risk.
+
+### C6 -- Own bug: gateway-transit flags on subnet-scoped peering
+`use_remote_gateways = true` on the subnet-scoped `spoke_to_hub` peering triggered
+`SubnetPeeringHasUseRemoteGatewaysSetButGatewaySubnetNotPeeredInRemoteSubnetNames` since
+`GatewaySubnet` wasn't in the scoped subnet list. design.md never specifies these flags (grepped,
+zero matches) -- the lab's route-advertisement mechanism (BIRD in S1, `summarizedGatewayPrefixes`
+in S2) never needs classic gateway transit. Fixed by disabling both `use_remote_gateways` and
+`allow_gateway_transit` on both peering directions. Not a design ambiguity, purely my own
+implementation error -- flagging so future labs with subnet-scoped peering + ER gateway don't
+repeat it.
+
+### C7 -- Terraform apply defers ALL error reporting to the very end of the run
+When two independent, fast-failing errors occurred (duplicate-VM rejection, peering property
+conflict) during a run that also included a genuinely long-running 25m7s ER Gateway create,
+**no error output appeared until the entire apply's resource graph had finished resolving** --
+meaning ground-truth `az vm show` polling showed zero change for ~40+ minutes while the actual
+rejection had already happened within seconds. Always cross-check with direct `az` queries rather
+than trusting apply log tail content or its absence as evidence of "still in progress."
+
+### C8 -- CR-buffered log artifact when tee-ing Terraform output
+Some resources' periodic "Still creating..." lines reliably reappear every ~10s in a
+`Tee-Object`-captured log (e.g., `azurerm_virtual_network_gateway.er`), while others (VM
+resources, `megaport_mcr`, some peerings) show only their first tick then silently vanish from
+log output for many minutes despite being genuinely in progress. Ground truth must always come
+from direct `az` CLI queries when monitoring this tool via a piped/teed async log.
+
+### C9 -- Post-deploy BIRD injection via `az vm run-command` needs base64, not inline heredoc
+A first attempt to push BIRD config via an inline PowerShell-interpolated `cat > file << 'EOF' ...`
+heredoc silently no-op'd (empty stdout, config file unchanged) -- likely mangled by argument
+escaping between PowerShell and the Azure CLI's script-string handling. Switching to
+base64-encode-locally / `echo '<b64>' | base64 -d > file` inside the remote script worked cleanly
+and is now the reliable pattern for any future multi-line remote file push via `run-command`.
+
+### C10 -- BIRD peering established; minor initial flap noted for Niobe
+Hub NVA (ASN 65001) established BGP with both ARS peers (65515) and the simulated CE (65000,
+`172.40.100.4`) after config push. A brief alternating flap ("Hold timer expired" -> reconnect) was
+observed on the two redundant ARS sessions during initial convergence -- sessions do establish, but
+this is worth a closer look by Niobe rather than treated as fully resolved.
+
+### C11 -- Actual observed timings
+Total wall-clock ~100 minutes across two apply attempts + fix cycles (ER Gateway alone: 25m7s,
+well within manifest's 20-45 min estimate; ER circuit + MCR + VXC: a few minutes each once the
+Frankfurt substitution was in place; final incremental apply for the 5 remaining resources after
+bug fixes: ~1m20s). Confirms ER Gateway is the genuine long pole as manifest.md predicted.
+
+### C12 -- Deviations requiring sign-off, sent to decisions inbox
+Four deviations documented in `.squad/decisions/inbox/tank-sap-rise-deploy.md`: CE-as-Azure-VM
+(not Megaport MVE), no Bastion (run-command only), Megaport PoP Stockholm->Frankfurt (account
+market entitlement), VM SKU B2als_v2->B2s_v2 (capacity). All four preserve the lab's teaching
+point; none are architecture changes I'd make by choice.
+
 **Files changed:**
 - azure.yaml: runtime python_3_12 -> python_3_13
 - src/echo-probe-agent/Dockerfile: FROM python:3.12-slim -> python:3.13-slim
@@ -1263,6 +1366,43 @@ agent-framework-foundry-hosting>=1.0.0a260630, requests>=2.32<3, debugpy -- all 
 
 **Decision inbox:** No new decision needed; correction is straightforward doc-to-config alignment.
 ## 2026-08-20 -- foundry-agent-prompt-vs-hosted-networking azd Deploy Fix
+
+## Learnings — sap-rise-scoped-peering-fwaas S1 flap round-2 diagnostics (2026-09-29)
+
+Trinity's round-2 diagnosis flagged a suspected NSG gap on `nsg-hub-nva`: no inbound-179 Allow
+rule from `172.40.100.0/24` (the simulated on-prem CE's subnet), since `design.md` §4's table
+only ever listed the ARS and spoke-NVA rows. Checked the live NSG directly with
+`az network nsg rule list` before touching anything — **the rule already exists and has been
+live since the original deploy**: `Allow-OnpremSim-BGP-In`, priority 120, source
+`172.40.100.0/24`, dest `VirtualNetwork`, 179/TCP, Allow, defined in
+`src/terraform/sap-rise-scoped-peering-fwaas/azure-nsg.tf`. Lesson: always check the deployed
+resource before assuming a documented gap is a live gap — `design.md`'s table was stale, not the
+infrastructure. Did not create a duplicate/conflicting rule; just corrected the design.md table
+and added a deployed-resources.md note so this doesn't get re-flagged.
+
+Ran the 4-poll `birdc show protocols` recheck (~14:37-14:48 UTC, no bird.conf touched): confirmed
+the rotating-single-session-up pattern persists exactly as in round 1 — at any moment only one
+of the three BGP sessions (`ce_onprem`, `azure_rs_1`, `azure_rs_2`) is Established, with the
+others alternating "No route to host" (ARS peers) and "Connection reset by peer"/"Hold timer
+expired" (`ce_onprem`). Notably `ce_onprem` did reach Established during poll 2, proving the NSG
+rule was never actually blocking it — it flaps for the same underlying reason as the ARS peers,
+not an NSG reason.
+
+ARS platform health (`az network routeserver show` / `peering show`) came back fully healthy
+(`provisioningState: Succeeded` on both the hub and the `ars-hub-nva-peering` BGP connection)
+during a window where `azure_rs_2` was down per BIRD — ruling out an ARS-side degraded state.
+
+The `tcpdump` capture during that same down window was the most useful evidence yet: repeated
+inbound SYNs arrive at `vm-hub-nva:179` from the down ARS peer IP (`10.40.0.37`), retried
+several times with new source ports, and **not one gets a SYN-ACK or RST back** — total silence
+from the hub NVA side. Meanwhile the up session (`10.40.0.36`) exchanges normal BGP keepalive/
+update traffic right up until an RST from the ARS side tears it down near the end of the 60s
+window. Zero response to inbound SYNs from a locally-silent host is consistent with "No route to
+host" being generated on `vm-hub-nva`'s own kernel (no route back to the source, so the SYN-ACK
+can't be sent) — points at something in the guest's routing table on `vm-hub-nva`, not the NSG,
+not ARS, and not the CE peer. Handed this back to Trinity with full detail in
+`.squad/decisions/inbox/tank-s1-diagnostics-round2.md`; did not touch bird.conf or proceed to
+Niobe.
 
 ### TANK-015 -- azd deploy "infrastructure has not been provisioned" -- Root Cause Fix
 
@@ -1633,3 +1773,136 @@ returned to its prior `deallocated` state.
 - `labs/sql-ltr-backup-migration/research/ltr-restore-measurements.md` (new)
 - `labs/sql-ltr-backup-migration/research/ltr-restore-raw-20260911.json` (new, fit flagged INVALID)
 - `labs/sql-ltr-backup-migration/deploy/calibrated-parameters.json` (updated)
+
+## Learnings — 2026-09-29: Applying Trinity's S1 bird.conf fix (rejection-lockout mechanical hand-off)
+
+Applied Trinity's exact hand-off spec (.squad/decisions/inbox/trinity-s1-bird-fix.md) to m-hub-nva's
+ird.conf, mechanically, per Squad's reviewer-rejection lockout (I authored the original broken config, so
+I could not redesign it myself). Three of four literal edits applied byte-for-byte with no issue:
+xport none; -> xport where proto = "static_bgp";, and hold time 60;/keepalive time 20; -> 180/60
+on both the ce_onprem protocol and the zure_peer template.
+
+**One deviation, forced by the installed BIRD version.** Trinity's spec text for the recursive-nexthop fix was
+oute 10.60.0.0/16 via 10.60.0.4 dev "eth0" onlink;. irdc configure check rejected it: syntax error,
+unexpected DEV. I pulled BIRD 2.0.8's actual grammar (proto/static/config.Y at tag 2.0.8 from upstream)
+and confirmed the dev "<iface>" next-hop qualifier simply does not exist in that grammar — it's a newer-BIRD
+addition, absent from 2.0.8. The 2.0.8-native equivalent is the % scope operator with an **unquoted**
+interface symbol: ia 10.60.0.4 % eth0 onlink;. Applied that instead, verified Configuration OK, and
+confirmed post-reload that 10.60.0.0/16 now installs correctly in Table master4 via static_bgp (the
+exact symptom Niobe/Trinity described as defect 1 is gone). **Lesson: when a hand-off spec's literal syntax
+doesn't validate, check the exact installed daemon/tool version's own grammar/source before improvising —
+don't guess at plausible-sounding alternate syntax, and don't treat a syntax failure as reason to redesign
+the fix itself. The intent (force onlink resolution via a named interface) was fully preserved; only the
+concrete keyword needed to match the actual binary on the VM.**
+
+**Recheck result: flap NOT resolved.** Trinity's mandatory 3-minute-plus flap recheck (I actually ran ~7
+minutes, 4 polls) showed a persistent rotating pattern: exactly one of ce_onprem/zure_rs_1/zure_rs_2
+Established at any given moment, the other two cycling through Active/start with socket-level errors
+("Connection reset by peer", "No route to host") rather than just hold-timer expiry. Per Trinity's own
+spec ("if it does not [resolve], the next diagnostic step is CPU-credit telemetry... do not iterate on
+bird.conf again without new evidence"), I stopped editing bird.conf and instead pulled Azure Monitor metrics
+(CPU Credits Remaining, Percentage CPU) for m-hub-nva across the fix window. Credits were climbing
+monotonically (83.76 -> 106.33 over 30 min) and CPU stayed under ~4% throughout — **this refutes the
+CPU-credit-starvation hypothesis with data**, meaning the flap's root cause is something else entirely
+(likely network/socket layer, not BIRD process starvation). Wrote full evidence and recommendation to
+.squad/decisions/inbox/tank-s1-fix-applied.md and escalated back to Trinity rather than attempting a
+further fix myself or handing off to Niobe. **Lesson: "stop and report back" instructions in a hand-off
+spec are there for a reason — gathering the specified diagnostic evidence (even when I can't act on it
+myself) is real, useful work, and is different from silently declaring victory on a partial fix.**
+
+Updated labs/sap-rise-scoped-peering-fwaas/deploy/deployed-resources.md with a bird.conf revision history
+table (v1 broken / v2 partially-fixed) so future readers don't have to reconstruct this from git history.
+
+## Learnings
+
+### 2026-09-29 -- sap-rise-scoped-peering-fwaas S1 BGP flap: round-3 final verification, partial pass
+
+Trinity's round-3 root cause (protocol kernel's export all; silently poisoning the guest kernel
+route table with whichever ARS peer won BIRD's best-path race for the shared, overlapping
+RouteServerSubnet address space) was correct and the one-line fix (export all; -> export none;)
+worked exactly as designed for that mechanism. Applied via az vm run-command + irdc configure
+(no restart needed), verified ip route show came back clean (only Azure-fabric entries, no
+10.40.0.32/27 ARS-origin routes), and confirmed both zure_rs_1/zure_rs_2 stayed continuously
+Established across a 4-poll ~12-minute window plus a 60s tcpdump showing normal bidirectional
+keepalive traffic with no unanswered SYNs. That specific defect is genuinely closed.
+
+**But the overall strict pass bar (all three sessions Established simultaneously on every poll)
+still failed** -- ce_onprem cycled Idle -> Active -> Established -> Idle independently of the ARS
+sessions, with "Connection reset by peer" then "Hold timer expired", and a 60s tcpdump taken during
+a down window captured zero port-179 packets to/from the on-prem-sim IP at all (not even failed SYNs).
+This is clearly a second, separate mechanism from the one Trinity's fix targeted -- the ARS side is
+now rock-solid while ce_onprem behaves like an entirely independent problem (no traffic attempted
+during the capture window, not a "no route" or "connection refused" signature).
+
+**Lesson: a correct, well-evidenced root-cause fix for one mechanism can still leave a strict
+multi-condition pass bar unmet if a second, unrelated mechanism is also present.** Don't let "the fix I
+was asked to apply worked as designed" bleed into "so the overall gate must have passed" -- score the
+actual pass bar as specified (all three, every poll), not just whether the targeted defect resolved.
+When the hand-off spec says stop and report on failure rather than guess at further fixes, that applies
+even after a partially-successful, well-verified fix -- the discipline is the same as previous rounds:
+gather the specified evidence, document what changed and what didn't, and escalate rather than iterate
+speculatively on bird.conf a third time without new diagnosis from Trinity.
+
+## Learnings
+
+### 2026-09-29 -- sap-rise-scoped-peering-fwaas S1 Defect 3b round-4: CE-side pull finds the smoking gun
+
+Every round-1-3 diagnostic only ever looked at m-hub-nva's side; round 4 was the first to pull
+ce-onprem's own bird.conf, logs, and metrics, and it broke the case wide open. The live
+ce-onprem hub_nva block was still at the pre-v2 timer values (old time 60; keepalive time 20;),
+never updated when Trinity's v2 fix bumped the hub's ce_onprem block to 180/60. Since BGP
+negotiates the lower hold time, the session runs on a 60s hold clock while the hub only sends a
+keepalive every 60s -- zero margin, guaranteed to occasionally miss. CPU/credit metrics on
+m-ce-onprem (same B2s_v2 SKU as the hub) came back completely clean -- sub-1% CPU, credits
+climbing monotonically the whole window -- so Trinity's CPU-starvation hypothesis is refuted on
+both ends now, not just the hub's. The real breakthrough was correlating irdc show protocols
+polls and ournalctl -u bird logs from *both* VMs at the same instants: every flap showed
+m-ce-onprem logging hub_nva: Error: Hold timer expired (its own timer, locally detected) at the
+exact millisecond m-hub-nva logged ce_onprem: Received: Hold timer expired (a NOTIFICATION it
+received from the peer) -- BIRD's log grammar (Error: vs Received:) tells you unambiguously which
+side actually pulled the trigger, and it was the CE every time. A simultaneous tcpdump on both
+sides during a live cycle showed the CE was not silent/backed-off at all -- it was actively
+exchanging keepalives right up until it sent a clean, self-initiated TCP FIN at the exact moment
+its hold timer expired, directly answering (and partially overturning, for this cycle) Trinity's
+Finding-1 backoff hypothesis. **Lesson: when a bug only affects one peer out of several sharing
+the same daemon/template, and every prior round has only instrumented one end of that
+relationship, the highest-leverage next step is almost always to go get the *other* end's own
+config/logs/metrics before inventing a new hypothesis about the end you've already exhausted --
+the asymmetry itself (one side patched, one side not) was sitting in plain sight in a file nobody
+had cat'd yet.** Wrote full findings to
+.squad/decisions/inbox/tank-s1-ce-diagnostics-round4.md; made no bird.conf edits on either VM,
+per the diagnostic-only scope of this round.
+
+## Learnings
+
+### 2026-09-29 -- sap-rise-scoped-peering-fwaas S1 BGP investigation: final wrap-up (round 5, Defect 3b closed, all four defects resolved)
+
+Applied Trinity's round-5 fix -- the exact scoped sed against vm-ce-onprem's own hub_nva block
+(hold time 60/keepalive time 20 -> hold time 180/keepalive time 60, matching what the hub's
+ce_onprem block already had since round 1) -- via the same az vm run-command + birdc configure
+pattern used for every prior fix in this investigation (no service restart, no disruption to the
+other two sessions on the CE). Confirmed the change landed with a direct grep of the live
+bird.conf before running any verification. Ran the strict 4-poll/10+-minute window across both
+VMs one more time: all three sessions (ce_onprem/hub_nva, azure_rs_1, azure_rs_2) showed
+Established on every single poll across ~14.5 minutes, with an unchanged Since timestamp on every
+session throughout -- meaning literally zero drops, not just "recovered before the next poll."
+Clean PASS against the exact bar Trinity specified.
+
+**Wrap-up on the whole multi-round S1 BGP investigation:** four distinct defects were found and
+fixed across five rounds, each one only surfacing after the previous one was closed and the strict
+pass bar was re-applied without relaxing it: (1) hub route-resolution / export none on the
+original deploy, (2) the initial CE-side flap symptom investigated across rounds 1-2, (3a) the
+hub's protocol kernel export all silently poisoning the guest kernel table with ARS-origin routes
+for the shared RouteServerSubnet space (round 3), and (3b) a stale, never-updated timer block on
+the CE's own hub_nva protocol left over from before round-1's hub-side fix (round 4 diagnosis,
+round 5 fix). The single biggest lesson holding across the whole arc: **never let "the specific
+mechanism I was asked to fix worked exactly as designed" get conflated with "so the overall pass
+bar must be met" -- every round that stopped at a partial pass (2, 3) correctly escalated instead
+of guessing, and every round that eventually found the next defect did so by widening the
+diagnostic aperture (first correlating both peers' logs by timestamp in round 4, rather than only
+ever looking at the side already patched) instead of re-guessing at the same file a third time.
+Holding a strict, unrelaxed multi-condition pass bar across five rounds -- and being willing to
+report FAIL with evidence rather than retry blind -- is what actually got this investigation to a
+real, verified close instead of a false-positive "fixed" after round 1 or round 3.** S1 is now
+confirmed ready for Niobe's full re-validation; final state recorded in deploy/deployed-resources.md
+(hub bird.conf at v3, CE bird.conf at v2) and .squad/decisions/inbox/tank-s1-defect3b-verification.md.

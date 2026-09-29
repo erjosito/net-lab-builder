@@ -1,5 +1,11 @@
 ﻿**Archived entries:** see \history-archive.md\
 
+📌 2026-09-29 — S1 BGP flapping investigation RESOLVED, all defects fixed
+
+SAP RISE lab Stage 1 underwent a 5-round investigation (Niobe validator → Trinity designer → Tank implementer → Morpheus orchestrator). All four defects (BIRD syntax, export filters, kernel table, timer alignment) are now fixed and verified stable over 14.5 minutes continuous observation. **S1 is ready for Niobe's full re-validation pass, and S2 scenario testing can now proceed.**
+
+11 investigation entries merged to `.squad/decisions.md` in chronological order, capturing the debugging narrative.
+
 # Project Context
 
 - **Owner:** Jose Moreno

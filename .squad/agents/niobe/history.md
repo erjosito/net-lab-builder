@@ -1,5 +1,17 @@
 **Archived entries:** see \history-archive.md\
 
+📌 2026-09-29 — S1 BGP flapping investigation COMPLETE, lab confirmed stable
+
+S1 initial validation (2026-09-29) found end-to-end FAIL. Multi-round investigation across 5 rounds (Trinity/Tank/Morpheus) resolved four defects:
+1. BIRD recursive-route resolution (syntax fix for BIRD 2.0.8)
+2. `ce_onprem` export filter (changed from `export none` to advertise static routes)
+3. Hub NVA kernel-table poisoning (kernel `export all` → `export none`)
+4. CE-side timer misalignment (timers never updated when hub's were fixed in round 1)
+
+All three BGP sessions now stable end-to-end, 14.5-min continuous verification showed zero flaps. **Ready for full S1 re-validation pass.**
+
+Key learning: Azure VNet-peering fabric reachability is invisible to guest OS routing table — BIRD's `kernel1 { learn; }` cannot resolve recursive static routes across peering unless the route is explicitly marked `onlink` (BIRD 2.0.8 syntax: `via <ip> % <interface> onlink`).
+
 ## Learnings (2026-08-18 — afd-edge-actions-jwt-validation live validation)
 
 - **Hyperlight sandbox: `crypto`, `fetch`, `atob`, `TextEncoder` all `undefined`.** S1-GATE = CONDITIONAL. Claims-only enforcement only. Origin `jose` RS256 is the only cryptographic security boundary. Results are deterministic across all AFD PoPs.
@@ -451,3 +463,62 @@ No Azure calls; no writes to `deploy/` or `raw-output/`.
 
 
 📌 Team update (2026-09-29T10:52:25Z): New lab sap-rise-scoped-peering-fwaas initiated (SAP RISE ExpressRoute FWaaS prefix-advertisement). Stage 1 scope locked (subnet peering, two scenarios: S1 ARS+NVA, S2 advertised-prefix). Key finding: S2 control-plane fixed (advertised gateway prefixes), data-plane unresolved for non-peered workload subnet — asymmetry now explicit teaching point. Lab-card correction flagged (summarizedGatewayPrefixes location). Phase 4 Jose review gate pending Tank deployment.
+
+## Learnings (2026-09-29 -- sap-rise-scoped-peering-fwaas S1 live validation, post-Tank-deploy)
+
+- **S1 VERDICT: FAIL, not the "complete fix" it was designed to demonstrate.** From the simulated
+  on-prem CE, BOTH `10.60.0.4` (spoke NVA subnet) AND `10.60.1.4` (workload subnet) show 100%
+  packet loss -- worse than the expected asymmetric result S2 alone was supposed to exhibit. Reverse
+  direction (workload -> CE) also 100% loss.
+- **Root cause #1, the interesting one -- recursive BGP static routes over Azure subnet peering
+  don't resolve.** `bird.conf` on the hub NVA declares `route 10.60.0.0/16 via 10.60.0.4;` (a
+  recursive-nexthop static route). BIRD requires a route to the gateway IP inside its OWN table
+  before it will install/export the static route. Azure's subnet-peering fabric delivers packets to
+  the peered subnet transparently at the hypervisor/SDN layer (confirmed: direct `ping 10.60.0.4`
+  from the hub NVA succeeds, and the NIC's Azure-side effective-route-table shows a VNetPeering
+  system route for `10.60.0.0/27`) but NEVER injects a matching route into the guest OS kernel
+  table. Since BIRD's `kernel1 { learn; }` protocol only sees what the guest kernel's `ip route`
+  shows, the recursive resolution silently fails and `static_bgp` installs ZERO routes --
+  independent of whether the BGP sessions themselves are up. **Reusable pattern: whenever a BIRD/
+  FRR NVA on Azure needs a static route whose next hop lives across a VNet peering (subnet-scoped
+  or full), the "via IP" will NOT resolve unless you either add an explicit onlink/interface-scoped
+  route, or inject a matching host/subnet route via cloud-init, because Azure peering reachability
+  is invisible to `ip route show` inside the guest.** This is a genuinely new gotcha for future labs
+  using this exact BIRD-on-Azure-peering pattern.
+- **Root cause #2:** `protocol bgp ce_onprem { ... export none; }` in the same `bird.conf` means the
+  hub NVA never advertises anything to the on-prem CE directly, regardless of #1. Flagged to
+  Trinity as either an authoring gap or an intentional-but-undocumented design choice (rely solely
+  on ARS->ERGW->circuit for CE-side learning, which then also fails per #1).
+- **BGP session flapping confirmed as real and ongoing, not a one-time convergence blip.** Two
+  `birdc show protocols all` polls on `vm-hub-nva`, ~2 minutes apart, show `ce_onprem`,
+  `azure_rs_1`, and `azure_rs_2` each alternating between Established and Idle/"Hold timer expired"
+  in different combinations each time. Matches Tank's note in `deployed-resources.md` but the
+  evidence shows it's persistent, not transient. Left as an open item -- not isolated to a single
+  cause (candidates: `Standard_B2s_v2` fallback SKU CPU steal, multihop=2 timing, or an ARS-side
+  keepalive delivery quirk).
+- **Secondary observation, not the root cause:** `vm-spoke-nva`'s NAT table only exempts RFC1918
+  destinations from MASQUERADE; the simulated on-prem prefix `172.40.100.0/24` is deliberately a
+  non-RFC1918-looking range and so gets source-NATted on egress. Flagged to Tank/Trinity, does not
+  by itself explain the 100% loss (conntrack would still permit the return leg once a route exists).
+- **`az vm run-command invoke` fully substitutes for Bastion/SSH here** (deviation #2) -- no
+  functional gap found for reading `birdc`/`ip route`/`iptables`/`bird.conf` output. One real
+  constraint: only ONE `run-command` can execute per VM at a time -- a second concurrent invocation
+  on the same VM fails with `(Conflict) Run command extension execution is in progress`. Sequence
+  calls per-VM; parallelize only across different VMs.
+- **CLI syntax corrections vs. the original skeleton:** `az network routeserver peering
+  list-learned-routes` / `list-advertised-routes` take `--name` (peering name), NOT
+  `--peering-name`. `az network vnet-gateway list-advertised-routes` requires `--peer <peerIP>`
+  (the MSEE/circuit peer IP), not a `--peer-group-name`. `az network express-route gateway ...`
+  (ExpressRoute-specific gateway subcommand group) does not apply here -- this lab's ER Gateway is
+  addressed via the standard `az network vnet-gateway ...` command group throughout.
+- **Sanitization:** all `show-output/s1-*` files use `<SUBSCRIPTION_ID>` placeholders; no Megaport
+  API calls made (deferred, not needed for the S1 verdict); no VM credentials captured or needed
+  (`run-command` uses the VM's system-assigned identity/az login context, not SSH keys).
+- **validation.md fully reconciled** against `deployed-resources.md`: real resource names
+  (`vm-hub-nva`, `nic-workload-probe`, `ergw-sap-rise`, `ars-hub`, `ars-hub-nva-peering`, etc.)
+  replace all `<placeholder>` names; every S1 assertion has PASS/FAIL/NOT RUN/DEFERRED filled in;
+  S2 explicitly marked PENDING (not toggled, not tested) per the task scope.
+- **Lab is NOT ready for S2 testing or teardown.** Recommended next step: Tank patches `bird.conf`
+  (interface-scoped/cloud-init route for the peered subnet; reconsider `ce_onprem export none`;
+  investigate the BGP flap), redeploys, and Niobe re-runs the full S1 capture set before S2 is
+  attempted. Decision recorded: `.squad/decisions/inbox/niobe-s1-validation.md`.
