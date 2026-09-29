@@ -788,3 +788,76 @@ The measurement is closed as abandoned. Anyone reviving it must stand up a new e
 seed first, then wait out the LTR backup availability delay (up to seven days) before
 attempting a timing run. The standing gate from the Tank entry still applies: verify restored
 row counts against the source before fitting any slope.
+
+---
+
+# Decision — SAP RISE ExpressRoute FWaaS lab: locked scope
+
+**Date:** 2026-09-29
+**Author:** Morpheus
+**Requested by:** Jose Moreno
+**Status:** Stage 1 lab card locked; Stage 2 manifest + fan-out NOT started yet.
+
+## Decision
+
+One lab, two scenarios, single ER circuit via one Megaport MCR, single ErGw1AZ gateway.
+
+- **S1:** Azure Route Server + Linux NVA (hub) redistributes the full SAP RISE spoke supernet into eBGP toward the ER Gateway.
+- **S2:** `summarizedGatewayPrefixes` ("advertised gateway prefixes") set on the SAP RISE spoke VNet forces the ER Gateway to advertise the supernet instead of the naturally-peered subnet.
+
+Two placeholder Linux VM "firewalls" (B-series), one in the hub, one in the spoke — filtering logic is out of scope; only their subnets' peering/routing scope is under test.
+
+## Topology correction validated (not actually a correction — confirmed as literally implementable)
+
+Jose's phrasing — "subnet peering between the two NVA subnets" — maps exactly to Azure's **subnet peering** feature (GA March 2025, `--peer-complete-vnet false` + `--local-subnet-names` / `--remote-subnet-names`; subscription must be Microsoft-allowlisted). This is NOT standard VNet-wide peering scoped after the fact — it is a first-class Azure peering-link type limited to named subnets on both sides.
+
+Confirmed via independent verification (Cloudtrooper blog, Dec 2025 hands-on test) that with subnet peering + gateway transit on the peered link, **ExpressRoute only advertises the peered subnet's prefix, not the full VNet address space** — this is the exact "natural restriction" mechanic the lab needs for its baseline (pre-remediation) state. No topology substitution needed.
+
+One caveat carried into the manifest: current-release subnet peering leaves non-peered subnets with an inert forward-route entry to the peered subnet (Azure drops the packet rather than delivering it) — NSGs on both NVA subnets are required as defense-in-depth, not just routing.
+
+Data-plane forcing: the SAP RISE spoke workload subnet needs an explicit UDR (default/hub-bound routes → spoke NVA IP) because it has no other path out (not directly peered). The hub side needs no equivalent UDR — GatewaySubnet forwarding for the spoke supernet is driven by BGP (S1: NVA→ARS→ER GW) or by the advertised-prefix property (S2), not by a UDR on GatewaySubnet (which Azure does not support attaching a custom route table to in the general case).
+
+## Open question flagged for validation (not yet resolved — Niobe's job at Execute phase)
+
+S2 (`summarizedGatewayPrefixes`) is confirmed to fix the **outbound BGP advertisement toward on-prem**. It is NOT yet confirmed whether it alone restores actual **end-to-end data-plane reachability** for addresses inside the supernet that are outside the physically peered subnet, since nothing in S2 alone creates an Azure-side system route into the hub NVA for that wider space. This asymmetry (control-plane fix vs. data-plane fix) is now the primary teaching point of Scenario 2 and must be evidenced, not assumed.
+
+## Address plan (locked for Stage 2)
+
+- Hub VNet `vnet-hub` — `10.40.0.0/16` (swedencentral)
+  - `GatewaySubnet` `10.40.0.0/27`
+  - `RouteServerSubnet` `10.40.0.32/27`
+  - `snet-hub-nva` `10.40.1.0/27`
+- Spoke VNet `vnet-sap-rise` — `10.60.0.0/16` (swedencentral)
+  - `snet-spoke-nva` `10.60.0.0/27`
+  - `snet-workload` `10.60.1.0/24`
+- Simulated on-prem/CE test route: `172.40.100.0/24`, ASN `65000`
+- ASN plan: ARS `65515` (fixed) · hub NVA `65001` · spoke NVA `65002` (BGP-capable but dormant unless later extended) · simulated CE `65000`
+
+## Rationale
+
+Preserves Jose's stated intent ("no traffic bypasses the firewalls") while using a real, current (2026) Azure primitive rather than inventing a workaround topology. Keeps the lab to one region, one ER circuit, minimal resource count.
+
+---
+
+# Decision — sap-rise-scoped-peering-fwaas: S2 mechanism resolved, one lab-card correction
+
+**Date:** 2026-09-29
+**Author:** Trinity
+**Status:** design.md written (`labs/sap-rise-scoped-peering-fwaas/design.md`), LOCKED pending Jose/Morpheus review.
+
+## Resolution of Morpheus's open question (S2 crux)
+
+`summarizedGatewayPrefixes` fixes the BGP **advertisement** only. It never touches `GatewaySubnet`'s system routes or the underlying VNet-peering fabric — it's a VNet-level property that changes what the ER Gateway announces outward, nothing else. Since `GatewaySubnet` is not itself part of the subnet-peering scope (only `snet-hub-nva` ↔ `snet-spoke-nva` are peered), there is no mechanism in S2 as scoped (no ARS, no hub-NVA BGP) that injects a return route for `10.60.0.0/16` into the gateway. Result: on-prem's BGP table shows the full `/16` (looks fixed), but traffic sent toward `10.60.1.0/24` (the non-peered workload subnet) black-holes at/before `GatewaySubnet` — it never reaches the hub NVA.
+
+**Scoped conclusion:** S2 is documented as **"advertisement-only, not a full connectivity fix."** Traffic to the already-peered `10.60.0.0/27` (spoke NVA subnet) keeps working in S2 — only the wider workload subnet stays unreachable. This asymmetry (control-plane fixed, data-plane not) is now designed as the explicit negative-evidence capture in the route-collection checklist (design.md §8, items 9–10): a probe from simulated on-prem to the workload VM must fail in S2 and succeed in S1, with a control probe to the spoke NVA subnet succeeding in both — isolating the failure precisely to the non-peered subnet.
+
+A genuinely complete S2 would require re-adding ARS route-injection (which converges it back to S1's mechanism) or upgrading to full VNet peering (which defeats the lab's premise). Neither is added as a hidden third scenario — the negative result is the teaching point.
+
+## Lab-card correction flagged
+
+The locked lab card states `summarizedGatewayPrefixes` is "set on the SAP RISE spoke VNet." Current (2026-08 GA) Microsoft documentation confirms this property is read **only from the VNet containing the gateway subnet/gateway** — i.e. `vnet-hub`. Setting it on a spoke VNet is an explicit documented no-op. design.md §6.2 corrects this: the property must be set on `vnet-hub`, with value `['10.40.0.0/16','10.60.0.0/16']` (must cover the hub's own space too, per docs, or the hub's own prefix keeps being advertised individually).
+
+## Other open item carried to Tank/Morpheus
+
+Simulated on-prem/CE (172.40.100.0/24, ASN 65000) realization mechanism is unspecified in the lab card beyond prefix+ASN — needs a call on whether it's a 4th VM acting as a BGP speaker or a Megaport-side simulation, before Tank can finalize the resource list.
+

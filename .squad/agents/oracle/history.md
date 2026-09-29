@@ -877,3 +877,4 @@ ew_str did not
   VM restart. Same fact, far more likely to change a reader's behaviour.
 - **Self-check.** 2388 lines, 5/5 Mermaid fences byte-identical, 34 code fences (even),
   0 dashes, 0 GUIDs, 21/21 anchors resolve, 0 surviving occurrences of the retracted claim.
+📌 Team update (2026-09-29T10:52:25Z): New lab sap-rise-scoped-peering-fwaas initiated (SAP RISE ExpressRoute FWaaS prefix-advertisement). Stage 1 scope locked (subnet peering, two scenarios: S1 ARS+NVA, S2 advertised-prefix). Key finding: S2 control-plane fixed (advertised gateway prefixes), data-plane unresolved for non-peered workload subnet — asymmetry now explicit teaching point. Lab-card correction flagged (summarizedGatewayPrefixes location). Phase 4 Jose review gate pending Tank deployment.

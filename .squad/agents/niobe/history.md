@@ -449,3 +449,5 @@ No Azure calls; no writes to `deploy/` or `raw-output/`.
 
 📌 Team update (2026-09-10T09:35:25Z): BACPAC compression measured (1.04x worst, 4.0x typical, 145x best); export throughput calibrated (0.36 + 0.159 GB formula); LTR policy cannot coexist with auto-pause enabled — decided by Tank & Oracle
 
+
+📌 Team update (2026-09-29T10:52:25Z): New lab sap-rise-scoped-peering-fwaas initiated (SAP RISE ExpressRoute FWaaS prefix-advertisement). Stage 1 scope locked (subnet peering, two scenarios: S1 ARS+NVA, S2 advertised-prefix). Key finding: S2 control-plane fixed (advertised gateway prefixes), data-plane unresolved for non-peered workload subnet — asymmetry now explicit teaching point. Lab-card correction flagged (summarizedGatewayPrefixes location). Phase 4 Jose review gate pending Tank deployment.

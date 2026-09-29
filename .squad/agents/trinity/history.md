@@ -323,3 +323,5 @@ Cross-agent impact: Morpheus, Oracle, Tank (manifest §4/§6 NSG rules, prefligh
 **Files changed:** README.md (primer + nav table), design.md (§17 cross-reference).
 
 📌 Team update (2026-08-21T15:35:00+02:00): Foundry lab revision cycle complete. Independent revision resolved all B1-B4 blockers per Morpheus lockout. Foundry Networking Architecture Primer added (D-27). Lab PUBLICATION-READY after Niobe second review APPROVED. Decided by Scribe (session orchestration).
+
+📌 Team update (2026-09-29T10:52:25Z): New lab sap-rise-scoped-peering-fwaas initiated (SAP RISE ExpressRoute FWaaS prefix-advertisement). Stage 1 scope locked (subnet peering, two scenarios: S1 ARS+NVA, S2 advertised-prefix). Key finding: S2 control-plane fixed (advertised gateway prefixes), data-plane unresolved for non-peered workload subnet — asymmetry now explicit teaching point. Lab-card correction flagged (summarizedGatewayPrefixes location). Phase 4 Jose review gate pending Tank deployment.

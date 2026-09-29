@@ -26,6 +26,18 @@
 
 **Phase 0 VM preflight is inapplicable for PaaS-only topologies.** Always document this explicitly in the lab card; it prevents checklist confusion.
 
+📌 2026-09-29 — SAP RISE ExpressRoute FWaaS lab, Stage 1 lab card locked (`sap-rise-scoped-peering-fwaas`).
+
+**Azure subnet-level VNet peering is real, GA (March 2025), and does exactly what it sounds like.** `az network vnet peering create --peer-complete-vnet false --local-subnet-names <x> --remote-subnet-names <y>` scopes a peering link to named subnets on each side, not the whole VNet. Subscription must be Microsoft-allowlisted first (form-based, not self-serve). Jose's request to "peer the two NVA subnets" was literally implementable — no topology correction needed, only a caveat about a current-release rough edge (see below).
+
+**Confirmed mechanism for the lab's baseline "problem": subnet peering + gateway transit on that link makes ExpressRoute advertise ONLY the peered subnet's prefix, not the full VNet address space.** Verified against an independent hands-on test (Cloudtrooper blog, Dec 2025) — full VNet peering advertises both VNets' whole address spaces; subnet peering shrinks the advertised prefix to just the peered subnet. This is exactly the "spoke supernet invisible to ER" symptom Jose described, and gave the lab a real baseline without inventing anything.
+
+**Known rough edge to carry into the manifest:** current-release subnet peering still leaves an inert forward-route entry from non-peered subnets to the peered subnet — packets are dropped at the destination, not actually delivered. NSGs on the NVA subnets are required as defense-in-depth even though routing already blocks the path.
+
+**S1 vs S2 are not equivalent fixes — flagged as the lab's real teaching point.** S1 (ARS + NVA eBGP redistribution) fixes both the advertised route AND the Azure-side data path (BGP populates a real next-hop into the hub NVA). S2 (`summarizedGatewayPrefixes` on the spoke VNet) is only confirmed to fix the *outbound advertisement toward on-prem* — whether it alone restores real end-to-end reachability for the wider supernet is unresolved and must be evidenced by Niobe at Execute, not assumed at design time.
+
+**Address plan locked:** hub `10.40.0.0/16` (GatewaySubnet `/27`, RouteServerSubnet `/27`, hub-NVA subnet `/27`), spoke `vnet-sap-rise` `10.60.0.0/16` (spoke-NVA subnet `/27`, workload subnet `/24`), simulated on-prem `172.40.100.0/24` ASN 65000, ARS 65515 (fixed), hub NVA 65001, spoke NVA 65002.
+
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
 
 📌 2026-08-19 — Lab #4 dual-hub-vnra-udr-transit Stage-1 lab card LOCKED.
@@ -368,3 +380,5 @@
 
 📌 Team update (2026-09-10T09:35:25Z): BACPAC compression measured (1.04x worst, 4.0x typical, 145x best); export throughput calibrated (0.36 + 0.159 GB formula); LTR policy cannot coexist with auto-pause enabled — decided by Tank & Oracle
 
+
+📌 Team update (2026-09-29T10:52:25Z): New lab sap-rise-scoped-peering-fwaas initiated (SAP RISE ExpressRoute FWaaS prefix-advertisement). Stage 1 scope locked (subnet peering, two scenarios: S1 ARS+NVA, S2 advertised-prefix). Key finding: S2 control-plane fixed (advertised gateway prefixes), data-plane unresolved for non-peered workload subnet — asymmetry now explicit teaching point. Lab-card correction flagged (summarizedGatewayPrefixes location). Phase 4 Jose review gate pending Tank deployment.
