@@ -1,0 +1,2 @@
+az network vpn-site update -g rg-vwan-ipsec-over-er-09281131 -n site-gcp-er --set vpnSiteLinks[0].bgpProperties.bgpPeeringAddress=10.250.254.242; az network vpn-gateway connection update -g rg-vwan-ipsec-over-er-09281131 --gateway-name vpngw-ver-09281131 -n conn-gcp-inet --set vpnLinkConnections[0].enableBgp=false
+

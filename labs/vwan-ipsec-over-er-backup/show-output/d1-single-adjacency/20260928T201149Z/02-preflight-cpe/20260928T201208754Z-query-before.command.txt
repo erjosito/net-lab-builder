@@ -1,0 +1,2 @@
+$i=Get-Content 'labs\vwan-ipsec-over-er-backup\config\inventory.json' -Raw|ConvertFrom-Json; gcloud compute ssh $i.gcp.cpeVmName --project $i.gcp.projectId --zone $i.gcp.zone --tunnel-through-iap --ssh-flag="-o ConnectTimeout=30" --ssh-flag="-o ServerAliveInterval=10" --ssh-flag="-o ServerAliveCountMax=3" --command "sudo bash -lc 'date -u -Ins; swanctl --list-sas; echo ===FRR===; vtysh -c \"show bgp ipv4 unicast summary\"; echo ===ROUTES===; ip route show; ip route get 10.240.0.12; echo ===XFRM===; ip -s xfrm state'"
+

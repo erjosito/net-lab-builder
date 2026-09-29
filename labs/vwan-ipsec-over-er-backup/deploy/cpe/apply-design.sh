@@ -17,21 +17,11 @@ case "$DESIGN" in
     target_ips="10.253.1.10"
     public_prepend=""
     d3_fallback=""
-    public_bgp_enabled=true
-    if [[ "$D1_PHASE" == private ]]; then
-      private_start_action=start
-      public_start_action=none
-      private_neighbor_shutdown=false
-      public_neighbor_shutdown=true
-    elif [[ "$D1_PHASE" == public ]]; then
-      private_start_action=none
-      public_start_action=start
-      private_neighbor_shutdown=true
-      public_neighbor_shutdown=false
-    else
-      echo "D1_PHASE must be private or public" >&2
-      exit 2
-    fi
+    public_bgp_enabled=false
+    private_start_action=start
+    public_start_action=start
+    private_neighbor_shutdown=false
+    public_neighbor_shutdown=false
     ;;
   D2)
     local_private=10.250.254.240
@@ -122,9 +112,13 @@ ip route replace "$PRI0_IKE/32" via 10.250.0.1 dev ens4 metric 5
 ip route replace "$PRI1_IKE/32" via 10.250.0.1 dev ens4 metric 5
 ip route replace "$PUB0_IKE/32" via 10.250.0.1 dev ens4 metric 5
 ip route replace "$PUB1_IKE/32" via 10.250.0.1 dev ens4 metric 5
-ip route replace "$PRI0_BGP/32" dev xfrm-pri0
-ip route replace "$PRI1_BGP/32" dev xfrm-pri1
-if [[ "$DESIGN" != D3 ]]; then
+if [[ "$DESIGN" == D1 ]]; then
+  ip route replace "$PRI1_BGP/32" dev xfrm-pri1 src 10.250.254.242
+else
+  ip route replace "$PRI0_BGP/32" dev xfrm-pri0
+  ip route replace "$PRI1_BGP/32" dev xfrm-pri1
+fi
+if [[ "$DESIGN" == D2 ]]; then
   ip route replace "$PUB0_BGP/32" dev xfrm-pub0
   ip route replace "$PUB1_BGP/32" dev xfrm-pub1
 fi
@@ -274,11 +268,17 @@ EOF
 chmod 0600 /etc/swanctl/conf.d/vwan.conf
 
 public_neighbor_base=""
-private_neighbor_instances=$(cat <<EOF
+if [[ "$DESIGN" == D1 ]]; then
+  private_neighbor_instances=" neighbor $PRI1_BGP peer-group PRI"
+  bgp_peer_elements="$PRI1_BGP"
+else
+  private_neighbor_instances=$(cat <<EOF
  neighbor $PRI0_BGP peer-group PRI
  neighbor $PRI1_BGP peer-group PRI
 EOF
 )
+  bgp_peer_elements="$PRI0_BGP, $PRI1_BGP"
+fi
 if $private_neighbor_shutdown; then
   private_neighbor_instances+=$'\n'" neighbor "$PRI0_BGP shutdown"
   private_neighbor_instances+=$'\n'" neighbor "$PRI1_BGP shutdown"
@@ -286,7 +286,6 @@ fi
 public_neighbor_instances=""
 public_address_family=""
 public_policy=""
-bgp_peer_elements="$PRI0_BGP, $PRI1_BGP"
 if $public_bgp_enabled; then
   public_neighbor_base=$(cat <<EOF
  neighbor PUB peer-group

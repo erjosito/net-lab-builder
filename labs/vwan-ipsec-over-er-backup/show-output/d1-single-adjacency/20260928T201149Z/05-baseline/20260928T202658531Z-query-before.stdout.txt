@@ -1,0 +1,67 @@
+2026-09-28T20:27:04,067343975+00:00
+
+IPv4 Unicast Summary (VRF default):
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 2
+RIB entries 9, using 1656 bytes of memory
+Peers 1, using 723 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+10.240.0.12     4      65515         6         4        0    0    0 00:00:17            2        0 N/A
+
+Total number of neighbors 1
+BGP table version is 2, local router ID is 10.250.254.250, vrf id 0
+Default local pref 100, local AS 65050
+Status codes:  s suppressed, d damped, h history, * valid, > best, = multipath,
+               i internal, r RIB-failure, S Stale, R Removed
+Nexthop codes: @NNN nexthop's vrf id, < announce-nh-self
+Origin codes:  i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+   Network          Next Hop            Metric LocPrf Weight Path
+*> 10.240.0.0/24    10.240.0.12                   200      0 65515 i
+*> 10.241.0.0/24    10.240.0.12                   200      0 65515 i
+   10.253.1.0/24    0.0.0.0                  0         32768 i
+   10.253.3.0/25    0.0.0.0                  0         32768 i
+   10.253.3.128/25  0.0.0.0                  0         32768 i
+
+Displayed  5 routes and 5 total paths
+10.240.0.12 dev xfrm-pri1 src 10.250.254.242 uid 0 
+    cache 
+probe code=000 connect=0.000000 total=3.002082
+probe_failed
+2026-09-28T20:27:17,380151212+00:00
+
+IPv4 Unicast Summary (VRF default):
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 2
+RIB entries 9, using 1656 bytes of memory
+Peers 1, using 723 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+10.240.0.12     4      65515         6         4        0    0    0 00:00:30            2        0 N/A
+
+Total number of neighbors 1
+BGP table version is 2, local router ID is 10.250.254.250, vrf id 0
+Default local pref 100, local AS 65050
+Status codes:  s suppressed, d damped, h history, * valid, > best, = multipath,
+               i internal, r RIB-failure, S Stale, R Removed
+Nexthop codes: @NNN nexthop's vrf id, < announce-nh-self
+Origin codes:  i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+   Network          Next Hop            Metric LocPrf Weight Path
+*> 10.240.0.0/24    10.240.0.12                   200      0 65515 i
+*> 10.241.0.0/24    10.240.0.12                   200      0 65515 i
+   10.253.1.0/24    0.0.0.0                  0         32768 i
+   10.253.3.0/25    0.0.0.0                  0         32768 i
+   10.253.3.128/25  0.0.0.0                  0         32768 i
+
+Displayed  5 routes and 5 total paths
+10.240.0.12 dev xfrm-pri1 src 10.250.254.242 uid 0 
+    cache 
+probe code=000 connect=0.000000 total=3.000792
+probe_failed
+

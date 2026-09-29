@@ -1,0 +1,15 @@
+curl: (28) Connection timeout after 3001 ms
+curl: (28) Connection timeout after 3000 ms
+FATAL ERROR: Remote side unexpectedly closed network connection
+
+Recommendation: To check for possible causes of SSH connectivity issues and get
+recommendations, rerun the ssh command with the --troubleshoot option.
+
+gcloud compute ssh cpe-ver-09281131 --project=gcp-vwan-eripsec-09281131 --zone=europe-north2-c --troubleshoot
+
+Or, to investigate an IAP tunneling issue:
+
+gcloud compute ssh cpe-ver-09281131 --project=gcp-vwan-eripsec-09281131 --zone=europe-north2-c --troubleshoot --tunnel-through-iap
+
+ERROR: (gcloud.compute.ssh) [C:\Users\jomore\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\sdk\plink.exe] exited with return code [1].
+

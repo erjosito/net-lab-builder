@@ -1,0 +1,143 @@
+ERROR: The command failed with an unexpected error. Here is the traceback:
+ERROR: (', DeserializationError: (\', DeserializationError: (", DeserializationError: Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \\\'str\\\'>", \\\'Unable to deserialize response data. Data: [{ipConfigurationId:Instance0,customBgpIpAddress:169.254.21.5},{ipConfigurationId:Instance1,customBgpIpAddress:169.254.22.5}], [GatewayCustomBgpIpAddressIpConfiguration]\\\', DeserializationError("Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \\\'str\\\'>"))\', \'Unable to deserialize response data. Data: [<azext_vwan.vendored_sdks.v2022_07_01.v2022_07_01.models._models_py3.VpnSiteLinkConnection object at 0x00000241317D2510>], [VpnSiteLinkConnection]\', DeserializationError(", DeserializationError: Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \'str\'>", \'Unable to deserialize response data. Data: [{ipConfigurationId:Instance0,customBgpIpAddress:169.254.21.5},{ipConfigurationId:Instance1,customBgpIpAddress:169.254.22.5}], [GatewayCustomBgpIpAddressIpConfiguration]\', DeserializationError("Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \'str\'>")))', 'Unable to build a model: (\', DeserializationError: (", DeserializationError: Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \\\'str\\\'>", \\\'Unable to deserialize response data. Data: [{ipConfigurationId:Instance0,customBgpIpAddress:169.254.21.5},{ipConfigurationId:Instance1,customBgpIpAddress:169.254.22.5}], [GatewayCustomBgpIpAddressIpConfiguration]\\\', DeserializationError("Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \\\'str\\\'>"))\', \'Unable to deserialize response data. Data: [<azext_vwan.vendored_sdks.v2022_07_01.v2022_07_01.models._models_py3.VpnSiteLinkConnection object at 0x00000241317D2510>], [VpnSiteLinkConnection]\', DeserializationError(", DeserializationError: Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \'str\'>", \'Unable to deserialize response data. Data: [{ipConfigurationId:Instance0,customBgpIpAddress:169.254.21.5},{ipConfigurationId:Instance1,customBgpIpAddress:169.254.22.5}], [GatewayCustomBgpIpAddressIpConfiguration]\', DeserializationError("Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \'str\'>")))', DeserializationError(', DeserializationError: (", DeserializationError: Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \'str\'>", \'Unable to deserialize response data. Data: [{ipConfigurationId:Instance0,customBgpIpAddress:169.254.21.5},{ipConfigurationId:Instance1,customBgpIpAddress:169.254.22.5}], [GatewayCustomBgpIpAddressIpConfiguration]\', DeserializationError("Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \'str\'>"))', 'Unable to deserialize response data. Data: [<azext_vwan.vendored_sdks.v2022_07_01.v2022_07_01.models._models_py3.VpnSiteLinkConnection object at 0x00000241317D2510>], [VpnSiteLinkConnection]', DeserializationError(", DeserializationError: Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class 'str'>", 'Unable to deserialize response data. Data: [{ipConfigurationId:Instance0,customBgpIpAddress:169.254.21.5},{ipConfigurationId:Instance1,customBgpIpAddress:169.254.22.5}], [GatewayCustomBgpIpAddressIpConfiguration]', DeserializationError("Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class 'str'>"))))
+Traceback (most recent call last):
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1605, in deserialize_data
+    return self.deserialize_type[iter_type](data, data_type[1:-1])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1632, in deserialize_iter
+    raise DeserializationError("Cannot deserialize as [{}] an object of type {}".format(iter_type, type(attr)))
+azure.core.exceptions.DeserializationError: Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class 'str'>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1605, in deserialize_data
+    return self.deserialize_type[iter_type](data, data_type[1:-1])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1633, in deserialize_iter
+    return [self.deserialize_data(a, iter_type) for a in attr]
+            ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1618, in deserialize_data
+    return self._deserialize(obj_type, data)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1401, in _deserialize
+    setattr(data, attr, self._deserialize(local_type, value))
+                        ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1409, in _deserialize
+    return self.deserialize_data(data, response)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1616, in deserialize_data
+    raise_with_traceback(DeserializationError, msg, err)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/core/exceptions.py", line 100, in raise_with_traceback
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1605, in deserialize_data
+    return self.deserialize_type[iter_type](data, data_type[1:-1])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1632, in deserialize_iter
+    raise DeserializationError("Cannot deserialize as [{}] an object of type {}".format(iter_type, type(attr)))
+azure.core.exceptions.DeserializationError: (", DeserializationError: Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class 'str'>", 'Unable to deserialize response data. Data: [{ipConfigurationId:Instance0,customBgpIpAddress:169.254.21.5},{ipConfigurationId:Instance1,customBgpIpAddress:169.254.22.5}], [GatewayCustomBgpIpAddressIpConfiguration]', DeserializationError("Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class 'str'>"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 684, in body
+    data = deserializer._deserialize(data_type, data)
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1401, in _deserialize
+    setattr(data, attr, self._deserialize(local_type, value))
+                        ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1409, in _deserialize
+    return self.deserialize_data(data, response)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1616, in deserialize_data
+    raise_with_traceback(DeserializationError, msg, err)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/core/exceptions.py", line 100, in raise_with_traceback
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1605, in deserialize_data
+    return self.deserialize_type[iter_type](data, data_type[1:-1])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1633, in deserialize_iter
+    return [self.deserialize_data(a, iter_type) for a in attr]
+            ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1618, in deserialize_data
+    return self._deserialize(obj_type, data)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1401, in _deserialize
+    setattr(data, attr, self._deserialize(local_type, value))
+                        ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1409, in _deserialize
+    return self.deserialize_data(data, response)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1616, in deserialize_data
+    raise_with_traceback(DeserializationError, msg, err)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/core/exceptions.py", line 100, in raise_with_traceback
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1605, in deserialize_data
+    return self.deserialize_type[iter_type](data, data_type[1:-1])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1632, in deserialize_iter
+    raise DeserializationError("Cannot deserialize as [{}] an object of type {}".format(iter_type, type(attr)))
+azure.core.exceptions.DeserializationError: (', DeserializationError: (", DeserializationError: Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \'str\'>", \'Unable to deserialize response data. Data: [{ipConfigurationId:Instance0,customBgpIpAddress:169.254.21.5},{ipConfigurationId:Instance1,customBgpIpAddress:169.254.22.5}], [GatewayCustomBgpIpAddressIpConfiguration]\', DeserializationError("Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \'str\'>"))', 'Unable to deserialize response data. Data: [<azext_vwan.vendored_sdks.v2022_07_01.v2022_07_01.models._models_py3.VpnSiteLinkConnection object at 0x00000241317D2510>], [VpnSiteLinkConnection]', DeserializationError(", DeserializationError: Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class 'str'>", 'Unable to deserialize response data. Data: [{ipConfigurationId:Instance0,customBgpIpAddress:169.254.21.5},{ipConfigurationId:Instance1,customBgpIpAddress:169.254.22.5}], [GatewayCustomBgpIpAddressIpConfiguration]', DeserializationError("Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class 'str'>")))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\knack/cli.py", line 233, in invoke
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/cli/core/commands/__init__.py", line 677, in execute
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/cli/core/commands/__init__.py", line 820, in _run_jobs_serially
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/cli/core/commands/__init__.py", line 789, in _run_job
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/cli/core/commands/__init__.py", line 335, in __call__
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/cli/core/commands/command_operation.py", line 241, in handler
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/cli/core/commands/__init__.py", line 454, in cached_put
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/cli/core/commands/__init__.py", line 448, in _put_operation
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/core/tracing/decorator.py", line 119, in wrapper_use_tracer
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\v2022_07_01\operations\_operations.py", line 89056, in begin_create_or_update
+    raw_result = self._create_or_update_initial(
+        resource_group_name=resource_group_name,
+    ...<8 lines>...
+        **kwargs
+    )
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\v2022_07_01\operations\_operations.py", line 88886, in _create_or_update_initial
+    _json = self._serialize.body(vpn_connection_parameters, "VpnConnection")
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 686, in body
+    raise_with_traceback(SerializationError, "Unable to build a model: " + str(err), err)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/core/exceptions.py", line 100, in raise_with_traceback
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 684, in body
+    data = deserializer._deserialize(data_type, data)
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1401, in _deserialize
+    setattr(data, attr, self._deserialize(local_type, value))
+                        ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1409, in _deserialize
+    return self.deserialize_data(data, response)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1616, in deserialize_data
+    raise_with_traceback(DeserializationError, msg, err)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/core/exceptions.py", line 100, in raise_with_traceback
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1605, in deserialize_data
+    return self.deserialize_type[iter_type](data, data_type[1:-1])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1633, in deserialize_iter
+    return [self.deserialize_data(a, iter_type) for a in attr]
+            ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1618, in deserialize_data
+    return self._deserialize(obj_type, data)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1401, in _deserialize
+    setattr(data, attr, self._deserialize(local_type, value))
+                        ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1409, in _deserialize
+    return self.deserialize_data(data, response)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1616, in deserialize_data
+    raise_with_traceback(DeserializationError, msg, err)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\_work\1\s\build_scripts\windows\artifacts\cli\Lib\site-packages\azure/core/exceptions.py", line 100, in raise_with_traceback
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1605, in deserialize_data
+    return self.deserialize_type[iter_type](data, data_type[1:-1])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jomore\.azure\cliextensions\virtual-wan\azext_vwan\vendored_sdks\v2022_07_01\_serialization.py", line 1632, in deserialize_iter
+    raise DeserializationError("Cannot deserialize as [{}] an object of type {}".format(iter_type, type(attr)))
+azure.core.exceptions.SerializationError: (', DeserializationError: (\', DeserializationError: (", DeserializationError: Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \\\'str\\\'>", \\\'Unable to deserialize response data. Data: [{ipConfigurationId:Instance0,customBgpIpAddress:169.254.21.5},{ipConfigurationId:Instance1,customBgpIpAddress:169.254.22.5}], [GatewayCustomBgpIpAddressIpConfiguration]\\\', DeserializationError("Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \\\'str\\\'>"))\', \'Unable to deserialize response data. Data: [<azext_vwan.vendored_sdks.v2022_07_01.v2022_07_01.models._models_py3.VpnSiteLinkConnection object at 0x00000241317D2510>], [VpnSiteLinkConnection]\', DeserializationError(", DeserializationError: Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \'str\'>", \'Unable to deserialize response data. Data: [{ipConfigurationId:Instance0,customBgpIpAddress:169.254.21.5},{ipConfigurationId:Instance1,customBgpIpAddress:169.254.22.5}], [GatewayCustomBgpIpAddressIpConfiguration]\', DeserializationError("Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \'str\'>")))', 'Unable to build a model: (\', DeserializationError: (", DeserializationError: Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \\\'str\\\'>", \\\'Unable to deserialize response data. Data: [{ipConfigurationId:Instance0,customBgpIpAddress:169.254.21.5},{ipConfigurationId:Instance1,customBgpIpAddress:169.254.22.5}], [GatewayCustomBgpIpAddressIpConfiguration]\\\', DeserializationError("Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \\\'str\\\'>"))\', \'Unable to deserialize response data. Data: [<azext_vwan.vendored_sdks.v2022_07_01.v2022_07_01.models._models_py3.VpnSiteLinkConnection object at 0x00000241317D2510>], [VpnSiteLinkConnection]\', DeserializationError(", DeserializationError: Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \'str\'>", \'Unable to deserialize response data. Data: [{ipConfigurationId:Instance0,customBgpIpAddress:169.254.21.5},{ipConfigurationId:Instance1,customBgpIpAddress:169.254.22.5}], [GatewayCustomBgpIpAddressIpConfiguration]\', DeserializationError("Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \'str\'>")))', DeserializationError(', DeserializationError: (", DeserializationError: Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \'str\'>", \'Unable to deserialize response data. Data: [{ipConfigurationId:Instance0,customBgpIpAddress:169.254.21.5},{ipConfigurationId:Instance1,customBgpIpAddress:169.254.22.5}], [GatewayCustomBgpIpAddressIpConfiguration]\', DeserializationError("Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class \'str\'>"))', 'Unable to deserialize response data. Data: [<azext_vwan.vendored_sdks.v2022_07_01.v2022_07_01.models._models_py3.VpnSiteLinkConnection object at 0x00000241317D2510>], [VpnSiteLinkConnection]', DeserializationError(", DeserializationError: Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class 'str'>", 'Unable to deserialize response data. Data: [{ipConfigurationId:Instance0,customBgpIpAddress:169.254.21.5},{ipConfigurationId:Instance1,customBgpIpAddress:169.254.22.5}], [GatewayCustomBgpIpAddressIpConfiguration]', DeserializationError("Cannot deserialize as [GatewayCustomBgpIpAddressIpConfiguration] an object of type <class 'str'>"))))
+To check existing issues, please visit: https://github.com/Azure/azure-cli/issues
+

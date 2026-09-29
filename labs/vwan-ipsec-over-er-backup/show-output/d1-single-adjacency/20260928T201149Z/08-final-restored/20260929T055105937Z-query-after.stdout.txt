@@ -1,0 +1,106 @@
+===AZURE_SITE===
+{
+  "asn": 65050,
+  "bgpPeeringAddress": "10.250.254.240"
+}
+===AZURE_PUBLIC_CONNECTION===
+{
+  "custom": [
+    {
+      "customBgpIpAddress": "169.254.21.5",
+      "ipConfigurationId": "Instance0"
+    },
+    {
+      "customBgpIpAddress": "169.254.22.5",
+      "ipConfigurationId": "Instance1"
+    }
+  ],
+  "enableBgp": true,
+  "state": "Succeeded"
+}
+===EXPRESSROUTE===
+{
+  "provider": "Provisioned",
+  "state": "Succeeded"
+}
+===GCP_VM===
+{
+  "lastStartTimestamp": "2026-09-28T22:47:45.594-07:00",
+  "status": "RUNNING"
+}
+===CPE===
+2026-09-29T05:51:26,104313175+00:00
+default via 10.250.0.1 dev ens4 proto dhcp src 10.250.0.10 metric 100 
+blackhole 10.240.0.0/24 proto static metric 20 
+10.240.0.4 via 10.250.0.1 dev ens4 metric 5 
+10.240.0.5 via 10.250.0.1 dev ens4 metric 5 
+blackhole 10.241.0.0/24 proto static metric 20 
+10.250.0.1 dev ens4 proto dhcp scope link src 10.250.0.10 metric 100 
+blackhole 10.253.2.0/24 proto static metric 20 
+74.158.47.254 via 10.250.0.1 dev ens4 metric 5 
+74.158.80.26 via 10.250.0.1 dev ens4 metric 5 
+169.254.21.1 dev xfrm-pri0 scope link 
+169.254.21.5 dev xfrm-pub0 scope link 
+169.254.22.1 dev xfrm-pri1 scope link 
+169.254.22.5 dev xfrm-pub1 scope link 
+169.254.169.254 via 10.250.0.1 dev ens4 proto dhcp src 10.250.0.10 metric 100 
+
+IPv4 Unicast Summary (VRF default):
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 1
+RIB entries 5, using 920 bytes of memory
+Peers 4, using 2892 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+169.254.21.1    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.22.1    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.21.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.22.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+
+Total number of neighbors 4
+pub1: #4, ESTABLISHED, IKEv2, 9f202146aa00779d_i* c9c8c523480aa04a_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.80.26' @ 74.158.80.26[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 76s ago, rekeying in 13843s
+  pub1: #2, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 76s ago, rekeying in 3468s, expires in 3884s
+    in  cbbf3394 (-|0x000001a5),   1716 bytes,    33 packets,     2s ago
+    out 0fe69218 (-|0x000001a5),   1080 bytes,    18 packets,     8s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pub0: #3, ESTABLISHED, IKEv2, 26051238b1698f03_i* 0c06aeb8cefa76e4_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.47.254' @ 74.158.47.254[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 76s ago, rekeying in 14228s
+  pub0: #1, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 76s ago, rekeying in 3362s, expires in 3884s
+    in  cd622d6e (-|0x000001a4),   1716 bytes,    33 packets,     1s ago
+    out 1278ec70 (-|0x000001a4),   1080 bytes,    18 packets,     8s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri1: #2, ESTABLISHED, IKEv2, 069820ec0a472d82_i* 72489aade9ef7903_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.5' @ 10.240.0.5[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 76s ago, rekeying in 13216s
+  pri1: #4, reqid 4, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 76s ago, rekeying in 3368s, expires in 3884s
+    in  c7c180dd (-|0x0000019b),   1664 bytes,    32 packets,     1s ago
+    out 1b4d0024 (-|0x0000019b),    600 bytes,    10 packets,     8s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri0: #1, ESTABLISHED, IKEv2, 4d504e1f1a4887f6_i* 0a62efc63325696e_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.4' @ 10.240.0.4[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 76s ago, rekeying in 14193s
+  pri0: #3, reqid 3, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 76s ago, rekeying in 3229s, expires in 3884s
+    in  c581fc9f (-|0x0000019a),   1768 bytes,    34 packets,     1s ago
+    out c3c85716 (-|0x0000019a),    600 bytes,    10 packets,     8s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+

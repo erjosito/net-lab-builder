@@ -78,6 +78,10 @@ $publicBgpPeers = @($publicConnection.vpnLinkConnections[0].vpnGatewayCustomBgpA
 if ($privateBgpPeers.Count -ne 2 -or $publicBgpPeers.Count -ne 2) {
     throw 'Each VPN connection must select two distinct Azure custom BGP addresses.'
 }
+if ($Design -eq 'D1') {
+    # Live gateway instance mapping: Instance1 is the approved single D1 peer.
+    $privateBgpPeers = @('10.240.0.13', '10.240.0.12')
+}
 
 $vpnGateway = az network vpn-gateway show -g $ResourceGroup -n $VpnGatewayName -o json | ConvertFrom-Json
 $instances = @{}
