@@ -1,0 +1,60 @@
+{
+  "allowClassicOperations": false,
+  "authorizationKey": "*****************",
+  "authorizations": [],
+  "circuitProvisioningState": "Enabled",
+  "etag": "W/\"3bc2024f-f899-44eb-93a8-e8604af4d763\"",
+  "gatewayManagerEtag": "",
+  "globalReachEnabled": false,
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/expressRouteCircuits/er-sap-rise",
+  "location": "swedencentral",
+  "name": "er-sap-rise",
+  "peerings": [
+    {
+      "azureASN": 12076,
+      "connections": [],
+      "etag": "W/\"3bc2024f-f899-44eb-93a8-e8604af4d763\"",
+      "gatewayManagerEtag": "",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/expressRouteCircuits/er-sap-rise/peerings/AzurePrivatePeering",
+      "lastModifiedBy": "Provider",
+      "name": "AzurePrivatePeering",
+      "peerASN": 64512,
+      "peeredConnections": [],
+      "peeringType": "AzurePrivatePeering",
+      "primaryAzurePort": "",
+      "primaryPeerAddressPrefix": "169.254.170.152/30",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "secondaryAzurePort": "",
+      "secondaryPeerAddressPrefix": "169.254.170.156/30",
+      "state": "Enabled",
+      "type": "Microsoft.Network/expressRouteCircuits/peerings",
+      "vlanId": 100
+    }
+  ],
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-saprise-swedencentral",
+  "serviceKey": "400c5bab-c600-4c31-a826-a39dd3af0933",
+  "serviceProviderProperties": {
+    "bandwidthInMbps": 50,
+    "peeringLocation": "Frankfurt",
+    "serviceProviderName": "Megaport"
+  },
+  "serviceProviderProvisioningState": "Provisioned",
+  "sku": {
+    "family": "MeteredData",
+    "name": "Standard_MeteredData",
+    "tier": "Standard"
+  },
+  "stag": 6,
+  "tags": {
+    "correlation_id": "7bb27d99",
+    "created_by": "copilot-lab",
+    "ephemeral": "true",
+    "lab": "sap-rise-scoped-peering-fwaas",
+    "owner": "jose",
+    "run_id": "7bb27d99"
+  },
+  "type": "Microsoft.Network/expressRouteCircuits"
+}
+

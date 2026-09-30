@@ -1,0 +1,27 @@
+# COMMAND: az network express-route list-route-tables -g rg-saprise-swedencentral -n er-sap-rise --peering-name AzurePrivatePeering --path primary -o json
+# INTERPRETATION: This is the MSEE-side (actual ExpressRoute circuit peering router) route table, as opposed to the ER gateway's internal learned/advertised-routes view. It shows only the hub summary prefix 10.40.0.0/16 (two ECMP next-hops, i.e. both hub NVA/firewall instances) plus the peering link-local /30. The spoke prefix 10.60.0.0/16 is NOT present. This confirms/matches the previously documented ER Gateway 'list-advertised-routes' result (only hub /16 advertised toward on-prem, no spoke /16) for the current live baseline: Design A / S1 (ARS + hub NVA), Design B toggle enable_summarized_gateway_prefixes = false. No discrepancy found between gateway view and true MSEE-side view.
+{
+  "value": [
+    {
+      "locPrf": "100",
+      "network": "10.40.0.0/16",
+      "nextHop": "10.40.0.12*",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.40.0.0/16",
+      "nextHop": "10.40.0.13",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "169.254.170.152/30",
+      "nextHop": "169.254.170.153",
+      "path": "64512",
+      "weight": 0
+    }
+  ]
+}
