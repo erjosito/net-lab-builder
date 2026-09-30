@@ -34,6 +34,7 @@ resource ID is shown.
 | CE simulation route table | `rt-ce-onprem` with `route-to-spoke`: `10.60.0.0/16 -> VirtualAppliance -> 10.40.1.4`, associated to `vnet-onprem-sim/snet-ce-onprem` on 2026-09-29 |
 | Spoke NVA return route table | `rt-spoke-nva-return` with `route-to-onprem-sim-via-hub`: `172.40.100.0/24 -> VirtualAppliance -> 10.40.1.4`, associated to `vnet-sap-rise/snet-spoke-nva` on 2026-09-29 |
 | S2 toggle (`summarizedGatewayPrefixes`) | Present in Terraform as a separate flag (`enable_summarized_gateway_prefixes`), currently **`false`** (S1 baseline active). Flip to `true` and re-apply to activate S2 on `vnet-hub` per design.md §6.2's corrected placement. |
+| ⚠️ Terraform state gap (found 2026-09-30) | This checkout's local Terraform state is **detached** from the live `rg-saprise-swedencentral` resources: `terraform state list` returns empty/no state file, while `az resource list -g rg-saprise-swedencentral` confirms all 38+ resources exist and are healthy. **Before anyone flips `enable_summarized_gateway_prefixes` to test Design B (S2), state MUST be reconciled first** (e.g., `terraform import` each resource, or locate the correct backend/state file). Do **not** run `terraform apply` against this checkout without reconciling state — a plan attempted against the empty state wants to recreate all 38+ resources from scratch. |
 
 ## ExpressRoute + Megaport
 

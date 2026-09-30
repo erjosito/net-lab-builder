@@ -31,6 +31,12 @@
 - Spoke NSG rule `Allow-OnpremSim-Forwarded-In` and route table `rt-spoke-nva-return` were both applied and verified.
 - The CE-to-spoke-NVA probe still returned `100% packet loss`, so the fallback diagnostics were run exactly as requested.
 - Current handoff artifact: `labs/sap-rise-scoped-peering-fwaas/show-output/s1-spoke-reachability-fix-20260929T173839Z/`. Do not improvise beyond that evidence without a new Trinity spec.
+
+### 2026-09-30 - sap-rise-scoped-peering-fwaas: local Terraform state is detached from the live resources
+
+- Attempted to flip `enable_summarized_gateway_prefixes` to `true` to test Design B/S2. `terraform state list` in this checkout returned empty/no state file, while `az resource list -g rg-saprise-swedencentral` confirmed all 38+ resources exist and are healthy.
+- A plan against the empty state wanted to recreate everything, so the apply was correctly withheld and the change was reverted back to the coordinator instead of mutating live resources.
+- Flag this state gap before any future mutation attempt on this lab: state must be reconciled (e.g., `terraform import` or locating the correct backend/state file) before running `terraform apply` here.
 **Archived entries:** see \history-archive.md\
 
 # Project Context
