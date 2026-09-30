@@ -1,4 +1,4 @@
-﻿## Archived Decisions
+## Archived Decisions
 
 > Decisions archived per Scribe Tier-2 (7-day) archival rule applied 2026-08-20T08:04:51Z.
 > Archive criterion: entries dated on/before 2026-08-13.
@@ -11089,3 +11089,497 @@ both VMs (hub at v3, CE at v2) and a summary marking S1 ready for full re-valida
 
 **S1 is ready for Niobe's full re-validation.** Niobe dispatch is left to Jose/the coordinating
 process, not initiated by Tank.
+
+
+---
+
+### 2026-08-18T12:21:25.407+02:00: User directive
+**By:** Jose Moreno (via Copilot)
+**What:** Documentation for the Azure Front Door Edge Actions JWT lab must be exhaustive and clear enough for readers who already know Azure Front Door but have not read about Edge Actions.
+**Why:** User request - captured for team memory
+
+
+---
+
+### 2026-08-19T20:51:09+02:00: User directive
+**By:** Jose Moreno (via Copilot)
+**What:** Kid must write blog posts that are engaging and understandable. Publication requires reader-facing validation: explanatory diagrams must render inline in the post, the narrative must introduce them clearly, jargon must be explained, and the final target rendering must be checked before the post is declared published.
+**Why:** User request after a post shipped with diagram files present in `assets/` but no diagrams visible inline.
+
+
+---
+
+### 2026-08-19T20:53:08+02:00: User directive
+**By:** Jose Moreno (via Copilot)
+**What:** Blog posts must be engaging and focus on topics of genuine interest to external Azure Networking practitioners. A mistake made while creating a lab is not itself a suitable headline; it may appear only when it demonstrates a broadly useful, generalizable trap, undocumented behavior, diagnostic technique, or design principle.
+**Why:** User clarified that publication should prioritize external reader value rather than narrating the team's lab chronology or internal errors.
+
+
+---
+
+### 2026-08-19T20:54:24+02:00: User directive
+**By:** Jose Moreno (via Copilot)
+**What:** Reframe the managed VNRA article around reusable design and observability lessons. The `allowVirtualNetworkAccess` finding belongs at the end as a brief anecdote or troubleshooting footnote, not as the article's main point or headline.
+**Why:** User prefers the article to prioritize broadly useful managed VNRA architecture and diagnostic guidance over an implementation mistake encountered during the lab.
+
+
+---
+
+### 2026-08-19T18:51:18.562+02:00: User directive
+**By:** Jose Moreno (via Copilot)
+**What:** Document the dual-hub managed-VNRA lab findings in the AzureNetworking Obsidian vault for durable long-term memory.
+**Why:** User request — captured for team memory
+
+
+---
+
+## Finding 14 — Key Vault Network Policy Deviation (2026-08-18T18:28)
+
+**Status:** Documented deviation; functional workaround in place.
+
+**Tenant policy:** `publicNetworkAccess=Disabled` enforced on all Key Vaults via Azure Policy — ARM PUT/PATCH both overridden silently.
+
+**Impact:** `vault.azure.net` data-plane unreachable from local machines (`ForbiddenByConnection`). `Import-JwtLabEnvironment.ps1` must be run from Cloud Shell or a private-endpoint network.
+
+**Workaround implemented:** All secrets written via ARM management plane (`PUT management.azure.com/.../secrets/{name}?api-version=2023-07-01`). This is documented in `Deploy-Lab.ps1` helper `Set-KvSecretArm`.
+
+**Verified credential:** Acquired real Entra token in-memory using stored `client-secret`, called `/protected` (HTTP 200) and `/admin` (HTTP 200). Both returned `edge_jwt_status=VALIDATED`.
+
+**Recommendation:** Team decision: document this pattern as standard for any future lab KV deployments in this tenant. If local data-plane access is needed, add a private endpoint or request a policy exemption from the tenant admin.
+
+# Tank Decision Inbox — AFD Edge Actions JWT Deploy
+Tank · 2026-08-17/18/18 · afd-edge-actions-jwt-validation A0/A1/A2/A3
+
+---
+
+## Finding 13 — S7/S9 PASS — Full E2E Real Token Validation Complete (2026-08-18T13:39)
+
+**Status:** ALL scenarios S1-S9 validated with real Entra tokens.
+
+**Breakthroughs:**
+1. **Admin consent alternative**: Graph `POST /servicePrincipals/{sp}/appRoleAssignments` assigns app role without requiring Global Admin. Jose's identity (Global Reader) was sufficient.
+2. **Entra v2 token aud format**: `accessTokenAcceptedVersion=2` changes `iss` to `login.microsoftonline.com/v2.0` but `aud` remains bare appId GUID for client_credentials flow. Manifests, docs, and `api://` identifier URIs do NOT affect the `aud` claim in machine-to-machine tokens. **Always use bare GUID as EXPECTED_AUD for client_credentials.**
+3. **EA swapDefault broken (confirmed)**: Cannot promote non-default EA versions. `provisioningState` stays `Provisioning` indefinitely on non-default versions. Created `eajwtvalidate3` as new EA with v1 default from scratch.
+4. **F1 App Service Plan quota**: Daily CPU limit causes `QuotaExceeded` state. Lab must use B1 SKU minimum.
+
+**Final S7/S9 evidence (13:39 UTC+2):**
+```json
+S7 → HTTP 200 {"route":"protected","sub":"cf2ff0a3...","roles":["Lab.Admin"],"edge_jwt_status":"VALIDATED"}
+S9 → HTTP 200 {"route":"admin","sub":"cf2ff0a3...","roles":["Lab.Admin"],"edge_jwt_status":"VALIDATED"}
+```
+
+**Resources (final state):**
+- EA: `eajwtvalidate3/v1` (correct bare-GUID aud, provisioningState=Succeeded)
+- Rule: `ruleprotected` → `eajwtvalidate3`
+- Origin: Updated `server.js` with `EXPECTED_AUD = API_APP_ID` (no `api://`)
+- App Plan: B1 (upgraded from F1)
+- Entra API app: `accessTokenAcceptedVersion=2`
+- Entra client SP: `Lab.Admin` role assigned
+
+**Handoff to Niobe:** All S1-S9 scenarios validated. Lab is complete.
+
+**Status:** A3 fully deployed. `eajwtvalidate/v1` executing at edge on `/protected` and `/admin`.
+
+**Critical learning:** EA `EXPECTED_AUD` uses Application ID URI format `api://<appId>`. Bare UUID tokens → `AUD_FAIL`. All test token construction must use `api://` prefix.
+
+**Security model confirmed (LAW evidence):**
+- EA: claims-only (iss/aud/exp/nbf/roles) → `EA_REJECT` with specific reason code or `EA_ACCEPT`
+- Origin: `jose` RS256/JWKS → `ERR_JWKS_MULTIPLE_MATCHING_KEYS` on fake-signed tokens (confirming crypto gate)
+- S2-S8 all verified in LAW `EdgeActionConsoleLog` and HTTP responses
+
+**Remaining blockers:**
+- B1: Admin consent needed for `app-edge-jwt-client` (`6f86ab2c-...`)
+  - Command: `az ad app permission admin-consent --id 6f86ab2c-1823-4db6-8e54-6338b8472b6a`
+- `eacapabilityprobe` orphan: dangling null attachment, portal/Support needed
+
+**Handoff to Niobe:** All S2-S9-sim validated. B1 must be resolved for real Entra token S7/S9 full validation.
+
+---
+
+### 5. S1 CAPABILITY VERDICT (2026-08-18) — CONDITIONAL
+
+S1 probe executed successfully (`edgeActionsAgentType=node`, `edgeActionsStatusCode=200`).
+`EdgeActionConsoleLog` entries confirmed in LAW.
+
+**EA sandbox — confirmed unavailable**: `crypto`, `fetch`, `atob`, `btoa`, `TextEncoder`  
+**Available**: `Promise`, `JSON`, `Date`, `Uint8Array`
+
+**Verdict**: STOP on RS256/JWKS signature verification. CONDITIONAL on claim-only enforcement.  
+**Updated `ea-jwt-validate.js`**: replaced `atob` with pure-JS base64url; removed GO path.
+
+---
+
+### 6. B3 — EdgeActionsPrivatePreview Expired (2026-08-18)
+
+**Finding**: After S1 succeeded, all subsequent `edgeActions` REST API calls returned `NoRegisteredProviderFound`. `az feature list` shows `Microsoft.Cdn/EdgeActionsPrivatePreview = NotRegistered`.
+
+**Impact**: Cannot create new EA resources or versions. A3 (JWT validation EA) deployment blocked.  
+**Data plane**: `eaprobe2` continues executing (AFD data plane independent of control plane).  
+**Fix needed**: Re-register subscription for Edge Actions private preview.  
+**Readiness**: `ea-jwt-validate.js` is fixed and ready; deploy script has `deployVersionCode` pattern.
+
+---
+
+### 8. Windows PowerShell `az rest --body` Quoting Bug (2026-08-18)
+
+Always use `--body "@filepath"` for EA REST calls on Windows — inline `--body 'json'` mangles the body.
+
+```powershell
+$body | ConvertTo-Json | Set-Content "build\body.json"
+az rest --method PUT --uri "..." --body "@build\body.json"
+```
+
+### 9. EA `isDefaultVersion` Is a String Field (2026-08-18)
+
+`"isDefaultVersion": "True"` (string), NOT `true` (boolean). Boolean causes 400 unspecified error.
+
+### 10. EA Control Plane Resource Path (2026-08-18)
+
+Correct: `/providers/Microsoft.Cdn/EdgeActions/{name}` (RG-level, capital E/A)  
+Wrong: `/providers/Microsoft.Cdn/profiles/{p}/edgeActions/{name}` (profile-nested)
+
+### 11. EdgeActionsPrivatePreview Feature Behavior (2026-08-18)
+
+- `NotRegistered` → all EA control plane blocked
+- `Pending` → `@file` creates work; inline body creates fail
+- `Registered` → all operations normal
+- Data plane continues regardless of feature flag state
+
+---
+
+## Current State for Niobe (Updated 2026-08-18 11:30)
+
+All A0 smoke tests PASS (2026-08-18):
+- AFD: `https://edge-jwt-lab-hgbdgdh9ccaja2hv.b02.azurefd.net`
+- `/health`: 200 ✅ | `/public`: 200 ✅ | `/edge-only`: 200 ✅ (teaching_warning present)
+- `/protected` no token: 401 ✅ | `/admin` no token: 401 ✅
+- `/protected` wrong-aud token: 401 ✅ (origin rejects)
+- S8 direct origin bypass: 403 ✅
+- S1 EA probe: `edgeActionsAgentType=node`, `edgeActionsStatusCode=200` ✅
+
+**Niobe can validate**:
+- S3 (public paths), S4 (header injection), S6 (missing token 401), S8 (origin bypass 403)
+- `/debug/request` shows injected AFD headers and EA execution
+
+**Blocked**:
+- B1: Admin consent → S7/S9 (valid-token flow) blocked
+- B3: EA private preview expired → A3 being deployed now (`eajwtvalidate`, 17-min clock running since 11:13:34)
+
+
+---
+
+# Decision: dual-hub-vnra-udr-transit Deployment Run
+
+> Filed by: Tank | Date: 2026-08-19T15:20:00+02:00
+> Ref: manifest.md v2 (vnra-c7e2a3f1) | Trinity verdict: APPROVED | Jose: Phase-4 authorized
+
+---
+
+## Cost Authorization Update (2026-08-19T13:38:35+02:00)
+
+Jose explicitly confirmed: cost is approved at the full upper-range (~$170/day) if the 50-Gbps tier maps to Standard pricing. No bandwidth/SKU/topology change authorized. Cleanup remains separately gated.
+
+Deployment was already complete before this confirmation arrived. Authorization is retroactively confirmed and on record.
+
+
+---
+
+# Decision: dual-hub-vnra-udr-transit -- Manifest v2
+
+> Filed by: Tank | Date: 2026-08-19 | Ref: manifest.md v2 (vnra-c7e2a3f1)
+> Supersedes: Morpheus manifest v1 (rejected by Trinity, B1-B6)
+> Reviewer-locked: Morpheus cannot review per task instructions; separate approver required.
+
+---
+
+## Prerequisite / Quota Discovery Evidence (read-only, 2026-08-19)
+
+| Gate | Result |
+|------|--------|
+| Microsoft.Network registration state | Registered -- PASS |
+| virtualNetworkAppliances resource type present | YES -- PASS |
+| API version 2025-05-01 available | YES (2025-03-01 through 2026-01-01) -- PASS |
+| swedencentral support | YES -- PASS |
+| northeurope support | YES -- PASS |
+| Existing VNRAs swedencentral | 0/2 -- PASS |
+| Existing VNRAs northeurope | 0/2 -- PASS |
+
+---
+
+## Verified Authoritative Facts (as of 2026-08-19)
+
+Source: https://learn.microsoft.com/azure/virtual-network/virtual-network-routing-appliance-overview
+        https://learn.microsoft.com/azure/virtual-network/virtual-network-routing-appliance-create
+        https://blog.cloudtrooper.net/2026/03/07/what-is-the-azure-virtual-network-routing-appliance/
+
+| Fact | Value |
+|---|---|
+| GA date | 2026-08-04 |
+| Resource type | `Microsoft.Network/virtualNetworkAppliances` |
+| REST API version | `2025-05-01` (from erjosito/vnra lab) |
+| PowerShell cmdlet | `New-AzVirtualNetworkAppliance` (Az.Network, GA) |
+| Azure CLI | No `az network routing-appliance` subcommand at GA |
+| Terraform | AzAPI provider only; AzureRM unsupported |
+| Supported regions | swedencentral YES, northeurope (North Europe) YES |
+| Subnet name (required) | `VirtualNetworkApplianceSubnet` (exact, case-sensitive) |
+| Subnet minimum size | Not documented; /28 recommended minimum |
+| Bandwidth tiers | 50 / 100 / 200 Gbps (immutable after creation) |
+| Quota limit | 2 per subscription per region |
+| UDR next-hop | VirtualAppliance + private IP (identical to VM NVA syntax) |
+| `allowForwardedTraffic` on peerings | Required (true on all transit peerings) |
+| NIC IP forwarding flag | N/A (no user NIC) |
+| Azure Monitor metrics | Built-in; no diagnostic config required |
+| VNet flow logs | NOT supported on VNRA subnet |
+| Per-flow logging | NOT available |
+| Internet egress | NOT supported (private connectivity only) |
+| Traceroute visibility | Invisible (hardware routing; TTL-based probes skip VNRA) |
+| ILB in front of VNRA | NOT supported (drops traffic) |
+| Pricing | NOT published on Learn |
+
+---
+
+### 2026-08-18T12:21:25.407+02:00: User directive
+**By:** Jose Moreno (via Copilot)
+**What:** Documentation for the Azure Front Door Edge Actions JWT lab must be exhaustive and clear enough for readers who already know Azure Front Door but have not read about Edge Actions.
+**Why:** User request - captured for team memory
+
+
+---
+
+### 2026-08-19T20:51:09+02:00: User directive
+**By:** Jose Moreno (via Copilot)
+**What:** Kid must write blog posts that are engaging and understandable. Publication requires reader-facing validation: explanatory diagrams must render inline in the post, the narrative must introduce them clearly, jargon must be explained, and the final target rendering must be checked before the post is declared published.
+**Why:** User request after a post shipped with diagram files present in `assets/` but no diagrams visible inline.
+
+
+---
+
+### 2026-08-19T20:53:08+02:00: User directive
+**By:** Jose Moreno (via Copilot)
+**What:** Blog posts must be engaging and focus on topics of genuine interest to external Azure Networking practitioners. A mistake made while creating a lab is not itself a suitable headline; it may appear only when it demonstrates a broadly useful, generalizable trap, undocumented behavior, diagnostic technique, or design principle.
+**Why:** User clarified that publication should prioritize external reader value rather than narrating the team's lab chronology or internal errors.
+
+
+---
+
+### 2026-08-19T20:54:24+02:00: User directive
+**By:** Jose Moreno (via Copilot)
+**What:** Reframe the managed VNRA article around reusable design and observability lessons. The `allowVirtualNetworkAccess` finding belongs at the end as a brief anecdote or troubleshooting footnote, not as the article's main point or headline.
+**Why:** User prefers the article to prioritize broadly useful managed VNRA architecture and diagnostic guidance over an implementation mistake encountered during the lab.
+
+
+---
+
+### 2026-08-19T18:51:18.562+02:00: User directive
+**By:** Jose Moreno (via Copilot)
+**What:** Document the dual-hub managed-VNRA lab findings in the AzureNetworking Obsidian vault for durable long-term memory.
+**Why:** User request — captured for team memory
+
+
+---
+
+## Finding 14 — Key Vault Network Policy Deviation (2026-08-18T18:28)
+
+**Status:** Documented deviation; functional workaround in place.
+
+**Tenant policy:** `publicNetworkAccess=Disabled` enforced on all Key Vaults via Azure Policy — ARM PUT/PATCH both overridden silently.
+
+**Impact:** `vault.azure.net` data-plane unreachable from local machines (`ForbiddenByConnection`). `Import-JwtLabEnvironment.ps1` must be run from Cloud Shell or a private-endpoint network.
+
+**Workaround implemented:** All secrets written via ARM management plane (`PUT management.azure.com/.../secrets/{name}?api-version=2023-07-01`). This is documented in `Deploy-Lab.ps1` helper `Set-KvSecretArm`.
+
+**Verified credential:** Acquired real Entra token in-memory using stored `client-secret`, called `/protected` (HTTP 200) and `/admin` (HTTP 200). Both returned `edge_jwt_status=VALIDATED`.
+
+**Recommendation:** Team decision: document this pattern as standard for any future lab KV deployments in this tenant. If local data-plane access is needed, add a private endpoint or request a policy exemption from the tenant admin.
+
+# Tank Decision Inbox — AFD Edge Actions JWT Deploy
+Tank · 2026-08-17/18/18 · afd-edge-actions-jwt-validation A0/A1/A2/A3
+
+---
+
+## Finding 13 — S7/S9 PASS — Full E2E Real Token Validation Complete (2026-08-18T13:39)
+
+**Status:** ALL scenarios S1-S9 validated with real Entra tokens.
+
+**Breakthroughs:**
+1. **Admin consent alternative**: Graph `POST /servicePrincipals/{sp}/appRoleAssignments` assigns app role without requiring Global Admin. Jose's identity (Global Reader) was sufficient.
+2. **Entra v2 token aud format**: `accessTokenAcceptedVersion=2` changes `iss` to `login.microsoftonline.com/v2.0` but `aud` remains bare appId GUID for client_credentials flow. Manifests, docs, and `api://` identifier URIs do NOT affect the `aud` claim in machine-to-machine tokens. **Always use bare GUID as EXPECTED_AUD for client_credentials.**
+3. **EA swapDefault broken (confirmed)**: Cannot promote non-default EA versions. `provisioningState` stays `Provisioning` indefinitely on non-default versions. Created `eajwtvalidate3` as new EA with v1 default from scratch.
+4. **F1 App Service Plan quota**: Daily CPU limit causes `QuotaExceeded` state. Lab must use B1 SKU minimum.
+
+**Final S7/S9 evidence (13:39 UTC+2):**
+```json
+S7 → HTTP 200 {"route":"protected","sub":"cf2ff0a3...","roles":["Lab.Admin"],"edge_jwt_status":"VALIDATED"}
+S9 → HTTP 200 {"route":"admin","sub":"cf2ff0a3...","roles":["Lab.Admin"],"edge_jwt_status":"VALIDATED"}
+```
+
+**Resources (final state):**
+- EA: `eajwtvalidate3/v1` (correct bare-GUID aud, provisioningState=Succeeded)
+- Rule: `ruleprotected` → `eajwtvalidate3`
+- Origin: Updated `server.js` with `EXPECTED_AUD = API_APP_ID` (no `api://`)
+- App Plan: B1 (upgraded from F1)
+- Entra API app: `accessTokenAcceptedVersion=2`
+- Entra client SP: `Lab.Admin` role assigned
+
+**Handoff to Niobe:** All S1-S9 scenarios validated. Lab is complete.
+
+**Status:** A3 fully deployed. `eajwtvalidate/v1` executing at edge on `/protected` and `/admin`.
+
+**Critical learning:** EA `EXPECTED_AUD` uses Application ID URI format `api://<appId>`. Bare UUID tokens → `AUD_FAIL`. All test token construction must use `api://` prefix.
+
+**Security model confirmed (LAW evidence):**
+- EA: claims-only (iss/aud/exp/nbf/roles) → `EA_REJECT` with specific reason code or `EA_ACCEPT`
+- Origin: `jose` RS256/JWKS → `ERR_JWKS_MULTIPLE_MATCHING_KEYS` on fake-signed tokens (confirming crypto gate)
+- S2-S8 all verified in LAW `EdgeActionConsoleLog` and HTTP responses
+
+**Remaining blockers:**
+- B1: Admin consent needed for `app-edge-jwt-client` (`6f86ab2c-...`)
+  - Command: `az ad app permission admin-consent --id 6f86ab2c-1823-4db6-8e54-6338b8472b6a`
+- `eacapabilityprobe` orphan: dangling null attachment, portal/Support needed
+
+**Handoff to Niobe:** All S2-S9-sim validated. B1 must be resolved for real Entra token S7/S9 full validation.
+
+---
+
+### 5. S1 CAPABILITY VERDICT (2026-08-18) — CONDITIONAL
+
+S1 probe executed successfully (`edgeActionsAgentType=node`, `edgeActionsStatusCode=200`).
+`EdgeActionConsoleLog` entries confirmed in LAW.
+
+**EA sandbox — confirmed unavailable**: `crypto`, `fetch`, `atob`, `btoa`, `TextEncoder`  
+**Available**: `Promise`, `JSON`, `Date`, `Uint8Array`
+
+**Verdict**: STOP on RS256/JWKS signature verification. CONDITIONAL on claim-only enforcement.  
+**Updated `ea-jwt-validate.js`**: replaced `atob` with pure-JS base64url; removed GO path.
+
+---
+
+### 6. B3 — EdgeActionsPrivatePreview Expired (2026-08-18)
+
+**Finding**: After S1 succeeded, all subsequent `edgeActions` REST API calls returned `NoRegisteredProviderFound`. `az feature list` shows `Microsoft.Cdn/EdgeActionsPrivatePreview = NotRegistered`.
+
+**Impact**: Cannot create new EA resources or versions. A3 (JWT validation EA) deployment blocked.  
+**Data plane**: `eaprobe2` continues executing (AFD data plane independent of control plane).  
+**Fix needed**: Re-register subscription for Edge Actions private preview.  
+**Readiness**: `ea-jwt-validate.js` is fixed and ready; deploy script has `deployVersionCode` pattern.
+
+---
+
+### 8. Windows PowerShell `az rest --body` Quoting Bug (2026-08-18)
+
+Always use `--body "@filepath"` for EA REST calls on Windows — inline `--body 'json'` mangles the body.
+
+```powershell
+$body | ConvertTo-Json | Set-Content "build\body.json"
+az rest --method PUT --uri "..." --body "@build\body.json"
+```
+
+### 9. EA `isDefaultVersion` Is a String Field (2026-08-18)
+
+`"isDefaultVersion": "True"` (string), NOT `true` (boolean). Boolean causes 400 unspecified error.
+
+### 10. EA Control Plane Resource Path (2026-08-18)
+
+Correct: `/providers/Microsoft.Cdn/EdgeActions/{name}` (RG-level, capital E/A)  
+Wrong: `/providers/Microsoft.Cdn/profiles/{p}/edgeActions/{name}` (profile-nested)
+
+### 11. EdgeActionsPrivatePreview Feature Behavior (2026-08-18)
+
+- `NotRegistered` → all EA control plane blocked
+- `Pending` → `@file` creates work; inline body creates fail
+- `Registered` → all operations normal
+- Data plane continues regardless of feature flag state
+
+---
+
+## Current State for Niobe (Updated 2026-08-18 11:30)
+
+All A0 smoke tests PASS (2026-08-18):
+- AFD: `https://edge-jwt-lab-hgbdgdh9ccaja2hv.b02.azurefd.net`
+- `/health`: 200 ✅ | `/public`: 200 ✅ | `/edge-only`: 200 ✅ (teaching_warning present)
+- `/protected` no token: 401 ✅ | `/admin` no token: 401 ✅
+- `/protected` wrong-aud token: 401 ✅ (origin rejects)
+- S8 direct origin bypass: 403 ✅
+- S1 EA probe: `edgeActionsAgentType=node`, `edgeActionsStatusCode=200` ✅
+
+**Niobe can validate**:
+- S3 (public paths), S4 (header injection), S6 (missing token 401), S8 (origin bypass 403)
+- `/debug/request` shows injected AFD headers and EA execution
+
+**Blocked**:
+- B1: Admin consent → S7/S9 (valid-token flow) blocked
+- B3: EA private preview expired → A3 being deployed now (`eajwtvalidate`, 17-min clock running since 11:13:34)
+
+
+---
+
+# Decision: dual-hub-vnra-udr-transit Deployment Run
+
+> Filed by: Tank | Date: 2026-08-19T15:20:00+02:00
+> Ref: manifest.md v2 (vnra-c7e2a3f1) | Trinity verdict: APPROVED | Jose: Phase-4 authorized
+
+---
+
+## Cost Authorization Update (2026-08-19T13:38:35+02:00)
+
+Jose explicitly confirmed: cost is approved at the full upper-range (~$170/day) if the 50-Gbps tier maps to Standard pricing. No bandwidth/SKU/topology change authorized. Cleanup remains separately gated.
+
+Deployment was already complete before this confirmation arrived. Authorization is retroactively confirmed and on record.
+
+
+---
+
+# Decision: dual-hub-vnra-udr-transit -- Manifest v2
+
+> Filed by: Tank | Date: 2026-08-19 | Ref: manifest.md v2 (vnra-c7e2a3f1)
+> Supersedes: Morpheus manifest v1 (rejected by Trinity, B1-B6)
+> Reviewer-locked: Morpheus cannot review per task instructions; separate approver required.
+
+---
+
+## Prerequisite / Quota Discovery Evidence (read-only, 2026-08-19)
+
+| Gate | Result |
+|------|--------|
+| Microsoft.Network registration state | Registered -- PASS |
+| virtualNetworkAppliances resource type present | YES -- PASS |
+| API version 2025-05-01 available | YES (2025-03-01 through 2026-01-01) -- PASS |
+| swedencentral support | YES -- PASS |
+| northeurope support | YES -- PASS |
+| Existing VNRAs swedencentral | 0/2 -- PASS |
+| Existing VNRAs northeurope | 0/2 -- PASS |
+
+---
+
+## Verified Authoritative Facts (as of 2026-08-19)
+
+Source: https://learn.microsoft.com/azure/virtual-network/virtual-network-routing-appliance-overview
+        https://learn.microsoft.com/azure/virtual-network/virtual-network-routing-appliance-create
+        https://blog.cloudtrooper.net/2026/03/07/what-is-the-azure-virtual-network-routing-appliance/
+
+| Fact | Value |
+|---|---|
+| GA date | 2026-08-04 |
+| Resource type | `Microsoft.Network/virtualNetworkAppliances` |
+| REST API version | `2025-05-01` (from erjosito/vnra lab) |
+| PowerShell cmdlet | `New-AzVirtualNetworkAppliance` (Az.Network, GA) |
+| Azure CLI | No `az network routing-appliance` subcommand at GA |
+| Terraform | AzAPI provider only; AzureRM unsupported |
+| Supported regions | swedencentral YES, northeurope (North Europe) YES |
+| Subnet name (required) | `VirtualNetworkApplianceSubnet` (exact, case-sensitive) |
+| Subnet minimum size | Not documented; /28 recommended minimum |
+| Bandwidth tiers | 50 / 100 / 200 Gbps (immutable after creation) |
+| Quota limit | 2 per subscription per region |
+| UDR next-hop | VirtualAppliance + private IP (identical to VM NVA syntax) |
+| `allowForwardedTraffic` on peerings | Required (true on all transit peerings) |
+| NIC IP forwarding flag | N/A (no user NIC) |
+| Azure Monitor metrics | Built-in; no diagnostic config required |
+| VNet flow logs | NOT supported on VNRA subnet |
+| Per-flow logging | NOT available |
+| Internet egress | NOT supported (private connectivity only) |
+| Traceroute visibility | Invisible (hardware routing; TTL-based probes skip VNRA) |
+| ILB in front of VNRA | NOT supported (drops traffic) |
+| Pricing | NOT published on Learn |
+
+---
+

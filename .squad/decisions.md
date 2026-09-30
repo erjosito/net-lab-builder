@@ -129,3 +129,25 @@ queued onto one long-lived agent, including an unbounded child process and
 contradictory work after STOP. The new policy preserves full evidence quality
 while sequencing it after the requested verdict and safe restore.
 
+
+
+---
+
+# Decision: correct unbacked design.md baseline claim; require show-output evidence before citing "confirmed" behavior
+
+**By:** Kid (Blog Writer) · **Date:** 2026-09-30 · **Lab:** sap-rise-scoped-peering-fwaas
+
+## What happened
+
+`design.md` (~line 81) carried a "confirmed baseline" claim, attributed to Morpheus, stating that subnet peering alone (no S1/S2 remediation) advertises the peered `/27` subnets to on-prem via ExpressRoute. No show-output file backed this claim. A dedicated live test this round (disabling ARS `allowBranchToBranchTraffic`, capturing MSEE route tables on both paths plus the ER Gateway's own learned/advertised-routes) showed the claim is false: only the hub `/16` is advertised, no `/27` of any kind. Evidence: `labs/sap-rise-scoped-peering-fwaas/show-output/s0-baseline-msee-01..04*.json`.
+
+## Decision
+
+- Corrected `design.md` §2/baseline text and §6.3 directly on `main` (commit `72751ca`), rather than deleting the wrong claim quietly. The original assumption is now documented as "tested and found incorrect," preserving the audit trail.
+- Corrected the published blog post (PR #15, merge commit `286f22c`) to match: the true baseline is stated plainly, and the discrepancy with the earlier design.md claim is called out for the reader as a teaching point (documented assumptions can be wrong; verify with a capture before trusting them).
+- Also used this round to test Design B live (previously only documented/never deployed, per PR #14's caveat), confirming its advertisement-only nature with real MSEE evidence, and to document that the Azure CLI's `az network vnet update --set properties.summarizedGatewayPrefixes=...` command does not work against the current CLI's typed VNet model; a raw REST PUT is the verified working method. `design.md` §6.2 updated accordingly.
+
+## Recommendation for the squad going forward
+
+Any claim in a design.md attributed to a named agent ("Confirmed baseline (X, verification cited)") should carry a citation to a specific show-output file at the time it's written, or be marked explicitly as "not yet captured / pending evidence." This round found a claim that had neither, and it was wrong. Treat unbacked "confirmed" language in design docs as a flag for re-verification before it's repeated downstream in a published post.
+
