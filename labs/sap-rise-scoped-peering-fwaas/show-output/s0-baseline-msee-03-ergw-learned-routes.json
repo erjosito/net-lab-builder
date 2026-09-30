@@ -1,0 +1,27 @@
+// Command: az network vnet-gateway list-learned-routes -g rg-saprise-swedencentral -n ergw-sap-rise -o json
+// Context: ARS ars-hub allowBranchToBranchTraffic=false (true "no S1/S2 remediation" baseline).
+// Interpretation: The ER Gateway itself only learns its own local 10.40.0.0/16 (weight 32768, self-originated) and
+// the MSEE-side link-local /30 for the private peering BGP session (via 12076-64512 AS path). No 10.40.1.0/27 or
+// 10.60.0.0/27 spoke routes are learned - reinforcing that, without S1/S2 remediation, the ER Gateway has no
+// visibility into the peered spoke subnets at the BGP RIB level, regardless of what raw VNet peering exposes.
+{
+  "value": [
+    {
+      "asPath": "",
+      "localAddress": "10.40.0.12",
+      "network": "10.40.0.0/16",
+      "origin": "Network",
+      "sourcePeer": "10.40.0.12",
+      "weight": 32768
+    },
+    {
+      "asPath": "12076-64512",
+      "localAddress": "10.40.0.12",
+      "network": "169.254.170.152/30",
+      "nextHop": "10.40.0.4",
+      "origin": "EBgp",
+      "sourcePeer": "10.40.0.4",
+      "weight": 32769
+    }
+  ]
+}

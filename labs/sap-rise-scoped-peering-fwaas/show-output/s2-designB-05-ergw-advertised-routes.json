@@ -1,0 +1,31 @@
+// Command: az network vnet-gateway list-advertised-routes -g rg-saprise-swedencentral -n ergw-sap-rise --peer 10.40.0.4 -o json
+// Context: Design B state - vnet-hub's summarizedGatewayPrefixes set to ["10.40.0.0/16","10.60.0.0/16"]
+// (advertise-only prefix summarization). Captured before Tank reverts.
+// Interpretation: The ER Gateway itself now advertises BOTH 10.40.0.0/16 and 10.60.0.0/16 toward MSEE peer
+// 10.40.0.4, versus only 10.40.0.0/16 in the true baseline (s0-baseline-msee-04). This is the root cause
+// visible at the source: the gateway was configured to originate/summarize 10.60.0.0/16 as an advertised
+// prefix, and that advertisement then propagates unchanged through both MSEE routers (s2-designB-03/04).
+// CONFIRMS design.md's "advertisement-only" prediction: on-prem now sees 10.60.0.0/16 as reachable via the
+// ER Gateway, but this reflects a configured summary route, not an actual forwarding path from the gateway
+// into the 10.60.0.0/16 spoke - i.e., reachability is advertised without a corresponding data-plane route to
+// deliver traffic there.
+{
+  "value": [
+    {
+      "asPath": "65515",
+      "localAddress": "10.40.0.12",
+      "network": "10.40.0.0/16",
+      "nextHop": "10.40.0.12",
+      "origin": "Igp",
+      "weight": 0
+    },
+    {
+      "asPath": "65515",
+      "localAddress": "10.40.0.12",
+      "network": "10.60.0.0/16",
+      "nextHop": "10.40.0.12",
+      "origin": "Igp",
+      "weight": 0
+    }
+  ]
+}

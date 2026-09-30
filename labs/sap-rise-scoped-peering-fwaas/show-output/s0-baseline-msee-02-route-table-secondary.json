@@ -1,0 +1,23 @@
+// Command: az network express-route list-route-tables -g rg-saprise-swedencentral -n er-sap-rise --peering-name AzurePrivatePeering --path secondary -o json
+// Context: ARS ars-hub allowBranchToBranchTraffic=false (true "no S1/S2 remediation" baseline).
+// Interpretation: Secondary MSEE router mirrors the primary - only 10.40.0.0/16 (twice, once per gateway instance
+// nextHop) is advertised. No /27 peered-subnet routes present. Confirms result 01: baseline peering alone does not
+// propagate the spoke /27s to either MSEE path, contradicting design.md's documented expectation.
+{
+  "value": [
+    {
+      "locPrf": "100",
+      "network": "10.40.0.0/16",
+      "nextHop": "10.40.0.12*",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.40.0.0/16",
+      "nextHop": "10.40.0.13",
+      "path": "65515",
+      "weight": 0
+    }
+  ]
+}

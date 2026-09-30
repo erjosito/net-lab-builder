@@ -1,0 +1,49 @@
+// Command: az network express-route list-route-tables -g rg-saprise-swedencentral -n er-sap-rise --peering-name AzurePrivatePeering --path primary -o json
+// Context: Design B state - vnet-hub's summarizedGatewayPrefixes set to ["10.40.0.0/16","10.60.0.0/16"]
+// (advertise-only prefix summarization). Captured before Tank reverts.
+// Interpretation: MSEE primary router now shows BOTH 10.40.0.0/16 AND 10.60.0.0/16 (the spoke prefix) as
+// reachable via the ER Gateway's link-local next hops (10.40.0.12*/10.40.0.13), alongside the /30
+// GatewaySubnet peering link-local. This CONFIRMS design.md's prediction: adding 10.60.0.0/16 to
+// summarizedGatewayPrefixes causes the gateway to advertise that prefix toward on-prem/MSEE even though the
+// gateway itself has no real forwarding path to deliver traffic into 10.60.0.0/16 (advertisement-only summarization,
+// no corresponding data-plane route). This is a strict superset of the true baseline (s0-baseline-msee-01), which
+// showed only 10.40.0.0/16.
+{
+  "value": [
+    {
+      "locPrf": "100",
+      "network": "10.40.0.0/16",
+      "nextHop": "10.40.0.12*",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.40.0.0/16",
+      "nextHop": "10.40.0.13",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.60.0.0/16",
+      "nextHop": "10.40.0.12*",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.60.0.0/16",
+      "nextHop": "10.40.0.13",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "169.254.170.152/30",
+      "nextHop": "169.254.170.153",
+      "path": "64512",
+      "weight": 0
+    }
+  ]
+}

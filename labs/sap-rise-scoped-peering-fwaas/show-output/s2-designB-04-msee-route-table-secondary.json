@@ -1,0 +1,40 @@
+// Command: az network express-route list-route-tables -g rg-saprise-swedencentral -n er-sap-rise --peering-name AzurePrivatePeering --path secondary -o json
+// Context: Design B state - vnet-hub's summarizedGatewayPrefixes set to ["10.40.0.0/16","10.60.0.0/16"]
+// (advertise-only prefix summarization). Captured before Tank reverts.
+// Interpretation: MSEE secondary router mirrors the primary (s2-designB-03): both 10.40.0.0/16 and
+// 10.60.0.0/16 are advertised via both gateway instance next hops (10.40.0.12*/10.40.0.13). Consistent
+// with the primary path, confirming the summarization change is symmetric across both MSEE routers and not
+// an artifact of a single path. No /30 GatewaySubnet link-local entry present on this path (matches
+// s0-baseline-msee-02 secondary baseline pattern, which also omitted it).
+{
+  "value": [
+    {
+      "locPrf": "100",
+      "network": "10.40.0.0/16",
+      "nextHop": "10.40.0.12*",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.40.0.0/16",
+      "nextHop": "10.40.0.13",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.60.0.0/16",
+      "nextHop": "10.40.0.12*",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.60.0.0/16",
+      "nextHop": "10.40.0.13",
+      "path": "65515",
+      "weight": 0
+    }
+  ]
+}

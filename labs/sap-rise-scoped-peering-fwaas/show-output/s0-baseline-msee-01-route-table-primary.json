@@ -1,0 +1,34 @@
+// Command: az network express-route list-route-tables -g rg-saprise-swedencentral -n er-sap-rise --peering-name AzurePrivatePeering --path primary -o json
+// Context: ARS ars-hub allowBranchToBranchTraffic=false (true "no S1/S2 remediation" baseline: plain subnet-scoped
+// peering only, no BGP redistribution reaching the ER Gateway).
+// Interpretation: MSEE primary router only holds 10.40.0.0/16 (the ER Gateway's own advertised summary) plus the
+// GatewaySubnet /30 link-local peering address. There is NO 10.40.1.0/27 and NO 10.60.0.0/27 entry. This
+// CONTRADICTS design.md's ~line 81 claim that peering alone (without BGP/S1-S2 remediation) naturally advertises
+// the peered spoke /27 subnets to the MSEE routers. In this true baseline, only the /16 aggregate the gateway
+// itself already advertises is visible - consistent with every other captured state, not with the documented
+// "confirmed baseline" exception.
+{
+  "value": [
+    {
+      "locPrf": "100",
+      "network": "10.40.0.0/16",
+      "nextHop": "10.40.0.12*",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.40.0.0/16",
+      "nextHop": "10.40.0.13",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "169.254.170.152/30",
+      "nextHop": "169.254.170.153",
+      "path": "64512",
+      "weight": 0
+    }
+  ]
+}

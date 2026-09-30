@@ -1,0 +1,18 @@
+// Command: az network vnet-gateway list-advertised-routes -g rg-saprise-swedencentral -n ergw-sap-rise --peer 10.40.0.4 -o json
+// Context: ARS ars-hub allowBranchToBranchTraffic=false (true "no S1/S2 remediation" baseline).
+// Interpretation: The ER Gateway advertises only 10.40.0.0/16 toward the MSEE peer 10.40.0.4. No /27 spoke subnets
+// are in the advertised set. This matches results 01-03: at every layer (MSEE primary, MSEE secondary, gateway
+// learned, gateway advertised) the true baseline exposes only the /16 hub summary, never the individual
+// 10.40.1.0/27 or 10.60.0.0/27 peered-subnet prefixes.
+{
+  "value": [
+    {
+      "asPath": "65515",
+      "localAddress": "10.40.0.12",
+      "network": "10.40.0.0/16",
+      "nextHop": "10.40.0.12",
+      "origin": "Igp",
+      "weight": 0
+    }
+  ]
+}

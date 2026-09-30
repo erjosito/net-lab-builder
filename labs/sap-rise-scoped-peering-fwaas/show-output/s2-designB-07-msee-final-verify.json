@@ -1,0 +1,34 @@
+// Command: az network express-route list-route-tables -g rg-saprise-swedencentral -n er-sap-rise --peering-name AzurePrivatePeering --path primary -o json
+// Context: Final end-to-end verification after Tank reverted vnet-hub's summarizedGatewayPrefixes property
+// (Design B test complete, s2-designB-06-vnet-hub-reverted.json).
+// Interpretation: MSEE primary router shows ONLY 10.40.0.0/16 (the ER Gateway's own advertised hub summary) plus
+// the GatewaySubnet /30 link-local peering address. NO 10.60.0.0/16 (spoke) entry is present. This matches
+// s0-baseline-msee-01-route-table-primary.json and s1-msee-02-route-table-primary.json byte-for-byte on the
+// "network" values, confirming Design B's summarizedGatewayPrefixes change has been fully reverted with no
+// lingering spoke advertisement to the MSEE.
+// Redaction: no subscription IDs present in this output (consistent with prior MSEE evidence files).
+{
+  "value": [
+    {
+      "locPrf": "100",
+      "network": "10.40.0.0/16",
+      "nextHop": "10.40.0.12*",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.40.0.0/16",
+      "nextHop": "10.40.0.13",
+      "path": "65515",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "169.254.170.152/30",
+      "nextHop": "169.254.170.153",
+      "path": "64512",
+      "weight": 0
+    }
+  ]
+}
