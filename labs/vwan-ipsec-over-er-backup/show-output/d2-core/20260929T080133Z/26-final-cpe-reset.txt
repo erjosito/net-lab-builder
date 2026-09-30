@@ -1,0 +1,96 @@
+===UTC=2026-09-29T08:28:57Z===
+===SAS===
+pub0: #30, ESTABLISHED, IKEv2, b1c96af016f41c64_i* ed9b357c69f0cd44_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.47.254' @ 74.158.47.254[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 1821s ago, rekeying in 11290s
+  pub0: #6, reqid 4, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 1821s ago, rekeying in 1560s, expires in 2139s
+    in  c6a2ba9f (-|0x000001a4),  18796 bytes,   346 packets,   127s ago
+    out ac0046cc (-|0x000001a4),  33384 bytes,   469 packets,     2s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri0: #29, ESTABLISHED, IKEv2, c34b8710811766e6_i* 40ff5264e98537dc_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.4' @ 10.240.0.4[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 1821s ago, rekeying in 11231s
+  pri0: #5, reqid 3, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 1821s ago, rekeying in 1467s, expires in 2139s
+    in  c31e7e97 (-|0x0000019a),  47379 bytes,   722 packets,   130s ago
+    out 3d88b190 (-|0x0000019a),  21820 bytes,   428 packets,     2s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pub1: #4, ESTABLISHED, IKEv2, 965b3046ce5ec9bb_i* 639698074d60c6be_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.80.26' @ 74.158.80.26[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 1965s ago, rekeying in 11776s
+  pub1: #2, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 1965s ago, rekeying in 1374s, expires in 1995s
+    in  c419ebdc (-|0x000001a5),  21448 bytes,   396 packets,   127s ago
+    out 5784c9b6 (-|0x000001a5),   8244 bytes,   129 packets,     2s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri1: #2, ESTABLISHED, IKEv2, 640a0443eb735b1b_i* edd4575a3ec08051_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.5' @ 10.240.0.5[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 1965s ago, rekeying in 12073s
+  pri1: #4, reqid 2, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 1965s ago, rekeying in 1346s, expires in 1995s
+    in  c2cf51a5 (-|0x0000019b),  62536 bytes,   922 packets,   131s ago
+    out 28db98c4 (-|0x0000019b),  19858 bytes,   404 packets,     2s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+===ROUTES===
+default via 10.250.0.1 dev ens4 proto dhcp src 10.250.0.10 metric 100
+blackhole 10.240.0.0/24 proto static metric 20
+10.240.0.4 via 10.250.0.1 dev ens4 metric 5
+10.240.0.5 via 10.250.0.1 dev ens4 metric 5
+blackhole 10.241.0.0/24 proto static metric 20
+10.250.0.1 dev ens4 proto dhcp scope link src 10.250.0.10 metric 100
+blackhole 10.253.2.0/24 proto static metric 20
+74.158.47.254 via 10.250.0.1 dev ens4 metric 5
+74.158.80.26 via 10.250.0.1 dev ens4 metric 5
+169.254.21.1 dev xfrm-pri0 scope link src 10.250.254.240
+169.254.21.5 dev xfrm-pub0 scope link src 169.254.21.6
+169.254.22.1 dev xfrm-pri1 scope link src 10.250.254.240
+169.254.22.5 dev xfrm-pub1 scope link src 169.254.21.6
+169.254.169.254 via 10.250.0.1 dev ens4 proto dhcp src 10.250.0.10 metric 100
+===BGP===
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 1
+RIB entries 1, using 184 bytes of memory
+Peers 4, using 2892 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+169.254.21.1    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.22.1    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.21.5    4      65515         0         1        0    0    0    never      Connect        0 N/A
+169.254.22.5    4      65515         0         1        0    0    0    never      Connect        0 N/A
+
+Total number of neighbors 4
+===NFT===
+table inet vwan_lab {
+	set ike_endpoints {
+		type ipv4_addr
+		elements = { 10.240.0.4, 10.240.0.5,
+			     74.158.47.254, 74.158.80.26 }
+	}
+
+	set bgp_peers {
+		type ipv4_addr
+		elements = { 169.254.21.1, 169.254.21.5,
+			     169.254.22.1, 169.254.22.5 }
+	}
+
+	chain input {
+		type filter hook input priority filter - 10; policy accept;
+		udp dport { 500, 4500 } ip saddr != @ike_endpoints drop
+		ip protocol esp ip saddr != @ike_endpoints drop
+		tcp dport 179 ip saddr != @bgp_peers drop
+	}
+}

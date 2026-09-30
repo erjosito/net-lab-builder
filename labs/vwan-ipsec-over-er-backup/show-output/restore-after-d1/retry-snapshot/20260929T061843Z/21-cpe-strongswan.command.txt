@@ -1,0 +1,1 @@
+gcloud compute ssh cpe-ver-09281131 --zone europe-north2-c --project <GCP_PROJECT_ID> --tunnel-through-iap --command 'sudo swanctl --list-sas --raw; sudo swanctl --list-conns --raw'

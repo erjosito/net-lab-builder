@@ -4,57 +4,57 @@
 
 ## Designs studied
 
-### Design D1: One ordinary BGP adjacency moved between underlays - recipe pending
+### Design D1: One ordinary BGP adjacency moved between underlays - rejected
 
-**Status:** Not executed. Awaiting Trinity's corrected D1 recipe.
-**Verdict:** No result is claimed. D1 does not require custom APIPA and is evaluated independently from the D2 APIPA evidence.
+**Status:** Executed under route-only movement and complete ExpressRoute transport loss.
+**Verdict:** **Rejected.** Moving the CPE route can keep the unchanged BGP tuple established over the public tunnel only while Azure can still return through ExpressRoute. When all ER transport was removed, the CPE sent repeated TCP/179 SYNs from `10.250.254.242` through `xfrm-pub1`, but Azure returned no SYN-ACK and BGP remained `Connect`.
 
 **What it is:** Configure one normal CPE loopback (`65050 / 10.250.254.242`) and one Azure default vWAN BGP neighbor. Keep the BGP tuple unchanged while switching only the Azure-neighbor `/32` route between the ER/private and Internet/public XFRM tunnels.
 
 **Evidence:**
-- `design.md` section 6 - current D1 concept, subject to Trinity's corrected recipe
-- `validation-plan.md` - D1 isolation and future evidence requirements
-- `evidence-index.md` - audit coverage once D1 is authorized
+- `show-output/d1-final-corrected/20260929T073900Z/07-float-observation.txt` - BGP continuity during the route-only asymmetric move while ER remained available
+- `show-output/d1-full-er-negative/20260929T124028Z/README.md` - clean full-ER negative proof and restore
+- `design.md` section 6 - D1 tuple and peer-route model
 
-**Why this status:** The APIPA correction attempts answer D2 questions only. They are preserved but are neither pass nor fail evidence for D1. No D1 mutation is authorized until Trinity publishes the corrected operation and reset recipe.
-
-**Use this design when:**
-- Testing whether one unchanged ordinary BGP tuple can reconnect when only its Azure-neighbor `/32` reachability moves between same-instance XFRM paths.
+**Why this verdict:** The clean outage retry removed every inactive CPE BGP identity, leaving only `.242`; the neighbor route pointed to `xfrm-pub1`; the public SAs remained established; and all Megaport VXCs were down. Packet capture showed outbound `.242 -> 10.240.0.12:179` SYN retransmissions with no response for more than three minutes. Azure has no mechanism to transfer the ER connection's peer identity to the Internet connection.
 
 **Avoid this design when:**
-- Production requires independently observable private and public failure domains.
+- VPN over the Internet must provide backup after actual ER transport loss.
 
-### Design D2: Separate BGP adjacencies with deterministic preference - correction and authorized retry failed
+### Design D2: Separate BGP adjacencies with deterministic preference - validated
 
-**Status:** The original bounded attempt and one user-authorized clean retry after local GSA disablement both completed and rolled back.
-**Verdict:** Neither attempt produced four unique sessions. Azure persisted the public APIPA peer and custom mappings, but the custom peers did not answer CPE-initiated SYNs while Azure continued initiating public TCP/179 from the default gateway addresses. This is a configuration/API association unresolved pending Trinity review, not a demonstrated platform limitation.
+**Status:** Full-ER failover and failback executed with four established IPsec SAs and four independent BGP adjacencies.
+**Verdict:** **Recommended.** Complete ER loss withdrew the two private adjacencies after their failure-detection timers expired, selected both public APIPA adjacencies, and restored bidirectional payload. Restoring ER and initiating the already-configured private children recovered both private adjacencies, restored private preference, and passed payload with no PSK or StrongSwan configuration change.
 
-**What it is:** Private sessions use Azure defaults `10.240.0.12/.13` from CPE source `10.250.254.240`; public sessions use custom peers `169.254.22.2/.3` from CPE source `169.254.22.1`. Route policy makes the ER-carried overlay primary and Internet backup.
+**What it is:** Private sessions use Azure defaults `10.240.0.12/.13` from CPE source `10.250.254.240`; public sessions use custom peers `169.254.21.5` and `169.254.22.5` from CPE source `169.254.21.6`. Route policy makes the ER-carried overlay primary and Internet backup.
 
 **Evidence:**
-- `show-output/d2-corrected/` - bounded correction, baseline, fault and restore captures
+- `show-output/d2-full-er/20260929T174957Z/README.md` - full-ER failover, convergence and failback summary
+- session evidence `files/d2-full-er-20260929/` - timestamped failover and failback monitors
 - `evidence-index.md` - command-level audit ledger
 - `validation-plan.md` - D2 path-selection and fault matrix
 - `design.md` sections 5, 7 and 10 - four-neighbor model, AS-path/local-preference policy and faults
 
-**Why this verdict:** The CPE had the required APIPA loopback, XFRM routes, active FRR neighbors, and four healthy SAs. During both bounded captures, `169.254.22.2/.3` received no BGP messages while public XFRM interfaces received BGP from `10.240.0.12/.13`. The retry additionally proves that CPE SYNs reached both custom peers without SYN-ACK or RST. Disabling local GSA removed the WSL DNS warning but did not change the observed result. The exact configuration/API association remains unresolved, the retry met its explicit rollback condition, and no further retry is allowed without Trinity review.
+**Why this verdict:** Before the fault, all four sessions were established and private local preference `200` beat public local preference `100`. Shutting the single GCP VXC removed both MSEE paths while preserving Internet transport. Payload first failed at about `17:51:55Z`; the last private route withdrew and the public pair became best at about `17:54:15Z`, producing an observed stale-private-path outage of roughly 140 seconds. Payload then passed over public. After ER restoration, the two private children and BGP sessions recovered, the private pair became best again, and a five-packet payload probe passed with 0% loss.
+
+**Operational note:** The subsequent D3-to-D2 routing-mode restore re-enabled Azure public BGP without changing IPsec. Azure retained the custom APIPA configuration, and CPE SYNs traversed both public XFRM interfaces, but Azure did not answer them while the existing public SAs remained established. Restoring those standby sessions may require tunnel re-establishment, which was intentionally not attempted because the lab invariant forbids further IPsec changes. This does not invalidate the earlier complete D2 failover/failback test.
 
 **Use this design when:**
 - Private and public transports must have independent health, policy and withdrawal.
 
-### Design D3: ER more-specific BGP routes with Internet static aggregate - evidence pending
+### Design D3: ER more-specific BGP routes with Internet static aggregate - validated with blackhole caveat
 
-**Status:** _Pending evidence; deterministic but health-blind candidate._
-**Verdict:** No result is claimed until longest-prefix selection, normal backup behavior and the Internet-down-then-primary-down blackhole sequence are captured.
+**Status:** Normal preference, healthy static failover and the mandatory compound failure were executed.
+**Verdict:** **Mechanically valid but not production-safe without health-driven route withdrawal.** The `/25` private routes win normally and the public `/24` carries traffic after private BGP withdrawal when Internet transport is healthy. If public transport fails first, the same installed static route blackholes traffic after private withdrawal.
 
 **What it is:** The ER overlay advertises `10.253.3.0/25` and `10.253.3.128/25`; the Internet link retains the covering static `10.253.3.0/24`. Longest-prefix match selects ER while the more-specifics exist, but the static aggregate can remain installed after its transport has failed.
 
 **Evidence:**
-- `show-output/d3-prefix/` - pending normal, compound-fault and restore captures
+- `show-output/d3-prefix/20260929T181517Z/README.md` - normal, healthy failover and compound blackhole proof
 - `validation-plan.md` - D3 route hierarchy and blackhole criteria
 - `design.md` sections 8-10 - prefix hierarchy, reverse distance-250 route and compound fault
 
-**Why this verdict:** Pending execution. The compound test must first make the Internet backup unusable, then withdraw the ER/BGP more-specifics and prove whether the still-installed aggregate blackholes traffic.
+**Why this verdict:** With private BGP active, both `/25`s were advertised and both test sources passed over the private overlay. After private BGP shutdown, the CPE selected its distance-250 public XFRM route and payload passed once Azure's static `10.253.3.0/24` route was configured. In the compound test, public transport was blocked first while private payload still passed; private BGP was then withdrawn, the static public route remained best, both probes failed with 100% loss, and the public-fault counter increased. All four SAs still appeared established, proving that route installation alone did not represent usable backup health.
 
 **Use this design when:**
 - A lab needs to demonstrate deterministic longest-prefix behavior and the limits of a health-blind static backup.
@@ -66,7 +66,7 @@
 
 Azure, GCP, ExpressRoute, Partner Interconnect, the Amsterdam MCR, all three VXCs, and all four IKE/ESP SAs are live. The ignored `config/inventory.json` contains exact resource identifiers, versioned managed-route queries, effective and configured BGP peers, the read-only Megaport collector, application endpoints, and reviewed fault/restore commands.
 
-Niobe must not execute D2/D3 faults. The public-link APIPA correction and its sole authorized retry both failed the four-session assertion; the runtime inventory remains `validationAuthorized=false`. D1 remains unexecuted pending Trinity's corrected recipe.
+D1 is complete and rejected. D2 full-ER failover and failback succeeded. D3 normal backup behavior and its stale-static-route blackhole were reproduced. The live lab is back on D2 with all four IPsec SAs, both private BGP adjacencies, private best-path selection and payload healthy. The two public standby BGP adjacencies did not re-establish after the D3-to-D2 Azure BGP-mode toggle; no tunnel restart or IPsec change was attempted.
 
 ## Evidence layout
 

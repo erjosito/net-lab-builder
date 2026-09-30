@@ -1,0 +1,121 @@
+===UTC 2026-09-29T07:56:26.1559836Z=== ===ER===
+{
+  "provider": "Provisioned",
+  "state": "Succeeded"
+}
+===PRIMARY===
+{
+  "value": [
+    {
+      "as": 65515,
+      "neighbor": "10.240.0.14",
+      "statePfxRcd": "3",
+      "upDown": "19:00:09",
+      "v": 4
+    },
+    {
+      "as": 65515,
+      "neighbor": "10.240.0.15",
+      "statePfxRcd": "3",
+      "upDown": "19:00:10",
+      "v": 4
+    },
+    {
+      "as": 65060,
+      "neighbor": "169.254.148.89",
+      "statePfxRcd": "4",
+      "upDown": "19:13:56",
+      "v": 4
+    }
+  ]
+}
+===SECONDARY===
+{
+  "value": [
+    {
+      "as": 65515,
+      "neighbor": "10.240.0.14",
+      "statePfxRcd": "3",
+      "upDown": "19:00:27",
+      "v": 4
+    },
+    {
+      "as": 65515,
+      "neighbor": "10.240.0.15",
+      "statePfxRcd": "3",
+      "upDown": "19:00:24",
+      "v": 4
+    },
+    {
+      "as": 65060,
+      "neighbor": "169.254.148.93",
+      "statePfxRcd": "7",
+      "upDown": "19:15:49",
+      "v": 4
+    }
+  ]
+}
+===SITES===
+{
+  "peer": "10.250.254.240",
+  "prefix": [
+    "10.253.2.0/24"
+  ],
+  "state": "Succeeded"
+}
+{
+  "peer": "10.250.254.241",
+  "prefix": [
+    "10.253.2.0/24"
+  ],
+  "state": "Succeeded"
+}
+===CONNECTIONS===
+{
+  "link": {
+    "bgp": true,
+    "state": "Succeeded",
+    "status": "Connected"
+  },
+  "state": "Succeeded"
+}
+{
+  "link": {
+    "bgp": true,
+    "state": "Succeeded",
+    "status": "Connected"
+  },
+  "state": "Succeeded"
+}
+===ATTACHMENT===
+{
+  "adminEnabled": true,
+  "bandwidth": "BPS_50M",
+  "cloudRouterIpAddress": "169.254.113.249/29",
+  "creationTimestamp": "2026-09-28T02:41:41.343-07:00",
+  "customerRouterIpAddress": "169.254.113.250/29",
+  "dataplaneVersion": 2,
+  "edgeAvailabilityDomain": "AVAILABILITY_DOMAIN_1",
+  "encryption": "NONE",
+  "id": "7863819040183519418",
+  "kind": "compute#interconnectAttachment",
+  "labelFingerprint": "vezUS-42LLM=",
+  "labels": {
+    "goog-terraform-provisioned": "true"
+  },
+  "name": "att-ver-09281131",
+  "pairingKey": "<REDACTED>",
+  "partnerAsn": "65060",
+  "partnerMetadata": {
+    "interconnectName": "Stockholm (arn-zone1-208)",
+    "partnerName": "Megaport",
+    "portalUrl": "https://megaport.al"
+  },
+  "region": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/regions/europe-north2",
+  "router": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/regions/europe-north2/routers/cr-ver-09281131",
+  "selfLink": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/regions/europe-north2/interconnectAttachments/att-ver-09281131",
+  "stackType": "IPV4_ONLY",
+  "state": "ACTIVE",
+  "type": "PARTNER",
+  "vlanTag8021q": 3694
+}

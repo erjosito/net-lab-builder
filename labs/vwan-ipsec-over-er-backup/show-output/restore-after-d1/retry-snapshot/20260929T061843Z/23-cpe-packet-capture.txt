@@ -1,0 +1,159 @@
+# action: read-only evidence capture
+# question_id: Q-PACKET-PATH
+# plane: packet
+# expected_effect: Packet headers identify the exact underlay, XFRM slot, BGP source and payload behavior.
+# utc_started: 2026-09-29T06:34:32.6315097Z
+# utc_ended: 2026-09-29T06:34:47.4371169Z
+# local_started: 2026-09-29T08:34:32.6315097+02:00
+# local_ended: 2026-09-29T08:34:47.4371169+02:00
+# command: gcloud compute ssh cpe-ver-09281131 --zone europe-north2-c --project <GCP_PROJECT_ID> --tunnel-through-iap --command 'sudo timeout 10s tcpdump -ni any -s 128 -tttt -vv '(udp port 500 or udp port 4500 or esp or tcp port 179 or icmp)''
+# exit_code: 124
+# stdout:
+2026-09-29 06:34:37.561663 ens4  In  IP (tos 0x0, ttl 252, id 11241, offset 0, flags [none], proto ESP (50), length 124)
+    10.240.0.4 > 10.250.0.10: ESP(spi=0xc581fc9f,seq=0x4e1), length 104
+2026-09-29 06:34:37.561700 xfrm-pri0 In  IP (tos 0x2,ECT(0), ttl 128, id 772, offset 0, flags [DF], proto TCP (6), length 52)
+    10.240.0.13.63003 > 10.250.254.242.179: Flags [SEW], cksum 0x06a5 (correct), seq 2884548069, win 64240, options [mss 1250,nop,wscale 8,nop,nop,sackOK], length 0
+2026-09-29 06:34:37.561732 xfrm-pri1 Out IP (tos 0xc0, ttl 255, id 0, offset 0, flags [DF], proto TCP (6), length 52)
+    10.250.254.242.179 > 10.240.0.13.63003: Flags [S.], cksum 0x1510 (incorrect -> 0x94b2), seq 1159867566, ack 2884548070, win 64240, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
+2026-09-29 06:34:37.561752 ens4  Out IP (tos 0xc0, ttl 64, id 0, offset 0, flags [DF], proto ESP (50), length 124)
+    10.250.0.10 > 10.240.0.5: ESP(spi=0x1b4d0024,seq=0x233), length 104
+2026-09-29 06:34:37.618436 ens4  In  IP (tos 0x0, ttl 252, id 11242, offset 0, flags [none], proto ESP (50), length 108)
+    10.240.0.4 > 10.250.0.10: ESP(spi=0xc581fc9f,seq=0x4e2), length 88
+2026-09-29 06:34:37.618437 ens4  In  IP (tos 0x0, ttl 252, id 11243, offset 0, flags [none], proto ESP (50), length 172)
+    10.240.0.4 > 10.250.0.10: ESP(spi=0xc581fc9f,seq=0x4e3), length 152
+2026-09-29 06:34:37.618494 xfrm-pri0 In  IP (tos 0x0, ttl 128, id 773, offset 0, flags [DF], proto TCP (6), length 40)
+    10.240.0.13.63003 > 10.250.254.242.179: Flags [.], cksum 0xc875 (correct), seq 1, ack 1, win 2048, length 0
+2026-09-29 06:34:37.618494 xfrm-pri0 In  IP (tos 0x0, ttl 128, id 774, offset 0, flags [DF], proto TCP (6), length 103)
+    10.240.0.13.63003 > 10.250.254.242.179: Flags [P.], cksum 0xf6c4 (correct), seq 1:64, ack 1, win 2048, length 63: BGP
+	Open Message (1), length: 63
+	  Version 4, my AS 65515, Holdtime 180s, ID 10.240.0.13
+	  Optional parameters, length: 34
+	    Option Capabilities Advertisement (2), length: 32
+	      Multiprotocol Extensions (1), length: 4
+		AFI IPv4 (1), SAFI Unicast (1)
+		0x0000:  0001 0001
+	      Multiprotocol Extensions (1), length: 4
+		AFI IPv6 (2), SAFI Unicast (1)
+		0x0000:  0002 0001
+	      Route Refresh (2), length: 0
+	      32-Bit AS Number (65), length: 4
+		 4 Byte AS 65515
+		0x0000:  0000 ffeb
+	      Graceful Restart (64), length: 10
+		Restart Flags: [none], Restart Time 120s
+		  AFI IPv4 (1), SAFI Unicast (1), Forwarding state preserved: no
+		  AFI IPv6 (2), SAFI Unicast (1), Forwarding state preserved: no
+		0x0000:  0078 0001 0100 0002 0100
+2026-09-29 06:34:37.618585 xfrm-pri1 Out IP (tos 0xc0, ttl 255, id 11560, offset 0, flags [DF], proto TCP (6), length 40)
+    10.250.254.242.179 > 10.240.0.13.63003: Flags [.], cksum 0x1504 (incorrect -> 0xce40), seq 1, ack 64, win 502, length 0
+2026-09-29 06:34:37.618615 ens4  Out IP (tos 0xc0, ttl 64, id 0, offset 0, flags [DF], proto ESP (50), length 108)
+    10.250.0.10 > 10.240.0.5: ESP(spi=0x1b4d0024,seq=0x234), length 88
+2026-09-29 06:34:37.618778 xfrm-pri1 Out IP (tos 0xc0, ttl 255, id 11561, offset 0, flags [DF], proto TCP (6), length 40)
+    10.250.254.242.179 > 10.240.0.13.63003: Flags [R.], cksum 0x1504 (incorrect -> 0xce3c), seq 1, ack 64, win 502, length 0
+2026-09-29 06:34:37.618797 ens4  Out IP (tos 0xc0, ttl 64, id 0, offset 0, flags [DF], proto ESP (50), length 108)
+    10.250.0.10 > 10.240.0.5: ESP(spi=0x1b4d0024,seq=0x235), length 88
+2026-09-29 06:34:41.836226 ens4  In  IP (tos 0x0, ttl 252, id 11244, offset 0, flags [none], proto ESP (50), length 124)
+    10.240.0.4 > 10.250.0.10: ESP(spi=0xc581fc9f,seq=0x4e4), length 104
+2026-09-29 06:34:41.836266 xfrm-pri0 In  IP (tos 0x2,ECT(0), ttl 128, id 775, offset 0, flags [DF], proto TCP (6), length 52)
+    10.240.0.13.63006 > 10.250.254.242.179: Flags [SEW], cksum 0x659c (correct), seq 1064551270, win 64240, options [mss 1250,nop,wscale 8,nop,nop,sackOK], length 0
+2026-09-29 06:34:41.836298 xfrm-pri1 Out IP (tos 0xc0, ttl 255, id 0, offset 0, flags [DF], proto TCP (6), length 52)
+    10.250.254.242.179 > 10.240.0.13.63006: Flags [S.], cksum 0x1510 (incorrect -> 0xcee7), seq 4013008736, ack 1064551271, win 64240, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
+2026-09-29 06:34:41.836320 ens4  Out IP (tos 0xc0, ttl 64, id 0, offset 0, flags [DF], proto ESP (50), length 124)
+    10.250.0.10 > 10.240.0.5: ESP(spi=0x1b4d0024,seq=0x236), length 104
+2026-09-29 06:34:41.892859 ens4  In  IP (tos 0x0, ttl 252, id 11245, offset 0, flags [none], proto ESP (50), length 108)
+    10.240.0.4 > 10.250.0.10: ESP(spi=0xc581fc9f,seq=0x4e5), length 88
+2026-09-29 06:34:41.892859 ens4  In  IP (tos 0x0, ttl 252, id 11246, offset 0, flags [none], proto ESP (50), length 172)
+    10.240.0.4 > 10.250.0.10: ESP(spi=0xc581fc9f,seq=0x4e6), length 152
+2026-09-29 06:34:41.892901 xfrm-pri0 In  IP (tos 0x0, ttl 128, id 776, offset 0, flags [DF], proto TCP (6), length 40)
+    10.240.0.13.63006 > 10.250.254.242.179: Flags [.], cksum 0x02ab (correct), seq 1, ack 1, win 2048, length 0
+2026-09-29 06:34:41.892901 xfrm-pri0 In  IP (tos 0x0, ttl 128, id 777, offset 0, flags [DF], proto TCP (6), length 103)
+    10.240.0.13.63006 > 10.250.254.242.179: Flags [P.], cksum 0x30fa (correct), seq 1:64, ack 1, win 2048, length 63: BGP
+	Open Message (1), length: 63
+	  Version 4, my AS 65515, Holdtime 180s, ID 10.240.0.13
+	  Optional parameters, length: 34
+	    Option Capabilities Advertisement (2), length: 32
+	      Multiprotocol Extensions (1), length: 4
+		AFI IPv4 (1), SAFI Unicast (1)
+		0x0000:  0001 0001
+	      Multiprotocol Extensions (1), length: 4
+		AFI IPv6 (2), SAFI Unicast (1)
+		0x0000:  0002 0001
+	      Route Refresh (2), length: 0
+	      32-Bit AS Number (65), length: 4
+		 4 Byte AS 65515
+		0x0000:  0000 ffeb
+	      Graceful Restart (64), length: 10
+		Restart Flags: [none], Restart Time 120s
+		  AFI IPv4 (1), SAFI Unicast (1), Forwarding state preserved: no
+		  AFI IPv6 (2), SAFI Unicast (1), Forwarding state preserved: no
+		0x0000:  0078 0001 0100 0002 0100
+2026-09-29 06:34:41.892975 xfrm-pri1 Out IP (tos 0xc0, ttl 255, id 13976, offset 0, flags [DF], proto TCP (6), length 40)
+    10.250.254.242.179 > 10.240.0.13.63006: Flags [.], cksum 0x1504 (incorrect -> 0x0876), seq 1, ack 64, win 502, length 0
+2026-09-29 06:34:41.892999 ens4  Out IP (tos 0xc0, ttl 64, id 0, offset 0, flags [DF], proto ESP (50), length 108)
+    10.250.0.10 > 10.240.0.5: ESP(spi=0x1b4d0024,seq=0x237), length 88
+2026-09-29 06:34:41.893169 xfrm-pri1 Out IP (tos 0xc0, ttl 255, id 13977, offset 0, flags [DF], proto TCP (6), length 40)
+    10.250.254.242.179 > 10.240.0.13.63006: Flags [R.], cksum 0x1504 (incorrect -> 0x0872), seq 1, ack 64, win 502, length 0
+2026-09-29 06:34:41.893185 ens4  Out IP (tos 0xc0, ttl 64, id 0, offset 0, flags [DF], proto ESP (50), length 108)
+    10.250.0.10 > 10.240.0.5: ESP(spi=0x1b4d0024,seq=0x238), length 88
+2026-09-29 06:34:46.073623 ens4  In  IP (tos 0x0, ttl 117, id 8059, offset 0, flags [none], proto UDP (17), length 112)
+    74.158.47.254.4500 > 10.250.0.10.4500: NONESP-encap: isakmp 2.0 msgid 0000006c cookie 26051238b1698f03->0c06aeb8cefa76e4: child_sa  inf2: [|v2e]
+2026-09-29 06:34:46.073623 ens4  In  IP (tos 0x0, ttl 117, id 50173, offset 0, flags [none], proto UDP (17), length 112)
+    74.158.80.26.4500 > 10.250.0.10.4500: NONESP-encap: isakmp 2.0 msgid 0000006c cookie 9f202146aa00779d->c9c8c523480aa04a: child_sa  inf2: [|v2e]
+2026-09-29 06:34:46.074163 ens4  Out IP (tos 0x0, ttl 64, id 20106, offset 0, flags [DF], proto UDP (17), length 112)
+    10.250.0.10.4500 > 74.158.47.254.4500: NONESP-encap: isakmp 2.0 msgid 0000006c cookie 26051238b1698f03->0c06aeb8cefa76e4: child_sa  inf2[IR]: [|v2e]
+2026-09-29 06:34:46.074326 ens4  Out IP (tos 0x0, ttl 64, id 50876, offset 0, flags [DF], proto UDP (17), length 112)
+    10.250.0.10.4500 > 74.158.80.26.4500: NONESP-encap: isakmp 2.0 msgid 0000006c cookie 9f202146aa00779d->c9c8c523480aa04a: child_sa  inf2[IR]: [|v2e]
+2026-09-29 06:34:46.254345 ens4  In  IP (tos 0x0, ttl 252, id 11247, offset 0, flags [none], proto ESP (50), length 124)
+    10.240.0.4 > 10.250.0.10: ESP(spi=0xc581fc9f,seq=0x4e7), length 104
+2026-09-29 06:34:46.254383 xfrm-pri0 In  IP (tos 0x2,ECT(0), ttl 128, id 778, offset 0, flags [DF], proto TCP (6), length 52)
+    10.240.0.13.63009 > 10.250.254.242.179: Flags [SEW], cksum 0xd852 (correct), seq 2142900326, win 64240, options [mss 1250,nop,wscale 8,nop,nop,sackOK], length 0
+2026-09-29 06:34:46.254413 xfrm-pri1 Out IP (tos 0xc0, ttl 255, id 0, offset 0, flags [DF], proto TCP (6), length 52)
+    10.250.254.242.179 > 10.240.0.13.63009: Flags [S.], cksum 0x1510 (incorrect -> 0x203a), seq 3451316799, ack 2142900327, win 64240, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
+2026-09-29 06:34:46.254435 ens4  Out IP (tos 0xc0, ttl 64, id 0, offset 0, flags [DF], proto ESP (50), length 124)
+    10.250.0.10 > 10.240.0.5: ESP(spi=0x1b4d0024,seq=0x239), length 104
+2026-09-29 06:34:46.301541 ens4  In  IP (tos 0x0, ttl 124, id 3978, offset 0, flags [none], proto UDP (17), length 112)
+    10.240.0.4.4500 > 10.250.0.10.4500: NONESP-encap: isakmp 2.0 msgid 0000006e cookie 4d504e1f1a4887f6->0a62efc63325696e: child_sa  inf2: [|v2e]
+2026-09-29 06:34:46.302243 ens4  Out IP (tos 0x0, ttl 64, id 653, offset 0, flags [DF], proto UDP (17), length 112)
+    10.250.0.10.4500 > 10.240.0.4.4500: NONESP-encap: isakmp 2.0 msgid 0000006e cookie 4d504e1f1a4887f6->0a62efc63325696e: child_sa  inf2[IR]: [|v2e]
+2026-09-29 06:34:46.310822 ens4  In  IP (tos 0x0, ttl 252, id 11248, offset 0, flags [none], proto ESP (50), length 108)
+    10.240.0.4 > 10.250.0.10: ESP(spi=0xc581fc9f,seq=0x4e8), length 88
+2026-09-29 06:34:46.310823 ens4  In  IP (tos 0x0, ttl 252, id 11249, offset 0, flags [none], proto ESP (50), length 172)
+    10.240.0.4 > 10.250.0.10: ESP(spi=0xc581fc9f,seq=0x4e9), length 152
+2026-09-29 06:34:46.310863 xfrm-pri0 In  IP (tos 0x0, ttl 128, id 779, offset 0, flags [DF], proto TCP (6), length 40)
+    10.240.0.13.63009 > 10.250.254.242.179: Flags [.], cksum 0x53fd (correct), seq 1, ack 1, win 2048, length 0
+2026-09-29 06:34:46.310863 xfrm-pri0 In  IP (tos 0x0, ttl 128, id 780, offset 0, flags [DF], proto TCP (6), length 103)
+    10.240.0.13.63009 > 10.250.254.242.179: Flags [P.], cksum 0x824c (correct), seq 1:64, ack 1, win 2048, length 63: BGP
+	Open Message (1), length: 63
+	  Version 4, my AS 65515, Holdtime 180s, ID 10.240.0.13
+	  Optional parameters, length: 34
+	    Option Capabilities Advertisement (2), length: 32
+	      Multiprotocol Extensions (1), length: 4
+		AFI IPv4 (1), SAFI Unicast (1)
+		0x0000:  0001 0001
+	      Multiprotocol Extensions (1), length: 4
+		AFI IPv6 (2), SAFI Unicast (1)
+		0x0000:  0002 0001
+	      Route Refresh (2), length: 0
+	      32-Bit AS Number (65), length: 4
+		 4 Byte AS 65515
+		0x0000:  0000 ffeb
+	      Graceful Restart (64), length: 10
+		Restart Flags: [none], Restart Time 120s
+		  AFI IPv4 (1), SAFI Unicast (1), Forwarding state preserved: no
+		  AFI IPv6 (2), SAFI Unicast (1), Forwarding state preserved: no
+		0x0000:  0078 0001 0100 0002 0100
+2026-09-29 06:34:46.310944 xfrm-pri1 Out IP (tos 0xc0, ttl 255, id 3195, offset 0, flags [DF], proto TCP (6), length 40)
+    10.250.254.242.179 > 10.240.0.13.63009: Flags [.], cksum 0x1504 (incorrect -> 0x59c8), seq 1, ack 64, win 502, length 0
+2026-09-29 06:34:46.310969 ens4  Out IP (tos 0xc0, ttl 64, id 0, offset 0, flags [DF], proto ESP (50), length 108)
+    10.250.0.10 > 10.240.0.5: ESP(spi=0x1b4d0024,seq=0x23a), length 88
+2026-09-29 06:34:46.311093 xfrm-pri1 Out IP (tos 0xc0, ttl 255, id 3196, offset 0, flags [DF], proto TCP (6), length 40)
+    10.250.254.242.179 > 10.240.0.13.63009: Flags [R.], cksum 0x1504 (incorrect -> 0x59c4), seq 1, ack 64, win 502, length 0
+2026-09-29 06:34:46.311109 ens4  Out IP (tos 0xc0, ttl 64, id 0, offset 0, flags [DF], proto ESP (50), length 108)
+    10.250.0.10 > 10.240.0.5: ESP(spi=0x1b4d0024,seq=0x23b), length 88
+
+# stderr:
+tcpdump: data link type LINUX_SLL2
+tcpdump: listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 128 bytes
+42 packets captured
+44 packets received by filter
+0 packets dropped by kernel

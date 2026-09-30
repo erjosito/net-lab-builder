@@ -1,0 +1,75 @@
+Warning: Permanently added '[localhost]:22022' (ED25519) to the list of known hosts.
+===ENV===
+DESIGN=D2
+D1_PHASE=private
+TARGET_IPS="10.253.2.10"
+PRI0_IKE=10.240.0.4
+PRI1_IKE=10.240.0.5
+PUB0_IKE=74.158.47.254
+PUB1_IKE=74.158.80.26
+PRI0_BGP=10.240.0.13
+PRI1_BGP=10.240.0.12
+PUB0_BGP=169.254.21.5
+PUB1_BGP=169.254.22.5
+===SAS===
+pub1: #18, ESTABLISHED, IKEv2, 810c5b596364f58e_i* 8bbc6b3ceff6058f_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.80.26' @ 74.158.80.26[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 81s ago, rekeying in 13840s
+  pub1: #6, reqid 4, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 81s ago, rekeying in 3497s, expires in 3879s
+    in  c4c20cfa (-|0x000001a5),   3867 bytes,    60 packets,     1s ago
+    out 21cbc300 (-|0x000001a5),    180 bytes,     3 packets,     1s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri1: #17, ESTABLISHED, IKEv2, 78680e29721be78c_i* 4f64e5c5845ed23f_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.5' @ 10.240.0.5[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 81s ago, rekeying in 13694s
+  pri1: #5, reqid 3, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 81s ago, rekeying in 3255s, expires in 3879s
+    in  ce1706b2 (-|0x0000019b),  10835 bytes,   158 packets,     1s ago
+    out 3c8f6172 (-|0x0000019b),  14938 bytes,   241 packets,     1s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pub0: #3, ESTABLISHED, IKEv2, 0d0b1b4cb4648de7_i* fce8922222d5027a_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.47.254' @ 74.158.47.254[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 124s ago, rekeying in 14049s
+  pub0: #2, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 124s ago, rekeying in 3159s, expires in 3836s
+    in  c93ddb25 (-|0x000001a4),   5730 bytes,    90 packets,     2s ago
+    out 9f1cd24e (-|0x000001a4),    840 bytes,    14 packets,     1s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri0: #1, ESTABLISHED, IKEv2, 7816cfe1377cabcf_i* 9f5f6b2c1cd2632d_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.4' @ 10.240.0.4[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 124s ago, rekeying in 12863s
+  pri0: #4, reqid 2, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 124s ago, rekeying in 3203s, expires in 3836s
+    in  c5a9b5ba (-|0x0000019a),  15377 bytes,   222 packets,     2s ago
+    out e8e76156 (-|0x0000019a),  22132 bytes,   352 packets,     2s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+===BGP===
+% Unknown command: show
+===ROUTES===
+default via 10.250.0.1 dev ens4 proto dhcp src 10.250.0.10 metric 100
+blackhole 10.240.0.0/24 proto static metric 20
+10.240.0.4 via 10.250.0.1 dev ens4 metric 5
+10.240.0.5 via 10.250.0.1 dev ens4 metric 5
+10.240.0.12 dev xfrm-pri1 scope link src 10.250.254.240
+10.240.0.13 dev xfrm-pri0 scope link src 10.250.254.240
+blackhole 10.241.0.0/24 proto static metric 20
+10.250.0.1 dev ens4 proto dhcp scope link src 10.250.0.10 metric 100
+blackhole 10.253.2.0/24 proto static metric 20
+74.158.47.254 via 10.250.0.1 dev ens4 metric 5
+74.158.80.26 via 10.250.0.1 dev ens4 metric 5
+169.254.21.5 dev xfrm-pub0 scope link src 169.254.21.6
+169.254.22.5 dev xfrm-pub1 scope link src 169.254.21.6
+169.254.169.254 via 10.250.0.1 dev ens4 proto dhcp src 10.250.0.10 metric 100

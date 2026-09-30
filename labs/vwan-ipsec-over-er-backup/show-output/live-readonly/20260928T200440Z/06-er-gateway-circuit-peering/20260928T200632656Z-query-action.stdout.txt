@@ -1,0 +1,147 @@
+ER_GATEWAY_API_VERSION=2024-10-01
+{
+  "etag": "W/\"<GUID>\"",
+  "id": "/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteGateways/ergw-ver-09281131",
+  "location": "swedencentral",
+  "name": "ergw-ver-09281131",
+  "properties": {
+    "allowNonVirtualWanTraffic": false,
+    "autoScaleConfiguration": {
+      "bounds": {
+        "min": 1
+      }
+    },
+    "expressRouteConnections": [
+      {
+        "etag": "W/\"<GUID>\"",
+        "id": "/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteGateways/ergw-ver-09281131/expressRouteConnections/conn-er",
+        "name": "conn-er",
+        "properties": {
+          "enableInternetSecurity": false,
+          "expressRouteCircuitPeering": {
+            "id": "/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteCircuits/er-ver-09281131/peerings/AzurePrivatePeering"
+          },
+          "expressRouteGatewayBypass": false,
+          "provisioningState": "Succeeded",
+          "resourceGuid": "<GUID>",
+          "routingConfiguration": {
+            "associatedRouteTable": {
+              "id": "/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubRouteTables/defaultRouteTable"
+            },
+            "propagatedRouteTables": {
+              "ids": [
+                {
+                  "id": "/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubRouteTables/defaultRouteTable"
+                }
+              ],
+              "labels": [
+                "default"
+              ]
+            }
+          },
+          "routingWeight": 0
+        },
+        "type": "Microsoft.Network/expressRouteGateways/expressRouteConnections"
+      }
+    ],
+    "provisioningState": "Succeeded",
+    "resourceGuid": "<GUID>",
+    "virtualHub": {
+      "id": "/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131"
+    }
+  },
+  "tags": {
+    "correlation_id": "09281131",
+    "created_by": "copilot-lab",
+    "ephemeral": "true",
+    "lab": "true",
+    "lab_name": "vwan-ipsec-over-er-backup",
+    "owner": "jose",
+    "run_id": "09281131"
+  },
+  "type": "Microsoft.Network/expressRouteGateways"
+}
+ER_CIRCUIT
+{
+  "allowClassicOperations": false,
+  "authorizationKey": "*****************",
+  "authorizations": [],
+  "circuitProvisioningState": "Enabled",
+  "etag": "W/\"<GUID>\"",
+  "gatewayManagerEtag": "",
+  "globalReachEnabled": false,
+  "id": "/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteCircuits/er-ver-09281131",
+  "location": "swedencentral",
+  "name": "er-ver-09281131",
+  "peerings": [
+    {
+      "azureASN": 12076,
+      "connections": [],
+      "etag": "W/\"<GUID>\"",
+      "gatewayManagerEtag": "",
+      "id": "/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteCircuits/er-ver-09281131/peerings/AzurePrivatePeering",
+      "lastModifiedBy": "Provider",
+      "name": "AzurePrivatePeering",
+      "peerASN": 65060,
+      "peeredConnections": [],
+      "peeringType": "AzurePrivatePeering",
+      "primaryAzurePort": "",
+      "primaryPeerAddressPrefix": "169.254.148.88/30",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+      "secondaryAzurePort": "",
+      "secondaryPeerAddressPrefix": "169.254.148.92/30",
+      "state": "Enabled",
+      "type": "Microsoft.Network/expressRouteCircuits/peerings",
+      "vlanId": 100
+    }
+  ],
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+  "serviceKey": "<REDACTED>",
+  "serviceProviderProperties": {
+    "bandwidthInMbps": 50,
+    "peeringLocation": "Stockholm",
+    "serviceProviderName": "Megaport"
+  },
+  "serviceProviderProvisioningState": "Provisioned",
+  "sku": {
+    "family": "MeteredData",
+    "name": "Standard_MeteredData",
+    "tier": "Standard"
+  },
+  "stag": 18,
+  "tags": {
+    "correlation_id": "09281131",
+    "created_by": "copilot-lab",
+    "ephemeral": "true",
+    "lab": "true",
+    "lab_name": "vwan-ipsec-over-er-backup",
+    "owner": "jose",
+    "run_id": "09281131"
+  },
+  "type": "Microsoft.Network/expressRouteCircuits"
+}
+ER_PRIVATE_PEERING
+{
+  "azureASN": 12076,
+  "connections": [],
+  "etag": "W/\"<GUID>\"",
+  "gatewayManagerEtag": "",
+  "id": "/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteCircuits/er-ver-09281131/peerings/AzurePrivatePeering",
+  "lastModifiedBy": "Provider",
+  "name": "AzurePrivatePeering",
+  "peerASN": 65060,
+  "peeredConnections": [],
+  "peeringType": "AzurePrivatePeering",
+  "primaryAzurePort": "MEG-EXR01-STO-PRI-01142020-A",
+  "primaryPeerAddressPrefix": "169.254.148.88/30",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+  "secondaryAzurePort": "MEG-EXR02-STO-SEC-01142020-A",
+  "secondaryPeerAddressPrefix": "169.254.148.92/30",
+  "state": "Enabled",
+  "type": "Microsoft.Network/expressRouteCircuits/peerings",
+  "vlanId": 100
+}
+

@@ -1,0 +1,43 @@
+# action: read-only evidence capture
+# question_id: Q-CPE-XFRM
+# plane: cpe-xfrm
+# expected_effect: XFRM interfaces, state and policy match the intended tunnel slots.
+# utc_started: 2026-09-29T06:34:08.2148796Z
+# utc_ended: 2026-09-29T06:34:13.1364040Z
+# local_started: 2026-09-29T08:34:08.2148796+02:00
+# local_ended: 2026-09-29T08:34:13.1364040+02:00
+# command: gcloud compute ssh cpe-ver-09281131 --zone europe-north2-c --project <GCP_PROJECT_ID> --tunnel-through-iap --command 'ip -details link show; ip xfrm state; ip xfrm policy'
+# exit_code: 1
+# stdout:
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 promiscuity 0 minmtu 0 maxmtu 0 addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+2: ens4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1460 qdisc mq state UP mode DEFAULT group default qlen 1000
+    link/ether 42:01:0a:fa:00:0a brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 68 maxmtu 65535 addrgenmode eui64 numtxqueues 2 numrxqueues 2 gso_max_size 65536 gso_max_segs 65535 parentbus virtio parentdev virtio1
+3: xfrm-pri0@ens4: <NOARP,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/none  promiscuity 0 minmtu 68 maxmtu 65535
+    xfrm if_id 0x19a addrgenmode random numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+4: xfrm-pri1@ens4: <NOARP,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/none  promiscuity 0 minmtu 68 maxmtu 65535
+    xfrm if_id 0x19b addrgenmode random numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+5: xfrm-pub0@ens4: <NOARP,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/none  promiscuity 0 minmtu 68 maxmtu 65535
+    xfrm if_id 0x1a4 addrgenmode random numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+6: xfrm-pub1@ens4: <NOARP,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/none  promiscuity 0 minmtu 68 maxmtu 65535
+    xfrm if_id 0x1a5 addrgenmode random numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+# stderr:
+RTNETLINK answers: Operation not permitted
+Dump terminated
+RTNETLINK answers: Operation not permitted
+Dump terminated
+
+Recommendation: To check for possible causes of SSH connectivity issues and get
+recommendations, rerun the ssh command with the --troubleshoot option.
+
+gcloud compute ssh cpe-ver-09281131 --project=<GCP_PROJECT_ID> --zone=europe-north2-c --troubleshoot
+
+Or, to investigate an IAP tunneling issue:
+
+gcloud compute ssh cpe-ver-09281131 --project=<GCP_PROJECT_ID> --zone=europe-north2-c --troubleshoot --tunnel-through-iap
+
+ERROR: (gcloud.compute.ssh) [C:\Users\jomore\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\sdk\plink.exe] exited with return code [1].

@@ -1,11 +1,11 @@
 # vWAN IPsec-over-ExpressRoute with Internet backup - network design
 
-**Owner:** Trinity | **Status:** authoritative, corrected after live BGP discovery | **Date:** 2026-09-28
+**Owner:** Trinity | **Status:** authoritative, APIPA verdict reassessed from sanitized evidence | **Date:** 2026-09-28
 **Scope:** design only; no deployment or IaC. `manifest.md` and the Morpheus review remain authoritative for region, products, cost authorization, and provider sequencing.
 
 ## 1. Verdict and invariants
 
-**Verdict:** **APPROVE corrected D2** using regular-private BGP on the ER link and custom APIPA BGP on the Internet link. **REJECT D1**; do not mutate live resources to test it. D3 remains approved as a deterministic, health-blind comparison. Live evidence showed that regular private identities on both sites make Azure use the same default peers `10.240.0.12/.13`; custom gateway APIPA addresses are selected only when the corresponding site-link peer is APIPA.
+**Verdict:** **APPROVE one corrected, bounded D2 retry** using regular-private BGP on ER and custom APIPA BGP on Internet. The prior custom-peer rejection was premature. **APPROVE D1 as a bounded experiment only:** one ordinary peer is configured on one BGP-enabled link, while reachability to one Azure default peer is moved between same-instance XFRM paths. D1's data-plane portability remains unproven. D3 remains approved.
 
 Invariants:
 
@@ -15,7 +15,7 @@ Invariants:
 - Each site link creates two IPsec tunnels, one per active-active vHub VPN gateway instance. Four logical slots remain stable even though Azure endpoint addresses are deployment-discovered.
 - Never advertise experiment prefixes on the ER underlay. Never learn an IKE endpoint through the overlay it establishes.
 - Hub routing preference is `ASPath`. Both candidate paths are S2S VPN routes at the hub; the ER physical underlay does not make the private overlay an ER route.
-- Sources: [[Services/Azure-Virtual-WAN]], [[Services/ExpressRoute]], [[Services/VPN-Gateway]], [[Services/Megaport]], [[Topics/BGP-on-Azure]], [[Topics/UDR-and-Effective-Routes]]. Microsoft Learn confirms: the VPN-over-ER CPE BGP peer **cannot be APIPA**; generic vWAN custom BGP addresses are APIPA-only (`169.254.21.*`/`169.254.22.*`); each gateway instance can own multiple custom addresses; and each `vpnLinkConnection` selects one custom address per gateway IP configuration.
+- Sources: [[Services/Azure-Virtual-WAN]], [[Services/ExpressRoute]], [[Services/VPN-Gateway]], [[Services/Megaport]], [[Topics/BGP-on-Azure]], [[Topics/UDR-and-Effective-Routes]]. Microsoft Learn confirms: VPN-over-ER CPE BGP cannot use APIPA; each link has two active-active tunnels and a unique IP/BGP peer; `vpnLinkConnection.enableBgp` is per link; custom APIPA is `169.254.21.0-169.254.22.255`.
 
 ## 2. Exact topology
 
@@ -56,14 +56,14 @@ Megaport owns Azure private-peering creation. Tank must not create competing Azu
 | GCP VPC subnet / CPE | `10.250.0.0/24` / `10.250.0.10` | ER underlay advertises only `10.250.0.10/32` |
 | CPE private peer-identity range | `10.250.254.0/24` | Never advertised through ER or as payload |
 | D2 private BGP source | `10.250.254.240/32` | Inside private IPsec only; regular private address required by VPN-over-ER |
-| D2 public BGP source | `169.254.22.1/32` | Inside public IPsec only; CPE initiates both BGP sessions |
+| D2 public BGP source | `169.254.21.6/32` | Inside public IPsec only; unique and collision-free; CPE initiates both sessions |
 | FRR router ID | `10.250.254.250` | Identifier only |
-| D1 payload | `10.253.1.0/24` | Reserved; D1 rejected and not run |
+| D1 payload | `10.253.1.0/24` | Only during bounded D1 |
 | D2 payload | `10.253.2.0/24` | Only during D2 |
 | D3 aggregate | `10.253.3.0/24` | Internet site static route |
 | D3 specifics | `10.253.3.0/25`, `10.253.3.128/25` | Private-site BGP only |
 
-The `.240` and `.250` addresses must be registered GCP alias-IP `/32`s, or an equivalent supported routed construct. `169.254.22.1/32` is assigned locally to the CPE loopback/dummy interface for BGP inside IPsec and is never advertised to GCP.
+The `.240` and `.250` addresses must be registered GCP alias-IP `/32`s, or an equivalent supported routed construct. `169.254.21.6/32` is assigned locally to the CPE loopback/dummy interface for BGP inside IPsec and is never advertised to GCP.
 
 ### ASNs and generated slots
 
@@ -81,12 +81,12 @@ Corrected live/session mapping:
 |---|---|---|---|---|
 | `pri0` | `10.250.0.10` | `10.250.254.240` | private `Instance0` | default `10.240.0.12` |
 | `pri1` | `10.250.0.10` | `10.250.254.240` | private `Instance1` | default `10.240.0.13` |
-| `pub0` | reserved public IPv4 via 1:1 NAT | `169.254.22.1` | public `Instance0` | custom `169.254.22.2` |
-| `pub1` | reserved public IPv4 via 1:1 NAT | `169.254.22.1` | public `Instance1` | custom `169.254.22.3` |
+| `pub0` | reserved public IPv4 via 1:1 NAT | `169.254.21.6` | public `Instance0` | custom `169.254.21.5` |
+| `pub1` | reserved public IPv4 via 1:1 NAT | `169.254.21.6` | public `Instance1` | custom `169.254.22.5` |
 
-At gateway scope, add `169.254.22.2` to instance-0's `customBgpIpAddresses` and `169.254.22.3` to instance-1's list. On the public `vpnLinkConnection`, map each gateway `ipConfigurationId` to its address through `vpnGatewayCustomBgpAddresses`. Do not assign custom APIPA to the private ER link.
+The deployed gateway already contains `169.254.21.5` on `Instance0` and `169.254.22.5` on `Instance1`; the public `vpnLinkConnection` already maps those exact addresses by `ipConfigurationId`. Preserve them. Set the remote CPE APIPA only on `site-gcp-inet`'s **link** `properties.bgpProperties.bgpPeeringAddress`, not on the site root or connection.
 
-Managed vWAN therefore exposes four distinct Azure peer IPs, but only two are custom APIPA: `10.240.0.12`, `10.240.0.13`, `169.254.22.2`, and `169.254.22.3`. Four supported custom APIPA peers are impossible because the private VPN-over-ER site cannot use an APIPA CPE peer.
+Managed vWAN therefore exposes four distinct Azure peer IPs, but only two are custom APIPA: `10.240.0.12`, `10.240.0.13`, `169.254.21.5`, and `169.254.22.5`. Four supported custom APIPA peers remain outside the documented VPN-over-ER boundary.
 
 ## 4. Underlay isolation and anti-recursion
 
@@ -98,8 +98,8 @@ The CPE has one NIC. GCP selects Partner Interconnect for learned Azure private 
    - each Azure **public** IKE endpoint: `via 10.250.0.1 dev <nic>`, verified as Internet next hop;
    - `10.240.0.12/32 dev xfrm-pri0 src 10.250.254.240`;
    - `10.240.0.13/32 dev xfrm-pri1 src 10.250.254.240`;
-   - `169.254.22.2/32 dev xfrm-pub0 src 169.254.22.1`;
-   - `169.254.22.3/32 dev xfrm-pub1 src 169.254.22.1`.
+   - `169.254.21.5/32 dev xfrm-pub0 src 169.254.21.6`;
+   - `169.254.22.5/32 dev xfrm-pub1 src 169.254.21.6`.
 3. Endpoint `/32`s must have lower metric than any broader route and survive reboot. A private endpoint covered by `10.240.0.0/24` must still resolve to the physical NIC, never to XFRM.
 4. Install persistent FRR `Null0` routes for `10.240.0.0/24` and `10.241.0.0/24` at administrative distance `254`. Overlay eBGP uses distance `20`; D3's public-XFRM static route uses distance `250`; endpoint/peer `/32`s win by LPM. If all overlay routes disappear, payload fails closed instead of following the GCP VPC's direct cleartext ER route.
 5. Exclude all Azure IKE endpoint `/32`s, Azure/CPE BGP peer `/32`s, `10.250.254.0/24`, `169.254.22.0/24`, and `10.250.0.10/32` from FRR redistribution and experiment prefix lists.
@@ -123,31 +123,41 @@ Use route-based IKEv2 with four XFRM interfaces:
 | `pub0` | `xfrm-pub0` | `420` | `pub0` | public |
 | `pub1` | `xfrm-pub1` | `421` | `pub1` | public |
 
-Use Azure-generated distinct PSKs per site connection, injected at runtime and never committed or persisted in IaC state. Public tunnels use NAT-T when GCP 1:1 NAT is detected. Permit UDP/500, UDP/4500, and ESP only between the corresponding Azure gateway endpoint(s) and CPE endpoint; permit TCP/179 only for the four corrected neighbor tuples after decapsulation. Azure can initiate the private sessions from `10.240.0.12/.13`; for custom APIPA, Azure accepts but does not initiate, so FRR must actively connect to `169.254.22.2/.3`. Enable NIC and OS IP forwarding. Do not SNAT `10.241.0.0/24` to/from the experiment prefixes.
+Use Azure-generated distinct PSKs per site connection, injected at runtime and never committed or persisted in IaC state. Synchronize the PSKs once, establish all four IPsec SAs, and then leave StrongSwan and the Azure VPN connection secrets unchanged for every D1/D2/D3 test. Scenario transitions use `/opt/vwan-lab/apply-routing-design.sh` and may change only FRR, BGP peer reachability routes, loopback addresses, and BGP filtering; they must not reload StrongSwan, rewrite `swanctl.conf`, or recreate XFRM interfaces. Public tunnels use NAT-T when GCP 1:1 NAT is detected. Permit TCP/179 only for the corrected tuples after decapsulation. Azure can initiate private sessions from `10.240.0.12/.13`; custom APIPA sessions must be initiated by FRR toward `169.254.21.5/.22.5`. Default-source SYNs arriving on public XFRM are documented behavior, not failure evidence; drop them on `xfrm-pub*` so replies cannot follow private `/32` routes. Enable NIC and OS IP forwarding. Do not SNAT lab payload.
+
+For a complete, reversible ER outage, prefer `Invoke-LabFault.ps1 -Fault gcp-vxc`: it directly sets the single Megaport GCP VXC `shutdown` property through `PUT /v3/product/vxc/{uid}/`, removing both MSEE paths while leaving Internet VPN transport intact. `-Operation Restore` sets `shutdown=false`. Do not use a full Terraform apply for VXC faults because unrelated provider drift can recreate live lab resources.
 
 FRR `zebra`, `bgpd`, and `staticd` are the baseline. BIRD 2 is an acceptable implementation substitution only if Tank keeps the same four-neighbor, source-address, route-filter, and preference semantics; never run FRR and BIRD simultaneously.
 
-- Four eBGP neighbors in D2, all remote ASN `65515`: `10.240.0.12` and `.13` sourced from `10.250.254.240`; `169.254.22.2` and `.3` sourced from `169.254.22.1`.
+- Four eBGP neighbors in D2, all remote ASN `65515`: `10.240.0.12` and `.13` sourced from `10.250.254.240`; `169.254.21.5` and `169.254.22.5` sourced from `169.254.21.6`.
 - Use explicit `update-source`, `ebgp-multihop 2` where required by the generated peer topology, prefix lists, and route maps. No redistribution of connected or kernel routes.
 - Permit only the active experiment prefix set outbound. Permit only Azure lab prefixes (`10.240.0.0/24`, `10.241.0.0/24`) inbound.
 - Multipath is allowed only within the two equal private-instance sessions or within the two equal public-instance sessions. D2 must never ECMP between private and public path classes.
 - Persist XFRM creation/routes and `swanctl --load-all` in separate ordered systemd units; a one-time interactive load is not reboot-safe.
 
-## 6. D1 - rejected
+## 6. D1 - one ordinary adjacency moved between underlays
 
-**REJECT.** A single floating identity cannot be expressed while remaining inside the documented support boundary: VPN-over-ER requires a non-APIPA CPE peer, custom vWAN peers require APIPA, and every vWAN link requires a unique BGP peering IP. Reusing one regular private peer makes both connections use the same default Azure peers `10.240.0.12/.13`, losing connection-specific adjacency identity; using APIPA on the ER link violates the VPN-over-ER guidance. Preserve `10.253.1.0/24` only as an unused label and record `d1-rejected-offline`; perform no live D1 mutation.
+**Configuration plane:** set the `site-gcp-er` link peer to `10.250.254.242`, ASN `65050`, and its `vpnLinkConnection.enableBgp=true`. Keep the distinct `site-gcp-inet` peer `10.250.254.241` but set its link connection `enableBgp=false`. Both links retain two SAs; FRR configures only Azure default peer `10.240.0.12` (live `Instance1`), so there is one session even though the BGP-enabled link exposes both default peers.
+
+**Data-plane experiment:** with no Azure object change between phases, establish `.242 -> .12` using `/32 dev xfrm-pri1`; then stop/withdraw `pri1`, replace only that `/32` with `dev xfrm-pub1`, and have FRR reconnect the unchanged tuple. There is no supported object that binds one BGP session to two links, so success depends on whether the managed gateway accepts the configured peer over a different healthy SA.
+
+**Pass:** outbound SYN and Established BGP on `pub1`, route continuity, and two repeatable private/public moves. **Negative proof:** public SA/probes healthy and `.242 -> .12` SYN visible on `pub1`, but no SYN-ACK/BGP establishment or return remains bound to `pri1`. Missing routes, IKE, selectors, or FRR initiation invalidate the result. Snapshot/restore both connections and CPE; one corrected attempt each direction; stop on stale routes or reset failure.
 
 ## 7. D2 - dedicated adjacencies, preferred private overlay
 
 D2 is the recommended design.
 
-**Azure-to-GCP:** advertise `10.253.2.0/24` on private neighbors `10.240.0.12/.13` with natural path `65050`; advertise it on public custom peers `169.254.22.2/.3` with three additional prepends (`65050 65050 65050`). With hub HRP `ASPath`, the private pair wins and the public pair remains eligible standby.
+**Azure-to-GCP:** advertise `10.253.2.0/24` on private neighbors `10.240.0.12/.13` with natural path `65050`; advertise it on public custom peers `169.254.21.5/.22.5` with three additional prepends (`65050 65050 65050`). With hub HRP `ASPath`, the private pair wins and the public pair remains eligible standby.
 
 **GCP-to-Azure:** on FRR import, set local preference `200` for private neighbors and `100` for public neighbors. Accept the same Azure prefix lengths on both. Install equal-cost paths only across the two private neighbors; on private withdrawal, install equal-cost paths across the two public neighbors.
 
 Do not use MED as the primary signal and do not depend on Azure recognizing the physical ER underlay. Expected convergence is immediate on explicit TCP/BGP reset and otherwise bounded by observed IKE/DPD plus vWAN BGP timers; record live timers rather than claiming a tighter SLA.
 
 Pass requires four unique neighbor tuples and four Established sessions: two default private plus two custom public. It also requires private preference in both directions, loss of only the faulted neighbor on a single-instance fault, full public takeover when both private neighbors withdraw, no private/public ECMP, and deterministic failback.
+
+**Observed result:** all pass conditions were met during the full-ER test. Shutting the GCP VXC removed both private underlay paths; after approximately 140 seconds of stale-private-path failure detection, both public APIPA paths became best and payload recovered. Restoring ER and initiating the unchanged private children from the CPE re-established both private adjacencies, restored private preference, and passed payload. No PSK or StrongSwan configuration changed.
+
+Switching the Azure public connection from D3 static mode back to D2 BGP mode while preserving the established public SAs did not reactivate the custom APIPA listeners: CPE SYNs traversed both public XFRM interfaces, but Azure did not respond. Treat a D3-to-D2 live mode switch as requiring a separate maintenance validation; it may require tunnel re-establishment even though the D2 failure and failback behavior itself is validated.
 
 ## 8. D3 - BGP specifics plus static Internet aggregate
 
@@ -161,9 +171,11 @@ Normal state uses private `/25`s by longest-prefix match. Withdrawal of both pri
 
 The mandatory compound test is: fail public IPsec first, then withdraw private BGP. Pass means either Azure demonstrably withdraws the static aggregate or the predicted blackhole is captured and labeled. Do not claim D3 production-safe without patch P3.
 
+**Observed result:** normal longest-prefix preference and healthy static failover both worked. In the compound sequence, the public static route remained installed and selected after public transport was blocked and private BGP was withdrawn. Both payload probes failed with 100% loss while all four SAs still appeared established and the public-fault counter increased. D3 therefore requires P3 or equivalent external health-driven route withdrawal for production use.
+
 ## 9. Reset and contamination controls
 
-Order: `baseline-captured -> d1-rejected-offline -> d2-corrected -> restore -> d3-prefix -> final-healthy`.
+Order: `baseline-captured -> d1-single-adjacency -> restore -> d2-corrected -> restore -> d3-prefix -> final-healthy`.
 
 Each design is a versioned CPE/Azure configuration bundle with a paired restore operation. Before advancing, Niobe must prove:
 
@@ -233,16 +245,16 @@ Tank implements, without changing intent:
 - CPE: four XFRM slots, persistent endpoint/peer `/32`s, fail-closed Azure aggregate blackholes, FRR policy, nftables, runtime PSK injection, restore commands, and sanitized generated-value inventory.
 - Required assertions before baseline: no CIDR overlap; private CPE endpoint ER-advertised/reachable; four Azure endpoint/peer mappings captured; both MSEE sessions established; MCR ASN valid; no secret/state leakage.
 
-### Bounded Tank remediation
+### Bounded post-D1 D2 recipe for Niobe
 
 No gateway recreation and no IPsec change:
 
-1. Snapshot sanitized gateway, both sites/link connections, XFRM, routes, and FRR.
-2. Leave private site peer `10.250.254.240` and neighbors `10.240.0.12/.13` unchanged.
-3. Change only the public site-link peer to `169.254.22.1`, ASN `65050`.
-4. Add gateway custom IPs `.22.2` on instance 0 and `.22.3` on instance 1; map them on the public `vpnLinkConnection`.
-5. Add CPE `169.254.22.1/32`, the two public XFRM `/32` routes, and FRR neighbors `.22.2/.3`; FRR initiates.
-6. Expect four Established sessions. If Azure still uses `.12/.13` on the public connection or either custom mapping is lost, restore the captured public site/link state and stop.
+1. Restore and prove the D1 baseline, then snapshot gateway, public site/connection, XFRM, routes, firewall, and FRR.
+2. Match by `ipConfigurationId`, not array order: gateway custom values and public connection selections must already be `Instance0 -> 169.254.21.5`, `Instance1 -> 169.254.22.5`; otherwise stop. Selected addresses must preexist on the gateway.
+3. Full parent-`vpnSite` PUT: change only the public link peer from `10.250.254.241` to `169.254.21.6`, ASN `65050`. Direct child-link PUT is unsupported.
+4. Do not PUT or recreate the gateway/connection; their mapping is already correct. Do not add `.22.2/.3`.
+5. CPE: remove `.241` and any failed `.22.1`; add `.21.6/32`; route `.21.5/32` through `xfrm-pub0` and `.22.5/32` through `xfrm-pub1`, both source `.21.6`; FRR uses both peers, update-source `.21.6`, remote ASN `65515`, multihop 2, active connect.
+6. Drop default-source `.12/.13` TCP/179 on public XFRMs. Pass only with CPE-originated SYNs and four Established sessions; otherwise restore `.241` and the CPE snapshot. Azure default-source SYNs may remain.
 
 ## 13. Tank hard blockers
 
@@ -267,4 +279,4 @@ For baseline, every fault, and every restore, collect:
 - CPE: `ip -d link`, `ip route`/`ip rule`, endpoint `ip route get`, `ip xfrm state/policy`, `swanctl --list-conns/--list-sas`, `show bgp summary`, neighbor received/advertised routes, RIB/FIB, nftables counters, and scoped packet captures.
 - Probes: continuous timestamped ICMP plus TCP from `10.241.0.4` to one host in each active experiment prefix and reverse probes where supported.
 
-The verdict dataset is `baseline-captured`, `d1-rejected-offline`, `d2-corrected`, `restore`, `d3-prefix`, `compound`, and `final-healthy`. Evidence must distinguish Azure validation, underlay, IKE, IPsec, BGP, route selection, and payload failure stages.
+The verdict dataset is `baseline-captured`, `d1-single-adjacency`, `restore`, `d2-corrected`, `restore-2`, `d3-prefix`, `compound`, and `final-healthy`. Evidence must distinguish configuration acceptance, underlay, IKE, IPsec, BGP binding, route selection, and payload failure.

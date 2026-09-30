@@ -1,0 +1,16 @@
+# action: read-only evidence capture
+# question_id: Q-AZURE-WORKLOAD-PATH
+# plane: azure-workload
+# expected_effect: Workload effective routes, kernel FIB and packet headers match the selected encrypted overlay path.
+# utc_started: 2026-09-29T05:54:55.9116752Z
+# utc_ended: 2026-09-29T05:54:59.0796704Z
+# local_started: 2026-09-29T07:54:55.9116752+02:00
+# local_ended: 2026-09-29T07:54:59.0796704+02:00
+# command: az vm run-command invoke -g rg-vwan-ipsec-over-er-09281131 -n vm-probe-ver-09281131 --command-id RunShellScript --scripts '<header-only tcpdump>'
+# exit_code: 1
+# stdout:
+
+# stderr:
+ERROR: (OperationNotAllowed) The operation requires the VM to be running (or set to run).
+Code: OperationNotAllowed
+Message: The operation requires the VM to be running (or set to run).

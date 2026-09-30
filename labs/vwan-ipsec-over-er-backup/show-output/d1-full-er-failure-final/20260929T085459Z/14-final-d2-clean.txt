@@ -1,0 +1,81 @@
+Warning: Permanently added '[localhost]:22022' (ED25519) to the list of known hosts.
+===SAS===
+pub1: #4, ESTABLISHED, IKEv2, 3bb3d3cc2bea3f62_i* 2492b9ad7e5c4e0a_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.80.26' @ 74.158.80.26[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 45s ago, rekeying in 13089s
+  pub1: #1, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 45s ago, rekeying in 3302s, expires in 3915s
+    in  cea2f9d6 (-|0x000001a5),   2213 bytes,    35 packets,     1s ago
+    out bc4c3f8a (-|0x000001a5),    600 bytes,    10 packets,     8s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pub0: #3, ESTABLISHED, IKEv2, 75aacc0c70b0973b_i* cf39c5278475491f_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.47.254' @ 74.158.47.254[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 45s ago, rekeying in 13596s
+  pub0: #2, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 45s ago, rekeying in 3411s, expires in 3915s
+    in  c010949c (-|0x000001a4),   2286 bytes,    36 packets,     2s ago
+    out 9a88feea (-|0x000001a4),    600 bytes,    10 packets,     8s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri1: #2, ESTABLISHED, IKEv2, 8df6eed30d5ec0ec_i* b79cce6b4e1eca69_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.5' @ 10.240.0.5[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 45s ago, rekeying in 13828s
+  pri1: #3, reqid 4, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 45s ago, rekeying in 3491s, expires in 3915s
+    in  cd687b1a (-|0x0000019b),   5979 bytes,    87 packets,     1s ago
+    out 9cad38a6 (-|0x0000019b),   8260 bytes,   133 packets,     1s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri0: #1, ESTABLISHED, IKEv2, 1a916836519212aa_i* c3303421b94fd7f0_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.4' @ 10.240.0.4[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 45s ago, rekeying in 13855s
+  pri0: #4, reqid 3, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 45s ago, rekeying in 3244s, expires in 3915s
+    in  cba6a8ac (-|0x0000019a),   6007 bytes,    90 packets,     0s ago
+    out be136c26 (-|0x0000019a),   8369 bytes,   135 packets,     0s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+===BGP===
+
+IPv4 Unicast Summary (VRF default):
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 117
+RIB entries 5, using 920 bytes of memory
+Peers 4, using 2892 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+10.240.0.12     4      65515        36        36        0    0    0 00:00:01            2        0 N/A
+10.240.0.13     4      65515        32        31        0    0    0 00:00:01            2        0 N/A
+169.254.21.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.22.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+
+Total number of neighbors 4
+===ROUTES===
+default via 10.250.0.1 dev ens4 proto dhcp src 10.250.0.10 metric 100
+10.240.0.0/24 nhid 189 proto bgp metric 20
+	nexthop via 10.240.0.12 dev xfrm-pri1 weight 1 onlink
+	nexthop via 10.240.0.13 dev xfrm-pri0 weight 1 onlink
+10.240.0.4 via 10.250.0.1 dev ens4 metric 5
+10.240.0.5 via 10.250.0.1 dev ens4 metric 5
+10.240.0.12 dev xfrm-pri1 scope link src 10.250.254.240
+10.240.0.13 dev xfrm-pri0 scope link src 10.250.254.240
+10.241.0.0/24 nhid 189 proto bgp metric 20
+	nexthop via 10.240.0.12 dev xfrm-pri1 weight 1 onlink
+	nexthop via 10.240.0.13 dev xfrm-pri0 weight 1 onlink
+10.250.0.1 dev ens4 proto dhcp scope link src 10.250.0.10 metric 100
+blackhole 10.253.2.0/24 proto static metric 20
+74.158.47.254 via 10.250.0.1 dev ens4 metric 5
+74.158.80.26 via 10.250.0.1 dev ens4 metric 5
+169.254.21.5 dev xfrm-pub0 scope link src 169.254.21.6
+169.254.22.5 dev xfrm-pub1 scope link src 169.254.21.6
+169.254.169.254 via 10.250.0.1 dev ens4 proto dhcp src 10.250.0.10 metric 100

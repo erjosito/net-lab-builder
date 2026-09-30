@@ -1,0 +1,74 @@
+{
+  "etag": "W/\"<GUID>\"",
+  "extendedLocation": null,
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteGateways/ergw-ver-09281131",
+  "identity": null,
+  "kind": null,
+  "location": "swedencentral",
+  "managedBy": null,
+  "name": "ergw-ver-09281131",
+  "plan": null,
+  "properties": {
+    "allowNonVirtualWanTraffic": false,
+    "autoScaleConfiguration": {
+      "bounds": {
+        "min": 1
+      }
+    },
+    "expressRouteConnections": [
+      {
+        "etag": "W/\"<GUID>\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteGateways/ergw-ver-09281131/expressRouteConnections/conn-er",
+        "name": "conn-er",
+        "properties": {
+          "enableInternetSecurity": false,
+          "expressRouteCircuitPeering": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteCircuits/er-ver-09281131/peerings/AzurePrivatePeering",
+            "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+          },
+          "expressRouteGatewayBypass": false,
+          "provisioningState": "Succeeded",
+          "resourceGuid": "<GUID>",
+          "routingConfiguration": {
+            "associatedRouteTable": {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubRouteTables/defaultRouteTable",
+              "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+            },
+            "propagatedRouteTables": {
+              "ids": [
+                {
+                  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubRouteTables/defaultRouteTable",
+                  "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+                }
+              ],
+              "labels": [
+                "default"
+              ]
+            }
+          },
+          "routingWeight": 0
+        },
+        "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+        "type": "Microsoft.Network/expressRouteGateways/expressRouteConnections"
+      }
+    ],
+    "provisioningState": "Succeeded",
+    "resourceGuid": "<GUID>",
+    "virtualHub": {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131",
+      "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+    }
+  },
+  "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+  "sku": null,
+  "tags": {
+    "correlation_id": "09281131",
+    "created_by": "copilot-lab",
+    "ephemeral": "true",
+    "lab": "true",
+    "lab_name": "vwan-ipsec-over-er-backup",
+    "owner": "jose",
+    "run_id": "09281131"
+  },
+  "type": "Microsoft.Network/expressRouteGateways"
+}

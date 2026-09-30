@@ -1,0 +1,11 @@
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\n2026-09-29T06:34:08,269121049+00:00\n===LISTENER===\nState  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess                                   \nLISTEN 0      4096   127.0.0.53%lo:53        0.0.0.0:*    users:((\"systemd-resolve\",pid=477,fd=14))\nLISTEN 0      5            0.0.0.0:8080      0.0.0.0:*    users:((\"python3\",pid=540,fd=3))         \nLISTEN 0      128          0.0.0.0:22        0.0.0.0:*    users:((\"sshd\",pid=901,fd=3))            \nLISTEN 0      128             [::]:22           [::]:*    users:((\"sshd\",pid=901,fd=4))            \n===ROUTES===\ndefault via 10.241.0.1 dev eth0 proto dhcp src 10.241.0.4 metric 100 \n10.241.0.0/26 dev eth0 proto kernel scope link src 10.241.0.4 metric 100 \n10.241.0.1 dev eth0 proto dhcp scope link src 10.241.0.4 metric 100 \n168.63.129.16 via 10.241.0.1 dev eth0 proto dhcp src 10.241.0.4 metric 100 \n169.254.169.254 via 10.241.0.1 dev eth0 proto dhcp src 10.241.0.4 metric 100 \n10.250.254.242 via 10.241.0.1 dev eth0 src 10.241.0.4 uid 0 \n    cache \n10.253.1.10 via 10.241.0.1 dev eth0 src 10.241.0.4 uid 0 \n    cache \n===NFT===\ntable ip security {\n\tchain OUTPUT {\n\t\ttype filter hook output priority 150; policy accept;\n\t\tmeta l4proto tcp ip daddr 168.63.129.16 tcp dport 53 counter packets 0 bytes 0 accept\n\t\tmeta l4proto tcp ip daddr 168.63.129.16 skuid 0 counter packets 7009 bytes 3625490 accept\n\t\tmeta l4proto tcp ip daddr 168.63.129.16 ct state invalid,new counter packets 0 bytes 0 drop\n\t}\n}\n===LOCAL_HTTP===\n===REVERSE_ICMP===\nPING 10.253.1.10 (10.253.1.10) 56(84) bytes of data.\n\n--- 10.253.1.10 ping statistics ---\n3 packets transmitted, 0 received, 100% packet loss, time 2031ms\n\n===REVERSE_TCP===\n\n[stderr]\ncurl: option -w: requires parameter\ncurl: try 'curl --help' or 'curl --manual' for more information\n/var/lib/waagent/run-command/download/7/script.sh: 2: http://127.0.0.1:8080/health: not found\nnc: connect to 10.253.1.10 port 8080 (tcp) timed out: Operation now in progress\n"
+    }
+  ]
+}
+

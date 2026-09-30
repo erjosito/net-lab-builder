@@ -1,0 +1,33 @@
+PING 10.241.0.4 (10.241.0.4) from 10.253.2.10 : 56(84) bytes of data.
+64 bytes from 10.241.0.4: icmp_seq=1 ttl=64 time=58.4 ms
+64 bytes from 10.241.0.4: icmp_seq=2 ttl=64 time=56.2 ms
+64 bytes from 10.241.0.4: icmp_seq=3 ttl=64 time=58.2 ms
+
+--- 10.241.0.4 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2001ms
+rtt min/avg/max/mdev = 56.222/57.608/58.356/0.981 ms
+ok
+===PACKETS===
+tcpdump: data link type LINUX_SLL2
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes
+08:17:40.690468 xfrm-pri0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 15, seq 1, length 64
+08:17:40.748791 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 15, seq 1, length 64
+08:17:41.691142 xfrm-pri0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 15, seq 2, length 64
+08:17:41.747318 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 15, seq 2, length 64
+08:17:42.691523 xfrm-pri0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 15, seq 3, length 64
+08:17:42.749743 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 15, seq 3, length 64
+08:17:42.757536 xfrm-pri0 Out IP 10.253.2.10.57132 > 10.241.0.4.8080: Flags [S], seq 3404542038, win 64240, options [mss 1460,sackOK,TS val 2571682797 ecr 0,nop,wscale 7], length 0
+08:17:42.813681 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.57132: Flags [S.], seq 3928389964, ack 3404542039, win 65160, options [mss 1250,sackOK,TS val 3300753481 ecr 2571682797,nop,wscale 7], length 0
+08:17:42.813731 xfrm-pri0 Out IP 10.253.2.10.57132 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571682853 ecr 3300753481], length 0
+08:17:42.813913 xfrm-pri0 Out IP 10.253.2.10.57132 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571682854 ecr 3300753481], length 85: HTTP: GET /health HTTP/1.1
+08:17:42.868809 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.57132: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300753536 ecr 2571682854], length 0
+08:17:42.869526 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.57132: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300753537 ecr 2571682854], length 200: HTTP: HTTP/1.0 200 OK
+08:17:42.869527 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.57132: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300753537 ecr 2571682854], length 3: HTTP
+08:17:42.869570 xfrm-pri0 Out IP 10.253.2.10.57132 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571682909 ecr 3300753537], length 0
+08:17:42.869721 xfrm-pri0 Out IP 10.253.2.10.57132 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571682909 ecr 3300753537], length 0
+08:17:42.924920 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.57132: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300753592 ecr 2571682909], length 0
+
+16 packets captured
+16 packets received by filter
+0 packets dropped by kernel

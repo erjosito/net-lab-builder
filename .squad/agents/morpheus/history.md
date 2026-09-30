@@ -6,6 +6,32 @@
 - **Project:** net-lab-builder
 - **Role:** Lead and orchestrator
 
+- **Owner:** Jose Moreno
+- **Project:** net-lab-builder — build, document, and tear down ephemeral Azure Networking labs
+- **Stack:** Azure (CLI, PowerShell, Bicep, Terraform); Megaport (ExpressRoute MCR + VXC); Linux/Windows VMs
+- **Created:** 2026-05-28
+- **Role:** Lead / Architect — own requirements, region & SKU selection, cost guardrail, lab lifecycle (8 phases: Analyze → Design → Manifest → Approval → Deploy → Execute → Report → Approval → Cleanup)
+
+## Learnings
+
+
+📌 2026-08-17 — Edge Actions JWT lab design (design-only, pre-manifest). Key findings for reuse:
+
+**Edge Actions JS API surface (confirmed from sample repo README + request-rejection sample).**
+`event.request.headers` (lowercase keys), `event.response.response_code` (only 401/403/200 valid), `event.context` (AFD server variables incl. `country_code`, `now`), `event.origin_data[]`, `event.origin.id`. `console.log()` → `EdgeActionConsoleLog` table. No documented `crypto`/`SubtleCrypto`/`atob`/`btoa` — treat as unknown until empirically tested.
+
+**No JWT sample in EdgeActionsSamples as of 2026-08-17.** Only: a-b-experimentation, header-add, origin-select, request-rejection, url-rewrite. The JWT validation use case in the docs is aspirational/listed but not yet sample-backed.
+
+**Fail-open is the headline risk for JWT labs.** If Edge Action execution > 10ms, AFD sends the request through WITHOUT processing. RS256 signature verification in pure JS is likely > 10ms. This makes the lab's S6 (fail-open timeout test) possibly the most important scenario — it either validates the sandbox has native crypto (fast path) or proves the security gap.
+
+**App Service F1 is the ideal echo origin for Edge Actions labs.** Free, public HTTPS, returns headers as JSON, zero deploy complexity. Proves origin bypass when a request arrives that should have been blocked.
+
+**AFD Standard is sufficient for Edge Actions.** Premium adds WAF managed rules + private link, neither needed for JWT validation testing.
+
+**Phase 0 VM preflight is inapplicable for PaaS-only topologies.** Always document this explicitly in the lab card; it prevents checklist confusion.
+
+<!-- Append new learnings below. Each entry is something lasting about the project. -->
+
 ## Historical summaries
 
 - **2026-08 Edge Actions and Foundry labs:** locked design scope, corrected deployment assumptions, and documented platform constraints without changing live Azure resources.
@@ -25,6 +51,8 @@
 - Defects A, B, C, D1, D2, E, F1, and F2 were all found and applied in sequence.
 - A/B/C and D1/D2/E are confirmed working for their intended hops. The inline Azure run-command quoting issue is also considered closed because the team standardized on `az vm run-command invoke --scripts @file`.
 - **Open next-session item:** CE to spoke-NVA reachability still fails. Trinity should start from `labs/sap-rise-scoped-peering-fwaas/show-output/s1-spoke-reachability-fix-20260929T173839Z/` before authoring any new fix.
+**Process note.** When task has 4 Ubuntu VMs but the VNRA concept is relevant, design with VM-based NVAs, name the subnet VirtualNetworkApplianceSubnet, and document the actual managed resource as D3 (Teaching-only) with explicit observability gap analysis. This preserves the lab's value for both immediate (VM NVA) and forward-looking (managed VNRA) use cases.
+
 **Process note.** When task has 4 Ubuntu VMs but the VNRA concept is relevant, design with VM-based NVAs, name the subnet VirtualNetworkApplianceSubnet, and document the actual managed resource as D3 (Teaching-only) with explicit observability gap analysis. This preserves the lab's value for both immediate (VM NVA) and forward-looking (managed VNRA) use cases.
 
 
@@ -350,6 +378,30 @@
 📌 Team update (2026-08-20T11:20:05+02:00): Foundry decisions consolidated and merged into decisions.md; Tower verification complete; ready for Gate B approval — decided by Scribe
 
 📌 Team update (2026-08-21T15:35:00+02:00): Foundry ingress/egress comparison matrix finalized (D-29). Architectural pattern mapping (hosted ≈ Functions, prompt ≈ Logic Apps). Lab ready for publication. Decided by Scribe (session orchestration).
+
+📌 2026-09-28 -- MCR can be a minimal dual-underlay IPsec CPE for vWAN VPN-over-ER evaluation.
+
+**Durable feasibility finding.** Current Megaport MCR supports IPsec tunnel interfaces on VXC interfaces (up to 30 tunnels per MCR), BGP policy controls including AS-path prepend, Azure ExpressRoute VXCs, and a Megaport Internet connection on the same MCR. This enables a compact provider-hosted topology with one MCR acting as the simulated branch router: one IPsec/BGP overlay to the vWAN VPN gateway private IP across ER private peering, and one to the gateway public IP across Megaport Internet. It faithfully exercises real ER and public-IP underlays plus vWAN route selection, but it does not validate StrongSwan/BIRD/FRR behavior, a customer LAN payload path, or independent-provider failure domains because both underlays share the MCR/Megaport edge. Use a GCP Linux CPE behind Partner Interconnect when those fidelity requirements matter.
+
+📌 2026-09-28 -- Static-summary Internet backup with ER/BGP more-specifics is deterministic but health-blind.
+
+**Durable routing finding.** A vWAN VPN site can carry a statically configured aggregate over the public-Internet IPsec tunnel while the ER-carried IPsec/BGP session advertises covering more-specific prefixes. Longest-prefix match makes the ER overlay primary without relying on VPN link weights or equal-cost AS paths. The design's failure gap is the static backup route: Azure documents VPN-site private address space as declarative static routing and provides no per-route DPD/SLA tracking primitive, so the route must be treated as persistent across tunnel failure until lab evidence proves otherwise. DPD can remove the IKE/IPsec SA but does not inherently withdraw a static route. Use paired prefix hierarchy in both directions, end-to-end tunnel probes plus route automation where blackholing is unacceptable, and always test the compound fault “Internet tunnel down first, then ER/BGP withdrawal.”
+
+📌 2026-09-28 -- Stage-1 shape selected for `vwan-ipsec-over-er-backup`.
+
+**Durable architecture choice.** When the objective includes StrongSwan/FRR behavior and distinct private-versus-public failure evidence, use one Linux CPE in a new isolated GCP project rather than an MCR-only CPE. Carry the private IPsec path over GCP Partner Interconnect → MCR → a real ER circuit, retain separate Megaport VXCs to both MSEE primary/secondary paths, and terminate the Internet backup from the same CPE. Treat “one BGP adjacency floating across both tunnels” as a falsifiable managed-vWAN anti-pattern, not an assumed capability; compare it directly with unique per-tunnel adjacencies and with ER more-specifics plus an Internet static covering aggregate.
+
+📌 2026-09-28 -- `vwan-ipsec-over-er-backup` Stage-1 locked and Stage-2 handed off.
+
+**Locked selections and gate outcome.** Preflight selected Sweden Central, `Standard_B2ts_v2` Ubuntu 22.04, hub/workload/GCP prefixes `10.240.0.0/24`, `10.241.0.0/24`, `10.250.0.0/24`, GCP `e2-small` in `europe-north2` (`e2-medium` fallback), and a Stockholm MCR with dual Azure ER VXCs plus one GCP Partner VXC. Jose waived the deployment approval gate at `2026-09-28T11:05:31.452+02:00`. Treat new-project permission, service/pairing keys, live gateway IPs and provider convergence as Wave-0/deploy-time dependencies; stop only when they prove the selected topology unavailable. Cleanup approval remains mandatory.
+
+📌 2026-09-28 -- Pre-deploy design review approved `vwan-ipsec-over-er-backup` for Tank handoff.
+
+**Frozen review outcome.** Ownership boundaries are Trinity design, Tank dependency graph/deploy/rollback, Niobe evidence/verdicts, and Oracle evidence-aligned diagrams. CPE overlay ASN is `65050`; private/public D2 site peers are unique (`10.250.254.240/32` and `.241/32` from a dedicated GCP secondary range), while `.242/32` is reserved solely for the safe D1 duplicate-peer experiment. The private and public underlays use separate Azure VPN Site resources so BGP and route policy remain independently controllable. D1/D2/D3 use disjoint `10.253.1.0/24`, `10.253.2.0/24`, and `10.253.3.0/24` route sets with a mandatory healthy reset/contamination gate between them. The provider sequence requires GCP pairing key plus ER service key before one MCR and three VXCs, including distinct primary/secondary MSEE VXCs. Azure-generated PSKs are runtime-injected and never committed or modeled as IaC inputs. Wave-0 permissions, private endpoint reachability, supported vWAN link shape, both MSEE paths, approved secret access, overlap checks, and quote scope are hard blockers; generated endpoints and normal provider convergence are expected dependencies. Decision recorded in `.squad/decisions/inbox/morpheus-vwan-ipsec-er-design-review.md`.
+
+📌 2026-09-28 -- Tank live-lab loop incident reviewed and circuit breakers adopted.
+
+**Durable process finding.** A background agent's final or idle response closes only that turn; it does not prove a queued follow-up is absent. STOP messages delivered during an active turn are queued, not interrupts, and must never be followed by a retry on the same agent. The `vwan-ipsec-over-er-backup` run combined deployment, remediation, audit reconstruction, corpus indexing, sanitization, and commits in one long-lived Tank agent. Whole-tree evidence work amplified the run, while an unbounded Terraform child process created a 58-minute non-interruptible interval. Live work now requires the bounded lease, STOP sentinel, command timeouts, separate mutation/validation/audit turns, and relaunch rules in `.squad/skills/live-lab-execution/SKILL.md` and routing rule 31. Incident decision: `.squad/decisions/inbox/morpheus-tank-loop-incident-20260928.md`.
 
 📌 2026-09-29 -- Result-first live-lab governance made mandatory for every active role.
 

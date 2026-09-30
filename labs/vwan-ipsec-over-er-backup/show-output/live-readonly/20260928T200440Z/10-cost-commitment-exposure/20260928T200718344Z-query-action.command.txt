@@ -1,0 +1,28 @@
+$subscription = az account show --query id -o tsv
+$start = (Get-Date -Day 1).ToString('yyyy-MM-dd')
+$end = (Get-Date).AddDays(1).ToString('yyyy-MM-dd')
+$body = @{
+  type = 'ActualCost'
+  timeframe = 'Custom'
+  timePeriod = @{ from = "$startT00:00:00Z"; to = "$endT00:00:00Z" }
+  dataset = @{
+    granularity = 'None'
+    aggregation = @{ totalCost = @{ name = 'PreTaxCost'; function = 'Sum' } }
+    grouping = @(@{ type = 'Dimension'; name = 'ServiceName' })
+    filter = @{ dimensions = @{ name = 'ResourceGroupName'; operator = 'In'; values = @('rg-vwan-ipsec-over-er-09281131') } }
+  }
+}
+$bodyFile = Join-Path $env:TEMP 'vwan-cost-query.json'
+try {
+  $body | ConvertTo-Json -Depth 10 | Set-Content $bodyFile -Encoding utf8
+  Write-Output 'AZURE_MONTH_TO_DATE_ACTUAL_COST'
+  az rest --method post --url "https://management.azure.com/subscriptions/<SUBSCRIPTION>/providers/Microsoft.CostManagement/query?api-version=2023-11-01" --body "@$bodyFile" --output json
+} finally {
+  Remove-Item $bodyFile -Force -ErrorAction SilentlyContinue
+}
+Write-Output 'GCP_BILLING_LINK_AND_LIVE_PRODUCTS'
+gcloud billing projects describe 'gcp-vwan-eripsec-09281131' --format=json
+gcloud compute instances describe 'cpe-ver-09281131' --zone 'europe-north2-c' --project 'gcp-vwan-eripsec-09281131' --format='json(status,machineType,disks,networkInterfaces.accessConfigs)'
+gcloud compute interconnects attachments describe 'att-ver-09281131' --region 'europe-north2' --project 'gcp-vwan-eripsec-09281131' --format='json(state,type,bandwidth,edgeAvailabilityDomain)'
+Write-Output 'MEGAPORT_COMMITMENT'
+Select-String -Path 'C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy-log.md' -Pattern 'EUR 991.80/month','managed gateways','continue billing' | ForEach-Object { $_.Line }

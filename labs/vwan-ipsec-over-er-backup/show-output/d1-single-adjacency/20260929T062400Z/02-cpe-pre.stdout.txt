@@ -1,0 +1,119 @@
+2026-09-29T06:22:35,766793960+00:00
+===SAS===
+pub1: #4, ESTABLISHED, IKEv2, 9f202146aa00779d_i* c9c8c523480aa04a_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.80.26' @ 74.158.80.26[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 1946s ago, rekeying in 11973s
+  pub1: #2, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 1946s ago, rekeying in 1598s, expires in 2014s
+    in  cbbf3394 (-|0x000001a5),  42952 bytes,   826 packets,     1s ago
+    out 0fe69218 (-|0x000001a5),  11040 bytes,   184 packets,    46s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pub0: #3, ESTABLISHED, IKEv2, 26051238b1698f03_i* 0c06aeb8cefa76e4_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.47.254' @ 74.158.47.254[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 1946s ago, rekeying in 12358s
+  pub0: #1, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 1946s ago, rekeying in 1492s, expires in 2014s
+    in  cd622d6e (-|0x000001a4),  43056 bytes,   828 packets,     0s ago
+    out 1278ec70 (-|0x000001a4),  11040 bytes,   184 packets,    46s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri1: #2, ESTABLISHED, IKEv2, 069820ec0a472d82_i* 72489aade9ef7903_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.5' @ 10.240.0.5[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 1946s ago, rekeying in 11346s
+  pri1: #4, reqid 4, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 1946s ago, rekeying in 1498s, expires in 2014s
+    in  c7c180dd (-|0x0000019b),  43420 bytes,   835 packets,     0s ago
+    out 1b4d0024 (-|0x0000019b),  10560 bytes,   176 packets,    46s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri0: #1, ESTABLISHED, IKEv2, 4d504e1f1a4887f6_i* 0a62efc63325696e_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.4' @ 10.240.0.4[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 1946s ago, rekeying in 12323s
+  pri0: #3, reqid 3, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 1946s ago, rekeying in 1359s, expires in 2014s
+    in  c581fc9f (-|0x0000019a),  43160 bytes,   830 packets,     0s ago
+    out c3c85716 (-|0x0000019a),  10560 bytes,   176 packets,    46s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+===BGP===
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 1
+RIB entries 5, using 920 bytes of memory
+Peers 4, using 2892 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+169.254.21.1    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.22.1    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.21.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.22.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+
+Total number of neighbors 4
+BGP table version is 1, local router ID is 10.250.254.250, vrf id 0
+Default local pref 100, local AS 65050
+Status codes:  s suppressed, d damped, h history, * valid, > best, = multipath,
+               i internal, r RIB-failure, S Stale, R Removed
+Nexthop codes: @NNN nexthop's vrf id, < announce-nh-self
+Origin codes:  i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+   Network          Next Hop            Metric LocPrf Weight Path
+*> 10.253.2.0/24    0.0.0.0                  0         32768 i
+   10.253.3.0/25    0.0.0.0                  0         32768 i
+   10.253.3.128/25  0.0.0.0                  0         32768 i
+
+Displayed  3 routes and 3 total paths
+===ROUTES===
+default via 10.250.0.1 dev ens4 proto dhcp src 10.250.0.10 metric 100
+blackhole 10.240.0.0/24 proto static metric 20
+10.240.0.4 via 10.250.0.1 dev ens4 metric 5
+10.240.0.5 via 10.250.0.1 dev ens4 metric 5
+blackhole 10.241.0.0/24 proto static metric 20
+10.250.0.1 dev ens4 proto dhcp scope link src 10.250.0.10 metric 100
+blackhole 10.253.2.0/24 proto static metric 20
+74.158.47.254 via 10.250.0.1 dev ens4 metric 5
+74.158.80.26 via 10.250.0.1 dev ens4 metric 5
+169.254.21.1 dev xfrm-pri0 scope link
+169.254.21.5 dev xfrm-pub0 scope link
+169.254.22.1 dev xfrm-pri1 scope link
+169.254.22.5 dev xfrm-pub1 scope link
+169.254.169.254 via 10.250.0.1 dev ens4 proto dhcp src 10.250.0.10 metric 100
+RTNETLINK answers: Invalid argument
+RTNETLINK answers: Invalid argument
+===NFT===
+===SOCKETS===
+State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+LISTEN 0      128          0.0.0.0:22        0.0.0.0:*    users:(("sshd",pid=740,fd=3))
+LISTEN 0      4096   127.0.0.53%lo:53        0.0.0.0:*    users:(("systemd-resolve",pid=368,fd=14))
+LISTEN 0      3          127.0.0.1:2616      0.0.0.0:*    users:(("staticd",pid=1766,fd=12))
+LISTEN 0      3          127.0.0.1:2601      0.0.0.0:*    users:(("zebra",pid=1754,fd=25))
+LISTEN 0      3          127.0.0.1:2605      0.0.0.0:*    users:(("bgpd",pid=1759,fd=18))
+LISTEN 0      4096         0.0.0.0:179       0.0.0.0:*    users:(("bgpd",pid=1759,fd=22))
+LISTEN 0      5            0.0.0.0:8080      0.0.0.0:*    users:(("python3",pid=709,fd=3))
+LISTEN 0      128             [::]:22           [::]:*    users:(("sshd",pid=740,fd=4))
+LISTEN 0      4096            [::]:179          [::]:*    users:(("bgpd",pid=1759,fd=23))
+ping: connect: Invalid argument
+===PROBES===
+bash: connect: Invalid argument
+bash: line 1: /dev/tcp/10.241.0.4/8080: Invalid argument
+
+Recommendation: To check for possible causes of SSH connectivity issues and get
+recommendations, rerun the ssh command with the --troubleshoot option.
+
+gcloud compute ssh cpe-ver-09281131 --project=gcp-vwan-eripsec-09281131 --zone=europe-north2-c --troubleshoot
+
+Or, to investigate an IAP tunneling issue:
+
+gcloud compute ssh cpe-ver-09281131 --project=gcp-vwan-eripsec-09281131 --zone=europe-north2-c --troubleshoot --tunnel-through-iap
+
+ERROR: (gcloud.compute.ssh) [C:\Users\jomore\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\sdk\plink.exe] exited with return code [1].
+

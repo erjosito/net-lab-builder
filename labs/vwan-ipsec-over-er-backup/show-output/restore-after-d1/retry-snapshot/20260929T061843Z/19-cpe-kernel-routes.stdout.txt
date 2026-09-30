@@ -1,0 +1,75 @@
+unicast default via 10.250.0.1 dev ens4 table main proto dhcp scope global src 10.250.0.10 metric 100
+unicast 10.240.0.0/24 nhid 37 via 10.240.0.12 dev xfrm-pri1 table main proto bgp scope global metric 20 onlink
+unicast 10.240.0.4 via 10.250.0.1 dev ens4 table main proto boot scope global metric 5
+unicast 10.240.0.5 via 10.250.0.1 dev ens4 table main proto boot scope global metric 5
+unicast 10.240.0.12 dev xfrm-pri1 table main proto boot scope link src 10.250.254.242
+unicast 10.241.0.0/24 nhid 37 via 10.240.0.12 dev xfrm-pri1 table main proto bgp scope global metric 20 onlink
+unicast 10.250.0.1 dev ens4 table main proto dhcp scope link src 10.250.0.10 metric 100
+blackhole 10.253.1.0/24 table main proto static scope global metric 20
+unicast 74.158.47.254 via 10.250.0.1 dev ens4 table main proto boot scope global metric 5
+unicast 74.158.80.26 via 10.250.0.1 dev ens4 table main proto boot scope global metric 5
+unicast 169.254.21.1 dev xfrm-pri0 table main proto boot scope link
+unicast 169.254.21.5 dev xfrm-pub0 table main proto boot scope link
+unicast 169.254.22.1 dev xfrm-pri1 table main proto boot scope link
+unicast 169.254.22.5 dev xfrm-pub1 table main proto boot scope link
+unicast 169.254.169.254 via 10.250.0.1 dev ens4 table main proto dhcp scope global src 10.250.0.10 metric 100
+local 10.250.0.10 dev ens4 table local proto kernel scope host src 10.250.0.10
+local 10.250.254.240 dev ens4 table local proto 66 scope host
+local 10.250.254.240 dev lo table local proto kernel scope host src 10.250.254.240
+local 10.250.254.241 dev ens4 table local proto 66 scope host
+local 10.250.254.241 dev lo table local proto kernel scope host src 10.250.254.241
+local 10.250.254.242 dev ens4 table local proto 66 scope host
+local 10.250.254.242 dev lo table local proto kernel scope host src 10.250.254.242
+local 10.250.254.250 dev ens4 table local proto 66 scope host
+local 10.250.254.250 dev lo table local proto kernel scope host src 10.250.254.250
+local 10.253.2.10 dev lo table local proto kernel scope host src 10.253.2.10
+local 127.0.0.0/8 dev lo table local proto kernel scope host src 127.0.0.1
+local 127.0.0.1 dev lo table local proto kernel scope host src 127.0.0.1
+broadcast 127.255.255.255 dev lo table local proto kernel scope link src 127.0.0.1
+unicast ::1 dev lo table main proto kernel scope global metric 256 pref medium
+unicast fe80::/64 dev ens4 table main proto kernel scope global metric 256 pref medium
+unicast fe80::/64 dev xfrm-pri0 table main proto kernel scope global metric 256 pref medium
+unicast fe80::/64 dev xfrm-pri1 table main proto kernel scope global metric 256 pref medium
+unicast fe80::/64 dev xfrm-pub0 table main proto kernel scope global metric 256 pref medium
+unicast fe80::/64 dev xfrm-pub1 table main proto kernel scope global metric 256 pref medium
+local ::1 dev lo table local proto kernel scope global metric 0 pref medium
+local fe80::4001:aff:fefa:a dev ens4 table local proto kernel scope global metric 0 pref medium
+local fe80::5d16:f4ed:eaed:30a6 dev xfrm-pub0 table local proto kernel scope global metric 0 pref medium
+local fe80::cc18:4749:ffd:e909 dev xfrm-pub1 table local proto kernel scope global metric 0 pref medium
+local fe80::faf0:8cbc:59f6:3938 dev xfrm-pri1 table local proto kernel scope global metric 0 pref medium
+local fe80::fb73:6416:8d8a:ff01 dev xfrm-pri0 table local proto kernel scope global metric 0 pref medium
+multicast ff00::/8 dev ens4 table local proto kernel scope global metric 256 pref medium
+multicast ff00::/8 dev xfrm-pri0 table local proto kernel scope global metric 256 pref medium
+multicast ff00::/8 dev xfrm-pri1 table local proto kernel scope global metric 256 pref medium
+multicast ff00::/8 dev xfrm-pub0 table local proto kernel scope global metric 256 pref medium
+multicast ff00::/8 dev xfrm-pub1 table local proto kernel scope global metric 256 pref medium
+0:	from all lookup local
+220:	from all lookup 220
+32766:	from all lookup main
+32767:	from all lookup default
+10.241.0.4 via 10.240.0.12 dev xfrm-pri1 src 10.250.254.240 uid 1002
+    cache
+slot=pri0 ike
+10.240.0.4 from 10.250.0.10 via 10.250.0.1 dev ens4 uid 1002
+    cache
+slot=pri0 bgp
+10.240.0.13 from 10.250.254.240 via 10.240.0.12 dev xfrm-pri1 uid 1002
+    cache
+slot=pri1 ike
+10.240.0.5 from 10.250.0.10 via 10.250.0.1 dev ens4 uid 1002
+    cache
+slot=pri1 bgp
+10.240.0.12 from 10.250.254.240 dev xfrm-pri1 uid 1002
+    cache
+slot=pub0 ike
+74.158.47.254 from 10.250.0.10 via 10.250.0.1 dev ens4 uid 1002
+    cache
+slot=pub0 bgp
+10.240.0.13 from 10.250.254.241 via 10.240.0.12 dev xfrm-pri1 uid 1002
+    cache
+slot=pub1 ike
+74.158.80.26 from 10.250.0.10 via 10.250.0.1 dev ens4 uid 1002
+    cache
+slot=pub1 bgp
+10.240.0.12 from 10.250.254.241 dev xfrm-pri1 uid 1002
+    cache

@@ -1,0 +1,15 @@
+UTC=2026-09-29T08:49:00Z
+TASK=recover-private-sas-20260929
+VERDICT=BLOCKED
+MUTATIONS_COMPLETED=0
+CPE_PROJECT=gcp-vwan-eripsec-09281131
+CPE_INSTANCE=cpe-ver-09281131
+CPE_ZONE=europe-north2-c
+CPE_NAT_IP=34.51.158.147
+PRIMARY_ACCESS=gcloud SSH with OpenSSH ConnectTimeout flag; failed because local gcloud uses plink and rejected -o
+ALTERNATE_ACCESS=gcloud SSH established method without OpenSSH flag; failed with network connection timeout
+STOP_REASON=Access failed after one primary and one alternate method; no reload or initiation attempted
+FOUR_SA_RESULT=NOT_VERIFIED; last allowed evidence shows pub0/pub1 ESTABLISHED/INSTALLED and pri0/pri1 absent
+D2_RUNTIME_CONFIG=NOT_LIVE_VERIFIED; expected DESIGN=D2 and endpoints match allowed runtime evidence
+AZURE_PROVIDER_LAST_ALLOWED_EVIDENCE=Provisioned; provisioning state Succeeded at 2026-09-29T08:46Z
+MEGAPORT_VXCS_LAST_ALLOWED_EVIDENCE=azurePrimary LIVE/up; azureSecondary LIVE/up; gcp LIVE/up at 2026-09-29T08:46Z

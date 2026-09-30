@@ -1,0 +1,23 @@
+2026-09-29T06:48:18,221235911+00:00
+10.241.0.4 via 10.240.0.12 dev xfrm-pri1 src 10.250.254.242 uid 1002
+    cache
+PING 10.241.0.4 (10.241.0.4) 56(84) bytes of data.
+
+--- 10.241.0.4 ping statistics ---
+3 packets transmitted, 0 received, 100% packet loss, time 2036ms
+
+ code=000 connect=0.000000 total=3.002010
+curl: (28) Connection timeout after 3001 ms
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on xfrm-pri1, link-type RAW (Raw IP), snapshot length 128 bytes
+2026-09-29 06:48:20.228837 IP 10.250.254.242 > 10.241.0.4: ICMP echo request, id 2, seq 1, length 64
+2026-09-29 06:48:21.241077 IP 10.250.254.242 > 10.241.0.4: ICMP echo request, id 2, seq 2, length 64
+2026-09-29 06:48:22.265189 IP 10.250.254.242 > 10.241.0.4: ICMP echo request, id 2, seq 3, length 64
+2026-09-29 06:48:24.272618 IP 10.250.254.242.46108 > 10.241.0.4.8080: Flags [S], seq 2991265062, win 64240, options [mss 1460,sackOK,TS val 3325936311 ecr 0,nop,wscale 7], length 0
+2026-09-29 06:48:25.272963 IP 10.250.254.242.46108 > 10.241.0.4.8080: Flags [S], seq 2991265062, win 64240, options [mss 1460,sackOK,TS val 3325937312 ecr 0,nop,wscale 7], length 0
+2026-09-29 06:48:26.296970 IP 10.250.254.242.46108 > 10.241.0.4.8080: Flags [S], seq 2991265062, win 64240, options [mss 1460,sackOK,TS val 3325938336 ecr 0,nop,wscale 7], length 0
+
+6 packets captured
+6 packets received by filter
+0 packets dropped by kernel
+

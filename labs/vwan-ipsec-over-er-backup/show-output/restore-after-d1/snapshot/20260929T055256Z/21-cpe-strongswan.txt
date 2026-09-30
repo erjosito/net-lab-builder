@@ -1,0 +1,25 @@
+# action: read-only evidence capture
+# question_id: Q-CPE-IPSEC
+# plane: cpe-ipsec
+# expected_effect: StrongSwan connections and SAs match the intended private/public overlay health.
+# utc_started: 2026-09-29T05:57:29.2785704Z
+# utc_ended: 2026-09-29T05:57:52.6625020Z
+# local_started: 2026-09-29T07:57:29.2785704+02:00
+# local_ended: 2026-09-29T07:57:52.6625020+02:00
+# command: gcloud compute ssh cpe-ver-09281131 --zone europe-north2-c --project <GCP_PROJECT_ID> --command 'sudo swanctl --list-sas --raw; sudo swanctl --list-conns --raw'
+# exit_code: 1
+# stdout:
+
+# stderr:
+FATAL ERROR: Network error: Connection timed out
+
+Recommendation: To check for possible causes of SSH connectivity issues and get
+recommendations, rerun the ssh command with the --troubleshoot option.
+
+gcloud compute ssh cpe-ver-09281131 --project=<GCP_PROJECT_ID> --zone=europe-north2-c --troubleshoot
+
+Or, to investigate an IAP tunneling issue:
+
+gcloud compute ssh cpe-ver-09281131 --project=<GCP_PROJECT_ID> --zone=europe-north2-c --troubleshoot --tunnel-through-iap
+
+ERROR: (gcloud.compute.ssh) [C:\Users\jomore\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\sdk\plink.exe] exited with return code [1].

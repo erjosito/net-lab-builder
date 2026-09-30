@@ -27,28 +27,66 @@ function Invoke-CpeAction {
 
 function Set-VxcState {
     param([bool]$Primary, [bool]$Secondary, [bool]$Gcp)
-    foreach ($name in 'MEGAPORT_ACCESS_KEY','MEGAPORT_SECRET_KEY') {
-        if (-not [Environment]::GetEnvironmentVariable($name, 'Process')) {
-            $value = [Environment]::GetEnvironmentVariable($name, 'User')
-            if ($value) { [Environment]::SetEnvironmentVariable($name, $value, 'Process') }
+
+    $accessKey = if ($env:MEGAPORT_ACCESS_KEY) {
+        $env:MEGAPORT_ACCESS_KEY
+    } else {
+        [Environment]::GetEnvironmentVariable('MEGAPORT_ACCESS_KEY', 'User')
+    }
+    $secretKey = if ($env:MEGAPORT_SECRET_KEY) {
+        $env:MEGAPORT_SECRET_KEY
+    } else {
+        [Environment]::GetEnvironmentVariable('MEGAPORT_SECRET_KEY', 'User')
+    }
+    if (-not $accessKey -or -not $secretKey) {
+        throw 'Megaport M2M credentials are unavailable through the approved environment path.'
+    }
+
+    $basic = [Convert]::ToBase64String(
+        [Text.Encoding]::ASCII.GetBytes("${accessKey}:${secretKey}")
+    )
+    $token = (Invoke-RestMethod -Method Post -Uri 'https://auth-m2m.megaport.com/oauth2/token' `
+        -Headers @{ Authorization = "Basic $basic" } `
+        -ContentType 'application/x-www-form-urlencoded' `
+        -Body 'grant_type=client_credentials').access_token
+    if (-not $token) { throw 'Megaport authentication did not return an access token.' }
+
+    $desired = [ordered]@{
+        ([string]$inventory.megaport.vxcUids.azurePrimary) = $Primary
+        ([string]$inventory.megaport.vxcUids.azureSecondary) = $Secondary
+        ([string]$inventory.megaport.vxcUids.gcp) = $Gcp
+    }
+    foreach ($entry in $desired.GetEnumerator()) {
+        $body = "{`"shutdown`":$($entry.Value.ToString().ToLowerInvariant())}"
+        $status = & curl.exe --silent --show-error --output NUL --write-out '%{http_code}' `
+            --request PUT "https://api.megaport.com/v3/product/vxc/$($entry.Key)/" `
+            --header "Authorization: Bearer $token" `
+            --header 'Content-Type: application/json' `
+            --data $body
+        if ($LASTEXITCODE -ne 0 -or $status -notin @('200','202','303')) {
+            throw "Megaport VXC update failed for $($entry.Key) (HTTP $status)."
         }
     }
-    $env:TF_VAR_megaport_access_key = $env:MEGAPORT_ACCESS_KEY
-    $env:TF_VAR_megaport_secret_key = $env:MEGAPORT_SECRET_KEY
-    $env:GOOGLE_OAUTH_ACCESS_TOKEN = (gcloud auth print-access-token).Trim()
-    if (-not $env:GOOGLE_OAUTH_ACCESS_TOKEN) {
-        throw 'Unable to acquire a GCP access token for the fault-state Terraform apply.'
-    }
-    Push-Location $TerraformDirectory
-    try {
-        terraform apply -input=false -auto-approve "-var-file=$TerraformVarFile" `
-            -var deploy_megaport=true `
-            -var "megaport_azure_primary_shutdown=$($Primary.ToString().ToLowerInvariant())" `
-            -var "megaport_azure_secondary_shutdown=$($Secondary.ToString().ToLowerInvariant())" `
-            -var "megaport_gcp_shutdown=$($Gcp.ToString().ToLowerInvariant())"
-        if ($LASTEXITCODE -ne 0) { throw 'Megaport VXC state apply failed.' }
-    } finally {
-        Pop-Location
+
+    $deadline = (Get-Date).AddMinutes(10)
+    do {
+        Start-Sleep -Seconds 15
+        $pending = @()
+        foreach ($entry in $desired.GetEnumerator()) {
+            $product = (Invoke-RestMethod -Method Get `
+                -Uri "https://api.megaport.com/v2/product/$($entry.Key)" `
+                -Headers @{ Authorization = "Bearer $token" }).data
+            if (
+                [bool]$product.shutdown -ne $entry.Value -or
+                [bool]$product.up -eq $entry.Value
+            ) {
+                $pending += $product.productName
+            }
+        }
+    } while ($pending.Count -gt 0 -and (Get-Date) -lt $deadline)
+
+    if ($pending.Count -gt 0) {
+        throw "Megaport VXC state did not converge: $($pending -join ', ')."
     }
 }
 

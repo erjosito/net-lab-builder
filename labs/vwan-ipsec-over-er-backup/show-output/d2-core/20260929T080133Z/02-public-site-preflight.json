@@ -1,0 +1,59 @@
+{
+  "addressSpace": {
+    "addressPrefixes": [
+      "10.253.2.0/24"
+    ]
+  },
+  "bgpProperties": null,
+  "deviceProperties": {
+    "deviceModel": null,
+    "deviceVendor": null,
+    "linkSpeedInMbps": 0
+  },
+  "etag": "W/\"<REDACTED-GUID>\"",
+  "id": "/subscriptions/<REDACTED-GUID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnSites/site-gcp-inet",
+  "ipAddress": null,
+  "isSecuritySite": false,
+  "location": "swedencentral",
+  "name": "site-gcp-inet",
+  "o365Policy": {
+    "breakOutCategories": {
+      "allow": false,
+      "default": false,
+      "optimize": false
+    }
+  },
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+  "siteKey": null,
+  "tags": {
+    "created_by": "copilot-lab",
+    "lab": "true",
+    "lab_name": "vwan-ipsec-over-er-backup"
+  },
+  "type": "Microsoft.Network/vpnSites",
+  "virtualWan": {
+    "id": "/subscriptions/<REDACTED-GUID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualWans/vwan-ver-09281131",
+    "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+  },
+  "vpnSiteLinks": [
+    {
+      "bgpProperties": {
+        "asn": 65050,
+        "bgpPeeringAddress": "10.250.254.241"
+      },
+      "etag": "W/\"<REDACTED-GUID>\"",
+      "fqdn": null,
+      "id": "/subscriptions/<REDACTED-GUID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnSites/site-gcp-inet/vpnSiteLinks/site-gcp-inet",
+      "ipAddress": "34.51.158.147",
+      "linkProperties": {
+        "linkProviderName": null,
+        "linkSpeedInMbps": 50
+      },
+      "name": "site-gcp-inet",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+      "type": "Microsoft.Network/vpnSites/vpnSiteLinks"
+    }
+  ]
+}

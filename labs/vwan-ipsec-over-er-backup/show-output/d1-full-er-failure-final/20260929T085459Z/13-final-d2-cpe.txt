@@ -1,0 +1,117 @@
+Warning: Permanently added '[localhost]:22022' (ED25519) to the list of known hosts.
+[IKE] establishing CHILD_SA pri0{5}
+[ENC] generating CREATE_CHILD_SA request 2 [ SA No TSi TSr ]
+[NET] sending packet: from 10.250.0.10[4500] to 10.240.0.4[4500] (208 bytes)
+[NET] received packet: from 10.240.0.4[4500] to 10.250.0.10[4500] (224 bytes)
+[ENC] parsed CREATE_CHILD_SA response 2 [ SA No TSi TSr ]
+[CFG] selected proposal: ESP:AES_CBC_256/HMAC_SHA2_256_128/NO_EXT_SEQ
+[IKE] CHILD_SA pri0{5} established with SPIs ccc706b1_i 9ff3d25c_o and TS 0.0.0.0/0 === 0.0.0.0/0
+initiate completed successfully
+[IKE] establishing CHILD_SA pri1{6}
+[ENC] generating CREATE_CHILD_SA request 2 [ SA No TSi TSr ]
+[NET] sending packet: from 10.250.0.10[4500] to 10.240.0.5[4500] (208 bytes)
+[NET] received packet: from 10.240.0.5[4500] to 10.250.0.10[4500] (224 bytes)
+[ENC] parsed CREATE_CHILD_SA response 2 [ SA No TSi TSr ]
+[CFG] selected proposal: ESP:AES_CBC_256/HMAC_SHA2_256_128/NO_EXT_SEQ
+[IKE] CHILD_SA pri1{6} established with SPIs c4f84acf_i 66255890_o and TS 0.0.0.0/0 === 0.0.0.0/0
+initiate completed successfully
+[IKE] establishing CHILD_SA pub0{7}
+[ENC] generating CREATE_CHILD_SA request 2 [ SA No TSi TSr ]
+[NET] sending packet: from 10.250.0.10[4500] to 74.158.47.254[4500] (208 bytes)
+[NET] received packet: from 74.158.47.254[4500] to 10.250.0.10[4500] (224 bytes)
+[ENC] parsed CREATE_CHILD_SA response 2 [ SA No TSi TSr ]
+[CFG] selected proposal: ESP:AES_CBC_256/HMAC_SHA2_256_128/NO_EXT_SEQ
+[IKE] CHILD_SA pub0{7} established with SPIs cefc2ac2_i d757fe3e_o and TS 0.0.0.0/0 === 0.0.0.0/0
+initiate completed successfully
+[IKE] establishing CHILD_SA pub1{8}
+[ENC] generating CREATE_CHILD_SA request 2 [ SA No TSi TSr ]
+[NET] sending packet: from 10.250.0.10[4500] to 74.158.80.26[4500] (208 bytes)
+[NET] received packet: from 74.158.80.26[4500] to 10.250.0.10[4500] (224 bytes)
+[ENC] parsed CREATE_CHILD_SA response 2 [ SA No TSi TSr ]
+[CFG] selected proposal: ESP:AES_CBC_256/HMAC_SHA2_256_128/NO_EXT_SEQ
+[IKE] CHILD_SA pub1{8} established with SPIs c538f2d0_i 5eec98b0_o and TS 0.0.0.0/0 === 0.0.0.0/0
+initiate completed successfully
+pub1: #4, ESTABLISHED, IKEv2, fa6d92266b246582_i* 1ef029a1820b9f19_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.80.26' @ 74.158.80.26[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 66s ago, rekeying in 13145s
+  pub1: #2, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 66s ago, rekeying in 3179s, expires in 3894s
+    in  cdf368b5 (-|0x000001a5),   2406 bytes,    39 packets,    23s ago
+    out f710cbac (-|0x000001a5),    600 bytes,    10 packets,    29s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+  pub1: #8, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 20s ago, rekeying in 3284s, expires in 3940s
+    in  c538f2d0 (-|0x000001a5),    780 bytes,    12 packets,     3s ago
+    out 5eec98b0 (-|0x000001a5),      0 bytes,     0 packets
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pub0: #3, ESTABLISHED, IKEv2, e6169ec437aeb294_i* 8906b9684d19c54f_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.47.254' @ 74.158.47.254[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 66s ago, rekeying in 14057s
+  pub0: #1, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 66s ago, rekeying in 3314s, expires in 3894s
+    in  cd0cf02d (-|0x000001a4),   2321 bytes,    38 packets,    25s ago
+    out be812fa0 (-|0x000001a4),    600 bytes,    10 packets,    29s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+  pub0: #7, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 21s ago, rekeying in 3294s, expires in 3940s
+    in  cefc2ac2 (-|0x000001a4),    942 bytes,    15 packets,     3s ago
+    out d757fe3e (-|0x000001a4),      0 bytes,     0 packets
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri1: #2, ESTABLISHED, IKEv2, b326bcfa540e7a23_i* 18cf180e814f324a_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.5' @ 10.240.0.5[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 66s ago, rekeying in 13607s
+  pri1: #4, reqid 4, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 66s ago, rekeying in 3183s, expires in 3894s
+    in  c8af4425 (-|0x0000019b),   6558 bytes,    92 packets,    21s ago
+    out bd95e50c (-|0x0000019b),   8723 bytes,   143 packets,    21s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+  pri1: #6, reqid 4, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 21s ago, rekeying in 3481s, expires in 3939s
+    in  c4f84acf (-|0x0000019b),   2132 bytes,    32 packets,     1s ago
+    out 66255890 (-|0x0000019b),   3068 bytes,    48 packets,     1s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri0: #1, ESTABLISHED, IKEv2, 8e69a9fdafd06ca0_i* 11f6973ed477a95b_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.4' @ 10.240.0.4[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 66s ago, rekeying in 13175s
+  pri0: #3, reqid 3, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 66s ago, rekeying in 3326s, expires in 3894s
+    in  cd986129 (-|0x0000019a),   5118 bytes,    74 packets,    24s ago
+    out 971272ec (-|0x0000019a),   7397 bytes,   121 packets,    24s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+  pri0: #5, reqid 3, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 21s ago, rekeying in 3221s, expires in 3939s
+    in  ccc706b1 (-|0x0000019a),   2132 bytes,    32 packets,     2s ago
+    out 9ff3d25c (-|0x0000019a),   3188 bytes,    51 packets,     2s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+
+IPv4 Unicast Summary (VRF default):
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 135
+RIB entries 5, using 920 bytes of memory
+Peers 4, using 2892 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+10.240.0.12     4      65515        52        53        0    0    0 00:00:03            2        1 N/A
+10.240.0.13     4      65515        42        46        0    0    0 00:00:04       Active        0 N/A
+169.254.21.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.22.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+
+Total number of neighbors 4
+cat: /etc/vwan-lab/network.env: Permission denied

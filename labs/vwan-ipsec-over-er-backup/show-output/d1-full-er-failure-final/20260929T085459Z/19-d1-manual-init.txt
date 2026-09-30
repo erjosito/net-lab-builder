@@ -1,0 +1,28 @@
+Warning: Permanently added '[localhost]:22022' (ED25519) to the list of known hosts.
+[IKE] initiating IKE_SA pri0[21] to 10.240.0.4
+initiate failed: establishing CHILD_SA 'pri0' failed
+[ENC] generating IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) N(FRAG_SUP) N(HASH_ALG) N(REDIR_SUP) ]
+[NET] sending packet: from 10.250.0.10[500] to 10.240.0.4[500] (336 bytes)
+[NET] received packet: from 10.240.0.4[500] to 10.250.0.10[500] (364 bytes)
+[ENC] parsed IKE_SA_INIT response 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V ]
+[IKE] received MS NT5 ISAKMPOAKLEY v9 vendor ID
+[IKE] received MS-Negotiation Discovery Capable vendor ID
+[CFG] selected proposal: IKE:AES_CBC_256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+[IKE] authentication of '10.250.0.10' (myself) with pre-shared key
+[IKE] no shared key found for '10.250.0.10' - '10.240.0.4'
+initiate failed: establishing CHILD_SA 'pri1' failed
+[IKE] initiating IKE_SA pri1[22] to 10.240.0.5
+[ENC] generating IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) N(FRAG_SUP) N(HASH_ALG) N(REDIR_SUP) ]
+[NET] sending packet: from 10.250.0.10[500] to 10.240.0.5[500] (336 bytes)
+[NET] received packet: from 10.240.0.5[500] to 10.250.0.10[500] (364 bytes)
+[ENC] parsed IKE_SA_INIT response 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V ]
+[IKE] received MS NT5 ISAKMPOAKLEY v9 vendor ID
+[IKE] received MS-Negotiation Discovery Capable vendor ID
+[CFG] selected proposal: IKE:AES_CBC_256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+[IKE] authentication of '10.250.0.10' (myself) with pre-shared key
+[IKE] no shared key found for '10.250.0.10' - '10.240.0.5'
+initiate failed: establishing CHILD_SA 'pub0' failed
+[IKE] retransmit 5 of request with message ID 0
+[NET] sending packet: from 10.250.0.10[500] to 74.158.47.254[500] (336 bytes)
+[IKE] giving up after 5 retransmits
+[IKE] establishing IKE_SA failed, peer not responding

@@ -1,0 +1,6 @@
+try {
+  & 'C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy\Collect-MegaportReadOnly.ps1' -OutputPath 'C:\Users\jomore\AppData\Local\Temp\megaport-readonly-20260928T200440Z.json' -InventoryPath 'C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\config\inventory.json' -ReadOnly
+  Get-Content 'C:\Users\jomore\AppData\Local\Temp\megaport-readonly-20260928T200440Z.json' -Raw
+} finally {
+  Remove-Item 'C:\Users\jomore\AppData\Local\Temp\megaport-readonly-20260928T200440Z.json' -Force -ErrorAction SilentlyContinue
+}

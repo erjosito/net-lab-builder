@@ -1,0 +1,8 @@
+Write-Output 'ANCHOR_COMMIT=f75c1b3'
+Write-Output 'ANCHOR_TIME=2026-09-28T17:40:44+02:00'
+Write-Output 'AZURE_ACTIVITY_WRITES'
+az monitor activity-log list --resource-group 'rg-vwan-ipsec-over-er-09281131' --start-time '2026-09-28T17:40:44+02:00' --output json --query "[?contains(operationName.value, 'write') || contains(operationName.value, 'delete') || contains(operationName.value, 'action')]"
+Write-Output 'GCP_ADMIN_ACTIVITY'
+gcloud logging read 'logName:"cloudaudit.googleapis.com%2Factivity" AND timestamp>="2026-09-28T17:40:44+02:00"' --project 'gcp-vwan-eripsec-09281131' --limit=100 --format=json
+Write-Output 'CPE_CONFIG_MTIMES_AND_SERVICE_LOG'
+gcloud compute ssh 'cpe-ver-09281131' --zone 'europe-north2-c' --project 'gcp-vwan-eripsec-09281131' --quiet --command 'sudo stat -c "%y %n" /etc/frr/frr.conf /etc/swanctl/conf.d/vwan.conf /etc/vwan-lab/network.env /etc/nftables.d-vwan-lab.conf 2>&1; sudo journalctl --since "2026-09-28T17:40:44+02:00" -u vwan-lab-network.service -u vwan-lab-ipsec.service -u frr --no-pager'

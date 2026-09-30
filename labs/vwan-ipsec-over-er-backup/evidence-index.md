@@ -2,7 +2,7 @@
 
 This is the local audit index. It is intentionally more detailed than the eventual blog post.
 
-Generated UTC: 2026-09-28T20:08:13.9435933Z
+Generated UTC: 2026-09-28T20:09:25.1742355Z
 
 ## Scenario and question coverage
 
@@ -567,6 +567,7 @@ Generated UTC: 2026-09-28T20:08:13.9435933Z
 | 2026-09-28T20:07:11.5146458+00:00 | live-readonly | `Q-LIVE-INVENTORY-COMPLETENESS` | query/action | 0 | List every runtime inventory field as null, empty or non-null without emitting its value. | [show-output/live-readonly/20260928T200440Z/09-inventory-null-status/20260928T200711512Z-query-action.metadata.json](show-output/live-readonly/20260928T200440Z/09-inventory-null-status/20260928T200711512Z-query-action.metadata.json) |
 | 2026-09-28T20:07:18.3466788+00:00 | live-readonly | `Q-LIVE-COST-EXPOSURE` | query/action | 0 | Capture available Azure actual cost, GCP billing/resource exposure and the live Megaport monthly commitment without placing an order. | [show-output/live-readonly/20260928T200440Z/10-cost-commitment-exposure/20260928T200718344Z-query-action.metadata.json](show-output/live-readonly/20260928T200440Z/10-cost-commitment-exposure/20260928T200718344Z-query-action.metadata.json) |
 | 2026-09-28T20:07:37.8161739+00:00 | live-readonly | `Q-LIVE-POST-F75C1B3-MUTATIONS` | query/action | 1 | Determine whether Azure, GCP or CPE logs show a live mutation after commit f75c1b3; Megaport mutation history is not inferred from current state. | [show-output/live-readonly/20260928T200440Z/11-post-f75c1b3-mutation-check/20260928T200737814Z-query-action.metadata.json](show-output/live-readonly/20260928T200440Z/11-post-f75c1b3-mutation-check/20260928T200737814Z-query-action.metadata.json) |
+| 2026-09-28T20:09:17.2577077+00:00 | live-readonly | `Q-LIVE-READONLY-VERDICT` | assertion/assertion | 0 | Answer the live mapping and post-f75c1b3 mutation questions from the single read-only bundle. | [show-output/live-readonly/20260928T200440Z/12-assertion-summary/20260928T200917232Z-assertion-assertion.metadata.json](show-output/live-readonly/20260928T200440Z/12-assertion-summary/20260928T200917232Z-assertion-assertion.metadata.json) |
 
 ## Known audit gaps
 

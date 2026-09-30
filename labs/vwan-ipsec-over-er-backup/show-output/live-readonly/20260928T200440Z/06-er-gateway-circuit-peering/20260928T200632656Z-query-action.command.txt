@@ -1,0 +1,6 @@
+Write-Output 'ER_GATEWAY_API_VERSION=2024-10-01'
+az rest --method get --url 'https://management.azure.com/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteGateways/ergw-ver-09281131?api-version=2024-10-01' --output json
+Write-Output 'ER_CIRCUIT'
+az network express-route show --resource-group 'rg-vwan-ipsec-over-er-09281131' --name 'er-ver-09281131' --output json
+Write-Output 'ER_PRIVATE_PEERING'
+az network express-route peering show --resource-group 'rg-vwan-ipsec-over-er-09281131' --circuit-name 'er-ver-09281131' --name 'AzurePrivatePeering' --output json

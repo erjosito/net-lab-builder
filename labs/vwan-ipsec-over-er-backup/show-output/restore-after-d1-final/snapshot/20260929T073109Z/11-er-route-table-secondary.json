@@ -1,0 +1,108 @@
+# action: read-only evidence capture
+# question_id: Q-MSEE-ROUTES
+# plane: azure-msee
+# expected_effect: Primary and secondary MSEE route tables expose the expected underlay routes and no overlay shortcut.
+# utc_started: 2026-09-29T07:32:37.3723742Z
+# utc_ended: 2026-09-29T07:32:53.8054240Z
+# local_started: 2026-09-29T09:32:37.3723742+02:00
+# local_ended: 2026-09-29T09:32:53.8054240+02:00
+# command: az network express-route list-route-tables -g rg-vwan-ipsec-over-er-09281131 -n er-ver-09281131 --peering-name AzurePrivatePeering --path secondary -o json
+# exit_code: 0
+# stdout:
+{
+  "value": [
+    {
+      "locPrf": "100",
+      "network": "10.240.0.0/24",
+      "nextHop": "10.240.0.14*",
+      "path": "65515 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.240.0.0/24",
+      "nextHop": "10.240.0.15",
+      "path": "65515 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.240.0.0/24",
+      "nextHop": "169.254.148.93",
+      "path": "65060 12076 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.241.0.0/24",
+      "nextHop": "10.240.0.14*",
+      "path": "65515 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.241.0.0/24",
+      "nextHop": "10.240.0.15",
+      "path": "65515 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.241.0.0/24",
+      "nextHop": "169.254.148.93",
+      "path": "65060 12076 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.250.0.10/32",
+      "nextHop": "169.254.148.93",
+      "path": "65060 16550 ?\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.253.2.0/24",
+      "nextHop": "10.240.0.15*",
+      "path": "65515 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.253.2.0/24",
+      "nextHop": "10.240.0.14",
+      "path": "65515 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "10.253.2.0/24",
+      "nextHop": "169.254.148.93",
+      "path": "65060 12076 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "169.254.113.248/29",
+      "nextHop": "169.254.148.93",
+      "path": "65060 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "169.254.148.88/30",
+      "nextHop": "169.254.148.93",
+      "path": "65060 I\n                    ",
+      "weight": 0
+    },
+    {
+      "locPrf": "100",
+      "network": "169.254.148.92/30",
+      "nextHop": "169.254.148.93",
+      "path": "65060 I\n                    ",
+      "weight": 0
+    }
+  ]
+}
+# stderr:
+WARNING: This command is in preview and under development. Reference and support levels: https://aka.ms/CLI_refstatus

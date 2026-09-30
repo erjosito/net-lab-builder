@@ -1,0 +1,49 @@
+# action: read-only evidence capture
+# question_id: Q-ROUTE-VHUB
+# plane: azure-vhub
+# expected_effect: vHub effective routes match the active design and fault state.
+# utc_started: 2026-09-29T06:18:45.9449548Z
+# utc_ended: 2026-09-29T06:19:03.9920595Z
+# local_started: 2026-09-29T08:18:45.9449548+02:00
+# local_ended: 2026-09-29T08:19:03.9920595+02:00
+# command: az network vhub get-effective-routes -g rg-vwan-ipsec-over-er-09281131 -n vhub-ver-09281131 --resource-type RouteTable --resource-id /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubRouteTables/defaultRouteTable -o json
+# exit_code: 0
+# stdout:
+{
+  "value": [
+    {
+      "addressPrefixes": [
+        "10.250.0.10/32"
+      ],
+      "asPath": "12076-65060-16550",
+      "nextHopType": "ExpressRouteGateway",
+      "nextHops": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteGateways/ergw-ver-09281131"
+      ],
+      "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteGateways/ergw-ver-09281131"
+    },
+    {
+      "addressPrefixes": [
+        "10.253.2.0/24"
+      ],
+      "asPath": "",
+      "nextHopType": "VPN_S2S_Gateway",
+      "nextHops": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131"
+      ],
+      "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131"
+    },
+    {
+      "addressPrefixes": [
+        "10.241.0.0/24"
+      ],
+      "nextHopType": "Virtual Network Connection",
+      "nextHops": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubVirtualNetworkConnections/conn-workload"
+      ],
+      "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubVirtualNetworkConnections/conn-workload"
+    }
+  ]
+}
+# stderr:
+

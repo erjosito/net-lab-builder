@@ -1,4 +1,58 @@
 **Archived entries:** see `history-archive.md`
+**Archived entries:** see \history-archive.md\
+
+## Learnings (2026-09-28 - vwan-ipsec-over-er-backup validation harness)
+
+- Audit-grade network evidence is a correlated unit, not a single output file: before state, exact sanitized action, separate stdout/stderr, exit code, during-state probes/packets, after state, assertion and restore must share one correlation ID. Preserve failed commands because they often isolate the platform boundary more clearly than the successful correction.
+- Keep a generated local evidence index that maps technical questions to raw files and explicitly lists gaps. The local lab artifact should carry command-level detail; the public narrative should cite conclusions without duplicating the transcript.
+- A negative managed-network experiment needs an explicit prerequisite ladder. For a floating BGP-neighbor test, API rejection or BGP failure is not evidence until endpoint reachability, supported address ownership, PSKs, IKE/IPsec, host routes, interface identity and routing-daemon syntax are independently healthy.
+- Cross-design route experiments need disjoint prefixes plus a machine-enforced contamination gate. Checking only the intended prefix is insufficient; the reset must reject every prefix, neighbor, static route and policy artifact belonging to the previous design.
+- Keep evidence collection read-only and make the mutation owner publish a paired, tested restore before fault injection. This preserves Niobe's diagnostic boundary and prevents an evidence script from becoming an unreviewed deployment/fault tool.
+- vWAN managed route views can require API-specific POST requests rather than a stable single CLI command. Treat those requests as versioned deployment-inventory inputs from Trinity/Tank, capture their failures verbatim, and never substitute resource provisioning state for route evidence.
+
+## Learnings (2026-08-18 — afd-edge-actions-jwt-validation live validation)
+
+- **Hyperlight sandbox: `crypto`, `fetch`, `atob`, `TextEncoder` all `undefined`.** S1-GATE = CONDITIONAL. Claims-only enforcement only. Origin `jose` RS256 is the only cryptographic security boundary. Results are deterministic across all AFD PoPs.
+- **`EdgeActionConsoleLog` is a top-level LAW table, not an AzureDiagnostics category.** Query as `EdgeActionConsoleLog | ...` not `AzureDiagnostics | where Category == "EdgeActionConsoleLog"`. There is also `EdgeActionServiceLog` (platform events) and `AppServiceHTTPLogs` (origin access).
+- **`edgeActionsStatusCode_s = 200` ≠ client got 200.** It means EA executed without timeout/exception. A client-facing 401 still shows `200` in this field. `503` = fail-open.
+- **`httpStatusCode_d = None` when EA rejects.** When EA synthesises a 401/403 response, the origin is never called, so the AFD access log records no origin HTTP status. Use `EdgeActionConsoleLog` reason codes for EA-level verdicts.
+- **EA response body is always AFD's default HTML 401/403 page.** EA code can only set `event.response.response_code` (200/401/403). No custom body is possible from EA code.
+- **The two-rule App Service access restriction pattern is validated by S8 (PASS).** Direct callers to `.azurewebsites.net` get HTTP 403 "Ip Forbidden" — ARM-native, no application code.
+- **Tampered token test (S6 CONDITIONAL): EA passes (CLAIMS_ONLY/ACCEPT), origin rejects (ERR_JWKS_MULTIPLE_MATCHING_KEYS).** Defence-in-depth holds. No NIOBE-CRIT-001.
+- **`deployVersionCode` LRO timing:** `validationStatus=Succeeded` appears ~15s after POST but `addAttachment` requires ~17 min. A deployment script that polls validationStatus and proceeds immediately will fail.
+- **`swapDefault` is broken** (always 400). Set `isDefaultVersion=true` at upload time.
+- **`addAttachment` direct call creates dangling null attachments.** Always use AFD rule PUT to trigger attachment. Dangling attachments cannot be removed via REST API; require portal/Support.
+- **Entra admin consent = blocking step in any application-permission flow.** Must be documented as a separate manual step with tenant admin coordination. `az ad app permission admin-consent --id <client-app-id>`.
+- **Audience format matters exactly:** `api://<app-id>` (with prefix), not bare GUID. EA AUD_FAIL fires on bare GUID.
+
+
+- **JWT sample gap is real and documented:** `Azure/EdgeActionsSamples` has no JWT sample
+  as of 2026-08-17. The capability probe (S1) is the only authoritative source of truth
+  for crypto API availability. Any harness that assumes `crypto.subtle` or `fetch` are
+  available before S1 evidence is invalid.
+- **SecureString token pattern for PS harnesses:** Tokens acquired via `Invoke-RestMethod`
+  must be immediately wrapped in `ConvertTo-SecureString -AsPlainText -Force`. Callers
+  receive a SecureString; the plain-text materialisation should occur only inside the HTTP
+  header assignment, then `Clear-Variable`. No token value ever reaches a file or `Write-Host`.
+- **Tampered JWT construction without disk leakage:** Split on `.`, decode middle part with
+  `base64url → UTF8 → JSON`, apply overrides, re-encode, reassemble with original sig bytes.
+  The full three-part tampered token lives only in a SecureString; the evidence file contains
+  only the decoded payload JSON.
+- **Sanitization patterns for edge/Entra scenarios (four critical patterns):**
+  1. Three-part base64url JWT shape
+  2. `Authorization: Bearer <value>` header in HTTP logs
+  3. `/subscriptions/<guid>` in resource IDs
+  4. `login.microsoftonline.com/<guid>` in Entra issuer URLs
+  All four must be scrubbed before commit; `Confirm-Sanitization.ps1` enforces this.
+- **Edge Action response contract is narrow:** Only 200/401/403 are valid return codes from
+  Edge Action code. Fail-open on exception/timeout is the platform's undocumented behaviour
+  (`edgeActionsStatusCode = 503`). S9 is the empirical proof; design correctly treats this
+  as the pivotal scenario.
+- **Two-rule App Service access restriction is required (not one):** Health probes carry
+  `X-FD-HealthProbe: 1` but NOT `X-Azure-FDID`. A single FDID rule blocks probes. Always
+  use rule 100 (health probe path) + rule 200 (FDID path) pattern.
+- **README Blog callout first, then Designs studied, then topology:** Per charter contract
+  for all net-lab-builder README files.
 
 # Project Context
 
@@ -24,3 +78,368 @@
 - A, B, C, D1, D2, E, F1, and F2 have now all been applied and individually verified by the implementer or designer for their intended hops.
 - **S1 is still not pass-ready** because the authoritative CE-to-spoke-NVA ping remains down.
 - When the next round starts, begin from Trinity's analysis of `labs/sap-rise-scoped-peering-fwaas/show-output/s1-spoke-reachability-fix-20260929T173839Z/` rather than re-running the old BGP checks first.
+**Phase 3 Gate C — FULL PASS / BUG NOT REPRODUCED — vwan-routemap-summarization**
+
+### Gate C outcome
+
+RI PrivateTraffic enabled on hub-eu2 (Tank). Measured both NVAs immediately after.
+RI enablement order: hub-eu1 FIRST (Gate B, ~09:30), hub-eu2 SECOND (Gate C, ~11:30).
+
+| Hub | NVA | RI state | BGP | Summaries | /24 leaks | Verdict |
+|-----|-----|----------|-----|-----------|-----------|---------|
+| hub-eu1 | nva1 | ON | Established | **6/6** | **0** | **PASS** |
+| hub-eu2 | nva2 | ON (new) | Established | **6/6** | **0** | **PASS** |
+
+**Headline: Missing-summary bug NOT reproduced under sequential RI enablement.**
+
+### Key empirical findings
+
+1. **Bug not reproduced.** Sequential RI enablement (stable state, no concurrent churn) did not
+   trigger the missing-summary condition at any gate (A, B, or C). All 6 summaries present on
+   both NVAs throughout the entire Phase 3 validation sequence.
+
+2. **Route count stable at 37/27 across ALL three gates.** No routes added or lost as RI was
+   progressively enabled. NVA BIRD RIB is driven by BGP from the hub VPN GW and is orthogonal
+   to RI's forwarding table changes.
+
+3. **BGP transparency across both RI enablements.** nva1's vpngw0/vpngw1 timestamps unchanged
+   from Gate A through Gate C (07:37:23/07:37:38 — never reset). nva2's vpngw0 had one brief
+   reconvergence at Gate B (hub-eu1 RI provision, 08:57:07), then was stable through Gate C.
+   Both RI enablements on hub-eu2 itself were BGP-transparent.
+
+4. **defaultRouteTable both hubs: _policy_PrivateTraffic confirmed.** Both hubs carry RFC1918
+   aggregates (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) → AzFW. This is the full RI state.
+   These aggregates did NOT suppress the per-connection route-map advertisement set at any point.
+
+5. **prepend-in AS-path effect is intra-hub.** The prepend-in route-map on hub-eu2 modifies
+   routes received FROM nva2 into hub-eu2. This effect is not visible in nva2's received-route
+   BIRD table. nva2 sees the hub's outbound (summarize-out) advertisement, not the inbound
+   prepend result. Confirmed Succeeded; de-preference mechanism intact at hub level.
+
+6. **Outstanding question for Trinity.** Bug may require concurrent churn: VPN connection
+   re-provisioning + RI enablement in the same time window. Not tested in this sequential lab.
+
+### Key file paths
+
+- show-output/43: both hubs secured + RI Succeeded (L1a)
+- show-output/44: route-maps intact (L1c); prepend-in confirmed
+- show-output/45: both defaultRouteTables with _policy_PrivateTraffic (L1d)
+- show-output/46: both firewalls Succeeded (L1e)
+- show-output/47: nva2 BGP Established (RI-ON)
+- show-output/48: **PRIMARY** nva2 BIRD RIB (6/6, 0 leaks, newly RI-ON hub)
+- show-output/49: nva2 route count (37/27)
+- show-output/50: nva1 BGP Established (stable since Gate A)
+- show-output/51: **PRIMARY** nva1 BIRD RIB (6/6, 0 leaks, both hubs RI-ON)
+- show-output/52: nva1 route count (37/27)
+- validation.md: Gate C section added (FULL PASS, bug not reproduced)
+- decisions/inbox/niobe-gate-c.md: team verdict + repro gap analysis
+
+
+
+### Gate B outcome
+
+RI PrivateTraffic enabled on hub-eu1 (swedencentral). Measured both NVAs immediately after.
+
+| Hub | NVA | RI state | BGP | Summaries | /24 leaks | Verdict |
+|-----|-----|----------|-----|-----------|-----------|---------|
+| hub-eu1 | nva1 | **ON** | vpngw0+vpngw1 Established | **6/6** | **0** | **PASS** |
+| hub-eu2 | nva2 | OFF (control) | vpngw0+vpngw1 Established | **6/6** | **0** | **PASS** |
+
+**Overall: FULL PASS.** RI and route-map summaries coexist without interference.
+
+### Key empirical findings
+
+1. **RI does NOT suppress route-map summaries.** The 10.0.0.0/8 aggregate in hub-eu1's
+   defaultRouteTable (_policy_PrivateTraffic) is a forwarding-layer construct (AzFW next-hop steering).
+   It does not modify the BGP advertisement set outbound to the VPN connection.
+   nva1's BIRD RIB: identical structure to Gate A — 6/6 summaries, 37/27, 0 /24 leaks.
+
+2. **RI enablement is BGP-transparent to the branch NVA.** nva1 vpngw0+vpngw1 timestamps
+   unchanged (07:37:23 / 07:37:38 from Gate A restore). Sessions not reset during RI enablement.
+
+3. **Brief vpngw0 reconvergence on nva2 (08:57:07).** Expected: when hub-eu1 undergoes
+   provisioning, nva2's vpngw0 session briefly reconverged. Not a failure — the RI enablement
+   on a peer hub causes a momentary hub-to-hub topology update that ripples to the non-RI hub's
+   VPN gateway BGP sessions. vpngw1 on nva2 stayed up continuously.
+
+4. **RIB symmetry confirmed.** nva1 (RI-on hub) and nva2 (RI-off hub) show structurally
+   identical RIBs at Gate B — same 6 summaries, same 37/27 count.
+
+### Key file paths
+
+- show-output/34: nva2 birdc show protocols (RI-off control, Established)
+- show-output/35: **PRIMARY** nva2 BIRD RIB (6/6 summaries, RI-off)
+- show-output/36: nva2 route count (37/27)
+- show-output/37: nva1 birdc show protocols (RI-ON hub, Established, timestamps unchanged)
+- show-output/38: **PRIMARY** nva1 BIRD RIB (6/6 summaries, RI-ON hub — key evidence)
+- show-output/39: nva1 route count (37/27)
+- validation.md: Gate B section added (FULL PASS)
+- decisions/inbox/niobe-gate-b.md: team verdict
+
+
+
+### Gate A full re-run outcome
+
+After Tank rebuilt nva1 via `az vm redeploy` (~90 min in swedencentral, clearing the stuck
+RunCommandLinux extension), Niobe completed the full Gate A measurement on both NVAs.
+
+| Hub | NVA | BGP | Summaries | /24 leaks | Verdict |
+|-----|-----|-----|-----------|-----------|---------|
+| hub-eu1 | nva1 | vpngw0+vpngw1 **Established** | **6/6** | **0** | **PASS** |
+| hub-eu2 | nva2 | vpngw0+vpngw1 **Established** | **6/6** | **0** | **PASS** |
+
+**Overall: FULL PASS.** Deploying Azure Firewalls (RI OFF) does NOT break outbound
+route-map summarization on either hub. Gate B (RI enable) may proceed on both hubs.
+
+### Key facts
+
+- Both NVAs: 37 routes / 27 networks in BIRD RIB.
+- 6 summaries confirmed: 10.0.0.0/16, 10.1.0.0/16, 10.2.0.0/16, 10.3.0.0/16, 10.4.0.0/17, 10.4.128.0/17.
+- Non-summary /24s (10.100.0.0/24 GCP, 10.200.0.0/24 nva1 mgmt, 10.201.0.0/24 nva2 mgmt) are infrastructure prefixes outside the route-map scope — not leaks.
+- `az network vhub route-map get-outbound-routes` remains non-functional. Correct syntax confirmed: `--resource-uri <ARM_URI>` (not `--connection-name`). Still returns empty (exit 0, no body). L2 BIRD RIB is the authoritative gate.
+
+### Key file paths
+
+- show-output/23: nva1 birdc show protocols (BGP Established)
+- show-output/24: nva2 birdc show protocols (BGP Established)
+- show-output/25: **PRIMARY** nva1 BIRD RIB (6/6 summaries, 0 leaks)
+- show-output/26: **PRIMARY** nva2 BIRD RIB (6/6 summaries, 0 leaks)
+- show-output/27: nva1 route count (37/27)
+- show-output/28: nva2 route count (37/27)
+- show-output/29: get-outbound-routes API gap (--resource-uri syntax confirmed, still empty)
+- show-output/30: AzFW Succeeded + RI = [] both hubs re-confirmed
+- validation.md: Phase 3 Gate A section updated to FULL PASS
+- decisions/inbox/niobe-gate-a-full.md: team verdict
+
+### CLI gotcha: --resource-uri vs --connection-name
+
+`az network vhub route-map get-outbound-routes` requires `--resource-uri <full_ARM_path>`,
+NOT `--connection-name`. The ARM URI must include the full vpnGateway/vpnConnections path:
+  `/subscriptions/<SUB>/resourceGroups/<RG>/providers/Microsoft.Network/vpnGateways/<gw>/vpnConnections/<conn>`
+Even with correct syntax, the API returns empty. Capture this once per gate to document the gap.
+
+
+
+### Gate A outcome
+
+- **hub-eu2/nva2: PASS** — 6/6 summaries (10.0.0.0/16, 10.1.0.0/16, 10.2.0.0/16, 10.3.0.0/16, 10.4.0.0/17, 10.4.128.0/17), 0 /24 leaks, BGP Established (vpngw0+vpngw1), firewall did NOT break route-maps.
+- **hub-eu1/nva1: INCONCLUSIVE** — All control-plane checks PASS; nva1 NVA-level measurement blocked by terminally stuck RunCommandLinux extension (pre-existing fault, persists across restart/deallocation). VPN tunnels not restored. Not a firewall-caused failure.
+- **Overall: CONDITIONAL PASS** — Proceed-to-RI conditionally safe for hub-eu2; Tank must rebuild nva1 before hub-eu1 can be fully measured.
+
+### XFRM restoration procedure (tested, reusable — see .squad/skills/vwan-nva-xfrm-restore/SKILL.md)
+
+Six-step procedure for hub-eu2/nva2 (tested and confirmed):
+1. `ip link add xfrm41 type xfrm dev eth0 if_id 41; ip link set xfrm41 up`
+2. `ip link add xfrm42 type xfrm dev eth0 if_id 42; ip link set xfrm42 up`
+3. `ip route add 192.168.4.12/32 dev xfrm41; ip route add 192.168.4.13/32 dev xfrm42`
+4. `swanctl --load-all`
+5. `swanctl --initiate --child s2s0 --ike vng0 --timeout 30; swanctl --initiate --child s2s1 --ike vng1 --timeout 30`
+6. Wait 75s for BGP convergence
+Total time from deallocated → BGP Established: ~3 minutes.
+
+### `get-outbound-routes` API is non-functional in this config
+
+`az network vhub route-map get-outbound-routes` (preview) consistently returns empty. REST API returns HTTP 404 "No route data was found." Use L2 BIRD RIB (`birdc show route`) as the authoritative measurement for all Gates.
+
+### nva1 stuck extension: persistent across restart
+
+The RunCommandLinux extension on nva1 is terminally stuck. Conflict/409 on invoke; newer persistent API hangs on create/update/delete. Even delete of the resource hangs. VM restart/deallocation does not clear it. Tank must `az vm redeploy` or delete+recreate nva1.
+
+### Key file paths
+
+- show-output/13–20: Gate A evidence files
+- validation.md: Phase 3 Gate A section added with full checklist
+- lessons-learned.md: Phase 3 findings section added
+- .squad/decisions/inbox/niobe-phase3-gate-a.md: verdict for Jose
+- .squad/skills/vwan-nva-xfrm-restore/SKILL.md: reusable XFRM restore skill
+
+## Learnings (2026-07-30T15:21:56+02:00)
+
+**Documentation review pass — vwan-routemap-summarization**
+
+Reviewed and updated three lab files after the Phase 3 audit and failover/failback session:
+
+- **validation.md** (Niobe's file): corrected stale self-reference about README gap (now fixed); tightened Phase 2 summary sentence to remove "awaiting Tank/Kid correction" since the fix was applied in this session.
+- **README.md**: updated "Designs studied" table (Phase 1 → "Deployed/validated" with cycle count; Phase 2 → "Infrastructure deployed, ER connections active"; Phase 3 → "Not started, confirmed 2026-07-30"). Added Phase 2 resources to "Deployed state" section (ER circuits, ER gateways, GCP VPN sites, kv-pe private endpoint, ER connections).
+- **manifest.md**: updated resource inventory table with Phase 2 resources (added Phase column); corrected "Out of scope" section (Phase 2 is deployed, Phase 3 not yet started); added Phase 2 NVA operational note (XFRM persistence gap + startup sequence) to Scenario 3.
+- **decisions/inbox/niobe-phase3-audit.md**: added Oracle (Docs) routing note with 4 structural items that are prose/diagram rewrites, out of Niobe's factual-correction scope.
+
+**Items routed to Oracle:** README intro paragraph, manifest topology ASCII, manifest §6 scenario walkthroughs (Phase 2 repro), manifest §2 in-scope statement.
+
+---
+
+## Learnings (2026-07-30T13:48:36+02:00)
+
+**Failover/failback cycle #4 + Phase 2 documentation gap — routemap-test-rg**
+
+1. **Phase 2 fully deployed (documentation gap).** First audit incorrectly reported ER gateways as having no connections because the query used `--query "connections"` instead of `--query "expressRouteConnections"`. The correct field for ExpressRoute gateway connections is `expressRouteConnections`. Both ergw-eu1 and ergw-eu2 have active ER connections (conn-er-eu1 / conn-er-eu2, both Succeeded). README and manifest.md show Phase 2 as "Not started" — this is a documentation gap requiring Tank/Kid action.
+
+2. **XFRM interfaces not persistent across deallocation.** After VMs are deallocated/started, XFRM interfaces (xfrm41/xfrm42, type xfrm, if_id 41/42) are NOT recreated automatically. Must run: `ip link add xfrm41 type xfrm dev eth0 if_id 41; ip link set xfrm41 up; ip route add 192.168.4.12/32 dev xfrm41` (and same for xfrm42/42). Also: `swanctl --load-all` is needed since strongswan-starter uses ipsec.conf (empty) not swanctl.conf. And `swanctl --initiate --child s2sX --ike vngX` needed since `start_action = trap` does not auto-connect.
+
+3. **Failover cycle #4 CLEAN.** hub-eu2/nva2: 6/6 summaries before and after 45s IPsec+BGP teardown and restart. Phase 2 ER routes visible in nva2 BIRD table (192.168.2.0/23 with ER AS paths, 10.100.0.0/24 via GCP ER).
+
+4. **CLI gotcha: ER gateway field.** `az network express-route gateway show --query connections` returns empty. Correct field: `expressRouteConnections`. Confirm with `az network express-route gateway show -g <rg> -n <gw> -o json | findstr -i connection` to see actual field names.
+
+5. **nva1 run-command stuck.** A complex multiline shell script with mixed PowerShell/bash syntax got stuck in the Azure VM run-command extension. The extension locked nva1 for the entire session, blocking all subsequent run-command attempts. Avoid multi-line scripts with `2>/dev/null` piped grep patterns in PowerShell — use @' '@ heredoc and simple single-line commands.
+
+---
+
+## Learnings (2026-07-30T13:35:49+02:00)
+
+**Phase 3 audit — routemap-test-rg live state**
+
+Ran a full live audit of `routemap-test-rg` on 2026-07-30 to answer "are we in Phase 3?"
+
+**Key findings:**
+1. **Phase 3 NOT started.** No Azure Firewalls (`az network firewall list` → empty), no Firewall Policies, no Routing Intent on any of the 3 hubs. Hub `azureFirewall = null` and `securityProviderName = null` on hub-us, hub-eu1, hub-eu2. All hubs are non-secured virtual hubs.
+
+2. **Phase 2 infrastructure partially deployed (undocumented).** The RG contains 2 ER circuits (er-eu1/swedencentral, er-eu2/westeurope — both Enabled/Provisioned), 2 ER gateways (ergw-eu1, ergw-eu2 — both Succeeded), 4 VPN sites (onprem1/2 + gcp1/2), and a Key Vault private endpoint. However, both ER gateways have `connections = null` — so Phase 2 is infrastructure-deployed but not operationally connected.
+
+3. **Phase 1 substrate intact.** All 3 hubs Provisioned/Succeeded. Route maps `summarize-out` on hub-eu1 and hub-eu2 (Succeeded); `prepend-in` on hub-eu2 (Succeeded).
+
+4. **Sequencing discrepancy.** Jose wants to jump straight to Phase 3 (Azure Firewall + Routing Intent), but docs sequence Phase 2 first. Phase 2 infra already exists with no connections. Team needs to decide: complete Phase 2 first, or clean-skip to Phase 3.
+
+**CLI gotcha:** `az network vhub routing-intent list` requires `--vhub` (short flag), NOT `--vhub-name`. Using `--vhub-name` returns "argument required: --vhub" error.
+
+**Evidence filed:** show-output/08 (resource inventory), 09 (Phase 3 audit), 10 (Phase 2 ER audit).
+**Decisions inbox:** `.squad/decisions/inbox/niobe-phase3-audit.md`
+
+---
+
+## Learnings (2026-06-15T23:32:10+02:00)
+
+**MSEE hairpin IPv6 validation skeleton** — Lab: `msee-hairpin-hns-vwan-ipv6`
+
+**Key insights from charter & charter review:**
+
+1. **IPv6 BGP peer-status capture pattern** — When validating dual-stack ER scenarios, capture HnS ER GW peers separately from vWAN hub BGP connections. HnS uses `az network vnet-gateway list-bgp-peer-status` (old VNet GW API); vWAN uses `az network vhub bgpconnection list` (hub API). Both must show IPv4+IPv6 neighbors up before routing captures are valid.
+
+2. **MSEE hairpin validation layers** — Simpler than multi-hub: only two ER GW layers + two ER circuit layers (no Megaport MCR, no vWAN hub REST inbound/outbound). Route-table captures at ER GW (learned+advertised) + ER circuit (list-route-tables) suffice. Three-layer pattern applies; no fourth (MCR) or fifth (vHub REST) layer needed.
+
+3. **Deliberate-break testing (S4 pattern)** — MSEE hairpin is gated by `allowVirtualWanTraffic` toggle on HnS ER GW. Disabling it drops BGP session within 30–60 sec, breaks both IPv4 and IPv6, then re-enabling restores it symmetrically. This is the critical proof of the hairpin mechanism: hairpin exists ⟺ flag is ON. Evidence: before/after BGP peer state + learned routes + data-plane ping.
+
+4. **Pre-flight gates** — Circuits must be `Provisioned` (not just `Enabled`) and both IPv4+IPv6 peering sub-resources must exist on each circuit. BGP peers must be up before route capture. Path A (ER Direct) also requires ER port status = `Succeeded`.
+
+5. **File count expectation** — ~31 files vs ~35 for vwan-dual-er-symmetric (simpler topology, no MCR BGP, no asymmetric-injection Phase A breakage into cross-region flows). Pre-flight 6 + S1 5 + S2 5 + S3 4 + S4-disable 7 + S4-revert 6 = 33 baseline, minus ~2 for reused evidence paths = ~31.
+
+**Validation skeleton structure:**
+- Pre-flight checks (subscription, circuits, ER ports, BGP peers) — 6 files
+- S1 IPv4 baseline — 5 files (learned-routes, advertised-routes, NIC routes, ping, circuit route-tables)
+- S2 IPv6 primary — 5 files (learned-routes IPv6, advertised-routes IPv6, NIC routes, ping, BGP IPv6 peer)
+- S3 route-table mutual distribution — 4 files (reuse S1/S2 evidence; add vWAN GW learned/advertised pair)
+- S4 deliberate-break (disable + revert) — 13 files (pre-disable baseline, toggle OFF, verify OFF, BGP down, pings fail, learned-routes empty, toggle ON, verify ON, BGP up, pings restored ×2)
+- Total: 18.4 KB skeleton; ~31 show-output files when live
+
+**Designs studied section** — Three rows (Path A ER Direct, Path B Megaport fallback, Path C IPsec VPN) with verdicts TBD; evidence links pending; A is "recommended if S1–S2 pass", B is "not recommended per Jose gate", C is "teaching-only (mechanism differs)". This follows rule #30: every design enumerated by Morpheus gets documented.
+
+**Reuse from vwan-dual-er-symmetric** — Assertion table structure (# | Assertion | Command | Expected | Evidence), three-layer checklist pattern, sanitization checklist, post-deploy validation order, BGP peer-status check pattern. Adapted for simpler topology (no MCR, no vHub REST layers) and dual-stack MSEE-only (no GCP multi-region cross-traffic).
+
+
+---
+
+📌 Team update (2026-07-31T11:01:11Z): **Phase 3 Gates A, B, C FULL PASS — Complete Testing Arc**. Gate A (firewall deploy, RI OFF): 6/6 summaries on both NVAs, 0 /24 leaks, BGP Established. Gate B (RI hub-eu1): 6/6 summaries intact, BGP transparent (session timestamps unchanged from Gate A). Gate C (RI hub-eu2, both hubs now RI-ON): 6/6 summaries survive, BGP stable across all three gates. Missing-summary bug NOT reproduced under sequential stable-state enablement. Root-cause analysis (Trinity): RI operates on data-plane forwarding table; summarize-out operates on BGP advertisement set — orthogonal planes. Gate D concurrent-churn variant designed (dormant) to test race between RI policy-install and VPN connection rekey. Evidence: show-output/23–52. Decisions merged: tank-ri-eu1-enable, tank-ri-eu2-enable, niobe-gate-a/b/c, link-megaport-kv-retrieval, trinity-gate-c-analysis. Next: Jose direction on Gate D concurrent-churn variant.
+
+## 2026-08-06 — Read-only verification of Tank's U1.5 + U2 (dual-hub-interconnect-ars-route-policy)
+
+**Verdict: PARTIAL** — technical execution is a full pass; the documentation/ledger phase was never
+completed (Tank's final response was lost). Nothing in Azure or on the NVAs is unfinished or risky.
+
+- **U1.5 confirmed live** on both NVAs: no `ars_poland_0/1`, no `export_to_poland_ars`, no
+  `route 10.30.0.0/27`, and no nva2 `10.31/10.32` prepend clause in `/etc/bird/bird.conf`. Local hub
+  ARS sessions Established with `Since` byte-identical to the pre-change captures (07:12:12.272 /
+  07:12:13.010 on nva1; 07:12:17.496 / 07:12:20.643 on nva2) — **no flap at any point**. `10.30.0.0/27`
+  gone from both ARS learned sets and both NIC effective-route tables. 9 routes / 6 networks on both.
+  Host backups `bird.conf.pre-u15.*` present; syntax-gate and apply evidence complete.
+- **U2 confirmed live:** `rm-hub1-tmp-assoc` (match `203.0.113.0/24` → Add asPath 64496 → Terminate)
+  associated inbound on `ars-hub1/peer-nva1`; `vnetRoutes.staticRoutes: []`,
+  `propagateStaticRoutes: true`, `vnetLocalRouteOverrideCriteria: Contains` all preserved;
+  `rm-hub1-activate` and all of `ars-hub2` untouched; 4/4 VPN connections `Connected`.
+  **Association left ACTIVE — no rollback.** I re-computed the B1→B2 delta myself: 0 differences
+  across all 9 comparable capture files.
+- **API-version trap (new learning):** `GET .../bgpConnections/<name>?api-version=2024-05-01`
+  silently omits `routingConfiguration` entirely — the association looks absent. Use **2024-10-01 or
+  later** to read or verify an ARS route-map association.
+- **Sanitization CLEAN** (0 raw subscription/tenant IDs, 81 `<SUBSCRIPTION_ID>` placeholders).
+  **No U3/U4/U5 activity.** No commit made (HEAD still `3a137f4`).
+- **Remaining gap = docs only:** `deploy-log.md` (no U1.5/U2 rows, both still "PENDING APPROVAL",
+  G4 still OPEN despite U2 satisfying its closing condition), `validation.md` (both "NOT RUN"),
+  `README.md`/`manifest.md` banners, Tank history, and a missing `tank-u15-u2-execution.md` inbox note.
+  Minimum recovery: **Tank, docs-only** — do **not** re-run U1.5 or U2.
+
+📌 Decision inbox written: `.squad/decisions/inbox/niobe-u15-u2-verification.md`
+
+
+## Learnings (2026-08-19 -- dual-hub-vnra-udr-transit final validation)
+
+- **`allowVirtualNetworkAccess=false` is the silent E1 root cause.** All six peerings were Connected/FullyInSync with allowForwardedTraffic=true yet dropped all data-plane traffic. The flag defaults false in some creation paths; always verify every peering leg with a full GET before testing UDR-steered hub-spoke topologies.
+- **Managed VNRA cross-hub UDR chaining DOES work** once peering flags are correct. Post-fix: 10/10, 0% loss both directions, avg 33/31 ms. The initial failure was a misconfiguration, not a platform limitation.
+- **Managed VNRA is TTL-invisible.** Tracepath shows one visible hop to the remote VM with no intermediate VNRA hops. Hardware forwarding does not decrement TTL. Definitive distinguisher from VM NVA.
+- **Pre-fix VNRA metrics (09-vnra1/2-metrics.json) all zero** -- explained by peering misconfiguration. Post-fix metrics NOT re-queried. Do not assert non-zero post-fix metric values.
+- **E2 (subnet effectiveRoute API) confirmed 404** from regional backend for VirtualNetworkApplianceSubnet. The full observability toolkit is: configured UDRs, spoke NIC effective routes, Network Watcher (spoke), VNRA resource GET, Monitor metrics, peering GET (all legs), end-to-end ping/tracepath.
+- **Retry evidence path:** `show-output/validation/retry-20260819T185118+0200/` files 01-13. File 06-07 = pre-fix still 100% loss; 09 = pre-fix zeros; 10-11 = peering correction + verification; 12-13 = post-fix PASS.
+- **Artifacts updated:** validation.md (stage 1-v3 final), lessons-learned.md (L1 revised + L11 added), README.md (E1 PASS, diagrams index, status table), `.squad/decisions/inbox/niobe-dual-hub-vnra-final-validation.md`.
+- **Lab ready for teardown.** No Azure writes beyond the peering flag correction. No commit or cleanup performed.
+
+---
+
+## 2026-08-20 · Foundry T1 IaC review (non-deploying) — APPROVE
+
+Independently validated Tank's labs/foundry-agent-prompt-vs-hosted-networking/deploy/
+artifacts without creating or modifying any Azure resource.
+
+- `az bicep build main.bicep`: OK, 18 ARM resources (nsg-tools, vnet-tools + 2 subnets,
+  2 peerings, 2 NIC/VM pairs, DNS resolver + 2 endpoints, forwarding ruleset + rule +
+  VNet link, 4 nsg-agentsubnet rules 110/120/125/126).
+- PS AST parse: 0 errors on deploy.ps1 and cleanup.ps1.
+- deploy.ps1: default runs bicep build + ARM validate + what-if only; apply gated by
+  `-Apply` AND exact `Read-Host` match `DEPLOY APPROVED`; `--mode Incremental`.
+- cleanup.ps1: default preview-only; delete gated by `-Delete` AND exact `DELETE APPROVED`;
+  fixed T2 arrays (VPN conns/GWs/PIPs, vm-onprem-*, nsg-echo-vms, vnet-onprem) and stale
+  `nsg-agentsubnet` rules matched by destination `172.30.100.0/24` / `10.200.100.0/24`.
+  No `az group delete`, no wildcards, no reference to vm-diag/vnet-foundry/PEs/DNS zones.
+- Live ARM validate + what-if against `rg-foundry-reserved-8d532edd` (safe, non-destructive):
+  Validate PASS. What-if: 18 Create, 0 Modify, 0 Delete, 52 Ignore — all shared Foundry
+  infra and all T2 VPN/on-prem resources correctly marked Ignore.
+- Parameters file contains no secrets; `vmSshPublicKey` supplied at deploy time.
+- README approval strings match the exact `Read-Host` gates.
+
+Record filed: `.squad/decisions/inbox/niobe-foundry-iac-review.md`.
+Verdict: **APPROVE**. No revisions required before Gate B (`DEPLOY APPROVED`).
+
+
+📌 Team update (2026-08-20T11:20:05+02:00): IaC review verdict: APPROVE; all foundry inbox entries processed and merged into decisions.md — decided by Scribe
+
+
+## 2026-08-20T13:53+02:00 -- Hosted-Agent Correction Review (Morpheus)
+
+**Artifact:** `labs/foundry-agent-prompt-vs-hosted-networking/hosted-agent/`
+**Verdict:** REJECT (strict lockout on Morpheus)
+**Record:** `.squad/decisions/inbox/niobe-hosted-agent-review.md`
+
+**Summary:** Move completed cleanly (old `labs/foundry-agent-reserved-prefix-reachability/hosted-agent/`
+absent; new tree has all hidden files). Function tools `probe_echo` / `probe_ctrl` are correctly
+registered on `Agent(tools=[...])`, use exact FQDNs `http://echo.tools.lab/api/echo` and
+`http://ctrl.tools.lab/api/echo`, explicit connect/read timeouts `(5, 10)`, and
+`raise_for_status()` without a broad catch. `azure.yaml` has no `deployments:` block; instructions
+consistently say `azd deploy` only. `.env` is gitignored and excluded from azd + Docker; `.env.example`
+is placeholder-only; `.foundry/.deployment.json` contains only a `projectId` GUID (no credential).
+Python runtime is `python_3_12` in both `azure.yaml` and the Dockerfile. `py_compile main.py` passes;
+`json.load` and `yaml.safe_load` pass on the JSON/YAML files.
+
+**Blocker (B1):** Morpheus's decision doc claims three unit tests passed (Host header assertions
+for both probes, plus `raise_for_status` propagation). No test files exist in the artifact
+(`rg`/`glob`/directory listing all return zero). Review criterion 9 (inspect tests to ensure they
+really assert Host headers and error propagation rather than merely passing) cannot be satisfied.
+Morpheus must add real tests or retract the claim.
+
+**Non-blocking observations:**
+- O1: `probe_echo`/`probe_ctrl` docstrings and the agent `instructions` string still describe the
+  old `{"error": ...}` return contract; the code correctly raises instead. Fix wording alongside B1.
+- O2: `hosted-agent-vscode.md` has stale scaffold paths (root `main.py`), stale sample code
+  (`try/except` wrapper), stale model reference (`gpt-4o-mini`), and stale runtime
+  (`--runtime python_3_13`). None push Jose into an unsafe flow, so per criterion 11 I did not edit
+  the guide; flagged as a follow-up doc PR.
+
+No Azure calls; no writes to `deploy/` or `raw-output/`.
+
+📌 Team update (2026-08-21T15:35:00+02:00): Foundry lab review cycle complete. First review REJECTED (B1-B4); Trinity revision APPROVED in second review. All blockers resolved; sanitization verified; VM state confirmed. Lab PUBLICATION-READY. Decided by Scribe (session orchestration).

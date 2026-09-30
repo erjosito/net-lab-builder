@@ -1,0 +1,9 @@
+Write-Output 'API_VERSION=2025-09-01'
+Write-Output 'PRIVATE_SITE'
+az rest --method get --url 'https://management.azure.com/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnSites/site-gcp-er?api-version=2025-09-01' --output json
+Write-Output 'PUBLIC_SITE'
+az rest --method get --url 'https://management.azure.com/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnSites/site-gcp-inet?api-version=2025-09-01' --output json
+Write-Output 'PRIVATE_CONNECTION_AND_LINK_CONNECTION'
+az rest --method get --url 'https://management.azure.com/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131/vpnConnections/conn-gcp-er?api-version=2025-09-01' --output json
+Write-Output 'PUBLIC_CONNECTION_AND_LINK_CONNECTION'
+az rest --method get --url 'https://management.azure.com/subscriptions/<SUBSCRIPTION>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131/vpnConnections/conn-gcp-inet?api-version=2025-09-01' --output json

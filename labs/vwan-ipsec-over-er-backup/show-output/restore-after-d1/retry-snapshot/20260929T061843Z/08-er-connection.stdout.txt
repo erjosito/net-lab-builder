@@ -1,0 +1,43 @@
+{
+  "etag": "W/\"<GUID>\"",
+  "extendedLocation": null,
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteGateways/ergw-ver-09281131/expressRouteConnections/conn-er",
+  "identity": null,
+  "kind": null,
+  "location": null,
+  "managedBy": null,
+  "name": "conn-er",
+  "plan": null,
+  "properties": {
+    "enableInternetSecurity": false,
+    "expressRouteCircuitPeering": {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteCircuits/er-ver-09281131/peerings/AzurePrivatePeering",
+      "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+    },
+    "expressRouteGatewayBypass": false,
+    "provisioningState": "Succeeded",
+    "resourceGuid": "<GUID>",
+    "routingConfiguration": {
+      "associatedRouteTable": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubRouteTables/defaultRouteTable",
+        "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+      },
+      "propagatedRouteTables": {
+        "ids": [
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubRouteTables/defaultRouteTable",
+            "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+          }
+        ],
+        "labels": [
+          "default"
+        ]
+      }
+    },
+    "routingWeight": 0
+  },
+  "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+  "sku": null,
+  "tags": null,
+  "type": "Microsoft.Network/expressRouteGateways/expressRouteConnections"
+}

@@ -1,0 +1,1 @@
+gcloud compute ssh cpe-ver-09281131 --zone europe-north2-c --project <GCP_PROJECT_ID> --tunnel-through-iap --command 'command -v birdc >/dev/null && sudo birdc show route all || echo "BIRD_NOT_INSTALLED"'

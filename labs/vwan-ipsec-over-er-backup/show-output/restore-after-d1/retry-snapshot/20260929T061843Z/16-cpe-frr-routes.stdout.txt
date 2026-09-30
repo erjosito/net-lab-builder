@@ -1,0 +1,118 @@
+{
+ "vrfId": 0,
+ "vrfName": "default",
+ "tableVersion": 5,
+ "routerId": "10.250.254.250",
+ "defaultLocPrf": 100,
+ "localAS": 65050,
+ "routes": { "10.240.0.0/24": [
+  {
+    "valid":true,
+    "bestpath":true,
+    "selectionReason":"First path received",
+    "pathFrom":"external",
+    "prefix":"10.240.0.0",
+    "prefixLen":24,
+    "network":"10.240.0.0\/24",
+    "version":4,
+    "weight":0,
+    "peerId":"10.240.0.12",
+    "path":"65515",
+    "origin":"IGP",
+    "nexthops":[
+      {
+        "ip":"10.240.0.12",
+        "afi":"ipv4",
+        "used":true
+      }
+    ]
+  }
+],"10.241.0.0/24": [
+  {
+    "valid":true,
+    "bestpath":true,
+    "selectionReason":"First path received",
+    "pathFrom":"external",
+    "prefix":"10.241.0.0",
+    "prefixLen":24,
+    "network":"10.241.0.0\/24",
+    "version":5,
+    "weight":0,
+    "peerId":"10.240.0.12",
+    "path":"65515",
+    "origin":"IGP",
+    "nexthops":[
+      {
+        "ip":"10.240.0.12",
+        "afi":"ipv4",
+        "used":true
+      }
+    ]
+  }
+],"10.253.1.0/24": [
+  {
+    "valid":true,
+    "bestpath":true,
+    "selectionReason":"First path received",
+    "pathFrom":"external",
+    "prefix":"10.253.1.0",
+    "prefixLen":24,
+    "network":"10.253.1.0\/24",
+    "version":3,
+    "metric":0,
+    "weight":32768,
+    "peerId":"(unspec)",
+    "path":"",
+    "origin":"IGP",
+    "nexthops":[
+      {
+        "ip":"0.0.0.0",
+        "hostname":"cpe-ver-09281131",
+        "afi":"ipv4",
+        "used":true
+      }
+    ]
+  }
+],"10.253.3.0/25": [
+  {
+    "pathFrom":"external",
+    "prefix":"10.253.3.0",
+    "prefixLen":25,
+    "network":"10.253.3.0\/25",
+    "version":0,
+    "metric":0,
+    "weight":32768,
+    "peerId":"(unspec)",
+    "path":"",
+    "origin":"IGP",
+    "nexthops":[
+      {
+        "ip":"0.0.0.0",
+        "hostname":"cpe-ver-09281131",
+        "afi":"ipv4",
+        "used":true
+      }
+    ]
+  }
+],"10.253.3.128/25": [
+  {
+    "pathFrom":"external",
+    "prefix":"10.253.3.128",
+    "prefixLen":25,
+    "network":"10.253.3.128\/25",
+    "version":0,
+    "metric":0,
+    "weight":32768,
+    "peerId":"(unspec)",
+    "path":"",
+    "origin":"IGP",
+    "nexthops":[
+      {
+        "ip":"0.0.0.0",
+        "hostname":"cpe-ver-09281131",
+        "afi":"ipv4",
+        "used":true
+      }
+    ]
+  }
+] }  }

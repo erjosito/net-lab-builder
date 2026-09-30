@@ -1,0 +1,60 @@
+{
+  "allowClassicOperations": false,
+  "authorizationKey": "*****************",
+  "authorizations": [],
+  "circuitProvisioningState": "Enabled",
+  "etag": "W/\"<GUID>\"",
+  "gatewayManagerEtag": "",
+  "globalReachEnabled": false,
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteCircuits/er-ver-09281131",
+  "location": "swedencentral",
+  "name": "er-ver-09281131",
+  "peerings": [
+    {
+      "azureASN": 12076,
+      "connections": [],
+      "etag": "W/\"<GUID>\"",
+      "gatewayManagerEtag": "",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteCircuits/er-ver-09281131/peerings/AzurePrivatePeering",
+      "lastModifiedBy": "Provider",
+      "name": "AzurePrivatePeering",
+      "peerASN": 65060,
+      "peeredConnections": [],
+      "peeringType": "AzurePrivatePeering",
+      "primaryAzurePort": "",
+      "primaryPeerAddressPrefix": "169.254.148.88/30",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+      "secondaryAzurePort": "",
+      "secondaryPeerAddressPrefix": "169.254.148.92/30",
+      "state": "Enabled",
+      "type": "Microsoft.Network/expressRouteCircuits/peerings",
+      "vlanId": 100
+    }
+  ],
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+  "serviceKey": "<REDACTED>",
+  "serviceProviderProperties": {
+    "bandwidthInMbps": 50,
+    "peeringLocation": "Stockholm",
+    "serviceProviderName": "Megaport"
+  },
+  "serviceProviderProvisioningState": "Provisioned",
+  "sku": {
+    "family": "MeteredData",
+    "name": "Standard_MeteredData",
+    "tier": "Standard"
+  },
+  "stag": 18,
+  "tags": {
+    "correlation_id": "09281131",
+    "created_by": "copilot-lab",
+    "ephemeral": "true",
+    "lab": "true",
+    "lab_name": "vwan-ipsec-over-er-backup",
+    "owner": "jose",
+    "run_id": "09281131"
+  },
+  "type": "Microsoft.Network/expressRouteCircuits"
+}

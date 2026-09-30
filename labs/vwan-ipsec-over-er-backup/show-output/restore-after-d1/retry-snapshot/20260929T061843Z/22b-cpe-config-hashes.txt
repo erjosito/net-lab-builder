@@ -1,0 +1,19 @@
+# action: read-only evidence capture
+# question_id: Q-CPE-CONFIG-INTEGRITY
+# plane: cpe-config
+# expected_effect: Configuration hashes correlate before and after configuration, fault and restore operations.
+# utc_started: 2026-09-29T06:34:27.9024428Z
+# utc_ended: 2026-09-29T06:34:32.6189625Z
+# local_started: 2026-09-29T08:34:27.9024428+02:00
+# local_ended: 2026-09-29T08:34:32.6189625+02:00
+# command: gcloud compute ssh cpe-ver-09281131 --zone europe-north2-c --project <GCP_PROJECT_ID> --tunnel-through-iap --command 'sudo sha256sum /etc/frr/frr.conf /etc/swanctl/conf.d/vwan.conf /etc/vwan-lab/network.env /etc/nftables.d-vwan-lab.conf /etc/systemd/system/vwan-lab-network.service /etc/systemd/system/vwan-lab-ipsec.service 2>&1'
+# exit_code: 0
+# stdout:
+3fb49f292842a0db1169fb544be5f8b5bb4fe32722314631bbe97ab0f0de38b5  /etc/frr/frr.conf
+f90add33da8909c8789eb9f4cdeb00cd68d614231a08bf59b31c6e6da91e3371  /etc/swanctl/conf.d/vwan.conf
+714eaaa19096a8a34cf5c6b67e5ea00532389bd594369de1c9ea5e02fff2990f  /etc/vwan-lab/network.env
+5e0e805554a4373837deefc37d96992ac2c69308e46cdfd55604b3eaa852e84e  /etc/nftables.d-vwan-lab.conf
+05bae2a2d49360df46683fcd8e92dc248f7a26a6c57c37ca96af8610ce35e9b8  /etc/systemd/system/vwan-lab-network.service
+611b66a9bfb392df4751b343c1aa024e863dcce91a380fda4d8bbadcdeb3ac00  /etc/systemd/system/vwan-lab-ipsec.service
+# stderr:
+

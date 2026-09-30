@@ -1,0 +1,18 @@
+# action: read-only evidence capture
+# question_id: Q-MEGAPORT-STATE
+# plane: megaport
+# expected_effect: MCR and all VXCs expose the expected path selection and provider/BGP state.
+# utc_started: 2026-09-29T06:34:47.4492854Z
+# utc_ended: 2026-09-29T06:34:50.8329838Z
+# local_started: 2026-09-29T08:34:47.4492854+02:00
+# local_ended: 2026-09-29T08:34:50.8329838+02:00
+# command: & C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\deploy\Collect-MegaportReadOnly.ps1 -OutputPath C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\show-output\restore-after-d1\retry-snapshot\20260929T061843Z\24-megaport-mcr-vxcs.json -ReadOnly
+# exit_code: 1
+# stdout:
+
+# stderr:
+Collect-MegaportReadOnly.ps1: C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\scripts\Collect-Evidence.ps1:425
+Line |
+ 425 |          & $megaportCollector -OutputPath $mpOut -ReadOnly
+     |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | The property 'csp_connection' cannot be found on this object. Verify that the property exists.

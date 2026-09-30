@@ -1,0 +1,73 @@
+# action: read-only evidence capture
+# question_id: Q-ER-PROVIDER-GATE
+# plane: azure-er-circuit
+# expected_effect: ExpressRoute circuit is enabled and provider-provisioned unless the scenario intentionally faults it.
+# utc_started: 2026-09-29T07:32:06.7383281Z
+# utc_ended: 2026-09-29T07:32:11.3606062Z
+# local_started: 2026-09-29T09:32:06.7383281+02:00
+# local_ended: 2026-09-29T09:32:11.3606062+02:00
+# command: az network express-route show -g rg-vwan-ipsec-over-er-09281131 -n er-ver-09281131 -o json
+# exit_code: 0
+# stdout:
+{
+  "allowClassicOperations": false,
+  "authorizationKey": "*****************",
+  "authorizations": [],
+  "circuitProvisioningState": "Enabled",
+  "etag": "W/\"<GUID>\"",
+  "gatewayManagerEtag": "",
+  "globalReachEnabled": false,
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteCircuits/er-ver-09281131",
+  "location": "swedencentral",
+  "name": "er-ver-09281131",
+  "peerings": [
+    {
+      "azureASN": 12076,
+      "connections": [],
+      "etag": "W/\"<GUID>\"",
+      "gatewayManagerEtag": "",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteCircuits/er-ver-09281131/peerings/AzurePrivatePeering",
+      "lastModifiedBy": "Provider",
+      "name": "AzurePrivatePeering",
+      "peerASN": 65060,
+      "peeredConnections": [],
+      "peeringType": "AzurePrivatePeering",
+      "primaryAzurePort": "",
+      "primaryPeerAddressPrefix": "169.254.148.88/30",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+      "secondaryAzurePort": "",
+      "secondaryPeerAddressPrefix": "169.254.148.92/30",
+      "state": "Enabled",
+      "type": "Microsoft.Network/expressRouteCircuits/peerings",
+      "vlanId": 100
+    }
+  ],
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+  "serviceKey": "<REDACTED>",
+  "serviceProviderProperties": {
+    "bandwidthInMbps": 50,
+    "peeringLocation": "Stockholm",
+    "serviceProviderName": "Megaport"
+  },
+  "serviceProviderProvisioningState": "Provisioned",
+  "sku": {
+    "family": "MeteredData",
+    "name": "Standard_MeteredData",
+    "tier": "Standard"
+  },
+  "stag": 18,
+  "tags": {
+    "correlation_id": "09281131",
+    "created_by": "copilot-lab",
+    "ephemeral": "true",
+    "lab": "true",
+    "lab_name": "vwan-ipsec-over-er-backup",
+    "owner": "jose",
+    "run_id": "09281131"
+  },
+  "type": "Microsoft.Network/expressRouteCircuits"
+}
+# stderr:
+

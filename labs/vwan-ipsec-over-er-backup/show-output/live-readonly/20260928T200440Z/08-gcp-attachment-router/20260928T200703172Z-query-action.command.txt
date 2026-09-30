@@ -1,0 +1,4 @@
+Write-Output 'PARTNER_ATTACHMENT'
+gcloud compute interconnects attachments describe 'att-ver-09281131' --region 'europe-north2' --project 'gcp-vwan-eripsec-09281131' --format=json
+Write-Output 'CLOUD_ROUTER_STATUS'
+gcloud compute routers get-status 'cr-ver-09281131' --region 'europe-north2' --project 'gcp-vwan-eripsec-09281131' --format=json

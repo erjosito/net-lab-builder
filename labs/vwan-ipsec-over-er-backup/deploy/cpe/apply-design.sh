@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [[ "${VWAN_ALLOW_IPSEC_RECONFIGURE:-}" != "1" ]]; then
+  echo "Refusing to rewrite or restart IPsec. Use apply-routing-design.sh for lab scenarios." >&2
+  echo "Set VWAN_ALLOW_IPSEC_RECONFIGURE=1 only for an explicitly authorized PSK synchronization." >&2
+  exit 64
+fi
+
 runtime=/run/vwan-lab/runtime.env
 test -f "$runtime"
 # shellcheck disable=SC1090
@@ -25,7 +31,7 @@ case "$DESIGN" in
     ;;
   D2)
     local_private=10.250.254.240
-    local_public=10.250.254.241
+    local_public=169.254.21.6
     advertised=10.253.2.0/24
     target_ips="10.253.2.10"
     public_prepend="set as-path prepend 65050 65050 65050"
@@ -91,9 +97,18 @@ cat >/usr/local/sbin/vwan-lab-network <<'EOF'
 set -euo pipefail
 source /etc/vwan-lab/network.env
 
-for addr in 10.250.254.240 10.250.254.241 10.250.254.242 10.250.254.250; do
-  ip address replace "$addr/32" dev lo
+for addr in 10.250.254.240 10.250.254.241 10.250.254.242 10.250.254.250 169.254.21.6; do
+  ip address del "$addr/32" dev lo 2>/dev/null || true
 done
+ip address add 10.250.254.250/32 dev lo
+case "$DESIGN" in
+  D1) ip address add 10.250.254.242/32 dev lo ;;
+  D2)
+    ip address add 10.250.254.240/32 dev lo
+    ip address add 169.254.21.6/32 dev lo
+    ;;
+  D3) ip address add 10.250.254.240/32 dev lo ;;
+esac
 for addr in 10.253.1.10 10.253.2.10 10.253.3.10 10.253.3.138; do
   ip address del "$addr/32" dev lo 2>/dev/null || true
 done
@@ -115,12 +130,12 @@ ip route replace "$PUB1_IKE/32" via 10.250.0.1 dev ens4 metric 5
 if [[ "$DESIGN" == D1 ]]; then
   ip route replace "$PRI1_BGP/32" dev xfrm-pri1 src 10.250.254.242
 else
-  ip route replace "$PRI0_BGP/32" dev xfrm-pri0
-  ip route replace "$PRI1_BGP/32" dev xfrm-pri1
+  ip route replace "$PRI0_BGP/32" dev xfrm-pri0 src 10.250.254.240
+  ip route replace "$PRI1_BGP/32" dev xfrm-pri1 src 10.250.254.240
 fi
 if [[ "$DESIGN" == D2 ]]; then
-  ip route replace "$PUB0_BGP/32" dev xfrm-pub0
-  ip route replace "$PUB1_BGP/32" dev xfrm-pub1
+  ip route replace "$PUB0_BGP/32" dev xfrm-pub0 src 169.254.21.6
+  ip route replace "$PUB1_BGP/32" dev xfrm-pub1 src 169.254.21.6
 fi
 EOF
 chmod 0700 /usr/local/sbin/vwan-lab-network
@@ -341,10 +356,7 @@ $public_neighbor_base
 $private_neighbor_instances
 $public_neighbor_instances
  address-family ipv4 unicast
-  network 10.253.1.0/24
-  network 10.253.2.0/24
-  network 10.253.3.0/25
-  network 10.253.3.128/25
+$(for p in $advertised; do echo "  network $p"; done)
   neighbor PRI route-map IMPORT-PRI in
   neighbor PRI prefix-list AZURE-IN in
   neighbor PRI prefix-list ACTIVE-OUT out

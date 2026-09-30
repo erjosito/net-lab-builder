@@ -1,0 +1,1 @@
+gcloud compute ssh 'cpe-ver-09281131' --zone 'europe-north2-c' --project 'gcp-vwan-eripsec-09281131' --quiet --command 'sudo vtysh -c "show bgp summary json"; echo ROUTES; sudo vtysh -c "show bgp ipv4 unicast json"'

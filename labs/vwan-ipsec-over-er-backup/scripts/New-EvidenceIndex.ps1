@@ -58,7 +58,7 @@ $lines.Add('| Question | Scenario | Audit question | Expected evidence | Current
 $lines.Add('|---|---|---|---|---:|---|')
 foreach ($question in $questions.questions) {
     $matches = @($records | Where-Object {
-        $_.Record.questionId -eq $question.id -or
+        (Get-OptionalProperty -InputObject $_.Record -Name 'questionId') -eq $question.id -or
             (Get-OptionalProperty -InputObject $_.Record -Name 'parentQuestionId') -eq $question.id
     })
     $paths = if ($matches.Count) {
@@ -81,15 +81,30 @@ $lines.Add('| UTC start | Scenario | Question | Action/state | Exit | Expected e
 $lines.Add('|---|---|---|---|---:|---|---|')
 foreach ($item in ($records | Sort-Object { $_.Record.utcStarted })) {
     $r = $item.Record
-    $utcStarted = ([datetimeoffset]$r.utcStarted).ToUniversalTime().ToString('o')
-    $effect = ([string]$r.expectedEffect).Replace('|','\|')
-    $parentQuestionId = Get-OptionalProperty -InputObject $r -Name 'parentQuestionId'
-    $questionLabel = if ($parentQuestionId) {
-        "$parentQuestionId / $($r.questionId)"
-    } else {
-        [string]$r.questionId
+    $utcValue = Get-OptionalProperty -InputObject $r -Name 'utcStarted'
+    if (-not $utcValue) {
+        $utcValue = Get-OptionalProperty -InputObject $r -Name 'utcEnded'
     }
-    $lines.Add("| $utcStarted | $($r.scenario) | ``$questionLabel`` | $($r.actionType)/$($r.state) | $($r.exitCode) | $effect | [$($item.RelativePath)]($($item.RelativePath)) |")
+    if (-not $utcValue) {
+        continue
+    }
+    $utcStarted = ([datetimeoffset]$utcValue).ToUniversalTime().ToString('o')
+    $effect = ([string](Get-OptionalProperty -InputObject $r -Name 'expectedEffect')).Replace('|','\|')
+    $parentQuestionId = Get-OptionalProperty -InputObject $r -Name 'parentQuestionId'
+    $questionId = Get-OptionalProperty -InputObject $r -Name 'questionId'
+    if (-not $questionId) {
+        $questionId = 'Q-UNCLASSIFIED'
+    }
+    $questionLabel = if ($parentQuestionId) {
+        "$parentQuestionId / $questionId"
+    } else {
+        [string]$questionId
+    }
+    $scenario = Get-OptionalProperty -InputObject $r -Name 'scenario'
+    $actionType = Get-OptionalProperty -InputObject $r -Name 'actionType'
+    $state = Get-OptionalProperty -InputObject $r -Name 'state'
+    $exitCode = Get-OptionalProperty -InputObject $r -Name 'exitCode'
+    $lines.Add("| $utcStarted | $scenario | ``$questionLabel`` | $actionType/$state | $exitCode | $effect | [$($item.RelativePath)]($($item.RelativePath)) |")
 }
 
 $lines.Add('')

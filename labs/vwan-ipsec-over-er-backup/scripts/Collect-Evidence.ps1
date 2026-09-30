@@ -20,6 +20,8 @@ param(
     [ValidateRange(5, 120)]
     [int]$CaptureSeconds = 20,
 
+    [switch]$SkipIndex,
+
     [switch]$DryRun
 )
 
@@ -402,15 +404,15 @@ $cpeCommands = [ordered]@{
 }
 foreach ($entry in $cpeCommands.GetEnumerator()) {
     $remote = [string]$entry.Value
-    Save-CommandOutput $entry.Key "gcloud compute ssh $cpe --zone $gcpZone --project $gcpProject --command '$remote'" {
-        gcloud compute ssh $cpe --zone $gcpZone --project $gcpProject --quiet --command $remote
+    Save-CommandOutput $entry.Key "gcloud compute ssh $cpe --zone $gcpZone --project $gcpProject --tunnel-through-iap --command '$remote'" {
+        gcloud compute ssh $cpe --zone $gcpZone --project $gcpProject --tunnel-through-iap --quiet --command $remote
     }
 }
 
 $filter = '(udp port 500 or udp port 4500 or esp or tcp port 179 or icmp)'
 $capture = "sudo timeout ${CaptureSeconds}s tcpdump -ni any -s 128 -tttt -vv '$filter'"
-Save-CommandOutput '23-cpe-packet-capture.txt' "gcloud compute ssh $cpe --zone $gcpZone --project $gcpProject --command '$capture'" {
-    gcloud compute ssh $cpe --zone $gcpZone --project $gcpProject --quiet --command $capture
+Save-CommandOutput '23-cpe-packet-capture.txt' "gcloud compute ssh $cpe --zone $gcpZone --project $gcpProject --tunnel-through-iap --command '$capture'" {
+    gcloud compute ssh $cpe --zone $gcpZone --project $gcpProject --tunnel-through-iap --quiet --command $capture
 }
 
 $megaportCollector = [string]$Inventory.megaport.collectorScript
@@ -432,7 +434,9 @@ if ($megaportCollector -and $megaportCollector -notmatch '^<') {
 }
 
 if (-not $DryRun) {
-    & (Join-Path $PSScriptRoot 'New-EvidenceIndex.ps1') -LabRoot $LabRoot
+    if (-not $SkipIndex) {
+        & (Join-Path $PSScriptRoot 'New-EvidenceIndex.ps1') -LabRoot $LabRoot
+    }
     & (Join-Path $PSScriptRoot 'Confirm-Sanitization.ps1') -Path $OutputDir
     Write-Host $OutputDir
 }

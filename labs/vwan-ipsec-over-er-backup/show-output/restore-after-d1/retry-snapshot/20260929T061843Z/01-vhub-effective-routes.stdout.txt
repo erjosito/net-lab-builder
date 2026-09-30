@@ -1,0 +1,36 @@
+{
+  "value": [
+    {
+      "addressPrefixes": [
+        "10.250.0.10/32"
+      ],
+      "asPath": "12076-65060-16550",
+      "nextHopType": "ExpressRouteGateway",
+      "nextHops": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteGateways/ergw-ver-09281131"
+      ],
+      "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/expressRouteGateways/ergw-ver-09281131"
+    },
+    {
+      "addressPrefixes": [
+        "10.253.2.0/24"
+      ],
+      "asPath": "",
+      "nextHopType": "VPN_S2S_Gateway",
+      "nextHops": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131"
+      ],
+      "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131"
+    },
+    {
+      "addressPrefixes": [
+        "10.241.0.0/24"
+      ],
+      "nextHopType": "Virtual Network Connection",
+      "nextHops": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubVirtualNetworkConnections/conn-workload"
+      ],
+      "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubVirtualNetworkConnections/conn-workload"
+    }
+  ]
+}

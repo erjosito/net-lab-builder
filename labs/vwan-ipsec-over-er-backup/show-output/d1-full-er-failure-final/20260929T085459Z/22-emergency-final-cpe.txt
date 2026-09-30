@@ -1,0 +1,60 @@
+Warning: Permanently added '[localhost]:22022' (ED25519) to the list of known hosts.
+pub1: #4, ESTABLISHED, IKEv2, 144a0938107fd535_i* 9b1f579b8900e3c8_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.80.26' @ 74.158.80.26[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 60s ago, rekeying in 13321s
+  pub1: #1, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 60s ago, rekeying in 3259s, expires in 3900s
+    in  c98b059f (-|0x000001a5),   2892 bytes,    45 packets,     1s ago
+    out 7934adf2 (-|0x000001a5),    600 bytes,    10 packets,    23s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pub0: #3, ESTABLISHED, IKEv2, fd88ab354121a5ff_i* 30a3139885f660ab_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.47.254' @ 74.158.47.254[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 60s ago, rekeying in 13149s
+  pub0: #2, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 60s ago, rekeying in 3224s, expires in 3900s
+    in  c64da4fa (-|0x000001a4),   2655 bytes,    42 packets,     1s ago
+    out 16108d22 (-|0x000001a4),    600 bytes,    10 packets,    23s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri1: #2, ESTABLISHED, IKEv2, daf54d25a41fabba_i* 44479993c6efd826_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.5' @ 10.240.0.5[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 60s ago, rekeying in 13239s
+  pri1: #4, reqid 4, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 60s ago, rekeying in 3379s, expires in 3900s
+    in  c0e4c88c (-|0x0000019b),   7736 bytes,   110 packets,     1s ago
+    out 823ba3ec (-|0x0000019b),  10919 bytes,   176 packets,     1s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri0: #1, ESTABLISHED, IKEv2, 88f47b02e5a3ca24_i* dfaf8a247606bedf_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.4' @ 10.240.0.4[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 60s ago, rekeying in 13702s
+  pri0: #3, reqid 3, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 60s ago, rekeying in 3297s, expires in 3900s
+    in  c2ad60a2 (-|0x0000019a),   7402 bytes,   102 packets,     0s ago
+    out 5c070790 (-|0x0000019a),  10727 bytes,   170 packets,     0s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+
+IPv4 Unicast Summary (VRF default):
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 137
+RIB entries 5, using 920 bytes of memory
+Peers 4, using 2892 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+10.240.0.12     4      65515        48        49        0    0    0 00:00:01      Connect        0 N/A
+10.240.0.13     4      65515        46        47        0    0    0 00:00:00            2        0 N/A
+169.254.21.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.22.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+
+Total number of neighbors 4

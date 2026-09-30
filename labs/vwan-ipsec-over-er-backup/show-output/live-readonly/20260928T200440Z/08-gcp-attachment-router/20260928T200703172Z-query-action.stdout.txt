@@ -1,0 +1,280 @@
+PARTNER_ATTACHMENT
+{
+  "adminEnabled": true,
+  "bandwidth": "BPS_50M",
+  "cloudRouterIpAddress": "169.254.113.249/29",
+  "creationTimestamp": "2026-09-28T02:41:41.343-07:00",
+  "customerRouterIpAddress": "169.254.113.250/29",
+  "dataplaneVersion": 2,
+  "edgeAvailabilityDomain": "AVAILABILITY_DOMAIN_1",
+  "encryption": "NONE",
+  "id": "7863819040183519418",
+  "kind": "compute#interconnectAttachment",
+  "labelFingerprint": "vezUS-42LLM=",
+  "labels": {
+    "goog-terraform-provisioned": "true"
+  },
+  "name": "att-ver-09281131",
+  "pairingKey": "<REDACTED>",
+  "partnerAsn": "65060",
+  "partnerMetadata": {
+    "interconnectName": "Stockholm (arn-zone1-208)",
+    "partnerName": "Megaport",
+    "portalUrl": "https://megaport.al"
+  },
+  "region": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/regions/europe-north2",
+  "router": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/regions/europe-north2/routers/cr-ver-09281131",
+  "selfLink": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/regions/europe-north2/interconnectAttachments/att-ver-09281131",
+  "stackType": "IPV4_ONLY",
+  "state": "ACTIVE",
+  "type": "PARTNER",
+  "vlanTag8021q": 3694
+}
+CLOUD_ROUTER_STATUS
+{
+  "kind": "compute#routerStatusResponse",
+  "result": {
+    "bestRoutes": [
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65060
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-09-28T12:45:19.565-07:00",
+        "destRange": "169.254.148.92/30",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131",
+        "nextHopIp": "169.254.113.250",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65060
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-09-28T12:45:19.566-07:00",
+        "destRange": "169.254.148.88/30",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131",
+        "nextHopIp": "169.254.113.250",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65060,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-09-28T12:45:19.565-07:00",
+        "destRange": "10.240.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131",
+        "nextHopIp": "169.254.113.250",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65060,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-09-28T12:45:19.565-07:00",
+        "destRange": "10.253.2.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131",
+        "nextHopIp": "169.254.113.250",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65060,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-09-28T12:45:19.565-07:00",
+        "destRange": "10.241.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131",
+        "nextHopIp": "169.254.113.250",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeType": "BGP"
+      }
+    ],
+    "bestRoutesForRouter": [
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65060,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-09-28T05:56:37.357-07:00",
+        "destRange": "10.240.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131",
+        "nextHopIp": "169.254.113.250",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65060,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-09-28T05:56:37.357-07:00",
+        "destRange": "10.241.0.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131",
+        "nextHopIp": "169.254.113.250",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65060,
+              12076
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-09-28T07:49:38.025-07:00",
+        "destRange": "10.253.2.0/24",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131",
+        "nextHopIp": "169.254.113.250",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65060
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-09-28T05:38:26.606-07:00",
+        "destRange": "169.254.113.248/29",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131",
+        "nextHopIp": "169.254.113.250",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65060
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-09-28T05:38:26.606-07:00",
+        "destRange": "169.254.148.88/30",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131",
+        "nextHopIp": "169.254.113.250",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      },
+      {
+        "asPaths": [
+          {
+            "asLists": [
+              65060
+            ],
+            "pathSegmentType": "AS_SEQUENCE"
+          }
+        ],
+        "creationTimestamp": "2026-09-28T05:38:26.607-07:00",
+        "destRange": "169.254.148.92/30",
+        "kind": "compute#route",
+        "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131",
+        "nextHopIp": "169.254.113.250",
+        "nextHopOrigin": "INCOMPLETE",
+        "priority": 0,
+        "routeStatus": "ACTIVE",
+        "routeType": "BGP"
+      }
+    ],
+    "bgpPeerStatus": [
+      {
+        "advertisedRoutes": [
+          {
+            "destRange": "10.250.0.10/32",
+            "kind": "compute#route",
+            "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131",
+            "nextHopIp": "169.254.113.249",
+            "nextHopOrigin": "INCOMPLETE",
+            "priority": 100,
+            "routeType": "BGP"
+          }
+        ],
+        "enableIpv4": true,
+        "enableIpv6": false,
+        "ipAddress": "169.254.113.249",
+        "md5AuthEnabled": false,
+        "name": "auto-ia-bgp-att-ver-0928113-d10467cd1e72b46",
+        "numLearnedRoutes": 6,
+        "peerIpAddress": "169.254.113.250",
+        "state": "Established",
+        "status": "UP",
+        "uptime": "7 hours, 28 minutes, 41 seconds",
+        "uptimeSeconds": "26921"
+      }
+    ],
+    "network": "https://www.googleapis.com/compute/v1/projects/gcp-vwan-eripsec-09281131/global/networks/vpc-ver-09281131"
+  }
+}
+

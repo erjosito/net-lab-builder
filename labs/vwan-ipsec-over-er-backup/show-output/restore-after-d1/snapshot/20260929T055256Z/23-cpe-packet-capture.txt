@@ -1,0 +1,25 @@
+# action: read-only evidence capture
+# question_id: Q-PACKET-PATH
+# plane: packet
+# expected_effect: Packet headers identify the exact underlay, XFRM slot, BGP source and payload behavior.
+# utc_started: 2026-09-29T05:59:03.1466942Z
+# utc_ended: 2026-09-29T05:59:26.5578593Z
+# local_started: 2026-09-29T07:59:03.1466942+02:00
+# local_ended: 2026-09-29T07:59:26.5578593+02:00
+# command: gcloud compute ssh cpe-ver-09281131 --zone europe-north2-c --project <GCP_PROJECT_ID> --command 'sudo timeout 15s tcpdump -ni any -s 128 -tttt -vv '(udp port 500 or udp port 4500 or esp or tcp port 179 or icmp)''
+# exit_code: 1
+# stdout:
+
+# stderr:
+FATAL ERROR: Network error: Connection timed out
+
+Recommendation: To check for possible causes of SSH connectivity issues and get
+recommendations, rerun the ssh command with the --troubleshoot option.
+
+gcloud compute ssh cpe-ver-09281131 --project=<GCP_PROJECT_ID> --zone=europe-north2-c --troubleshoot
+
+Or, to investigate an IAP tunneling issue:
+
+gcloud compute ssh cpe-ver-09281131 --project=<GCP_PROJECT_ID> --zone=europe-north2-c --troubleshoot --tunnel-through-iap
+
+ERROR: (gcloud.compute.ssh) [C:\Users\jomore\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\sdk\plink.exe] exited with return code [1].

@@ -1,0 +1,17 @@
+Write-Output @'
+READ-ONLY CAPTURE VERDICT
+
+- Capture correlation: readonly-live-20260928T200440Z.
+- The capture itself issued only GET/list/status/log/cost queries, remote read commands, and a bounded tcpdump request. It made no configuration change, fault, restore, retry, or cleanup.
+- VPN API version: 2025-09-01.
+- YES: the live public vpnLinkConnection mapping is Instance0 -> 169.254.21.5 and Instance1 -> 169.254.22.5. The VPN gateway also currently lists those custom addresses on the corresponding gateway instances.
+- Important nuance: the public VPN site BGP peer is currently 10.250.254.241, showing the APIPA site-peer correction was rolled back while the connection-level custom mappings remain configured.
+- Both private and public connections are Succeeded, and each reports Instance0 and Instance1 Connected (four Azure-managed tunnel statuses).
+- Current StrongSwan SA detail, FRR state/routes, and TCP/179 packet sample were not obtainable: all three single-attempt SSH commands timed out. They were preserved as failures and were not retried.
+- ER gateway and circuit are Succeeded; provider state is Provisioned; private peering is Enabled/Succeeded.
+- MCR and all three VXCs are LIVE/up; both Azure VXC BGP status values and the GCP VXC BGP status value are 1.
+- GCP Partner attachment is ACTIVE; Cloud Router peer is Established/UP with six learned routes.
+- Inventory null/non-null enumeration failed because the local walker command had a PowerShell expression error. It was preserved and not retried.
+- Azure month-to-date Cost Management returned no rows (billing ingestion lag or no posted cost in the query window). GCP billing is enabled, the e2-small CPE is RUNNING, and the 50-Mbps Partner attachment is ACTIVE. Megaport rack-rate commitment remains EUR 991.80/month; managed Azure/GCP/Megaport resources continue billing.
+- NO: it is not true that no live mutation occurred after f75c1b3. Azure Activity Log records successful VPN gateway, public VPN site, and public VPN connection writes after the commit timestamp, including writes between 18:44:56Z and 19:56:30Z. GCP Admin Activity returned no entries. CPE post-commit logs were unavailable because SSH timed out, and current-state Megaport output is not a mutation-history source.
+'@

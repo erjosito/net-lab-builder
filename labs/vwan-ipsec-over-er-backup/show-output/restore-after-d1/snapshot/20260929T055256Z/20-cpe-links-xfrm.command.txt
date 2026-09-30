@@ -1,0 +1,1 @@
+gcloud compute ssh cpe-ver-09281131 --zone europe-north2-c --project <GCP_PROJECT_ID> --command 'ip -details link show; ip xfrm state; ip xfrm policy'

@@ -1,0 +1,105 @@
+# action: read-only evidence capture
+# question_id: Q-VPN-MANAGED-STATE
+# plane: azure-vpn
+# expected_effect: Managed VPN gateway, site and connection state matches the intended private/public link state.
+# utc_started: 2026-09-29T07:31:50.2077681Z
+# utc_ended: 2026-09-29T07:31:55.8188200Z
+# local_started: 2026-09-29T09:31:50.2077681+02:00
+# local_ended: 2026-09-29T09:31:55.8188200+02:00
+# command: az resource show --ids /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131/vpnConnections/conn-gcp-inet -o json
+# exit_code: 0
+# stdout:
+{
+  "etag": "W/\"<GUID>\"",
+  "extendedLocation": null,
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131/vpnConnections/conn-gcp-inet",
+  "identity": null,
+  "kind": null,
+  "location": null,
+  "managedBy": null,
+  "name": "conn-gcp-inet",
+  "plan": null,
+  "properties": {
+    "egressBytesTransferred": 2084107,
+    "enableInternetSecurity": false,
+    "ingressBytesTransferred": 272676,
+    "provisioningState": "Succeeded",
+    "remoteVpnSite": {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnSites/site-gcp-inet",
+      "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+    },
+    "routingConfiguration": {
+      "associatedRouteTable": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubRouteTables/defaultRouteTable",
+        "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+      },
+      "propagatedRouteTables": {
+        "ids": [
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubRouteTables/defaultRouteTable",
+            "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+          }
+        ],
+        "labels": [
+          "default"
+        ]
+      }
+    },
+    "vpnLinkConnections": [
+      {
+        "etag": "W/\"<GUID>\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131/vpnConnections/conn-gcp-inet/vpnLinkConnections/conn-gcp-inet-link",
+        "name": "conn-gcp-inet-link",
+        "properties": {
+          "connectionBandwidth": 50,
+          "connectionStatus": "Connected",
+          "connectionStatusDetails": [
+            {
+              "connectionStatus": "Connected",
+              "ipConfigurationId": "Instance0"
+            },
+            {
+              "connectionStatus": "Connected",
+              "ipConfigurationId": "Instance1"
+            }
+          ],
+          "dpdTimeoutSeconds": 0,
+          "egressBytesTransferred": 1811431,
+          "enableBgp": true,
+          "enableRateLimiting": false,
+          "ingressBytesTransferred": 272676,
+          "ipsecPolicies": [],
+          "packetCaptureDiagnosticState": "None",
+          "provisioningState": "Succeeded",
+          "routingWeight": 0,
+          "useLocalAzureIpAddress": false,
+          "usePolicyBasedTrafficSelectors": false,
+          "vpnConnectionProtocolType": "IKEv2",
+          "vpnGatewayCustomBgpAddresses": [
+            {
+              "customBgpIpAddress": "169.254.21.5",
+              "ipConfigurationId": "Instance0"
+            },
+            {
+              "customBgpIpAddress": "169.254.22.5",
+              "ipConfigurationId": "Instance1"
+            }
+          ],
+          "vpnLinkConnectionMode": "Default",
+          "vpnSiteLink": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnSites/site-gcp-inet/vpnSiteLinks/site-gcp-inet",
+            "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+          }
+        },
+        "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+        "type": "Microsoft.Network/vpnGateways/vpnConnections/vpnLinkConnections"
+      }
+    ]
+  },
+  "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+  "sku": null,
+  "tags": null,
+  "type": "Microsoft.Network/vpnGateways/vpnConnections"
+}
+# stderr:
+

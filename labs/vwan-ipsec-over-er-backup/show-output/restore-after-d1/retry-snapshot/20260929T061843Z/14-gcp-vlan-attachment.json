@@ -1,0 +1,44 @@
+# action: read-only evidence capture
+# question_id: Q-GCP-UNDERLAY
+# plane: gcp-underlay
+# expected_effect: Partner attachment, instance aliases, VPC routes and firewall state match the intended underlay.
+# utc_started: 2026-09-29T06:33:35.6176621Z
+# utc_ended: 2026-09-29T06:33:37.4372608Z
+# local_started: 2026-09-29T08:33:35.6176621+02:00
+# local_ended: 2026-09-29T08:33:37.4372608+02:00
+# command: gcloud compute interconnects attachments describe att-ver-09281131 --region europe-north2 --project <GCP_PROJECT_ID> --format=json
+# exit_code: 0
+# stdout:
+{
+  "adminEnabled": true,
+  "bandwidth": "BPS_50M",
+  "cloudRouterIpAddress": "169.254.113.249/29",
+  "creationTimestamp": "2026-09-28T02:41:41.343-07:00",
+  "customerRouterIpAddress": "169.254.113.250/29",
+  "dataplaneVersion": 2,
+  "edgeAvailabilityDomain": "AVAILABILITY_DOMAIN_1",
+  "encryption": "NONE",
+  "id": "7863819040183519418",
+  "kind": "compute#interconnectAttachment",
+  "labelFingerprint": "vezUS-42LLM=",
+  "labels": {
+    "goog-terraform-provisioned": "true"
+  },
+  "name": "att-ver-09281131",
+  "pairingKey": "<REDACTED>",
+  "partnerAsn": "65060",
+  "partnerMetadata": {
+    "interconnectName": "Stockholm (arn-zone1-208)",
+    "partnerName": "Megaport",
+    "portalUrl": "https://megaport.al"
+  },
+  "region": "https://www.googleapis.com/compute/v1/projects/<GCP_PROJECT_ID>/regions/europe-north2",
+  "router": "https://www.googleapis.com/compute/v1/projects/<GCP_PROJECT_ID>/regions/europe-north2/routers/cr-ver-09281131",
+  "selfLink": "https://www.googleapis.com/compute/v1/projects/<GCP_PROJECT_ID>/regions/europe-north2/interconnectAttachments/att-ver-09281131",
+  "stackType": "IPV4_ONLY",
+  "state": "ACTIVE",
+  "type": "PARTNER",
+  "vlanTag8021q": 3694
+}
+# stderr:
+

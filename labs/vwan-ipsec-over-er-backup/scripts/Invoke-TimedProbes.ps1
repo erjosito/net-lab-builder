@@ -21,6 +21,8 @@ param(
     [ValidateRange(1, 60)]
     [int]$IntervalSeconds = 5,
 
+    [switch]$SkipIndex,
+
     [switch]$DryRun
 )
 
@@ -164,6 +166,8 @@ while [ `$SECONDS -lt `$end ]; do
   sleep $IntervalSeconds
 done
 "@
+$azureCommand = $azureCommand -replace "`r`n", "`n"
+$gcpCommand = $gcpCommand -replace "`r`n", "`n"
 
 $probeStarted = Get-Date
 $azureJob = Start-Job -ArgumentList @(
@@ -183,7 +187,7 @@ $gcpJob = Start-Job -ArgumentList @(
     $gcpCommand
 ) -ScriptBlock {
     param($VmName, $Zone, $Project, $Command)
-    gcloud compute ssh $VmName --zone $Zone --project $Project --quiet --command $Command
+    gcloud compute ssh $VmName --zone $Zone --project $Project --tunnel-through-iap --quiet --command $Command
     Write-Output "collector_exit=$LASTEXITCODE"
 }
 
@@ -202,9 +206,11 @@ Save-ProbeBundle -BaseName 'timed-probes-azure-to-gcp' -Direction 'azure-to-gcp'
     -Command "az vm run-command invoke -g $($Inventory.azure.resourceGroup) -n $($Inventory.azure.workloadVmName) --command-id RunShellScript --scripts '<TIMED_PROBE_SCRIPT>'" `
     -Stdout $azureRaw -Stderr $azureError -ExitCode $azureExit -Started $probeStarted -Ended $probeEnded
 Save-ProbeBundle -BaseName 'timed-probes-gcp-to-azure' -Direction 'gcp-to-azure' `
-    -Command "gcloud compute ssh $($Inventory.gcp.cpeVmName) --zone $($Inventory.gcp.zone) --project $($Inventory.gcp.projectId) --command '<TIMED_PROBE_SCRIPT>'" `
+    -Command "gcloud compute ssh $($Inventory.gcp.cpeVmName) --zone $($Inventory.gcp.zone) --project $($Inventory.gcp.projectId) --tunnel-through-iap --command '<TIMED_PROBE_SCRIPT>'" `
     -Stdout $gcpRaw -Stderr $gcpError -ExitCode $gcpExit -Started $probeStarted -Ended $probeEnded
 
-& (Join-Path $PSScriptRoot 'New-EvidenceIndex.ps1') -LabRoot $LabRoot
+if (-not $SkipIndex) {
+    & (Join-Path $PSScriptRoot 'New-EvidenceIndex.ps1') -LabRoot $LabRoot
+}
 & (Join-Path $PSScriptRoot 'Confirm-Sanitization.ps1') -Path $OutputDir
 Write-Host $OutputDir

@@ -1,0 +1,71 @@
+===LISTENERS===
+State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+LISTEN 0      128          0.0.0.0:22        0.0.0.0:*    users:(("sshd",pid=740,fd=3))
+LISTEN 0      4096   127.0.0.53%lo:53        0.0.0.0:*    users:(("systemd-resolve",pid=368,fd=14))
+LISTEN 0      3          127.0.0.1:2616      0.0.0.0:*    users:(("staticd",pid=5491,fd=12))
+LISTEN 0      3          127.0.0.1:2601      0.0.0.0:*    users:(("zebra",pid=5477,fd=25))
+LISTEN 0      3          127.0.0.1:2605      0.0.0.0:*    users:(("bgpd",pid=5484,fd=18))
+LISTEN 0      4096         0.0.0.0:179       0.0.0.0:*    users:(("bgpd",pid=5484,fd=22))
+LISTEN 0      5            0.0.0.0:8080      0.0.0.0:*    users:(("python3",pid=709,fd=3))
+LISTEN 0      128             [::]:22           [::]:*    users:(("sshd",pid=740,fd=4))
+LISTEN 0      4096            [::]:179          [::]:*    users:(("bgpd",pid=5484,fd=23))
+===PING===
+PING 10.241.0.4 (10.241.0.4) from 10.253.1.10 : 56(84) bytes of data.
+64 bytes from 10.241.0.4: icmp_seq=1 ttl=64 time=58.8 ms
+64 bytes from 10.241.0.4: icmp_seq=2 ttl=64 time=56.2 ms
+64 bytes from 10.241.0.4: icmp_seq=3 ttl=64 time=56.2 ms
+64 bytes from 10.241.0.4: icmp_seq=4 ttl=64 time=56.0 ms
+
+--- 10.241.0.4 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3004ms
+rtt min/avg/max/mdev = 56.017/56.797/58.838/1.179 ms
+===CURL===
+ok
+===PRI1_CAPTURE===
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on xfrm-pri1, link-type RAW (Raw IP), snapshot length 262144 bytes
+2026-09-29 07:49:05.735470 IP 10.253.1.10 > 10.241.0.4: ICMP echo request, id 8, seq 1, length 64
+2026-09-29 07:49:05.794294 IP 10.241.0.4 > 10.253.1.10: ICMP echo reply, id 8, seq 1, length 64
+2026-09-29 07:49:06.736539 IP 10.253.1.10 > 10.241.0.4: ICMP echo request, id 8, seq 2, length 64
+2026-09-29 07:49:06.792664 IP 10.241.0.4 > 10.253.1.10: ICMP echo reply, id 8, seq 2, length 64
+2026-09-29 07:49:07.737975 IP 10.253.1.10 > 10.241.0.4: ICMP echo request, id 8, seq 3, length 64
+2026-09-29 07:49:07.794110 IP 10.241.0.4 > 10.253.1.10: ICMP echo reply, id 8, seq 3, length 64
+2026-09-29 07:49:08.739420 IP 10.253.1.10 > 10.241.0.4: ICMP echo request, id 8, seq 4, length 64
+2026-09-29 07:49:08.795391 IP 10.241.0.4 > 10.253.1.10: ICMP echo reply, id 8, seq 4, length 64
+2026-09-29 07:49:08.805695 IP 10.253.1.10.57260 > 10.241.0.4.8080: Flags [S], seq 520511867, win 64240, options [mss 1460,sackOK,TS val 431539847 ecr 0,nop,wscale 7], length 0
+2026-09-29 07:49:08.862655 IP 10.253.1.10.57260 > 10.241.0.4.8080: Flags [.], ack 1440015683, win 502, options [nop,nop,TS val 431539904 ecr 2473389191], length 0
+2026-09-29 07:49:08.863048 IP 10.253.1.10.57260 > 10.241.0.4.8080: Flags [P.], seq 0:85, ack 1, win 502, options [nop,nop,TS val 431539905 ecr 2473389191], length 85: HTTP: GET /health HTTP/1.1
+2026-09-29 07:49:09.006603 IP 10.253.1.10.57260 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 431540048 ecr 2473389336], length 0
+2026-09-29 07:49:09.006918 IP 10.253.1.10.57260 > 10.241.0.4.8080: Flags [F.], seq 85, ack 205, win 501, options [nop,nop,TS val 431540049 ecr 2473389336], length 0
+2026-09-29 07:49:13.607794 IP 10.240.0.12.61425 > 10.250.254.242.179: Flags [P.], seq 2527735209:2527735228, ack 2925603138, win 6146, length 19: BGP
+2026-09-29 07:49:13.647948 IP 10.250.254.242.179 > 10.240.0.12.61425: Flags [.], ack 19, win 501, length 0
+2026-09-29 07:49:16.499538 IP 10.250.254.242.179 > 10.240.0.12.61425: Flags [P.], seq 1:20, ack 19, win 501, length 19: BGP
+2026-09-29 07:49:16.596040 IP 10.240.0.12.61425 > 10.250.254.242.179: Flags [.], ack 20, win 6146, length 0
+2026-09-29 07:49:19.712166 IP 10.241.0.4 > 10.253.1.10: ICMP echo request, id 2, seq 1, length 64
+2026-09-29 07:49:19.712208 IP 10.253.1.10 > 10.241.0.4: ICMP echo reply, id 2, seq 1, length 64
+2026-09-29 07:49:20.713722 IP 10.241.0.4 > 10.253.1.10: ICMP echo request, id 2, seq 2, length 64
+2026-09-29 07:49:20.713773 IP 10.253.1.10 > 10.241.0.4: ICMP echo reply, id 2, seq 2, length 64
+2026-09-29 07:49:21.715042 IP 10.241.0.4 > 10.253.1.10: ICMP echo request, id 2, seq 3, length 64
+2026-09-29 07:49:21.715068 IP 10.253.1.10 > 10.241.0.4: ICMP echo reply, id 2, seq 3, length 64
+2026-09-29 07:49:22.716562 IP 10.241.0.4 > 10.253.1.10: ICMP echo request, id 2, seq 4, length 64
+2026-09-29 07:49:22.716602 IP 10.253.1.10 > 10.241.0.4: ICMP echo reply, id 2, seq 4, length 64
+2026-09-29 07:49:22.777915 IP 10.253.1.10.8080 > 10.241.0.4.55216: Flags [S.], seq 3794223559, ack 3224940524, win 65160, options [mss 1460,sackOK,TS val 431553820 ecr 2473403107,nop,wscale 7], length 0
+2026-09-29 07:49:22.833843 IP 10.253.1.10.8080 > 10.241.0.4.55216: Flags [.], ack 87, win 509, options [nop,nop,TS val 431553875 ecr 2473403163], length 0
+2026-09-29 07:49:22.847202 IP 10.253.1.10.8080 > 10.241.0.4.55216: Flags [P.], seq 1:201, ack 87, win 509, options [nop,nop,TS val 431553889 ecr 2473403163], length 200: HTTP: HTTP/1.0 200 OK
+2026-09-29 07:49:22.848424 IP 10.253.1.10.8080 > 10.241.0.4.55216: Flags [FP.], seq 201:204, ack 87, win 509, options [nop,nop,TS val 431553890 ecr 2473403163], length 3: HTTP
+2026-09-29 07:49:22.903549 IP 10.253.1.10.8080 > 10.241.0.4.55216: Flags [.], ack 88, win 509, options [nop,nop,TS val 431553945 ecr 2473403233], length 0
+2026-09-29 07:50:05.816086 IP 10.240.0.12.61425 > 10.250.254.242.179: Flags [P.], seq 19:38, ack 20, win 6146, length 19: BGP
+2026-09-29 07:50:05.816130 IP 10.250.254.242.179 > 10.240.0.12.61425: Flags [.], ack 38, win 501, length 0
+2026-09-29 07:50:16.499664 IP 10.250.254.242.179 > 10.240.0.12.61425: Flags [P.], seq 20:39, ack 38, win 501, length 19: BGP
+2026-09-29 07:50:16.611644 IP 10.240.0.12.61425 > 10.250.254.242.179: Flags [.], ack 39, win 6146, length 0
+
+34 packets captured
+34 packets received by filter
+0 packets dropped by kernel
+===PUB1_CAPTURE===
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on xfrm-pub1, link-type RAW (Raw IP), snapshot length 262144 bytes
+
+0 packets captured
+0 packets received by filter
+0 packets dropped by kernel

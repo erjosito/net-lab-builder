@@ -1,0 +1,183 @@
+===UTC=2026-09-29T08:09:30Z===
+===ADDR===
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet 10.250.254.250/32 scope global lo
+       valid_lft forever preferred_lft forever
+    inet 10.250.254.240/32 scope global lo
+       valid_lft forever preferred_lft forever
+    inet 169.254.21.6/32 scope global lo
+       valid_lft forever preferred_lft forever
+    inet 10.253.2.10/32 scope global lo
+       valid_lft forever preferred_lft forever
+===ROUTES===
+default via 10.250.0.1 dev ens4 proto dhcp src 10.250.0.10 metric 100
+10.240.0.0/24 nhid 34 proto bgp metric 20
+	nexthop via 10.240.0.12 dev xfrm-pri0 weight 1 onlink
+	nexthop via 10.240.0.13 dev xfrm-pri1 weight 1 onlink
+10.240.0.4 via 10.250.0.1 dev ens4 metric 5
+10.240.0.5 via 10.250.0.1 dev ens4 metric 5
+10.240.0.12 dev xfrm-pri0 scope link src 10.250.254.240
+10.240.0.13 dev xfrm-pri1 scope link src 10.250.254.240
+10.241.0.0/24 nhid 34 proto bgp metric 20
+	nexthop via 10.240.0.12 dev xfrm-pri0 weight 1 onlink
+	nexthop via 10.240.0.13 dev xfrm-pri1 weight 1 onlink
+10.250.0.1 dev ens4 proto dhcp scope link src 10.250.0.10 metric 100
+blackhole 10.253.2.0/24 proto static metric 20
+74.158.47.254 via 10.250.0.1 dev ens4 metric 5
+74.158.80.26 via 10.250.0.1 dev ens4 metric 5
+169.254.21.5 dev xfrm-pub0 scope link src 169.254.21.6
+169.254.22.5 dev xfrm-pub1 scope link src 169.254.21.6
+169.254.169.254 via 10.250.0.1 dev ens4 proto dhcp src 10.250.0.10 metric 100
+===SAS===
+pub0: #30, ESTABLISHED, IKEv2, b1c96af016f41c64_i* ed9b357c69f0cd44_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.47.254' @ 74.158.47.254[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 654s ago, rekeying in 12457s
+  pub0: #6, reqid 4, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 654s ago, rekeying in 2727s, expires in 3306s
+    in  c6a2ba9f (-|0x000001a4),  13459 bytes,   250 packets,    27s ago
+    out ac0046cc (-|0x000001a4),   3814 bytes,    57 packets,    27s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri0: #29, ESTABLISHED, IKEv2, c34b8710811766e6_i* 40ff5264e98537dc_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.4' @ 10.240.0.4[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 654s ago, rekeying in 12398s
+  pri0: #5, reqid 3, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 654s ago, rekeying in 2634s, expires in 3306s
+    in  c31e7e97 (-|0x0000019a),  12208 bytes,   227 packets,    28s ago
+    out 3d88b190 (-|0x0000019a),   3883 bytes,    63 packets,    29s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pub1: #4, ESTABLISHED, IKEv2, 965b3046ce5ec9bb_i* 639698074d60c6be_r
+  local  '34.51.158.147' @ 10.250.0.10[4500]
+  remote '74.158.80.26' @ 74.158.80.26[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 798s ago, rekeying in 12943s
+  pub1: #2, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 798s ago, rekeying in 2541s, expires in 3162s
+    in  c419ebdc (-|0x000001a5),  16040 bytes,   299 packets,    27s ago
+    out 5784c9b6 (-|0x000001a5),   5126 bytes,    79 packets,    27s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri1: #2, ESTABLISHED, IKEv2, 640a0443eb735b1b_i* edd4575a3ec08051_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.5' @ 10.240.0.5[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 798s ago, rekeying in 13240s
+  pri1: #4, reqid 2, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 798s ago, rekeying in 2513s, expires in 3162s
+    in  c2cf51a5 (-|0x0000019b),  15432 bytes,   289 packets,    28s ago
+    out 28db98c4 (-|0x0000019b),   4891 bytes,    79 packets,    29s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+===BGP===
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 3
+RIB entries 5, using 920 bytes of memory
+Peers 4, using 2892 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+10.240.0.12     4      65515         8         7        0    0    0 00:02:28            2        1 N/A
+10.240.0.13     4      65515         8         7        0    0    0 00:02:28            2        1 N/A
+169.254.21.5    4      65515         4         5        0    0    0 00:00:28            2        1 N/A
+169.254.22.5    4      65515         4         5        0    0    0 00:00:28            2        1 N/A
+
+Total number of neighbors 4
+===BGP_D2_PREFIX===
+BGP routing table entry for 10.253.2.0/24, version 1
+Paths: (1 available, best #1, table default)
+  Advertised to non peer-group peers:
+  10.240.0.12 10.240.0.13 169.254.21.5 169.254.22.5
+  Local
+    0.0.0.0 from 0.0.0.0 (10.250.254.250)
+      Origin IGP, metric 0, weight 32768, valid, sourced, local, best (First path received)
+      Last update: Tue Sep 29 08:07:01 2026
+===BGP_AZURE_PREFIX===
+BGP routing table entry for 10.241.0.0/24, version 3
+Paths: (4 available, best #4, table default)
+  Not advertised to any peer
+  65515
+    169.254.22.5 from 169.254.22.5 (10.240.0.12)
+      Origin IGP, localpref 100, valid, external
+      Last update: Tue Sep 29 08:09:01 2026
+  65515
+    169.254.21.5 from 169.254.21.5 (10.240.0.13)
+      Origin IGP, localpref 100, valid, external
+      Last update: Tue Sep 29 08:09:01 2026
+  65515
+    10.240.0.13 from 10.240.0.13 (10.240.0.13)
+      Origin IGP, localpref 200, valid, external, multipath
+      Last update: Tue Sep 29 08:07:05 2026
+  65515
+    10.240.0.12 from 10.240.0.12 (10.240.0.12)
+      Origin IGP, localpref 200, valid, external, multipath, best (Older Path)
+      Last update: Tue Sep 29 08:07:05 2026
+===KERNEL_AZURE_PREFIX===
+10.241.0.0/24 nhid 34 proto bgp metric 20
+	nexthop via 10.240.0.12 dev xfrm-pri0 weight 1 onlink
+	nexthop via 10.240.0.13 dev xfrm-pri1 weight 1 onlink
+===PUBLIC_BGP_CAPTURE===
+tcpdump: data link type LINUX_SLL2
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes
+2026-09-29 08:07:00.453733 xfrm-pub0 Out IP 169.254.21.6.42849 > 169.254.21.5.179: Flags [P.], seq 2623428304:2623428325, ack 2181222623, win 501, options [nop,nop,TS val 1042440592 ecr 78606853], length 21: BGP
+2026-09-29 08:07:00.453816 xfrm-pub1 Out IP 169.254.21.6.38625 > 169.254.22.5.179: Flags [P.], seq 3623414523:3623414544, ack 2337471045, win 501, options [nop,nop,TS val 2896173100 ecr 78622924], length 21: BGP
+2026-09-29 08:07:00.453964 xfrm-pub0 Out IP 169.254.21.6.42849 > 169.254.21.5.179: Flags [P.], seq 21:42, ack 1, win 501, options [nop,nop,TS val 1042440593 ecr 78606853], length 21: BGP
+2026-09-29 08:07:00.453996 xfrm-pub1 Out IP 169.254.21.6.38625 > 169.254.22.5.179: Flags [P.], seq 21:42, ack 1, win 501, options [nop,nop,TS val 2896173101 ecr 78622924], length 21: BGP
+2026-09-29 08:07:00.459058 xfrm-pub0 Out IP 169.254.21.6.42849 > 169.254.21.5.179: Flags [F.], seq 42, ack 1, win 501, options [nop,nop,TS val 1042440598 ecr 78606853], length 0
+2026-09-29 08:07:00.459503 xfrm-pub1 Out IP 169.254.21.6.38625 > 169.254.22.5.179: Flags [F.], seq 42, ack 1, win 501, options [nop,nop,TS val 2896173106 ecr 78622924], length 0
+2026-09-29 08:07:00.463884 xfrm-pub1 In  IP 169.254.22.5.179 > 169.254.21.6.38625: Flags [F.], seq 1, ack 21, win 8192, options [nop,nop,TS val 78655819 ecr 2896173100], length 0
+2026-09-29 08:07:00.463913 xfrm-pub1 Out IP 169.254.21.6.38625 > 169.254.22.5.179: Flags [.], ack 2, win 501, options [nop,nop,TS val 2896173111 ecr 78655819], length 0
+2026-09-29 08:07:00.464225 xfrm-pub0 In  IP 169.254.21.5.179 > 169.254.21.6.42849: Flags [.], ack 42, win 8192, options [nop,nop,TS val 78639189 ecr 1042440592], length 0
+2026-09-29 08:07:00.464225 xfrm-pub0 In  IP 169.254.21.5.179 > 169.254.21.6.42849: Flags [R.], seq 1, ack 42, win 0, length 0
+2026-09-29 08:07:00.466075 xfrm-pub1 In  IP 169.254.22.5.179 > 169.254.21.6.38625: Flags [R.], seq 2, ack 42, win 0, length 0
+2026-09-29 08:07:01.913620 xfrm-pub0 Out IP 169.254.21.6.32971 > 169.254.21.5.179: Flags [S], seq 1736153687, win 64240, options [mss 1460,sackOK,TS val 1042442052 ecr 0,nop,wscale 7], length 0
+2026-09-29 08:07:01.913690 xfrm-pub1 Out IP 169.254.21.6.34947 > 169.254.22.5.179: Flags [S], seq 1804938519, win 64240, options [mss 1460,sackOK,TS val 2896174560 ecr 0,nop,wscale 7], length 0
+2026-09-29 08:07:01.922999 xfrm-pub0 In  IP 169.254.21.5.179 > 169.254.21.6.32971: Flags [S.], seq 2383398890, ack 1736153688, win 65535, options [mss 1360,nop,wscale 8,sackOK,TS val 78640649 ecr 1042442052], length 0
+2026-09-29 08:07:01.923062 xfrm-pub0 Out IP 169.254.21.6.32971 > 169.254.21.5.179: Flags [.], ack 1, win 502, options [nop,nop,TS val 1042442062 ecr 78640649], length 0
+2026-09-29 08:07:01.923371 xfrm-pub0 Out IP 169.254.21.6.32971 > 169.254.21.5.179: Flags [P.], seq 1:98, ack 1, win 502, options [nop,nop,TS val 1042442062 ecr 78640649], length 97: BGP
+2026-09-29 08:07:01.923402 xfrm-pub1 In  IP 169.254.22.5.179 > 169.254.21.6.34947: Flags [S.], seq 535244855, ack 1804938520, win 65535, options [mss 1360,nop,wscale 8,sackOK,TS val 78657279 ecr 2896174560], length 0
+2026-09-29 08:07:01.923428 xfrm-pub1 Out IP 169.254.21.6.34947 > 169.254.22.5.179: Flags [.], ack 1, win 502, options [nop,nop,TS val 2896174570 ecr 78657279], length 0
+2026-09-29 08:07:01.923525 xfrm-pub1 Out IP 169.254.21.6.34947 > 169.254.22.5.179: Flags [P.], seq 1:98, ack 1, win 502, options [nop,nop,TS val 2896174570 ecr 78657279], length 97: BGP
+2026-09-29 08:07:01.932771 xfrm-pub0 In  IP 169.254.21.5.179 > 169.254.21.6.32971: Flags [F.], seq 1, ack 1, win 8193, options [nop,nop,TS val 78640658 ecr 1042442062], length 0
+2026-09-29 08:07:01.932924 xfrm-pub0 Out IP 169.254.21.6.32971 > 169.254.21.5.179: Flags [.], ack 2, win 502, options [nop,nop,TS val 1042442072 ecr 78640658], length 0
+2026-09-29 08:07:01.933068 xfrm-pub0 In  IP 169.254.21.5.179 > 169.254.21.6.32971: Flags [R.], seq 2, ack 98, win 0, length 0
+2026-09-29 08:07:01.934093 xfrm-pub1 In  IP 169.254.22.5.179 > 169.254.21.6.34947: Flags [R.], seq 1, ack 98, win 0, length 0
+2026-09-29 08:09:01.934051 xfrm-pub0 Out IP 169.254.21.6.44687 > 169.254.21.5.179: Flags [S], seq 3903575164, win 64240, options [mss 1460,sackOK,TS val 1042562073 ecr 0,nop,wscale 7], length 0
+2026-09-29 08:09:01.934564 xfrm-pub1 Out IP 169.254.21.6.39341 > 169.254.22.5.179: Flags [S], seq 2040953356, win 64240, options [mss 1460,sackOK,TS val 2896294581 ecr 0,nop,wscale 7], length 0
+2026-09-29 08:09:01.943270 xfrm-pub0 In  IP 169.254.21.5.179 > 169.254.21.6.44687: Flags [S.], seq 3359949289, ack 3903575165, win 65535, options [mss 1360,nop,wscale 8,sackOK,TS val 78760669 ecr 1042562073], length 0
+2026-09-29 08:09:01.943335 xfrm-pub0 Out IP 169.254.21.6.44687 > 169.254.21.5.179: Flags [.], ack 1, win 502, options [nop,nop,TS val 1042562082 ecr 78760669], length 0
+2026-09-29 08:09:01.943732 xfrm-pub0 Out IP 169.254.21.6.44687 > 169.254.21.5.179: Flags [P.], seq 1:98, ack 1, win 502, options [nop,nop,TS val 1042562082 ecr 78760669], length 97: BGP
+2026-09-29 08:09:01.944301 xfrm-pub1 In  IP 169.254.22.5.179 > 169.254.21.6.39341: Flags [S.], seq 3001454738, ack 2040953357, win 65535, options [mss 1360,nop,wscale 8,sackOK,TS val 78777301 ecr 2896294581], length 0
+2026-09-29 08:09:01.944326 xfrm-pub1 Out IP 169.254.21.6.39341 > 169.254.22.5.179: Flags [.], ack 1, win 502, options [nop,nop,TS val 2896294591 ecr 78777301], length 0
+2026-09-29 08:09:01.944436 xfrm-pub1 Out IP 169.254.21.6.39341 > 169.254.22.5.179: Flags [P.], seq 1:98, ack 1, win 502, options [nop,nop,TS val 2896294591 ecr 78777301], length 97: BGP
+2026-09-29 08:09:01.954458 xfrm-pub0 In  IP 169.254.21.5.179 > 169.254.21.6.44687: Flags [P.], seq 1:64, ack 98, win 8192, options [nop,nop,TS val 78760679 ecr 1042562082], length 63: BGP
+2026-09-29 08:09:01.954458 xfrm-pub0 In  IP 169.254.21.5.179 > 169.254.21.6.44687: Flags [P.], seq 64:83, ack 98, win 8192, options [nop,nop,TS val 78760679 ecr 1042562082], length 19: BGP
+2026-09-29 08:09:01.954537 xfrm-pub0 Out IP 169.254.21.6.44687 > 169.254.21.5.179: Flags [.], ack 64, win 502, options [nop,nop,TS val 1042562093 ecr 78760679], length 0
+2026-09-29 08:09:01.954588 xfrm-pub0 Out IP 169.254.21.6.44687 > 169.254.21.5.179: Flags [.], ack 83, win 502, options [nop,nop,TS val 1042562093 ecr 78760679], length 0
+2026-09-29 08:09:01.955009 xfrm-pub0 Out IP 169.254.21.6.44687 > 169.254.21.5.179: Flags [P.], seq 98:117, ack 83, win 502, options [nop,nop,TS val 1042562094 ecr 78760679], length 19: BGP
+2026-09-29 08:09:01.955821 xfrm-pub1 In  IP 169.254.22.5.179 > 169.254.21.6.39341: Flags [P.], seq 1:64, ack 98, win 8192, options [nop,nop,TS val 78777302 ecr 2896294591], length 63: BGP
+2026-09-29 08:09:01.955822 xfrm-pub1 In  IP 169.254.22.5.179 > 169.254.21.6.39341: Flags [P.], seq 64:83, ack 98, win 8192, options [nop,nop,TS val 78777313 ecr 2896294591], length 19: BGP
+2026-09-29 08:09:01.955941 xfrm-pub1 Out IP 169.254.21.6.39341 > 169.254.22.5.179: Flags [.], ack 64, win 502, options [nop,nop,TS val 2896294602 ecr 78777302], length 0
+2026-09-29 08:09:01.956009 xfrm-pub1 Out IP 169.254.21.6.39341 > 169.254.22.5.179: Flags [.], ack 83, win 502, options [nop,nop,TS val 2896294603 ecr 78777313], length 0
+2026-09-29 08:09:01.956356 xfrm-pub1 Out IP 169.254.21.6.39341 > 169.254.22.5.179: Flags [P.], seq 98:117, ack 83, win 502, options [nop,nop,TS val 2896294603 ecr 78777313], length 19: BGP
+2026-09-29 08:09:01.968225 xfrm-pub0 In  IP 169.254.21.5.179 > 169.254.21.6.44687: Flags [P.], seq 83:134, ack 117, win 8192, options [nop,nop,TS val 78760680 ecr 1042562094], length 51: BGP
+2026-09-29 08:09:01.968225 xfrm-pub0 In  IP 169.254.21.5.179 > 169.254.21.6.44687: Flags [P.], seq 134:221, ack 117, win 8192, options [nop,nop,TS val 78760694 ecr 1042562094], length 87: BGP
+2026-09-29 08:09:01.968443 xfrm-pub0 Out IP 169.254.21.6.44687 > 169.254.21.5.179: Flags [.], ack 221, win 501, options [nop,nop,TS val 1042562107 ecr 78760680], length 0
+2026-09-29 08:09:01.969784 xfrm-pub1 In  IP 169.254.22.5.179 > 169.254.21.6.39341: Flags [P.], seq 83:134, ack 117, win 8192, options [nop,nop,TS val 78777327 ecr 2896294603], length 51: BGP
+2026-09-29 08:09:01.969785 xfrm-pub1 In  IP 169.254.22.5.179 > 169.254.21.6.39341: Flags [P.], seq 134:221, ack 117, win 8192, options [nop,nop,TS val 78777327 ecr 2896294603], length 87: BGP
+2026-09-29 08:09:01.969838 xfrm-pub1 Out IP 169.254.21.6.39341 > 169.254.22.5.179: Flags [.], ack 221, win 501, options [nop,nop,TS val 2896294616 ecr 78777327], length 0
+2026-09-29 08:09:03.156391 xfrm-pub0 Out IP 169.254.21.6.44687 > 169.254.21.5.179: Flags [P.], seq 117:207, ack 221, win 501, options [nop,nop,TS val 1042563295 ecr 78760680], length 90: BGP
+2026-09-29 08:09:03.156510 xfrm-pub1 Out IP 169.254.21.6.39341 > 169.254.22.5.179: Flags [P.], seq 117:207, ack 221, win 501, options [nop,nop,TS val 2896295803 ecr 78777327], length 90: BGP
+2026-09-29 08:09:03.189945 xfrm-pub0 In  IP 169.254.21.5.179 > 169.254.21.6.44687: Flags [.], ack 207, win 8192, options [nop,nop,TS val 78761916 ecr 1042563295], length 0
+2026-09-29 08:09:03.215604 xfrm-pub1 In  IP 169.254.22.5.179 > 169.254.21.6.39341: Flags [.], ack 207, win 8192, options [nop,nop,TS val 78778573 ecr 2896295803], length 0
+
+51 packets captured
+51 packets received by filter
+0 packets dropped by kernel

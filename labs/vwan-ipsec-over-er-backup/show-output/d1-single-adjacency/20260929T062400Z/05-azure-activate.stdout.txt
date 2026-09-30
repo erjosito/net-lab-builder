@@ -1,0 +1,137 @@
+{
+  "addressSpace": {
+    "addressPrefixes": [
+      "10.253.2.0/24"
+    ]
+  },
+  "bgpProperties": null,
+  "deviceProperties": {
+    "deviceModel": "StrongSwan-FRR",
+    "deviceVendor": "Linux",
+    "linkSpeedInMbps": 50
+  },
+  "etag": "W/\"<REDACTED-GUID>\"",
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnSites/site-gcp-er",
+  "ipAddress": null,
+  "isSecuritySite": false,
+  "location": "swedencentral",
+  "name": "site-gcp-er",
+  "o365Policy": {
+    "breakOutCategories": {
+      "allow": false,
+      "default": false,
+      "optimize": false
+    }
+  },
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+  "siteKey": null,
+  "tags": {
+    "created_by": "copilot-lab",
+    "lab": "true",
+    "lab_name": "vwan-ipsec-over-er-backup"
+  },
+  "type": "Microsoft.Network/vpnSites",
+  "virtualWan": {
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualWans/vwan-ver-09281131",
+    "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+  },
+  "vpnSiteLinks": [
+    {
+      "bgpProperties": {
+        "asn": 65050,
+        "bgpPeeringAddress": "10.250.254.242"
+      },
+      "etag": "W/\"<REDACTED-GUID>\"",
+      "fqdn": null,
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnSites/site-gcp-er/vpnSiteLinks/site-gcp-er",
+      "ipAddress": "10.250.0.10",
+      "linkProperties": {
+        "linkProviderName": null,
+        "linkSpeedInMbps": 0
+      },
+      "name": "site-gcp-er",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+      "type": "Microsoft.Network/vpnSites/vpnSiteLinks"
+    }
+  ]
+}
+{
+  "connectionBandwidth": null,
+  "connectionStatus": null,
+  "dpdTimeoutSeconds": null,
+  "egressBytesTransferred": 1956559,
+  "enableBgp": null,
+  "enableInternetSecurity": false,
+  "enableRateLimiting": null,
+  "etag": "W/\"<REDACTED-GUID>\"",
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131/vpnConnections/conn-gcp-inet",
+  "ingressBytesTransferred": 246996,
+  "ipsecPolicies": null,
+  "name": "conn-gcp-inet",
+  "provisioningState": "Succeeded",
+  "remoteVpnSite": {
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnSites/site-gcp-inet",
+    "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+  },
+  "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+  "routingConfiguration": {
+    "associatedRouteTable": {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubRouteTables/defaultRouteTable",
+      "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+    },
+    "inboundRouteMap": null,
+    "outboundRouteMap": null,
+    "propagatedRouteTables": {
+      "ids": [
+        {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/hubRouteTables/defaultRouteTable",
+          "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+        }
+      ],
+      "labels": [
+        "default"
+      ]
+    },
+    "vnetRoutes": null
+  },
+  "routingWeight": null,
+  "sharedKey": null,
+  "trafficSelectorPolicies": null,
+  "type": "Microsoft.Network/vpnGateways/vpnConnections",
+  "useLocalAzureIpAddress": null,
+  "usePolicyBasedTrafficSelectors": null,
+  "vpnConnectionProtocolType": null,
+  "vpnLinkConnections": [
+    {
+      "connectionBandwidth": 50,
+      "connectionStatus": "Connected",
+      "egressBytesTransferred": 1709563,
+      "egressNatRules": null,
+      "enableBgp": false,
+      "enableRateLimiting": false,
+      "etag": "W/\"<REDACTED-GUID>\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnGateways/vpngw-ver-09281131/vpnConnections/conn-gcp-inet/vpnLinkConnections/conn-gcp-inet-link",
+      "ingressBytesTransferred": 246996,
+      "ingressNatRules": null,
+      "ipsecPolicies": [],
+      "name": "conn-gcp-inet-link",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+      "routingWeight": 0,
+      "sharedKey": null,
+      "type": "Microsoft.Network/vpnGateways/vpnConnections/vpnLinkConnections",
+      "useLocalAzureIpAddress": false,
+      "usePolicyBasedTrafficSelectors": false,
+      "vpnConnectionProtocolType": "IKEv2",
+      "vpnGatewayCustomBgpAddresses": [],
+      "vpnLinkConnectionMode": "Default",
+      "vpnSiteLink": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnSites/site-gcp-inet/vpnSiteLinks/site-gcp-inet",
+        "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+      }
+    }
+  ]
+}
+

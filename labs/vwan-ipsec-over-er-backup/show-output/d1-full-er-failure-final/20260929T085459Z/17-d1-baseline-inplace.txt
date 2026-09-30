@@ -1,0 +1,42 @@
+Warning: Permanently added '[localhost]:22022' (ED25519) to the list of known hosts.
+pri1: #2, ESTABLISHED, IKEv2, 8df6eed30d5ec0ec_i* b79cce6b4e1eca69_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.5' @ 10.240.0.5[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 434s ago, rekeying in 13439s
+  pri1: #3, reqid 4, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 434s ago, rekeying in 3102s, expires in 3526s
+    in  cd687b1a (-|0x0000019b),  32450 bytes,   509 packets,     2s ago
+    out 9cad38a6 (-|0x0000019b),  58381 bytes,  1067 packets,     0s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+pri0: #1, ESTABLISHED, IKEv2, 1a916836519212aa_i* c3303421b94fd7f0_r
+  local  '10.250.0.10' @ 10.250.0.10[4500]
+  remote '10.240.0.4' @ 10.240.0.4[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 434s ago, rekeying in 13466s
+  pri0: #4, reqid 3, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 434s ago, rekeying in 2855s, expires in 3526s
+    in  cba6a8ac (-|0x0000019a),  30617 bytes,   485 packets,     4s ago
+    out be136c26 (-|0x0000019a),  45067 bytes,   845 packets,     1s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+
+IPv4 Unicast Summary (VRF default):
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 425
+RIB entries 1, using 184 bytes of memory
+Peers 4, using 2892 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+10.240.0.12     4      65515        95       101        0    0    0 00:04:54      Connect        0 N/A
+10.240.0.13     4      65515        76        82        0    0    0 00:05:23      Connect        0 N/A
+169.254.21.5    4      65515         0         0        0    0    0    never       Active        0 N/A
+169.254.22.5    4      65515         0         0        0    0    0    never       Active        0 N/A
+
+Total number of neighbors 4
+10.240.0.12 from 10.250.254.242 dev xfrm-pri1 uid 1001
+    cache
+ping: bind: Cannot assign requested address
+curl: (45) bind failed with errno 99: Cannot assign requested address

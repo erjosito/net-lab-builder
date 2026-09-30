@@ -1,0 +1,77 @@
+# action: read-only evidence capture
+# question_id: Q-VPN-MANAGED-STATE
+# plane: azure-vpn
+# expected_effect: Managed VPN gateway, site and connection state matches the intended private/public link state.
+# utc_started: 2026-09-29T06:19:09.3080642Z
+# utc_ended: 2026-09-29T06:19:14.7618266Z
+# local_started: 2026-09-29T08:19:09.3080642+02:00
+# local_ended: 2026-09-29T08:19:14.7618266+02:00
+# command: az resource show --ids /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnSites/site-gcp-er -o json
+# exit_code: 0
+# stdout:
+{
+  "etag": "W/\"<GUID>\"",
+  "extendedLocation": null,
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnSites/site-gcp-er",
+  "identity": null,
+  "kind": null,
+  "location": "swedencentral",
+  "managedBy": null,
+  "name": "site-gcp-er",
+  "plan": null,
+  "properties": {
+    "addressSpace": {
+      "addressPrefixes": [
+        "10.253.2.0/24"
+      ]
+    },
+    "deviceProperties": {
+      "deviceModel": "StrongSwan-FRR",
+      "deviceVendor": "Linux",
+      "linkSpeedInMbps": 50
+    },
+    "isSecuritySite": false,
+    "o365Policy": {
+      "breakOutCategories": {
+        "allow": false,
+        "default": false,
+        "optimize": false
+      }
+    },
+    "provisioningState": "Succeeded",
+    "virtualWan": {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualWans/vwan-ver-09281131",
+      "resourceGroup": "rg-vwan-ipsec-over-er-09281131"
+    },
+    "vpnSiteLinks": [
+      {
+        "etag": "W/\"<GUID>\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/vpnSites/site-gcp-er/vpnSiteLinks/site-gcp-er",
+        "name": "site-gcp-er",
+        "properties": {
+          "bgpProperties": {
+            "asn": 65050,
+            "bgpPeeringAddress": "10.250.254.240"
+          },
+          "ipAddress": "10.250.0.10",
+          "linkProperties": {
+            "linkSpeedInMbps": 0
+          },
+          "provisioningState": "Succeeded"
+        },
+        "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+        "type": "Microsoft.Network/vpnSites/vpnSiteLinks"
+      }
+    ]
+  },
+  "resourceGroup": "rg-vwan-ipsec-over-er-09281131",
+  "sku": null,
+  "tags": {
+    "created_by": "copilot-lab",
+    "lab": "true",
+    "lab_name": "vwan-ipsec-over-er-backup"
+  },
+  "type": "Microsoft.Network/vpnSites"
+}
+# stderr:
+

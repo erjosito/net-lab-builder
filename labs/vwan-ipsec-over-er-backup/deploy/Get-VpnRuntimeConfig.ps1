@@ -73,14 +73,9 @@ $privateConnection = az network vpn-gateway connection show -g $ResourceGroup --
     -n conn-gcp-er -o json | ConvertFrom-Json
 $publicConnection = az network vpn-gateway connection show -g $ResourceGroup --gateway-name $VpnGatewayName `
     -n conn-gcp-inet -o json | ConvertFrom-Json
-$privateBgpPeers = @($privateConnection.vpnLinkConnections[0].vpnGatewayCustomBgpAddresses | Sort-Object ipConfigurationId | ForEach-Object { $_.customBgpIpAddress })
 $publicBgpPeers = @($publicConnection.vpnLinkConnections[0].vpnGatewayCustomBgpAddresses | Sort-Object ipConfigurationId | ForEach-Object { $_.customBgpIpAddress })
-if ($privateBgpPeers.Count -ne 2 -or $publicBgpPeers.Count -ne 2) {
-    throw 'Each VPN connection must select two distinct Azure custom BGP addresses.'
-}
-if ($Design -eq 'D1') {
-    # Live gateway instance mapping: Instance1 is the approved single D1 peer.
-    $privateBgpPeers = @('10.240.0.13', '10.240.0.12')
+if ($publicBgpPeers.Count -ne 2) {
+    throw 'The public VPN connection must select two distinct Azure custom BGP addresses.'
 }
 
 $vpnGateway = az network vpn-gateway show -g $ResourceGroup -n $VpnGatewayName -o json | ConvertFrom-Json
@@ -91,6 +86,13 @@ foreach ($address in $vpnGateway.bgpSettings.bgpPeeringAddresses) {
 $instance0 = $instances.Instance0
 $instance1 = $instances.Instance1
 if (-not $instance0 -or -not $instance1) { throw 'VPN gateway active-active endpoint data is incomplete.' }
+$privateBgpPeers = @(
+    @($instance0.defaultBgpIpAddresses)[0],
+    @($instance1.defaultBgpIpAddresses)[0]
+)
+if ($privateBgpPeers.Count -ne 2 -or $privateBgpPeers -contains $null) {
+    throw 'The VPN gateway default BGP peer mapping is incomplete.'
+}
 
 $private0 = @($instance0.tunnelIpAddresses | Where-Object { $_ -match '^10\.' })[0]
 $private1 = @($instance1.tunnelIpAddresses | Where-Object { $_ -match '^10\.' })[0]

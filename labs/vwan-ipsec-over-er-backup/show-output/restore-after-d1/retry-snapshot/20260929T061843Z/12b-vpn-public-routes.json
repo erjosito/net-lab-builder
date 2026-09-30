@@ -1,0 +1,18 @@
+# action: read-only evidence capture
+# question_id: Q-MANAGED-CONNECTION-ROUTES
+# plane: azure-vwan-routes
+# expected_effect: Managed connection route view correlates with the active design, withdrawal or restore.
+# utc_started: 2026-09-29T06:32:40.0677836Z
+# utc_ended: 2026-09-29T06:32:48.7550068Z
+# local_started: 2026-09-29T08:32:40.0677836+02:00
+# local_ended: 2026-09-29T08:32:48.7550068+02:00
+# command: az rest --method POST --url https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-ipsec-over-er-09281131/providers/Microsoft.Network/virtualHubs/vhub-ver-09281131/effectiveRoutes?api-version=2025-09-01 --body '<SANITIZED_BODY>' -o json
+# exit_code: 1
+# stdout:
+
+# stderr:
+PropertyNotFoundException: C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\scripts\Collect-Evidence.ps1:228
+Line |
+ 228 |          if ($parsed.status -in @('InProgress', 'Running', 'Accepted') …
+     |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | The property 'status' cannot be found on this object. Verify that the property exists.

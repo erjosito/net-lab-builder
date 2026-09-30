@@ -1,0 +1,14 @@
+# action: read-only evidence capture
+# question_id: Q-CPE-FIREWALL
+# plane: cpe-firewall
+# expected_effect: nftables rules and counters correlate with allowed or intentionally dropped traffic.
+# utc_started: 2026-09-29T06:34:23.1123642Z
+# utc_ended: 2026-09-29T06:34:27.8913918Z
+# local_started: 2026-09-29T08:34:23.1123642+02:00
+# local_ended: 2026-09-29T08:34:27.8913918+02:00
+# command: gcloud compute ssh cpe-ver-09281131 --zone europe-north2-c --project <GCP_PROJECT_ID> --tunnel-through-iap --command 'sudo nft list ruleset'
+# exit_code: 0
+# stdout:
+
+# stderr:
+

@@ -1,0 +1,22 @@
+{
+  "design": "D1",
+  "privateConnection": "conn-gcp-er",
+  "publicConnection": "conn-gcp-inet",
+  "privateIkeEndpoints": [
+    "10.240.0.4",
+    "10.240.0.5"
+  ],
+  "publicIkeEndpoints": [
+    "74.158.47.254",
+    "74.158.80.26"
+  ],
+  "privateBgpPeers": [
+    "10.240.0.13",
+    "10.240.0.12"
+  ],
+  "publicBgpPeers": [
+    "169.254.21.5",
+    "169.254.22.5"
+  ],
+  "pskStorage": "runtime-only; omitted"
+}

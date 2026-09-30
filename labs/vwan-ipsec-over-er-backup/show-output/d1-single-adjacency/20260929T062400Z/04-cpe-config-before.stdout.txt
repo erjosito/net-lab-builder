@@ -1,0 +1,70 @@
+2026-09-29T06:23:03,544097025+00:00
+===ADDR===
+lo               UNKNOWN        127.0.0.1/8 10.250.254.240/32 10.250.254.241/32 10.250.254.242/32 10.250.254.250/32 10.253.2.10/32 ::1/128
+ens4             UP             10.250.0.10/32 metric 100 fe80::4001:aff:fefa:a/64
+xfrm-pri0@ens4   UNKNOWN        fe80::fb73:6416:8d8a:ff01/64
+xfrm-pri1@ens4   UNKNOWN        fe80::faf0:8cbc:59f6:3938/64
+xfrm-pub0@ens4   UNKNOWN        fe80::5d16:f4ed:eaed:30a6/64
+xfrm-pub1@ens4   UNKNOWN        fe80::cc18:4749:ffd:e909/64
+===FRR===
+frr version 8.1
+frr defaults traditional
+hostname cpe-ver-09281131
+no ipv6 forwarding
+service integrated-vtysh-config
+!
+ip route 10.240.0.0/24 Null0 254
+ip route 10.241.0.0/24 Null0 254
+ip route 10.253.2.0/24 Null0
+!
+router bgp 65050
+ bgp router-id 10.250.254.250
+ no bgp ebgp-requires-policy
+ neighbor PRI peer-group
+ neighbor PRI remote-as 65515
+ neighbor PRI ebgp-multihop 2
+ neighbor PRI update-source 10.250.254.240
+ neighbor PUB peer-group
+ neighbor PUB remote-as 65515
+ neighbor PUB ebgp-multihop 2
+ neighbor PUB update-source 10.250.254.241
+ neighbor 169.254.21.1 peer-group PRI
+ neighbor 169.254.22.1 peer-group PRI
+ neighbor 169.254.21.5 peer-group PUB
+ neighbor 169.254.22.5 peer-group PUB
+ !
+ address-family ipv4 unicast
+  network 10.253.2.0/24
+  network 10.253.3.0/25
+  network 10.253.3.128/25
+  neighbor PRI prefix-list AZURE-IN in
+  neighbor PRI prefix-list ACTIVE-OUT out
+  neighbor PRI route-map IMPORT-PRI in
+  neighbor PUB prefix-list AZURE-IN in
+  neighbor PUB prefix-list ACTIVE-OUT out
+  neighbor PUB route-map IMPORT-PUB in
+  neighbor PUB route-map EXPORT-PUB out
+  maximum-paths 2
+ exit-address-family
+exit
+!
+ip prefix-list AZURE-IN seq 10 permit 10.240.0.0/24
+ip prefix-list AZURE-IN seq 20 permit 10.241.0.0/24
+ip prefix-list ACTIVE-OUT seq 10 permit 10.253.2.0/24
+!
+route-map IMPORT-PRI permit 10
+ set local-preference 200
+exit
+!
+route-map IMPORT-PUB permit 10
+ set local-preference 100
+exit
+!
+route-map EXPORT-PUB permit 10
+ set as-path prepend 65050 65050 65050
+exit
+!
+===HASH===
+1e418c45971e1cc50e6b2e2bd610bed122d9819b33c9d8be9cf487ed18322d30  /etc/frr/frr.conf
+===STOP===
+

@@ -1,0 +1,1 @@
+gcloud compute ssh 'cpe-ver-09281131' --zone 'europe-north2-c' --project 'gcp-vwan-eripsec-09281131' --quiet --command 'sudo swanctl --list-sas --raw; echo CONNECTIONS; sudo swanctl --list-conns --raw'

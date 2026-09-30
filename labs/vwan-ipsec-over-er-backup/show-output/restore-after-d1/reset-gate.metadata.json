@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "correlationId": "09281131",
+  "scenario": "restore",
+  "questionId": "Q-RESET-CONTAMINATION",
+  "plane": "cross-plane",
+  "actionType": "assertion",
+  "state": "assertion",
+  "expectedEffect": "Only D2 experiment prefixes remain and all mandatory health signals and bidirectional probes pass.",
+  "observedEffect": "RESET GATE FAIL",
+  "commandFile": "reset-gate.command.txt",
+  "stdoutFile": "reset-gate.stdout.txt",
+  "stderrFile": "reset-gate.stderr.txt",
+  "combinedFile": "reset-gate-verdict.json",
+  "utcStarted": "2026-09-29T06:34:51.9423924Z",
+  "utcEnded": "2026-09-29T06:34:55.5907924Z",
+  "localStarted": "2026-09-29T08:34:51.9423924+02:00",
+  "localEnded": "2026-09-29T08:34:55.5907924+02:00",
+  "durationMs": 3648.0,
+  "exitCode": 1,
+  "succeeded": false,
+  "workingDirectory": "<REPOSITORY_ROOT>"
+}

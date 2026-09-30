@@ -1,0 +1,23 @@
+# action: read-only evidence capture
+# question_id: Q-AZURE-WORKLOAD-PATH
+# plane: azure-workload
+# expected_effect: Workload effective routes, kernel FIB and packet headers match the selected encrypted overlay path.
+# utc_started: 2026-09-29T06:21:25.5293451Z
+# utc_ended: 2026-09-29T06:32:30.5489153Z
+# local_started: 2026-09-29T08:21:25.5293451+02:00
+# local_ended: 2026-09-29T08:32:30.5489153+02:00
+# command: az vm run-command invoke -g rg-vwan-ipsec-over-er-09281131 -n vm-probe-ver-09281131 --command-id RunShellScript --scripts '<ip route and rule capture>'
+# exit_code: 0
+# stdout:
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\nunicast default via 10.241.0.1 dev eth0 table main proto dhcp scope global src 10.241.0.4 metric 100 \nunicast 10.241.0.0/26 dev eth0 table main proto kernel scope link src 10.241.0.4 metric 100 \nunicast 10.241.0.1 dev eth0 table main proto dhcp scope link src 10.241.0.4 metric 100 \nunicast 168.63.129.16 via 10.241.0.1 dev eth0 table main proto dhcp scope global src 10.241.0.4 metric 100 \nunicast 169.254.169.254 via 10.241.0.1 dev eth0 table main proto dhcp scope global src 10.241.0.4 metric 100 \nlocal 10.241.0.4 dev eth0 table local proto kernel scope host src 10.241.0.4 \nbroadcast 10.241.0.63 dev eth0 table local proto kernel scope link src 10.241.0.4 \nlocal 127.0.0.0/8 dev lo table local proto kernel scope host src 127.0.0.1 \nlocal 127.0.0.1 dev lo table local proto kernel scope host src 127.0.0.1 \nbroadcast 127.255.255.255 dev lo table local proto kernel scope link src 127.0.0.1 \nunicast ::1 dev lo table main proto kernel scope global metric 256 pref medium\nunicast fe80::/64 dev eth0 table main proto kernel scope global metric 256 pref medium\nlocal ::1 dev lo table local proto kernel scope global metric 0 pref medium\nlocal fe80::6245:bdff:fec9:133f dev eth0 table local proto kernel scope global metric 0 pref medium\nmulticast ff00::/8 dev eth0 table local proto kernel scope global metric 256 pref medium\n0:\tfrom all lookup local\n32766:\tfrom all lookup main\n32767:\tfrom all lookup default\n\n[stderr]\n"
+    }
+  ]
+}
+# stderr:
+

@@ -1,0 +1,856 @@
+FAULT_UTC=2026-09-29T08:19:41Z START_MS=1790669981197
+PRIVATE_SHUT_MS=156
+PUBLIC_SELECTED_MS=1166 CONVERGENCE_MS=1010
+===BGP_SUMMARY===
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 5
+RIB entries 5, using 920 bytes of memory
+Peers 4, using 2892 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+10.240.0.12     4      65515        20        19        0    0    0 00:00:01 Idle (Admin)        0 N/A
+10.240.0.13     4      65515        19        19        0    0    0 00:00:01 Idle (Admin)        0 N/A
+169.254.21.5    4      65515        16        15        0    0    0 00:10:40            2        1 N/A
+169.254.22.5    4      65515        16        15        0    0    0 00:10:40            2        1 N/A
+
+Total number of neighbors 4
+===AZURE_ROUTE===
+BGP routing table entry for 10.241.0.0/24, version 5
+Paths: (2 available, best #1, table default)
+  Not advertised to any peer
+  65515
+    169.254.22.5 from 169.254.22.5 (10.240.0.12)
+      Origin IGP, localpref 100, valid, external, multipath, best (Router ID)
+      Last update: Tue Sep 29 08:09:02 2026
+  65515
+    169.254.21.5 from 169.254.21.5 (10.240.0.13)
+      Origin IGP, localpref 100, valid, external, multipath
+      Last update: Tue Sep 29 08:09:02 2026
+===KERNEL===
+10.241.0.0/24 nhid 43 proto bgp metric 20
+	nexthop via 169.254.21.5 dev xfrm-pub0 weight 1 onlink
+	nexthop via 169.254.22.5 dev xfrm-pub1 weight 1 onlink
+===SAS===
+pub0: #30, ESTABLISHED, IKEv2, b1c96af016f41c64_i* ed9b357c69f0cd44_r
+  pub0: #6, reqid 4, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+pri0: #29, ESTABLISHED, IKEv2, c34b8710811766e6_i* 40ff5264e98537dc_r
+  pri0: #5, reqid 3, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+pub1: #4, ESTABLISHED, IKEv2, 965b3046ce5ec9bb_i* 639698074d60c6be_r
+  pub1: #2, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+pri1: #2, ESTABLISHED, IKEv2, 640a0443eb735b1b_i* edd4575a3ec08051_r
+  pri1: #4, reqid 2, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+===PAYLOAD===
+PING 10.241.0.4 (10.241.0.4) from 10.253.2.10 : 56(84) bytes of data.
+64 bytes from 10.241.0.4: icmp_seq=1 ttl=64 time=33.2 ms
+64 bytes from 10.241.0.4: icmp_seq=2 ttl=64 time=33.2 ms
+64 bytes from 10.241.0.4: icmp_seq=3 ttl=64 time=33.1 ms
+64 bytes from 10.241.0.4: icmp_seq=4 ttl=64 time=33.2 ms
+64 bytes from 10.241.0.4: icmp_seq=5 ttl=64 time=33.0 ms
+
+--- 10.241.0.4 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4002ms
+rtt min/avg/max/mdev = 33.034/33.137/33.212/0.064 ms
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.10.12
+Date: Tue, 29 Sep 2026 08:19:46 GMT
+Content-type: application/octet-stream
+Content-Length: 3
+Last-Modified: Mon, 28 Sep 2026 12:06:40 GMT
+
+ok
+===PROBES===
+PROBE ms=9 ping=ok http=ok
+PROBE ms=1201 ping=ok http=ok
+PROBE ms=2323 ping=ok http=ok
+PROBE ms=3442 ping=ok http=ok
+PROBE ms=4559 ping=ok http=ok
+PROBE ms=5672 ping=ok http=ok
+PROBE ms=6786 ping=ok http=ok
+PROBE ms=7900 ping=ok http=ok
+PROBE ms=9013 ping=ok http=ok
+PROBE ms=10129 ping=ok http=ok
+PROBE ms=11247 ping=ok http=ok
+PROBE ms=12364 ping=ok http=ok
+PROBE ms=13480 ping=ok http=ok
+PROBE ms=14597 ping=ok http=ok
+PROBE ms=15711 ping=ok http=ok
+PROBE ms=16825 ping=ok http=ok
+PROBE ms=17943 ping=ok http=ok
+PROBE ms=19061 ping=ok http=ok
+PROBE ms=20181 ping=ok http=ok
+PROBE ms=21314 ping=ok http=ok
+PROBE ms=22436 ping=ok http=ok
+PROBE ms=23553 ping=ok http=ok
+PROBE ms=24682 ping=ok http=ok
+PROBE ms=25801 ping=ok http=ok
+PROBE ms=26925 ping=ok http=ok
+PROBE ms=28043 ping=ok http=ok
+PROBE ms=29163 ping=ok http=ok
+PROBE ms=30281 ping=ok http=ok
+PROBE ms=31394 ping=ok http=ok
+PROBE ms=32509 ping=ok http=ok
+PROBE ms=33625 ping=ok http=ok
+PROBE ms=34742 ping=ok http=ok
+PROBE ms=35857 ping=ok http=ok
+PROBE ms=36976 ping=ok http=ok
+PROBE ms=38096 ping=ok http=ok
+PROBE ms=39215 ping=ok http=ok
+PROBE ms=40333 ping=ok http=ok
+PROBE ms=41452 ping=ok http=ok
+PROBE ms=42571 ping=ok http=ok
+PROBE ms=43690 ping=ok http=ok
+PROBE ms=44808 ping=ok http=ok
+PROBE ms=45927 ping=ok http=ok
+PROBE ms=47045 ping=ok http=ok
+PROBE ms=48160 ping=ok http=ok
+PROBE ms=49280 ping=ok http=ok
+PROBE ms=50398 ping=ok http=ok
+PROBE ms=51513 ping=ok http=ok
+PROBE ms=52628 ping=ok http=ok
+PROBE ms=53747 ping=ok http=ok
+PROBE ms=54867 ping=ok http=ok
+PROBE ms=55982 ping=ok http=ok
+PROBE ms=57116 ping=ok http=ok
+PROBE ms=58232 ping=ok http=ok
+PROBE ms=59345 ping=ok http=ok
+PROBE ms=60463 ping=ok http=ok
+PROBE ms=61581 ping=ok http=ok
+PROBE ms=62701 ping=ok http=ok
+PROBE ms=63820 ping=ok http=ok
+PROBE ms=64940 ping=ok http=ok
+PROBE ms=66057 ping=ok http=ok
+===PACKETS===
+tcpdump: data link type LINUX_SLL2
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes
+08:19:41.267040 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 16, seq 1, length 64
+08:19:41.277923 xfrm-pri0 Out IP 10.253.2.10.43404 > 10.241.0.4.8080: Flags [S], seq 1191894082, win 64240, options [mss 1460,sackOK,TS val 2571801318 ecr 0,nop,wscale 7], length 0
+08:19:41.334149 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.43404: Flags [S.], seq 305013591, ack 1191894083, win 65160, options [mss 1250,sackOK,TS val 3300872001 ecr 2571801318,nop,wscale 7], length 0
+08:19:41.334193 xfrm-pri0 Out IP 10.253.2.10.43404 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571801374 ecr 3300872001], length 0
+08:19:41.334292 xfrm-pri0 Out IP 10.253.2.10.43404 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571801374 ecr 3300872001], length 85: HTTP: GET /health HTTP/1.1
+08:19:41.392138 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.43404: Flags [.], ack 86, win 509, opti08:19:41.392138 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.43404: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300872057 ecr 2571801374], length 0
+08:19:41.392138 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.43404: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300872058 ecr 2571801374], length 200: HTTP: HTTP/1.0 200 OK
+08:19:41.392138 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.43404: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300872058 ecr 2571801374], length 3: HTTP
+08:19:41.392196 xfrm-pri0 Out IP 10.253.2.10.43404 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571801432 ecr 3300872058], length 0
+08:19:41.392327 xfrm-pri0 Out IP 10.253.2.10.43404 > 10.241.0.4.80808:19:41.447478 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.43404: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300872115 ecr 2571801432], length 0
+08:19:42.400913 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 17, seq 1, length 64
+08:19:42.434182 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 17, seq 1, length 64
+0808:19:42.434182 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 17, seq 1, length 64
+08:19:42.445710 xfrm-pub0 Out IP 10.253.2.10.43418 > 10.241.0.4.8080: Flags [S08:19:42.478814 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.43418: Flags [S.], seq 3734833130, ack 206284180, win 65160, options [mss 1250,sackOK,TS val 3300873146 ecr 2571802485,nop,wscale 7], length 0
+08:19:42.478902 xfrm-pub0 Out IP 10.253.2.10.43418 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571802518 ecr 3300873146], length 0
+08:19:42.479078 xfrm-pub0 Out IP 10.253.2.10.43418 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571802519 ecr 3300873146], length 85: HTTP: GET /health HTTP/1.1
+08:19:42.511387 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.43418: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300873179 ecr 2571802519], length 0
+08:19:42.512215 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.43418: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300873180 ecr 2571802519], length 200: HTTP: HTTP/1.0 200 OK
+08:19:42.512255 xfrm-pub0 Out IP 10.253.2.10.43418 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571802552 ecr 3300873180], length 0
+08:19:42.512318 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.43418: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300873180 ecr 2571802519], length 3: HTTP
+08:19:42.512421 xfrm-pub0 Out IP 10.253.2.10.43418 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571802552 ecr 3300873180], length 0
+08:19:42.544514 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.43418: Flags [.], ack 87, win 509, opti08:19:42.544514 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.25308:19:42.694797 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 18, seq 1, length 64
+08:19:42.727958 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 18, seq 1, length 64
+08:19:43.522732 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 19, seq 1, length 64
+08:19:43.555904 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 19, seq 1, length 64
+08:19:43.565841 xfrm-pub0 Out IP 10.253.2.10.43420 > 10.241.0.4.8080: Flags [S], seq 348938436, win 64240, options [mss 1460,sackOK,TS val 2571803605 ecr 0,nop,wscale 7], length 0
+08:19:43.598928 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.43420: Flags [S.], seq 2791438500, ack 348938437, win 65160, options [mss 1250,sackOK,TS val 3300874266 ecr 2571803605,nop,wscale 7], length 0
+08:19:43.599005 xfrm-pub0 Out IP 10.253.2.10.43420 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571803639 ecr 3300874266], length 0
+08:19:43.599239 xfrm-pub0 Out IP 10.253.2.10.43420 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571803639 ecr 3300874266], length 85: HTTP: GET /health HTTP/1.1
+08:19:43.631425 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.43420: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300874299 ecr 2571803639], length 0
+08:19:43.631958 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.43420: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300874300 ecr 2571803639], length 200: HTTP: HTTP/1.0 200 OK
+08:19:43.632048 xfrm-pub0 Out IP 10.253.2.10.43420 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571803672 ecr 3300874300], length 0
+08:19:43.632116 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.43420: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300874300 ecr 2571803639], length 3: HTTP
+08:19:43.632237 xfrm-pub0 Out IP 10.253.2.10.43420 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571803672 ecr 3300874300], length 0
+08:19:43.664296 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.43420: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300874332 ecr 2571803672], length 0
+08:19:43.695299 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 18, seq 2, length 64
+08:19:43.728412 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 18, seq 2, length 64
+08:19:44.641294 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 20, seq 1, length 64
+08:19:44.675043 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 20, seq 1, length 64
+08:19:44.684075 xfrm-pub0 Out IP 10.253.2.10.43422 > 10.241.0.4.8080: Flags [S], seq 3975360552, win 64240, options [mss 1460,sackOK,TS val 2571804724 ecr 0,nop,wscale 7], length 0
+08:19:44.695783 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 18, seq 3, length 64
+08:19:44.717025 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.43422: Flags [S.], seq 2504015174, ack 08:19:44.717025 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.43422: Flags [S.], seq 2504015174, ack 3975360553, win 65160, options [mss 1250,sackOK,TS val 3300875384 ecr 2571804724,nop,wscale 7], length 0
+08:19:44.717141 xfrm-pub0 Out IP 10.253.2.10.43422 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571804757 ecr 3300875384], length 0
+08:19:44.717276 xfrm-pub0 Out IP 10.253.2.10.43422 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571804757 ecr 3300875384], length 85: HTTP: GET /health HTTP/1.08:19:44.749477 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.43422: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300875417 ecr 2571804757], length 0
+08:19:44.750128 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.43422: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300875418 ecr 2571804757], length 200: HTTP: HTTP/1.0 200 OK
+08:19:44.750129 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.43422: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300875418 ecr 2571804757], length 3: HTTP
+08:19:44.750182 xfrm-pub0 Out IP 10.253.2.10.43422 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571804790 ecr 3300875418], length 0
+08:19:44.750400 xfrm-pub0 Out IP 10.253.2.10.43422 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571804790 ecr 3300875418], length 0
+08:19:44.782468 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.43422: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300875450 ecr 2571804790], length 0
+08:19:45.696192 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 18, seq 4, length 64
+08:19:45.729375 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 18, seq 4, length 64
+08:19:45.758360 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 21, seq 1, length 64
+08:19:45.791554 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 21, seq 1, length 64
+08:19:45.798595 xfrm-pub0 Out IP 10.253.2.10.48320 > 10.241.0.4.8080: Flags [S], seq 320888999, win 64240, options [mss 1460,sackOK,TS val 2571805838 ecr 0,nop,wscale 7], length 0
+08:19:45.831604 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48320: Flags [S.], seq 3136032428, ack 320889000, win 65160, options [mss 1250,sackOK,TS val 3300876499 ecr 2571805838,nop,wscale 7], length 0
+08:19:45.831659 xfrm-pub0 Out IP 10.253.2.10.48320 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571805871 ecr 3300876499], length 0
+08:19:45.831803 xfrm-pub0 Out IP 10.253.2.10.48320 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571805871 ecr 3300876499], length 85: HTTP: GET /health HTTP/1.1
+08:19:45.864035 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48320: Flags [.], ack 86, win 509, opti08:19:45.864035 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48320: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300876532 ecr 2571805871], length 0
+08:19:45.864662 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48320: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300876532 ecr 2571805871], length 200: HTTP: HTTP/1.0 200 OK
+08:19:45.864662 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48320: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300876532 ecr 2571805871], length 3: HTTP
+08:19:45.864703 xfrm-pub0 Out IP 10.253.2.10.48320 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571805904 ecr 3300876532], length 0
+08:19:45.864840 xfrm-pub0 Out IP 10.253.2.10.48320 > 10.241.0.4.80808:19:45.896762 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48320: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300876564 ecr 2571805904], length 0
+08:19:46.696581 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 18, seq 5, length 64
+08:19:46.729586 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 18, seq 5, length 64
+08:19:46.738954 xfrm-pub0 Out IP 10.253.2.10.48328 > 10.241.0.4.8080: Flags [S], seq 3018424563, win 64240, options [mss 1460,sackOK,TS val 2571806779 ecr 0,nop,wscale 7], length 0
+08:19:46.772240 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48328: Flags [S.], seq 2913569795, ack 3018424564, win 65160, options [mss 1250,sackOK,TS val 3300877439 ecr 2571806779,nop,wscale 7], length 0
+08:19:46.772602 xfrm-pub0 Out IP 10.253.2.10.48328 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571806812 ecr 3300877439], length 0
+08:19:46.772716 xfrm-pub0 Out IP 10.253.2.10.48328 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571806812 ecr 3300877439], length 85: HTTP: GET /health HTTP/1.1
+08:19:46.811839 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48328: Flags [.], ack 86, win 509, opti08:19:46.811839 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48328: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300877472 ecr 2571806812], length 0
+08:19:46.811839 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48328: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300877474 ecr 2571806812], length 200: HTTP: HTTP/1.0 200 OK
+08:19:46.811839 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48328: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300877474 ecr 2571806812], length 3: HTTP
+08:19:46.811883 xfrm-pub0 Out IP 10.253.2.10.48328 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571806852 ecr 3300877474], length 0
+08:19:46.812024 xfrm-pub0 Out IP 10.253.2.10.48328 > 10.241.0.4.80808:19:46.844128 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48328: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300877512 ecr 2571806852], length 0
+08:19:46.871420 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 22, seq 1, length 64
+08:19:46.904495 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 22, seq 1, length 64
+0808:19:46.904495 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 22, seq 1, length 64
+08:19:46.911849 xfrm-pub0 Out IP 10.253.2.10.48334 > 10.241.0.4.8080: Flags [S]08:19:46.944884 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48334: Flags [S.], seq 3774570861, ack 2197354197, win 65160, options [mss 1250,sackOK,TS val 3300877612 ecr 2571806951,nop,wscale 7], length 0
+08:19:46.944946 xfrm-pub0 Out IP 10.253.2.10.48334 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571806985 ecr 3300877612], length 0
+08:19:46.945072 xfrm-pub0 Out IP 10.253.2.10.48334 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571806985 ecr 3300877612], length 85: HTTP: GET /health HTTP/1.1
+08:19:46.977142 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48334: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300877645 ecr 2571806985], length 0
+08:19:46.978195 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48334: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300877646 ecr 2571806985], length 200: HTTP: HTTP/1.0 200 OK
+08:19:46.978195 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48334: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300877646 ecr 2571806985], length 3: HTTP
+08:19:46.978226 xfrm-pub0 Out IP 10.253.2.10.48334 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571807018 ecr 3300877646], length 0
+08:19:46.978367 xfrm-pub0 Out IP 10.253.2.10.48334 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571807018 ecr 3300877646], length 0
+08:19:47.010455 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48334: Flags [.], ack 87, win 509, opti08:19:47.010455 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.25308:19:47.985070 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 23, seq 1, length 64
+08:19:48.018295 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 23, seq 1, length 64
+08:19:48.025496 xfrm-pub0 Out IP 10.253.2.10.48336 > 10.241.0.4.8080: Flags [S], seq 2359751438, win 64240, options [mss 1460,sackOK,TS val 2571808065 ecr 0,nop,wscale 7], length 0
+08:19:48.059309 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48336: Flags [S.], seq 3261275407, ack 08:19:48.059309 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48336: Flags [S.], seq 3261275407, ack 2359751439, win 65160, options [mss 1250,sackOK,TS val 3300878726 ecr 2571808065,nop,wscale 7], length 0
+08:19:48.059361 xfrm-pub0 Out IP 10.253.2.10.48336 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571808099 ecr 3300878726], length 0
+08:19:48.059577 xfrm-pub0 Out IP 10.253.2.10.48336 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 08:19:48.091735 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48336: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300878759 ecr 2571808099], length 0
+08:19:48.092338 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48336: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300878760 ecr 2571808099], length 200: HTTP: HTTP/1.0 200 OK
+08:19:48.092338 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48336: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300878760 ecr 2571808099], length 3: HTTP
+08:19:48.092398 xfrm-pub0 Out IP 10.253.2.10.48336 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571808132 ecr 3300878760], length 0
+08:19:48.092561 xfrm-pub0 Out IP 10.253.2.10.48336 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571808132 ecr 3300878760], length 0
+08:19:48.124832 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48336: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300878792 ecr 2571808132], length 0
+08:19:49.099243 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 24, seq 1, length 64
+08:19:49.132638 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 24, seq 1, length 64
+08:19:49.139714 xfrm-pub0 Out IP 10.253.2.10.48340 > 10.241.0.4.8080: Flags [S], seq 2380277462, win 64240, options [mss 1460,sackOK,TS val 2571809179 ecr 0,nop,wscale 7], length 0
+08:19:49.172528 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48340: Flags [S.], seq 2981740993, ack 2380277463, win 65160, options [mss 1250,sackOK,TS val 3300879840 ecr 2571809179,nop,wscale 7], length 0
+08:19:49.172580 xfrm-pub0 Out IP 10.253.2.10.48340 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571809212 ecr 3300879840], length 0
+08:19:49.172710 xfrm-pub0 Out IP 10.253.2.10.48340 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571809212 ecr 3300879840], length 85: HTTP: GET /health HTTP/1.1
+08:19:49.204821 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48340: Flags [.], ack 86, win 509, opti08:19:49.204821 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48340: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300879872 ecr 2571809212], length 0
+08:19:49.205503 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48340: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300879873 ecr 2571809212], length 200: HTTP: HTTP/1.0 200 OK
+08:19:49.205503 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48340: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300879873 ecr 2571809212], length 3: HTTP
+08:19:49.205548 xfrm-pub0 Out IP 10.253.2.10.48340 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571809245 ecr 3300879873], length 0
+08:19:49.205697 xfrm-pub0 Out IP 10.253.2.10.48340 > 10.241.0.4.80808:19:49.237813 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48340: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300879905 ecr 2571809245], length 0
+08:19:50.212543 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 25, seq 1, length 64
+08:19:50.245751 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 25, seq 1, length 64
+08:19:50.253212 xfrm-pub0 Out IP 10.253.2.10.48344 > 10.241.0.4.8080: Flags [S], seq 3922729633, win 64240, options [mss 1460,sackOK,TS val 2571810293 ecr 0,nop,wscale 7], length 0
+08:19:50.286867 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48344: Flags [S.], seq 130975461, ack 3922729634, win 65160, options [mss 1250,sackOK,TS val 3300880954 ecr 2571810293,nop,wscale 7], length 0
+08:19:50.286918 xfrm-pub0 Out IP 10.253.2.10.48344 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571810327 ecr 3300880954], length 0
+08:19:50.287041 xfrm-pub0 Out IP 10.253.2.10.48344 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571810327 ecr 3300880954], length 85: HTTP: GET /health HTTP/1.1
+08:19:50.320052 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48344: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300880988 ecr 2571810327], length 0
+08:19:50.320753 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48344: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300880988 ecr 2571810327], length 200: HTTP: HTTP/1.0 200 OK
+08:19:50.320753 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48344: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300880988 ecr 2571810327], length 3: HTTP
+08:19:50.320790 xfrm-pub0 Out IP 10.253.2.10.48344 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571810360 ecr 3300880988], length 0
+08:19:50.320953 xfrm-pub0 Out IP 10.253.2.10.48344 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571810361 ecr 3300880988], length 0
+08:19:50.353024 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.48344: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300881021 ecr 2571810361], length 0
+08:19:51.328926 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 26, seq 1, length 64
+08:19:51.361897 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 26, seq 1, length 64
+08:19:51.371502 xfrm-pub0 Out IP 10.253.2.10.48350 > 10.241.0.4.8080: Flags [S], seq 2291621191, win 608:19:51.371502 xfrm-pub0 Out IP 10.253.2.10.48350 > 10.241.0.4.8080: Flags [S]08:19:51.404889 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48350: Flags [S.], seq 3163088047, ack 2291621192, win 65160, options [mss 1250,sackOK,TS val 3300882072 ecr 2571811411,nop,wscale 7], length 0
+08:19:51.404937 xfrm-pub0 Out IP 10.253.2.10.48350 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571811445 ecr 3300882072], length 0
+08:19:51.405056 xfrm-pub0 Out IP 10.253.2.10.48350 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571811445 ecr 3300882072], length 85: HTTP: GET /health HTTP/1.1
+08:19:51.437261 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48350: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300882105 ecr 2571811445], length 0
+08:19:51.437716 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48350: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300882105 ecr 2571811445], length 200: HTTP: HTTP/1.0 200 OK
+08:19:51.437716 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48350: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300882105 ecr 2571811445], length 3: HTTP
+08:19:51.437747 xfrm-pub0 Out IP 10.253.2.10.48350 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571811477 ecr 3300882105], length 0
+08:19:51.437964 xfrm-pub0 Out IP 10.253.2.10.48350 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571811478 ecr 3300882105], length 0
+08:19:51.470078 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48350: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300882137 ecr 2571811478], length 0
+08:19:52.446794 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 27, seq 1, length 64
+08:19:52.479892 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 27, seq 1, length 64
+08:19:52.489287 xfrm-pub0 Out IP 10.253.2.10.48364 > 10.241.0.4.8080: Flags [S], seq 2315053991, win 64240, options [mss 1460,sackOK,TS val 2571812529 ecr 0,nop,wscale 7], length 0
+08:19:52.522366 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48364: Flags [S.], seq 4152951217, ack 08:19:52.522366 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48364: Flags [S.], seq 4152951217, ack 2315053992, win 65160, options [mss 1250,sackOK,TS val 3300883189 ecr 2571812529,nop,wscale 7], length 0
+08:19:52.522452 xfrm-pub0 Out IP 10.253.2.10.48364 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571812562 ecr 3300883189], length 0
+08:19:52.522629 xfrm-pub0 Out IP 10.253.2.10.48364 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 08:19:52.554917 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48364: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300883222 ecr 2571812562], length 0
+08:19:52.555546 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48364: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300883223 ecr 2571812562], length 200: HTTP: HTTP/1.0 200 OK
+08:19:52.555547 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48364: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300883223 ecr 2571812562], length 3: HTTP
+08:19:52.555594 xfrm-pub0 Out IP 10.253.2.10.48364 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571812595 ecr 3300883223], length 0
+08:19:52.555894 xfrm-pub0 Out IP 10.253.2.10.48364 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571812595 ecr 3300883223], length 0
+08:19:52.588084 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48364: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300883255 ecr 2571812595], length 0
+08:19:53.563571 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 28, seq 1, length 64
+08:19:53.597484 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 28, seq 1, length 64
+08:19:53.604813 xfrm-pub0 Out IP 10.253.2.10.48374 > 10.241.0.4.8080: Flags [S], seq 117479758, win 64240, options [mss 1460,sackOK,TS val 2571813644 ecr 0,nop,wscale 7], length 0
+08:19:53.637983 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48374: Flags [S.], seq 1909254611, ack 117479759, win 65160, options [mss 1250,sackOK,TS val 3300884305 ecr 2571813644,nop,wscale 7], length 0
+08:19:53.638039 xfrm-pub0 Out IP 10.253.2.10.48374 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571813678 ecr 3300884305], length 0
+08:19:53.638181 xfrm-pub0 Out IP 10.253.2.10.48374 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571813678 ecr 3300884305], length 85: HTTP: GET /health HTTP/1.1
+08:19:53.670525 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48374: Flags [.], ack 86, win 509, opti08:19:53.670525 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48374: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300884338 ecr 2571813678], length 0
+08:19:53.671175 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48374: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300884339 ecr 2571813678], length 200: HTTP: HTTP/1.0 200 OK
+08:19:53.671175 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48374: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300884339 ecr 2571813678], length 3: HTTP
+08:19:53.671231 xfrm-pub0 Out IP 10.253.2.10.48374 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571813711 ecr 3300884339], length 0
+08:19:53.671380 xfrm-pub0 Out IP 10.253.2.10.48374 > 10.241.0.4.80808:19:53.703669 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48374: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300884371 ecr 2571813711], length 0
+08:19:54.679341 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 29, seq 1, length 64
+08:19:54.712314 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 29, seq 1, length 64
+08:19:54.721953 xfrm-pub0 Out IP 10.253.2.10.48384 > 10.241.0.4.8080: Flags [S], seq 2110541556, win 64240, options [mss 1460,sackOK,TS val 2571814762 ecr 0,nop,wscale 7], length 0
+08:19:54.755309 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48384: Flags [S.], seq 2843002522, ack 2110541557, win 65160, options [mss 1250,sackOK,TS val 3300885422 ecr 2571814762,nop,wscale 7], length 0
+08:19:54.755389 xfrm-pub0 Out IP 10.253.2.10.48384 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571814795 ecr 3300885422], length 0
+08:19:54.755658 xfrm-pub0 Out IP 10.253.2.10.48384 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571814795 ecr 3300885422], length 85: HTTP: GET /health HTTP/1.1
+08:19:54.787813 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48384: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300885455 ecr 2571814795], length 0
+08:19:54.788411 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48384: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300885456 ecr 2571814795], length 200: HTTP: HTTP/1.0 200 OK
+08:19:54.788411 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48384: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300885456 ecr 2571814795], length 3: HTTP
+08:19:54.788451 xfrm-pub0 Out IP 10.253.2.10.48384 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571814828 ecr 3300885456], length 0
+08:19:54.788650 xfrm-pub0 Out IP 10.253.2.10.48384 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571814828 ecr 3300885456], length 0
+08:19:54.820889 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.48384: Flags [.], ack 87, win 509, opti08:19:54.820889 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.25308:19:55.796260 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 30, seq 1, length 64
+08:19:55.829174 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 30, seq 1, length 64
+08:19:55.836399 xfrm-pub0 Out IP 10.253.2.10.42386 > 10.241.0.4.8080: Flags [S], seq 337643591, win 64240, options [mss 1460,sackOK,TS val 2571815876 ecr 0,nop,wscale 7], length 0
+08:19:55.870688 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42386: Flags [S.], seq 1160218194, ack 337643592, win 65160, options [mss 1250,sackOK,TS val 3300886538 ecr 2571815876,nop,wscale 7], length 0
+08:19:55.870735 xfrm-pub0 Out IP 10.253.2.10.42386 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571815910 ecr 3300886538], length 0
+08:19:55.870841 xfrm-pub0 Out IP 10.253.2.10.42386 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571815910 ecr 3300886538], length 85: HTTP: GET /health HTTP/1.1
+08:19:55.902927 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42386: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300886570 ecr 2571815910], length 0
+08:19:55.903624 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42386: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300886571 ecr 2571815910], length 200: HTTP: HTTP/1.0 200 OK
+08:19:55.903624 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42386: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300886571 ecr 2571815910], length 3: HTTP
+08:19:55.903664 xfrm-pub0 Out IP 10.253.2.10.42386 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571815943 ecr 3300886571], length 0
+08:19:55.903802 xfrm-pub0 Out IP 10.253.2.10.42386 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571815943 ecr 3300886571], length 0
+08:19:55.935940 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42386: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300886603 ecr 2571815943], length 0
+08:19:56.910550 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 31, seq 1, length 64
+08:19:56.943610 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 31, seq 1, length 64
+08:19:56.950709 xfrm-pub0 Out IP 10.253.2.10.42394 > 10.241.0.4.8080: Flags [S], seq 3289975817, win 64240, options [mss 1460,sackOK,TS val 2571816990 ecr 0,nop,wscale 7], length 0
+08:19:56.984496 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42394: Flags [S.], seq 3869877424, ack 3289975818, win 65160, options [mss 1250,sackOK,TS val 3300887652 ecr 2571816990,nop,wscale 7], length 0
+08:19:56.984545 xfrm-pub0 Out IP 10.253.2.10.42394 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571817024 ecr 3300887652], length 0
+08:19:56.984671 xfrm-pub0 Out IP 10.253.2.10.42394 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571817024 ecr 3300887652], length 85: HTTP: GET /health HTTP/1.1
+08:19:57.016655 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42394: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300887684 ecr 2571817024], length 0
+08:19:57.017331 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42394: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300887685 ecr 2571817024], length 200: HTTP: HTTP/1.0 200 OK
+08:19:57.017372 xfrm-pub0 Out IP 10.253.2.10.42394 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571817057 ecr 3300887685], length 0
+08:19:57.017410 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42394: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300887685 ecr 2571817024], length 3: HTTP
+08:19:57.017500 xfrm-pub0 Out IP 10.253.2.10.42394 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571817057 ecr 3300887685], length 0
+08:19:57.049858 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42394: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300887717 ecr 2571817057], length 0
+08:19:58.025188 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 32, seq 1, length 64
+08:19:58.058247 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 32, seq 1, length 64
+08:19:58.067787 xfrm-pub0 Out IP 10.253.2.10.42396 > 10.241.0.4.8080: Flags [S], seq 2530589348, win 64240, options [mss 1460,sackOK,TS val 2571818107 ecr 0,nop,wscale 7], length 0
+08:19:58.101031 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42396: Flags [S.], seq 3557734697, ack 2530589349, win 65160, options [mss 1250,sackOK,TS val 3300888768 ecr 2571818107,nop,wscale 7], length 0
+08:19:58.101115 xfrm-pub0 Out IP 10.253.2.10.42396 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571818141 ecr 3300888768], length 0
+08:19:58.101309 xfrm-pub0 Out IP 10.253.2.10.42396 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571818141 ecr 3300888768], length 85: HTTP: GET /health HTTP/1.1
+08:19:58.133456 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42396: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300888801 ecr 2571818141], length 0
+08:19:58.134004 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42396: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300888801 ecr 2571818141], length 200: HTTP: HTTP/1.0 200 OK
+08:19:58.134004 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42396: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300888802 ecr 2571818141], length 3: HTTP
+08:19:58.134053 xfrm-pub0 Out IP 10.253.2.10.42396 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571818174 ecr 3300888801], length 0
+08:19:58.134258 xfrm-pub0 Out IP 10.253.2.10.42396 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571818174 ecr 3300888802], length 0
+08:19:58.166576 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42396: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300888834 ecr 2571818174], length 0
+08:19:59.143058 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 33, seq 1, length 64
+08:19:59.176094 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 33, seq 1, length 64
+08:19:59.185920 xfrm-pub0 Out IP 10.253.2.10.42410 > 10.241.0.4.8080: Flags [S], seq 4002700312, win 64240, options [mss 1460,sackOK,TS val 2571819226 ecr 0,nop,wscale 7], length 0
+08:19:59.218976 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42410: Flags [S.], seq 3082621724, ack 4002700313, win 65160, options [mss 1250,sackOK,TS val 3300889886 ecr 2571819226,nop,wscale 7], length 0
+08:19:59.219108 xfrm-pub0 Out IP 10.253.2.10.42410 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571819259 ecr 3300889886], length 0
+08:19:59.219312 xfrm-pub0 Out IP 10.253.2.10.42410 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571819259 ecr 3300889886], length 85: HTTP: GET /health HTTP/1.1
+08:19:59.251414 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42410: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300889919 ecr 2571819259], length 0
+08:19:59.252052 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42410: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300889920 ecr 2571819259], length 200: HTTP: HTTP/1.0 200 OK
+08:19:59.252053 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42410: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300889920 ecr 2571819259], length 3: HTTP
+08:19:59.252100 xfrm-pub0 Out IP 10.253.2.10.42410 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571819292 ecr 3300889920], length 0
+08:19:59.252296 xfrm-pub0 Out IP 10.253.2.10.42410 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571819292 ecr 3300889920], length 0
+08:19:59.284765 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42410: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300889952 ecr 2571819292], length 0
+08:20:00.260993 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 34, seq 1, length 64
+08:20:00.294160 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 34, seq 1, length 64
+08:20:00.304986 xfrm-pub0 Out IP 10.253.2.10.42414 > 10.241.0.4.8080: Flags [S], seq 910660209, win 64240, options [mss 1460,sackOK,TS val 2571820345 ecr 0,nop,wscale 7], length 0
+08:20:00.338301 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42414: Flags [S.], seq 434381884, ack 910660210, win 65160, options [mss 1250,sackOK,TS val 3300891005 ecr 2571820345,nop,wscale 7], length 0
+08:20:00.338367 xfrm-pub0 Out IP 10.253.2.10.42414 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571820378 ecr 3300891005], length 0
+08:20:00.338506 xfrm-pub0 Out IP 10.253.2.10.42414 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571820378 ecr 3300891005], length 85: HTTP: GET /health HTTP/1.1
+08:20:00.370826 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42414: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300891038 ecr 2571820378], length 0
+08:20:00.371427 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42414: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300891039 ecr 2571820378], length 200: HTTP: HTTP/1.0 200 OK
+08:20:00.371427 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42414: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300891039 ecr 2571820378], length 3: HTTP
+08:20:00.371472 xfrm-pub0 Out IP 10.253.2.10.42414 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571820411 ecr 3300891039], length 0
+08:20:00.371690 xfrm-pub0 Out IP 10.253.2.10.42414 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571820411 ecr 3300891039], length 0
+08:20:00.404148 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42414: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300891071 ecr 2571820411], length 0
+08:20:01.380981 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 35, seq 1, length 64
+08:20:01.418068 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 35, seq 1, length 64
+08:20:01.428088 xfrm-pub0 Out IP 10.253.2.10.42416 > 10.241.0.4.8080: Flags [S], seq 1091073222, win 64240, options [mss 1460,sackOK,TS val 2571821468 ecr 0,nop,wscale 7], length 0
+08:20:01.471910 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42416: Flags [S.], seq 4106376791, ack 1091073223, win 65160, options [mss 1250,sackOK,TS val 3300892130 ecr 2571821468,nop,wscale 7], length 0
+08:20:01.472005 xfrm-pub0 Out IP 10.253.2.10.42416 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571821512 ecr 3300892130], length 0
+08:20:01.472259 xfrm-pub0 Out IP 10.253.2.10.42416 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571821512 ecr 3300892130], length 85: HTTP: GET /health HTTP/1.1
+08:20:01.504407 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42416: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300892172 ecr 2571821512], length 0
+08:20:01.504962 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42416: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300892173 ecr 2571821512], length 200: HTTP: HTTP/1.0 200 OK
+08:20:01.505014 xfrm-pub0 Out IP 10.253.2.10.42416 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571821545 ecr 3300892173], length 0
+08:20:01.505149 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42416: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300892173 ecr 2571821512], length 3: HTTP
+08:20:01.505246 xfrm-pub0 Out IP 10.253.2.10.42416 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571821545 ecr 3300892173], length 0
+08:20:01.537469 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42416: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300892205 ecr 2571821545], length 0
+08:20:02.514115 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 36, seq 1, length 64
+08:20:02.547220 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 36, seq 1, length 64
+08:20:02.557752 xfrm-pub0 Out IP 10.253.2.10.42430 > 10.241.0.4.8080: Flags [S], seq 3940065445, win 64240, options [mss 1460,sackOK,TS val 2571822597 ecr 0,nop,wscale 7], length 0
+08:20:02.594004 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42430: Flags [S.], seq 985109994, ack 3940065446, win 65160, options [mss 1250,sackOK,TS val 3300893261 ecr 2571822597,nop,wscale 7], length 0
+08:20:02.594078 xfrm-pub0 Out IP 10.253.2.10.42430 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571822634 ecr 3300893261], length 0
+08:20:02.594265 xfrm-pub0 Out IP 10.253.2.10.42430 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571822634 ecr 3300893261], length 85: HTTP: GET /health HTTP/1.1
+08:20:02.626339 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42430: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300893294 ecr 2571822634], length 0
+08:20:02.627007 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42430: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300893295 ecr 2571822634], length 200: HTTP: HTTP/1.0 200 OK
+08:20:02.627007 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42430: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300893295 ecr 2571822634], length 3: HTTP
+08:20:02.627041 xfrm-pub0 Out IP 10.253.2.10.42430 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571822667 ecr 3300893295], length 0
+08:20:02.627193 xfrm-pub0 Out IP 10.253.2.10.42430 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571822667 ecr 3300893295], length 0
+08:20:02.659264 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.42430: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300893327 ecr 2571822667], length 0
+08:20:03.634789 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 37, seq 1, length 64
+08:20:03.670938 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 37, seq 1, length 64
+08:20:03.678130 xfrm-pub0 Out IP 10.253.2.10.42438 > 10.241.0.4.8080: Flags [S], seq 3017875262, win 64240, options [mss 1460,sackOK,TS val 2571823718 ecr 0,nop,wscale 7], length 0
+08:20:03.711803 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42438: Flags [S.], seq 461915752, ack 3017875263, win 65160, options [mss 1250,sackOK,TS val 3300894378 ecr 2571823718,nop,wscale 7], length 0
+08:20:03.711869 xfrm-pub0 Out IP 10.253.2.10.42438 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571823751 ecr 3300894378], length 0
+08:20:03.711979 xfrm-pub0 Out IP 10.253.2.10.42438 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571823752 ecr 3300894378], length 85: HTTP: GET /health HTTP/1.1
+08:20:03.744342 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42438: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300894412 ecr 2571823752], length 0
+08:20:03.744925 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42438: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300894412 ecr 2571823752], length 200: HTTP: HTTP/1.0 200 OK
+08:20:03.744925 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42438: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300894412 ecr 2571823752], length 3: HTTP
+08:20:03.744953 xfrm-pub0 Out IP 10.253.2.10.42438 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571823785 ecr 3300894412], length 0
+08:20:03.745073 xfrm-pub0 Out IP 10.253.2.10.42438 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571823785 ecr 3300894412], length 0
+08:20:03.777649 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42438: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300894445 ecr 2571823785], length 0
+08:20:04.752792 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 38, seq 1, length 64
+08:20:04.790945 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 38, seq 1, length 64
+08:20:04.800379 xfrm-pub0 Out IP 10.253.2.10.42440 > 10.241.0.4.8080: Flags [S], seq 2327882792, win 64240, options [mss 1460,sackOK,TS val 2571824840 ecr 0,nop,wscale 7], length 0
+08:20:04.839789 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42440: Flags [S.], seq 2394543989, ack 2327882793, win 65160, options [mss 1250,sackOK,TS val 3300895501 ecr 2571824840,nop,wscale 7], length 0
+08:20:04.839861 xfrm-pub0 Out IP 10.253.2.10.42440 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571824879 ecr 3300895501], length 0
+08:20:04.840045 xfrm-pub0 Out IP 10.253.2.10.42440 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571824880 ecr 3300895501], length 85: HTTP: GET /health HTTP/1.1
+08:20:04.872243 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42440: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300895540 ecr 2571824880], length 0
+08:20:04.872818 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42440: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300895540 ecr 2571824880], length 200: HTTP: HTTP/1.0 200 OK
+08:20:04.872818 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42440: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300895540 ecr 2571824880], length 3: HTTP
+08:20:04.872859 xfrm-pub0 Out IP 10.253.2.10.42440 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571824912 ecr 3300895540], length 0
+08:20:04.873055 xfrm-pub0 Out IP 10.253.2.10.42440 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571824913 ecr 3300895540], length 0
+08:20:04.905322 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.42440: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300895573 ecr 2571824913], length 0
+08:20:05.882265 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 39, seq 1, length 64
+08:20:05.915757 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 39, seq 1, length 64
+08:20:05.925357 xfrm-pub0 Out IP 10.253.2.10.39526 > 10.241.0.4.8080: Flags [S], seq 1553593402, win 64240, options [mss 1460,sackOK,TS val 2571825965 ecr 0,nop,wscale 7], length 0
+08:20:05.958394 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39526: Flags [S.], seq 1110428915, ack 1553593403, win 65160, options [mss 1250,sackOK,TS val 3300896626 ecr 2571825965,nop,wscale 7], length 0
+08:20:05.958475 xfrm-pub0 Out IP 10.253.2.10.39526 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571825998 ecr 3300896626], length 0
+08:20:05.958656 xfrm-pub0 Out IP 10.253.2.10.39526 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571825998 ecr 3300896626], length 85: HTTP: GET /health HTTP/1.1
+08:20:05.990949 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39526: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300896658 ecr 2571825998], length 0
+08:20:05.991577 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39526: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300896659 ecr 2571825998], length 200: HTTP: HTTP/1.0 200 OK
+08:20:05.991577 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39526: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300896659 ecr 2571825998], length 3: HTTP
+08:20:05.991622 xfrm-pub0 Out IP 10.253.2.10.39526 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571826031 ecr 3300896659], length 0
+08:20:05.991826 xfrm-pub0 Out IP 10.253.2.10.39526 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571826031 ecr 3300896659], length 0
+08:20:06.023903 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39526: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300896691 ecr 2571826031], length 0
+08:20:07.000449 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 40, seq 1, length 64
+08:20:07.033597 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 40, seq 1, length 64
+08:20:07.043582 xfrm-pub0 Out IP 10.253.2.10.39542 > 10.241.0.4.8080: Flags [S], seq 633532209, win 64240, options [mss 1460,sackOK,TS val 2571827083 ecr 0,nop,wscale 7], length 0
+08:20:07.082802 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39542: Flags [S.], seq 911661600, ack 633532210, win 65160, options [mss 1250,sackOK,TS val 3300897744 ecr 2571827083,nop,wscale 7], length 0
+08:20:07.082875 xfrm-pub0 Out IP 10.253.2.10.39542 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571827122 ecr 3300897744], length 0
+08:20:07.083039 xfrm-pub0 Out IP 10.253.2.10.39542 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571827123 ecr 3300897744], length 85: HTTP: GET /health HTTP/1.1
+08:20:07.115401 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39542: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300897783 ecr 2571827123], length 0
+08:20:07.115870 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39542: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300897783 ecr 2571827123], length 200: HTTP: HTTP/1.0 200 OK
+08:20:07.115924 xfrm-pub0 Out IP 10.253.2.10.39542 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571827156 ecr 3300897783], length 0
+08:20:07.115985 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39542: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300897784 ecr 2571827123], length 3: HTTP
+08:20:07.116106 xfrm-pub0 Out IP 10.253.2.10.39542 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571827156 ecr 3300897784], length 0
+08:20:07.148374 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39542: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300897816 ecr 2571827156], length 0
+08:20:08.124718 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 41, seq 1, length 64
+08:20:08.157904 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 41, seq 1, length 64
+08:20:08.167019 xfrm-pub0 Out IP 10.253.2.10.39556 > 10.241.0.4.8080: Flags [S], seq 1009321984, win 64240, options [mss 1460,sackOK,TS val 2571828207 ecr 0,nop,wscale 7], length 0
+08:20:08.200290 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39556: Flags [S.], seq 2753107214, ack 1009321985, win 65160, options [mss 1250,sackOK,TS val 3300898867 ecr 2571828207,nop,wscale 7], length 0
+08:20:08.200374 xfrm-pub0 Out IP 10.253.2.10.39556 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571828240 ecr 3300898867], length 0
+08:20:08.200556 xfrm-pub0 Out IP 10.253.2.10.39556 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571828240 ecr 3300898867], length 85: HTTP: GET /health HTTP/1.1
+08:20:08.232912 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39556: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300898900 ecr 2571828240], length 0
+08:20:08.233638 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39556: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300898901 ecr 2571828240], length 200: HTTP: HTTP/1.0 200 OK
+08:20:08.233638 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39556: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300898901 ecr 2571828240], length 3: HTTP
+08:20:08.233719 xfrm-pub0 Out IP 10.253.2.10.39556 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571828273 ecr 3300898901], length 0
+08:20:08.234005 xfrm-pub0 Out IP 10.253.2.10.39556 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571828274 ecr 3300898901], length 0
+08:20:08.266122 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39556: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300898934 ecr 2571828274], length 0
+08:20:09.242686 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 42, seq 1, length 64
+08:20:09.275817 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 42, seq 1, length 64
+08:20:09.285603 xfrm-pub0 Out IP 10.253.2.10.39568 > 10.241.0.4.8080: Flags [S], seq 4111855172, win 64240, options [mss 1460,sackOK,TS val 2571829325 ecr 0,nop,wscale 7], length 0
+08:20:09.320107 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39568: Flags [S.], seq 3772594249, ack 4111855173, win 65160, options [mss 1250,sackOK,TS val 3300899987 ecr 2571829325,nop,wscale 7], length 0
+08:20:09.320183 xfrm-pub0 Out IP 10.253.2.10.39568 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571829360 ecr 3300899987], length 0
+08:20:09.320353 xfrm-pub0 Out IP 10.253.2.10.39568 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571829360 ecr 3300899987], length 85: HTTP: GET /health HTTP/1.1
+08:20:09.352499 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39568: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300900020 ecr 2571829360], length 0
+08:20:09.353099 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39568: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300900020 ecr 2571829360], length 200: HTTP: HTTP/1.0 200 OK
+08:20:09.353099 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39568: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300900021 ecr 2571829360], length 3: HTTP
+08:20:09.353185 xfrm-pub0 Out IP 10.253.2.10.39568 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571829393 ecr 3300900020], length 0
+08:20:09.353396 xfrm-pub0 Out IP 10.253.2.10.39568 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571829393 ecr 3300900021], length 0
+08:20:09.386661 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39568: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300900054 ecr 2571829393], length 0
+08:20:10.362463 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 43, seq 1, length 64
+08:20:10.395614 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 43, seq 1, length 64
+08:20:10.405649 xfrm-pub0 Out IP 10.253.2.10.39582 > 10.241.0.4.8080: Flags [S], seq 4091822346, win 64240, options [mss 1460,sackOK,TS val 2571830445 ecr 0,nop,wscale 7], length 0
+08:20:10.438925 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39582: Flags [S.], seq 310883138, ack 4091822347, win 65160, options [mss 1250,sackOK,TS val 3300901106 ecr 2571830445,nop,wscale 7], length 0
+08:20:10.439001 xfrm-pub0 Out IP 10.253.2.10.39582 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571830479 ecr 3300901106], length 0
+08:20:10.439195 xfrm-pub0 Out IP 10.253.2.10.39582 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571830479 ecr 3300901106], length 85: HTTP: GET /health HTTP/1.1
+08:20:10.471510 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39582: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300901139 ecr 2571830479], length 0
+08:20:10.472704 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39582: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300901140 ecr 2571830479], length 200: HTTP: HTTP/1.0 200 OK
+08:20:10.472704 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39582: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300901140 ecr 2571830479], length 3: HTTP
+08:20:10.472753 xfrm-pub0 Out IP 10.253.2.10.39582 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571830512 ecr 3300901140], length 0
+08:20:10.473007 xfrm-pub0 Out IP 10.253.2.10.39582 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571830513 ecr 3300901140], length 0
+08:20:10.505379 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39582: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300901173 ecr 2571830513], length 0
+08:20:11.480458 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 44, seq 1, length 64
+08:20:11.513518 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 44, seq 1, length 64
+08:20:11.520719 xfrm-pub0 Out IP 10.253.2.10.39594 > 10.241.0.4.8080: Flags [S], seq 1058969884, win 64240, options [mss 1460,sackOK,TS val 2571831560 ecr 0,nop,wscale 7], length 0
+08:20:11.553509 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39594: Flags [S.], seq 2807273079, ack 1058969885, win 65160, options [mss 1250,sackOK,TS val 3300902221 ecr 2571831560,nop,wscale 7], length 0
+08:20:11.553557 xfrm-pub0 Out IP 10.253.2.10.39594 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571831593 ecr 3300902221], length 0
+08:20:11.553670 xfrm-pub0 Out IP 10.253.2.10.39594 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571831593 ecr 3300902221], length 85: HTTP: GET /health HTTP/1.1
+08:20:11.585834 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39594: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300902253 ecr 2571831593], length 0
+08:20:11.586400 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39594: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300902254 ecr 2571831593], length 200: HTTP: HTTP/1.0 200 OK
+08:20:11.586437 xfrm-pub0 Out IP 10.253.2.10.39594 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571831626 ecr 3300902254], length 0
+08:20:11.586471 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39594: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300902254 ecr 2571831593], length 3: HTTP
+08:20:11.586574 xfrm-pub0 Out IP 10.253.2.10.39594 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571831626 ecr 3300902254], length 0
+08:20:11.619464 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39594: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300902287 ecr 2571831626], length 0
+08:20:12.593400 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 45, seq 1, length 64
+08:20:12.626263 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 45, seq 1, length 64
+08:20:12.633587 xfrm-pub0 Out IP 10.253.2.10.39608 > 10.241.0.4.8080: Flags [S], seq 536090935, win 64240, options [mss 1460,sackOK,TS val 2571832673 ecr 0,nop,wscale 7], length 0
+08:20:12.666807 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39608: Flags [S.], seq 901927089, ack 536090936, win 65160, options [mss 1250,sackOK,TS val 3300903334 ecr 2571832673,nop,wscale 7], length 0
+08:20:12.666857 xfrm-pub0 Out IP 10.253.2.10.39608 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571832706 ecr 3300903334], length 0
+08:20:12.666976 xfrm-pub0 Out IP 10.253.2.10.39608 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571832707 ecr 3300903334], length 85: HTTP: GET /health HTTP/1.1
+08:20:12.700123 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39608: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300903368 ecr 2571832707], length 0
+08:20:12.700699 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39608: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300903368 ecr 2571832707], length 200: HTTP: HTTP/1.0 200 OK
+08:20:12.700699 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39608: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300903368 ecr 2571832707], length 3: HTTP
+08:20:12.700731 xfrm-pub0 Out IP 10.253.2.10.39608 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571832740 ecr 3300903368], length 0
+08:20:12.700910 xfrm-pub0 Out IP 10.253.2.10.39608 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571832741 ecr 3300903368], length 0
+08:20:12.733040 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.39608: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300903400 ecr 2571832741], length 0
+08:20:13.708140 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 46, seq 1, length 64
+08:20:13.741436 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 46, seq 1, length 64
+08:20:13.750353 xfrm-pub0 Out IP 10.253.2.10.39612 > 10.241.0.4.8080: Flags [S], seq 325366555, win 64240, options [mss 1460,sackOK,TS val 2571833790 ecr 0,nop,wscale 7], length 0
+08:20:13.783284 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39612: Flags [S.], seq 4258072539, ack 325366556, win 65160, options [mss 1250,sackOK,TS val 3300904451 ecr 2571833790,nop,wscale 7], length 0
+08:20:13.783360 xfrm-pub0 Out IP 10.253.2.10.39612 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571833823 ecr 3300904451], length 0
+08:20:13.783590 xfrm-pub0 Out IP 10.253.2.10.39612 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571833823 ecr 3300904451], length 85: HTTP: GET /health HTTP/1.1
+08:20:13.815811 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39612: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300904483 ecr 2571833823], length 0
+08:20:13.816204 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39612: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300904484 ecr 2571833823], length 200: HTTP: HTTP/1.0 200 OK
+08:20:13.816246 xfrm-pub0 Out IP 10.253.2.10.39612 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571833856 ecr 3300904484], length 0
+08:20:13.816289 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39612: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300904484 ecr 2571833823], length 3: HTTP
+08:20:13.816436 xfrm-pub0 Out IP 10.253.2.10.39612 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571833856 ecr 3300904484], length 0
+08:20:13.848800 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39612: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300904516 ecr 2571833856], length 0
+08:20:14.824730 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 47, seq 1, length 64
+08:20:14.858476 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 47, seq 1, length 64
+08:20:14.867847 xfrm-pub0 Out IP 10.253.2.10.39614 > 10.241.0.4.8080: Flags [S], seq 1252334069, win 64240, options [mss 1460,sackOK,TS val 2571834907 ecr 0,nop,wscale 7], length 0
+08:20:14.900762 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39614: Flags [S.], seq 2223153139, ack 1252334070, win 65160, options [mss 1250,sackOK,TS val 3300905568 ecr 2571834907,nop,wscale 7], length 0
+08:20:14.900893 xfrm-pub0 Out IP 10.253.2.10.39614 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571834940 ecr 3300905568], length 0
+08:20:14.901032 xfrm-pub0 Out IP 10.253.2.10.39614 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571834941 ecr 3300905568], length 85: HTTP: GET /health HTTP/1.1
+08:20:14.933315 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39614: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300905601 ecr 2571834941], length 0
+08:20:14.933839 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39614: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300905601 ecr 2571834941], length 200: HTTP: HTTP/1.0 200 OK
+08:20:14.933880 xfrm-pub0 Out IP 10.253.2.10.39614 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571834973 ecr 3300905601], length 0
+08:20:14.933936 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39614: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300905602 ecr 2571834941], length 3: HTTP
+08:20:14.934059 xfrm-pub0 Out IP 10.253.2.10.39614 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571834974 ecr 3300905602], length 0
+08:20:14.966020 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.39614: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300905634 ecr 2571834974], length 0
+08:20:15.941647 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 48, seq 1, length 64
+08:20:15.974820 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 48, seq 1, length 64
+08:20:15.982207 xfrm-pub0 Out IP 10.253.2.10.49176 > 10.241.0.4.8080: Flags [S], seq 2808460983, win 64240, options [mss 1460,sackOK,TS val 2571836022 ecr 0,nop,wscale 7], length 0
+08:20:16.015391 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49176: Flags [S.], seq 294157289, ack 2808460984, win 65160, options [mss 1250,sackOK,TS val 3300906682 ecr 2571836022,nop,wscale 7], length 0
+08:20:16.015443 xfrm-pub0 Out IP 10.253.2.10.49176 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571836055 ecr 3300906682], length 0
+08:20:16.015573 xfrm-pub0 Out IP 10.253.2.10.49176 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571836055 ecr 3300906682], length 85: HTTP: GET /health HTTP/1.1
+08:20:16.047768 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49176: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300906715 ecr 2571836055], length 0
+08:20:16.048410 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49176: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300906716 ecr 2571836055], length 200: HTTP: HTTP/1.0 200 OK
+08:20:16.048410 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49176: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300906716 ecr 2571836055], length 3: HTTP
+08:20:16.048440 xfrm-pub0 Out IP 10.253.2.10.49176 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571836088 ecr 3300906716], length 0
+08:20:16.048552 xfrm-pub0 Out IP 10.253.2.10.49176 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571836088 ecr 3300906716], length 0
+08:20:16.080738 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49176: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300906748 ecr 2571836088], length 0
+08:20:17.057551 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 49, seq 1, length 64
+08:20:17.090697 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 49, seq 1, length 64
+08:20:17.100711 xfrm-pub0 Out IP 10.253.2.10.49184 > 10.241.0.4.8080: Flags [S], seq 3497276252, win 64240, options [mss 1460,sackOK,TS val 2571837140 ecr 0,nop,wscale 7], length 0
+08:20:17.133525 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.49184: Flags [S.], seq 1131109573, ack 3497276253, win 65160, options [mss 1250,sackOK,TS val 3300907801 ecr 2571837140,nop,wscale 7], length 0
+08:20:17.133602 xfrm-pub0 Out IP 10.253.2.10.49184 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571837173 ecr 3300907801], length 0
+08:20:17.133855 xfrm-pub0 Out IP 10.253.2.10.49184 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571837173 ecr 3300907801], length 85: HTTP: GET /health HTTP/1.1
+08:20:17.165942 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.49184: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300907834 ecr 2571837173], length 0
+08:20:17.166812 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.49184: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300907834 ecr 2571837173], length 200: HTTP: HTTP/1.0 200 OK
+08:20:17.166813 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.49184: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300907834 ecr 2571837173], length 3: HTTP
+08:20:17.166880 xfrm-pub0 Out IP 10.253.2.10.49184 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571837206 ecr 3300907834], length 0
+08:20:17.167059 xfrm-pub0 Out IP 10.253.2.10.49184 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571837207 ecr 3300907834], length 0
+08:20:17.199065 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.49184: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300907867 ecr 2571837207], length 0
+08:20:18.175665 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 50, seq 1, length 64
+08:20:18.211032 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 50, seq 1, length 64
+08:20:18.220303 xfrm-pub0 Out IP 10.253.2.10.49186 > 10.241.0.4.8080: Flags [S], seq 3054793906, win 64240, options [mss 1460,sackOK,TS val 2571838260 ecr 0,nop,wscale 7], length 0
+08:20:18.253427 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.49186: Flags [S.], seq 261754731, ack 3054793907, win 65160, options [mss 1250,sackOK,TS val 3300908921 ecr 2571838260,nop,wscale 7], length 0
+08:20:18.253519 xfrm-pub0 Out IP 10.253.2.10.49186 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571838293 ecr 3300908921], length 0
+08:20:18.253704 xfrm-pub0 Out IP 10.253.2.10.49186 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571838293 ecr 3300908921], length 85: HTTP: GET /health HTTP/1.1
+08:20:18.285844 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.49186: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300908953 ecr 2571838293], length 0
+08:20:18.286444 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.49186: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300908954 ecr 2571838293], length 200: HTTP: HTTP/1.0 200 OK
+08:20:18.286444 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.49186: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300908954 ecr 2571838293], length 3: HTTP
+08:20:18.286505 xfrm-pub0 Out IP 10.253.2.10.49186 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571838326 ecr 3300908954], length 0
+08:20:18.286709 xfrm-pub0 Out IP 10.253.2.10.49186 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571838326 ecr 3300908954], length 0
+08:20:18.318672 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.49186: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300908986 ecr 2571838326], length 0
+08:20:19.295275 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 51, seq 1, length 64
+08:20:19.328594 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 51, seq 1, length 64
+08:20:19.339044 xfrm-pub0 Out IP 10.253.2.10.49194 > 10.241.0.4.8080: Flags [S], seq 3981878087, win 64240, options [mss 1460,sackOK,TS val 2571839379 ecr 0,nop,wscale 7], length 0
+08:20:19.372083 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49194: Flags [S.], seq 2811743654, ack 3981878088, win 65160, options [mss 1250,sackOK,TS val 3300910039 ecr 2571839379,nop,wscale 7], length 0
+08:20:19.372157 xfrm-pub0 Out IP 10.253.2.10.49194 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571839412 ecr 3300910039], length 0
+08:20:19.372333 xfrm-pub0 Out IP 10.253.2.10.49194 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571839412 ecr 3300910039], length 85: HTTP: GET /health HTTP/1.1
+08:20:19.405117 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49194: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300910072 ecr 2571839412], length 0
+08:20:19.405612 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49194: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300910073 ecr 2571839412], length 200: HTTP: HTTP/1.0 200 OK
+08:20:19.405613 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49194: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300910073 ecr 2571839412], length 3: HTTP
+08:20:19.405662 xfrm-pub0 Out IP 10.253.2.10.49194 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571839445 ecr 3300910073], length 0
+08:20:19.405905 xfrm-pub0 Out IP 10.253.2.10.49194 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571839446 ecr 3300910073], length 0
+08:20:19.438086 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49194: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300910105 ecr 2571839446], length 0
+08:20:20.414753 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 52, seq 1, length 64
+08:20:20.447752 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 52, seq 1, length 64
+08:20:20.457607 xfrm-pub0 Out IP 10.253.2.10.49196 > 10.241.0.4.8080: Flags [S], seq 3675703175, win 64240, options [mss 1460,sackOK,TS val 2571840497 ecr 0,nop,wscale 7], length 0
+08:20:20.490694 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.49196: Flags [S.], seq 3234125316, ack 3675703176, win 65160, options [mss 1250,sackOK,TS val 3300911158 ecr 2571840497,nop,wscale 7], length 0
+08:20:20.490772 xfrm-pub0 Out IP 10.253.2.10.49196 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571840530 ecr 3300911158], length 0
+08:20:20.491055 xfrm-pub0 Out IP 10.253.2.10.49196 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571840531 ecr 3300911158], length 85: HTTP: GET /health HTTP/1.1
+08:20:20.523203 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.49196: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300911191 ecr 2571840531], length 0
+08:20:20.524110 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.49196: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300911192 ecr 2571840531], length 200: HTTP: HTTP/1.0 200 OK
+08:20:20.524178 xfrm-pub0 Out IP 10.253.2.10.49196 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571840564 ecr 3300911192], length 0
+08:20:20.524259 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.49196: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300911192 ecr 2571840531], length 3: HTTP
+08:20:20.524400 xfrm-pub0 Out IP 10.253.2.10.49196 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571840564 ecr 3300911192], length 0
+08:20:20.556404 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.49196: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300911224 ecr 2571840564], length 0
+08:20:21.532259 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 53, seq 1, length 64
+08:20:21.565515 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 53, seq 1, length 64
+08:20:21.572933 xfrm-pub0 Out IP 10.253.2.10.49200 > 10.241.0.4.8080: Flags [S], seq 3491485274, win 64240, options [mss 1460,sackOK,TS val 2571841613 ecr 0,nop,wscale 7], length 0
+08:20:21.611108 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49200: Flags [S.], seq 3116196234, ack 3491485275, win 65160, options [mss 1250,sackOK,TS val 3300912273 ecr 2571841613,nop,wscale 7], length 0
+08:20:21.611164 xfrm-pub0 Out IP 10.253.2.10.49200 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571841651 ecr 3300912273], length 0
+08:20:21.611381 xfrm-pub0 Out IP 10.253.2.10.49200 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571841651 ecr 3300912273], length 85: HTTP: GET /health HTTP/1.1
+08:20:21.643787 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49200: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300912311 ecr 2571841651], length 0
+08:20:21.644192 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49200: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300912312 ecr 2571841651], length 200: HTTP: HTTP/1.0 200 OK
+08:20:21.644192 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49200: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300912312 ecr 2571841651], length 3: HTTP
+08:20:21.644315 xfrm-pub0 Out IP 10.253.2.10.49200 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571841684 ecr 3300912312], length 0
+08:20:21.644440 xfrm-pub0 Out IP 10.253.2.10.49200 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571841684 ecr 3300912312], length 0
+08:20:21.676604 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49200: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300912344 ecr 2571841684], length 0
+08:20:22.651333 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 54, seq 1, length 64
+08:20:22.684425 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 54, seq 1, length 64
+08:20:22.692535 xfrm-pub0 Out IP 10.253.2.10.49202 > 10.241.0.4.8080: Flags [S], seq 3617018142, win 64240, options [mss 1460,sackOK,TS val 2571842732 ecr 0,nop,wscale 7], length 0
+08:20:22.729214 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49202: Flags [S.], seq 3220295159, ack 3617018143, win 65160, options [mss 1250,sackOK,TS val 3300913396 ecr 2571842732,nop,wscale 7], length 0
+08:20:22.729288 xfrm-pub0 Out IP 10.253.2.10.49202 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571842769 ecr 3300913396], length 0
+08:20:22.729471 xfrm-pub0 Out IP 10.253.2.10.49202 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571842769 ecr 3300913396], length 85: HTTP: GET /health HTTP/1.1
+08:20:22.761774 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49202: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300913429 ecr 2571842769], length 0
+08:20:22.762416 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49202: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300913430 ecr 2571842769], length 200: HTTP: HTTP/1.0 200 OK
+08:20:22.762417 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49202: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300913430 ecr 2571842769], length 3: HTTP
+08:20:22.762469 xfrm-pub0 Out IP 10.253.2.10.49202 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571842802 ecr 3300913430], length 0
+08:20:22.762731 xfrm-pub0 Out IP 10.253.2.10.49202 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571842802 ecr 3300913430], length 0
+08:20:22.795226 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49202: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300913463 ecr 2571842802], length 0
+08:20:23.770495 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 55, seq 1, length 64
+08:20:23.803688 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 55, seq 1, length 64
+08:20:23.813537 xfrm-pub0 Out IP 10.253.2.10.49214 > 10.241.0.4.8080: Flags [S], seq 4289125134, win 64240, options [mss 1460,sackOK,TS val 2571843853 ecr 0,nop,wscale 7], length 0
+08:20:23.846946 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49214: Flags [S.], seq 3840166127, ack 4289125135, win 65160, options [mss 1250,sackOK,TS val 3300914514 ecr 2571843853,nop,wscale 7], length 0
+08:20:23.847032 xfrm-pub0 Out IP 10.253.2.10.49214 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571843887 ecr 3300914514], length 0
+08:20:23.847248 xfrm-pub0 Out IP 10.253.2.10.49214 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571843887 ecr 3300914514], length 85: HTTP: GET /health HTTP/1.1
+08:20:23.879568 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49214: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300914547 ecr 2571843887], length 0
+08:20:23.880275 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49214: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300914548 ecr 2571843887], length 200: HTTP: HTTP/1.0 200 OK
+08:20:23.880275 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49214: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300914548 ecr 2571843887], length 3: HTTP
+08:20:23.880335 xfrm-pub0 Out IP 10.253.2.10.49214 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571843920 ecr 3300914548], length 0
+08:20:23.880541 xfrm-pub0 Out IP 10.253.2.10.49214 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571843920 ecr 3300914548], length 0
+08:20:23.912779 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49214: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300914580 ecr 2571843920], length 0
+08:20:24.889435 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 56, seq 1, length 64
+08:20:24.922649 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 56, seq 1, length 64
+08:20:24.932348 xfrm-pub0 Out IP 10.253.2.10.49230 > 10.241.0.4.8080: Flags [S], seq 4153232035, win 64240, options [mss 1460,sackOK,TS val 2571844972 ecr 0,nop,wscale 7], length 0
+08:20:24.965613 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49230: Flags [S.], seq 1023525245, ack 4153232036, win 65160, options [mss 1250,sackOK,TS val 3300915633 ecr 2571844972,nop,wscale 7], length 0
+08:20:24.965695 xfrm-pub0 Out IP 10.253.2.10.49230 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571845005 ecr 3300915633], length 0
+08:20:24.965919 xfrm-pub0 Out IP 10.253.2.10.49230 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571845006 ecr 3300915633], length 85: HTTP: GET /health HTTP/1.1
+08:20:24.998176 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49230: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300915666 ecr 2571845006], length 0
+08:20:24.998750 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49230: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300915666 ecr 2571845006], length 200: HTTP: HTTP/1.0 200 OK
+08:20:24.998750 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49230: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300915666 ecr 2571845006], length 3: HTTP
+08:20:24.998817 xfrm-pub0 Out IP 10.253.2.10.49230 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571845038 ecr 3300915666], length 0
+08:20:24.999062 xfrm-pub0 Out IP 10.253.2.10.49230 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571845039 ecr 3300915666], length 0
+08:20:25.031273 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.49230: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300915699 ecr 2571845039], length 0
+08:20:26.006900 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 57, seq 1, length 64
+08:20:26.039937 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 57, seq 1, length 64
+08:20:26.047364 xfrm-pub0 Out IP 10.253.2.10.45408 > 10.241.0.4.8080: Flags [S], seq 1880585961, win 64240, options [mss 1460,sackOK,TS val 2571846087 ecr 0,nop,wscale 7], length 0
+08:20:26.086014 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45408: Flags [S.], seq 1673098965, ack 1880585962, win 65160, options [mss 1250,sackOK,TS val 3300916748 ecr 2571846087,nop,wscale 7], length 0
+08:20:26.086069 xfrm-pub0 Out IP 10.253.2.10.45408 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571846126 ecr 3300916748], length 0
+08:20:26.086209 xfrm-pub0 Out IP 10.253.2.10.45408 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571846126 ecr 3300916748], length 85: HTTP: GET /health HTTP/1.1
+08:20:26.118459 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45408: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300916786 ecr 2571846126], length 0
+08:20:26.119161 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45408: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300916787 ecr 2571846126], length 200: HTTP: HTTP/1.0 200 OK
+08:20:26.119161 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45408: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300916787 ecr 2571846126], length 3: HTTP
+08:20:26.119208 xfrm-pub0 Out IP 10.253.2.10.45408 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571846159 ecr 3300916787], length 0
+08:20:26.119376 xfrm-pub0 Out IP 10.253.2.10.45408 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571846159 ecr 3300916787], length 0
+08:20:26.151562 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45408: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300916819 ecr 2571846159], length 0
+08:20:27.127276 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 58, seq 1, length 64
+08:20:27.161770 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 58, seq 1, length 64
+08:20:27.171766 xfrm-pub0 Out IP 10.253.2.10.45410 > 10.241.0.4.8080: Flags [S], seq 561904677, win 64240, options [mss 1460,sackOK,TS val 2571847211 ecr 0,nop,wscale 7], length 0
+08:20:27.204840 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45410: Flags [S.], seq 1462368613, ack 561904678, win 65160, options [mss 1250,sackOK,TS val 3300917872 ecr 2571847211,nop,wscale 7], length 0
+08:20:27.204916 xfrm-pub0 Out IP 10.253.2.10.45410 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571847245 ecr 3300917872], length 0
+08:20:27.205097 xfrm-pub0 Out IP 10.253.2.10.45410 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571847245 ecr 3300917872], length 85: HTTP: GET /health HTTP/1.1
+08:20:27.237201 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45410: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300917905 ecr 2571847245], length 0
+08:20:27.237826 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45410: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300917905 ecr 2571847245], length 200: HTTP: HTTP/1.0 200 OK
+08:20:27.237827 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45410: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300917905 ecr 2571847245], length 3: HTTP
+08:20:27.237874 xfrm-pub0 Out IP 10.253.2.10.45410 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571847277 ecr 3300917905], length 0
+08:20:27.238012 xfrm-pub0 Out IP 10.253.2.10.45410 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571847278 ecr 3300917905], length 0
+08:20:27.270327 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45410: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300917938 ecr 2571847278], length 0
+08:20:28.244621 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 59, seq 1, length 64
+08:20:28.277512 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 59, seq 1, length 64
+08:20:28.285336 xfrm-pub0 Out IP 10.253.2.10.45424 > 10.241.0.4.8080: Flags [S], seq 1121113944, win 64240, options [mss 1460,sackOK,TS val 2571848325 ecr 0,nop,wscale 7], length 0
+08:20:28.318438 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.45424: Flags [S.], seq 1173439992, ack 1121113945, win 65160, options [mss 1250,sackOK,TS val 3300918986 ecr 2571848325,nop,wscale 7], length 0
+08:20:28.318495 xfrm-pub0 Out IP 10.253.2.10.45424 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571848358 ecr 3300918986], length 0
+08:20:28.318626 xfrm-pub0 Out IP 10.253.2.10.45424 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571848358 ecr 3300918986], length 85: HTTP: GET /health HTTP/1.1
+08:20:28.350678 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.45424: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300919018 ecr 2571848358], length 0
+08:20:28.351279 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.45424: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300919019 ecr 2571848358], length 200: HTTP: HTTP/1.0 200 OK
+08:20:28.351400 xfrm-pub0 Out IP 10.253.2.10.45424 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571848391 ecr 3300919019], length 0
+08:20:28.351447 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.45424: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300919019 ecr 2571848358], length 3: HTTP
+08:20:28.351530 xfrm-pub0 Out IP 10.253.2.10.45424 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571848391 ecr 3300919019], length 0
+08:20:28.383578 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.45424: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300919051 ecr 2571848391], length 0
+08:20:29.359846 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 60, seq 1, length 64
+08:20:29.392894 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 60, seq 1, length 64
+08:20:29.403072 xfrm-pub0 Out IP 10.253.2.10.45434 > 10.241.0.4.8080: Flags [S], seq 1181618781, win 64240, options [mss 1460,sackOK,TS val 2571849443 ecr 0,nop,wscale 7], length 0
+08:20:29.436266 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45434: Flags [S.], seq 2538017690, ack 1181618782, win 65160, options [mss 1250,sackOK,TS val 3300920103 ecr 2571849443,nop,wscale 7], length 0
+08:20:29.436349 xfrm-pub0 Out IP 10.253.2.10.45434 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571849476 ecr 3300920103], length 0
+08:20:29.436532 xfrm-pub0 Out IP 10.253.2.10.45434 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571849476 ecr 3300920103], length 85: HTTP: GET /health HTTP/1.1
+08:20:29.468789 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45434: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300920136 ecr 2571849476], length 0
+08:20:29.469509 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45434: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300920137 ecr 2571849476], length 200: HTTP: HTTP/1.0 200 OK
+08:20:29.469509 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45434: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300920137 ecr 2571849476], length 3: HTTP
+08:20:29.469597 xfrm-pub0 Out IP 10.253.2.10.45434 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571849509 ecr 3300920137], length 0
+08:20:29.469816 xfrm-pub0 Out IP 10.253.2.10.45434 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571849509 ecr 3300920137], length 0
+08:20:29.502132 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45434: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300920169 ecr 2571849509], length 0
+08:20:30.479421 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 61, seq 1, length 64
+08:20:30.512817 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 61, seq 1, length 64
+08:20:30.522658 xfrm-pub0 Out IP 10.253.2.10.45444 > 10.241.0.4.8080: Flags [S], seq 3582730001, win 64240, options [mss 1460,sackOK,TS val 2571850562 ecr 0,nop,wscale 7], length 0
+08:20:30.556263 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45444: Flags [S.], seq 237138846, ack 3582730002, win 65160, options [mss 1250,sackOK,TS val 3300921223 ecr 2571850562,nop,wscale 7], length 0
+08:20:30.556350 xfrm-pub0 Out IP 10.253.2.10.45444 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571850596 ecr 3300921223], length 0
+08:20:30.556617 xfrm-pub0 Out IP 10.253.2.10.45444 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571850596 ecr 3300921223], length 85: HTTP: GET /health HTTP/1.1
+08:20:30.588901 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45444: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300921256 ecr 2571850596], length 0
+08:20:30.589402 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45444: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300921257 ecr 2571850596], length 200: HTTP: HTTP/1.0 200 OK
+08:20:30.589402 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45444: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300921257 ecr 2571850596], length 3: HTTP
+08:20:30.589448 xfrm-pub0 Out IP 10.253.2.10.45444 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571850629 ecr 3300921257], length 0
+08:20:30.589660 xfrm-pub0 Out IP 10.253.2.10.45444 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571850629 ecr 3300921257], length 0
+08:20:30.621898 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45444: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300921289 ecr 2571850629], length 0
+08:20:31.597800 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 62, seq 1, length 64
+08:20:31.630863 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 62, seq 1, length 64
+08:20:31.638596 xfrm-pub0 Out IP 10.253.2.10.45456 > 10.241.0.4.8080: Flags [S], seq 2895292401, win 64240, options [mss 1460,sackOK,TS val 2571851678 ecr 0,nop,wscale 7], length 0
+08:20:31.671896 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45456: Flags [S.], seq 710396770, ack 2895292402, win 65160, options [mss 1250,sackOK,TS val 3300922339 ecr 2571851678,nop,wscale 7], length 0
+08:20:31.671937 xfrm-pub0 Out IP 10.253.2.10.45456 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571851712 ecr 3300922339], length 0
+08:20:31.672039 xfrm-pub0 Out IP 10.253.2.10.45456 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571851712 ecr 3300922339], length 85: HTTP: GET /health HTTP/1.1
+08:20:31.704505 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45456: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300922372 ecr 2571851712], length 0
+08:20:31.705184 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45456: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300922373 ecr 2571851712], length 200: HTTP: HTTP/1.0 200 OK
+08:20:31.705184 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45456: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300922373 ecr 2571851712], length 3: HTTP
+08:20:31.705225 xfrm-pub0 Out IP 10.253.2.10.45456 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571851745 ecr 3300922373], length 0
+08:20:31.705352 xfrm-pub0 Out IP 10.253.2.10.45456 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571851745 ecr 3300922373], length 0
+08:20:31.737611 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45456: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300922405 ecr 2571851745], length 0
+08:20:32.712109 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 63, seq 1, length 64
+08:20:32.745143 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 63, seq 1, length 64
+08:20:32.752944 xfrm-pub0 Out IP 10.253.2.10.45462 > 10.241.0.4.8080: Flags [S], seq 688463306, win 64240, options [mss 1460,sackOK,TS val 2571852793 ecr 0,nop,wscale 7], length 0
+08:20:32.786032 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.45462: Flags [S.], seq 343461402, ack 688463307, win 65160, options [mss 1250,sackOK,TS val 3300923453 ecr 2571852793,nop,wscale 7], length 0
+08:20:32.786075 xfrm-pub0 Out IP 10.253.2.10.45462 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571852826 ecr 3300923453], length 0
+08:20:32.786159 xfrm-pub0 Out IP 10.253.2.10.45462 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571852826 ecr 3300923453], length 85: HTTP: GET /health HTTP/1.1
+08:20:32.818501 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.45462: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300923486 ecr 2571852826], length 0
+08:20:32.819184 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.45462: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300923487 ecr 2571852826], length 200: HTTP: HTTP/1.0 200 OK
+08:20:32.819184 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.45462: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300923487 ecr 2571852826], length 3: HTTP
+08:20:32.819232 xfrm-pub0 Out IP 10.253.2.10.45462 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571852859 ecr 3300923487], length 0
+08:20:32.819370 xfrm-pub0 Out IP 10.253.2.10.45462 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571852859 ecr 3300923487], length 0
+08:20:32.851448 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.45462: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300923519 ecr 2571852859], length 0
+08:20:33.827626 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 64, seq 1, length 64
+08:20:33.860747 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 64, seq 1, length 64
+08:20:33.870824 xfrm-pub0 Out IP 10.253.2.10.45468 > 10.241.0.4.8080: Flags [S], seq 2819353356, win 64240, options [mss 1460,sackOK,TS val 2571853910 ecr 0,nop,wscale 7], length 0
+08:20:33.904701 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45468: Flags [S.], seq 2760663607, ack 2819353357, win 65160, options [mss 1250,sackOK,TS val 3300924571 ecr 2571853910,nop,wscale 7], length 0
+08:20:33.904782 xfrm-pub0 Out IP 10.253.2.10.45468 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571853944 ecr 3300924571], length 0
+08:20:33.905088 xfrm-pub0 Out IP 10.253.2.10.45468 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571853945 ecr 3300924571], length 85: HTTP: GET /health HTTP/1.1
+08:20:33.937462 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45468: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300924605 ecr 2571853945], length 0
+08:20:33.937988 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45468: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300924605 ecr 2571853945], length 200: HTTP: HTTP/1.0 200 OK
+08:20:33.937988 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45468: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300924605 ecr 2571853945], length 3: HTTP
+08:20:33.938027 xfrm-pub0 Out IP 10.253.2.10.45468 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571853978 ecr 3300924605], length 0
+08:20:33.938242 xfrm-pub0 Out IP 10.253.2.10.45468 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571853978 ecr 3300924605], length 0
+08:20:33.970693 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45468: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300924638 ecr 2571853978], length 0
+08:20:34.946219 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 65, seq 1, length 64
+08:20:34.979155 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 65, seq 1, length 64
+08:20:34.986815 xfrm-pub0 Out IP 10.253.2.10.45474 > 10.241.0.4.8080: Flags [S], seq 2362210836, win 64240, options [mss 1460,sackOK,TS val 2571855026 ecr 0,nop,wscale 7], length 0
+08:20:35.025919 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45474: Flags [S.], seq 2433728860, ack 2362210837, win 65160, options [mss 1250,sackOK,TS val 3300925687 ecr 2571855026,nop,wscale 7], length 0
+08:20:35.025967 xfrm-pub0 Out IP 10.253.2.10.45474 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571855066 ecr 3300925687], length 0
+08:20:35.026077 xfrm-pub0 Out IP 10.253.2.10.45474 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571855066 ecr 3300925687], length 85: HTTP: GET /health HTTP/1.1
+08:20:35.058537 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45474: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300925726 ecr 2571855066], length 0
+08:20:35.059405 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45474: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300925727 ecr 2571855066], length 200: HTTP: HTTP/1.0 200 OK
+08:20:35.059405 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45474: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300925727 ecr 2571855066], length 3: HTTP
+08:20:35.059444 xfrm-pub0 Out IP 10.253.2.10.45474 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571855099 ecr 3300925727], length 0
+08:20:35.059571 xfrm-pub0 Out IP 10.253.2.10.45474 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571855099 ecr 3300925727], length 0
+08:20:35.091876 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.45474: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300925759 ecr 2571855099], length 0
+08:20:36.066390 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 66, seq 1, length 64
+08:20:36.099455 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 66, seq 1, length 64
+08:20:36.107899 xfrm-pub0 Out IP 10.253.2.10.35164 > 10.241.0.4.8080: Flags [S], seq 3717227718, win 64240, options [mss 1460,sackOK,TS val 2571856147 ecr 0,nop,wscale 7], length 0
+08:20:36.140754 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35164: Flags [S.], seq 4227994143, ack 3717227719, win 65160, options [mss 1250,sackOK,TS val 3300926808 ecr 2571856147,nop,wscale 7], length 0
+08:20:36.140819 xfrm-pub0 Out IP 10.253.2.10.35164 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571856180 ecr 3300926808], length 0
+08:20:36.140973 xfrm-pub0 Out IP 10.253.2.10.35164 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571856181 ecr 3300926808], length 85: HTTP: GET /health HTTP/1.1
+08:20:36.173016 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35164: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300926841 ecr 2571856181], length 0
+08:20:36.173581 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35164: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300926841 ecr 2571856181], length 200: HTTP: HTTP/1.0 200 OK
+08:20:36.173581 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35164: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300926841 ecr 2571856181], length 3: HTTP
+08:20:36.173637 xfrm-pub0 Out IP 10.253.2.10.35164 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571856213 ecr 3300926841], length 0
+08:20:36.173777 xfrm-pub0 Out IP 10.253.2.10.35164 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571856213 ecr 3300926841], length 0
+08:20:36.205951 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35164: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300926874 ecr 2571856213], length 0
+08:20:37.181673 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 67, seq 1, length 64
+08:20:37.230805 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 67, seq 1, length 64
+08:20:37.240125 xfrm-pub0 Out IP 10.253.2.10.35176 > 10.241.0.4.8080: Flags [S], seq 3184776216, win 64240, options [mss 1460,sackOK,TS val 2571857280 ecr 0,nop,wscale 7], length 0
+08:20:37.273271 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35176: Flags [S.], seq 3400429494, ack 3184776217, win 65160, options [mss 1250,sackOK,TS val 3300927940 ecr 2571857280,nop,wscale 7], length 0
+08:20:37.273357 xfrm-pub0 Out IP 10.253.2.10.35176 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571857313 ecr 3300927940], length 0
+08:20:37.273614 xfrm-pub0 Out IP 10.253.2.10.35176 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571857313 ecr 3300927940], length 85: HTTP: GET /health HTTP/1.1
+08:20:37.306205 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35176: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300927974 ecr 2571857313], length 0
+08:20:37.306390 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35176: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300927974 ecr 2571857313], length 200: HTTP: HTTP/1.0 200 OK
+08:20:37.306390 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35176: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300927974 ecr 2571857313], length 3: HTTP
+08:20:37.306436 xfrm-pub0 Out IP 10.253.2.10.35176 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571857346 ecr 3300927974], length 0
+08:20:37.306646 xfrm-pub0 Out IP 10.253.2.10.35176 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571857346 ecr 3300927974], length 0
+08:20:37.338848 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35176: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300928006 ecr 2571857346], length 0
+08:20:38.315270 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 68, seq 1, length 64
+08:20:38.348363 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 68, seq 1, length 64
+08:20:38.357695 xfrm-pub0 Out IP 10.253.2.10.35188 > 10.241.0.4.8080: Flags [S], seq 3714579745, win 64240, options [mss 1460,sackOK,TS val 2571858397 ecr 0,nop,wscale 7], length 0
+08:20:38.390709 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35188: Flags [S.], seq 3683489808, ack 3714579746, win 65160, options [mss 1250,sackOK,TS val 3300929058 ecr 2571858397,nop,wscale 7], length 0
+08:20:38.390802 xfrm-pub0 Out IP 10.253.2.10.35188 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571858430 ecr 3300929058], length 0
+08:20:38.391004 xfrm-pub0 Out IP 10.253.2.10.35188 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571858431 ecr 3300929058], length 85: HTTP: GET /health HTTP/1.1
+08:20:38.423510 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35188: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300929091 ecr 2571858431], length 0
+08:20:38.423711 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35188: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300929091 ecr 2571858431], length 200: HTTP: HTTP/1.0 200 OK
+08:20:38.423748 xfrm-pub0 Out IP 10.253.2.10.35188 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571858463 ecr 3300929091], length 0
+08:20:38.423807 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35188: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300929091 ecr 2571858431], length 3: HTTP
+08:20:38.423962 xfrm-pub0 Out IP 10.253.2.10.35188 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571858464 ecr 3300929091], length 0
+08:20:38.456132 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35188: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300929124 ecr 2571858464], length 0
+08:20:39.431337 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 69, seq 1, length 64
+08:20:39.464600 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 69, seq 1, length 64
+08:20:39.471974 xfrm-pub0 Out IP 10.253.2.10.35198 > 10.241.0.4.8080: Flags [S], seq 2622574521, win 64240, options [mss 1460,sackOK,TS val 2571859512 ecr 0,nop,wscale 7], length 0
+08:20:39.505005 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35198: Flags [S.], seq 2006370574, ack 2622574522, win 65160, options [mss 1250,sackOK,TS val 3300930172 ecr 2571859512,nop,wscale 7], length 0
+08:20:39.505058 xfrm-pub0 Out IP 10.253.2.10.35198 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571859545 ecr 3300930172], length 0
+08:20:39.505189 xfrm-pub0 Out IP 10.253.2.10.35198 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571859545 ecr 3300930172], length 85: HTTP: GET /health HTTP/1.1
+08:20:39.537452 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35198: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300930205 ecr 2571859545], length 0
+08:20:39.537812 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35198: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300930205 ecr 2571859545], length 200: HTTP: HTTP/1.0 200 OK
+08:20:39.537844 xfrm-pub0 Out IP 10.253.2.10.35198 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571859577 ecr 3300930205], length 0
+08:20:39.537886 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35198: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300930205 ecr 2571859545], length 3: HTTP
+08:20:39.537989 xfrm-pub0 Out IP 10.253.2.10.35198 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571859578 ecr 3300930205], length 0
+08:20:39.570122 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35198: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300930238 ecr 2571859578], length 0
+08:20:40.544628 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 70, seq 1, length 64
+08:20:40.577442 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 70, seq 1, length 64
+08:20:40.584628 xfrm-pub0 Out IP 10.253.2.10.35214 > 10.241.0.4.8080: Flags [S], seq 3476249909, win 64240, options [mss 1460,sackOK,TS val 2571860624 ecr 0,nop,wscale 7], length 0
+08:20:40.621873 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35214: Flags [S.], seq 1338364467, ack 3476249910, win 65160, options [mss 1250,sackOK,TS val 3300931289 ecr 2571860624,nop,wscale 7], length 0
+08:20:40.621930 xfrm-pub0 Out IP 10.253.2.10.35214 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571860662 ecr 3300931289], length 0
+08:20:40.622067 xfrm-pub0 Out IP 10.253.2.10.35214 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571860662 ecr 3300931289], length 85: HTTP: GET /health HTTP/1.1
+08:20:40.654471 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35214: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300931322 ecr 2571860662], length 0
+08:20:40.654897 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35214: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300931322 ecr 2571860662], length 200: HTTP: HTTP/1.0 200 OK
+08:20:40.654898 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35214: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300931322 ecr 2571860662], length 3: HTTP
+08:20:40.654932 xfrm-pub0 Out IP 10.253.2.10.35214 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571860695 ecr 3300931322], length 0
+08:20:40.655086 xfrm-pub0 Out IP 10.253.2.10.35214 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571860695 ecr 3300931322], length 0
+08:20:40.687311 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35214: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300931355 ecr 2571860695], length 0
+08:20:41.662642 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 71, seq 1, length 64
+08:20:41.695738 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 71, seq 1, length 64
+08:20:41.705631 xfrm-pub0 Out IP 10.253.2.10.35218 > 10.241.0.4.8080: Flags [S], seq 2018352230, win 64240, options [mss 1460,sackOK,TS val 2571861745 ecr 0,nop,wscale 7], length 0
+08:20:41.738890 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35218: Flags [S.], seq 2034119311, ack 2018352231, win 65160, options [mss 1250,sackOK,TS val 3300932406 ecr 2571861745,nop,wscale 7], length 0
+08:20:41.738959 xfrm-pub0 Out IP 10.253.2.10.35218 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571861779 ecr 3300932406], length 0
+08:20:41.739164 xfrm-pub0 Out IP 10.253.2.10.35218 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571861779 ecr 3300932406], length 85: HTTP: GET /health HTTP/1.1
+08:20:41.771237 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35218: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300932439 ecr 2571861779], length 0
+08:20:41.771710 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35218: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300932439 ecr 2571861779], length 200: HTTP: HTTP/1.0 200 OK
+08:20:41.771710 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35218: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300932439 ecr 2571861779], length 3: HTTP
+08:20:41.771754 xfrm-pub0 Out IP 10.253.2.10.35218 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571861811 ecr 3300932439], length 0
+08:20:41.772017 xfrm-pub0 Out IP 10.253.2.10.35218 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571861812 ecr 3300932439], length 0
+08:20:41.804154 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35218: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300932472 ecr 2571861812], length 0
+08:20:42.781150 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 72, seq 1, length 64
+08:20:42.814497 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 72, seq 1, length 64
+08:20:42.824627 xfrm-pub0 Out IP 10.253.2.10.35220 > 10.241.0.4.8080: Flags [S], seq 2261443117, win 64240, options [mss 1460,sackOK,TS val 2571862864 ecr 0,nop,wscale 7], length 0
+08:20:42.858595 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35220: Flags [S.], seq 2426782997, ack 2261443118, win 65160, options [mss 1250,sackOK,TS val 3300933526 ecr 2571862864,nop,wscale 7], length 0
+08:20:42.858675 xfrm-pub0 Out IP 10.253.2.10.35220 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571862898 ecr 3300933526], length 0
+08:20:42.858857 xfrm-pub0 Out IP 10.253.2.10.35220 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571862898 ecr 3300933526], length 85: HTTP: GET /health HTTP/1.1
+08:20:42.891090 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35220: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300933558 ecr 2571862898], length 0
+08:20:42.891678 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35220: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300933559 ecr 2571862898], length 200: HTTP: HTTP/1.0 200 OK
+08:20:42.891723 xfrm-pub0 Out IP 10.253.2.10.35220 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571862931 ecr 3300933559], length 0
+08:20:42.891770 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35220: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300933559 ecr 2571862898], length 3: HTTP
+08:20:42.891979 xfrm-pub0 Out IP 10.253.2.10.35220 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571862932 ecr 3300933559], length 0
+08:20:42.924124 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35220: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300933591 ecr 2571862932], length 0
+08:20:43.900439 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 73, seq 1, length 64
+08:20:43.934644 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 73, seq 1, length 64
+08:20:43.944927 xfrm-pub0 Out IP 10.253.2.10.35234 > 10.241.0.4.8080: Flags [S], seq 881108439, win 64240, options [mss 1460,sackOK,TS val 2571863985 ecr 0,nop,wscale 7], length 0
+08:20:43.977804 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35234: Flags [S.], seq 2730207453, ack 881108440, win 65160, options [mss 1250,sackOK,TS val 3300934645 ecr 2571863985,nop,wscale 7], length 0
+08:20:43.977896 xfrm-pub0 Out IP 10.253.2.10.35234 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571864017 ecr 3300934645], length 0
+08:20:43.978108 xfrm-pub0 Out IP 10.253.2.10.35234 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571864018 ecr 3300934645], length 85: HTTP: GET /health HTTP/1.1
+08:20:44.010208 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35234: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300934678 ecr 2571864018], length 0
+08:20:44.010889 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35234: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300934678 ecr 2571864018], length 200: HTTP: HTTP/1.0 200 OK
+08:20:44.010889 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35234: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300934679 ecr 2571864018], length 3: HTTP
+08:20:44.010950 xfrm-pub0 Out IP 10.253.2.10.35234 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571864051 ecr 3300934678], length 0
+08:20:44.011209 xfrm-pub0 Out IP 10.253.2.10.35234 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571864051 ecr 3300934679], length 0
+08:20:44.043322 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.35234: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300934711 ecr 2571864051], length 0
+08:20:45.020316 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 74, seq 1, length 64
+08:20:45.053350 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 74, seq 1, length 64
+08:20:45.063438 xfrm-pub0 Out IP 10.253.2.10.35240 > 10.241.0.4.8080: Flags [S], seq 3856149025, win 64240, options [mss 1460,sackOK,TS val 2571865103 ecr 0,nop,wscale 7], length 0
+08:20:45.097156 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35240: Flags [S.], seq 574575436, ack 3856149026, win 65160, options [mss 1250,sackOK,TS val 3300935764 ecr 2571865103,nop,wscale 7], length 0
+08:20:45.097231 xfrm-pub0 Out IP 10.253.2.10.35240 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571865137 ecr 3300935764], length 0
+08:20:45.097419 xfrm-pub0 Out IP 10.253.2.10.35240 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571865137 ecr 3300935764], length 85: HTTP: GET /health HTTP/1.1
+08:20:45.129810 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35240: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300935797 ecr 2571865137], length 0
+08:20:45.130625 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35240: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300935798 ecr 2571865137], length 200: HTTP: HTTP/1.0 200 OK
+08:20:45.130625 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35240: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300935798 ecr 2571865137], length 3: HTTP
+08:20:45.130669 xfrm-pub0 Out IP 10.253.2.10.35240 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571865170 ecr 3300935798], length 0
+08:20:45.130939 xfrm-pub0 Out IP 10.253.2.10.35240 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571865171 ecr 3300935798], length 0
+08:20:45.163191 xfrm-pri1 In  IP 10.241.0.4.8080 > 10.253.2.10.35240: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300935831 ecr 2571865171], length 0
+08:20:46.140004 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 75, seq 1, length 64
+08:20:46.172986 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 75, seq 1, length 64
+08:20:46.182708 xfrm-pub0 Out IP 10.253.2.10.55596 > 10.241.0.4.8080: Flags [S], seq 3919666900, win 64240, options [mss 1460,sackOK,TS val 2571866222 ecr 0,nop,wscale 7], length 0
+08:20:46.215752 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.55596: Flags [S.], seq 2585579049, ack 3919666901, win 65160, options [mss 1250,sackOK,TS val 3300936883 ecr 2571866222,nop,wscale 7], length 0
+08:20:46.215827 xfrm-pub0 Out IP 10.253.2.10.55596 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571866255 ecr 3300936883], length 0
+08:20:46.216012 xfrm-pub0 Out IP 10.253.2.10.55596 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571866256 ecr 3300936883], length 85: HTTP: GET /health HTTP/1.1
+08:20:46.248145 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.55596: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300936916 ecr 2571866256], length 0
+08:20:46.248777 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.55596: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300936916 ecr 2571866256], length 200: HTTP: HTTP/1.0 200 OK
+08:20:46.248777 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.55596: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300936916 ecr 2571866256], length 3: HTTP
+08:20:46.248813 xfrm-pub0 Out IP 10.253.2.10.55596 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571866288 ecr 3300936916], length 0
+08:20:46.249026 xfrm-pub0 Out IP 10.253.2.10.55596 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571866289 ecr 3300936916], length 0
+08:20:46.281093 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.55596: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300936949 ecr 2571866289], length 0
+08:20:47.256661 xfrm-pub0 Out IP 10.253.2.10 > 10.241.0.4: ICMP echo request, id 76, seq 1, length 64
+08:20:47.290084 xfrm-pri1 In  IP 10.241.0.4 > 10.253.2.10: ICMP echo reply, id 76, seq 1, length 64
+08:20:47.297312 xfrm-pub0 Out IP 10.253.2.10.55604 > 10.241.0.4.8080: Flags [S], seq 3258441321, win 64240, options [mss 1460,sackOK,TS val 2571867337 ecr 0,nop,wscale 7], length 0
+08:20:47.330450 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.55604: Flags [S.], seq 795364221, ack 3258441322, win 65160, options [mss 1250,sackOK,TS val 3300937998 ecr 2571867337,nop,wscale 7], length 0
+08:20:47.330497 xfrm-pub0 Out IP 10.253.2.10.55604 > 10.241.0.4.8080: Flags [.], ack 1, win 502, options [nop,nop,TS val 2571867370 ecr 3300937998], length 0
+08:20:47.330616 xfrm-pub0 Out IP 10.253.2.10.55604 > 10.241.0.4.8080: Flags [P.], seq 1:86, ack 1, win 502, options [nop,nop,TS val 2571867370 ecr 3300937998], length 85: HTTP: GET /health HTTP/1.1
+08:20:47.362812 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.55604: Flags [.], ack 86, win 509, options [nop,nop,TS val 3300938030 ecr 2571867370], length 0
+08:20:47.363449 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.55604: Flags [P.], seq 1:201, ack 86, win 509, options [nop,nop,TS val 3300938031 ecr 2571867370], length 200: HTTP: HTTP/1.0 200 OK
+08:20:47.363480 xfrm-pub0 Out IP 10.253.2.10.55604 > 10.241.0.4.8080: Flags [.], ack 201, win 501, options [nop,nop,TS val 2571867403 ecr 3300938031], length 0
+08:20:47.363511 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.55604: Flags [FP.], seq 201:204, ack 86, win 509, options [nop,nop,TS val 3300938031 ecr 2571867370], length 3: HTTP
+08:20:47.363603 xfrm-pub0 Out IP 10.253.2.10.55604 > 10.241.0.4.8080: Flags [F.], seq 86, ack 205, win 501, options [nop,nop,TS val 2571867403 ecr 3300938031], length 0
+08:20:47.395701 xfrm-pri0 In  IP 10.241.0.4.8080 > 10.253.2.10.55604: Flags [.], ack 87, win 509, options [nop,nop,TS val 3300938063 ecr 2571867403], length 0
+
+739 packets captured
+739 packets received by filter
+0 packets dropped by kernel

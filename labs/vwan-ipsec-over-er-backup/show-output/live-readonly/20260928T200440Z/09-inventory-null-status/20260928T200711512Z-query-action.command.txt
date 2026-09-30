@@ -1,0 +1,17 @@
+$root = Get-Content 'C:\Users\jomore\Repos\net-lab-builder\labs\vwan-ipsec-over-er-backup\config\inventory.json' -Raw | ConvertFrom-Json
+function Walk([object]$Value, [string]$Path) {
+  if ($null -eq $Value) {
+    [pscustomobject]@{ path = $Path; state = 'null' }
+  } elseif ($Value -is [System.Management.Automation.PSCustomObject]) {
+    foreach ($property in $Value.PSObject.Properties) {
+      Walk $property.Value (if ($Path) { "$Path.$($property.Name)" } else { $property.Name })
+    }
+  } elseif ($Value -is [System.Collections.IEnumerable] -and $Value -isnot [string]) {
+    $items = @($Value)
+    if ($items.Count -eq 0) { [pscustomobject]@{ path = $Path; state = 'empty-array' } }
+    for ($i = 0; $i -lt $items.Count; $i++) { Walk $items[$i] "$Path[$i]" }
+  } else {
+    [pscustomobject]@{ path = $Path; state = 'non-null'; type = $Value.GetType().Name }
+  }
+}
+Walk $root '' | Sort-Object path | ConvertTo-Json -Depth 5

@@ -1,0 +1,221 @@
+UTC=2026-09-29T08:33:35.8026158Z ===CPE_D2_PREFLIGHT===
+DESIGN=D2
+pub0: #30, ESTABLISHED, IKEv2, b1c96af016f41c64_i* ed9b357c69f0cd44_r
+  pub0: #6, reqid 4, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+pri0: #29, ESTABLISHED, IKEv2, c34b8710811766e6_i* 40ff5264e98537dc_r
+  pri0: #5, reqid 3, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+pub1: #4, ESTABLISHED, IKEv2, 965b3046ce5ec9bb_i* 639698074d60c6be_r
+  pub1: #2, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+pri1: #2, ESTABLISHED, IKEv2, 640a0443eb735b1b_i* edd4575a3ec08051_r
+  pri1: #4, reqid 2, INSTALLED, TUNNEL, ESP:AES_CBC-256/HMAC_SHA2_256_128
+
+IPv4 Unicast Summary (VRF default):
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 1
+RIB entries 1, using 184 bytes of memory
+Peers 4, using 2892 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+169.254.21.1    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.22.1    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.21.5    4      65515         0         1        0    0    0    never      Connect        0 N/A
+169.254.22.5    4      65515         0         1        0    0    0    never      Connect        0 N/A
+
+Total number of neighbors 4
+RTNETLINK answers: Invalid argument
+
+===AZURE_PROVIDER===
+{
+  "provider": "Provisioned",
+  "state": "Succeeded"
+}
+
+===MEGAPORT_PROVIDER===
+{
+  "utc": "2026-09-29T08:33:58.6213992Z",
+  "status": "collected",
+  "products": {
+    "mcr": {
+      "productName": "mcr-ver-09281131",
+      "productType": "MCR2",
+      "provisioningStatus": "LIVE",
+      "up": true,
+      "shutdown": null,
+      "rateLimit": null,
+      "portSpeed": 1000,
+      "location": "Equinix Amsterdam AM1",
+      "aEnd": {
+        "productName": null,
+        "location": null,
+        "diversityZone": null
+      },
+      "bEnd": {
+        "productName": null,
+        "location": null,
+        "connectType": null,
+        "diversityZone": null
+      },
+      "pathSelections": [],
+      "bgpConnections": [
+        {
+          "connectType": null,
+          "localAsn": null,
+          "localIpAddress": null,
+          "peerAsn": null,
+          "peerIpAddress": null,
+          "peerType": null,
+          "shutdown": null,
+          "status": null
+        }
+      ]
+    },
+    "azurePrimary": {
+      "productName": "vxc-azure-primary-ver-09281131",
+      "productType": "VXC",
+      "provisioningStatus": "LIVE",
+      "up": true,
+      "shutdown": false,
+      "rateLimit": 50,
+      "portSpeed": null,
+      "location": null,
+      "aEnd": {
+        "productName": "mcr-ver-09281131",
+        "location": "Equinix Amsterdam AM1",
+        "diversityZone": "blue"
+      },
+      "bEnd": {
+        "productName": "Stockholm Primary",
+        "location": "Equinix Stockholm SK1",
+        "connectType": "AZURE",
+        "diversityZone": "red"
+      },
+      "pathSelections": [
+        "primary",
+        "secondary"
+      ],
+      "bgpConnections": [
+        {
+          "connectType": "VROUTER",
+          "localAsn": 65060,
+          "localIpAddress": "169.254.148.89",
+          "peerAsn": 12076,
+          "peerIpAddress": "169.254.148.90",
+          "peerType": "PRIV_CLOUD",
+          "shutdown": false,
+          "status": 1
+        },
+        {
+          "connectType": "AZURE",
+          "localAsn": null,
+          "localIpAddress": null,
+          "peerAsn": null,
+          "peerIpAddress": null,
+          "peerType": null,
+          "shutdown": null,
+          "status": null
+        }
+      ]
+    },
+    "azureSecondary": {
+      "productName": "vxc-azure-secondary-ver-09281131",
+      "productType": "VXC",
+      "provisioningStatus": "LIVE",
+      "up": true,
+      "shutdown": false,
+      "rateLimit": 50,
+      "portSpeed": null,
+      "location": null,
+      "aEnd": {
+        "productName": "mcr-ver-09281131",
+        "location": "Equinix Amsterdam AM1",
+        "diversityZone": "blue"
+      },
+      "bEnd": {
+        "productName": "Stockholm Secondary",
+        "location": "Equinix Stockholm SK1",
+        "connectType": "AZURE",
+        "diversityZone": "blue"
+      },
+      "pathSelections": [
+        "primary",
+        "secondary"
+      ],
+      "bgpConnections": [
+        {
+          "connectType": "VROUTER",
+          "localAsn": 65060,
+          "localIpAddress": "169.254.148.93",
+          "peerAsn": 12076,
+          "peerIpAddress": "169.254.148.94",
+          "peerType": "PRIV_CLOUD",
+          "shutdown": false,
+          "status": 1
+        },
+        {
+          "connectType": "AZURE",
+          "localAsn": null,
+          "localIpAddress": null,
+          "peerAsn": null,
+          "peerIpAddress": null,
+          "peerType": null,
+          "shutdown": null,
+          "status": null
+        }
+      ]
+    },
+    "gcp": {
+      "productName": "vxc-gcp-ver-09281131",
+      "productType": "VXC",
+      "provisioningStatus": "LIVE",
+      "up": true,
+      "shutdown": false,
+      "rateLimit": 50,
+      "portSpeed": null,
+      "location": null,
+      "aEnd": {
+        "productName": "mcr-ver-09281131",
+        "location": "Equinix Amsterdam AM1",
+        "diversityZone": "blue"
+      },
+      "bEnd": {
+        "productName": "Stockholm (arn-zone1-208)",
+        "location": "Digital Realty Interxion STO5",
+        "connectType": "GOOGLE",
+        "diversityZone": "red"
+      },
+      "pathSelections": [
+        null
+      ],
+      "bgpConnections": [
+        {
+          "connectType": "VROUTER",
+          "localAsn": 65060,
+          "localIpAddress": "169.254.113.250",
+          "peerAsn": 16550,
+          "peerIpAddress": "169.254.113.249",
+          "peerType": "PRIV_CLOUD",
+          "shutdown": false,
+          "status": 1
+        },
+        {
+          "connectType": "GOOGLE",
+          "localAsn": null,
+          "localIpAddress": null,
+          "peerAsn": null,
+          "peerIpAddress": null,
+          "peerType": null,
+          "shutdown": null,
+          "status": null
+        }
+      ]
+    }
+  },
+  "lookingGlass": {
+    "status": "available",
+    "routes": [
+      null
+    ]
+  }
+}
+

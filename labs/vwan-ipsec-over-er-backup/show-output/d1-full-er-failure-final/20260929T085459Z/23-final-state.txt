@@ -1,0 +1,22 @@
+Warning: Permanently added '[localhost]:22022' (ED25519) to the list of known hosts.
+===SAS===
+pub1: #4, ESTABLISHED, IKEv2, 144a0938107fd535_i* 9b1f579b8900e3c8_r
+pub0: #3, ESTABLISHED, IKEv2, fd88ab354121a5ff_i* 30a3139885f660ab_r
+pri1: #2, ESTABLISHED, IKEv2, daf54d25a41fabba_i* 44479993c6efd826_r
+pri0: #1, ESTABLISHED, IKEv2, 88f47b02e5a3ca24_i* dfaf8a247606bedf_r
+===BGP===
+
+IPv4 Unicast Summary (VRF default):
+BGP router identifier 10.250.254.250, local AS number 65050 vrf-id 0
+BGP table version 233
+RIB entries 5, using 920 bytes of memory
+Peers 4, using 2892 KiB of memory
+Peer groups 2, using 128 bytes of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+10.240.0.12     4      65515        76        78        0    0    0 00:00:01            2        0 N/A
+10.240.0.13     4      65515        78        82        0    0    0 00:00:04            2        1 N/A
+169.254.21.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+169.254.22.5    4      65515         0         0        0    0    0    never      Connect        0 N/A
+
+Total number of neighbors 4

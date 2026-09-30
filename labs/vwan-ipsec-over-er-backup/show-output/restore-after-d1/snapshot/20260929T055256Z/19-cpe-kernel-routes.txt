@@ -1,0 +1,25 @@
+# action: read-only evidence capture
+# question_id: Q-CPE-FIB
+# plane: cpe-kernel
+# expected_effect: Kernel route lookups are non-recursive, fail closed, and use the expected XFRM interface.
+# utc_started: 2026-09-29T05:56:42.4764456Z
+# utc_ended: 2026-09-29T05:57:05.8042444Z
+# local_started: 2026-09-29T07:56:42.4764456+02:00
+# local_ended: 2026-09-29T07:57:05.8042444+02:00
+# command: gcloud compute ssh cpe-ver-09281131 --zone europe-north2-c --project <GCP_PROJECT_ID> --command 'ip -details route show table all; ip rule show; ip route get 10.241.0.4; echo 'slot=pri0 ike'; ip route get 10.240.0.4 from 10.250.0.10; echo 'slot=pri0 bgp'; ip route get 10.240.0.13 from 10.250.254.240; echo 'slot=pri1 ike'; ip route get 10.240.0.5 from 10.250.0.10; echo 'slot=pri1 bgp'; ip route get 10.240.0.12 from 10.250.254.240; echo 'slot=pub0 ike'; ip route get 74.158.47.254 from 10.250.0.10; echo 'slot=pub0 bgp'; ip route get 10.240.0.13 from 10.250.254.241; echo 'slot=pub1 ike'; ip route get 74.158.80.26 from 10.250.0.10; echo 'slot=pub1 bgp'; ip route get 10.240.0.12 from 10.250.254.241'
+# exit_code: 1
+# stdout:
+
+# stderr:
+FATAL ERROR: Network error: Connection timed out
+
+Recommendation: To check for possible causes of SSH connectivity issues and get
+recommendations, rerun the ssh command with the --troubleshoot option.
+
+gcloud compute ssh cpe-ver-09281131 --project=<GCP_PROJECT_ID> --zone=europe-north2-c --troubleshoot
+
+Or, to investigate an IAP tunneling issue:
+
+gcloud compute ssh cpe-ver-09281131 --project=<GCP_PROJECT_ID> --zone=europe-north2-c --troubleshoot --tunnel-through-iap
+
+ERROR: (gcloud.compute.ssh) [C:\Users\jomore\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\sdk\plink.exe] exited with return code [1].

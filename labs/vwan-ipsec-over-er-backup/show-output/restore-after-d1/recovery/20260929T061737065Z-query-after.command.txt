@@ -1,0 +1,1 @@
+az vm get-instance-view -g rg-vwan-ipsec-over-er-09281131 -n vm-probe-ver-09281131 --query '{power:instanceView.statuses[?starts_with(code, `PowerState/`)]|[0].displayStatus,provisioning:provisioningState}' -o json

@@ -1,0 +1,1 @@
+gcloud compute ssh cpe-ver-09281131 --zone europe-north2-c --project <GCP_PROJECT_ID> --command 'sudo timeout 15s tcpdump -ni any -s 128 -tttt -vv '(udp port 500 or udp port 4500 or esp or tcp port 179 or icmp)''
