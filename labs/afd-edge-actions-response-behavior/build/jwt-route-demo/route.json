@@ -1,0 +1,26 @@
+{
+  "properties": {
+    "linkToDefaultDomain": "Enabled",
+    "originPath": null,
+    "enabledState": "Enabled",
+    "forwardingProtocol": "HttpsOnly",
+    "supportedProtocols": [
+      "Https"
+    ],
+    "patternsToMatch": [
+      "/protected",
+      "/protected/*",
+      "/admin",
+      "/admin/*"
+    ],
+    "ruleSets": [
+      {
+        "id": "/subscriptions/<REDACTED-GUID>/resourceGroups/rg-afd-edge-response-lab/providers/Microsoft.Cdn/profiles/afd-edge-response-a8fbd8e1/ruleSets/rsedgejwt"
+      }
+    ],
+    "httpsRedirect": "Enabled",
+    "originGroup": {
+      "id": "/subscriptions/<REDACTED-GUID>/resourceGroups/rg-afd-edge-response-lab/providers/Microsoft.Cdn/profiles/afd-edge-response-a8fbd8e1/originGroups/og-origin"
+    }
+  }
+}

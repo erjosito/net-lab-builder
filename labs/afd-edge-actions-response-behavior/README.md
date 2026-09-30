@@ -46,6 +46,45 @@ custom response should accept or create a separate request ID; use
 
 Evidence: `evidence/tracking-reference-result.json`.
 
+## Public and protected route reproduction
+
+The optional JWT route demonstration recreates the original portal structure:
+
+- `/public` uses `rt-all` and matches no Edge Action rule.
+- `/protected` and `/admin` use the more-specific `rt-jwt` route.
+- `rt-jwt` associates `rsedgejwt/ruleprotected`.
+- `ruleprotected` invokes the separate `eajwtvisual` Edge Action.
+- A request without a bearer token receives 401.
+
+Deploy it with:
+
+```powershell
+.\deploy\Add-JwtRouteDemo.ps1
+```
+
+This is intended to make the route distinction visible and testable. It checks
+only for the presence of a bearer token and is not cryptographic JWT
+authentication.
+
+A separate route is required because the preview currently permits only one
+Edge Action rule per route; `rt-all` already hosts `rsresponseprobe`.
+The demonstration restricts `rt-all` to `/ea/*`, `/control`, `/public`, and
+`/health` so that `/protected` and `/admin` can match only `rt-jwt`.
+
+Verified behavior:
+
+| Request | Result | Processing path |
+|---|---:|---|
+| `GET /public` | 200 | Origin reached; no JWT Edge Action |
+| `GET /protected` without `Authorization` | 401 | Rejected by `eajwtvisual` |
+| `GET /protected` with a bearer value | 200 | Edge Action accepted; origin reached |
+
+In the portal, open **Front Door manager** to compare `rt-all` and `rt-jwt`,
+then open **Rule sets > rsedgejwt > ruleprotected** to see the `/protected`
+and `/admin` condition and the `eajwtvisual` action.
+
+Evidence: `evidence/public-protected-result.json`.
+
 ## Cleanup
 
 ```powershell

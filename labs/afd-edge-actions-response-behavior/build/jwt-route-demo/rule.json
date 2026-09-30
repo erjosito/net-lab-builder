@@ -1,0 +1,32 @@
+{
+  "properties": {
+    "actions": [
+      {
+        "parameters": {
+          "typeName": "DeliveryRuleEdgeActionParameters",
+          "edgeActionReference": {
+            "id": "/subscriptions/<REDACTED-GUID>/resourceGroups/rg-afd-edge-response-lab/providers/Microsoft.Cdn/EdgeActions/eajwtvisual"
+          },
+          "invocationPoint": "ClientRequest"
+        },
+        "name": "EdgeAction"
+      }
+    ],
+    "conditions": [
+      {
+        "parameters": {
+          "negateCondition": false,
+          "matchValues": [
+            "/protected",
+            "/admin"
+          ],
+          "typeName": "DeliveryRuleUrlPathMatchConditionParameters",
+          "operator": "BeginsWith",
+          "transforms": []
+        },
+        "name": "UrlPath"
+      }
+    ],
+    "order": 2
+  }
+}
