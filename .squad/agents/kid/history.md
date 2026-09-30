@@ -285,3 +285,27 @@ Niobe approved Morpheus's final diagram revision. Applied to blog PR #8:
 - **Alt text corrected**: prompt baseline .49/.239 (sibling lab, no re-run); hosted REST .238/.28/.110, SDK .92/.142/.165, SSE .124 (seven observations); fourth REST attempt NSG-blocked/no src_ip.
 - **Commit SHA**: 840c020. **PR #8** remains OPEN, UNMERGED at https://github.com/erjosito/azure-networking-blog/pull/8.
 - Three independent diagram revision cycles: Oracle (rejected — transposed IPs, overclaimed Toolbox); Trinity (rejected — same IP issue + invocation count error); Morpheus (approved).
+
+---
+
+## 2026-09-30 — sap-rise-scoped-peering-fwaas (draft) + repo hygiene
+
+**Source lab:** `labs/sap-rise-scoped-peering-fwaas`
+**Target repo:** `erjosito/azure-networking-blog`
+**Post folder:** `2026-09-sap-rise-scoped-peering-fwaas/`
+**PRs opened:** #11 (draft — the post) and #10 (folder rename + naming convention note)
+**Word count:** 2573
+**Ship status:** draft (S1 data-plane validation still open; Jose to decide final publish timing)
+
+## Learnings
+
+- **Reframing labs that fail validation into architectural comparisons is a repeatable pattern.** When Jose asks for a post about a lab whose reference scenario isn't passing end-to-end, the right move is to pivot the headline from "look what we proved" to "here are the design options for this problem class, and here is the taxonomy of trade-offs." The gotchas the failing lab surfaced (in this case, ARS `allowBranchToBranchTraffic` and Linux runtime `ip_forward`) then become concrete evidence *within* the comparison — teaching material about how a given design silently breaks — rather than a postmortem headline. The post still ends with an honest "here's what this lab has and hasn't proven yet" section, so nothing is speculative.
+- **Repo folder naming convention (`YYYY-MM-<slug>`) is now documented in the root README of `azure-networking-blog`.** Every existing folder except one already matched; the one exception (`dual-hub-vnra-udr-transit`) has been renamed to `2026-08-dual-hub-vnra-udr-transit` (2026-08 confirmed via `git log --diff-filter=A`). Future posts must follow this.
+- **Separate branches/PRs for post work vs. repo hygiene.** Rename lived on `chore/rename-dual-hub-folder` (PR #10, ready for merge); the draft post lives on `post/sap-rise-scoped-peering-fwaas` (PR #11, draft). Keeps review scope clean.
+- **File paths worth remembering:**
+  - Blog local clone: `C:\Users\jomore\Repos\azure-networking-blog\`
+  - Draft post: `2026-09-sap-rise-scoped-peering-fwaas/`
+  - Source lab validation (in-progress S1): `labs/sap-rise-scoped-peering-fwaas/validation.md`
+- **User preference (Jose):** default to draft PR (not direct-to-main) when the underlying lab is not yet fully validated end-to-end; flag the status clearly so he can decide publish timing.
+- **PERMANENT STYLE RULE: never use em-dashes (—) in blog posts.** Use commas, periods, parentheses, or restructured sentences instead. Applies to titles, headings, and all prose, going forward, in every future post, not just this one.
+- **Terminology correction:** use "subnet peering," not "scoped VNet peering" or "scoped peering," when describing subnet-scoped VNet peering (SAP RISE post, corrected 2026-09-30 after Jose flagged it in PR #12).
