@@ -13,4 +13,3 @@ READ-ONLY CAPTURE VERDICT
 - Inventory null/non-null enumeration failed because the local walker command had a PowerShell expression error. It was preserved and not retried.
 - Azure month-to-date Cost Management returned no rows (billing ingestion lag or no posted cost in the query window). GCP billing is enabled, the e2-small CPE is RUNNING, and the 50-Mbps Partner attachment is ACTIVE. Megaport rack-rate commitment remains EUR 991.80/month; managed Azure/GCP/Megaport resources continue billing.
 - NO: it is not true that no live mutation occurred after f75c1b3. Azure Activity Log records successful VPN gateway, public VPN site, and public VPN connection writes after the commit timestamp, including writes between 18:44:56Z and 19:56:30Z. GCP Admin Activity returned no entries. CPE post-commit logs were unavailable because SSH timed out, and current-state Megaport output is not a mutation-history source.
-

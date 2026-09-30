@@ -766,7 +766,7 @@ Named both paths individually on `git add`.
   arrive already believing the wrong thing; state the correction first, then the durable
   architectural reason (Recovery Services vault recovery points, and SQL PaaS LTR never lands
   in a vault).
-- **Tooling gotcha.** An dit whose old_str ended in a newline and whose 
+- **Tooling gotcha.** An dit whose old_str ended in a newline and whose
 ew_str did not
   silently joined two lines, producing vailable:<https://...>. Caught by a targeted grep
   with -A 3 on the edited region. Always re-read the region after an edit whose boundaries
