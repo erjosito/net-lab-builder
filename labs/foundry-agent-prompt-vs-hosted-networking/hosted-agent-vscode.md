@@ -82,18 +82,19 @@ Your Python `main.py` calls `requests.get("http://echo.tools.lab/api/echo")` dir
 - **Why interesting:** this is the headline network difference the lab tests.  
 - **Complexity:** minimal — just `import requests` and one HTTP call.
 
-### Approach B — Foundry Toolbox with OpenAPI definition (advanced — predicted, not tested in this lab)
+### Approach B — Foundry Toolbox with OpenAPI definition (advanced — documented, not tested in this lab)
 
 You would create a Foundry Toolbox via Python SDK and attach an OpenAPI tool definition pointing at
-`http://echo.tools.lab`. The agent code calls the toolbox endpoint; the platform would route the actual
-HTTP call through the **data proxy**.
+`http://echo.tools.lab`. The agent code calls the toolbox endpoint; Microsoft Learn now explicitly
+documents that the platform routes registered tool server calls through the **data proxy** regardless
+of agent type.
 
 > ⚠️ **Not implemented or tested in this lab.** Approach B was not deployed. The source IP prediction
 > below is based on platform documentation, not empirical evidence from this lab. See OQ1 in
 > [design.md](design.md) for the design uncertainty.
 
-- **Source IP at target VM (predicted):** same data proxy IP range as the prompt agent's tool calls — both would use AgentSubnet `192.168.0.0/24`. Whether the exact IP value differs from the Micro VM NIC IPs is an open question (OQ1).
-- **Why interesting:** would prove the data proxy path is agent-type-independent (i.e., H1 applies to hosted agents using Toolbox, not just prompt agents).
+- **Source IP at target VM (not measured):** expected from the data proxy allocation in AgentSubnet `192.168.0.0/24`. Whether the exact IP value differs from the Micro VM NIC IPs is an open question (OQ1).
+- **Why interesting:** would empirically verify the documented agent-type-independent data proxy path and compare its observed source IP with direct Micro VM egress.
 - **Complexity:** requires SDK toolbox creation and `azure.yaml` modification.
 - **VS Code UI limitation:** the Foundry Toolkit VS Code UI does **not** support adding OpenAPI tools
   to a toolbox (confirmed from docs 2026-08-19). You must use the Python SDK or `azd` CLI.
@@ -396,11 +397,11 @@ agent using a Foundry Toolbox. It is a follow-up to the initial HS2 run.
 adding OpenAPI tools to a toolbox. The capability matrix in the official toolbox docs shows
 `Foundry Toolkit: No` for OpenAPI tool creation. You must use the Python SDK.
 
-### Why this matters (design intent — not yet validated)
+### Why this matters (documented mechanism — source IP comparison not yet validated)
 
 When a hosted agent calls `requests.get(...)` directly (Approach A), the source IP is the
-Micro VM NIC IP. **If** Approach B were implemented, the Toolbox call would route through the
-**data proxy** — the same path as a prompt agent's OpenAPI tool call. This would allow a direct
+Micro VM NIC IP. Approach B routes the Toolbox call through the **data proxy** — the same documented
+path as a prompt agent's OpenAPI tool call. Implementing it would allow a direct
 comparison of `src_ip` at vm-tools-echo between the two paths (Approach A vs B) to empirically
 confirm or refute H1 from within a single lab run. **This comparison was not performed in this lab.**
 OQ1 (whether data proxy and Micro VM NIC IPs are distinguishable by value) remains open.
