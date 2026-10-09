@@ -1,0 +1,12 @@
+{
+  "command": "\"C:\\Program Files\\Microsoft SDKs\\Azure\\CLI2\\wbin\\az.cmd\" network route-table route create -g rg-aks-agic-shared-udr --route-table-name rt-shared -n nva-lower --address-prefix 0.0.0.0/1 --next-hop-type VirtualAppliance --next-hop-ip-address 10.20.1.4 --only-show-errors -o json",
+  "startedAtUtc": "2026-10-09T12:53:15.840622+00:00",
+  "timeoutSeconds": 180,
+  "timedOut": false,
+  "pid": 53448,
+  "endedAtUtc": "2026-10-09T12:53:24.799590+00:00",
+  "stdout": "{\r\n  \"addressPrefix\": \"0.0.0.0/1\",\r\n  \"etag\": \"W/\\\"<redacted-id>\\\"\",\r\n  \"hasBgpOverride\": false,\r\n  \"id\": \"/subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/routeTables/rt-shared/routes/nva-lower\",\r\n  \"name\": \"nva-lower\",\r\n  \"nextHopIpAddress\": \"10.20.1.4\",\r\n  \"nextHopType\": \"VirtualAppliance\",\r\n  \"provisioningState\": \"Succeeded\",\r\n  \"resourceGroup\": \"rg-aks-agic-shared-udr\",\r\n  \"type\": \"Microsoft.Network/routeTables/routes\"\r\n}\r\n",
+  "stderr": "",
+  "exitCode": 0,
+  "childExited": true
+}

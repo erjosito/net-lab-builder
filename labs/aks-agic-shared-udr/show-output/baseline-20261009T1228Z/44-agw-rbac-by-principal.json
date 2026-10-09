@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "44-agw-rbac-by-principal",
+  "sourceTool": "az",
+  "startedAtUtc": "2026-10-09T12:38:14.9526677Z",
+  "completedAtUtc": "2026-10-09T12:38:21.0763243Z",
+  "command": "az role assignment list --scope /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1 --query [].{role:roleDefinitionName,principalId:principalId,scope:scope} -o json",
+  "timeoutSeconds": 600,
+  "durationSeconds": 6.12,
+  "timedOut": false,
+  "exitCode": 0,
+  "stdout": "[\r\n  {\r\n    \"principalId\": \"<GUID>\",\r\n    \"role\": \"Contributor\",\r\n    \"scope\": \"/subscriptions/<SUBSCRIPTION_ID>/resourcegroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1\"\r\n  }\r\n]\r\n",
+  "stderr": ""
+}

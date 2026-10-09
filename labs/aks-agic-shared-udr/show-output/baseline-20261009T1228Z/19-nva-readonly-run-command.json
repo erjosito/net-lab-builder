@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "19-nva-readonly-run-command",
+  "sourceTool": "az",
+  "startedAtUtc": "2026-10-09T12:33:47.2813588Z",
+  "completedAtUtc": "2026-10-09T12:34:24.7317104Z",
+  "command": "az vm run-command invoke -g rg-aks-agic-shared-udr -n nva1 --command-id RunShellScript --scripts \"printf 'ip_forward='; sysctl -n net.ipv4.ip_forward; printf 'cloud_init='; cloud-init status --long; printf 'NAT_POSTROUTING\\n'; iptables -t nat -S POSTROUTING; printf 'FORWARD_CHAIN\\n'; iptables -S FORWARD; printf 'IP_ROUTE\\n'; ip route; printf 'PRIVATE_FRONTEND_HTTP\\n'; curl --silent --show-error --max-time 8 --output /dev/null --write-out 'http=%{http_code}\\n' http://10.21.2.250/\" -o json",
+  "timeoutSeconds": 600,
+  "durationSeconds": 37.45,
+  "timedOut": false,
+  "exitCode": 0,
+  "stdout": "{\r\n  \"value\": [\r\n    {\r\n      \"code\": \"ProvisioningState/succeeded\",\r\n      \"displayStatus\": \"Provisioning succeeded\",\r\n      \"level\": \"Info\",\r\n      \"message\": \"Enable succeeded: \\n[stdout]\\nip_forward=1\\ncloud_init=status: done\\nextended_status: done\\nboot_status_code: enabled-by-generator\\nlast_update: Thu, 01 Jan 1970 00:00:25 +0000\\ndetail: DataSourceAzure [seed=/dev/sr0]\\nerrors: []\\nrecoverable_errors: {}\\nNAT_POSTROUTING\\n-P POSTROUTING ACCEPT\\n-A POSTROUTING -s 10.21.0.0/16 -o eth0 -j MASQUERADE\\nFORWARD_CHAIN\\n-P FORWARD ACCEPT\\nIP_ROUTE\\ndefault via 10.20.1.1 dev eth0 proto dhcp src 10.20.1.4 metric 100 \\n10.20.1.0/24 dev eth0 proto kernel scope link src 10.20.1.4 metric 100 \\n10.20.1.1 dev eth0 proto dhcp scope link src 10.20.1.4 metric 100 \\n168.63.129.16 via 10.20.1.1 dev eth0 proto dhcp src 10.20.1.4 metric 100 \\n169.254.169.254 via 10.20.1.1 dev eth0 proto dhcp src 10.20.1.4 metric 100 \\nPRIVATE_FRONTEND_HTTP\\nhttp=200\\n\\n[stderr]\\n\"\r\n    }\r\n  ]\r\n}\r\n",
+  "stderr": ""
+}

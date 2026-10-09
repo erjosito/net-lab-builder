@@ -1,0 +1,60 @@
+[
+  {
+    "addressPrefix": "0.0.0.0/0",
+    "etag": "W/\"<REDACTED-GUID>\"",
+    "hasBgpOverride": false,
+    "id": "/subscriptions/<REDACTED-GUID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/routeTables/rt-shared/routes/default",
+    "name": "default",
+    "nextHopType": "Internet",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-aks-agic-shared-udr",
+    "type": "Microsoft.Network/routeTables/routes"
+  },
+  {
+    "addressPrefix": "10.244.0.0/24",
+    "etag": "W/\"<REDACTED-GUID>\"",
+    "hasBgpOverride": false,
+    "id": "/subscriptions/<REDACTED-GUID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/routeTables/rt-shared/routes/aks-system-33773689-vmss000000____102440024",
+    "name": "aks-system-33773689-vmss000000____102440024",
+    "nextHopIpAddress": "10.21.1.4",
+    "nextHopType": "VirtualAppliance",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-aks-agic-shared-udr",
+    "type": "Microsoft.Network/routeTables/routes"
+  },
+  {
+    "addressPrefix": "0.0.0.0/1",
+    "etag": "W/\"<REDACTED-GUID>\"",
+    "hasBgpOverride": false,
+    "id": "/subscriptions/<REDACTED-GUID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/routeTables/rt-shared/routes/nva-lower",
+    "name": "nva-lower",
+    "nextHopIpAddress": "10.20.1.4",
+    "nextHopType": "VirtualAppliance",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-aks-agic-shared-udr",
+    "type": "Microsoft.Network/routeTables/routes"
+  },
+  {
+    "addressPrefix": "128.0.0.0/1",
+    "etag": "W/\"<REDACTED-GUID>\"",
+    "hasBgpOverride": false,
+    "id": "/subscriptions/<REDACTED-GUID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/routeTables/rt-shared/routes/nva-upper",
+    "name": "nva-upper",
+    "nextHopIpAddress": "10.20.1.4",
+    "nextHopType": "VirtualAppliance",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-aks-agic-shared-udr",
+    "type": "Microsoft.Network/routeTables/routes"
+  },
+  {
+    "addressPrefix": "GatewayManager",
+    "etag": "W/\"<REDACTED-GUID>\"",
+    "hasBgpOverride": false,
+    "id": "/subscriptions/<REDACTED-GUID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/routeTables/rt-shared/routes/gm",
+    "name": "gm",
+    "nextHopType": "Internet",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-aks-agic-shared-udr",
+    "type": "Microsoft.Network/routeTables/routes"
+  }
+]

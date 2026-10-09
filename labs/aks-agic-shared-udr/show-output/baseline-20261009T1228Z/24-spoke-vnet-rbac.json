@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "24-spoke-vnet-rbac",
+  "sourceTool": "az",
+  "startedAtUtc": "2026-10-09T12:35:56.3450951Z",
+  "completedAtUtc": "2026-10-09T12:36:01.8633812Z",
+  "command": "az role assignment list --scope /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/virtualNetworks/vnet-spoke --query [].{role:roleDefinitionName,principal:principalName,principalType:principalType,scope:scope} -o json",
+  "timeoutSeconds": 600,
+  "durationSeconds": 5.52,
+  "timedOut": false,
+  "exitCode": 0,
+  "stdout": "[\r\n  {\r\n    \"principal\": \"<GUID>\",\r\n    \"principalType\": \"ServicePrincipal\",\r\n    \"role\": \"Network Contributor\",\r\n    \"scope\": \"/subscriptions/<SUBSCRIPTION_ID>/resourcegroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/virtualNetworks/vnet-spoke\"\r\n  }\r\n]\r\n",
+  "stderr": ""
+}

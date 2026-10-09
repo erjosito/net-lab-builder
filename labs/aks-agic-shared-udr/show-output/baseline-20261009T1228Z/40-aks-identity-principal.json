@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "40-aks-identity-principal",
+  "sourceTool": "az",
+  "startedAtUtc": "2026-10-09T12:37:53.2932820Z",
+  "completedAtUtc": "2026-10-09T12:37:57.3530159Z",
+  "command": "az identity show -g rg-aks-agic-shared-udr -n id-aks --query principalId -o tsv",
+  "timeoutSeconds": 600,
+  "durationSeconds": 4.06,
+  "timedOut": false,
+  "exitCode": 0,
+  "stdout": "<GUID>\r\n",
+  "stderr": ""
+}

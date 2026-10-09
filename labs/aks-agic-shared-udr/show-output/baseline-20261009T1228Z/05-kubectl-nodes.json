@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "05-kubectl-nodes",
+  "sourceTool": "kubectl",
+  "startedAtUtc": "2026-10-09T12:32:59.5623948Z",
+  "completedAtUtc": "2026-10-09T12:33:00.7817419Z",
+  "command": "kubectl get nodes -o wide --request-timeout=60s",
+  "timeoutSeconds": 120,
+  "durationSeconds": 1.22,
+  "timedOut": false,
+  "exitCode": 0,
+  "stdout": "NAME                             STATUS   ROLES    AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION     CONTAINER-RUNTIME\naks-system-33773689-vmss000000   Ready    <none>   24m   v1.35.8   10.21.1.4     <none>        Ubuntu 24.04.5 LTS   6.8.0-1067-azure   containerd://2.3.3-2\n",
+  "stderr": ""
+}

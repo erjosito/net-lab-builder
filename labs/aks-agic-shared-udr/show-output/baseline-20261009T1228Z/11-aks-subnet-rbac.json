@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "11-aks-subnet-rbac",
+  "sourceTool": "az",
+  "startedAtUtc": "2026-10-09T12:33:18.7811680Z",
+  "completedAtUtc": "2026-10-09T12:33:18.8354445Z",
+  "command": "az role assignment list --scope /subscriptions/<GUID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/virtualNetworks/vnet-spoke/subnets/snet-aks --query [].{role:roleDefinitionName,principal:principalName,principalType:principalType,scope:scope} -o json",
+  "timeoutSeconds": 600,
+  "durationSeconds": 0.05,
+  "timedOut": false,
+  "exitCode": 1,
+  "stdout": "",
+  "stderr": "The system cannot find the file specified.\r\n"
+}

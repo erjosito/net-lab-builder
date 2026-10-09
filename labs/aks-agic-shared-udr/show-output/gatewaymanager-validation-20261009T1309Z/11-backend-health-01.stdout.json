@@ -1,0 +1,38 @@
+{
+  "backendAddressPools": [
+    {
+      "backendAddressPool": {
+        "id": "/subscriptions/<REDACTED-GUID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1/backendAddressPools/pool-default-web-80-bp-80",
+        "resourceGroup": "rg-aks-agic-shared-udr"
+      },
+      "backendHttpSettingsCollection": [
+        {
+          "backendHttpSettings": {
+            "id": "/subscriptions/<REDACTED-GUID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1/backendHttpSettingsCollection/bp-default-web-80-80-web-private",
+            "resourceGroup": "rg-aks-agic-shared-udr"
+          },
+          "servers": [
+            {
+              "address": "10.244.0.14",
+              "health": "Healthy",
+              "healthProbeLog": "Success. Received 200 status code"
+            }
+          ]
+        },
+        {
+          "backendHttpSettings": {
+            "id": "/subscriptions/<REDACTED-GUID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1/backendHttpSettingsCollection/bp-default-web-80-80-web-public",
+            "resourceGroup": "rg-aks-agic-shared-udr"
+          },
+          "servers": [
+            {
+              "address": "10.244.0.14",
+              "health": "Healthy",
+              "healthProbeLog": "Success. Received 200 status code"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

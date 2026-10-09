@@ -1,0 +1,21 @@
+#cloud-config
+write_files:
+  - path: /etc/sysctl.d/99-nva.conf
+    content: |
+      net.ipv4.ip_forward=1
+  - path: /etc/systemd/system/nva-snat.service
+    content: |
+      [Unit]
+      Description=SNAT spoke traffic to Internet
+      After=network-online.target
+      Wants=network-online.target
+      [Service]
+      Type=oneshot
+      RemainAfterExit=yes
+      ExecStart=/usr/sbin/iptables -t nat -A POSTROUTING -s 10.21.0.0/16 -o eth0 -j MASQUERADE
+      [Install]
+      WantedBy=multi-user.target
+runcmd:
+  - sysctl --system
+  - systemctl daemon-reload
+  - systemctl enable --now nva-snat.service

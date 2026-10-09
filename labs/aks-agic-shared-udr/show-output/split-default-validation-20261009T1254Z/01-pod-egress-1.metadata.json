@@ -1,0 +1,13 @@
+{
+  "command": "kubectl exec -n default web-6b6897c5b7-xvdrv -- python -c <urllib source-IP check for https://api.ipify.org>",
+  "pod": "web-6b6897c5b7-xvdrv",
+  "podIp": "10.244.0.14",
+  "startedAtUtc": "2026-10-09T12:56:49.1436744Z",
+  "completedAtUtc": "2026-10-09T12:56:51.5504401Z",
+  "timeoutSeconds": 25,
+  "timedOut": false,
+  "exitCode": 1,
+  "stdoutFile": "01-pod-egress-1.stdout.txt",
+  "stderrFile": "01-pod-egress-1.stderr.txt",
+  "sanitizer": "No credentials requested or emitted; external source-IP response only"
+}

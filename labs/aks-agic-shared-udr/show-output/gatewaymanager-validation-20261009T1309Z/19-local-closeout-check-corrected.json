@@ -1,0 +1,28 @@
+{
+  "operation": "Compare the admitted and current UDR routes; inspect for lingering validation CLI processes",
+  "startedAtUtc": "2026-10-09T13:16:19.0109185Z",
+  "completedAtUtc": "2026-10-09T13:16:20.3635877Z",
+  "timeoutSeconds": 30,
+  "timedOut": false,
+  "exitCode": 0,
+  "routeComparison": {
+    "passed": true,
+    "before": [
+      "aks-system-33773689-vmss000000____102440024|10.244.0.0/24|VirtualAppliance|10.21.1.4",
+      "default|0.0.0.0/0|Internet|",
+      "gm|GatewayManager|Internet|",
+      "nva-lower|0.0.0.0/1|VirtualAppliance|10.20.1.4",
+      "nva-upper|128.0.0.0/1|VirtualAppliance|10.20.1.4"
+    ],
+    "after": [
+      "aks-system-33773689-vmss000000____102440024|10.244.0.0/24|VirtualAppliance|10.21.1.4",
+      "default|0.0.0.0/0|Internet|",
+      "gm|GatewayManager|Internet|",
+      "nva-lower|0.0.0.0/1|VirtualAppliance|10.20.1.4",
+      "nva-upper|128.0.0.0/1|VirtualAppliance|10.20.1.4"
+    ],
+    "diff": []
+  },
+  "matchingLiveProcesses": [],
+  "noMatchingLiveProcesses": true
+}

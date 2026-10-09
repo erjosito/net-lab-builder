@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "01-account-context",
+  "sourceTool": "az",
+  "startedAtUtc": "2026-10-09T12:32:44.2262154Z",
+  "completedAtUtc": "2026-10-09T12:32:45.4013768Z",
+  "command": "az account show --query {id:id,tenantId:tenantId} -o json",
+  "timeoutSeconds": 600,
+  "durationSeconds": 1.16,
+  "timedOut": false,
+  "exitCode": 0,
+  "stdout": "{\r\n  \"id\": \"<GUID>\",\r\n  \"tenantId\": \"<GUID>\"\r\n}\r\n",
+  "stderr": ""
+}

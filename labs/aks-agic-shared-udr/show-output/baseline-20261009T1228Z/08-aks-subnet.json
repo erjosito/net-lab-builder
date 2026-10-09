@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "08-aks-subnet",
+  "sourceTool": "az",
+  "startedAtUtc": "2026-10-09T12:33:05.4336461Z",
+  "completedAtUtc": "2026-10-09T12:33:10.5500388Z",
+  "command": "az network vnet subnet show -g rg-aks-agic-shared-udr --vnet-name vnet-spoke -n snet-aks --query {name:name,id:id,prefix:addressPrefix,routeTable:routeTable.id,state:provisioningState} -o json",
+  "timeoutSeconds": 600,
+  "durationSeconds": 5.12,
+  "timedOut": false,
+  "exitCode": 0,
+  "stdout": "{\r\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/virtualNetworks/vnet-spoke/subnets/snet-aks\",\r\n  \"name\": \"snet-aks\",\r\n  \"prefix\": \"10.21.1.0/24\",\r\n  \"routeTable\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/routeTables/rt-shared\",\r\n  \"state\": \"Succeeded\"\r\n}\r\n",
+  "stderr": ""
+}

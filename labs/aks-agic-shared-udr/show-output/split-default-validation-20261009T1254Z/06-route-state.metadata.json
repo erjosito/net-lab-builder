@@ -1,0 +1,11 @@
+{
+  "command": "az network route-table route list --resource-group rg-aks-agic-shared-udr --route-table-name rt-shared --query [name,prefix,nextHopType,nextHopIpAddress] --output json",
+  "startedAtUtc": "2026-10-09T13:04:48.4458488Z",
+  "completedAtUtc": "2026-10-09T13:04:56.4981305Z",
+  "timeoutSeconds": 180,
+  "timedOut": false,
+  "exitCode": 0,
+  "stdoutFile": "06-route-state.stdout.json",
+  "stderrFile": "06-route-state.stderr.txt",
+  "sanitizer": "Query limits output to route name, prefix, and next-hop fields; no resource IDs or credentials"
+}

@@ -1,0 +1,33 @@
+{
+  "startedAtUtc": "2026-10-09T12:43:21.953810+00:00",
+  "verdict": "ADMISSION_REJECT",
+  "mutationCommandCompletedAtUtc": "2026-10-09T12:43:34.118207+00:00",
+  "podRoutesAndAssociationsUnchanged": true,
+  "defaultRoute": {
+    "addressPrefix": "0.0.0.0/0",
+    "etag": "W/\"<redacted-id>\"",
+    "hasBgpOverride": false,
+    "id": "/subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/routeTables/rt-shared/routes/default",
+    "name": "default",
+    "nextHopType": "Internet",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-aks-agic-shared-udr",
+    "type": "Microsoft.Network/routeTables/routes"
+  },
+  "associatedSubnets": [
+    {
+      "id": "/subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/virtualNetworks/vnet-spoke/subnets/snet-aks",
+      "resourceGroup": "rg-aks-agic-shared-udr"
+    },
+    {
+      "id": "/subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/virtualNetworks/vnet-spoke/subnets/snet-appgw",
+      "resourceGroup": "rg-aks-agic-shared-udr"
+    }
+  ],
+  "restoreState": "Baseline unchanged; no rollback",
+  "admissionError": "ERROR: (ApplicationGatewaySubnetUserDefinedRouteNotAllowed) Route Table /subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/routeTables/rt-shared is associated to subnet /subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/virtualNetworks/vnet-spoke/subnets/snet-appgw, which contains V2 SKU Application Gateway /subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1. Route /subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/routeTables/rt-shared/routes/default in the route table has AddressPrefix '0.0.0.0/0'. For routes associated to subnet containing Application Gateway V2, please ensure '0.0.0.0/0' uses NextHopType as 'Internet'.\nCode: ApplicationGatewaySubnetUserDefinedRouteNotAllowed\nMessage: Route Table /subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/routeTables/rt-shared is associated to subnet /subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/virtualNetworks/vnet-spoke/subnets/snet-appgw, which contains V2 SKU Application Gateway /subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1. Route /subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/routeTables/rt-shared/routes/default in the route table has AddressPrefix '0.0.0.0/0'. For routes associated to subnet containing Application Gateway V2, please ensure '0.0.0.0/0' uses NextHopType as 'Internet'.\n",
+  "endedAtUtc": "2026-10-09T12:43:37.880106+00:00",
+  "mutationCount": 0,
+  "mutationAttempts": 1,
+  "pendingChildren": 0
+}

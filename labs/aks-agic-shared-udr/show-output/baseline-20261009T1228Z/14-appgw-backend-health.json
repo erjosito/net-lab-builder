@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "14-appgw-backend-health",
+  "sourceTool": "az",
+  "startedAtUtc": "2026-10-09T12:33:22.7134905Z",
+  "completedAtUtc": "2026-10-09T12:33:38.4709167Z",
+  "command": "az network application-gateway show-backend-health -g rg-aks-agic-shared-udr -n agw1 -o json",
+  "timeoutSeconds": 600,
+  "durationSeconds": 15.76,
+  "timedOut": false,
+  "exitCode": 0,
+  "stdout": "{\r\n  \"backendAddressPools\": [\r\n    {\r\n      \"backendAddressPool\": {\r\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1/backendAddressPools/pool-default-web-80-bp-80\",\r\n        \"resourceGroup\": \"rg-aks-agic-shared-udr\"\r\n      },\r\n      \"backendHttpSettingsCollection\": [\r\n        {\r\n          \"backendHttpSettings\": {\r\n            \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1/backendHttpSettingsCollection/bp-default-web-80-80-web-private\",\r\n            \"resourceGroup\": \"rg-aks-agic-shared-udr\"\r\n          },\r\n          \"servers\": [\r\n            {\r\n              \"address\": \"10.244.0.14\",\r\n              \"health\": \"Healthy\",\r\n              \"healthProbeLog\": \"Success. Received 200 status code\"\r\n            }\r\n          ]\r\n        },\r\n        {\r\n          \"backendHttpSettings\": {\r\n            \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1/backendHttpSettingsCollection/bp-default-web-80-80-web-public\",\r\n            \"resourceGroup\": \"rg-aks-agic-shared-udr\"\r\n          },\r\n          \"servers\": [\r\n            {\r\n              \"address\": \"10.244.0.14\",\r\n              \"health\": \"Healthy\",\r\n              \"healthProbeLog\": \"Success. Received 200 status code\"\r\n            }\r\n          ]\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+  "stderr": ""
+}

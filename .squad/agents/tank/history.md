@@ -1375,3 +1375,7 @@ All three files pass py_compile; 10/10 unit tests pass.
 - The partial workload fault uses a dedicated nftables table and matches only ICMP echo requests and TCP/8080 between the Azure workload and active experiment targets; control-plane traffic remains untouched. Syntax was validated on the live CPE.
 - Updated evidence config hashes to the deployed `vwan-lab-network` and `vwan-lab-ipsec` units and installed current CPE controls under `/opt/vwan-lab`.
 - Opened GCP TCP/8080 in place with zero destructive actions. Harness and timed-probe dry runs pass against the populated inventory.
+
+## 2026-10-09 aks-agic-shared-udr baseline
+- Deployed baseline in rg-aks-agic-shared-udr (swedencentral) via labs/aks-agic-shared-udr/deploy (deploy.ps1 + infra/*.bicep). 5 mutations: group, base ARM, aks ARM, 2x kubectl apply. AppGW/AGIC backend Healthy, public 200, pod routes in rt-shared, default->Internet. Feature NotRegistered throughout. Lessons: az '@file' must follow --parameters; nginx azurelinux image 404s on / (use aks-helloworld:v1); AGIC AppGW update takes ~8-10 min; PS Start-Job dies when tool shell exits. No forced tunnel done; cleanup not run.
+- Treatment results (same lab): literal 0/0->NVA rejected (ApplicationGatewaySubnetUserDefinedRouteNotAllowed); split 0/1+128/1 accepted, backend health Unknown >10 min; GatewayManager->Internet added, Healthy at 13:13:31 UTC (observed, unsupported). Treatment retained; README published.

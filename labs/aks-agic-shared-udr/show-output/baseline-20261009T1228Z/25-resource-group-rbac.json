@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "25-resource-group-rbac",
+  "sourceTool": "az",
+  "startedAtUtc": "2026-10-09T12:36:01.8676271Z",
+  "completedAtUtc": "2026-10-09T12:36:06.9871510Z",
+  "command": "az role assignment list --scope /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-aks-agic-shared-udr --query [].{role:roleDefinitionName,principal:principalName,principalType:principalType,scope:scope} -o json",
+  "timeoutSeconds": 600,
+  "durationSeconds": 5.12,
+  "timedOut": false,
+  "exitCode": 0,
+  "stdout": "[\r\n  {\r\n    \"principal\": \"<GUID>\",\r\n    \"principalType\": \"ServicePrincipal\",\r\n    \"role\": \"Reader\",\r\n    \"scope\": \"/subscriptions/<SUBSCRIPTION_ID>/resourcegroups/rg-aks-agic-shared-udr\"\r\n  }\r\n]\r\n",
+  "stderr": ""
+}

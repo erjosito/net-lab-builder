@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "18-metric-unhealthyhostcount",
+  "sourceTool": "az",
+  "startedAtUtc": "2026-10-09T12:33:47.0980042Z",
+  "completedAtUtc": "2026-10-09T12:33:47.1586313Z",
+  "command": "az monitor metrics list --resource /subscriptions/<GUID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1 --metric UnhealthyHostCount --start-time 2026-10-09T12:18:47Z --end-time 2026-10-09T12:33:47Z --interval PT1M --aggregation Average -o json",
+  "timeoutSeconds": 600,
+  "durationSeconds": 0.06,
+  "timedOut": false,
+  "exitCode": 1,
+  "stdout": "",
+  "stderr": "The system cannot find the file specified.\r\n"
+}

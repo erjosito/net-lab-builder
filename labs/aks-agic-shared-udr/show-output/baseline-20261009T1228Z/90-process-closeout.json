@@ -1,0 +1,11 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "command": "Get-CimInstance Win32_Process | Where-Object { ExecutablePath -like *Microsoft SDKs\\Azure\\CLI2\\* or Name -eq kubectl.exe }",
+  "startedAtUtc": "2026-10-09T12:39:43.1015545Z",
+  "completedAtUtc": "2026-10-09T12:39:43.7929619Z",
+  "scope": "Process closeout only; no Azure API call",
+  "matches": [],
+  "result": "No Azure CLI or kubectl processes remain",
+  "count": 0
+}

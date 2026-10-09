@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "17-appgw-metric-definitions",
+  "sourceTool": "az",
+  "startedAtUtc": "2026-10-09T12:33:46.9728733Z",
+  "completedAtUtc": "2026-10-09T12:33:47.0298535Z",
+  "command": "az monitor metrics list-definitions --resource /subscriptions/<GUID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1 --query [].{name:name.value,unit:unit,primaryAggregation:primaryAggregationType} -o json",
+  "timeoutSeconds": 600,
+  "durationSeconds": 0.06,
+  "timedOut": false,
+  "exitCode": 1,
+  "stdout": "",
+  "stderr": "The system cannot find the file specified.\r\n"
+}

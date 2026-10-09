@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "13-appgw-status",
+  "sourceTool": "az",
+  "startedAtUtc": "2026-10-09T12:33:18.9030190Z",
+  "completedAtUtc": "2026-10-09T12:33:22.7086703Z",
+  "command": "az network application-gateway show -g rg-aks-agic-shared-udr -n agw1 --query {name:name,state:provisioningState,operational:operationalState,sku:sku.name,autoscale:autoscaleConfiguration,frontends:frontendIPConfigurations[].{name:name,privateIp:privateIPAddress,publicIp:publicIPAddress.id}} -o json",
+  "timeoutSeconds": 600,
+  "durationSeconds": 3.81,
+  "timedOut": false,
+  "exitCode": 0,
+  "stdout": "{\r\n  \"autoscale\": {\r\n    \"maxCapacity\": 2,\r\n    \"minCapacity\": 1\r\n  },\r\n  \"frontends\": [\r\n    {\r\n      \"name\": \"fe-public\",\r\n      \"privateIp\": null,\r\n      \"publicIp\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/publicIPAddresses/pip-agw1\"\r\n    },\r\n    {\r\n      \"name\": \"fe-private\",\r\n      \"privateIp\": \"10.21.2.250\",\r\n      \"publicIp\": null\r\n    }\r\n  ],\r\n  \"name\": \"agw1\",\r\n  \"operational\": \"Running\",\r\n  \"sku\": \"Standard_v2\",\r\n  \"state\": \"Succeeded\"\r\n}\r\n",
+  "stderr": ""
+}

@@ -1,0 +1,38 @@
+{
+  "backendAddressPools": [
+    {
+      "backendAddressPool": {
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1/backendAddressPools/pool-default-web-80-bp-80",
+        "resourceGroup": "rg-aks-agic-shared-udr"
+      },
+      "backendHttpSettingsCollection": [
+        {
+          "backendHttpSettings": {
+            "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1/backendHttpSettingsCollection/bp-default-web-80-80-web-private",
+            "resourceGroup": "rg-aks-agic-shared-udr"
+          },
+          "servers": [
+            {
+              "address": "10.244.0.14",
+              "health": "Unknown",
+              "healthProbeLog": "Unable to retrieve health status data. Check presence of NSG/UDR blocking access to ports 65503-65534 from Internet to Application Gateway. To learn more visit - https://aka.ms/UnknownBackendHealth."
+            }
+          ]
+        },
+        {
+          "backendHttpSettings": {
+            "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1/backendHttpSettingsCollection/bp-default-web-80-80-web-public",
+            "resourceGroup": "rg-aks-agic-shared-udr"
+          },
+          "servers": [
+            {
+              "address": "10.244.0.14",
+              "health": "Unknown",
+              "healthProbeLog": "Unable to retrieve health status data. Check presence of NSG/UDR blocking access to ports 65503-65534 from Internet to Application Gateway. To learn more visit - https://aka.ms/UnknownBackendHealth."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

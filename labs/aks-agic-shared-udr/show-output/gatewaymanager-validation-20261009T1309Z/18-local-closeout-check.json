@@ -1,0 +1,21 @@
+{
+  "operation": "Compare admitted treatment route table with current route list; inspect for lingering validation CLI processes",
+  "startedAtUtc": "2026-10-09T13:15:46.0042456Z",
+  "completedAtUtc": "2026-10-09T13:15:47.9411775Z",
+  "timeoutSeconds": 30,
+  "timedOut": false,
+  "exitCode": 0,
+  "routeComparison": {
+    "passed": false,
+    "before": "|||",
+    "after": [
+      "aks-system-33773689-vmss000000____102440024|10.244.0.0/24|VirtualAppliance|10.21.1.4",
+      "default|0.0.0.0/0|Internet|",
+      "gm|GatewayManager|Internet|",
+      "nva-lower|0.0.0.0/1|VirtualAppliance|10.20.1.4",
+      "nva-upper|128.0.0.0/1|VirtualAppliance|10.20.1.4"
+    ]
+  },
+  "matchingLiveProcesses": [],
+  "noMatchingLiveProcesses": true
+}

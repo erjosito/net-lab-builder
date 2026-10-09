@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "15-nva-vm-state",
+  "sourceTool": "az",
+  "startedAtUtc": "2026-10-09T12:33:38.4741496Z",
+  "completedAtUtc": "2026-10-09T12:33:42.1039587Z",
+  "command": "az vm show -g rg-aks-agic-shared-udr -n nva1 --query {name:name,state:provisioningState,vmSize:hardwareProfile.vmSize,network:networkProfile.networkInterfaces[].id} -o json",
+  "timeoutSeconds": 600,
+  "durationSeconds": 3.63,
+  "timedOut": false,
+  "exitCode": 0,
+  "stdout": "{\r\n  \"name\": \"nva1\",\r\n  \"network\": [\r\n    \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/networkInterfaces/nic-nva1\"\r\n  ],\r\n  \"state\": \"Succeeded\",\r\n  \"vmSize\": \"Standard_B2ts_v2\"\r\n}\r\n",
+  "stderr": ""
+}

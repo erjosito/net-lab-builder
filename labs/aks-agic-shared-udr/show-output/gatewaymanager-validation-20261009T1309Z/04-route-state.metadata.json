@@ -1,0 +1,11 @@
+{
+  "command": "az network route-table route list --resource-group rg-aks-agic-shared-udr --route-table-name rt-shared --query [name,prefix,nextHopType,nextHopIpAddress] --output json",
+  "startedAtUtc": "2026-10-09T13:11:42.8382363Z",
+  "completedAtUtc": "2026-10-09T13:11:55.6742944Z",
+  "timeoutSeconds": 180,
+  "timedOut": false,
+  "exitCode": 2,
+  "stdoutFile": "04-route-state.stdout.json",
+  "stderrFile": "04-route-state.stderr.txt",
+  "sanitizer": "Subscription/resource GUIDs redacted; remaining command response preserved"
+}

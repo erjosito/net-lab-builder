@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "02-feature-registration",
+  "sourceTool": "az",
+  "startedAtUtc": "2026-10-09T12:32:45.4365531Z",
+  "completedAtUtc": "2026-10-09T12:32:48.6451137Z",
+  "command": "az feature show --namespace Microsoft.Network --name EnableApplicationGatewayNetworkIsolation --query properties.state -o tsv",
+  "timeoutSeconds": 600,
+  "durationSeconds": 3.21,
+  "timedOut": false,
+  "exitCode": 0,
+  "stdout": "NotRegistered\r\n",
+  "stderr": ""
+}

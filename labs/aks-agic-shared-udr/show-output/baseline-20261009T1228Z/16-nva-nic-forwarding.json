@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "16-nva-nic-forwarding",
+  "sourceTool": "az",
+  "startedAtUtc": "2026-10-09T12:33:42.1080796Z",
+  "completedAtUtc": "2026-10-09T12:33:46.9669278Z",
+  "command": "az network nic show -g rg-aks-agic-shared-udr -n nic-nva1 --query {name:name,ipForwarding:enableIPForwarding,configs:ipConfigurations[].{name:name,privateIp:privateIPAddress,subnet:subnet.id}} -o json",
+  "timeoutSeconds": 600,
+  "durationSeconds": 4.86,
+  "timedOut": false,
+  "exitCode": 0,
+  "stdout": "{\r\n  \"configs\": [\r\n    {\r\n      \"name\": \"ipconfig1\",\r\n      \"privateIp\": \"10.20.1.4\",\r\n      \"subnet\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-nva\"\r\n    }\r\n  ],\r\n  \"ipForwarding\": true,\r\n  \"name\": \"nic-nva1\"\r\n}\r\n",
+  "stderr": ""
+}

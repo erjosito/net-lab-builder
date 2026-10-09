@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "10-shared-route-table",
+  "sourceTool": "az",
+  "startedAtUtc": "2026-10-09T12:33:14.2575224Z",
+  "completedAtUtc": "2026-10-09T12:33:18.7569897Z",
+  "command": "az network route-table show -g rg-aks-agic-shared-udr -n rt-shared --query {name:name,id:id,state:provisioningState,disableBgpRoutePropagation:disableBgpRoutePropagation,routes:routes[].{name:name,prefix:addressPrefix,nextHopType:nextHopType,nextHopIp:nextHopIpAddress,state:provisioningState}} -o json",
+  "timeoutSeconds": 600,
+  "durationSeconds": 4.5,
+  "timedOut": false,
+  "exitCode": 0,
+  "stdout": "{\r\n  \"disableBgpRoutePropagation\": true,\r\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/routeTables/rt-shared\",\r\n  \"name\": \"rt-shared\",\r\n  \"routes\": [\r\n    {\r\n      \"name\": \"default\",\r\n      \"nextHopIp\": null,\r\n      \"nextHopType\": \"Internet\",\r\n      \"prefix\": \"0.0.0.0/0\",\r\n      \"state\": \"Succeeded\"\r\n    },\r\n    {\r\n      \"name\": \"aks-system-33773689-vmss000000____102440024\",\r\n      \"nextHopIp\": \"10.21.1.4\",\r\n      \"nextHopType\": \"VirtualAppliance\",\r\n      \"prefix\": \"10.244.0.0/24\",\r\n      \"state\": \"Succeeded\"\r\n    }\r\n  ],\r\n  \"state\": \"Succeeded\"\r\n}\r\n",
+  "stderr": ""
+}

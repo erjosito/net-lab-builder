@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "04-aks-nodepool-state",
+  "sourceTool": "az",
+  "startedAtUtc": "2026-10-09T12:32:53.8421100Z",
+  "completedAtUtc": "2026-10-09T12:32:59.5551880Z",
+  "command": "az aks nodepool show -g rg-aks-agic-shared-udr --cluster-name aks1 -n system --query {name:name,state:provisioningState,power:powerState.code,count:count,size:vmSize,mode:mode,version:orchestratorVersion,subnet:vnetSubnetID} -o json",
+  "timeoutSeconds": 600,
+  "durationSeconds": 5.71,
+  "timedOut": false,
+  "exitCode": 0,
+  "stdout": "{\r\n  \"count\": 1,\r\n  \"mode\": \"System\",\r\n  \"name\": \"system\",\r\n  \"power\": \"Running\",\r\n  \"size\": \"Standard_D2as_v5\",\r\n  \"state\": \"Succeeded\",\r\n  \"subnet\": null,\r\n  \"version\": \"1.35\"\r\n}\r\n",
+  "stderr": ""
+}

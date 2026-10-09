@@ -1,0 +1,11 @@
+{
+  "command": "\"C:\\Program Files\\Microsoft SDKs\\Azure\\CLI2\\wbin\\az.CMD\" network route-table route update -g rg-aks-agic-shared-udr --route-table-name rt-shared -n default --next-hop-type VirtualAppliance --next-hop-ip-address 10.20.1.4 --only-show-errors -o json",
+  "startedAtUtc": "2026-10-09T12:43:28.364538+00:00",
+  "timeoutSeconds": 180,
+  "timedOut": false,
+  "pid": 35040,
+  "endedAtUtc": "2026-10-09T12:43:34.118207+00:00",
+  "stdout": "",
+  "stderr": "ERROR: (ApplicationGatewaySubnetUserDefinedRouteNotAllowed) Route Table /subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/routeTables/rt-shared is associated to subnet /subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/virtualNetworks/vnet-spoke/subnets/snet-appgw, which contains V2 SKU Application Gateway /subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1. Route /subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/routeTables/rt-shared/routes/default in the route table has AddressPrefix '0.0.0.0/0'. For routes associated to subnet containing Application Gateway V2, please ensure '0.0.0.0/0' uses NextHopType as 'Internet'.\nCode: ApplicationGatewaySubnetUserDefinedRouteNotAllowed\nMessage: Route Table /subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/routeTables/rt-shared is associated to subnet /subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/virtualNetworks/vnet-spoke/subnets/snet-appgw, which contains V2 SKU Application Gateway /subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1. Route /subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/routeTables/rt-shared/routes/default in the route table has AddressPrefix '0.0.0.0/0'. For routes associated to subnet containing Application Gateway V2, please ensure '0.0.0.0/0' uses NextHopType as 'Internet'.\n",
+  "exitCode": 1
+}

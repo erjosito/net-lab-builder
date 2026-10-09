@@ -1,0 +1,15 @@
+{
+  "correlationId": "aks-agic-baseline-20261009T1228Z",
+  "taskId": "aks-agic-baseline-validation-20261009",
+  "diagnostic": "07-aks-identity-resource",
+  "sourceTool": "az",
+  "startedAtUtc": "2026-10-09T12:33:02.2749993Z",
+  "completedAtUtc": "2026-10-09T12:33:05.4275830Z",
+  "command": "az identity show -g rg-aks-agic-shared-udr -n id-aks --query {name:name,state:provisioningState,principalId:principalId,clientId:clientId} -o json",
+  "timeoutSeconds": 600,
+  "durationSeconds": 3.15,
+  "timedOut": false,
+  "exitCode": 0,
+  "stdout": "{\r\n  \"clientId\": \"<GUID>\",\r\n  \"name\": \"id-aks\",\r\n  \"principalId\": \"<GUID>\",\r\n  \"state\": null\r\n}\r\n",
+  "stderr": ""
+}

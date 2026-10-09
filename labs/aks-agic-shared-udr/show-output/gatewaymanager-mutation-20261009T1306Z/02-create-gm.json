@@ -1,0 +1,12 @@
+{
+  "command": "\"C:\\Program Files\\Microsoft SDKs\\Azure\\CLI2\\wbin\\az.cmd\" network route-table route create -g rg-aks-agic-shared-udr --route-table-name rt-shared -n gm --address-prefix GatewayManager --next-hop-type Internet --only-show-errors --output json",
+  "startedAtUtc": "2026-10-09T13:08:30.811318+00:00",
+  "timeoutSeconds": 180,
+  "timedOut": false,
+  "pid": 60064,
+  "endedAtUtc": "2026-10-09T13:08:39.632484+00:00",
+  "exitCode": 0,
+  "stdout": "{\r\n  \"addressPrefix\": \"GatewayManager\",\r\n  \"etag\": \"W/\\\"<redacted-id>\\\"\",\r\n  \"hasBgpOverride\": false,\r\n  \"id\": \"/subscriptions/<redacted-id>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/routeTables/rt-shared/routes/gm\",\r\n  \"name\": \"gm\",\r\n  \"nextHopType\": \"Internet\",\r\n  \"provisioningState\": \"Succeeded\",\r\n  \"resourceGroup\": \"rg-aks-agic-shared-udr\",\r\n  \"type\": \"Microsoft.Network/routeTables/routes\"\r\n}\r\n",
+  "stderr": "",
+  "childExited": true
+}
