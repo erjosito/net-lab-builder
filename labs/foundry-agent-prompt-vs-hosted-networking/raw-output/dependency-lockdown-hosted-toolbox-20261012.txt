@@ -1,0 +1,254 @@
+HTTP/2.0 200 OK
+Access-Control-Expose-Headers: Operation-Location,Location,Apim-Request-Id,x-agent-session-id,x-agent-invocation-id
+Api-Supported-Versions: 1.0,2025-05-15-preview,2025-11-15-preview
+Apim-Request-Id: 6a288d73-cec0-456e-a9d3-739c2892be3a
+Azureml-Served-By-Cluster: hyena-swedencentral-01
+Cache-Control: no-cache
+Content-Encoding: identity
+Content-Type: text/event-stream; charset=utf-8
+Date: Mon, 12 Oct 2026 15:10:05 GMT
+Request-Context: appId=
+Server: istio-envoy
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+X-Accel-Buffering: no
+X-Agent-Session-Id: 98433b3f4d4196f72a4f0cffd70438d6d3b2e1be77e16379add708403d2bcdf
+X-Content-Type-Options: nosniff
+X-Ms-Debug-Latency-Container-Response-Ms: 2859
+X-Ms-Debug-Latency-Platform-Preprocessing-Ms: 445
+X-Ms-Debug-Latency-Response-Begin-Ms: 3304
+X-Ms-Debug-Latency-Session-Start-Type: warm
+X-Ms-Region: Sweden Central
+X-Ms-Response-Type: standard
+X-Platform-Server: azure-ai-agentserver-core/2.2.0 (python/3.13) azure-ai-agentserver-responses/2.3.0 (python/3.13)
+X-Request-Id: 6024dd30569436a4bbcb19bdbb1cbebc,6024dd30569436a4bbcb19bdbb1cbebc
+
+event: response.created
+data: {"type": "response.created", "response": {"id": "caresp_03f212187edf063600rqFgfYKLF2DAP9bo2Tn0hLFqstBJDhWe", "object": "response", "output": [], "created_at": 1791817805, "error": null, "incomplete_details": null, "instructions": null, "parallel_tool_calls": false, "status": "in_progress", "response_id": "caresp_03f212187edf063600rqFgfYKLF2DAP9bo2Tn0hLFqstBJDhWe", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}, "model": "", "agent_session_id": "98433b3f4d4196f72a4f0cffd70438d6d3b2e1be77e16379add708403d2bcdf", "conversation": {"id": "conv_03f212187edf063600PvYgd6wRClrpNZFGyqTTcnvFVQxdxrmZ"}}, "sequence_number": 0}
+
+event: response.in_progress
+data: {"type": "response.in_progress", "response": {"id": "caresp_03f212187edf063600rqFgfYKLF2DAP9bo2Tn0hLFqstBJDhWe", "object": "response", "output": [], "created_at": 1791817805, "error": null, "incomplete_details": null, "instructions": null, "parallel_tool_calls": false, "status": "in_progress", "response_id": "caresp_03f212187edf063600rqFgfYKLF2DAP9bo2Tn0hLFqstBJDhWe", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}, "model": "", "agent_session_id": "98433b3f4d4196f72a4f0cffd70438d6d3b2e1be77e16379add708403d2bcdf", "conversation": {"id": "conv_03f212187edf063600PvYgd6wRClrpNZFGyqTTcnvFVQxdxrmZ"}}, "sequence_number": 1}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 0, "item": {"type": "reasoning", "id": "rs_027664b8914fb6b2016accf8506c6c81979a84df0fcc443c8a", "summary": [], "encrypted_content": null, "status": "in_progress", "response_id": "caresp_03f212187edf063600rqFgfYKLF2DAP9bo2Tn0hLFqstBJDhWe", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 2}
+
+event: response.reasoning_summary_part.added
+data: {"type": "response.reasoning_summary_part.added", "item_id": "rs_027664b8914fb6b2016accf8506c6c81979a84df0fcc443c8a", "output_index": 0, "summary_index": 0, "part": {"type": "summary_text", "text": ""}, "sequence_number": 3}
+
+event: response.reasoning_summary_text.done
+data: {"type": "response.reasoning_summary_text.done", "item_id": "rs_027664b8914fb6b2016accf8506c6c81979a84df0fcc443c8a", "output_index": 0, "summary_index": 0, "text": "", "sequence_number": 4}
+
+event: response.reasoning_summary_part.done
+data: {"type": "response.reasoning_summary_part.done", "item_id": "rs_027664b8914fb6b2016accf8506c6c81979a84df0fcc443c8a", "output_index": 0, "summary_index": 0, "part": {"type": "summary_text", "text": ""}, "sequence_number": 5}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 0, "item": {"type": "reasoning", "id": "rs_027664b8914fb6b2016accf8506c6c81979a84df0fcc443c8a", "summary": [{"type": "summary_text", "text": ""}], "encrypted_content": "gAAAAABqzPhRB5f_ENBiStv5i4IjMs97gOubIVr9XUsQJ2cgJtPBWpIq1d4-AQa-CuKAJaZHPB4yUe_bXz_RrEDwSb0kUKqN8JfKvwm9OagZulfzPTzTTFo2hBGwqyeBxeOqOYQoeQc5cC7nvh_IjvigIwmcUbzXJMOQI5ci0zNkgLRvkv8ROcV48yiOT2vv5ai6-DE5px-4mV556zUDuzWRkDnTrZ39Wx58VdoFDxrm-2hCaEZ0WI0zh67XoM0deaK4SVb8fw4k_TRbyFspEK-FdnG5dIwUZTBZVlLkwCN0PZpOMRB9V19JJEwwurgIFZL4wb7cD7a-SKjMe96Xl_IUUhAdrO8-IG7dnGQ6QlWbZzkmHd5rvJWsfUVmf_5X8dPSw_YfAXdfamYazSHPCD1PNpEeE4tR1yHsrhQylJHSU6b9GoBR6T8l0yeQVt3WCm0CwVlsbd5i8IKey1GFr4UPHBaNnPLHPHPnbI9oJcb22huf67GU9DZRZ7p5WsI-EV6DqQbJOG09f3Vp-KWoTPW5cJVl7HxaEXZoR2lXg-ptffOQMKN6sm7AQLPv4WYEPodVq9VTFQ1nIwdq7IXeYJTvavlCZwc4oztzyng-hx9fzKY9QF3BuoxXa0r9_kmd2W1EdYPtZ8sCLRotN07Cm2-mtcOobYH6busmSW5fhLLoJhpqO0buhVjUM-1826sCGh3XiWcmdIGSGG-8smfo6wZwxqSkGQdnyxYG0bHrv-oAH-eTmSNYkfZ0u6oPeleAahUM9QEndJKaCeJfiKdq2sGJbxoGvzJl8DvxVKGtjGRykgM2_cn05uYA4TPh5zJ5y3LStRPDwIH6EISdyNM7lyA-rbk3pjqbh76ViV04Fv_1kPRFaQiT2xYIfYBHRcQgMxhV2vu__rxPp5RawiBJaEfCWko9NBZ6YqdTgA_j3SPY8yNG1TcL5oXir-uoDrlh18lVzFxkU-gIylvlhvPpn6MsQ9jpyP0xZ4ZBmRhm2noEaAHkeYo6vwwbHZ4q6XRWwh7excrHsuTr2jso6Zv7z7oQQ-r_iK6lTmXXm41SKij2h5OrlwldPvNzqMNkwkO6PK2u4Dj_IHH_yr7Rrh1_hXVoW8B7SRh9hS8b4yFmxCrtLVszRYjThMpQfbW1tvYiEfhxUyJxEuVd1uLuYDDPPeFhQd0oCF6Nnrm8KnkvqESVO4N1uPVYmb5hSp7PwlMt_hyC2pmgwD327P9jHcTRaklvCnnLydzS19UdGOMlMdKsuaAvoQFDzu0kHIefulbbnPxlbDx8cGSOGU9VRl2zmw60NPHt5dBjRcx-qQk6bQiWAl4X8N6J_rabQE-lCr0vn9iq0VKKXixXFmF2N2BTssmz_QEK5EmQwy64gEmDKh7V3DJBwZ3ujhwsthGIO0XqYRLX_e8e-bsQyxuJgMJ46ZOk2BEBGNREUOhPMUfAv4gbSRa3Ao0It5MnaR1n1M9S6JHyc6WOq5DKUeM2JQ9K-GGnLslethDTt4-nBqQj7fCe4vFcr-TVCH27zVQOiPB-6P2vmDdhL3JHdtJ4yZ-XVfIS0WfztuY0NP2B9QwpA1PElaZsiiEJSnvpexMWRYdn5ZwkjtWNtIxQqf6wDRBZOYuuUm7D_fG5_Zw0wcwSeACzEw79C3aGY50y91hTF96nb4InejF9Kku2Xv7WA8gA77JmfqXhr66RZ06U0VE8sZzCg0l_rydUUjKHCq6wNdB8GkseXpqyIHCQstjQj1FM6O8aX-ev5WIn4aEM5D2S4wdKo88LTqJ9MLlAiDA61BVSX1FRNiiH9LaEKANxdGfrC08pBjYFwNEFh23Cev5sjm383FqENduA1Sa2hldP7UQre_OD1TVMT3PWIkLnIZtC11ekxNWbdn_Z2N2YsupXY1NxnDG88VxHE218ylauaIFUkiAOjLPFl_fL4KzsZ1HS3kKJaDhhAuWdM8XW7qlOxJgCOXyQQkKqhRjShDacRGLBcyfTMpqxM59AH4ZTGZMw-UKXs1e2Oilill_tfho6gLs0-l2Bzh1nNFhjQ9VHj8xFpwUzVWnagn5IOKQ_IprmbqqcgXEU8QGzktmLZlzPj-6w4UcVP5gtcIWQD60y03-PPA5CA5ofbF8wb9MPKh3Nj6gRJfxlZFxumtGcz_zsjvO7jXdWr_P7sJw4QoXN9sE9A1G_LFVn3g8lyc1q2JHNllcAUTJJKDDqZlFdzsdFtEt4d6eodQKLsxU5WhDSyhQ-Hxrrh9cM6rrmARcB2ByCnx0zgHOJYfctG4-RB6oMZ9W2ITGcaB40EARpO_jxGhMglViU4tRPOkMUjaLGT0EfRTs0bc4EJ71pzJ53JL00h-CrXUGpDGaicpBoUwpYWX07K-yW6TLd48gsUFJFkqceWwhnVo2kfHEKMw==", "status": "completed", "response_id": "caresp_03f212187edf063600rqFgfYKLF2DAP9bo2Tn0hLFqstBJDhWe", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 6}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 1, "item": {"type": "function_call", "id": "fc_03f212187edf063600ZghaJjv0lizbCkodHwyEv8NSVyhgM5Su", "call_id": "call_joDnJdgfszzUd8uAE7xKGNzH", "name": "dependency_probe___probeDependencyPath", "arguments": "", "status": "in_progress", "response_id": "caresp_03f212187edf063600rqFgfYKLF2DAP9bo2Tn0hLFqstBJDhWe", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 7}
+
+event: response.function_call_arguments.delta
+data: {"type": "response.function_call_arguments.delta", "item_id": "fc_03f212187edf063600ZghaJjv0lizbCkodHwyEv8NSVyhgM5Su", "output_index": 1, "delta": "{}", "sequence_number": 8}
+
+event: response.function_call_arguments.done
+data: {"type": "response.function_call_arguments.done", "item_id": "fc_03f212187edf063600ZghaJjv0lizbCkodHwyEv8NSVyhgM5Su", "output_index": 1, "name": "dependency_probe___probeDependencyPath", "arguments": "{}", "sequence_number": 9}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 1, "item": {"type": "function_call", "id": "fc_03f212187edf063600ZghaJjv0lizbCkodHwyEv8NSVyhgM5Su", "call_id": "call_joDnJdgfszzUd8uAE7xKGNzH", "name": "dependency_probe___probeDependencyPath", "arguments": "{}", "status": "completed", "response_id": "caresp_03f212187edf063600rqFgfYKLF2DAP9bo2Tn0hLFqstBJDhWe", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 10}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 2, "item": {"type": "function_call_output", "id": "fco_03f212187edf063600NjVRi9Tf3Lp2ped4lPiwfMK8RmargItO", "call_id": "call_joDnJdgfszzUd8uAE7xKGNzH", "output": "{\"azure_client_ip\": null, \"azure_socket_ip\": null, \"forwarded_for\": [\"100.100.209.6\", \"100.64.17.214\", \"192.168.0.99\"], \"forwarded_for_raw\": \"100.100.209.6,100.64.17.214, 192.168.0.99\", \"forwarded_proto\": \"https\", \"host\": \"func-deppath-kpo2.azurewebsites.net\", \"label\": \"function-dependency\", \"method\": \"GET\", \"request_id\": \"7f227876-9290-440f-a6b1-38badde2ea19\", \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\", \"timestamp_utc\": \"2026-10-12T15:10:10.483006+00:00\", \"user_agent\": \"azure-agents\"}", "status": "in_progress", "response_id": "caresp_03f212187edf063600rqFgfYKLF2DAP9bo2Tn0hLFqstBJDhWe", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 11}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 2, "item": {"type": "function_call_output", "id": "fco_03f212187edf063600NjVRi9Tf3Lp2ped4lPiwfMK8RmargItO", "call_id": "call_joDnJdgfszzUd8uAE7xKGNzH", "output": "{\"azure_client_ip\": null, \"azure_socket_ip\": null, \"forwarded_for\": [\"100.100.209.6\", \"100.64.17.214\", \"192.168.0.99\"], \"forwarded_for_raw\": \"100.100.209.6,100.64.17.214, 192.168.0.99\", \"forwarded_proto\": \"https\", \"host\": \"func-deppath-kpo2.azurewebsites.net\", \"label\": \"function-dependency\", \"method\": \"GET\", \"request_id\": \"7f227876-9290-440f-a6b1-38badde2ea19\", \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\", \"timestamp_utc\": \"2026-10-12T15:10:10.483006+00:00\", \"user_agent\": \"azure-agents\"}", "status": "completed", "response_id": "caresp_03f212187edf063600rqFgfYKLF2DAP9bo2Tn0hLFqstBJDhWe", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 12}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 3, "item": {"type": "message", "id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "role": "assistant", "content": [], "status": "in_progress", "response_id": "caresp_03f212187edf063600rqFgfYKLF2DAP9bo2Tn0hLFqstBJDhWe", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 13}
+
+event: response.content_part.added
+data: {"type": "response.content_part.added", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "part": {"type": "output_text", "text": "", "annotations": [], "logprobs": []}, "sequence_number": 14}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "", "logprobs": [], "sequence_number": 15}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "{\n", "logprobs": [], "sequence_number": 16}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": " ", "logprobs": [], "sequence_number": 17}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": " \"", "logprobs": [], "sequence_number": 18}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "azure", "logprobs": [], "sequence_number": 19}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "_client", "logprobs": [], "sequence_number": 20}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "_ip", "logprobs": [], "sequence_number": 21}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "\":", "logprobs": [], "sequence_number": 22}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": " null", "logprobs": [], "sequence_number": 23}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": ",\n", "logprobs": [], "sequence_number": 24}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": " ", "logprobs": [], "sequence_number": 25}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": " \"", "logprobs": [], "sequence_number": 26}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "azure", "logprobs": [], "sequence_number": 27}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "_socket", "logprobs": [], "sequence_number": 28}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "_ip", "logprobs": [], "sequence_number": 29}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "\":", "logprobs": [], "sequence_number": 30}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": " null", "logprobs": [], "sequence_number": 31}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": ",\n ", "logprobs": [], "sequence_number": 32}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": " \"forward", "logprobs": [], "sequence_number": 33}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "ed_for", "logprobs": [], "sequence_number": 34}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "\": [\n", "logprobs": [], "sequence_number": 35}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "    \"", "logprobs": [], "sequence_number": 36}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "100.", "logprobs": [], "sequence_number": 37}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "100.", "logprobs": [], "sequence_number": 38}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "209.6", "logprobs": [], "sequence_number": 39}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "\",\n    \"", "logprobs": [], "sequence_number": 40}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "100.64", "logprobs": [], "sequence_number": 41}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": ".17.", "logprobs": [], "sequence_number": 42}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "214\",\n   ", "logprobs": [], "sequence_number": 43}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": " \"192.", "logprobs": [], "sequence_number": 44}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "168.0.", "logprobs": [], "sequence_number": 45}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "99\"\n  ],\n", "logprobs": [], "sequence_number": 46}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "  \"forwarded", "logprobs": [], "sequence_number": 47}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "_for_raw\": \"100", "logprobs": [], "sequence_number": 48}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": ".100.209.", "logprobs": [], "sequence_number": 49}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "6,100.64", "logprobs": [], "sequence_number": 50}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": ".17.214, ", "logprobs": [], "sequence_number": 51}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "192.168", "logprobs": [], "sequence_number": 52}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": ".0.99\",\n ", "logprobs": [], "sequence_number": 53}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": " \"forwarded_proto\": \"https", "logprobs": [], "sequence_number": 54}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "\",\n", "logprobs": [], "sequence_number": 55}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "  \"host\": \"func-de", "logprobs": [], "sequence_number": 56}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "ppath-kpo2.azureweb", "logprobs": [], "sequence_number": 57}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "sites.net\",\n  \"label\": \"", "logprobs": [], "sequence_number": 58}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "function-dependency\",\n  \"method\": \"", "logprobs": [], "sequence_number": 59}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "GET\",\n  \"request_id", "logprobs": [], "sequence_number": 60}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "\": \"7f227876-9290-", "logprobs": [], "sequence_number": 61}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "440f-a6b", "logprobs": [], "sequence_number": 62}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "1-38badde2ea19\",\n  \"", "logprobs": [], "sequence_number": 63}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "request_url\": \"", "logprobs": [], "sequence_number": 64}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "https://func-deppath-kpo2.azurewebsites", "logprobs": [], "sequence_number": 65}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": ".net/api/de", "logprobs": [], "sequence_number": 66}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "pendency-probe\",\n  \"timestamp_utc\": \"2026", "logprobs": [], "sequence_number": 67}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "-10", "logprobs": [], "sequence_number": 68}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "-12T15:10:10.483006+00:", "logprobs": [], "sequence_number": 69}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "00", "logprobs": [], "sequence_number": 70}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "delta": "\",\n  \"user_agent\": \"azure-agents\"\n}", "logprobs": [], "sequence_number": 71}
+
+event: response.output_text.done
+data: {"type": "response.output_text.done", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "text": "{\n  \"azure_client_ip\": null,\n  \"azure_socket_ip\": null,\n  \"forwarded_for\": [\n    \"100.100.209.6\",\n    \"100.64.17.214\",\n    \"192.168.0.99\"\n  ],\n  \"forwarded_for_raw\": \"100.100.209.6,100.64.17.214, 192.168.0.99\",\n  \"forwarded_proto\": \"https\",\n  \"host\": \"func-deppath-kpo2.azurewebsites.net\",\n  \"label\": \"function-dependency\",\n  \"method\": \"GET\",\n  \"request_id\": \"7f227876-9290-440f-a6b1-38badde2ea19\",\n  \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\",\n  \"timestamp_utc\": \"2026-10-12T15:10:10.483006+00:00\",\n  \"user_agent\": \"azure-agents\"\n}", "logprobs": [], "sequence_number": 72}
+
+event: response.content_part.done
+data: {"type": "response.content_part.done", "item_id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "output_index": 3, "content_index": 0, "part": {"type": "output_text", "text": "{\n  \"azure_client_ip\": null,\n  \"azure_socket_ip\": null,\n  \"forwarded_for\": [\n    \"100.100.209.6\",\n    \"100.64.17.214\",\n    \"192.168.0.99\"\n  ],\n  \"forwarded_for_raw\": \"100.100.209.6,100.64.17.214, 192.168.0.99\",\n  \"forwarded_proto\": \"https\",\n  \"host\": \"func-deppath-kpo2.azurewebsites.net\",\n  \"label\": \"function-dependency\",\n  \"method\": \"GET\",\n  \"request_id\": \"7f227876-9290-440f-a6b1-38badde2ea19\",\n  \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\",\n  \"timestamp_utc\": \"2026-10-12T15:10:10.483006+00:00\",\n  \"user_agent\": \"azure-agents\"\n}", "annotations": [], "logprobs": []}, "sequence_number": 73}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 3, "item": {"type": "message", "id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "role": "assistant", "content": [{"type": "output_text", "text": "{\n  \"azure_client_ip\": null,\n  \"azure_socket_ip\": null,\n  \"forwarded_for\": [\n    \"100.100.209.6\",\n    \"100.64.17.214\",\n    \"192.168.0.99\"\n  ],\n  \"forwarded_for_raw\": \"100.100.209.6,100.64.17.214, 192.168.0.99\",\n  \"forwarded_proto\": \"https\",\n  \"host\": \"func-deppath-kpo2.azurewebsites.net\",\n  \"label\": \"function-dependency\",\n  \"method\": \"GET\",\n  \"request_id\": \"7f227876-9290-440f-a6b1-38badde2ea19\",\n  \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\",\n  \"timestamp_utc\": \"2026-10-12T15:10:10.483006+00:00\",\n  \"user_agent\": \"azure-agents\"\n}", "annotations": [], "logprobs": []}], "status": "completed", "response_id": "caresp_03f212187edf063600rqFgfYKLF2DAP9bo2Tn0hLFqstBJDhWe", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 74}
+
+event: response.completed
+data: {"type": "response.completed", "response": {"id": "caresp_03f212187edf063600rqFgfYKLF2DAP9bo2Tn0hLFqstBJDhWe", "object": "response", "output": [{"type": "reasoning", "id": "rs_027664b8914fb6b2016accf8506c6c81979a84df0fcc443c8a", "summary": [{"type": "summary_text", "text": ""}], "encrypted_content": "gAAAAABqzPhRB5f_ENBiStv5i4IjMs97gOubIVr9XUsQJ2cgJtPBWpIq1d4-AQa-CuKAJaZHPB4yUe_bXz_RrEDwSb0kUKqN8JfKvwm9OagZulfzPTzTTFo2hBGwqyeBxeOqOYQoeQc5cC7nvh_IjvigIwmcUbzXJMOQI5ci0zNkgLRvkv8ROcV48yiOT2vv5ai6-DE5px-4mV556zUDuzWRkDnTrZ39Wx58VdoFDxrm-2hCaEZ0WI0zh67XoM0deaK4SVb8fw4k_TRbyFspEK-FdnG5dIwUZTBZVlLkwCN0PZpOMRB9V19JJEwwurgIFZL4wb7cD7a-SKjMe96Xl_IUUhAdrO8-IG7dnGQ6QlWbZzkmHd5rvJWsfUVmf_5X8dPSw_YfAXdfamYazSHPCD1PNpEeE4tR1yHsrhQylJHSU6b9GoBR6T8l0yeQVt3WCm0CwVlsbd5i8IKey1GFr4UPHBaNnPLHPHPnbI9oJcb22huf67GU9DZRZ7p5WsI-EV6DqQbJOG09f3Vp-KWoTPW5cJVl7HxaEXZoR2lXg-ptffOQMKN6sm7AQLPv4WYEPodVq9VTFQ1nIwdq7IXeYJTvavlCZwc4oztzyng-hx9fzKY9QF3BuoxXa0r9_kmd2W1EdYPtZ8sCLRotN07Cm2-mtcOobYH6busmSW5fhLLoJhpqO0buhVjUM-1826sCGh3XiWcmdIGSGG-8smfo6wZwxqSkGQdnyxYG0bHrv-oAH-eTmSNYkfZ0u6oPeleAahUM9QEndJKaCeJfiKdq2sGJbxoGvzJl8DvxVKGtjGRykgM2_cn05uYA4TPh5zJ5y3LStRPDwIH6EISdyNM7lyA-rbk3pjqbh76ViV04Fv_1kPRFaQiT2xYIfYBHRcQgMxhV2vu__rxPp5RawiBJaEfCWko9NBZ6YqdTgA_j3SPY8yNG1TcL5oXir-uoDrlh18lVzFxkU-gIylvlhvPpn6MsQ9jpyP0xZ4ZBmRhm2noEaAHkeYo6vwwbHZ4q6XRWwh7excrHsuTr2jso6Zv7z7oQQ-r_iK6lTmXXm41SKij2h5OrlwldPvNzqMNkwkO6PK2u4Dj_IHH_yr7Rrh1_hXVoW8B7SRh9hS8b4yFmxCrtLVszRYjThMpQfbW1tvYiEfhxUyJxEuVd1uLuYDDPPeFhQd0oCF6Nnrm8KnkvqESVO4N1uPVYmb5hSp7PwlMt_hyC2pmgwD327P9jHcTRaklvCnnLydzS19UdGOMlMdKsuaAvoQFDzu0kHIefulbbnPxlbDx8cGSOGU9VRl2zmw60NPHt5dBjRcx-qQk6bQiWAl4X8N6J_rabQE-lCr0vn9iq0VKKXixXFmF2N2BTssmz_QEK5EmQwy64gEmDKh7V3DJBwZ3ujhwsthGIO0XqYRLX_e8e-bsQyxuJgMJ46ZOk2BEBGNREUOhPMUfAv4gbSRa3Ao0It5MnaR1n1M9S6JHyc6WOq5DKUeM2JQ9K-GGnLslethDTt4-nBqQj7fCe4vFcr-TVCH27zVQOiPB-6P2vmDdhL3JHdtJ4yZ-XVfIS0WfztuY0NP2B9QwpA1PElaZsiiEJSnvpexMWRYdn5ZwkjtWNtIxQqf6wDRBZOYuuUm7D_fG5_Zw0wcwSeACzEw79C3aGY50y91hTF96nb4InejF9Kku2Xv7WA8gA77JmfqXhr66RZ06U0VE8sZzCg0l_rydUUjKHCq6wNdB8GkseXpqyIHCQstjQj1FM6O8aX-ev5WIn4aEM5D2S4wdKo88LTqJ9MLlAiDA61BVSX1FRNiiH9LaEKANxdGfrC08pBjYFwNEFh23Cev5sjm383FqENduA1Sa2hldP7UQre_OD1TVMT3PWIkLnIZtC11ekxNWbdn_Z2N2YsupXY1NxnDG88VxHE218ylauaIFUkiAOjLPFl_fL4KzsZ1HS3kKJaDhhAuWdM8XW7qlOxJgCOXyQQkKqhRjShDacRGLBcyfTMpqxM59AH4ZTGZMw-UKXs1e2Oilill_tfho6gLs0-l2Bzh1nNFhjQ9VHj8xFpwUzVWnagn5IOKQ_IprmbqqcgXEU8QGzktmLZlzPj-6w4UcVP5gtcIWQD60y03-PPA5CA5ofbF8wb9MPKh3Nj6gRJfxlZFxumtGcz_zsjvO7jXdWr_P7sJw4QoXN9sE9A1G_LFVn3g8lyc1q2JHNllcAUTJJKDDqZlFdzsdFtEt4d6eodQKLsxU5WhDSyhQ-Hxrrh9cM6rrmARcB2ByCnx0zgHOJYfctG4-RB6oMZ9W2ITGcaB40EARpO_jxGhMglViU4tRPOkMUjaLGT0EfRTs0bc4EJ71pzJ53JL00h-CrXUGpDGaicpBoUwpYWX07K-yW6TLd48gsUFJFkqceWwhnVo2kfHEKMw==", "status": "completed", "response_id": "caresp_03f212187edf063600rqFgfYKLF2DAP9bo2Tn0hLFqstBJDhWe", "agent_reference": null}, {"type": "function_call", "id": "fc_03f212187edf063600ZghaJjv0lizbCkodHwyEv8NSVyhgM5Su", "call_id": "call_joDnJdgfszzUd8uAE7xKGNzH", "name": "dependency_probe___probeDependencyPath", "arguments": "{}", "status": "completed", "response_id": "caresp_03f212187edf063600rqFgfYKLF2DAP9bo2Tn0hLFqstBJDhWe", "agent_reference": null}, {"type": "function_call_output", "id": "fco_03f212187edf063600NjVRi9Tf3Lp2ped4lPiwfMK8RmargItO", "call_id": "call_joDnJdgfszzUd8uAE7xKGNzH", "output": "{\"azure_client_ip\": null, \"azure_socket_ip\": null, \"forwarded_for\": [\"100.100.209.6\", \"100.64.17.214\", \"192.168.0.99\"], \"forwarded_for_raw\": \"100.100.209.6,100.64.17.214, 192.168.0.99\", \"forwarded_proto\": \"https\", \"host\": \"func-deppath-kpo2.azurewebsites.net\", \"label\": \"function-dependency\", \"method\": \"GET\", \"request_id\": \"7f227876-9290-440f-a6b1-38badde2ea19\", \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\", \"timestamp_utc\": \"2026-10-12T15:10:10.483006+00:00\", \"user_agent\": \"azure-agents\"}", "status": "completed", "response_id": "caresp_03f212187edf063600rqFgfYKLF2DAP9bo2Tn0hLFqstBJDhWe", "agent_reference": null}, {"type": "message", "id": "msg_03f212187edf063600wbUGmbaumghq7XepLUuQOKr1I3kjJpIr", "role": "assistant", "content": [{"type": "output_text", "text": "{\n  \"azure_client_ip\": null,\n  \"azure_socket_ip\": null,\n  \"forwarded_for\": [\n    \"100.100.209.6\",\n    \"100.64.17.214\",\n    \"192.168.0.99\"\n  ],\n  \"forwarded_for_raw\": \"100.100.209.6,100.64.17.214, 192.168.0.99\",\n  \"forwarded_proto\": \"https\",\n  \"host\": \"func-deppath-kpo2.azurewebsites.net\",\n  \"label\": \"function-dependency\",\n  \"method\": \"GET\",\n  \"request_id\": \"7f227876-9290-440f-a6b1-38badde2ea19\",\n  \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\",\n  \"timestamp_utc\": \"2026-10-12T15:10:10.483006+00:00\",\n  \"user_agent\": \"azure-agents\"\n}", "annotations": [], "logprobs": []}], "status": "completed", "response_id": "caresp_03f212187edf063600rqFgfYKLF2DAP9bo2Tn0hLFqstBJDhWe", "agent_reference": null}], "created_at": 1791817805, "error": null, "incomplete_details": null, "instructions": null, "parallel_tool_calls": false, "status": "completed", "completed_at": 1791817816, "usage": {"input_tokens": 7981, "input_tokens_details": {"cached_tokens": 5888, "cache_write_tokens": 0}, "output_tokens": 426, "output_tokens_details": {"reasoning_tokens": 128}, "total_tokens": 8407}, "response_id": "caresp_03f212187edf063600rqFgfYKLF2DAP9bo2Tn0hLFqstBJDhWe", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}, "model": "", "agent_session_id": "98433b3f4d4196f72a4f0cffd70438d6d3b2e1be77e16379add708403d2bcdf", "conversation": {"id": "conv_03f212187edf063600PvYgd6wRClrpNZFGyqTTcnvFVQxdxrmZ"}}, "sequence_number": 75}
+
+Update available: 1.31.2 -> 1.35.1 (https://github.com/Azure/azure-dev/releases/tag/azure-dev-cli_1.35.1)
+To update, run `winget upgrade Microsoft.Azd`

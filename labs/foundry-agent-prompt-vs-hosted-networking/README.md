@@ -4,14 +4,12 @@
 hosted agent -- specifically: do tool calls originate from the same source IP? Does direct agent code
 produce a different egress path? Is DNS resolution context-transparent across agent types?
 
-> **Scope correction (2026-10-08):** Prompt and hosted agents have equivalent networking for
-> **registered Foundry tool calls** because those calls use the single-tenant data proxy regardless
-> of agent type. They are not network-equivalent overall: hosted-agent Python code also has a
-> separate direct-egress path through the Micro VM NIC. A Microsoft sample reports that an OpenAPI
-> tool routed through the data proxy receives `403 Ip Forbidden` when an Azure Function is reachable
-> only through an App Service Private Endpoint, while customer code on the VNet can call it. That
-> service-specific Private Endpoint case was not tested in this lab; see
-> [Private Endpoint scope boundary](#private-endpoint-scope-boundary).
+> **Private Endpoint extension (2026-10-12):** Prompt and hosted agents have equivalent networking
+> for **registered Foundry tool calls**: both reached a locked-down Azure Function through the same
+> Tools Service/data-proxy path and presented `192.168.0.99` during comparable runs. Hosted-agent
+> Python also has a separate direct path through its Micro VM NIC (`192.168.0.138`). Both execution
+> contexts consumed the VNet-linked Function private DNS zone and reached Private Endpoint
+> `192.168.1.27`; the workstation public path returned `403 Ip Forbidden`.
 
 ## Deployment Status
 
@@ -37,6 +35,9 @@ produce a different egress path? Is DNS resolution context-transparent across ag
 
 **Lab scenarios complete** — 2026-08-21. See [design.md §15](design.md) and [raw-output/test-matrix-results-20260821.md](raw-output/test-matrix-results-20260821.md).
 
+**Function Private Endpoint extension complete** — 2026-10-12. See
+[dependency-path results](raw-output/dependency-path-results-20261012.md).
+
 > **VM billing note:** vm-tools-echo, vm-tools-ctrl, and vm-diag are deallocated after each test session. Start them only when running tests.
 
 
@@ -61,9 +62,9 @@ dnsmasq on vm-tools-echo (Z2 recommended).
 | Lab card (manifest) | [manifest.md](manifest.md) | Locked |
 | Network design | [design.md](design.md) | Authored (Trinity) |
 | **Foundry Networking Primer** | [README.md#foundry-networking-architecture-primer](#foundry-networking-architecture-primer) | This document |
-| Results | [raw-output/test-matrix-results-20260821.md](raw-output/test-matrix-results-20260821.md) | Complete (2026-08-21) |
+| Results | [raw-output/test-matrix-results-20260821.md](raw-output/test-matrix-results-20260821.md) and [dependency-path-results-20261012.md](raw-output/dependency-path-results-20261012.md) | Complete (2026-08-21 and 2026-10-12 extension) |
 | VS Code hosted-agent guide | [hosted-agent-vscode.md](hosted-agent-vscode.md) | Documentation |
-| Diagrams | [diagrams/](diagrams/) | Six purpose-built static SVG/PNG exports with matching `.excalidraw` sources; legacy `.mmd` kept as supplemental |
+| Diagrams | [diagrams/](diagrams/) | Seven purpose-built static SVG/PNG exports with matching `.excalidraw` sources; legacy `.mmd` kept as supplemental |
 | **T1 Bicep template** | [deploy/main.bicep](deploy/main.bicep) | Authored (Tank) |
 | **T1 parameters example** | [deploy/parameters/lab.parameters.json](deploy/parameters/lab.parameters.json) | Authored (Tank) |
 | **T1 deploy script** | [deploy/deploy.ps1](deploy/deploy.ps1) | Authored (Tank); safe preview by default |
@@ -71,7 +72,7 @@ dnsmasq on vm-tools-echo (Z2 recommended).
 | Cloud-init: echo VM | [deploy/cloud-init/echo-vm.yaml](deploy/cloud-init/echo-vm.yaml) | Authored (Tank) |
 | Cloud-init: ctrl VM | [deploy/cloud-init/ctrl-vm.yaml](deploy/cloud-init/ctrl-vm.yaml) | Authored (Tank) |
 | Hosted agent source | [hosted-agent/src/echo-probe-agent/main.py](hosted-agent/src/echo-probe-agent/main.py) | Python 3.13; probe_echo + probe_ctrl tools |
-| Hosted agent tests | [hosted-agent/tests/](hosted-agent/tests/) | unittest; mock-based; run with pytest |
+| Hosted agent tests | [hosted-agent/src/echo-probe-agent/tests/](hosted-agent/src/echo-probe-agent/tests/) | unittest; mock-based; run with pytest |
 | Test results | [raw-output/test-matrix-results-20260821.md](raw-output/test-matrix-results-20260821.md) | HS1–HS5 + NSG negative outcomes |
 | **SDK invocation scripts** | [tests/probe_network.py](tests/probe_network.py) | Programmatic comparison: hosted SDK + client-side FC + sessions API doc |
 | SDK invocation README | [tests/README.md](tests/README.md) | API choices, prerequisites, expected results |
@@ -81,7 +82,7 @@ dnsmasq on vm-tools-echo (Z2 recommended).
 
 ## Diagrams
 
-All six diagrams are purpose-built static SVG exports (opaque white background, black text, explicit dimensions) with matching `.excalidraw` sources for editing on <https://aka.ms/excalidraw>. PNGs are rasterized from the same static SVGs at 2× resolution via a sharp/librsvg pipeline; the browser Excalidraw canvas is not used for export. Legacy `.mmd` Mermaid files are kept as supplemental sources. Every image linked below is click-through to the SVG for full-page zoom.
+All seven diagrams are purpose-built static SVG exports (opaque white background, black text, explicit dimensions) with matching `.excalidraw` sources for editing on <https://aka.ms/excalidraw>. PNGs are rasterized from the same static SVGs at 2× resolution via a sharp/librsvg pipeline; the browser Excalidraw canvas is not used for export. Legacy `.mmd` Mermaid files are kept as supplemental sources. Every image linked below is click-through to the SVG for full-page zoom.
 
 ### 01 — Peered tools topology
 
@@ -99,12 +100,12 @@ Historical T2 VPN/BGP topology from the sibling lab; documents S3/S4 evidence an
 
 Sources: [SVG](diagrams/02-historical-vpn-reference.svg) · [Excalidraw](diagrams/02-historical-vpn-reference.excalidraw) · [Mermaid](diagrams/02-historical-vpn-reference.mmd)
 
-### 03 — Agent egress paths (HS1 baseline / Path 2 documented but not measured / HS2 measured)
+### 03 — Original VM-target agent egress paths
 
 Three egress paths converging on `echo.tools.lab`. Status chips preserve the evidence state at the
 time of the lab: sibling-lab baseline evidence, an unimplemented Toolbox path, and the 2026-08-21
-hosted-direct-code measurement. Microsoft Learn now explicitly documents that registered tool calls
-use the data proxy regardless of agent type; this lab still did not measure the hosted Toolbox path.
+hosted-direct-code measurement. The later Function extension measured the previously unimplemented
+Toolbox path; see diagram 07.
 
 [![03 — Agent egress paths](diagrams/03-agent-egress-paths.png)](diagrams/03-agent-egress-paths.svg)
 
@@ -133,6 +134,16 @@ Client invocation surfaces (VS Code Toolkit / azd / vm-diag / public workstation
 [![06 — Programmatic invocation](diagrams/06-programmatic-invocation.png)](diagrams/06-programmatic-invocation.svg)
 
 Sources: [SVG](diagrams/06-programmatic-invocation.svg) · [Excalidraw](diagrams/06-programmatic-invocation.excalidraw) · [Mermaid](diagrams/06-programmatic-invocation.mmd)
+
+### 07 — Function Private Endpoint paths under full lockdown
+
+The 2026-10-12 extension compares prompt registered OpenAPI, hosted registered Toolbox, hosted
+direct Python, and a workstation control against one Azure Function. It shows the measured executor
+addresses and the split between successful private paths and the denied public path.
+
+[![07 — Function Private Endpoint paths](diagrams/07-function-private-endpoint-paths.png)](diagrams/07-function-private-endpoint-paths.svg)
+
+Sources: [SVG](diagrams/07-function-private-endpoint-paths.svg) · [Excalidraw](diagrams/07-function-private-endpoint-paths.excalidraw) · [Mermaid](diagrams/07-function-private-endpoint-paths.mmd)
 
 ---
 
@@ -172,12 +183,12 @@ DNS zones, DNS Private Resolver. No Foundry-specific knowledge assumed.*
 | **Foundry project** | A logical namespace under the account. Each project has its own endpoint prefix and RBAC scope. | Comparable to an APIM product or a distinct backend pool. |
 | **Foundry account endpoint / private endpoint** | When private networking is enabled, a Private Endpoint in your VNet's PESubnet gives VNet-internal resources a private IP for `<account>.services.ai.azure.com`. A Private DNS zone `privatelink.services.ai.azure.com` provides split-horizon resolution (VNet → PE IP; internet → public IP). | Standard Azure Private Link pattern — identical to Storage, Key Vault, etc. |
 | **AgentSubnet (network injection)** | A subnet in your VNet delegated to `Microsoft.App/environments`. Foundry injects its managed compute (data proxy, Micro VM NICs) into this subnet so they have IPs in your address space. NSG and UDR rules you apply to AgentSubnet govern egress from that managed compute. | Analogous to App Service VNet Integration, ACI network injection, or Azure Container Apps environment injection into a delegated subnet. |
-| **Data proxy** | A Microsoft-managed component that lives inside AgentSubnet with an IP from that subnet (`192.168.0.x` in this lab). When a **prompt agent** is configured with HTTP Connection resources (OpenAPI tool definitions), the platform's Tools Service routes tool HTTP calls through the data proxy to your endpoints. *The data proxy is not a customer-deployed resource; its internal architecture is undocumented.* | Functionally similar to an internal App Service outbound IP or a managed NAT within the subnet — you see the IP at the target but cannot configure the component itself. |
+| **Data proxy** | A Microsoft-managed component that lives inside AgentSubnet with an IP from that subnet (`192.168.0.x` in this lab). The platform's Tools Service routes registered OpenAPI/Toolbox HTTP calls through it for both prompt and hosted agents. *The data proxy is not a customer-deployed resource; its internal architecture is undocumented.* | Functionally similar to an internal App Service outbound IP or a managed NAT within the subnet — you see the IP at the target but cannot configure the component itself. |
 | **Prompt agent** | A Foundry agent configured entirely through declarations (system instructions + OpenAPI tool JSON). No code. The platform handles all tool invocation via the data proxy. Invoked through the Assistants API (threads/runs) at the project endpoint. | Closest Azure analogy: Azure Logic App with managed connectors — behavior is defined, not coded; the platform executes HTTP calls on your behalf. |
 | **Hosted agent** | A Foundry agent backed by Python code (`main.py`) that runs inside a **Micro VM** in AgentSubnet. Invoked through the OpenAI Responses API at a dedicated per-agent endpoint. | Closest analogy: Azure Container Apps (your code runs in a managed container with a VNet-injected NIC). |
 | **Hosted Micro VM / runtime NIC** | An ephemeral lightweight container spawned by Foundry for each hosted agent invocation (stateless Responses API path). It receives a dedicated NIC in AgentSubnet (`192.168.0.y`). Your Python code's HTTP calls originate from this NIC — not from the data proxy. *Micro VM is an informal term; the official resource is the AgentSubnet-injected compute; internal architecture is undocumented/inferred.* | Analogous to an ACI container or ACA replica: ephemeral, VNet-injected, gone after the call ends. |
 | **Private DNS resolver + dnsmasq** | In this lab a customer-deployed Azure DNS Private Resolver (outbound endpoint `192.168.3.20`, SNAT pool `192.168.3.21–25`) forwards `tools.lab` queries to dnsmasq on vm-tools-echo (`10.1.100.4:53`). All VNet resources (data proxy, Micro VM NICs, vm-diag) use the same VNet-level DNS forwarding ruleset — see [docs](https://learn.microsoft.com/azure/dns/dns-private-resolver-overview). | Identical to the Azure-recommended hybrid DNS pattern: outbound resolver EP → on-prem/custom DNS. |
-| **Tool target** | A customer-deployed HTTP server that receives the tool call. In this lab: `vm-tools-echo` (`10.1.100.4`) and `vm-tools-ctrl` (`10.1.200.4`) in the peered vnet-tools. The echo response includes `src_ip` — the ground-truth source IP of the caller. | Any Azure VM or PaaS endpoint that your workload needs to reach. NSG on the target subnet is the enforcement point. |
+| **Tool/dependency target** | A customer endpoint receiving the call. The original lab used `vm-tools-echo` (`10.1.100.4`) and `vm-tools-ctrl` (`10.1.200.4`). The extension used `func-deppath-kpo2` through Function Private Endpoint `192.168.1.27`. Each target returned caller metadata. | Any Azure VM or PaaS endpoint that the registered tool or hosted application code needs to reach. |
 | **Caller / client** | The entity that invokes the agent. In this lab: a workstation (outside VNet) and vm-diag (MgmtSubnet, inside VNet). The caller reaches the Foundry endpoint via the private endpoint (inside VNet) or the public IP (outside VNet). | The same as any Azure client calling a private or public HTTPS endpoint. |
 | **Client-side function calling (FC)** | The caller uses a standard OpenAI model endpoint (not an agent endpoint) and executes tool calls locally on the calling machine. No data proxy, no Micro VM. Tool HTTP calls come from the **caller's NIC**, not from AgentSubnet. | Equivalent to running your own HTTP client code — no platform egress involved. |
 
@@ -217,7 +228,7 @@ For hosted agents, the URL is `<account>.services.ai.azure.com/api/projects/<pro
 For prompt agents, the URL is the Foundry project Assistants API endpoint (`/openai/v1/threads`, `/runs`).  
 RBAC: **Foundry Agent Consumer** role at project scope required for hosted agent invocation. ([Foundry network isolation](https://learn.microsoft.com/azure/foundry/how-to/configure-private-link))
 
-#### 2. Prompt-tool egress — Data proxy → tool target *(H1; BASELINE ONLY — not re-run in this lab)*
+#### 2. Registered-tool egress — Tools Service → data proxy → target *(H1; empirically confirmed)*
 
 ```
 Foundry Tools Service
@@ -228,7 +239,10 @@ Foundry Tools Service
   src_ip at target: 192.168.0.x (AgentSubnet)
 ```
 
-NSG enforcement: nsg-tools on EchoSubnet/CtrlSubnet (customer-owned). The data proxy **cannot** be configured or inspected directly; its existence is inferred from the observed `src_ip`. (Source: sibling lab 2026-08-14; see [raw-output/probe-network-sdk-evidence-20260821.md](raw-output/probe-network-sdk-evidence-20260821.md).)
+The 2026-10-12 extension invoked the same Function OpenAPI operation from a prompt agent and a hosted
+agent Toolbox. Both reached the Function Private Endpoint and presented data-proxy address
+`192.168.0.99` in comparable runs. The data proxy **cannot** be configured or inspected directly;
+the target-observed forwarding chain is the evidence.
 
 #### 3. Hosted-tool egress — Micro VM NIC → tool target *(H2; empirically confirmed)*
 
@@ -270,42 +284,43 @@ This path uses **no Foundry data proxy or Micro VM** — the caller is the tool 
 
 ## Key Results Summary
 
-Three hypotheses (H1–H3) were in scope. H1 uses 2026-08-14 baseline evidence inherited from the sibling
-lab and was **not re-run** in this lab — the prompt-agent data-proxy path cannot be reproduced
-programmatically via `azure-ai-projects 2.3.0` (SDK limitation; see design.md §16). H2 and H3
-confirmed empirically. Full evidence in [design.md §15–16](design.md) and [raw-output/](raw-output/).
+Three hypotheses (H1–H3) were in scope. H2 and H3 were confirmed in the original 2026-08-21 VM
+experiment. H1 was subsequently confirmed in the 2026-10-12 Function extension using
+`azure-ai-projects 2.8.0`, a prompt OpenAPI tool, and a hosted Toolbox backed by the same OpenAPI
+definition. Full evidence is in [design.md §15–18](design.md) and [raw-output/](raw-output/).
 
 | Hypothesis | Result | Key evidence |
 |------------|--------|-------------|
-| H1: prompt + hosted tool calls share same src_ip range | **BASELINE ONLY** (sibling lab 2026-08-14; not re-run here — SDK control path is client-side FC, not data-proxy) | Sibling-lab data proxy src_ip: 192.168.0.49, .239 (AgentSubnet 192.168.0.0/24). Hosted Micro VM also uses same /24. Mechanism not re-run; no raw invocation record from data proxy in this lab. |
+| H1: prompt + hosted registered tool calls share the data-proxy path | **CONFIRMED** | Prompt OpenAPI and hosted Toolbox both reached the Function PE; both presented `192.168.0.99` during comparable runs. |
 | H2: hosted agent code egresses via Micro VM NIC (not data proxy) | CONFIRMED | 7 hosted-agent invocations (3 REST direct, 3 SDK, 1 SSE); src_ip changes per call (ephemeral Micro VM). The 8th run is client-side FC — a control that executes on the caller NIC, not via AgentSubnet. |
-| H3: DNS resolution is context-transparent | CONFIRMED | All callers use same DNSOutboundSubnet SNAT IPs at dnsmasq |
+| H3: DNS resolution is context-transparent | CONFIRMED | The VM test showed the common DNS Private Resolver chain; the Function test showed both data proxy and Micro VM resolving the VNet-linked private endpoint. |
 | Client-FC vs hosted: private VNet isolation | NEW FINDING | tools.lab DNS fails from workstation; hosted agent (inside AgentSubnet) succeeds |
 
-### Private Endpoint scope boundary
+### Function Private Endpoint extension
 
-The lab targets were directly routed VM addresses in a peered VNet, resolved through a custom
-`tools.lab` forwarding chain. The lab did **not** test a PaaS target whose inbound path requires a
-Private Endpoint.
+The original targets were directly routed VMs. On 2026-10-12 the lab added an Azure Function target
+and tested three managed execution paths against the same endpoint:
 
-The Microsoft Foundry sample
-[Scenario 3: Full lockdown](https://github.com/microsoft-foundry/foundry-samples/blob/main/infrastructure/infrastructure-setup-bicep/19-private-network-agent-tools/tests/TESTING-GUIDE.md#scenario-3-full-lockdown-customer-code-only-)
-reports a narrower behavior:
+1. Prompt-agent registered OpenAPI tool.
+2. Hosted-agent registered OpenAPI tool through a Foundry Toolbox.
+3. Hosted-agent direct Python DNS, TCP/TLS, and HTTPS calls.
 
-- A prompt agent using an OpenAPI tool reaches the Azure Function through the data proxy.
-- With Function `publicNetworkAccess: Disabled`, that request reaches or resolves to the public
-  App Service frontend rather than being recognized as Private Endpoint traffic and returns
-  `403 Ip Forbidden`.
-- The same restriction is expected for a hosted agent using a registered OpenAPI/Toolbox tool,
-  because Microsoft Learn documents that hosted tool calls also use the data proxy.
-- Hosted-agent Python making a direct HTTP request uses the Micro VM NIC instead. It is expected to
-  behave like customer code on the VNet and use the Function Private Endpoint, but neither this lab
-  nor the referenced sample tested that exact hosted-direct-code case.
+With the Function Private Endpoint at `192.168.1.27` and public access disabled, all three managed
+paths returned HTTP 200. Prompt OpenAPI and hosted Toolbox used the data proxy
+(`192.168.0.99` in comparable runs; `.80` in another prompt run), while direct Python used the Micro
+VM NIC `192.168.0.138`. The workstation still resolved the public App Service frontend and received
+`403 Ip Forbidden`.
 
-This does not invalidate the VM/custom-DNS measurements. It limits the conclusion: networking was
-equivalent for the paths and directly routed targets tested here, and is documented as equivalent
-for registered tool calls. Hosted agents additionally expose a direct-code path that can behave
-differently for service-specific Private Endpoint ingress.
+This current result does not reproduce the `403` reported for the prompt OpenAPI path in the
+Microsoft Foundry sample
+[Scenario 3: Full lockdown](https://github.com/microsoft-foundry/foundry-samples/blob/main/infrastructure/infrastructure-setup-bicep/19-private-network-agent-tools/tests/TESTING-GUIDE.md#scenario-3-full-lockdown-customer-code-only-).
+The discrepancy is environment- or platform-version-specific: the current template-19 capability
+host and VNet-linked `privatelink.azurewebsites.net` zone allowed the data proxy to select the
+private endpoint. The practical difference observed here is executor identity and source address,
+not an inherent inability of registered tools to use Private Endpoints.
+
+Full matrix and evidence links:
+[dependency-path-results-20261012.md](raw-output/dependency-path-results-20261012.md).
 
 ### Invocation summary (8 runs: 7 hosted-agent via AgentSubnet + 1 client-side FC via caller NIC)
 
@@ -416,7 +431,7 @@ VPN GW deletion takes approximately 5 minutes each. Do not interrupt mid-sequenc
 |--------|---------|
 | [manifest.md](manifest.md) | Full lab card, hypotheses, scenarios, NSG spec, cost estimate |
 | [hosted-agent-vscode.md](hosted-agent-vscode.md) | VS Code Foundry Toolkit walkthrough for Jose |
-| [diagrams/](diagrams/) | Six purpose-built static SVG/PNG exports with matching `.excalidraw` sources; legacy `.mmd` kept as supplemental |
+| [diagrams/](diagrams/) | Seven purpose-built static SVG/PNG exports with matching `.excalidraw` sources; legacy `.mmd` kept as supplemental |
 | Sibling lab: `../foundry-agent-reserved-prefix-reachability/` | Shared infra baseline; H1 evidence (S3/S4) |
 | `.squad/decisions/inbox/morpheus-foundry-lab-restructure.md` | Cleanup gate details (original lab) |
 | `.squad/decisions/inbox/morpheus-foundry-topology-rethink.md` | T1 vs T2 split rationale; teardown order |

@@ -1,0 +1,376 @@
+HTTP/2.0 200 OK
+Access-Control-Expose-Headers: Operation-Location,Location,Apim-Request-Id,x-agent-session-id,x-agent-invocation-id
+Api-Supported-Versions: 1.0,2025-05-15-preview,2025-11-15-preview
+Apim-Request-Id: cdc529cf-94fe-4498-9e98-1f1b6d34a65c
+Azureml-Served-By-Cluster: hyena-swedencentral-02
+Cache-Control: no-cache
+Content-Encoding: identity
+Content-Type: text/event-stream; charset=utf-8
+Date: Mon, 12 Oct 2026 15:04:15 GMT
+Request-Context: appId=
+Server: istio-envoy
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+X-Accel-Buffering: no
+X-Agent-Session-Id: 98433b3f4d4196f72a4f0cffd70438d6d3b2e1be77e16379add708403d2bcdf
+X-Content-Type-Options: nosniff
+X-Ms-Debug-Latency-Container-Response-Ms: 772
+X-Ms-Debug-Latency-Platform-Preprocessing-Ms: 1962
+X-Ms-Debug-Latency-Response-Begin-Ms: 2734
+X-Ms-Debug-Latency-Session-Start-Type: warm
+X-Ms-Region: Sweden Central
+X-Ms-Response-Type: standard
+X-Platform-Server: azure-ai-agentserver-core/2.2.0 (python/3.13) azure-ai-agentserver-responses/2.3.0 (python/3.13)
+X-Request-Id: 7a7296c1a10e2d0e00104f63b7d4b312,7a7296c1a10e2d0e00104f63b7d4b312
+
+event: response.created
+data: {"type": "response.created", "response": {"id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "object": "response", "output": [], "created_at": 1791817455, "error": null, "incomplete_details": null, "instructions": null, "parallel_tool_calls": false, "status": "in_progress", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}, "model": "", "agent_session_id": "98433b3f4d4196f72a4f0cffd70438d6d3b2e1be77e16379add708403d2bcdf", "conversation": {"id": "conv_03f212187edf063600PvYgd6wRClrpNZFGyqTTcnvFVQxdxrmZ"}}, "sequence_number": 0}
+
+event: response.in_progress
+data: {"type": "response.in_progress", "response": {"id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "object": "response", "output": [], "created_at": 1791817455, "error": null, "incomplete_details": null, "instructions": null, "parallel_tool_calls": false, "status": "in_progress", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}, "model": "", "agent_session_id": "98433b3f4d4196f72a4f0cffd70438d6d3b2e1be77e16379add708403d2bcdf", "conversation": {"id": "conv_03f212187edf063600PvYgd6wRClrpNZFGyqTTcnvFVQxdxrmZ"}}, "sequence_number": 1}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 0, "item": {"type": "reasoning", "id": "rs_027664b8914fb6b2016accf6f290448197b27027039692fd7f", "summary": [], "encrypted_content": null, "status": "in_progress", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 2}
+
+event: response.reasoning_summary_part.added
+data: {"type": "response.reasoning_summary_part.added", "item_id": "rs_027664b8914fb6b2016accf6f290448197b27027039692fd7f", "output_index": 0, "summary_index": 0, "part": {"type": "summary_text", "text": ""}, "sequence_number": 3}
+
+event: response.reasoning_summary_text.done
+data: {"type": "response.reasoning_summary_text.done", "item_id": "rs_027664b8914fb6b2016accf6f290448197b27027039692fd7f", "output_index": 0, "summary_index": 0, "text": "", "sequence_number": 4}
+
+event: response.reasoning_summary_part.done
+data: {"type": "response.reasoning_summary_part.done", "item_id": "rs_027664b8914fb6b2016accf6f290448197b27027039692fd7f", "output_index": 0, "summary_index": 0, "part": {"type": "summary_text", "text": ""}, "sequence_number": 5}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 0, "item": {"type": "reasoning", "id": "rs_027664b8914fb6b2016accf6f290448197b27027039692fd7f", "summary": [{"type": "summary_text", "text": ""}], "encrypted_content": "gAAAAABqzPbzYUaR7JudQSHRfxjW1UJmozijWN-6GkOpXtBZGVW8Qj1_v1JUG2OauUMmxxH1rLWpf47FhsFWi2pa1fh_oGhrY7jm9maC0RnRQT86ovzIFKcJ3MYi0sfe3EQLdtlkH4QPU2dcI8PT4aSryx5z3AFM4sQOj69TRD6bZiC1kFP1_9IaAbgpF0MwqYnsdY36v0tp1eCbMVLHJPNkiN--6njxZSeN_jii6mf4PNkoPAf94tST7RH9tuCtOK2rfY6jhSkEPdxA8qxP9a9lMX4ZUIoXwOiN8ukdWPx_UAJ_pT_h0HLQOK7Ynz0mhsypce5ChPwKiXHgIjvd_tsc7ji0Zm_HmWYHiLB5oPrv_4Q-I8AbnRHHpuCa20cCv2NtBg-g1t2_0OVVCA8kB0JgOBwBt2VZQK-mikFFjG2jyWoi0UEtpVeK5Q9tb217dmltJHV5-NNoatkH_Ppw5Yj0DSr4EwgcbhURQxu58QWiilDahHZxGce9Ovix7YZKL3B-gm-CfkH31scazg7rOY20fCfpbSpLX-Z0OKgLJg6mHFEVmf6d42aOsTb1LMl7UUQSjIm8_LYmU1pjm7_LG49PWYSSRw-4B21hrq0Tix3LbV4CRTaiP93vwdtc0VNAC_NGY5rz-FpyajtCopAl0rYIpEiSM9koGY8Sntbi6kuz9UEWh6vDyl1OVAcaGVYemv3dxXwwuH0krQnLVXzJJe-zjG7f5oHYRD6y9Qx1nj_lMu2r4cBle4uIP5AFw0JsAYZ-j9owsjHGTpbeTG3M1roKEo5dF0RUaAhJVFbxHt9UkgjBFLN-Q6_WRQvNodVzSzoBpWb5eUnMCb4U0sz2qwl72tjxPJrPJw9JIpnz1n0FI7GOlx6sW7PMWS-laFX8a1RpqJgPAgqsdhyFFbOIFGzMV0ZJonBl8sqckpK8qA4mleCu9Rjb-8aecDF4FhOWcJdaKWSb7Y5xNIZCwHcZnS3Ik48zgN5CZ4_dBLrCm5yOmIkCP8AbE7SqPxHY5bvYPahrcL_rf3LltDotF9mPplZ35WGa5tfzQUBvE_0-cPTJlNArLAi0ycPfvGTBWM_DOMs622jflNdF9w4wRNSxHlbDZbF_llsX4DB422ChNwfVjH3B9mORaMLFcerSGRsxopGzjD7n0udKCbJfFUqCTPKrncr3WAFqhAkGAcrqlrh9fjZC0g_VurvCQ5DBy792nrCYfgqM-Oi6kOHgunF6p96lSMPXahpUykXAIZeRJmcbrnKCkZ_pDWiHDM2-1onUCyjEtMJEc4-9hFQDPChC_qkI38jtqnDpn5HQvTImMud82ot7yOXQ6IwEva8FoVuu7U4JT_UZobSc3JjlJHetpUkU05DNgECct1A_RUXpBw1ixUsM7bDDd8E812VLHIr0cfRlGJtFUoGT9Rwt9kmRwXC09lCsxyqtUovkktHlFSqYU023P-tGGFUmp5rRxX_kLEU7vyAYkdzINzKWtjuIh25f7Ctk18oxUhmi6Ovn_TQhj-p3393rJBh0EYhvkWyIPqet7XshI5Fdz8I8Tw5yUCE3jrwyWFf__NST4A85jwvefaHexD26nYYThP8tkzQWt8JqIoTZRfy1lj8RhecMZ5hrvDTNPrD9sRVtb4PCDmqZVgEL03i_ZbfzsO6SW5QDcG7OuXhEk880u8b2wJTe9UiZMQGEHb-MZdVxw4tHOJB7YfR7TLSGo-ZXebMRbvlJ8-Y_5lT6JNhEf92KVUGo5pYr_0xNygQqSj9NLnUerJ7xtdGKLEyUkRFgVzgk7-Ge_u3ThUir27qwyljpJAyLkx-tudAprqLcd__JS2o4IOXlYDz8dVLTjfWz5I2R4aq1fq3PgATnMIZQcXvWIwWsn7qNvlKVH6KoMqBXUhehmSyrayzGeU79pDQ=", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 6}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 1, "item": {"type": "function_call", "id": "fc_03f212187edf063600JsflUQkwghdxjc4XsPQrIXbmCGJcgnUK", "call_id": "call_E96Qqm6jzSHPnQnmLeQIhOEG", "name": "probe_dependency_dns", "arguments": "", "status": "in_progress", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 7}
+
+event: response.function_call_arguments.delta
+data: {"type": "response.function_call_arguments.delta", "item_id": "fc_03f212187edf063600JsflUQkwghdxjc4XsPQrIXbmCGJcgnUK", "output_index": 1, "delta": "{}", "sequence_number": 8}
+
+event: response.function_call_arguments.done
+data: {"type": "response.function_call_arguments.done", "item_id": "fc_03f212187edf063600JsflUQkwghdxjc4XsPQrIXbmCGJcgnUK", "output_index": 1, "name": "probe_dependency_dns", "arguments": "{}", "sequence_number": 9}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 1, "item": {"type": "function_call", "id": "fc_03f212187edf063600JsflUQkwghdxjc4XsPQrIXbmCGJcgnUK", "call_id": "call_E96Qqm6jzSHPnQnmLeQIhOEG", "name": "probe_dependency_dns", "arguments": "{}", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 10}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 2, "item": {"type": "function_call_output", "id": "fco_03f212187edf063600Z5yUSIaV0csdl3FAHS5MB2fluqvuFQwU", "call_id": "call_E96Qqm6jzSHPnQnmLeQIhOEG", "output": "{\"stage\": \"dns\", \"hostname\": \"func-deppath-kpo2.azurewebsites.net\", \"port\": 443, \"addresses\": [\"192.168.1.27\"], \"duration_ms\": 12.55}", "status": "in_progress", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 11}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 2, "item": {"type": "function_call_output", "id": "fco_03f212187edf063600Z5yUSIaV0csdl3FAHS5MB2fluqvuFQwU", "call_id": "call_E96Qqm6jzSHPnQnmLeQIhOEG", "output": "{\"stage\": \"dns\", \"hostname\": \"func-deppath-kpo2.azurewebsites.net\", \"port\": 443, \"addresses\": [\"192.168.1.27\"], \"duration_ms\": 12.55}", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 12}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 3, "item": {"type": "reasoning", "id": "rs_027664b8914fb6b2016accf6f47d6c8197b4b321a49a8fc870", "summary": [], "encrypted_content": null, "status": "in_progress", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 13}
+
+event: response.reasoning_summary_part.added
+data: {"type": "response.reasoning_summary_part.added", "item_id": "rs_027664b8914fb6b2016accf6f47d6c8197b4b321a49a8fc870", "output_index": 3, "summary_index": 0, "part": {"type": "summary_text", "text": ""}, "sequence_number": 14}
+
+event: response.reasoning_summary_text.done
+data: {"type": "response.reasoning_summary_text.done", "item_id": "rs_027664b8914fb6b2016accf6f47d6c8197b4b321a49a8fc870", "output_index": 3, "summary_index": 0, "text": "", "sequence_number": 15}
+
+event: response.reasoning_summary_part.done
+data: {"type": "response.reasoning_summary_part.done", "item_id": "rs_027664b8914fb6b2016accf6f47d6c8197b4b321a49a8fc870", "output_index": 3, "summary_index": 0, "part": {"type": "summary_text", "text": ""}, "sequence_number": 16}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 3, "item": {"type": "reasoning", "id": "rs_027664b8914fb6b2016accf6f47d6c8197b4b321a49a8fc870", "summary": [{"type": "summary_text", "text": ""}], "encrypted_content": "gAAAAABqzPb0XwUt--UD-50MMlZS4bn0LH87OKyKASIvzhIc-5NxODrcsI9BNV_kp7R7NFTCl-tIci1MH2Ty2cgDcZYekjYHTs4MXDrO5-g4-6ZupctzH-pkNduydhMxyI7YNx0VBt9BRnypwf6fZynfGYwJMnTwr3BxY7n3pR4kuqPU1993NnSAj-XBQ6Qm01d7B0RqSwpAYi4iy-ap_SB4CYH9vZ7TTgTzFSv8Ibwh632MsJcMNYpK4i-XKDHc9Y4iTJhLEfPlN_AS_C_dWL46Mzof-F4MwmcFQM34KhX_zIaMEZuRCt8buyiUuulR7gFZut3CWDkIhwOBU_hsq2cuKbJH5yEgNimvlUh7ECgc4l2dePpeisphpYMcDEP5VXCbYitjImDCt-anIzFQyfnm6CHa7oiqw782bnZPpCDzVhnLe_grA_Qed8kKF72sD3xMqOkAGL1ZSHEAjbpmsgC3-L_ClbzT60lfBa0MpvaJzSiOLzsUJhTXyzwQLUBpXjzx9QGWvcIUi9c2E2Cn3yd1lfbMZc62rQfGq2SrQRVhIHf8Tvc5O40r9ic2wueZ3MBgYC74G8wpAIFiRTC50kxHINVubbEoR_YHF1m8aTXUls069RwoUh5vBeKIB4ZuxjvQaMVp7JGwGcwANtOVVFWjQ1ryF6LycdH88pgflLWsBCquaShyP_hyed-iF7q2vdO9PRYz2DlNRyRUbNhpzdvWoGQEXHGKyvj93CED7OAvX8QNM-hmu8tUfRu6IufivXLVNxZV92EpTcdF_Ej5Ql384hfr3NabRm1yDupRjvTC5YzeoBw3pgrgKW6mxnW15OWAdlK3fQjCZEAk3y0xxCcaX6DulCou8CGBrTiUqDhCNxbv4hcg2XV6N7F7-Y6tvLxACF5fUXtuiJt7kVF89VgnTiYvoVNZb04Vmihaa6iQdh5vSXbOfTQHHDMvr4KFkVLKEMCKiyJBx33HJv88_Tk5iROmmVZ7bHY8NOisgrTyIRDmC7pdZtzRMK3ENbrCxcKNbGU4LTg72di78OFkD6lZ0bHYarPzcFpAhSowiwXb_5Lys0dJAk0_WI0ED_-mEDqgwixCfiSvib9l-AhI6WPsSEGaKQLcwdHdybzfk5pHhWrRWbN3iH6IlyIDNJQwS3IHhGOlwAuahUvSlX0zxE5BpMQDl-P3107I60YL1nocN5T3mNpCJPdY3GXfXWdlk5ElQvez1J6v", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 17}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 4, "item": {"type": "function_call", "id": "fc_03f212187edf063600BxGgH2nJZsV2EvFgcClWq85kuDuf8ru8", "call_id": "call_SGXPPgPDH028ChbvetYrk64L", "name": "probe_dependency_tls", "arguments": "", "status": "in_progress", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 18}
+
+event: response.function_call_arguments.delta
+data: {"type": "response.function_call_arguments.delta", "item_id": "fc_03f212187edf063600BxGgH2nJZsV2EvFgcClWq85kuDuf8ru8", "output_index": 4, "delta": "{}", "sequence_number": 19}
+
+event: response.function_call_arguments.done
+data: {"type": "response.function_call_arguments.done", "item_id": "fc_03f212187edf063600BxGgH2nJZsV2EvFgcClWq85kuDuf8ru8", "output_index": 4, "name": "probe_dependency_tls", "arguments": "{}", "sequence_number": 20}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 4, "item": {"type": "function_call", "id": "fc_03f212187edf063600BxGgH2nJZsV2EvFgcClWq85kuDuf8ru8", "call_id": "call_SGXPPgPDH028ChbvetYrk64L", "name": "probe_dependency_tls", "arguments": "{}", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 21}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 5, "item": {"type": "function_call_output", "id": "fco_03f212187edf0636008Ngpn9j3D4eXYRGOA1p9CTq9ThMzideI", "call_id": "call_SGXPPgPDH028ChbvetYrk64L", "output": "{\"stage\": \"tls\", \"hostname\": \"func-deppath-kpo2.azurewebsites.net\", \"peer_ip\": \"192.168.1.27\", \"peer_port\": 443, \"tls_version\": \"TLSv1.3\", \"cipher\": \"TLS_AES_256_GCM_SHA384\", \"duration_ms\": 82.11}", "status": "in_progress", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 22}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 5, "item": {"type": "function_call_output", "id": "fco_03f212187edf0636008Ngpn9j3D4eXYRGOA1p9CTq9ThMzideI", "call_id": "call_SGXPPgPDH028ChbvetYrk64L", "output": "{\"stage\": \"tls\", \"hostname\": \"func-deppath-kpo2.azurewebsites.net\", \"peer_ip\": \"192.168.1.27\", \"peer_port\": 443, \"tls_version\": \"TLSv1.3\", \"cipher\": \"TLS_AES_256_GCM_SHA384\", \"duration_ms\": 82.11}", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 23}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 6, "item": {"type": "reasoning", "id": "rs_027664b8914fb6b2016accf6f5eb24819785d5e5c0d5eef20f", "summary": [], "encrypted_content": null, "status": "in_progress", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 24}
+
+event: response.reasoning_summary_part.added
+data: {"type": "response.reasoning_summary_part.added", "item_id": "rs_027664b8914fb6b2016accf6f5eb24819785d5e5c0d5eef20f", "output_index": 6, "summary_index": 0, "part": {"type": "summary_text", "text": ""}, "sequence_number": 25}
+
+event: response.reasoning_summary_text.done
+data: {"type": "response.reasoning_summary_text.done", "item_id": "rs_027664b8914fb6b2016accf6f5eb24819785d5e5c0d5eef20f", "output_index": 6, "summary_index": 0, "text": "", "sequence_number": 26}
+
+event: response.reasoning_summary_part.done
+data: {"type": "response.reasoning_summary_part.done", "item_id": "rs_027664b8914fb6b2016accf6f5eb24819785d5e5c0d5eef20f", "output_index": 6, "summary_index": 0, "part": {"type": "summary_text", "text": ""}, "sequence_number": 27}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 6, "item": {"type": "reasoning", "id": "rs_027664b8914fb6b2016accf6f5eb24819785d5e5c0d5eef20f", "summary": [{"type": "summary_text", "text": ""}], "encrypted_content": "gAAAAABqzPb2cxLh2ntBk8gp2duv3nYKYcm-aiY_4ITu1An-dYs7I_Ol6yXTSmoVHSuYEcTWf6CXDd4Bdg0QQ_d96WG_EsHmMRB2HW0Q5xL9cgGED8niHRrMFxlmnp7WM7ClZud2VsUdebSbm5L7NCbHaUz2JOXEgo8YHO4JN1xxl103Iuy9dbjZnBTACstbjYNaaDFoohT-CIKbsJhwsMV8rh36xLaCF54j4axDNcVSJ5HFtOy4MyYmgrb-wMIreslsLMjBQFte5-vA6E2LDUTcnkQIDUShoIqGEBtTE5-6VC5knEv1yYEjfvGXqgguWdchL3hDCAGJ5cfNxmCeUaE8OKB7wBlFqVtE0QgQcLmSqiqKAui3QfVlVF6IV6luvzUWtpzH18ZiDYCMeA-eYhq19tYNXrPFBz3e_VifwdJoNbp-6En9zvwL320zdfmaVmwWT2pICGnEEbYktE0vHfrASwkr3ms2JLNqpYT0rDu-5_yucmnUGLi8B03SC3os1m6rbMTxz8HX7K2aAAQjPrULrdks2bJe5SGlN3J8JZJNDtZ_nmXKjd6c4jly0bCLrXwTmqLm1M7WT4wLnDBdKgMpeVjf8F2RaC93v1KpsnRl8H6cyFCT4mIuOiShizj58UgX3DjPt_xeBBU914LxSAWmiZqB2RxVouNG6Jg1zS-t4_bID6VOXsfhYQI-wMvxxbqTxkM9Rwje1vucIR0WxHHwMp5ywmWt9IybwPR4MUXzqjHYMUGSQ5CJKcwwTrh6h0PecLnvYSYTanmM06eGsJzfb0ECdqkGkMnpOomt0oYiQ8Fh8R7w3UsNAtOjHsczZq34YFNq-wvpV0TX0jkSi0DhhJtW0Pm2Cmy2bWJCPbilOae8z2vgpLCFgJl7EO5VtYELzRxI1WiHGepDSG7MjrmgmJ2V_5x1fMW7FoJhTIKN2ztdSEsxDMiu48ripINtnBgbb8hvH5NceC896w_zBnvT8BLMq6F-RXGoqypTFk8tiwEC6bpUiM1MoCrZgDoSGUlpzHSjWSYXUIF9btWkVBDP0Pd6cr1NOtIZy-mhNMqBth4QsknDJJMw7JCLI0tps9AKfrcJn3BfPaiWOjnATAyAYmkSofstvGDb8Txu2kV2L4KnasYQzFMMan6Ks3YlqSR7LleLIhH3QAngNSuXlryCCZKlUOAw0SBnMaQ1zde-EoaGLr4qxRZgWnEtn1YdiiXtjgbJjUXQ", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 28}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 7, "item": {"type": "function_call", "id": "fc_03f212187edf063600bbzjB8sFGIAuDqGZq4qFA8w6zbUha87E", "call_id": "call_zlHvQ8bpryjG4A9NHA6dIiLf", "name": "probe_dependency_https", "arguments": "", "status": "in_progress", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 29}
+
+event: response.function_call_arguments.delta
+data: {"type": "response.function_call_arguments.delta", "item_id": "fc_03f212187edf063600bbzjB8sFGIAuDqGZq4qFA8w6zbUha87E", "output_index": 7, "delta": "{}", "sequence_number": 30}
+
+event: response.function_call_arguments.done
+data: {"type": "response.function_call_arguments.done", "item_id": "fc_03f212187edf063600bbzjB8sFGIAuDqGZq4qFA8w6zbUha87E", "output_index": 7, "name": "probe_dependency_https", "arguments": "{}", "sequence_number": 31}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 7, "item": {"type": "function_call", "id": "fc_03f212187edf063600bbzjB8sFGIAuDqGZq4qFA8w6zbUha87E", "call_id": "call_zlHvQ8bpryjG4A9NHA6dIiLf", "name": "probe_dependency_https", "arguments": "{}", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 32}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 8, "item": {"type": "function_call_output", "id": "fco_03f212187edf063600hPaQfZhGbPsDBMSV0ptHURWaGxdt81sP", "call_id": "call_zlHvQ8bpryjG4A9NHA6dIiLf", "output": "{\"stage\": \"https\", \"status_code\": 200, \"duration_ms\": 1810.42, \"target\": {\"azure_client_ip\": null, \"azure_socket_ip\": null, \"forwarded_for\": [\"192.168.0.138\"], \"forwarded_for_raw\": \"192.168.0.138\", \"forwarded_proto\": \"https\", \"host\": \"func-deppath-kpo2.azurewebsites.net\", \"label\": \"function-dependency\", \"method\": \"GET\", \"request_id\": null, \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\", \"timestamp_utc\": \"2026-10-12T15:04:24.094802+00:00\", \"user_agent\": \"python-requests/2.34.2\"}}", "status": "in_progress", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 33}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 8, "item": {"type": "function_call_output", "id": "fco_03f212187edf063600hPaQfZhGbPsDBMSV0ptHURWaGxdt81sP", "call_id": "call_zlHvQ8bpryjG4A9NHA6dIiLf", "output": "{\"stage\": \"https\", \"status_code\": 200, \"duration_ms\": 1810.42, \"target\": {\"azure_client_ip\": null, \"azure_socket_ip\": null, \"forwarded_for\": [\"192.168.0.138\"], \"forwarded_for_raw\": \"192.168.0.138\", \"forwarded_proto\": \"https\", \"host\": \"func-deppath-kpo2.azurewebsites.net\", \"label\": \"function-dependency\", \"method\": \"GET\", \"request_id\": null, \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\", \"timestamp_utc\": \"2026-10-12T15:04:24.094802+00:00\", \"user_agent\": \"python-requests/2.34.2\"}}", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 34}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 9, "item": {"type": "reasoning", "id": "rs_027664b8914fb6b2016accf6f8ea9c8197b89a4090707aa8fe", "summary": [], "encrypted_content": null, "status": "in_progress", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 35}
+
+event: response.reasoning_summary_part.added
+data: {"type": "response.reasoning_summary_part.added", "item_id": "rs_027664b8914fb6b2016accf6f8ea9c8197b89a4090707aa8fe", "output_index": 9, "summary_index": 0, "part": {"type": "summary_text", "text": ""}, "sequence_number": 36}
+
+event: response.reasoning_summary_text.done
+data: {"type": "response.reasoning_summary_text.done", "item_id": "rs_027664b8914fb6b2016accf6f8ea9c8197b89a4090707aa8fe", "output_index": 9, "summary_index": 0, "text": "", "sequence_number": 37}
+
+event: response.reasoning_summary_part.done
+data: {"type": "response.reasoning_summary_part.done", "item_id": "rs_027664b8914fb6b2016accf6f8ea9c8197b89a4090707aa8fe", "output_index": 9, "summary_index": 0, "part": {"type": "summary_text", "text": ""}, "sequence_number": 38}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 9, "item": {"type": "reasoning", "id": "rs_027664b8914fb6b2016accf6f8ea9c8197b89a4090707aa8fe", "summary": [{"type": "summary_text", "text": ""}], "encrypted_content": "gAAAAABqzPb6XhXXmEBRnuyqQbZRbQUoRzITwO12_cX68X47OqpLqPfwK2QszIaCAnnQxt4vHTNUiI2qqDJnyfsKhAQRj4Boskz3O4GOXTeZ5cUWWxr_mJyIW-Dmdald69XjUkFzpGDpl44GwKAKhf9-fVc2FPMF2RWZJKkAlz2AsPrIimXLgwINW0NjsOPO1FY-v6tmlwx0uMo0_Ypdkyjx7mNQ5A_y2aR_oTqijRBE7qXu4MSi5LfhqoqVITRQ43s_YP8ZXwqO3HehzT9WFR_Sey3S6Sd1j-fOgOHfRqpbN_vt6a2sv_xBpknjdI5yx3iKzr2gXs586YNukIKiswnBNOa12dnaJbpJVWzYCot8Vi7uZjpNbeYuEbyIiEKJ9cfFWMNHJtv2hnJDqc448HO43i9gKV1OLayq2x-Wfr8UBVn_yhemEncFMSIbS3Kdr_kvw-ABTjwDvfkMBKqD29ztz7Y7h4ogRzNagZbL4R_5izkGfq1tgwhyklfDOqOJTj3XHHd68Rt_2fX6iIxENh08UB8_uGGOXVYxBzBNgzVz56oOdBmjpVVjbmOojMn3CUibhrHvY1cQQdL2E69FP_m23gc-TIuS0lVn-Sds8EXl-4oslg8C_8ZQxVr9kwrR4ye9w47OaDYxnRTxontAv3jkvePZZfbzYtmh1oxfqwQNEgu9DMxGw8oVC80RGmODWLeHJXi_YxzBhTGNBHdTxmR4j-83UExt8fQu0RCcO1dJbFkXN6E9v6PC2XlegCtp4vksqhsRzE4BYBNs4OC5viPt2Os_f6KZvr2bUugYW0-7ut0LAuWeLFbiy6SS3kRKyLlub9ENQbGgYHiwNElP3feT-0noVj0sQ4EZ7-Yff9-lMo5GSuKdOJcCU47wK8H59PDVqrtcHteTIG7TLeG3FYQszuqzCoMyalBngT6yJUErAdzvZyuLqjHFoK7VMGWcHhA0qBv0qEcSgHEHEFitDo1rZ6Sjmc_xjbp8sfWh6x6wRo75UKTh0TKiIiBEs61VS52H6G6UPkoDgqEcSM1pGmgzPJ_6_dwfIzrPHhQEd7AN1xSlQkP3wYMC6ahd903O5T4bKrsZwloAq88tDJueaXC_nfZg-iLTOSseo3NHgb80AYEDKqQ9qnLi4IOZshBTExMlcN4dtQIcDT062ivZB2OKDU9o7iWlQVzzLWKVk0ZdI3JjP6FdQt5XUx87jPk943t2wBGC5np59C6cW_KCrAeOYZ5MWEu3u4zHZeE3L3eaRDbmxg5qRRnf9I5CNAoU0POAcmA0dmHMeWZLHEyBecOrwT97DoqpF056p4vI2O8IUQWrcQxZ54ZxAiUnFXHq9Rr48muRJOdCpXyarR8VTSrDxe9Kup79u5hqTapNhj-Ol0WQcDLvOlN_3pNUBi0BsQpFNWl-uOL95PsiKHqTMu1sXX_qROYF99h94DB8DZ3ApoIyC4J50QaAzEc-TvehkvTpWExtuY-EYehHwUZjRl96DhP023K0utNOUp0r7ZAEbULM6jL4zHCbgWt-10riNRAlVssfGYsCepLVLNkIVy02Lu9GT6qzpUxKFkytEQVlGqMOEAIpEmPLisswrS3ozlvrQo_oc2ZPBNVX1cB4EJ_Xzpr0Q-y5hcViZ5X738UG8ah5pLk3v49O5-7K3FJjtQXWyhZJooR1Td77wSiBpk-Z7hq-bwl-LgDOD9Xng4K0wlw9DrAVQnJU8x-EDf4GCA0tv5RCZjYXsuyt1v0PSxNIZ61T3m_iN68Wvcdf0TeB8XMsN1rZSZ3-VtozhZKBYh35C-v2v_L--TZsoE1W5Bpr53Pr1j6KNlJ4Zal4k0xdttzCFpsOTP8Pbfc29a5qOS-37hJm08g4asPMdDV8sQIpWAmJZCIzNHLNngw1K3LzcjH19g7py59cqRLlltuqufHJDSSWVCcaFg1Ter48BkoTsP6A4Ob6FqnAanmYhtw-qGDlcJ81MI8XlEwUqLXDFdDRa4LLCxeePxqThdIPYZaLaGFfpUZmcP769vaYfdYyF7yeHcuOmzO8oqPFVo8HouO3jVws0Kkzi7bydLEuH1LAWYj3AJT_Z8LUbhouYURI4-jnR-CisVZsi_dB0cSLpPBNQwEAW44zwFLjJ31LIaBEEeZ2Mn4IfE12Zc1AeQaX5a6rsR9yyRfHmAih-9x9673MMVGKj2ZaTHDLHAVmZ4pZ9qt7rEQ0IgdMuMtaD980BAF9lFOODlaWxn8vr5O7KdyeVdvmqc-5U5p455AQFA3pKrcwGZEToICPy0FX-_BIjh_EPFkofiCaK9gsQu2scGIxhdoBdpeHeb3xmK-y66-tAR2Oq83Nsw8gEVVjHmXoaF1NeTkeheHRdaIHyMPgjthcMK8XXSiuRcOADRyUf93VAcxQQcy50EPhL8qyD2x-2d3Po7lgbqZINCIemx2V8XU8nZ6qGLEhPN8R6ojWu5AYdIpFqvax_Dp353reVRzeHdIMVVr7XuIunrogES6NVjcgQRqz0wtMlgAMQdeM5BV66ebuEsbeUXU811PT4y8O_Xv97H5hrYFW0sZXAbD7UyVZA5DsZ3VVHnudS9S_rggfMyAgL1QHSw==", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 39}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 10, "item": {"type": "message", "id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "role": "assistant", "content": [], "status": "in_progress", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 40}
+
+event: response.content_part.added
+data: {"type": "response.content_part.added", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "part": {"type": "output_text", "text": "", "annotations": [], "logprobs": []}, "sequence_number": 41}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "", "logprobs": [], "sequence_number": 42}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "{\n", "logprobs": [], "sequence_number": 43}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": " ", "logprobs": [], "sequence_number": 44}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": " \"", "logprobs": [], "sequence_number": 45}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "dns", "logprobs": [], "sequence_number": 46}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "\":", "logprobs": [], "sequence_number": 47}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": " {\n", "logprobs": [], "sequence_number": 48}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "   ", "logprobs": [], "sequence_number": 49}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": " \"", "logprobs": [], "sequence_number": 50}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "stage", "logprobs": [], "sequence_number": 51}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "\":", "logprobs": [], "sequence_number": 52}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": " \"", "logprobs": [], "sequence_number": 53}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "dns", "logprobs": [], "sequence_number": 54}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "\",\n", "logprobs": [], "sequence_number": 55}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "   ", "logprobs": [], "sequence_number": 56}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": " \"", "logprobs": [], "sequence_number": 57}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "hostname", "logprobs": [], "sequence_number": 58}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "\": \"", "logprobs": [], "sequence_number": 59}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "func-de", "logprobs": [], "sequence_number": 60}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "ppath", "logprobs": [], "sequence_number": 61}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "-kpo", "logprobs": [], "sequence_number": 62}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "2.azure", "logprobs": [], "sequence_number": 63}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "websites", "logprobs": [], "sequence_number": 64}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": ".net\",\n", "logprobs": [], "sequence_number": 65}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "    \"port", "logprobs": [], "sequence_number": 66}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "\": 443", "logprobs": [], "sequence_number": 67}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": ",\n    \"", "logprobs": [], "sequence_number": 68}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "addresses\": [\n", "logprobs": [], "sequence_number": 69}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "      \"192", "logprobs": [], "sequence_number": 70}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": ".168.", "logprobs": [], "sequence_number": 71}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "1.27\"\n", "logprobs": [], "sequence_number": 72}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "    ],\n    \"", "logprobs": [], "sequence_number": 73}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "duration_ms\": ", "logprobs": [], "sequence_number": 74}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "12.55\n ", "logprobs": [], "sequence_number": 75}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": " },\n  \"tls\":", "logprobs": [], "sequence_number": 76}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": " {\n    \"stage\":", "logprobs": [], "sequence_number": 77}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": " \"tls\",\n    \"hostname", "logprobs": [], "sequence_number": 78}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "\": \"func", "logprobs": [], "sequence_number": 79}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "-deppath-kpo2", "logprobs": [], "sequence_number": 80}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": ".azurewebsites.net\",\n    \"", "logprobs": [], "sequence_number": 81}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "peer", "logprobs": [], "sequence_number": 82}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "_ip\": \"192.168.", "logprobs": [], "sequence_number": 83}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "1.27\",\n    \"peer", "logprobs": [], "sequence_number": 84}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "_port\": 443,\n    \"tls", "logprobs": [], "sequence_number": 85}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "_version\": \"TLSv1.3\",\n", "logprobs": [], "sequence_number": 86}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "    \"cipher\": \"TLS", "logprobs": [], "sequence_number": 87}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "_AES_256_GCM_SHA384\",\n    \"", "logprobs": [], "sequence_number": 88}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "duration_ms\": 82", "logprobs": [], "sequence_number": 89}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": ".11\n  },\n  \"https\": {\n   ", "logprobs": [], "sequence_number": 90}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": " \"stage\": \"", "logprobs": [], "sequence_number": 91}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "https\",\n    \"status_code\": 200,\n    \"", "logprobs": [], "sequence_number": 92}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "duration_ms\":", "logprobs": [], "sequence_number": 93}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": " 1810.42,\n    \"target\": {\n      \"", "logprobs": [], "sequence_number": 94}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "azure_client", "logprobs": [], "sequence_number": 95}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "_ip\": null,\n      \"azure_socket_ip\": null,\n", "logprobs": [], "sequence_number": 96}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "      \"forward", "logprobs": [], "sequence_number": 97}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "ed_for\": [\n        \"192.168.0.138", "logprobs": [], "sequence_number": 98}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "\"\n     ", "logprobs": [], "sequence_number": 99}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": " ],\n      \"forwarded_for_raw\": \"192.168.0", "logprobs": [], "sequence_number": 100}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": ".", "logprobs": [], "sequence_number": 101}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "138\",\n      \"forwarded_proto\": \"", "logprobs": [], "sequence_number": 102}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "https\",\n      \"host\": \"func-deppath-kpo", "logprobs": [], "sequence_number": 103}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "2.azurewebsites.net\",\n      \"label\": \"function", "logprobs": [], "sequence_number": 104}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "-dependency\",\n      \"method\": \"GET\",\n", "logprobs": [], "sequence_number": 105}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "      \"request_id\": null,\n      \"request_url\": \"https", "logprobs": [], "sequence_number": 106}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "://func-deppath-kpo2.azurewebsites.net/api/de", "logprobs": [], "sequence_number": 107}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "pendency-probe\",\n      \"timestamp_utc\": \"202", "logprobs": [], "sequence_number": 108}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "6-10-12T15:04:24.094802", "logprobs": [], "sequence_number": 109}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": "+00:00\",\n      \"user_agent\": \"python-requests/2", "logprobs": [], "sequence_number": 110}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "delta": ".34.2\"\n    }\n  }\n}", "logprobs": [], "sequence_number": 111}
+
+: keep-alive
+
+event: response.output_text.done
+data: {"type": "response.output_text.done", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "text": "{\n  \"dns\": {\n    \"stage\": \"dns\",\n    \"hostname\": \"func-deppath-kpo2.azurewebsites.net\",\n    \"port\": 443,\n    \"addresses\": [\n      \"192.168.1.27\"\n    ],\n    \"duration_ms\": 12.55\n  },\n  \"tls\": {\n    \"stage\": \"tls\",\n    \"hostname\": \"func-deppath-kpo2.azurewebsites.net\",\n    \"peer_ip\": \"192.168.1.27\",\n    \"peer_port\": 443,\n    \"tls_version\": \"TLSv1.3\",\n    \"cipher\": \"TLS_AES_256_GCM_SHA384\",\n    \"duration_ms\": 82.11\n  },\n  \"https\": {\n    \"stage\": \"https\",\n    \"status_code\": 200,\n    \"duration_ms\": 1810.42,\n    \"target\": {\n      \"azure_client_ip\": null,\n      \"azure_socket_ip\": null,\n      \"forwarded_for\": [\n        \"192.168.0.138\"\n      ],\n      \"forwarded_for_raw\": \"192.168.0.138\",\n      \"forwarded_proto\": \"https\",\n      \"host\": \"func-deppath-kpo2.azurewebsites.net\",\n      \"label\": \"function-dependency\",\n      \"method\": \"GET\",\n      \"request_id\": null,\n      \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\",\n      \"timestamp_utc\": \"2026-10-12T15:04:24.094802+00:00\",\n      \"user_agent\": \"python-requests/2.34.2\"\n    }\n  }\n}", "logprobs": [], "sequence_number": 112}
+
+event: response.content_part.done
+data: {"type": "response.content_part.done", "item_id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "output_index": 10, "content_index": 0, "part": {"type": "output_text", "text": "{\n  \"dns\": {\n    \"stage\": \"dns\",\n    \"hostname\": \"func-deppath-kpo2.azurewebsites.net\",\n    \"port\": 443,\n    \"addresses\": [\n      \"192.168.1.27\"\n    ],\n    \"duration_ms\": 12.55\n  },\n  \"tls\": {\n    \"stage\": \"tls\",\n    \"hostname\": \"func-deppath-kpo2.azurewebsites.net\",\n    \"peer_ip\": \"192.168.1.27\",\n    \"peer_port\": 443,\n    \"tls_version\": \"TLSv1.3\",\n    \"cipher\": \"TLS_AES_256_GCM_SHA384\",\n    \"duration_ms\": 82.11\n  },\n  \"https\": {\n    \"stage\": \"https\",\n    \"status_code\": 200,\n    \"duration_ms\": 1810.42,\n    \"target\": {\n      \"azure_client_ip\": null,\n      \"azure_socket_ip\": null,\n      \"forwarded_for\": [\n        \"192.168.0.138\"\n      ],\n      \"forwarded_for_raw\": \"192.168.0.138\",\n      \"forwarded_proto\": \"https\",\n      \"host\": \"func-deppath-kpo2.azurewebsites.net\",\n      \"label\": \"function-dependency\",\n      \"method\": \"GET\",\n      \"request_id\": null,\n      \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\",\n      \"timestamp_utc\": \"2026-10-12T15:04:24.094802+00:00\",\n      \"user_agent\": \"python-requests/2.34.2\"\n    }\n  }\n}", "annotations": [], "logprobs": []}, "sequence_number": 113}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 10, "item": {"type": "message", "id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "role": "assistant", "content": [{"type": "output_text", "text": "{\n  \"dns\": {\n    \"stage\": \"dns\",\n    \"hostname\": \"func-deppath-kpo2.azurewebsites.net\",\n    \"port\": 443,\n    \"addresses\": [\n      \"192.168.1.27\"\n    ],\n    \"duration_ms\": 12.55\n  },\n  \"tls\": {\n    \"stage\": \"tls\",\n    \"hostname\": \"func-deppath-kpo2.azurewebsites.net\",\n    \"peer_ip\": \"192.168.1.27\",\n    \"peer_port\": 443,\n    \"tls_version\": \"TLSv1.3\",\n    \"cipher\": \"TLS_AES_256_GCM_SHA384\",\n    \"duration_ms\": 82.11\n  },\n  \"https\": {\n    \"stage\": \"https\",\n    \"status_code\": 200,\n    \"duration_ms\": 1810.42,\n    \"target\": {\n      \"azure_client_ip\": null,\n      \"azure_socket_ip\": null,\n      \"forwarded_for\": [\n        \"192.168.0.138\"\n      ],\n      \"forwarded_for_raw\": \"192.168.0.138\",\n      \"forwarded_proto\": \"https\",\n      \"host\": \"func-deppath-kpo2.azurewebsites.net\",\n      \"label\": \"function-dependency\",\n      \"method\": \"GET\",\n      \"request_id\": null,\n      \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\",\n      \"timestamp_utc\": \"2026-10-12T15:04:24.094802+00:00\",\n      \"user_agent\": \"python-requests/2.34.2\"\n    }\n  }\n}", "annotations": [], "logprobs": []}], "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 114}
+
+event: response.failed
+data: {"type": "response.failed", "response": {"id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "object": "response", "output": [{"type": "reasoning", "id": "rs_027664b8914fb6b2016accf6f290448197b27027039692fd7f", "summary": [{"type": "summary_text", "text": ""}], "encrypted_content": "gAAAAABqzPbzYUaR7JudQSHRfxjW1UJmozijWN-6GkOpXtBZGVW8Qj1_v1JUG2OauUMmxxH1rLWpf47FhsFWi2pa1fh_oGhrY7jm9maC0RnRQT86ovzIFKcJ3MYi0sfe3EQLdtlkH4QPU2dcI8PT4aSryx5z3AFM4sQOj69TRD6bZiC1kFP1_9IaAbgpF0MwqYnsdY36v0tp1eCbMVLHJPNkiN--6njxZSeN_jii6mf4PNkoPAf94tST7RH9tuCtOK2rfY6jhSkEPdxA8qxP9a9lMX4ZUIoXwOiN8ukdWPx_UAJ_pT_h0HLQOK7Ynz0mhsypce5ChPwKiXHgIjvd_tsc7ji0Zm_HmWYHiLB5oPrv_4Q-I8AbnRHHpuCa20cCv2NtBg-g1t2_0OVVCA8kB0JgOBwBt2VZQK-mikFFjG2jyWoi0UEtpVeK5Q9tb217dmltJHV5-NNoatkH_Ppw5Yj0DSr4EwgcbhURQxu58QWiilDahHZxGce9Ovix7YZKL3B-gm-CfkH31scazg7rOY20fCfpbSpLX-Z0OKgLJg6mHFEVmf6d42aOsTb1LMl7UUQSjIm8_LYmU1pjm7_LG49PWYSSRw-4B21hrq0Tix3LbV4CRTaiP93vwdtc0VNAC_NGY5rz-FpyajtCopAl0rYIpEiSM9koGY8Sntbi6kuz9UEWh6vDyl1OVAcaGVYemv3dxXwwuH0krQnLVXzJJe-zjG7f5oHYRD6y9Qx1nj_lMu2r4cBle4uIP5AFw0JsAYZ-j9owsjHGTpbeTG3M1roKEo5dF0RUaAhJVFbxHt9UkgjBFLN-Q6_WRQvNodVzSzoBpWb5eUnMCb4U0sz2qwl72tjxPJrPJw9JIpnz1n0FI7GOlx6sW7PMWS-laFX8a1RpqJgPAgqsdhyFFbOIFGzMV0ZJonBl8sqckpK8qA4mleCu9Rjb-8aecDF4FhOWcJdaKWSb7Y5xNIZCwHcZnS3Ik48zgN5CZ4_dBLrCm5yOmIkCP8AbE7SqPxHY5bvYPahrcL_rf3LltDotF9mPplZ35WGa5tfzQUBvE_0-cPTJlNArLAi0ycPfvGTBWM_DOMs622jflNdF9w4wRNSxHlbDZbF_llsX4DB422ChNwfVjH3B9mORaMLFcerSGRsxopGzjD7n0udKCbJfFUqCTPKrncr3WAFqhAkGAcrqlrh9fjZC0g_VurvCQ5DBy792nrCYfgqM-Oi6kOHgunF6p96lSMPXahpUykXAIZeRJmcbrnKCkZ_pDWiHDM2-1onUCyjEtMJEc4-9hFQDPChC_qkI38jtqnDpn5HQvTImMud82ot7yOXQ6IwEva8FoVuu7U4JT_UZobSc3JjlJHetpUkU05DNgECct1A_RUXpBw1ixUsM7bDDd8E812VLHIr0cfRlGJtFUoGT9Rwt9kmRwXC09lCsxyqtUovkktHlFSqYU023P-tGGFUmp5rRxX_kLEU7vyAYkdzINzKWtjuIh25f7Ctk18oxUhmi6Ovn_TQhj-p3393rJBh0EYhvkWyIPqet7XshI5Fdz8I8Tw5yUCE3jrwyWFf__NST4A85jwvefaHexD26nYYThP8tkzQWt8JqIoTZRfy1lj8RhecMZ5hrvDTNPrD9sRVtb4PCDmqZVgEL03i_ZbfzsO6SW5QDcG7OuXhEk880u8b2wJTe9UiZMQGEHb-MZdVxw4tHOJB7YfR7TLSGo-ZXebMRbvlJ8-Y_5lT6JNhEf92KVUGo5pYr_0xNygQqSj9NLnUerJ7xtdGKLEyUkRFgVzgk7-Ge_u3ThUir27qwyljpJAyLkx-tudAprqLcd__JS2o4IOXlYDz8dVLTjfWz5I2R4aq1fq3PgATnMIZQcXvWIwWsn7qNvlKVH6KoMqBXUhehmSyrayzGeU79pDQ=", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": null}, {"type": "function_call", "id": "fc_03f212187edf063600JsflUQkwghdxjc4XsPQrIXbmCGJcgnUK", "call_id": "call_E96Qqm6jzSHPnQnmLeQIhOEG", "name": "probe_dependency_dns", "arguments": "{}", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": null}, {"type": "function_call_output", "id": "fco_03f212187edf063600Z5yUSIaV0csdl3FAHS5MB2fluqvuFQwU", "call_id": "call_E96Qqm6jzSHPnQnmLeQIhOEG", "output": "{\"stage\": \"dns\", \"hostname\": \"func-deppath-kpo2.azurewebsites.net\", \"port\": 443, \"addresses\": [\"192.168.1.27\"], \"duration_ms\": 12.55}", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": null}, {"type": "reasoning", "id": "rs_027664b8914fb6b2016accf6f47d6c8197b4b321a49a8fc870", "summary": [{"type": "summary_text", "text": ""}], "encrypted_content": "gAAAAABqzPb0XwUt--UD-50MMlZS4bn0LH87OKyKASIvzhIc-5NxODrcsI9BNV_kp7R7NFTCl-tIci1MH2Ty2cgDcZYekjYHTs4MXDrO5-g4-6ZupctzH-pkNduydhMxyI7YNx0VBt9BRnypwf6fZynfGYwJMnTwr3BxY7n3pR4kuqPU1993NnSAj-XBQ6Qm01d7B0RqSwpAYi4iy-ap_SB4CYH9vZ7TTgTzFSv8Ibwh632MsJcMNYpK4i-XKDHc9Y4iTJhLEfPlN_AS_C_dWL46Mzof-F4MwmcFQM34KhX_zIaMEZuRCt8buyiUuulR7gFZut3CWDkIhwOBU_hsq2cuKbJH5yEgNimvlUh7ECgc4l2dePpeisphpYMcDEP5VXCbYitjImDCt-anIzFQyfnm6CHa7oiqw782bnZPpCDzVhnLe_grA_Qed8kKF72sD3xMqOkAGL1ZSHEAjbpmsgC3-L_ClbzT60lfBa0MpvaJzSiOLzsUJhTXyzwQLUBpXjzx9QGWvcIUi9c2E2Cn3yd1lfbMZc62rQfGq2SrQRVhIHf8Tvc5O40r9ic2wueZ3MBgYC74G8wpAIFiRTC50kxHINVubbEoR_YHF1m8aTXUls069RwoUh5vBeKIB4ZuxjvQaMVp7JGwGcwANtOVVFWjQ1ryF6LycdH88pgflLWsBCquaShyP_hyed-iF7q2vdO9PRYz2DlNRyRUbNhpzdvWoGQEXHGKyvj93CED7OAvX8QNM-hmu8tUfRu6IufivXLVNxZV92EpTcdF_Ej5Ql384hfr3NabRm1yDupRjvTC5YzeoBw3pgrgKW6mxnW15OWAdlK3fQjCZEAk3y0xxCcaX6DulCou8CGBrTiUqDhCNxbv4hcg2XV6N7F7-Y6tvLxACF5fUXtuiJt7kVF89VgnTiYvoVNZb04Vmihaa6iQdh5vSXbOfTQHHDMvr4KFkVLKEMCKiyJBx33HJv88_Tk5iROmmVZ7bHY8NOisgrTyIRDmC7pdZtzRMK3ENbrCxcKNbGU4LTg72di78OFkD6lZ0bHYarPzcFpAhSowiwXb_5Lys0dJAk0_WI0ED_-mEDqgwixCfiSvib9l-AhI6WPsSEGaKQLcwdHdybzfk5pHhWrRWbN3iH6IlyIDNJQwS3IHhGOlwAuahUvSlX0zxE5BpMQDl-P3107I60YL1nocN5T3mNpCJPdY3GXfXWdlk5ElQvez1J6v", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": null}, {"type": "function_call", "id": "fc_03f212187edf063600BxGgH2nJZsV2EvFgcClWq85kuDuf8ru8", "call_id": "call_SGXPPgPDH028ChbvetYrk64L", "name": "probe_dependency_tls", "arguments": "{}", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": null}, {"type": "function_call_output", "id": "fco_03f212187edf0636008Ngpn9j3D4eXYRGOA1p9CTq9ThMzideI", "call_id": "call_SGXPPgPDH028ChbvetYrk64L", "output": "{\"stage\": \"tls\", \"hostname\": \"func-deppath-kpo2.azurewebsites.net\", \"peer_ip\": \"192.168.1.27\", \"peer_port\": 443, \"tls_version\": \"TLSv1.3\", \"cipher\": \"TLS_AES_256_GCM_SHA384\", \"duration_ms\": 82.11}", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": null}, {"type": "reasoning", "id": "rs_027664b8914fb6b2016accf6f5eb24819785d5e5c0d5eef20f", "summary": [{"type": "summary_text", "text": ""}], "encrypted_content": "gAAAAABqzPb2cxLh2ntBk8gp2duv3nYKYcm-aiY_4ITu1An-dYs7I_Ol6yXTSmoVHSuYEcTWf6CXDd4Bdg0QQ_d96WG_EsHmMRB2HW0Q5xL9cgGED8niHRrMFxlmnp7WM7ClZud2VsUdebSbm5L7NCbHaUz2JOXEgo8YHO4JN1xxl103Iuy9dbjZnBTACstbjYNaaDFoohT-CIKbsJhwsMV8rh36xLaCF54j4axDNcVSJ5HFtOy4MyYmgrb-wMIreslsLMjBQFte5-vA6E2LDUTcnkQIDUShoIqGEBtTE5-6VC5knEv1yYEjfvGXqgguWdchL3hDCAGJ5cfNxmCeUaE8OKB7wBlFqVtE0QgQcLmSqiqKAui3QfVlVF6IV6luvzUWtpzH18ZiDYCMeA-eYhq19tYNXrPFBz3e_VifwdJoNbp-6En9zvwL320zdfmaVmwWT2pICGnEEbYktE0vHfrASwkr3ms2JLNqpYT0rDu-5_yucmnUGLi8B03SC3os1m6rbMTxz8HX7K2aAAQjPrULrdks2bJe5SGlN3J8JZJNDtZ_nmXKjd6c4jly0bCLrXwTmqLm1M7WT4wLnDBdKgMpeVjf8F2RaC93v1KpsnRl8H6cyFCT4mIuOiShizj58UgX3DjPt_xeBBU914LxSAWmiZqB2RxVouNG6Jg1zS-t4_bID6VOXsfhYQI-wMvxxbqTxkM9Rwje1vucIR0WxHHwMp5ywmWt9IybwPR4MUXzqjHYMUGSQ5CJKcwwTrh6h0PecLnvYSYTanmM06eGsJzfb0ECdqkGkMnpOomt0oYiQ8Fh8R7w3UsNAtOjHsczZq34YFNq-wvpV0TX0jkSi0DhhJtW0Pm2Cmy2bWJCPbilOae8z2vgpLCFgJl7EO5VtYELzRxI1WiHGepDSG7MjrmgmJ2V_5x1fMW7FoJhTIKN2ztdSEsxDMiu48ripINtnBgbb8hvH5NceC896w_zBnvT8BLMq6F-RXGoqypTFk8tiwEC6bpUiM1MoCrZgDoSGUlpzHSjWSYXUIF9btWkVBDP0Pd6cr1NOtIZy-mhNMqBth4QsknDJJMw7JCLI0tps9AKfrcJn3BfPaiWOjnATAyAYmkSofstvGDb8Txu2kV2L4KnasYQzFMMan6Ks3YlqSR7LleLIhH3QAngNSuXlryCCZKlUOAw0SBnMaQ1zde-EoaGLr4qxRZgWnEtn1YdiiXtjgbJjUXQ", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": null}, {"type": "function_call", "id": "fc_03f212187edf063600bbzjB8sFGIAuDqGZq4qFA8w6zbUha87E", "call_id": "call_zlHvQ8bpryjG4A9NHA6dIiLf", "name": "probe_dependency_https", "arguments": "{}", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": null}, {"type": "function_call_output", "id": "fco_03f212187edf063600hPaQfZhGbPsDBMSV0ptHURWaGxdt81sP", "call_id": "call_zlHvQ8bpryjG4A9NHA6dIiLf", "output": "{\"stage\": \"https\", \"status_code\": 200, \"duration_ms\": 1810.42, \"target\": {\"azure_client_ip\": null, \"azure_socket_ip\": null, \"forwarded_for\": [\"192.168.0.138\"], \"forwarded_for_raw\": \"192.168.0.138\", \"forwarded_proto\": \"https\", \"host\": \"func-deppath-kpo2.azurewebsites.net\", \"label\": \"function-dependency\", \"method\": \"GET\", \"request_id\": null, \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\", \"timestamp_utc\": \"2026-10-12T15:04:24.094802+00:00\", \"user_agent\": \"python-requests/2.34.2\"}}", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": null}, {"type": "reasoning", "id": "rs_027664b8914fb6b2016accf6f8ea9c8197b89a4090707aa8fe", "summary": [{"type": "summary_text", "text": ""}], "encrypted_content": "gAAAAABqzPb6XhXXmEBRnuyqQbZRbQUoRzITwO12_cX68X47OqpLqPfwK2QszIaCAnnQxt4vHTNUiI2qqDJnyfsKhAQRj4Boskz3O4GOXTeZ5cUWWxr_mJyIW-Dmdald69XjUkFzpGDpl44GwKAKhf9-fVc2FPMF2RWZJKkAlz2AsPrIimXLgwINW0NjsOPO1FY-v6tmlwx0uMo0_Ypdkyjx7mNQ5A_y2aR_oTqijRBE7qXu4MSi5LfhqoqVITRQ43s_YP8ZXwqO3HehzT9WFR_Sey3S6Sd1j-fOgOHfRqpbN_vt6a2sv_xBpknjdI5yx3iKzr2gXs586YNukIKiswnBNOa12dnaJbpJVWzYCot8Vi7uZjpNbeYuEbyIiEKJ9cfFWMNHJtv2hnJDqc448HO43i9gKV1OLayq2x-Wfr8UBVn_yhemEncFMSIbS3Kdr_kvw-ABTjwDvfkMBKqD29ztz7Y7h4ogRzNagZbL4R_5izkGfq1tgwhyklfDOqOJTj3XHHd68Rt_2fX6iIxENh08UB8_uGGOXVYxBzBNgzVz56oOdBmjpVVjbmOojMn3CUibhrHvY1cQQdL2E69FP_m23gc-TIuS0lVn-Sds8EXl-4oslg8C_8ZQxVr9kwrR4ye9w47OaDYxnRTxontAv3jkvePZZfbzYtmh1oxfqwQNEgu9DMxGw8oVC80RGmODWLeHJXi_YxzBhTGNBHdTxmR4j-83UExt8fQu0RCcO1dJbFkXN6E9v6PC2XlegCtp4vksqhsRzE4BYBNs4OC5viPt2Os_f6KZvr2bUugYW0-7ut0LAuWeLFbiy6SS3kRKyLlub9ENQbGgYHiwNElP3feT-0noVj0sQ4EZ7-Yff9-lMo5GSuKdOJcCU47wK8H59PDVqrtcHteTIG7TLeG3FYQszuqzCoMyalBngT6yJUErAdzvZyuLqjHFoK7VMGWcHhA0qBv0qEcSgHEHEFitDo1rZ6Sjmc_xjbp8sfWh6x6wRo75UKTh0TKiIiBEs61VS52H6G6UPkoDgqEcSM1pGmgzPJ_6_dwfIzrPHhQEd7AN1xSlQkP3wYMC6ahd903O5T4bKrsZwloAq88tDJueaXC_nfZg-iLTOSseo3NHgb80AYEDKqQ9qnLi4IOZshBTExMlcN4dtQIcDT062ivZB2OKDU9o7iWlQVzzLWKVk0ZdI3JjP6FdQt5XUx87jPk943t2wBGC5np59C6cW_KCrAeOYZ5MWEu3u4zHZeE3L3eaRDbmxg5qRRnf9I5CNAoU0POAcmA0dmHMeWZLHEyBecOrwT97DoqpF056p4vI2O8IUQWrcQxZ54ZxAiUnFXHq9Rr48muRJOdCpXyarR8VTSrDxe9Kup79u5hqTapNhj-Ol0WQcDLvOlN_3pNUBi0BsQpFNWl-uOL95PsiKHqTMu1sXX_qROYF99h94DB8DZ3ApoIyC4J50QaAzEc-TvehkvTpWExtuY-EYehHwUZjRl96DhP023K0utNOUp0r7ZAEbULM6jL4zHCbgWt-10riNRAlVssfGYsCepLVLNkIVy02Lu9GT6qzpUxKFkytEQVlGqMOEAIpEmPLisswrS3ozlvrQo_oc2ZPBNVX1cB4EJ_Xzpr0Q-y5hcViZ5X738UG8ah5pLk3v49O5-7K3FJjtQXWyhZJooR1Td77wSiBpk-Z7hq-bwl-LgDOD9Xng4K0wlw9DrAVQnJU8x-EDf4GCA0tv5RCZjYXsuyt1v0PSxNIZ61T3m_iN68Wvcdf0TeB8XMsN1rZSZ3-VtozhZKBYh35C-v2v_L--TZsoE1W5Bpr53Pr1j6KNlJ4Zal4k0xdttzCFpsOTP8Pbfc29a5qOS-37hJm08g4asPMdDV8sQIpWAmJZCIzNHLNngw1K3LzcjH19g7py59cqRLlltuqufHJDSSWVCcaFg1Ter48BkoTsP6A4Ob6FqnAanmYhtw-qGDlcJ81MI8XlEwUqLXDFdDRa4LLCxeePxqThdIPYZaLaGFfpUZmcP769vaYfdYyF7yeHcuOmzO8oqPFVo8HouO3jVws0Kkzi7bydLEuH1LAWYj3AJT_Z8LUbhouYURI4-jnR-CisVZsi_dB0cSLpPBNQwEAW44zwFLjJ31LIaBEEeZ2Mn4IfE12Zc1AeQaX5a6rsR9yyRfHmAih-9x9673MMVGKj2ZaTHDLHAVmZ4pZ9qt7rEQ0IgdMuMtaD980BAF9lFOODlaWxn8vr5O7KdyeVdvmqc-5U5p455AQFA3pKrcwGZEToICPy0FX-_BIjh_EPFkofiCaK9gsQu2scGIxhdoBdpeHeb3xmK-y66-tAR2Oq83Nsw8gEVVjHmXoaF1NeTkeheHRdaIHyMPgjthcMK8XXSiuRcOADRyUf93VAcxQQcy50EPhL8qyD2x-2d3Po7lgbqZINCIemx2V8XU8nZ6qGLEhPN8R6ojWu5AYdIpFqvax_Dp353reVRzeHdIMVVr7XuIunrogES6NVjcgQRqz0wtMlgAMQdeM5BV66ebuEsbeUXU811PT4y8O_Xv97H5hrYFW0sZXAbD7UyVZA5DsZ3VVHnudS9S_rggfMyAgL1QHSw==", "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": null}, {"type": "message", "id": "msg_03f212187edf063600ogPAKmonsQ9pBGK6cxCyLKeBdA5gGAio", "role": "assistant", "content": [{"type": "output_text", "text": "{\n  \"dns\": {\n    \"stage\": \"dns\",\n    \"hostname\": \"func-deppath-kpo2.azurewebsites.net\",\n    \"port\": 443,\n    \"addresses\": [\n      \"192.168.1.27\"\n    ],\n    \"duration_ms\": 12.55\n  },\n  \"tls\": {\n    \"stage\": \"tls\",\n    \"hostname\": \"func-deppath-kpo2.azurewebsites.net\",\n    \"peer_ip\": \"192.168.1.27\",\n    \"peer_port\": 443,\n    \"tls_version\": \"TLSv1.3\",\n    \"cipher\": \"TLS_AES_256_GCM_SHA384\",\n    \"duration_ms\": 82.11\n  },\n  \"https\": {\n    \"stage\": \"https\",\n    \"status_code\": 200,\n    \"duration_ms\": 1810.42,\n    \"target\": {\n      \"azure_client_ip\": null,\n      \"azure_socket_ip\": null,\n      \"forwarded_for\": [\n        \"192.168.0.138\"\n      ],\n      \"forwarded_for_raw\": \"192.168.0.138\",\n      \"forwarded_proto\": \"https\",\n      \"host\": \"func-deppath-kpo2.azurewebsites.net\",\n      \"label\": \"function-dependency\",\n      \"method\": \"GET\",\n      \"request_id\": null,\n      \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\",\n      \"timestamp_utc\": \"2026-10-12T15:04:24.094802+00:00\",\n      \"user_agent\": \"python-requests/2.34.2\"\n    }\n  }\n}", "annotations": [], "logprobs": []}], "status": "completed", "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": null}], "created_at": 1791817455, "error": {"code": "server_error", "message": "Another request advanced this agent session; reload before writing."}, "incomplete_details": null, "instructions": null, "parallel_tool_calls": false, "status": "failed", "completed_at": null, "usage": {"input_tokens": 7896, "input_tokens_details": {"cached_tokens": 5504, "cache_write_tokens": 0}, "output_tokens": 754, "output_tokens_details": {"reasoning_tokens": 256}, "total_tokens": 8650}, "response_id": "caresp_03f212187edf063600jlwXF7z3jLl8dW8LW0uc0ZCcz4pRnBhf", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}, "model": "", "agent_session_id": "98433b3f4d4196f72a4f0cffd70438d6d3b2e1be77e16379add708403d2bcdf", "conversation": {"id": "conv_03f212187edf063600PvYgd6wRClrpNZFGyqTTcnvFVQxdxrmZ"}}, "sequence_number": 115}
+
+Update available: 1.31.2 -> 1.35.1 (https://github.com/Azure/azure-dev/releases/tag/azure-dev-cli_1.35.1)
+To update, run `winget upgrade Microsoft.Azd`

@@ -1,0 +1,257 @@
+HTTP/2.0 200 OK
+Access-Control-Expose-Headers: Operation-Location,Location,Apim-Request-Id,x-agent-session-id,x-agent-invocation-id
+Api-Supported-Versions: 1.0,2025-05-15-preview,2025-11-15-preview
+Apim-Request-Id: 3c443536-f345-4b0b-9133-ca36567b8910
+Azureml-Served-By-Cluster: hyena-swedencentral-01
+Cache-Control: no-cache
+Content-Encoding: identity
+Content-Type: text/event-stream; charset=utf-8
+Date: Mon, 12 Oct 2026 15:11:16 GMT
+Request-Context: appId=
+Server: istio-envoy
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+X-Accel-Buffering: no
+X-Agent-Session-Id: 98433b3f4d4196f72a4f0cffd70438d6d3b2e1be77e16379add708403d2bcdf
+X-Content-Type-Options: nosniff
+X-Ms-Debug-Latency-Container-Response-Ms: 455
+X-Ms-Debug-Latency-Platform-Preprocessing-Ms: 317
+X-Ms-Debug-Latency-Response-Begin-Ms: 772
+X-Ms-Debug-Latency-Session-Start-Type: warm
+X-Ms-Region: Sweden Central
+X-Ms-Response-Type: standard
+X-Platform-Server: azure-ai-agentserver-core/2.2.0 (python/3.13) azure-ai-agentserver-responses/2.3.0 (python/3.13)
+X-Request-Id: 6d93f76b5817917a1b1374b638427584,6d93f76b5817917a1b1374b638427584
+
+event: response.created
+data: {"type": "response.created", "response": {"id": "caresp_03f212187edf063600SrdKm31WWefpbwzj0igvfUOAZGgASCVv", "object": "response", "output": [], "created_at": 1791817876, "error": null, "incomplete_details": null, "instructions": null, "parallel_tool_calls": false, "status": "in_progress", "response_id": "caresp_03f212187edf063600SrdKm31WWefpbwzj0igvfUOAZGgASCVv", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}, "model": "", "agent_session_id": "98433b3f4d4196f72a4f0cffd70438d6d3b2e1be77e16379add708403d2bcdf", "conversation": {"id": "conv_03f212187edf063600PvYgd6wRClrpNZFGyqTTcnvFVQxdxrmZ"}}, "sequence_number": 0}
+
+event: response.in_progress
+data: {"type": "response.in_progress", "response": {"id": "caresp_03f212187edf063600SrdKm31WWefpbwzj0igvfUOAZGgASCVv", "object": "response", "output": [], "created_at": 1791817876, "error": null, "incomplete_details": null, "instructions": null, "parallel_tool_calls": false, "status": "in_progress", "response_id": "caresp_03f212187edf063600SrdKm31WWefpbwzj0igvfUOAZGgASCVv", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}, "model": "", "agent_session_id": "98433b3f4d4196f72a4f0cffd70438d6d3b2e1be77e16379add708403d2bcdf", "conversation": {"id": "conv_03f212187edf063600PvYgd6wRClrpNZFGyqTTcnvFVQxdxrmZ"}}, "sequence_number": 1}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 0, "item": {"type": "reasoning", "id": "rs_027664b8914fb6b2016accf8968b0881978ba71b75f106f675", "summary": [], "encrypted_content": null, "status": "in_progress", "response_id": "caresp_03f212187edf063600SrdKm31WWefpbwzj0igvfUOAZGgASCVv", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 2}
+
+event: response.reasoning_summary_part.added
+data: {"type": "response.reasoning_summary_part.added", "item_id": "rs_027664b8914fb6b2016accf8968b0881978ba71b75f106f675", "output_index": 0, "summary_index": 0, "part": {"type": "summary_text", "text": ""}, "sequence_number": 3}
+
+event: response.reasoning_summary_text.done
+data: {"type": "response.reasoning_summary_text.done", "item_id": "rs_027664b8914fb6b2016accf8968b0881978ba71b75f106f675", "output_index": 0, "summary_index": 0, "text": "", "sequence_number": 4}
+
+event: response.reasoning_summary_part.done
+data: {"type": "response.reasoning_summary_part.done", "item_id": "rs_027664b8914fb6b2016accf8968b0881978ba71b75f106f675", "output_index": 0, "summary_index": 0, "part": {"type": "summary_text", "text": ""}, "sequence_number": 5}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 0, "item": {"type": "reasoning", "id": "rs_027664b8914fb6b2016accf8968b0881978ba71b75f106f675", "summary": [{"type": "summary_text", "text": ""}], "encrypted_content": "gAAAAABqzPiX8HZ5BIlQLVy0ssd5ThTj35T7y5nAuwKdx-LPgJXmBnQpi1ZN_tXQpzblQzabwYYQA6w6rWKd6CYljOWRU8t6TuxDR-wSrbyTUTlbbPjlWRdW5xBmqN3tP9rtPfr3gmWxAYy6MkwqG0MTXpLbYCp24T2xqE2zNpeh-0c9MmniVnaUeEQ4tGj_TfhYAjmisqTIy0RIfRbUFpIGyP1EjaOpRyf9BjulD9rfqfXvT1Pc-DIMpwqE7QFLcsvBqDcqhJt0M0sheItdcRltQ_SA6zsjjrRuKEuNx-FLYH9LsF_n9ozAVBU23AYrwF49PgvoEXmmM2mEUU3y4cbks82OG4QZxkNR5owi2NNCFe2Odpo18UK-G1_Bb4Zl0vo8kKB7vdO-d4i67lrBoYwUNcE9ETRe2KV4sDVcrgwtz1CNxiCdMqqP726ZcCX_8dbx4kPm8NyTkT_6eueHwW2o9mULFLioTjrjuFioGMnh-HhimptErmLeTDAZbmBSIu6TARfTCUTK_6mLgR-xcb_oEW9z9F-iKLp4ltTtIozaHJko_IHfMJsYwj2QzUL_qVbeFb2yEfmAXCecYxrYHFxff7ebaCbdbLAcx9d5pybr4UpIZW7XV97dafSP6IAnt6LDbgIc5k8CP8YKuHgxwV51_zMo2mxGLU2hM8jluUjYeFh7RDwebxZWpLfHe19Y5S2swealBlSp4l4_pWbZpgOAeY9n6ai6IzpLk9Et3SmUKYm3aGf7NN75uFeTNHblYrRpmeG_rYjapcsRxi-6vwg9BHgUyHfuROUWURpvXycJRx8XSE4ssAIU0OMcJPf7dB6KXlPXm-RANHNAKvKowslEeKGAoIdJ6g5XcxGDLWici-3dXRmDoFLfbuYoAKJAJC1jI7WCbbCfPSeg7gVciR2oVMYKEO6h1CGYi0GJ6WYrgNP9wzvpQsWeSBnl91lihf7__WpORz1AY2W_RxhA5o7VOTijpWwB6TWPwl0VKMzkyx0gMEUKXRrKDHl4FW9lre7gY9ATBbESjKetGwT1QZuvLH7CCusE-x0SePz_F1qJl_5Gdc4nMhzxWPPDPhzvRSlurFNCiJIKSYpAmE9JPooiWVc_lHqRoJu3POJnxT8EoTpdWXKcFciTyUS1czJq1hi5LXmbcmjYLHghwAXu58yVvX4Lmmtkd-yZeivC1tCaa7bizA2YSTOzDLbBWg3W3qVXKyssFlTBiqUnGvzX-v1q-EqcCPMNR1ZEBhhPBWi14-wSc3OFT60qjw4St3tvEr91pKFMW-h487Y-JN42YG6_OTmtSV4SMf4NG1dWQAda_mgJilwDRDJTVwSx4_XadZcngFp7XdHKL5rPTw3JrG2TLfx6qQBOM1TnsNH9HlxRJmbajNjnlImcQ9w7kgd7htam3U6huG4Omjo925zO4YJcaVRzrOYEivp2TSOy3P0e317B4TMu62ql3Ba_qRs3PKzXp265rXKb7qE2Q5TDEq8Pq0Mh2t7v8Tfk4bxu92N0XBYII_vqVAus8I5zJaReWgouvdmEISAs1Xx1bcmTgDrCZxK2lDEk37P8lS_fjIi1CdruGZWMBdUgm9O-J1Mbs8qWEl-4dKqag0McQXopnanFJoJBXTEol1_ImOINHzctpMffHj5kTA4YU6cXX45UyJzM23ZxS2KrK6gXWgU5eqCgT7oaqOvbTloMMnBbtZvj-2oR5fYAz5BP18OGgFVast3bf_ljq6zoI0eKogYBfoYyik-4Jodsr-tkeNhXUplbQpKKoIGwS1g7Z2-H64RUhCqNA-LeX1I06xnG9v-c6CXj-Oe3_5Y9aRMuftc3bimkGsuG6W6vT8mHFgVDamJ52wy0fytdwsaHSW3Y1WpK8iiaNv8TRHfMm7YVFfTzVasTyeLHHIEIMXWsPL7SE1PS6UBV3simEBZM-KlKHN3nhuure6tec-DBSNu6uO4oJJR4DOUSIABc4OQoim0Y52tXSNGgmMSdiSRqgF2S-gy9NYtCIqRsVYuHQ9gseitrOP56KVBCVQszmKodvvGeOoHUNRngA4kcNpUsOWVIwGTVxTlLoeiJ5VWJMr94SApGG1OqtVsocJ2laZJq_-Jg6bakQXzTiTlZfUwD", "status": "completed", "response_id": "caresp_03f212187edf063600SrdKm31WWefpbwzj0igvfUOAZGgASCVv", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 6}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 1, "item": {"type": "function_call", "id": "fc_03f212187edf063600ia4be39h9mqcKqwLT5rchJhNOLylwqoM", "call_id": "call_zlrQAO26adgKNkYFU5sm3kSO", "name": "dependency_probe___probeDependencyPath", "arguments": "", "status": "in_progress", "response_id": "caresp_03f212187edf063600SrdKm31WWefpbwzj0igvfUOAZGgASCVv", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 7}
+
+event: response.function_call_arguments.delta
+data: {"type": "response.function_call_arguments.delta", "item_id": "fc_03f212187edf063600ia4be39h9mqcKqwLT5rchJhNOLylwqoM", "output_index": 1, "delta": "{}", "sequence_number": 8}
+
+event: response.function_call_arguments.done
+data: {"type": "response.function_call_arguments.done", "item_id": "fc_03f212187edf063600ia4be39h9mqcKqwLT5rchJhNOLylwqoM", "output_index": 1, "name": "dependency_probe___probeDependencyPath", "arguments": "{}", "sequence_number": 9}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 1, "item": {"type": "function_call", "id": "fc_03f212187edf063600ia4be39h9mqcKqwLT5rchJhNOLylwqoM", "call_id": "call_zlrQAO26adgKNkYFU5sm3kSO", "name": "dependency_probe___probeDependencyPath", "arguments": "{}", "status": "completed", "response_id": "caresp_03f212187edf063600SrdKm31WWefpbwzj0igvfUOAZGgASCVv", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 10}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 2, "item": {"type": "function_call_output", "id": "fco_03f212187edf063600DJwx1RoW6NYFNPWMrr3llcmk87ogcace", "call_id": "call_zlrQAO26adgKNkYFU5sm3kSO", "output": "{\"azure_client_ip\": null, \"azure_socket_ip\": null, \"forwarded_for\": [\"100.100.209.6\", \"100.64.17.202\", \"192.168.0.99\"], \"forwarded_for_raw\": \"100.100.209.6,100.64.17.202, 192.168.0.99\", \"forwarded_proto\": \"https\", \"host\": \"func-deppath-kpo2.azurewebsites.net\", \"label\": \"function-dependency\", \"method\": \"GET\", \"request_id\": \"eb39a0fe-6bfb-40f1-8dd8-8feb03c5aeaf\", \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\", \"timestamp_utc\": \"2026-10-12T15:11:20.633242+00:00\", \"user_agent\": \"azure-agents\"}", "status": "in_progress", "response_id": "caresp_03f212187edf063600SrdKm31WWefpbwzj0igvfUOAZGgASCVv", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 11}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 2, "item": {"type": "function_call_output", "id": "fco_03f212187edf063600DJwx1RoW6NYFNPWMrr3llcmk87ogcace", "call_id": "call_zlrQAO26adgKNkYFU5sm3kSO", "output": "{\"azure_client_ip\": null, \"azure_socket_ip\": null, \"forwarded_for\": [\"100.100.209.6\", \"100.64.17.202\", \"192.168.0.99\"], \"forwarded_for_raw\": \"100.100.209.6,100.64.17.202, 192.168.0.99\", \"forwarded_proto\": \"https\", \"host\": \"func-deppath-kpo2.azurewebsites.net\", \"label\": \"function-dependency\", \"method\": \"GET\", \"request_id\": \"eb39a0fe-6bfb-40f1-8dd8-8feb03c5aeaf\", \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\", \"timestamp_utc\": \"2026-10-12T15:11:20.633242+00:00\", \"user_agent\": \"azure-agents\"}", "status": "completed", "response_id": "caresp_03f212187edf063600SrdKm31WWefpbwzj0igvfUOAZGgASCVv", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 12}
+
+event: response.output_item.added
+data: {"type": "response.output_item.added", "output_index": 3, "item": {"type": "message", "id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "role": "assistant", "content": [], "status": "in_progress", "response_id": "caresp_03f212187edf063600SrdKm31WWefpbwzj0igvfUOAZGgASCVv", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 13}
+
+event: response.content_part.added
+data: {"type": "response.content_part.added", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "part": {"type": "output_text", "text": "", "annotations": [], "logprobs": []}, "sequence_number": 14}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "", "logprobs": [], "sequence_number": 15}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "{\n", "logprobs": [], "sequence_number": 16}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": " ", "logprobs": [], "sequence_number": 17}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": " \"", "logprobs": [], "sequence_number": 18}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "azure", "logprobs": [], "sequence_number": 19}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "_client", "logprobs": [], "sequence_number": 20}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "_ip", "logprobs": [], "sequence_number": 21}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "\":", "logprobs": [], "sequence_number": 22}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": " null", "logprobs": [], "sequence_number": 23}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": ",\n", "logprobs": [], "sequence_number": 24}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": " ", "logprobs": [], "sequence_number": 25}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": " \"", "logprobs": [], "sequence_number": 26}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "azure", "logprobs": [], "sequence_number": 27}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "_socket", "logprobs": [], "sequence_number": 28}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "_ip", "logprobs": [], "sequence_number": 29}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "\":", "logprobs": [], "sequence_number": 30}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": " null", "logprobs": [], "sequence_number": 31}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": ",\n ", "logprobs": [], "sequence_number": 32}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": " \"forward", "logprobs": [], "sequence_number": 33}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "ed_for", "logprobs": [], "sequence_number": 34}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "\": [\n", "logprobs": [], "sequence_number": 35}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "    \"", "logprobs": [], "sequence_number": 36}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "100.", "logprobs": [], "sequence_number": 37}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "100.", "logprobs": [], "sequence_number": 38}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "209.6", "logprobs": [], "sequence_number": 39}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "\",\n    \"", "logprobs": [], "sequence_number": 40}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "100.64", "logprobs": [], "sequence_number": 41}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": ".17.", "logprobs": [], "sequence_number": 42}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "202\",\n   ", "logprobs": [], "sequence_number": 43}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": " \"192.", "logprobs": [], "sequence_number": 44}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "168.0.", "logprobs": [], "sequence_number": 45}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "99\"\n  ],\n", "logprobs": [], "sequence_number": 46}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "  \"forwarded", "logprobs": [], "sequence_number": 47}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "_for_raw\": \"100", "logprobs": [], "sequence_number": 48}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": ".100.209.", "logprobs": [], "sequence_number": 49}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "6,100.64", "logprobs": [], "sequence_number": 50}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": ".17.202, ", "logprobs": [], "sequence_number": 51}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "192.168", "logprobs": [], "sequence_number": 52}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": ".0.99\",\n ", "logprobs": [], "sequence_number": 53}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": " \"forwarded_proto\": \"https", "logprobs": [], "sequence_number": 54}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "\",\n", "logprobs": [], "sequence_number": 55}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "  \"host\": \"func-de", "logprobs": [], "sequence_number": 56}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "ppath-kpo2.azureweb", "logprobs": [], "sequence_number": 57}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "sites.net\",\n  \"label\": \"", "logprobs": [], "sequence_number": 58}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "function-dependency\",\n  \"method\": \"", "logprobs": [], "sequence_number": 59}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "GET\",\n  \"request_id", "logprobs": [], "sequence_number": 60}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "\": \"eb39a0fe-6b", "logprobs": [], "sequence_number": 61}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "fb-40f1", "logprobs": [], "sequence_number": 62}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "-8dd8-8feb03c5ae", "logprobs": [], "sequence_number": 63}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "af\",\n  \"", "logprobs": [], "sequence_number": 64}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "request_url\": \"https://func-deppath-kpo", "logprobs": [], "sequence_number": 65}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "2.azureweb", "logprobs": [], "sequence_number": 66}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "sites.net/api/dependency-probe\",\n  \"timestamp_utc", "logprobs": [], "sequence_number": 67}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "\": \"", "logprobs": [], "sequence_number": 68}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "2026-10-12T15:11:20.633", "logprobs": [], "sequence_number": 69}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "242", "logprobs": [], "sequence_number": 70}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "+00:00\",\n  \"user_agent\": \"azure-agents\"\n", "logprobs": [], "sequence_number": 71}
+
+event: response.output_text.delta
+data: {"type": "response.output_text.delta", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "delta": "}", "logprobs": [], "sequence_number": 72}
+
+event: response.output_text.done
+data: {"type": "response.output_text.done", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "text": "{\n  \"azure_client_ip\": null,\n  \"azure_socket_ip\": null,\n  \"forwarded_for\": [\n    \"100.100.209.6\",\n    \"100.64.17.202\",\n    \"192.168.0.99\"\n  ],\n  \"forwarded_for_raw\": \"100.100.209.6,100.64.17.202, 192.168.0.99\",\n  \"forwarded_proto\": \"https\",\n  \"host\": \"func-deppath-kpo2.azurewebsites.net\",\n  \"label\": \"function-dependency\",\n  \"method\": \"GET\",\n  \"request_id\": \"eb39a0fe-6bfb-40f1-8dd8-8feb03c5aeaf\",\n  \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\",\n  \"timestamp_utc\": \"2026-10-12T15:11:20.633242+00:00\",\n  \"user_agent\": \"azure-agents\"\n}", "logprobs": [], "sequence_number": 73}
+
+event: response.content_part.done
+data: {"type": "response.content_part.done", "item_id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "output_index": 3, "content_index": 0, "part": {"type": "output_text", "text": "{\n  \"azure_client_ip\": null,\n  \"azure_socket_ip\": null,\n  \"forwarded_for\": [\n    \"100.100.209.6\",\n    \"100.64.17.202\",\n    \"192.168.0.99\"\n  ],\n  \"forwarded_for_raw\": \"100.100.209.6,100.64.17.202, 192.168.0.99\",\n  \"forwarded_proto\": \"https\",\n  \"host\": \"func-deppath-kpo2.azurewebsites.net\",\n  \"label\": \"function-dependency\",\n  \"method\": \"GET\",\n  \"request_id\": \"eb39a0fe-6bfb-40f1-8dd8-8feb03c5aeaf\",\n  \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\",\n  \"timestamp_utc\": \"2026-10-12T15:11:20.633242+00:00\",\n  \"user_agent\": \"azure-agents\"\n}", "annotations": [], "logprobs": []}, "sequence_number": 74}
+
+event: response.output_item.done
+data: {"type": "response.output_item.done", "output_index": 3, "item": {"type": "message", "id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "role": "assistant", "content": [{"type": "output_text", "text": "{\n  \"azure_client_ip\": null,\n  \"azure_socket_ip\": null,\n  \"forwarded_for\": [\n    \"100.100.209.6\",\n    \"100.64.17.202\",\n    \"192.168.0.99\"\n  ],\n  \"forwarded_for_raw\": \"100.100.209.6,100.64.17.202, 192.168.0.99\",\n  \"forwarded_proto\": \"https\",\n  \"host\": \"func-deppath-kpo2.azurewebsites.net\",\n  \"label\": \"function-dependency\",\n  \"method\": \"GET\",\n  \"request_id\": \"eb39a0fe-6bfb-40f1-8dd8-8feb03c5aeaf\",\n  \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\",\n  \"timestamp_utc\": \"2026-10-12T15:11:20.633242+00:00\",\n  \"user_agent\": \"azure-agents\"\n}", "annotations": [], "logprobs": []}], "status": "completed", "response_id": "caresp_03f212187edf063600SrdKm31WWefpbwzj0igvfUOAZGgASCVv", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}}, "sequence_number": 75}
+
+event: response.completed
+data: {"type": "response.completed", "response": {"id": "caresp_03f212187edf063600SrdKm31WWefpbwzj0igvfUOAZGgASCVv", "object": "response", "output": [{"type": "reasoning", "id": "rs_027664b8914fb6b2016accf8968b0881978ba71b75f106f675", "summary": [{"type": "summary_text", "text": ""}], "encrypted_content": "gAAAAABqzPiX8HZ5BIlQLVy0ssd5ThTj35T7y5nAuwKdx-LPgJXmBnQpi1ZN_tXQpzblQzabwYYQA6w6rWKd6CYljOWRU8t6TuxDR-wSrbyTUTlbbPjlWRdW5xBmqN3tP9rtPfr3gmWxAYy6MkwqG0MTXpLbYCp24T2xqE2zNpeh-0c9MmniVnaUeEQ4tGj_TfhYAjmisqTIy0RIfRbUFpIGyP1EjaOpRyf9BjulD9rfqfXvT1Pc-DIMpwqE7QFLcsvBqDcqhJt0M0sheItdcRltQ_SA6zsjjrRuKEuNx-FLYH9LsF_n9ozAVBU23AYrwF49PgvoEXmmM2mEUU3y4cbks82OG4QZxkNR5owi2NNCFe2Odpo18UK-G1_Bb4Zl0vo8kKB7vdO-d4i67lrBoYwUNcE9ETRe2KV4sDVcrgwtz1CNxiCdMqqP726ZcCX_8dbx4kPm8NyTkT_6eueHwW2o9mULFLioTjrjuFioGMnh-HhimptErmLeTDAZbmBSIu6TARfTCUTK_6mLgR-xcb_oEW9z9F-iKLp4ltTtIozaHJko_IHfMJsYwj2QzUL_qVbeFb2yEfmAXCecYxrYHFxff7ebaCbdbLAcx9d5pybr4UpIZW7XV97dafSP6IAnt6LDbgIc5k8CP8YKuHgxwV51_zMo2mxGLU2hM8jluUjYeFh7RDwebxZWpLfHe19Y5S2swealBlSp4l4_pWbZpgOAeY9n6ai6IzpLk9Et3SmUKYm3aGf7NN75uFeTNHblYrRpmeG_rYjapcsRxi-6vwg9BHgUyHfuROUWURpvXycJRx8XSE4ssAIU0OMcJPf7dB6KXlPXm-RANHNAKvKowslEeKGAoIdJ6g5XcxGDLWici-3dXRmDoFLfbuYoAKJAJC1jI7WCbbCfPSeg7gVciR2oVMYKEO6h1CGYi0GJ6WYrgNP9wzvpQsWeSBnl91lihf7__WpORz1AY2W_RxhA5o7VOTijpWwB6TWPwl0VKMzkyx0gMEUKXRrKDHl4FW9lre7gY9ATBbESjKetGwT1QZuvLH7CCusE-x0SePz_F1qJl_5Gdc4nMhzxWPPDPhzvRSlurFNCiJIKSYpAmE9JPooiWVc_lHqRoJu3POJnxT8EoTpdWXKcFciTyUS1czJq1hi5LXmbcmjYLHghwAXu58yVvX4Lmmtkd-yZeivC1tCaa7bizA2YSTOzDLbBWg3W3qVXKyssFlTBiqUnGvzX-v1q-EqcCPMNR1ZEBhhPBWi14-wSc3OFT60qjw4St3tvEr91pKFMW-h487Y-JN42YG6_OTmtSV4SMf4NG1dWQAda_mgJilwDRDJTVwSx4_XadZcngFp7XdHKL5rPTw3JrG2TLfx6qQBOM1TnsNH9HlxRJmbajNjnlImcQ9w7kgd7htam3U6huG4Omjo925zO4YJcaVRzrOYEivp2TSOy3P0e317B4TMu62ql3Ba_qRs3PKzXp265rXKb7qE2Q5TDEq8Pq0Mh2t7v8Tfk4bxu92N0XBYII_vqVAus8I5zJaReWgouvdmEISAs1Xx1bcmTgDrCZxK2lDEk37P8lS_fjIi1CdruGZWMBdUgm9O-J1Mbs8qWEl-4dKqag0McQXopnanFJoJBXTEol1_ImOINHzctpMffHj5kTA4YU6cXX45UyJzM23ZxS2KrK6gXWgU5eqCgT7oaqOvbTloMMnBbtZvj-2oR5fYAz5BP18OGgFVast3bf_ljq6zoI0eKogYBfoYyik-4Jodsr-tkeNhXUplbQpKKoIGwS1g7Z2-H64RUhCqNA-LeX1I06xnG9v-c6CXj-Oe3_5Y9aRMuftc3bimkGsuG6W6vT8mHFgVDamJ52wy0fytdwsaHSW3Y1WpK8iiaNv8TRHfMm7YVFfTzVasTyeLHHIEIMXWsPL7SE1PS6UBV3simEBZM-KlKHN3nhuure6tec-DBSNu6uO4oJJR4DOUSIABc4OQoim0Y52tXSNGgmMSdiSRqgF2S-gy9NYtCIqRsVYuHQ9gseitrOP56KVBCVQszmKodvvGeOoHUNRngA4kcNpUsOWVIwGTVxTlLoeiJ5VWJMr94SApGG1OqtVsocJ2laZJq_-Jg6bakQXzTiTlZfUwD", "status": "completed", "response_id": "caresp_03f212187edf063600SrdKm31WWefpbwzj0igvfUOAZGgASCVv", "agent_reference": null}, {"type": "function_call", "id": "fc_03f212187edf063600ia4be39h9mqcKqwLT5rchJhNOLylwqoM", "call_id": "call_zlrQAO26adgKNkYFU5sm3kSO", "name": "dependency_probe___probeDependencyPath", "arguments": "{}", "status": "completed", "response_id": "caresp_03f212187edf063600SrdKm31WWefpbwzj0igvfUOAZGgASCVv", "agent_reference": null}, {"type": "function_call_output", "id": "fco_03f212187edf063600DJwx1RoW6NYFNPWMrr3llcmk87ogcace", "call_id": "call_zlrQAO26adgKNkYFU5sm3kSO", "output": "{\"azure_client_ip\": null, \"azure_socket_ip\": null, \"forwarded_for\": [\"100.100.209.6\", \"100.64.17.202\", \"192.168.0.99\"], \"forwarded_for_raw\": \"100.100.209.6,100.64.17.202, 192.168.0.99\", \"forwarded_proto\": \"https\", \"host\": \"func-deppath-kpo2.azurewebsites.net\", \"label\": \"function-dependency\", \"method\": \"GET\", \"request_id\": \"eb39a0fe-6bfb-40f1-8dd8-8feb03c5aeaf\", \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\", \"timestamp_utc\": \"2026-10-12T15:11:20.633242+00:00\", \"user_agent\": \"azure-agents\"}", "status": "completed", "response_id": "caresp_03f212187edf063600SrdKm31WWefpbwzj0igvfUOAZGgASCVv", "agent_reference": null}, {"type": "message", "id": "msg_03f212187edf063600nRqzj1p4tWkcukh6iexvHxpSDcv4vhgp", "role": "assistant", "content": [{"type": "output_text", "text": "{\n  \"azure_client_ip\": null,\n  \"azure_socket_ip\": null,\n  \"forwarded_for\": [\n    \"100.100.209.6\",\n    \"100.64.17.202\",\n    \"192.168.0.99\"\n  ],\n  \"forwarded_for_raw\": \"100.100.209.6,100.64.17.202, 192.168.0.99\",\n  \"forwarded_proto\": \"https\",\n  \"host\": \"func-deppath-kpo2.azurewebsites.net\",\n  \"label\": \"function-dependency\",\n  \"method\": \"GET\",\n  \"request_id\": \"eb39a0fe-6bfb-40f1-8dd8-8feb03c5aeaf\",\n  \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\",\n  \"timestamp_utc\": \"2026-10-12T15:11:20.633242+00:00\",\n  \"user_agent\": \"azure-agents\"\n}", "annotations": [], "logprobs": []}], "status": "completed", "response_id": "caresp_03f212187edf063600SrdKm31WWefpbwzj0igvfUOAZGgASCVv", "agent_reference": null}], "created_at": 1791817876, "error": null, "incomplete_details": null, "instructions": null, "parallel_tool_calls": false, "status": "completed", "completed_at": 1791817884, "usage": {"input_tokens": 10480, "input_tokens_details": {"cached_tokens": 9344, "cache_write_tokens": 0}, "output_tokens": 383, "output_tokens_details": {"reasoning_tokens": 128}, "total_tokens": 10863}, "response_id": "caresp_03f212187edf063600SrdKm31WWefpbwzj0igvfUOAZGgASCVv", "agent_reference": {"type": "agent_reference", "name": "echo-probe-agent", "version": "2"}, "model": "", "agent_session_id": "98433b3f4d4196f72a4f0cffd70438d6d3b2e1be77e16379add708403d2bcdf", "conversation": {"id": "conv_03f212187edf063600PvYgd6wRClrpNZFGyqTTcnvFVQxdxrmZ"}}, "sequence_number": 76}
+
+Update available: 1.31.2 -> 1.35.1 (https://github.com/Azure/azure-dev/releases/tag/azure-dev-cli_1.35.1)
+To update, run `winget upgrade Microsoft.Azd`

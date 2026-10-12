@@ -1,0 +1,34 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Foundry dependency path probe",
+    "version": "1.0.0",
+    "description": "Returns network metadata observed by the private Azure Function target."
+  },
+  "servers": [
+    {
+      "url": "https://func-deppath-kpo2.azurewebsites.net"
+    }
+  ],
+  "paths": {
+    "/api/dependency-probe": {
+      "get": {
+        "operationId": "probeDependencyPath",
+        "summary": "Probe the Azure Function dependency path",
+        "responses": {
+          "200": {
+            "description": "Target-observed network metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

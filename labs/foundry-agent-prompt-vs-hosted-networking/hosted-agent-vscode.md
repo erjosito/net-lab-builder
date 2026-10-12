@@ -6,8 +6,9 @@
 **Status:** Documentation. Deployment complete (2026-08-21). Scenarios HS2/HS3/HS5 confirmed.
 
 > **Scope:** This guide covers the VS Code Foundry Toolkit workflow for creating, debugging, and
-> deploying a hosted agent. It maps directly to the lab's scenarios HS1–HS5. No executable sample
-> code is provided beyond illustrative snippets required by the scaffold structure.
+> deploying a hosted agent. It maps to scenarios HS1–HS5 and the later Azure Function dependency
+> extension. The checked-in hosted-agent implementation is executable and includes both direct
+> Python and Foundry Toolbox paths.
 
 ---
 
@@ -82,20 +83,19 @@ Your Python `main.py` calls `requests.get("http://echo.tools.lab/api/echo")` dir
 - **Why interesting:** this is the headline network difference the lab tests.  
 - **Complexity:** minimal — just `import requests` and one HTTP call.
 
-### Approach B — Foundry Toolbox with OpenAPI definition (advanced — documented, not tested in this lab)
+### Approach B — Foundry Toolbox with OpenAPI definition (advanced — tested 2026-10-12)
 
-You would create a Foundry Toolbox via Python SDK and attach an OpenAPI tool definition pointing at
-`http://echo.tools.lab`. The agent code calls the toolbox endpoint; Microsoft Learn now explicitly
-documents that the platform routes registered tool server calls through the **data proxy** regardless
-of agent type.
+The extension creates a Foundry Toolbox via Python SDK and attaches the same OpenAPI definition used
+by the prompt agent. The hosted agent connects to the toolbox MCP endpoint with
+`agent_framework.FoundryToolbox`; the platform routes its registered HTTP tool call through the
+**data proxy** regardless of agent type.
 
-> ⚠️ **Not implemented or tested in this lab.** Approach B was not deployed. The source IP prediction
-> below is based on platform documentation, not empirical evidence from this lab. See OQ1 in
-> [design.md](design.md) for the design uncertainty.
-
-- **Source IP at target VM (not measured):** expected from the data proxy allocation in AgentSubnet `192.168.0.0/24`. Whether the exact IP value differs from the Micro VM NIC IPs is an open question (OQ1).
-- **Why interesting:** would empirically verify the documented agent-type-independent data proxy path and compare its observed source IP with direct Micro VM egress.
-- **Complexity:** requires SDK toolbox creation and `azure.yaml` modification.
+- **Measured data-proxy source:** `192.168.0.99` at the Function during comparable prompt and hosted
+  Toolbox runs.
+- **Measured direct-code source:** Micro VM NIC `192.168.0.138`.
+- **Why interesting:** it proves one hosted agent can expose two distinct network executors.
+- **Implementation:** `tests/setup_dependency_agents.py` creates the toolbox; `TOOLBOX_ENDPOINT` in
+  `azure.yaml` enables it in `main.py`.
 - **VS Code UI limitation:** the Foundry Toolkit VS Code UI does **not** support adding OpenAPI tools
   to a toolbox (confirmed from docs 2026-08-19). You must use the Python SDK or `azd` CLI.
 
@@ -349,8 +349,8 @@ azd deploy
 2. Select the **Playground** tab.
 3. Send: `probe both echo endpoints and return the results`.
 4. Capture the full JSON response. Look for `echo_data.src_ip` and `ctrl_data.src_ip`.
-5. Compare `echo_data.src_ip` with the data proxy IPs observed in the sibling lab
-   (`192.168.0.49`, `192.168.0.239`). If different, H2 is confirmed. If the same, OQ1 remains open.
+5. Compare `echo_data.src_ip` with the registered-tool executor. The later Function extension made
+   this comparison directly: data proxy `192.168.0.99` versus Micro VM `192.168.0.138`.
 
 ### Surface 2: Terminal (`azd` CLI)
 
@@ -397,49 +397,55 @@ agent using a Foundry Toolbox. It is a follow-up to the initial HS2 run.
 adding OpenAPI tools to a toolbox. The capability matrix in the official toolbox docs shows
 `Foundry Toolkit: No` for OpenAPI tool creation. You must use the Python SDK.
 
-### Why this matters (documented mechanism — source IP comparison not yet validated)
+### Why this matters
 
 When a hosted agent calls `requests.get(...)` directly (Approach A), the source IP is the
-Micro VM NIC IP. Approach B routes the Toolbox call through the **data proxy** — the same documented
-path as a prompt agent's OpenAPI tool call. Implementing it would allow a direct
-comparison of `src_ip` at vm-tools-echo between the two paths (Approach A vs B) to empirically
-confirm or refute H1 from within a single lab run. **This comparison was not performed in this lab.**
-OQ1 (whether data proxy and Micro VM NIC IPs are distinguishable by value) remains open.
+Micro VM NIC IP. Approach B routes the Toolbox call through the **data proxy** — the same path as a
+prompt agent's OpenAPI tool call. Against the locked-down Function, the hosted Toolbox and prompt
+OpenAPI paths both presented `192.168.0.99`, while direct Python presented `192.168.0.138`.
 
-### Toolbox creation (Python SDK — repository stages `agent-tools/create-echo-toolbox.py`)
+### Toolbox creation (Python SDK)
 
-The repository stages a script at `agent-tools/create-echo-toolbox.py`. Jose runs it once:
+The checked-in [`tests/setup_dependency_agents.py`](tests/setup_dependency_agents.py) creates or
+reuses `dependency-path-toolbox:1` and `dependency-openapi-prompt:1` from the shared
+[`dependency-function/openapi.json`](dependency-function/openapi.json). The essential SDK shape is:
 
 ```python
 # Illustrative structure only — do not commit credentials or IDs
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
+from azure.ai.projects.models import (
+    OpenApiAnonymousAuthDetails,
+    OpenApiFunctionDefinition,
+    OpenApiToolboxTool,
+)
 import json
 
 project = AIProjectClient(
     endpoint="https://<FOUNDRY_ACCOUNT>.services.ai.azure.com/api/projects/<PROJECT>",
     credential=DefaultAzureCredential(),
 )
-with open("agent-tools/echo-echo-dns.openapi.json") as f:
+with open("dependency-function/openapi.json") as f:
     spec = json.load(f)
 
+definition = OpenApiFunctionDefinition(
+    name="dependency_probe",
+    spec=spec,
+    description="Return target-observed network metadata.",
+    auth=OpenApiAnonymousAuthDetails(),
+)
+
 toolbox_version = project.toolboxes.create_version(
-    name="echo-toolbox",
-    description="Echo endpoint toolbox for prompt-vs-hosted lab",
-    tools=[{
-        "type": "openapi",
-        "name": "echoTools",
-        "spec": spec,
-        "auth": {"type": "anonymous"},
-    }],
+    name="dependency-path-toolbox",
+    tools=[OpenApiToolboxTool(openapi=definition)],
 )
 print(f"Toolbox: {toolbox_version.name}  version: {toolbox_version.version}")
 ```
 
-After creating the toolbox, reference it in `azure.yaml` (Tank prepares this addition) and add a
-second call in `main.py` that uses the Toolbox SDK instead of `requests` directly. The agent code
-makes a Toolbox call → platform data proxy → `echo.tools.lab`. Compare the resulting `src_ip` with
-the direct `requests.get()` `src_ip` from HS2.
+Reference the versioned toolbox MCP URL through `TOOLBOX_ENDPOINT` in `azure.yaml`. The current
+`main.py` conditionally constructs `FoundryToolbox` when this variable is present and adds it to the
+same Agent Framework tool list as the direct Python probes. This keeps the two paths available in
+one hosted deployment without hard-coding project or toolbox identifiers.
 
 > **⚠️ Billable action:** Creating a toolbox version incurs Foundry data-plane charges. Verify
 > pricing before running this step in a loop.

@@ -61,6 +61,10 @@ simplicity; evidence collection only requires the final values.
 """
 
 import os
+import socket
+import ssl
+import time
+from urllib.parse import urlparse
 
 # ``requests`` — synchronous HTTP client; used for the direct probe calls.
 # Why sync requests (not async httpx): the tool functions are called from the
@@ -81,7 +85,7 @@ from agent_framework import Agent
 # endpoint + credential into the interface that ``Agent`` expects for LLM calls.
 # Alternative: raw ``azure.ai.projects.AIProjectClient`` + manual Responses API
 # requests.  FoundryChatClient hides the auth header refresh and retry logic.
-from agent_framework.foundry import FoundryChatClient
+from agent_framework.foundry import FoundryChatClient, FoundryToolbox
 
 # ``ResponsesHostServer`` — starts the HTTP listener that implements the OpenAI
 # Responses API on the Micro VM port.  The Foundry platform forwards incoming
@@ -131,6 +135,116 @@ _CTRL_URL = "http://ctrl.tools.lab/api/echo"
 # the echo handler is trivially fast so this is a safety ceiling.
 # Docs: https://docs.python-requests.org/en/latest/user/quickstart/#timeouts
 _TIMEOUT = (5, 10)  # (connect_timeout, read_timeout) in seconds
+
+# The Function dependency is injected at deployment time rather than hard-coded.
+# This keeps the hosted-agent package reusable and avoids coupling source code to
+# one globally unique Function App name.
+_DEPENDENCY_URL_ENV = "FUNCTION_DEPENDENCY_URL"
+
+
+def _dependency_target() -> tuple[str, str, int]:
+    """Return the configured HTTPS URL, hostname, and TCP port.
+
+    ``urlparse`` handles default ports and rejects malformed configuration
+    before any network call. HTTPS is required because the test compares the
+    normal Azure Functions TLS path; allowing HTTP would change both the port
+    and the App Service front-end behavior.
+
+    URL parsing reference:
+    https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlparse
+    """
+
+    url = os.getenv(_DEPENDENCY_URL_ENV, "").strip()
+    parsed = urlparse(url)
+    if parsed.scheme != "https" or not parsed.hostname:
+        raise RuntimeError(
+            f"{_DEPENDENCY_URL_ENV} must be an absolute HTTPS URL; got {url!r}."
+        )
+    return url, parsed.hostname, parsed.port or 443
+
+
+def probe_dependency_dns() -> dict:
+    """Resolve the Function hostname using the Micro VM's configured resolver.
+
+    ``socket.getaddrinfo`` uses the operating-system resolver, so this measures
+    the same DNS configuration available to normal Python dependencies inside
+    the hosted-agent Micro VM. The result retains all unique IPv4/IPv6 answers.
+
+    Alternative: ``dnspython`` can expose record TTLs and query a chosen DNS
+    server directly. It is intentionally not used because that would bypass the
+    runtime resolver path under test and add an unnecessary dependency.
+    """
+
+    _, hostname, port = _dependency_target()
+    started = time.monotonic()
+    answers = socket.getaddrinfo(hostname, port, type=socket.SOCK_STREAM)
+    addresses = sorted({answer[4][0] for answer in answers})
+    return {
+        "stage": "dns",
+        "hostname": hostname,
+        "port": port,
+        "addresses": addresses,
+        "duration_ms": round((time.monotonic() - started) * 1000, 2),
+    }
+
+
+def probe_dependency_tls() -> dict:
+    """Open TCP 443 and complete a certificate-validating TLS handshake.
+
+    ``socket.create_connection`` follows normal address-selection behavior and
+    returns the selected peer address. ``ssl.create_default_context`` validates
+    the server certificate against the standard trust store and verifies that
+    it matches the Function hostname.
+
+    Keeping this separate from the HTTP call distinguishes routing/firewall/TLS
+    failures from an HTTP authorization or application response.
+    """
+
+    _, hostname, port = _dependency_target()
+    started = time.monotonic()
+    context = ssl.create_default_context()
+    with (
+        socket.create_connection((hostname, port), timeout=_TIMEOUT[0]) as tcp_socket,
+        context.wrap_socket(tcp_socket, server_hostname=hostname) as tls_socket,
+    ):
+        peer_ip, peer_port = tls_socket.getpeername()[:2]
+        return {
+            "stage": "tls",
+            "hostname": hostname,
+            "peer_ip": peer_ip,
+            "peer_port": peer_port,
+            "tls_version": tls_socket.version(),
+            "cipher": tls_socket.cipher()[0],
+            "duration_ms": round((time.monotonic() - started) * 1000, 2),
+        }
+
+
+def probe_dependency_https() -> dict:
+    """Call the Function directly from hosted Python and return its JSON body.
+
+    This is the application-dependency path under test:
+
+    ``hosted Python -> Micro VM NIC -> Function endpoint``
+
+    It does *not* register the URL as a Foundry OpenAPI tool and therefore does
+    not ask the Tools Service/data proxy to execute the request. ``requests``
+    performs DNS, TCP, TLS, redirect handling, and HTTP directly in this process.
+
+    ``raise_for_status`` is intentionally retained. A lockdown result such as
+    ``403 Ip Forbidden`` must propagate as an error rather than being disguised
+    as a successful tool result.
+    """
+
+    url, _, _ = _dependency_target()
+    started = time.monotonic()
+    response = requests.get(url, timeout=_TIMEOUT)
+    response.raise_for_status()
+    return {
+        "stage": "https",
+        "status_code": response.status_code,
+        "duration_ms": round((time.monotonic() - started) * 1000, 2),
+        "target": response.json(),
+    }
 
 
 def probe_echo() -> dict:
@@ -232,11 +346,35 @@ def main():
     # Why not ``AIProjectClient`` directly?  FoundryChatClient is the MAF-native
     # adapter and handles the chat-completion loop (tool-call ↔ tool-result
     # message exchange) transparently.
+    credential = DefaultAzureCredential()
     client = FoundryChatClient(
         project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
         model=model_name,
-        credential=DefaultAzureCredential(),
+        credential=credential,
     )
+
+    # A Foundry toolbox exposes its registered tools through an MCP-compatible
+    # project endpoint. FoundryToolbox is only added when TOOLBOX_ENDPOINT is
+    # configured, which keeps local development and direct-only deployments
+    # usable without silently pointing at a stale toolbox.
+    #
+    # The important network distinction is that this client asks the Foundry
+    # Tools Service to execute the registered OpenAPI tool. The Function HTTP
+    # request therefore originates from the data-proxy path, not from requests
+    # running in this Micro VM.
+    #
+    # Reference:
+    # https://learn.microsoft.com/azure/foundry/agents/how-to/tools/openapi
+    toolbox_endpoint = os.getenv("TOOLBOX_ENDPOINT", "").strip()
+    registered_tools = []
+    if toolbox_endpoint:
+        registered_tools.append(
+            FoundryToolbox(
+                credential,
+                url=toolbox_endpoint,
+                name="dependency_path_toolbox",
+            )
+        )
 
     # ``Agent`` combines the LLM client, system instructions, and a list of
     # callable Python functions (tools).  MAF inspects each function's type
@@ -262,10 +400,23 @@ def main():
             "dialed URL including host header). "
             "Present the results as a table with one row per target. "
             "Do not omit or summarise fields -- exact values are required for lab evidence. "
+            "When asked to probe the Function dependency, call probe_dependency_dns(), "
+            "probe_dependency_tls(), and probe_dependency_https(). Return every field from "
+            "all three results, including the complete target object from the HTTPS result. "
+            "When asked to use the registered Function tool, call probeDependencyPath from "
+            "dependency_path_toolbox and return the complete raw tool response. Do not call "
+            "the local dependency probe functions for a registered-tool request. "
             "If a tool call raises an exception, report the exception message verbatim -- it "
             "means the lab network is not yet reachable from this endpoint."
         ),
-        tools=[probe_echo, probe_ctrl],
+        tools=[
+            probe_echo,
+            probe_ctrl,
+            probe_dependency_dns,
+            probe_dependency_tls,
+            probe_dependency_https,
+            *registered_tools,
+        ],
         # ``store=False`` disables conversation-history persistence on the
         # Foundry side.  Each invocation is stateless: the caller sends the
         # full message and receives the full response in one round trip.

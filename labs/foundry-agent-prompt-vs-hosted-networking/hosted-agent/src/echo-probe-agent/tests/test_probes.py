@@ -53,6 +53,7 @@ the MAF tool-call layer (MAF serialises uncaught exceptions into the tool
 result).  Tests in ``TestHTTPErrorPropagation`` explicitly assert that no such
 silent wrapping occurs.
 """
+import socket
 import sys
 import unittest
 from unittest.mock import MagicMock, patch
@@ -85,12 +86,14 @@ for _name, _stub in {
 
 # Import main after stubs are in place.  The alias ``_main`` keeps IDE
 # "unused import" warnings away while making clear this is a test-only
-# import.  noqa: E402 silences the "module level import not at top of file"
-# linter warning — the ordering is intentional.
-import main as _main  # noqa: E402
+# import. The ordering is intentional because these stubs must exist first.
+import main as _main
 
 probe_echo = _main.probe_echo
 probe_ctrl = _main.probe_ctrl
+probe_dependency_dns = _main.probe_dependency_dns
+probe_dependency_tls = _main.probe_dependency_tls
+probe_dependency_https = _main.probe_dependency_https
 
 
 # ===========================================================================
@@ -211,6 +214,111 @@ class TestHTTPErrorPropagation(unittest.TestCase):
             + repr(result)
             + " instead of propagating"
         )
+
+
+# ===========================================================================
+# Function application-dependency probes
+# ===========================================================================
+
+class TestDependencyProbes(unittest.TestCase):
+    """Dependency probes preserve DNS, TLS, and HTTPS as separate evidence stages."""
+
+    @patch.dict(
+        "os.environ",
+        {"FUNCTION_DEPENDENCY_URL": "https://function.example/api/dependency-probe"},
+        clear=False,
+    )
+    @patch("main.socket.getaddrinfo")
+    def test_dns_returns_unique_sorted_addresses(self, mock_getaddrinfo):
+        """DNS uses the OS resolver and de-duplicates repeated address records."""
+        mock_getaddrinfo.return_value = [
+            (2, 1, 6, "", ("10.0.0.5", 443)),
+            (2, 1, 6, "", ("10.0.0.4", 443)),
+            (2, 1, 6, "", ("10.0.0.5", 443)),
+        ]
+
+        result = probe_dependency_dns()
+
+        mock_getaddrinfo.assert_called_once_with(
+            "function.example", 443, type=socket.SOCK_STREAM
+        )
+        self.assertEqual(result["addresses"], ["10.0.0.4", "10.0.0.5"])
+        self.assertEqual(result["stage"], "dns")
+
+    @patch.dict(
+        "os.environ",
+        {"FUNCTION_DEPENDENCY_URL": "https://function.example/api/dependency-probe"},
+        clear=False,
+    )
+    @patch("main.ssl.create_default_context")
+    @patch("main.socket.create_connection")
+    def test_tls_reports_selected_peer_and_protocol(
+        self, mock_create_connection, mock_create_default_context
+    ):
+        """TLS probe reports the address actually selected by create_connection."""
+        tcp_context = MagicMock()
+        tcp_socket = MagicMock()
+        tcp_context.__enter__.return_value = tcp_socket
+        mock_create_connection.return_value = tcp_context
+
+        tls_context = MagicMock()
+        tls_socket = MagicMock()
+        tls_socket.getpeername.return_value = ("10.0.0.6", 443)
+        tls_socket.version.return_value = "TLSv1.3"
+        tls_socket.cipher.return_value = ("TLS_AES_256_GCM_SHA384", "TLSv1.3", 256)
+        tls_context.__enter__.return_value = tls_socket
+        mock_create_default_context.return_value.wrap_socket.return_value = tls_context
+
+        result = probe_dependency_tls()
+
+        mock_create_connection.assert_called_once_with(
+            ("function.example", 443), timeout=5
+        )
+        mock_create_default_context.return_value.wrap_socket.assert_called_once_with(
+            tcp_socket, server_hostname="function.example"
+        )
+        self.assertEqual(result["peer_ip"], "10.0.0.6")
+        self.assertEqual(result["tls_version"], "TLSv1.3")
+
+    @patch.dict(
+        "os.environ",
+        {"FUNCTION_DEPENDENCY_URL": "https://function.example/api/dependency-probe"},
+        clear=False,
+    )
+    @patch("main.requests.get")
+    def test_https_returns_status_and_target_json(self, mock_get):
+        """HTTPS direct dependency call retains target-observed response metadata."""
+        mock_get.return_value.status_code = 200
+        mock_get.return_value.json.return_value = {
+            "label": "function-dependency",
+            "forwarded_for": ["192.168.0.7"],
+        }
+
+        result = probe_dependency_https()
+
+        mock_get.assert_called_once_with(
+            "https://function.example/api/dependency-probe",
+            timeout=(5, 10),
+        )
+        mock_get.return_value.raise_for_status.assert_called_once()
+        self.assertEqual(result["status_code"], 200)
+        self.assertEqual(result["target"]["forwarded_for"], ["192.168.0.7"])
+
+    @patch.dict("os.environ", {}, clear=True)
+    def test_missing_dependency_url_is_explicit_error(self):
+        """Missing deployment configuration fails before any network operation."""
+        with self.assertRaisesRegex(RuntimeError, "FUNCTION_DEPENDENCY_URL"):
+            probe_dependency_dns()
+
+    @patch.dict(
+        "os.environ",
+        {"FUNCTION_DEPENDENCY_URL": "http://function.example/api/dependency-probe"},
+        clear=False,
+    )
+    def test_non_https_dependency_url_is_rejected(self):
+        """HTTP would change the tested path and is therefore rejected."""
+        with self.assertRaisesRegex(RuntimeError, "absolute HTTPS URL"):
+            probe_dependency_https()
 
 
 if __name__ == "__main__":

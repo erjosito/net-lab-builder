@@ -1,0 +1,285 @@
+{
+  "prompt_response": {
+    "access_programs": null,
+    "agent_reference": {
+      "name": "dependency-openapi-prompt",
+      "type": "agent_reference",
+      "version": "1"
+    },
+    "background": false,
+    "completed_at": 1791817912.0,
+    "content_filters": [
+      {
+        "blocked": false,
+        "content_filter_offsets": {
+          "check_offset": 0,
+          "end_offset": 1466,
+          "start_offset": 0
+        },
+        "content_filter_raw": [],
+        "content_filter_results": {
+          "hate": {
+            "filtered": false,
+            "severity": "safe"
+          },
+          "jailbreak": {
+            "detected": false,
+            "filtered": false
+          },
+          "self_harm": {
+            "filtered": false,
+            "severity": "safe"
+          },
+          "sexual": {
+            "filtered": false,
+            "severity": "safe"
+          },
+          "violence": {
+            "filtered": false,
+            "severity": "safe"
+          }
+        },
+        "source_type": "prompt"
+      },
+      {
+        "blocked": false,
+        "content_filter_offsets": {
+          "check_offset": 0,
+          "end_offset": 2061,
+          "start_offset": 0
+        },
+        "content_filter_raw": [],
+        "content_filter_results": {
+          "hate": {
+            "filtered": false,
+            "severity": "safe"
+          },
+          "protected_material_code": {
+            "detected": false,
+            "filtered": false
+          },
+          "protected_material_text": {
+            "detected": false,
+            "filtered": false
+          },
+          "self_harm": {
+            "filtered": false,
+            "severity": "safe"
+          },
+          "sexual": {
+            "filtered": false,
+            "severity": "safe"
+          },
+          "violence": {
+            "filtered": false,
+            "severity": "safe"
+          }
+        },
+        "source_type": "completion"
+      }
+    ],
+    "conversation": {
+      "id": "conv_01c2c1119a14669100CP3ho2hgAKAlgdPUieH3xPlbKVLRIRBG"
+    },
+    "created_at": 1791817905.0,
+    "error": null,
+    "id": "resp_01c2c1119a146691006accf8ad6d008190ba4fb82655d5459a",
+    "incomplete_details": null,
+    "instructions": "Always call dependency_probe.probeDependencyPath. Return the complete raw response object and do not omit source-address or URL fields.",
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "metadata": {},
+    "model": "gpt-5-mini",
+    "moderation": null,
+    "object": "response",
+    "output": [
+      {
+        "agent_reference": {
+          "name": "dependency-openapi-prompt",
+          "type": "agent_reference",
+          "version": "1"
+        },
+        "content": [],
+        "id": "rs_01c2c1119a146691006accf8b2bc648190890dd6a4296b1ac2",
+        "response_id": "resp_01c2c1119a146691006accf8ad6d008190ba4fb82655d5459a",
+        "status": null,
+        "summary": [],
+        "type": "reasoning"
+      },
+      {
+        "agent_reference": {
+          "name": "dependency-openapi-prompt",
+          "type": "agent_reference",
+          "version": "1"
+        },
+        "arguments": "{}",
+        "call_id": "call_0a746ca6d618424fa0dab0237f0237ee",
+        "content": null,
+        "id": "fc_01c2c1119a146691006accf8b395548190b6e4e836787320bb",
+        "name": "dependency_probe_probeDependencyPath",
+        "phase": null,
+        "response_id": "resp_01c2c1119a146691006accf8ad6d008190ba4fb82655d5459a",
+        "role": null,
+        "status": "completed",
+        "type": "openapi_call"
+      },
+      {
+        "agent_reference": {
+          "name": "dependency-openapi-prompt",
+          "type": "agent_reference",
+          "version": "1"
+        },
+        "call_id": "call_0a746ca6d618424fa0dab0237f0237ee",
+        "content": null,
+        "id": "fco_01c2c1119a146691006accf8b408a48190984f6e6fdd23724a",
+        "name": "dependency_probe_probeDependencyPath",
+        "output": "{\n        \"response\": \"{\\n  \\\"azure_client_ip\\\": null,\\n  \\\"azure_socket_ip\\\": null,\\n  \\\"forwarded_for\\\": [\\n    \\\"100.100.209.4\\\",\\n    \\\"100.64.17.214\\\",\\n    \\\"192.168.0.99\\\"\\n  ],\\n  \\\"forwarded_for_raw\\\": \\\"100.100.209.4,100.64.17.214, 192.168.0.99\\\",\\n  \\\"forwarded_proto\\\": \\\"https\\\",\\n  \\\"host\\\": \\\"func-deppath-kpo2.azurewebsites.net\\\",\\n  \\\"label\\\": \\\"function-dependency\\\",\\n  \\\"method\\\": \\\"GET\\\",\\n  \\\"request_id\\\": \\\"0c83281a-d8f2-4cbc-98de-a447aaa448bf\\\",\\n  \\\"request_url\\\": \\\"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\\\",\\n  \\\"timestamp_utc\\\": \\\"2026-10-12T15:11:47.998592+00:00\\\",\\n  \\\"user_agent\\\": \\\"azure-agents\\\"\\n}\"\n      }",
+        "phase": null,
+        "response_id": "resp_01c2c1119a146691006accf8ad6d008190ba4fb82655d5459a",
+        "role": null,
+        "status": "completed",
+        "type": "openapi_call_output"
+      },
+      {
+        "agent_reference": {
+          "name": "dependency-openapi-prompt",
+          "type": "agent_reference",
+          "version": "1"
+        },
+        "content": [],
+        "id": "rs_01c2c1119a146691006accf8b4f8608190aa25e235133da1e3",
+        "response_id": "resp_01c2c1119a146691006accf8ad6d008190ba4fb82655d5459a",
+        "status": null,
+        "summary": [],
+        "type": "reasoning"
+      },
+      {
+        "agent_reference": {
+          "name": "dependency-openapi-prompt",
+          "type": "agent_reference",
+          "version": "1"
+        },
+        "content": [
+          {
+            "annotations": [],
+            "logprobs": [],
+            "text": "{\n  \"azure_client_ip\": null,\n  \"azure_socket_ip\": null,\n  \"forwarded_for\": [\n    \"100.100.209.4\",\n    \"100.64.17.214\",\n    \"192.168.0.99\"\n  ],\n  \"forwarded_for_raw\": \"100.100.209.4,100.64.17.214, 192.168.0.99\",\n  \"forwarded_proto\": \"https\",\n  \"host\": \"func-deppath-kpo2.azurewebsites.net\",\n  \"label\": \"function-dependency\",\n  \"method\": \"GET\",\n  \"request_id\": \"0c83281a-d8f2-4cbc-98de-a447aaa448bf\",\n  \"request_url\": \"https://func-deppath-kpo2.azurewebsites.net/api/dependency-probe\",\n  \"timestamp_utc\": \"2026-10-12T15:11:47.998592+00:00\",\n  \"user_agent\": \"azure-agents\"\n}",
+            "type": "output_text"
+          }
+        ],
+        "id": "msg_01c2c1119a146691006accf8b69510819090c776e010295667",
+        "phase": null,
+        "response_id": "resp_01c2c1119a146691006accf8ad6d008190ba4fb82655d5459a",
+        "role": "assistant",
+        "status": "completed",
+        "type": "message"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_diagnostics": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+      "context": "current_turn",
+      "effort": "medium",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "temperature": 1.0,
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "required",
+    "tools": [
+      {
+        "allowed_callers": null,
+        "async_": null,
+        "defer_loading": null,
+        "description": null,
+        "name": null,
+        "openapi": {
+          "auth": {
+            "type": "anonymous"
+          },
+          "description": "Call the Azure Function dependency probe and return all target-observed network metadata without summarizing fields.",
+          "name": "dependency_probe",
+          "spec": {
+            "info": {
+              "description": "Returns network metadata observed by the private Azure Function target.",
+              "title": "Foundry dependency path probe",
+              "version": "1.0.0"
+            },
+            "openapi": "3.0.1",
+            "paths": {
+              "/api/dependency-probe": {
+                "get": {
+                  "operationId": "probeDependencyPath",
+                  "responses": {
+                    "200": {
+                      "content": {
+                        "application/json": {
+                          "schema": {
+                            "additionalProperties": true,
+                            "type": "object"
+                          }
+                        }
+                      },
+                      "description": "Target-observed network metadata"
+                    }
+                  },
+                  "summary": "Probe the Azure Function dependency path"
+                }
+              }
+            },
+            "servers": [
+              {
+                "url": "https://func-deppath-kpo2.azurewebsites.net"
+              }
+            ]
+          }
+        },
+        "output_schema": null,
+        "parameters": null,
+        "strict": null,
+        "type": "openapi"
+      }
+    ],
+    "top_logprobs": 0,
+    "top_p": 1.0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 504,
+      "input_tokens_details": {
+        "cache_write_tokens": 0,
+        "cached_tokens": 0
+      },
+      "output_tokens": 540,
+      "output_tokens_details": {
+        "reasoning_tokens": 256
+      },
+      "total_tokens": 1044
+    },
+    "user": null
+  },
+  "resources": {
+    "prompt_agent": {
+      "name": "dependency-openapi-prompt",
+      "version": "1"
+    },
+    "toolbox": {
+      "name": "dependency-path-toolbox",
+      "version": "1"
+    }
+  },
+  "toolbox_endpoint": "https://fndrydepkpo2.services.ai.azure.com/api/projects/dependencykpo2/toolboxes/dependency-path-toolbox/versions/1/mcp?api-version=v1"
+}

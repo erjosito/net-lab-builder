@@ -199,7 +199,10 @@ Data proxy (`192.168.0.x`) resolves `echo.tools.lab` via `168.63.129.16` → out
 
 ### P2 — Hosted-agent OpenAPI tool call via Toolbox (HS1 hosted variant)
 
-Same data-plane path as P1. Tool server calls always route through the data proxy regardless of agent type (documented: agents-networking-deep-dive, 2026-08-20). Whether the exact IP value differs from P1 is OQ1.
+Same data-plane path as P1. Tool server calls route through the data proxy regardless of agent type.
+The 2026-10-12 Function extension confirmed this empirically: prompt OpenAPI and hosted Toolbox
+both reached Private Endpoint `192.168.1.27` and both presented data-proxy IP `192.168.0.99` during
+comparable runs.
 
 ### P3 — Hosted-agent direct Python code call, Micro VM NIC (HS2/HS3)
 
@@ -367,6 +370,8 @@ All accessed **2026-08-20**.
 | 6 | `../foundry-agent-reserved-prefix-reachability/results.md` | Data proxy source IPs observed (192.168.0.49, 192.168.0.239); TLS self-signed observation |
 | 7 | `.squad/decisions/inbox/morpheus-foundry-topology-rethink.md` (2026-08-20) | T1 topology spec; VPN historical status |
 | 8 | `.squad/decisions/inbox/morpheus-foundry-lab-restructure.md` (2026-08-20) | Sibling lab decision; shared infra boundary; cleanup gate |
+| 9 | `raw-output/dependency-path-results-20261012.md` | Function Private Endpoint public-control, PE/public, and full-lockdown measurements |
+| 10 | https://github.com/microsoft-foundry/foundry-samples/tree/main/infrastructure/infrastructure-setup-bicep/19-private-network-agent-tools | Current capability-host/VNet template and historical Scenario 3 comparison |
 
 
 ---
@@ -429,7 +434,7 @@ Deployment follows Wave 0–7 in `manifest.md §7`. Tank runs validate + what-if
 
 | Hypothesis | Claim | Empirical result |
 |------------|-------|-----------------|
-| H1 (tool call path) | Prompt and hosted tool calls share same source IP range | **BASELINE ONLY** — prior lab (sibling, 2026-08-14) shows data proxy src_ip in 192.168.0.0/24. Hosted agent `requests.get` also from 192.168.0.0/24. Same /24 subnet pool used by both. H1 not re-run in this lab; no raw data-proxy invocation record here (SDK path is client-side FC). |
+| H1 (registered tool path) | Prompt and hosted registered tools use the same data proxy | **CONFIRMED 2026-10-12** — prompt OpenAPI and hosted Toolbox both reached Function PE `192.168.1.27`; both presented `192.168.0.99` in comparable runs. |
 | H2 (direct code egress) | Hosted agent Python code uses Micro VM NIC; src_ip distinct from data proxy | CONFIRMED — direct egress via Micro VM NIC. src_ips observed: 192.168.0.238, .28, .110 (runs 1-3; change per invocation). Prior data proxy values were .49, .239 — different values, same /24 pool. |
 | H3 (DNS context transparent) | DNS query src at dnsmasq is outbound EP IP regardless of caller type | CONFIRMED — all queries arrive at dnsmasq from 192.168.3.21–25 (DNSOutboundSubnet SNAT range) whether caller is Micro VM NIC or vm-diag (MgmtSubnet). Chain is context-transparent by design. |
 
@@ -534,11 +539,10 @@ or `Not tested/predicted`. Ingress rows distinguish caller→agent from agent/to
 > **[Foundry Networking Architecture Primer](README.md#foundry-networking-architecture-primer)**
 > in README.md. That section is the recommended starting point for readers new to Foundry networking.
 
-> **Provenance note (H1 / data-proxy rows):** The prompt-agent data-proxy path was observed in the
-> sibling lab (2026-08-14, runs S3/S4) and is not a re-run from this lab. The SDK-created
-> `client-side FC` path is a control experiment that executes on the caller, not via the data proxy.
-> These two paths are architecturally distinct; the SDK path does not replicate or re-confirm the
-> data-proxy path.
+> **Provenance note (H1 / data-proxy rows):** The original VM-target data-proxy evidence came from
+> the sibling lab (2026-08-14). The 2026-10-12 extension directly re-ran both a prompt registered
+> OpenAPI tool and a hosted registered Toolbox tool against the same Function endpoint. The
+> SDK-created `client-side FC` path remains a separate caller-executed control.
 
 ### Ingress: Caller → Agent endpoint
 
@@ -569,5 +573,32 @@ or `Not tested/predicted`. Ingress rows distinguish caller→agent from agent/to
 | Dimension | Prompt agent | Hosted agent | Client-side FC | Same/Different | Evidence / Provenance |
 |-----------|-------------|-------------|---------------|----------------|----------------------|
 | Deployment-time egress | None (config-only) | AgentSubnet → `mcr.microsoft.com` (base image pull) + `*.login.microsoft.com` (auth) | None | **Different (hosted agent only)** | design.md §2 C1; hosted-agent-vscode.md §11 |
-| Runtime egress path | Data proxy → vnet-tools (tool calls only) | Micro VM NIC → vnet-tools (direct code); data proxy → vnet-tools (registered tool calls; **documented, not measured here**) | Caller → internet or VNet (if caller is inside VNet) | **Different** | design.md §8 P1/P2/P3; agents-networking-deep-dive |
-| Toolbox/OpenAPI data-proxy path from hosted agent (Approach B) | N/A | **Documented, not measured in this lab** — Microsoft Learn states that tool server calls use the data proxy regardless of agent type; SDK toolbox creation was not implemented here | N/A | Same documented mechanism as prompt tools; empirical source-IP comparison remains open | hosted-agent-vscode.md §14; agents-networking-deep-dive; OQ1 |
+| Runtime egress path | Data proxy → target for registered tools | Micro VM NIC → target for direct code; data proxy → target for registered Toolbox calls | Caller → internet or VNet (if caller is inside VNet) | **Different** | design.md §8 P1/P2/P3; dependency-path-results-20261012.md |
+| Toolbox/OpenAPI data-proxy path from hosted agent (Approach B) | Prompt OpenAPI: data proxy `192.168.0.99` in comparable Function run | **Measured** — hosted Toolbox used the same data proxy `192.168.0.99`; direct Python used Micro VM `192.168.0.138` | N/A | Same registered-tool executor; different from hosted direct code | hosted-agent-vscode.md §14; dependency-path-results-20261012.md |
+
+---
+
+## 18. Azure Function Private Endpoint Extension (2026-10-12)
+
+### Topology and controls
+
+- Function Private Endpoint: `192.168.1.27` in `PESubnet`.
+- Private DNS zone: `privatelink.azurewebsites.net`, linked to `vnet-foundry`.
+- Function public access was first enabled for a control, then disabled for full lockdown.
+- The same OpenAPI specification and operation were used by the prompt agent and hosted Toolbox.
+- Hosted direct Python independently measured DNS, selected TCP/TLS peer, and HTTPS response.
+
+### Full-lockdown result
+
+| Caller path | Executor at target | Result |
+|---|---|---|
+| Prompt registered OpenAPI | Data proxy `192.168.0.80`, repeat `192.168.0.99` | HTTP 200 through PE |
+| Hosted registered Toolbox | Data proxy `192.168.0.99`, repeat `.99` | HTTP 200 through PE |
+| Hosted direct Python | Micro VM NIC `192.168.0.138`, repeat `.138` | DNS/TLS peer `192.168.1.27`; HTTP 200 |
+| Workstation public path | Public App Service frontend | `403 Ip Forbidden` |
+
+The data proxy and Micro VM are separate network executors, but both used the VNet-linked private
+DNS zone and could route to the Function Private Endpoint. The Microsoft sample's historical
+Scenario 3 `403` for prompt OpenAPI was not reproduced in this current template-19 deployment.
+Do not generalize either result to every Foundry configuration: capability-host generation,
+platform behavior, DNS-zone links, and target-service integration can change the outcome.
