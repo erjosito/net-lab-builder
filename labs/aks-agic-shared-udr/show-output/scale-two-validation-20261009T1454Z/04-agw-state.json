@@ -1,0 +1,12 @@
+{
+  "seq": 4,
+  "name": "agw-state",
+  "mutating": false,
+  "command": "C:\\WINDOWS\\system32\\cmd.exe /c az network application-gateway show -g rg-aks-agic-shared-udr -n agw1 --query {name:name,provisioningState:provisioningState,operationalState:operationalState} -o json --only-show-errors",
+  "startUtc": "2026-10-09T14:56:29.232019Z",
+  "timedOut": false,
+  "endUtc": "2026-10-09T14:56:35.308667Z",
+  "exitCode": 0,
+  "stdout": "{\n  \"name\": \"agw1\",\n  \"operationalState\": \"Running\",\n  \"provisioningState\": \"Succeeded\"\n}\n",
+  "stderr": ""
+}

@@ -1,0 +1,12 @@
+{
+  "seq": 7,
+  "name": "agic-pods",
+  "mutating": false,
+  "command": "kubectl --kubeconfig C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\aks-agic-shared-udr\\deploy\\.runtime-control\\kubeconfig --request-timeout=60s get pods -n kube-system -l app=ingress-appgw -o wide",
+  "startUtc": "2026-10-09T14:56:58.580809Z",
+  "timedOut": false,
+  "endUtc": "2026-10-09T14:56:59.864808Z",
+  "exitCode": 0,
+  "stdout": "NAME                                        READY   STATUS    RESTARTS   AGE    IP           NODE                             NOMINATED NODE   READINESS GATES\n<agic-controller-pod>   1/1     Running   0          168m   10.244.0.8   <aks-node>   <none>           <none>\n",
+  "stderr": ""
+}

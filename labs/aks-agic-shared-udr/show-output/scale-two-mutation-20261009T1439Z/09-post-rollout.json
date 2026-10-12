@@ -1,0 +1,12 @@
+{
+  "seq": 9,
+  "name": "post-rollout",
+  "mutating": false,
+  "command": "kubectl --kubeconfig C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\aks-agic-shared-udr\\deploy\\.runtime-control\\kubeconfig --request-timeout=60s rollout status deployment/web -n default --timeout=120s",
+  "startUtc": "2026-10-09T14:40:56.8450184Z",
+  "endUtc": "2026-10-09T14:40:58.8223747Z",
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "deployment \"web\" successfully rolled out\n",
+  "stderr": ""
+}

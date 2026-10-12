@@ -1,0 +1,12 @@
+{
+  "seq": 5,
+  "name": "agw-pool",
+  "mutating": false,
+  "command": "C:\\WINDOWS\\system32\\cmd.exe /c az network application-gateway address-pool show -g rg-aks-agic-shared-udr --gateway-name agw1 -n pool-default-web-80-bp-80 --query {name:name,backendAddresses:backendAddresses,state:provisioningState} -o json --only-show-errors",
+  "startUtc": "2026-10-09T14:56:35.310653Z",
+  "timedOut": false,
+  "endUtc": "2026-10-09T14:56:40.561274Z",
+  "exitCode": 0,
+  "stdout": "{\n  \"backendAddresses\": [\n    {\n      \"ipAddress\": \"10.244.0.14\"\n    },\n    {\n      \"ipAddress\": \"10.244.0.18\"\n    }\n  ],\n  \"name\": \"pool-default-web-80-bp-80\",\n  \"state\": \"Succeeded\"\n}\n",
+  "stderr": ""
+}

@@ -1,0 +1,12 @@
+{
+  "seq": 2,
+  "name": "pre-replicas",
+  "mutating": false,
+  "command": "kubectl --kubeconfig C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\aks-agic-shared-udr\\deploy\\.runtime-control\\kubeconfig --request-timeout=60s get deploy web -n default -o jsonpath={.spec.replicas}/{.status.readyReplicas}",
+  "startUtc": "2026-10-09T14:40:50.0641418Z",
+  "endUtc": "2026-10-09T14:40:51.4586695Z",
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "1/1",
+  "stderr": ""
+}

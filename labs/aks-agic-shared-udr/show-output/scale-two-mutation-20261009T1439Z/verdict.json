@@ -1,0 +1,25 @@
+{
+  "result": "PASS for the captured scale-out and backend-health checks only",
+  "evidenceDate": "2026-10-09",
+  "originalReplicas": 1,
+  "finalReplicas": 2,
+  "scaleUtc": "2026-10-09T14:40:55.3299016Z",
+  "baselinePodIP": "10.244.0.14",
+  "newPodIP": "10.244.0.18",
+  "agicConfigurationAppliedUtc": "2026-10-09T14:41:09.253017Z",
+  "agicConfigurationAppliedSecondsAfterScale": 14,
+  "poolObservedUtc": "2026-10-09T14:42:38.5460775Z/2026-10-09T14:42:47.1438365Z",
+  "poolObservedNoLaterThanSecondsAfterScale": 112,
+  "appgwPoolBefore": "Not captured; pre-scale lookup did not execute successfully",
+  "appgwPoolAfter": [
+    "10.244.0.14",
+    "10.244.0.18"
+  ],
+  "backendHealthCapturedUtc": "2026-10-09T14:56:40Z/2026-10-09T14:56:58Z",
+  "backendHealth": "Both addresses Healthy on public and private HTTP settings",
+  "routesPostSnapshotUtc": "2026-10-09T14:41:28.6120860Z/2026-10-09T14:41:35.1780189Z",
+  "routesPostSnapshot": "Five expected routes were present; no pre-scale route snapshot, so unchanged routes are not established",
+  "egressRecheck": "INCONCLUSIVE: both pod-originated commands failed because the AKS API hostname did not resolve",
+  "closedUtc": "2026-10-09T14:50:58.2204686Z",
+  "auditNote": "Pool observation time is a bounded snapshot, not the exact time AGIC added the address. See ../scale-two-validation-20261009T1454Z/validation-verdict.md for evidence timing and limitations."
+}

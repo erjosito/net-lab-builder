@@ -1,0 +1,12 @@
+{
+  "seq": 6,
+  "name": "agw-backend-health",
+  "mutating": false,
+  "command": "C:\\WINDOWS\\system32\\cmd.exe /c az network application-gateway show-backend-health -g rg-aks-agic-shared-udr -n agw1 -o json --only-show-errors",
+  "startUtc": "2026-10-09T14:56:40.562637Z",
+  "timedOut": false,
+  "endUtc": "2026-10-09T14:56:58.578919Z",
+  "exitCode": 0,
+  "stdout": "{\n  \"backendAddressPools\": [\n    {\n      \"backendAddressPool\": {\n        \"id\": \"/subscriptions/<uuid>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1/backendAddressPools/pool-default-web-80-bp-80\",\n        \"resourceGroup\": \"rg-aks-agic-shared-udr\"\n      },\n      \"backendHttpSettingsCollection\": [\n        {\n          \"backendHttpSettings\": {\n            \"id\": \"/subscriptions/<uuid>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1/backendHttpSettingsCollection/bp-default-web-80-80-web-private\",\n            \"resourceGroup\": \"rg-aks-agic-shared-udr\"\n          },\n          \"servers\": [\n            {\n              \"address\": \"10.244.0.14\",\n              \"health\": \"Healthy\",\n              \"healthProbeLog\": \"Success. Received 200 status code\"\n            },\n            {\n              \"address\": \"10.244.0.18\",\n              \"health\": \"Healthy\",\n              \"healthProbeLog\": \"Success. Received 200 status code\"\n            }\n          ]\n        },\n        {\n          \"backendHttpSettings\": {\n            \"id\": \"/subscriptions/<uuid>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/applicationGateways/agw1/backendHttpSettingsCollection/bp-default-web-80-80-web-public\",\n            \"resourceGroup\": \"rg-aks-agic-shared-udr\"\n          },\n          \"servers\": [\n            {\n              \"address\": \"10.244.0.14\",\n              \"health\": \"Healthy\",\n              \"healthProbeLog\": \"Success. Received 200 status code\"\n            },\n            {\n              \"address\": \"10.244.0.18\",\n              \"health\": \"Healthy\",\n              \"healthProbeLog\": \"Success. Received 200 status code\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}\n",
+  "stderr": ""
+}

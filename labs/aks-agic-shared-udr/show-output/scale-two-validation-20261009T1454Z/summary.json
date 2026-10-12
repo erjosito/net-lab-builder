@@ -1,0 +1,87 @@
+{
+  "startUtc": "2026-10-09T14:56:25.471997Z",
+  "checks": {
+    "deployment": {
+      "desired": 2,
+      "ready": 2,
+      "available": 2,
+      "updated": 2
+    },
+    "pods": {
+      "<web-pod-b>": {
+        "ip": "10.244.0.18",
+        "phase": "Running",
+        "ready": true,
+        "node": "<aks-node>"
+      },
+      "<web-pod-a>": {
+        "ip": "10.244.0.14",
+        "phase": "Running",
+        "ready": true,
+        "node": "<aks-node>"
+      }
+    },
+    "endpointSliceIPs": [
+      "10.244.0.14",
+      "10.244.0.18"
+    ],
+    "agw": {
+      "name": "agw1",
+      "operationalState": "Running",
+      "provisioningState": "Succeeded"
+    },
+    "poolIPs": [
+      "10.244.0.14",
+      "10.244.0.18"
+    ],
+    "backendHealth": [
+      {
+        "settings": "bp-default-web-80-80-web-private",
+        "address": "10.244.0.14",
+        "health": "Healthy"
+      },
+      {
+        "settings": "bp-default-web-80-80-web-private",
+        "address": "10.244.0.18",
+        "health": "Healthy"
+      },
+      {
+        "settings": "bp-default-web-80-80-web-public",
+        "address": "10.244.0.14",
+        "health": "Healthy"
+      },
+      {
+        "settings": "bp-default-web-80-80-web-public",
+        "address": "10.244.0.18",
+        "health": "Healthy"
+      }
+    ],
+    "agicPods": [
+      "NAME                                        READY   STATUS    RESTARTS   AGE    IP           NODE                             NOMINATED NODE   READINESS GATES",
+      "<agic-controller-pod>   1/1     Running   0          168m   10.244.0.8   <aks-node>   <none>           <none>"
+    ],
+    "agicLogLinesMatching": [
+      "2026-10-09T14:40:59.466910702Z I1009 14:40:59.465774       1 mutate_app_gateway.go:166] BEGIN AppGateway deployment",
+      "2026-10-09T14:41:09.253159625Z I1009 14:41:09.253017       1 mutate_app_gateway.go:174] Applied generated Application Gateway configuration",
+      "2026-10-09T14:41:09.253772259Z I1009 14:41:09.253701       1 mutate_app_gateway.go:193] END AppGateway deployment"
+    ],
+    "routes": null,
+    "rtSubnets": [
+      "snet-aks",
+      "snet-appgw"
+    ],
+    "egress": {
+      "<web-pod-b>": {
+        "exit": 1,
+        "ip": "",
+        "stderr": ": dial tcp: lookup <aks-api-fqdn>: no such host\"\nUnable to connect to the server: dial tcp: lookup <aks-api-fqdn>: no such host\n"
+      },
+      "<web-pod-a>": {
+        "exit": 1,
+        "ip": "",
+        "stderr": ": dial tcp: lookup <aks-api-fqdn>: no such host\"\nUnable to connect to the server: dial tcp: lookup <aks-api-fqdn>: no such host\n"
+      }
+    }
+  },
+  "endUtc": "2026-10-10T05:09:54.053238Z"
+}

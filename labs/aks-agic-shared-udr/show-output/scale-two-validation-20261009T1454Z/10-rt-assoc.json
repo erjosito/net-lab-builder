@@ -1,0 +1,12 @@
+{
+  "seq": 10,
+  "name": "rt-assoc",
+  "mutating": false,
+  "command": "C:\\WINDOWS\\system32\\cmd.exe /c az network route-table show -g rg-aks-agic-shared-udr -n rt-shared --query {subnets:subnets[].id} -o json --only-show-errors",
+  "startUtc": "2026-10-10T05:09:11.228038Z",
+  "timedOut": false,
+  "endUtc": "2026-10-10T05:09:49.423569Z",
+  "exitCode": 0,
+  "stdout": "{\n  \"subnets\": [\n    \"/subscriptions/<uuid>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/virtualNetworks/vnet-spoke/subnets/snet-aks\",\n    \"/subscriptions/<uuid>/resourceGroups/rg-aks-agic-shared-udr/providers/Microsoft.Network/virtualNetworks/vnet-spoke/subnets/snet-appgw\"\n  ]\n}\n",
+  "stderr": ""
+}

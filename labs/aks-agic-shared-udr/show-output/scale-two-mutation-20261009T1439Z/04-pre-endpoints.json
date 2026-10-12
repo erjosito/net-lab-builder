@@ -1,0 +1,12 @@
+{
+  "seq": 4,
+  "name": "pre-endpoints",
+  "mutating": false,
+  "command": "kubectl --kubeconfig C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\aks-agic-shared-udr\\deploy\\.runtime-control\\kubeconfig --request-timeout=60s get endpoints web -n default -o wide",
+  "startUtc": "2026-10-09T14:40:52.7798746Z",
+  "endUtc": "2026-10-09T14:40:53.9637347Z",
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "NAME   ENDPOINTS        AGE\nweb    10.244.0.14:80   149m\n",
+  "stderr": "Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice\n"
+}

@@ -1,0 +1,12 @@
+{
+  "seq": 12,
+  "name": "post-agw-pool",
+  "mutating": false,
+  "command": "az network application-gateway show -g rg-aks-agic-shared-udr -n  --query backendAddressPools[].{name:name,addrs:backendAddresses} -o json --only-show-errors",
+  "startUtc": "2026-10-09T14:41:01.2311438Z",
+  "endUtc": "2026-10-09T14:41:01.2519786Z",
+  "exitCode": null,
+  "timedOut": false,
+  "stdout": "",
+  "stderr": ""
+}

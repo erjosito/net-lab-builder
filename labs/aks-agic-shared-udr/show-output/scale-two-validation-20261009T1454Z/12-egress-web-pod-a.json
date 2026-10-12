@@ -1,0 +1,12 @@
+{
+  "seq": 12,
+  "name": "egress-<web-pod-a>",
+  "mutating": false,
+  "command": "kubectl --kubeconfig C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\aks-agic-shared-udr\\deploy\\.runtime-control\\kubeconfig --request-timeout=60s exec -n default <web-pod-a> -- python -c import urllib.request;print(urllib.request.urlopen('https://api.ipify.org',timeout=20).read().decode())",
+  "startUtc": "2026-10-10T05:09:52.831438Z",
+  "timedOut": false,
+  "endUtc": "2026-10-10T05:09:54.049142Z",
+  "exitCode": 1,
+  "stdout": "",
+  "stderr": "E1010 07:09:53.956874   64640 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"https://<aks-api-fqdn>:443/api?timeout=1m0s\\\": dial tcp: lookup <aks-api-fqdn>: no such host\"\nE1010 07:09:53.983927   64640 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"https://<aks-api-fqdn>:443/api?timeout=1m0s\\\": dial tcp: lookup <aks-api-fqdn>: no such host\"\nE1010 07:09:53.999779   64640 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"https://<aks-api-fqdn>:443/api?timeout=1m0s\\\": dial tcp: lookup <aks-api-fqdn>: no such host\"\nE1010 07:09:54.015302   64640 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"https://<aks-api-fqdn>:443/api?timeout=1m0s\\\": dial tcp: lookup <aks-api-fqdn>: no such host\"\nUnable to connect to the server: dial tcp: lookup <aks-api-fqdn>: no such host\n"
+}
