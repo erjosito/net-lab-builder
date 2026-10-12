@@ -1,0 +1,131 @@
+[
+  {
+    "label": "G3:vm-hub-nva",
+    "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-nva",
+    "body": {
+      "power": "running"
+    },
+    "before": {
+      "power": "deallocated"
+    },
+    "cost": 1,
+    "compute": true,
+    "argv": [
+      "vm",
+      "start",
+      "-g",
+      "rg-saprise-swedencentral",
+      "-n",
+      "vm-hub-nva"
+    ],
+    "inverse": [
+      {
+        "label": "undo:G3:vm-hub-nva",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-nva",
+        "body": {
+          "power": "deallocated"
+        },
+        "compute": true,
+        "cost": 1,
+        "argv": [
+          "vm",
+          "deallocate",
+          "-g",
+          "rg-saprise-swedencentral",
+          "-n",
+          "vm-hub-nva"
+        ],
+        "power": true,
+        "timeout": 600
+      }
+    ],
+    "power": true,
+    "timeout": 600
+  },
+  {
+    "label": "G3:vm-spoke-nva",
+    "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-spoke-nva",
+    "body": {
+      "power": "running"
+    },
+    "before": {
+      "power": "deallocated"
+    },
+    "cost": 1,
+    "compute": true,
+    "argv": [
+      "vm",
+      "start",
+      "-g",
+      "rg-saprise-swedencentral",
+      "-n",
+      "vm-spoke-nva"
+    ],
+    "inverse": [
+      {
+        "label": "undo:G3:vm-spoke-nva",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-spoke-nva",
+        "body": {
+          "power": "deallocated"
+        },
+        "compute": true,
+        "cost": 1,
+        "argv": [
+          "vm",
+          "deallocate",
+          "-g",
+          "rg-saprise-swedencentral",
+          "-n",
+          "vm-spoke-nva"
+        ],
+        "power": true,
+        "timeout": 600
+      }
+    ],
+    "power": true,
+    "timeout": 600
+  },
+  {
+    "label": "G3:vm-workload-probe",
+    "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-workload-probe",
+    "body": {
+      "power": "running"
+    },
+    "before": {
+      "power": "deallocated"
+    },
+    "cost": 1,
+    "compute": true,
+    "argv": [
+      "vm",
+      "start",
+      "-g",
+      "rg-saprise-swedencentral",
+      "-n",
+      "vm-workload-probe"
+    ],
+    "inverse": [
+      {
+        "label": "undo:G3:vm-workload-probe",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-workload-probe",
+        "body": {
+          "power": "deallocated"
+        },
+        "compute": true,
+        "cost": 1,
+        "argv": [
+          "vm",
+          "deallocate",
+          "-g",
+          "rg-saprise-swedencentral",
+          "-n",
+          "vm-workload-probe"
+        ],
+        "power": true,
+        "timeout": 600
+      }
+    ],
+    "power": true,
+    "timeout": 600
+  }
+]

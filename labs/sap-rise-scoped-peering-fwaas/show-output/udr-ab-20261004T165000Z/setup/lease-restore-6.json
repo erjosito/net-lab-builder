@@ -1,0 +1,97 @@
+{
+  "calls": [
+    {
+      "label": "restore:6:0",
+      "argv": [
+        "vm",
+        "deallocate",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-spoke-nva"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 26200,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "restore:5:0",
+      "argv": [
+        "vm",
+        "deallocate",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-hub-nva"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 40680,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "restore:4:0",
+      "argv": [
+        "network",
+        "vnet",
+        "subnet",
+        "update",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "snet-hub-test",
+        "--vnet-name",
+        "vnet-hub",
+        "--remove",
+        "routeTable"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 9628,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-6-vms",
+      "argv": [
+        "vm",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-d"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 2608,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-6-source-subnet",
+      "argv": [
+        "network",
+        "vnet",
+        "subnet",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "--vnet-name",
+        "vnet-hub",
+        "-n",
+        "snet-hub-test"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 29260,
+      "exitCode": 0,
+      "stderr": ""
+    }
+  ],
+  "mutations": 3,
+  "forward": 0,
+  "reserved": 0,
+  "taskId": "udr-restore-6"
+}

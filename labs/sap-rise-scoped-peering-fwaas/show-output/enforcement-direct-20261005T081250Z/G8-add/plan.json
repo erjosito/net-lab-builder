@@ -1,0 +1,41 @@
+[
+  {
+    "label": "G8-add:route",
+    "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g8",
+    "body": {
+      "properties": {
+        "addressPrefix": "10.60.1.4/32",
+        "nextHopType": "VNetPeering"
+      }
+    },
+    "before": null,
+    "cost": 1,
+    "compute": false,
+    "argv": [
+      "rest",
+      "--method",
+      "put",
+      "--url",
+      "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g8?api-version=2025-01-01",
+      "--body",
+      "{\"properties\":{\"addressPrefix\":\"10.60.1.4/32\",\"nextHopType\":\"VNetPeering\"}}"
+    ],
+    "inverse": [
+      {
+        "label": "undo:G8-add:route",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g8",
+        "body": null,
+        "compute": false,
+        "cost": 1,
+        "argv": [
+          "rest",
+          "--method",
+          "delete",
+          "--url",
+          "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g8?api-version=2025-01-01"
+        ]
+      }
+    ],
+    "trial": true
+  }
+]

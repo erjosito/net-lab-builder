@@ -1,0 +1,271 @@
+{
+  "startedAtUtc": "2026-10-05T08:08:45.875280+00:00",
+  "lease": "labs\\sap-rise-scoped-peering-fwaas\\deploy\\.runtime-control\\enforcement-recovery-niobe.tfvars.json",
+  "subscriptionId": "[REDACTED]",
+  "stateBeforeSha256": "e8cc2ced84d22562181d8b7b373a0efb960867965683796b6fddc0eab41d3930",
+  "originalStateStatus": "blocked",
+  "originalStateError": "Local timeout; remote completion UNKNOWN",
+  "results": {
+    "recovery-vm-list": {
+      "observedAtUtc": "2026-10-05T08:09:11.487391+00:00",
+      "data": [
+        {
+          "name": "vm-ce-onprem",
+          "powerState": "VM deallocated",
+          "provisioningState": "Succeeded",
+          "privateIps": "172.40.100.4"
+        },
+        {
+          "name": "vm-hub-nva",
+          "powerState": "VM deallocated",
+          "provisioningState": "Succeeded",
+          "privateIps": "10.40.1.4"
+        },
+        {
+          "name": "vm-hub-test",
+          "powerState": "VM running",
+          "provisioningState": "Succeeded",
+          "privateIps": "10.40.2.4"
+        },
+        {
+          "name": "vm-spoke-nva",
+          "powerState": "VM deallocated",
+          "provisioningState": "Succeeded",
+          "privateIps": "10.60.0.4"
+        },
+        {
+          "name": "vm-workload-probe",
+          "powerState": "VM running",
+          "provisioningState": "Updating",
+          "privateIps": "10.60.1.4"
+        }
+      ]
+    },
+    "recovery-workload-instance-view": {
+      "observedAtUtc": "2026-10-05T08:09:16.478022+00:00",
+      "data": {
+        "statuses": [
+          {
+            "code": "ProvisioningState/updating",
+            "displayStatus": "Updating",
+            "level": "Info"
+          },
+          {
+            "code": "PowerState/running",
+            "displayStatus": "VM running",
+            "level": "Info"
+          }
+        ],
+        "vmAgentStatuses": null,
+        "extensionStatuses": []
+      }
+    },
+    "recovery-workload-resource": {
+      "observedAtUtc": "2026-10-05T08:09:22.697778+00:00",
+      "data": {
+        "name": "vm-workload-probe",
+        "provisioningState": "Updating",
+        "vmId": "[REDACTED]",
+        "timeCreated": "2026-09-29T13:27:07.2108118+00:00"
+      }
+    },
+    "recovery-source-nic": {
+      "observedAtUtc": "2026-10-05T08:09:25.906043+00:00",
+      "data": {
+        "name": "nic-hub-test",
+        "provisioningState": "Succeeded",
+        "diskState": null,
+        "managedBy": null,
+        "addressPrefix": null,
+        "privateIPs": [
+          "10.40.2.4"
+        ]
+      }
+    },
+    "recovery-source-subnet": {
+      "observedAtUtc": "2026-10-05T08:09:30.300778+00:00",
+      "data": {
+        "name": "snet-hub-test",
+        "provisioningState": "Succeeded",
+        "diskState": null,
+        "managedBy": null,
+        "addressPrefix": "10.40.2.0/27",
+        "privateIPs": [
+          null
+        ]
+      }
+    },
+    "recovery-source-table": {
+      "observedAtUtc": "2026-10-05T08:09:33.661553+00:00",
+      "data": {
+        "name": "rt-enforcement-source",
+        "provisioningState": "Succeeded",
+        "diskState": null,
+        "managedBy": null,
+        "addressPrefix": null,
+        "privateIPs": []
+      }
+    },
+    "recovery-source-disk": {
+      "observedAtUtc": "2026-10-05T08:09:36.849675+00:00",
+      "data": {
+        "name": "osdisk-enforcement-hub-test",
+        "provisioningState": "Succeeded",
+        "diskState": "Attached",
+        "managedBy": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test",
+        "addressPrefix": null,
+        "privateIPs": []
+      }
+    }
+  },
+  "errors": {},
+  "guestProbe": "Skipped: unnecessary for power-state reconciliation; RunCommand could remain pending.",
+  "finishedAtUtc": "2026-10-05T08:09:44.073280+00:00",
+  "stateAfterSha256": "e8cc2ced84d22562181d8b7b373a0efb960867965683796b6fddc0eab41d3930",
+  "originalStateUnchanged": true,
+  "calls": 8,
+  "mutations": 0,
+  "activityLog": {
+    "rawEvidence": "recovery-activity.json",
+    "eventCount": 66,
+    "maxEvents": 150,
+    "windowStartUtc": "2026-10-05T07:33:45Z",
+    "nonterminalLatestOperations": [
+      {
+        "correlationId": "[REDACTED]",
+        "eventTimestamp": "2026-10-05T07:58:26.0972922Z",
+        "operationId": "[REDACTED]",
+        "operationName": "Microsoft.Compute/virtualMachines/start/action",
+        "resourceId": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-workload-probe",
+        "status": "Accepted",
+        "subStatus": "Accepted"
+      },
+      {
+        "correlationId": "[REDACTED]",
+        "eventTimestamp": "2026-10-05T07:54:38.0652346Z",
+        "operationId": "[REDACTED]",
+        "operationName": "Microsoft.Compute/disks/write",
+        "resourceId": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/disks/osdisk-enforcement-hub-test",
+        "status": "Accepted",
+        "subStatus": "OK"
+      },
+      {
+        "correlationId": "[REDACTED]",
+        "eventTimestamp": "2026-10-05T07:54:36.2329049Z",
+        "operationId": "[REDACTED]",
+        "operationName": "Microsoft.Compute/virtualMachines/write",
+        "resourceId": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test",
+        "status": "Accepted",
+        "subStatus": "Created"
+      },
+      {
+        "correlationId": "[REDACTED]",
+        "eventTimestamp": "2026-10-05T07:51:43.1049306Z",
+        "operationId": "[REDACTED]",
+        "operationName": "Microsoft.Network/routeTables/write",
+        "resourceId": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source",
+        "status": "Accepted",
+        "subStatus": "Created"
+      }
+    ],
+    "limitation": "Activity Log is eventually consistent. Nonterminal entries plus Updating indicate unresolved control-plane work; this is not a definitive subscription-wide pending-operation inventory.",
+    "interpretation": "Only workload start has corroborating current Updating provisioning state. Three other latest-per-correlation Accepted writes (source VM, source disk, source table) have current Succeeded resource states; their incomplete log groups alone do not establish pending Azure operations."
+  },
+  "localProcessChecks": [
+    {
+      "pid": 36256,
+      "alive": false,
+      "process": null,
+      "evidence": "G3\\01-before-G3-vm-hub-nva.json",
+      "checkedAtUtc": "2026-10-05T08:10:36.555870+00:00"
+    },
+    {
+      "pid": 40140,
+      "alive": false,
+      "process": null,
+      "evidence": "G3\\02-G3-vm-hub-nva.json",
+      "checkedAtUtc": "2026-10-05T08:10:37.448935+00:00"
+    },
+    {
+      "pid": 8936,
+      "alive": false,
+      "process": null,
+      "evidence": "G3\\03-after-G3-vm-hub-nva.json",
+      "checkedAtUtc": "2026-10-05T08:10:38.340136+00:00"
+    },
+    {
+      "pid": 39620,
+      "alive": false,
+      "process": null,
+      "evidence": "G3\\04-before-G3-vm-spoke-nva.json",
+      "checkedAtUtc": "2026-10-05T08:10:39.370908+00:00"
+    },
+    {
+      "pid": 34600,
+      "alive": false,
+      "process": null,
+      "evidence": "G3\\05-G3-vm-spoke-nva.json",
+      "checkedAtUtc": "2026-10-05T08:10:40.503293+00:00"
+    },
+    {
+      "pid": 14796,
+      "alive": false,
+      "process": null,
+      "evidence": "G3\\06-after-G3-vm-spoke-nva.json",
+      "checkedAtUtc": "2026-10-05T08:10:41.639446+00:00"
+    },
+    {
+      "pid": 18196,
+      "alive": false,
+      "process": null,
+      "evidence": "G3\\07-before-G3-vm-workload-probe.json",
+      "checkedAtUtc": "2026-10-05T08:10:42.591774+00:00"
+    },
+    {
+      "pid": 24580,
+      "alive": false,
+      "process": null,
+      "evidence": "G3\\08-G3-vm-workload-probe.json",
+      "checkedAtUtc": "2026-10-05T08:10:43.878042+00:00"
+    },
+    {
+      "pid": 31672,
+      "alive": false,
+      "process": null,
+      "evidence": "G3\\09-undo-G3-vm-spoke-nva.json",
+      "checkedAtUtc": "2026-10-05T08:10:44.847629+00:00"
+    },
+    {
+      "pid": 36372,
+      "alive": false,
+      "process": null,
+      "evidence": "G3\\10-verify-undo-G3-vm-spoke-nva.json",
+      "checkedAtUtc": "2026-10-05T08:10:45.754774+00:00"
+    },
+    {
+      "pid": 38016,
+      "alive": false,
+      "process": null,
+      "evidence": "G3\\11-undo-G3-vm-hub-nva.json",
+      "checkedAtUtc": "2026-10-05T08:10:46.652091+00:00"
+    },
+    {
+      "pid": 23344,
+      "alive": false,
+      "process": null,
+      "evidence": "G3\\12-verify-undo-G3-vm-hub-nva.json",
+      "checkedAtUtc": "2026-10-05T08:10:47.659403+00:00"
+    }
+  ],
+  "findings": {
+    "workload": "vm-workload-probe 10.60.1.4 is PowerState/running, not PowerState/starting, but ProvisioningState/updating; not ready/settled. VM agent readiness not reported.",
+    "pendingOperation": "Workload start accepted 2026-10-05T07:58:26.0972922Z, correlation [REDACTED]; no terminal event observed in queried Activity Log. Treat start as unresolved despite running power state.",
+    "nvas": "vm-hub-nva and vm-spoke-nva deallocated, provisioning Succeeded; deallocation terminal successes confirmed.",
+    "otherCompute": "vm-ce-onprem deallocated/Succeeded; temporary vm-hub-test running/Succeeded at 10.40.2.4.",
+    "temporaryResources": "NIC, subnet 10.40.2.0/27, source route table and OS disk all Succeeded; disk Attached to vm-hub-test.",
+    "localPriorProcesses": "All twelve exact G3 child PIDs absent; no process termination performed.",
+    "timeoutAndRollback": "G3 workload local timeout was 420.096322 seconds (600 requested, capped by lease with 300 seconds rollback reserve). Transport killed its owned child but Azure completion remained unknown. Rollback restores only applied entries, so NVAs restored and unknown workload skipped; prior G1/G2 resources deliberately retained.",
+    "recommendation": "Do not retry start, resume blocked chain, mutate, or cleanup from this reconciliation. Coordinator should treat the workload operation as unresolved. If the original workload cannot start reliably, consider a fresh probe VM at 10.60.1.5 in the same workload subnet for a NEW fixed-endpoint comparison with new approval/leases and baseline; no deployment now. This must not silently replace the 10.60.1.4 endpoint in existing evidence."
+  },
+  "verifiedAtUtc": "2026-10-05T08:10:47.660593+00:00"
+}

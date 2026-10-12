@@ -1,0 +1,19 @@
+{
+  "label": "direct-check-rt-spoke-workload",
+  "argv": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-spoke-workload?api-version=2025-01-01"
+  ],
+  "utc": "2026-10-05T08:23:15.997913+00:00",
+  "cost": 0,
+  "timeoutSeconds": 120,
+  "status": "succeeded",
+  "pid": 9596,
+  "stdout": "{\n  \"etag\": \"W/\\\"[REDACTED]\\\"\",\n  \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-spoke-workload\",\n  \"location\": \"swedencentral\",\n  \"name\": \"rt-spoke-workload\",\n  \"properties\": {\n    \"disableBgpRoutePropagation\": true,\n    \"provisioningState\": \"Succeeded\",\n    \"resourceGuid\": \"[REDACTED]\",\n    \"routes\": [\n      {\n        \"etag\": \"W/\\\"[REDACTED]\\\"\",\n        \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-spoke-workload/routes/default-via-spoke-nva\",\n        \"name\": \"default-via-spoke-nva\",\n        \"properties\": {\n          \"addressPrefix\": \"0.0.0.0/0\",\n          \"hasBgpOverride\": false,\n          \"nextHopIpAddress\": \"10.60.0.4\",\n          \"nextHopType\": \"VirtualAppliance\",\n          \"provisioningState\": \"Succeeded\"\n        },\n        \"type\": \"Microsoft.Network/routeTables/routes\"\n      }\n    ],\n    \"subnets\": [\n      {\n        \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/subnets/snet-workload\"\n      }\n    ]\n  },\n  \"tags\": {\n    \"correlation_id\": \"7bb27d99\",\n    \"created_by\": \"copilot-lab\",\n    \"ephemeral\": \"true\",\n    \"lab\": \"sap-rise-scoped-peering-fwaas\",\n    \"owner\": \"jose\",\n    \"run_id\": \"7bb27d99\"\n  },\n  \"type\": \"Microsoft.Network/routeTables\"\n}\n",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T08:23:19.272442+00:00"
+}

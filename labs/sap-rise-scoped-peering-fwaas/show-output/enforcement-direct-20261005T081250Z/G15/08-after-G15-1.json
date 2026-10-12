@@ -1,0 +1,19 @@
+{
+  "label": "after-G15:1",
+  "argv": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets?api-version=2025-01-01"
+  ],
+  "utc": "2026-10-05T08:31:26.447116+00:00",
+  "cost": 0,
+  "timeoutSeconds": 120,
+  "status": "succeeded",
+  "pid": 20156,
+  "stdout": "{\n  \"value\": [\n    {\n      \"etag\": \"W/\\\"[REDACTED]\\\"\",\n      \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/RouteServerSubnet\",\n      \"name\": \"RouteServerSubnet\",\n      \"properties\": {\n        \"addressPrefix\": \"10.40.0.32/27\",\n        \"defaultOutboundAccess\": true,\n        \"delegations\": [],\n        \"ipConfigurations\": [\n          {\n            \"id\": \"/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Network/virtualHubs/ARS-HUB/ipConfigurations/IPCONFIG1\"\n          },\n          {\n            \"id\": \"/subscriptions/[REDACTED]/resourceGroups/ARMRG-[REDACTED]/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/RS/VIRTUALMACHINES/0/NETWORKINTERFACES/CUSTNIC/ipConfigurations/IPCONFIG\"\n          },\n          {\n            \"id\": \"/subscriptions/[REDACTED]/resourceGroups/ARMRG-[REDACTED]/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/RS/VIRTUALMACHINES/1/NETWORKINTERFACES/CUSTNIC/ipConfigurations/IPCONFIG\"\n          }\n        ],\n        \"privateEndpointNetworkPolicies\": \"Disabled\",\n        \"privateLinkServiceNetworkPolicies\": \"Enabled\",\n        \"provisioningState\": \"Succeeded\",\n        \"serviceEndpoints\": []\n      },\n      \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\n    },\n    {\n      \"etag\": \"W/\\\"[REDACTED]\\\"\",\n      \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/GatewaySubnet\",\n      \"name\": \"GatewaySubnet\",\n      \"properties\": {\n        \"addressPrefix\": \"10.40.0.0/27\",\n        \"defaultOutboundAccess\": true,\n        \"delegations\": [],\n        \"privateEndpointNetworkPolicies\": \"Disabled\",\n        \"privateLinkServiceNetworkPolicies\": \"Enabled\",\n        \"provisioningState\": \"Succeeded\",\n        \"serviceEndpoints\": []\n      },\n      \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\n    },\n    {\n      \"etag\": \"W/\\\"[REDACTED]\\\"\",\n      \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-nva\",\n      \"name\": \"snet-hub-nva\",\n      \"properties\": {\n        \"addressPrefix\": \"10.40.1.0/27\",\n        \"defaultOutboundAccess\": true,\n        \"delegations\": [],\n        \"ipConfigurations\": [\n          {\n            \"id\": \"/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Network/networkInterfaces/NIC-HUB-NVA/ipConfigurations/IPCONFIG1\"\n          }\n        ],\n        \"networkSecurityGroup\": {\n          \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva\"\n        },\n        \"privateEndpointNetworkPolicies\": \"Disabled\",\n        \"privateLinkServiceNetworkPolicies\": \"Enabled\",\n        \"provisioningState\": \"Succeeded\",\n        \"serviceEndpoints\": []\n      },\n      \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\n    }\n  ]\n}\n",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T08:31:30.548289+00:00"
+}

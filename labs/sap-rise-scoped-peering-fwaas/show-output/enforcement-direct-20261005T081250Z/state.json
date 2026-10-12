@@ -1,0 +1,2053 @@
+{
+  "startedAtUtc": "2026-10-05T07:50:30.008996+00:00",
+  "subscriptionId": "[REDACTED]",
+  "calls": 173,
+  "mutations": 31,
+  "completed": [
+    "G4",
+    "collect-subnet",
+    "G7-add",
+    "collect-vnetlocal",
+    "G7-remove",
+    "G8-add",
+    "collect-vnetpeering",
+    "G8-remove",
+    "G10",
+    "G11-add",
+    "collect-full",
+    "G11-remove",
+    "G12",
+    "collect-restored",
+    "G13",
+    "G14",
+    "G15",
+    "power-close"
+  ],
+  "status": "blocked",
+  "prior": "labs\\sap-rise-scoped-peering-fwaas\\show-output\\enforcement-20261005T075030Z",
+  "journal": [
+    {
+      "label": "G1:table",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source",
+      "body": {
+        "location": "swedencentral",
+        "tags": {
+          "lab": "sap-rise-scoped-peering-fwaas",
+          "owner": "jose",
+          "ephemeral": "true"
+        },
+        "properties": {
+          "disableBgpRoutePropagation": true,
+          "routes": []
+        }
+      },
+      "before": null,
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "put",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source?api-version=2025-01-01",
+        "--body",
+        "{\"location\":\"swedencentral\",\"tags\":{\"lab\":\"sap-rise-scoped-peering-fwaas\",\"owner\":\"jose\",\"ephemeral\":\"true\"},\"properties\":{\"disableBgpRoutePropagation\":true,\"routes\":[]}}"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G1:table",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source",
+          "body": null,
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "delete",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source?api-version=2025-01-01"
+          ]
+        }
+      ],
+      "phase": "G1",
+      "status": "applied",
+      "lease": "enforcement-20261005-G1",
+      "utc": "2026-10-05T07:51:40.729799+00:00",
+      "after": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source",
+        "location": "swedencentral",
+        "name": "rt-enforcement-source",
+        "properties": {
+          "disableBgpRoutePropagation": true,
+          "provisioningState": "Succeeded",
+          "resourceGuid": "[REDACTED]",
+          "routes": []
+        },
+        "tags": {
+          "ephemeral": "true",
+          "lab": "sap-rise-scoped-peering-fwaas",
+          "owner": "jose"
+        },
+        "type": "Microsoft.Network/routeTables"
+      }
+    },
+    {
+      "label": "G1:subnet",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test",
+      "body": {
+        "properties": {
+          "addressPrefix": "10.40.2.0/27",
+          "routeTable": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source"
+          },
+          "networkSecurityGroup": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva"
+          }
+        }
+      },
+      "before": null,
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "put",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test?api-version=2025-01-01",
+        "--body",
+        "{\"properties\":{\"addressPrefix\":\"10.40.2.0/27\",\"routeTable\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source\"},\"networkSecurityGroup\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva\"}}}"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G1:subnet",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test",
+          "body": null,
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "delete",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test?api-version=2025-01-01"
+          ]
+        }
+      ],
+      "phase": "G1",
+      "status": "applied",
+      "lease": "enforcement-20261005-G1",
+      "utc": "2026-10-05T07:51:53.574083+00:00",
+      "after": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test",
+        "name": "snet-hub-test",
+        "properties": {
+          "addressPrefix": "10.40.2.0/27",
+          "delegations": [],
+          "networkSecurityGroup": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva"
+          },
+          "privateEndpointNetworkPolicies": "Disabled",
+          "privateLinkServiceNetworkPolicies": "Enabled",
+          "provisioningState": "Succeeded",
+          "routeTable": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source"
+          }
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      }
+    },
+    {
+      "label": "G1:nic",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test",
+      "body": {
+        "location": "swedencentral",
+        "tags": {
+          "lab": "sap-rise-scoped-peering-fwaas",
+          "owner": "jose",
+          "ephemeral": "true"
+        },
+        "properties": {
+          "enableIPForwarding": false,
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "privateIPAllocationMethod": "Static",
+                "privateIPAddress": "10.40.2.4",
+                "subnet": {
+                  "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "before": null,
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "put",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test?api-version=2025-01-01",
+        "--body",
+        "{\"location\":\"swedencentral\",\"tags\":{\"lab\":\"sap-rise-scoped-peering-fwaas\",\"owner\":\"jose\",\"ephemeral\":\"true\"},\"properties\":{\"enableIPForwarding\":false,\"ipConfigurations\":[{\"name\":\"ipconfig1\",\"properties\":{\"privateIPAllocationMethod\":\"Static\",\"privateIPAddress\":\"10.40.2.4\",\"subnet\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test\"}}}]}}"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G1:nic",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test",
+          "body": null,
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "delete",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test?api-version=2025-01-01"
+          ]
+        }
+      ],
+      "phase": "G1",
+      "status": "applied",
+      "lease": "enforcement-20261005-G1",
+      "utc": "2026-10-05T07:52:05.339995+00:00",
+      "after": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test",
+        "kind": "Regular",
+        "location": "swedencentral",
+        "name": "nic-hub-test",
+        "properties": {
+          "allowPort25Out": true,
+          "auxiliaryMode": "None",
+          "auxiliarySku": "None",
+          "defaultOutboundConnectivityEnabled": false,
+          "disableTcpStateTracking": false,
+          "dnsSettings": {
+            "appliedDnsServers": [],
+            "dnsServers": [],
+            "internalDomainNameSuffix": "kfuukhuvatmepdc5fbtop05jcb.gvxx.internal.cloudapp.net"
+          },
+          "enableAcceleratedNetworking": false,
+          "enableIPForwarding": false,
+          "hostedWorkloads": [],
+          "ipConfigurations": [
+            {
+              "etag": "W/\"[REDACTED]\"",
+              "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test/ipConfigurations/ipconfig1",
+              "name": "ipconfig1",
+              "properties": {
+                "primary": true,
+                "privateIPAddress": "10.40.2.4",
+                "privateIPAddressVersion": "IPv4",
+                "privateIPAllocationMethod": "Static",
+                "provisioningState": "Succeeded",
+                "subnet": {
+                  "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test"
+                }
+              },
+              "type": "Microsoft.Network/networkInterfaces/ipConfigurations"
+            }
+          ],
+          "nicType": "Standard",
+          "provisioningState": "Succeeded",
+          "resourceGuid": "[REDACTED]",
+          "tapConfigurations": [],
+          "vnetEncryptionSupported": false
+        },
+        "tags": {
+          "ephemeral": "true",
+          "lab": "sap-rise-scoped-peering-fwaas",
+          "owner": "jose"
+        },
+        "type": "Microsoft.Network/networkInterfaces"
+      }
+    },
+    {
+      "label": "G2:vm-and-disk",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test",
+      "body": {
+        "location": "swedencentral",
+        "tags": {
+          "lab": "sap-rise-scoped-peering-fwaas",
+          "owner": "jose",
+          "ephemeral": "true"
+        },
+        "properties": {
+          "hardwareProfile": {
+            "vmSize": "Standard_B2ts_v2"
+          },
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "Canonical",
+              "offer": "0001-com-ubuntu-server-jammy",
+              "sku": "22_04-lts-gen2",
+              "version": "latest"
+            },
+            "osDisk": {
+              "name": "osdisk-enforcement-hub-test",
+              "createOption": "FromImage",
+              "deleteOption": "Detach",
+              "managedDisk": {
+                "storageAccountType": "StandardSSD_LRS"
+              }
+            }
+          },
+          "osProfile": {
+            "computerName": "vm-hub-test",
+            "adminUsername": "azurelabuser",
+            "linuxConfiguration": {
+              "disablePasswordAuthentication": true,
+              "ssh": {
+                "publicKeys": [
+                  {
+                    "path": "/home/azurelabuser/.ssh/authorized_keys",
+                    "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/"
+                  }
+                ]
+              }
+            }
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test",
+                "properties": {
+                  "primary": true,
+                  "deleteOption": "Detach"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "before": null,
+      "cost": 2,
+      "compute": true,
+      "argv": [
+        "rest",
+        "--method",
+        "put",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test?api-version=2024-07-01",
+        "--body",
+        "{\"location\":\"swedencentral\",\"tags\":{\"lab\":\"sap-rise-scoped-peering-fwaas\",\"owner\":\"jose\",\"ephemeral\":\"true\"},\"properties\":{\"hardwareProfile\":{\"vmSize\":\"Standard_B2ts_v2\"},\"storageProfile\":{\"imageReference\":{\"publisher\":\"Canonical\",\"offer\":\"0001-com-ubuntu-server-jammy\",\"sku\":\"22_04-lts-gen2\",\"version\":\"latest\"},\"osDisk\":{\"name\":\"osdisk-enforcement-hub-test\",\"createOption\":\"FromImage\",\"deleteOption\":\"Detach\",\"managedDisk\":{\"storageAccountType\":\"StandardSSD_LRS\"}}},\"osProfile\":{\"computerName\":\"vm-hub-test\",\"adminUsername\":\"azurelabuser\",\"linuxConfiguration\":{\"disablePasswordAuthentication\":true,\"ssh\":{\"publicKeys\":[{\"path\":\"/home/azurelabuser/.ssh/authorized_keys\",\"keyData\":\"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/\"}]}}},\"networkProfile\":{\"networkInterfaces\":[{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test\",\"properties\":{\"primary\":true,\"deleteOption\":\"Detach\"}}]}}}"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G2:vm-and-disk",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test",
+          "body": null,
+          "compute": true,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "delete",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test?api-version=2024-07-01"
+          ]
+        },
+        {
+          "label": "undo:G2:disk",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/osdisk-enforcement-hub-test",
+          "body": null,
+          "compute": true,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "delete",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/osdisk-enforcement-hub-test?api-version=2024-03-02"
+          ]
+        }
+      ],
+      "resourceCosts": [
+        {
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test",
+          "cost": 1,
+          "before": null
+        },
+        {
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/osdisk-enforcement-hub-test",
+          "cost": 1,
+          "before": null
+        }
+      ],
+      "additionalReads": 1,
+      "wait": [
+        "vm",
+        "wait",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-hub-test",
+        "--created",
+        "--interval",
+        "30",
+        "--timeout",
+        "600"
+      ],
+      "phase": "G2",
+      "status": "applied",
+      "lease": "enforcement-20261005-G2",
+      "utc": "2026-10-05T07:54:32.230165+00:00",
+      "after": {
+        "etag": "\"1\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test",
+        "location": "swedencentral",
+        "name": "vm-hub-test",
+        "properties": {
+          "hardwareProfile": {
+            "vmSize": "Standard_B2ts_v2"
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test",
+                "properties": {
+                  "deleteOption": "Detach",
+                  "primary": true
+                }
+              }
+            ]
+          },
+          "osProfile": {
+            "adminUsername": "azurelabuser",
+            "allowExtensionOperations": true,
+            "computerName": "vm-hub-test",
+            "linuxConfiguration": {
+              "disablePasswordAuthentication": true,
+              "enableVMAgentPlatformUpdates": true,
+              "patchSettings": {
+                "assessmentMode": "ImageDefault",
+                "patchMode": "ImageDefault"
+              },
+              "provisionVMAgent": true,
+              "ssh": {
+                "publicKeys": [
+                  {
+                    "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/",
+                    "path": "/home/azurelabuser/.ssh/authorized_keys"
+                  }
+                ]
+              }
+            },
+            "requireGuestProvisionSignal": true,
+            "secrets": []
+          },
+          "provisioningState": "Succeeded",
+          "storageProfile": {
+            "dataDisks": [],
+            "diskControllerType": "SCSI",
+            "imageReference": {
+              "exactVersion": "22.04.202608060",
+              "offer": "0001-com-ubuntu-server-jammy",
+              "publisher": "Canonical",
+              "sku": "22_04-lts-gen2",
+              "version": "latest"
+            },
+            "osDisk": {
+              "caching": "ReadWrite",
+              "createOption": "FromImage",
+              "deleteOption": "Detach",
+              "diskSizeGB": 30,
+              "managedDisk": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/osdisk-enforcement-hub-test",
+                "storageAccountType": "StandardSSD_LRS"
+              },
+              "name": "osdisk-enforcement-hub-test",
+              "osType": "Linux"
+            }
+          },
+          "timeCreated": "2026-10-05T07:54:35.0869703+00:00",
+          "vmId": "[REDACTED]"
+        },
+        "tags": {
+          "ephemeral": "true",
+          "lab": "sap-rise-scoped-peering-fwaas",
+          "owner": "jose"
+        },
+        "type": "Microsoft.Compute/virtualMachines"
+      },
+      "diskAfter": {
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/osdisk-enforcement-hub-test",
+        "location": "swedencentral",
+        "managedBy": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test",
+        "name": "osdisk-enforcement-hub-test",
+        "properties": {
+          "LastOwnershipUpdateTime": "2026-10-05T07:54:37.2390833+00:00",
+          "creationData": {
+            "createOption": "FromImage",
+            "imageReference": {
+              "id": "/Subscriptions/[REDACTED]/Providers/Microsoft.Compute/Locations/SwedenCentral/Publishers/Canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-jammy/Skus/22_04-lts-gen2/Versions/22.04.202608060"
+            }
+          },
+          "diskIOPSReadWrite": 500,
+          "diskMBpsReadWrite": 100,
+          "diskSizeBytes": 32213303296,
+          "diskSizeGB": 30,
+          "diskState": "Attached",
+          "encryption": {
+            "type": "EncryptionAtRestWithPlatformKey"
+          },
+          "hyperVGeneration": "V2",
+          "networkAccessPolicy": "AllowAll",
+          "osType": "Linux",
+          "provisioningState": "Succeeded",
+          "publicNetworkAccess": "Enabled",
+          "supportedCapabilities": {
+            "acceleratedNetwork": true,
+            "architecture": "x64",
+            "diskControllerTypes": "SCSI, NVMe"
+          },
+          "supportsHibernation": true,
+          "timeCreated": "2026-10-05T07:54:37.2390833+00:00",
+          "uniqueId": "[REDACTED]"
+        },
+        "sku": {
+          "name": "StandardSSD_LRS",
+          "tier": "Standard"
+        },
+        "tags": {
+          "ephemeral": "true",
+          "lab": "sap-rise-scoped-peering-fwaas",
+          "owner": "jose"
+        },
+        "type": "Microsoft.Compute/disks"
+      }
+    },
+    {
+      "label": "G4:nsg-hub-nva",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/securityRules/Allow-PeeringEnforcement-ICMP",
+      "body": {
+        "properties": {
+          "priority": 105,
+          "direction": "Inbound",
+          "access": "Allow",
+          "protocol": "Icmp",
+          "sourceAddressPrefixes": [
+            "10.40.2.4/32",
+            "10.40.1.4/32",
+            "10.60.0.4/32",
+            "10.60.1.4/32"
+          ],
+          "destinationAddressPrefixes": [
+            "10.40.2.4/32",
+            "10.40.1.4/32",
+            "10.60.0.4/32",
+            "10.60.1.4/32"
+          ],
+          "sourcePortRange": "*",
+          "destinationPortRange": "*"
+        }
+      },
+      "before": null,
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "put",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/securityRules/Allow-PeeringEnforcement-ICMP?api-version=2025-01-01",
+        "--body",
+        "{\"properties\":{\"priority\":105,\"direction\":\"Inbound\",\"access\":\"Allow\",\"protocol\":\"Icmp\",\"sourceAddressPrefixes\":[\"10.40.2.4/32\",\"10.40.1.4/32\",\"10.60.0.4/32\",\"10.60.1.4/32\"],\"destinationAddressPrefixes\":[\"10.40.2.4/32\",\"10.40.1.4/32\",\"10.60.0.4/32\",\"10.60.1.4/32\"],\"sourcePortRange\":\"*\",\"destinationPortRange\":\"*\"}}"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G4:nsg-hub-nva",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/securityRules/Allow-PeeringEnforcement-ICMP",
+          "body": null,
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "delete",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/securityRules/Allow-PeeringEnforcement-ICMP?api-version=2025-01-01"
+          ]
+        }
+      ],
+      "phase": "G4",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G4",
+      "utc": "2026-10-05T08:13:00.957102+00:00",
+      "after": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/securityRules/Allow-PeeringEnforcement-ICMP",
+        "name": "Allow-PeeringEnforcement-ICMP",
+        "properties": {
+          "access": "Allow",
+          "destinationAddressPrefixes": [
+            "10.40.2.4/32",
+            "10.40.1.4/32",
+            "10.60.0.4/32",
+            "10.60.1.4/32"
+          ],
+          "destinationPortRange": "*",
+          "destinationPortRanges": [],
+          "direction": "Inbound",
+          "priority": 105,
+          "protocol": "Icmp",
+          "provisioningState": "Succeeded",
+          "sourceAddressPrefixes": [
+            "10.40.2.4/32",
+            "10.40.1.4/32",
+            "10.60.0.4/32",
+            "10.60.1.4/32"
+          ],
+          "sourcePortRange": "*",
+          "sourcePortRanges": []
+        },
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+      }
+    },
+    {
+      "label": "G4:vnet-sap-rise-snet-workload-nsg-swedencentral",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/securityRules/Allow-PeeringEnforcement-ICMP",
+      "body": {
+        "properties": {
+          "priority": 105,
+          "direction": "Inbound",
+          "access": "Allow",
+          "protocol": "Icmp",
+          "sourceAddressPrefixes": [
+            "10.40.2.4/32",
+            "10.40.1.4/32",
+            "10.60.0.4/32",
+            "10.60.1.4/32"
+          ],
+          "destinationAddressPrefixes": [
+            "10.40.2.4/32",
+            "10.40.1.4/32",
+            "10.60.0.4/32",
+            "10.60.1.4/32"
+          ],
+          "sourcePortRange": "*",
+          "destinationPortRange": "*"
+        }
+      },
+      "before": null,
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "put",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/securityRules/Allow-PeeringEnforcement-ICMP?api-version=2025-01-01",
+        "--body",
+        "{\"properties\":{\"priority\":105,\"direction\":\"Inbound\",\"access\":\"Allow\",\"protocol\":\"Icmp\",\"sourceAddressPrefixes\":[\"10.40.2.4/32\",\"10.40.1.4/32\",\"10.60.0.4/32\",\"10.60.1.4/32\"],\"destinationAddressPrefixes\":[\"10.40.2.4/32\",\"10.40.1.4/32\",\"10.60.0.4/32\",\"10.60.1.4/32\"],\"sourcePortRange\":\"*\",\"destinationPortRange\":\"*\"}}"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G4:vnet-sap-rise-snet-workload-nsg-swedencentral",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/securityRules/Allow-PeeringEnforcement-ICMP",
+          "body": null,
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "delete",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/securityRules/Allow-PeeringEnforcement-ICMP?api-version=2025-01-01"
+          ]
+        }
+      ],
+      "phase": "G4",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G4",
+      "utc": "2026-10-05T08:13:20.089930+00:00",
+      "after": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/securityRules/Allow-PeeringEnforcement-ICMP",
+        "name": "Allow-PeeringEnforcement-ICMP",
+        "properties": {
+          "access": "Allow",
+          "destinationAddressPrefixes": [
+            "10.40.2.4/32",
+            "10.40.1.4/32",
+            "10.60.0.4/32",
+            "10.60.1.4/32"
+          ],
+          "destinationPortRange": "*",
+          "destinationPortRanges": [],
+          "direction": "Inbound",
+          "priority": 105,
+          "protocol": "Icmp",
+          "provisioningState": "Succeeded",
+          "sourceAddressPrefixes": [
+            "10.40.2.4/32",
+            "10.40.1.4/32",
+            "10.60.0.4/32",
+            "10.60.1.4/32"
+          ],
+          "sourcePortRange": "*",
+          "sourcePortRanges": []
+        },
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+      }
+    },
+    {
+      "label": "G7-add:route",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g7",
+      "body": {
+        "properties": {
+          "addressPrefix": "10.60.1.4/32",
+          "nextHopType": "VnetLocal"
+        }
+      },
+      "before": null,
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "put",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g7?api-version=2025-01-01",
+        "--body",
+        "{\"properties\":{\"addressPrefix\":\"10.60.1.4/32\",\"nextHopType\":\"VnetLocal\"}}"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G7-add:route",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g7",
+          "body": null,
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "delete",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g7?api-version=2025-01-01"
+          ]
+        }
+      ],
+      "trial": true,
+      "phase": "G7-add",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G7-add",
+      "utc": "2026-10-05T08:15:53.877280+00:00",
+      "after": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g7",
+        "name": "enforcement-g7",
+        "properties": {
+          "addressPrefix": "10.60.1.4/32",
+          "hasBgpOverride": false,
+          "nextHopType": "VnetLocal",
+          "provisioningState": "Succeeded"
+        },
+        "type": "Microsoft.Network/routeTables/routes"
+      }
+    },
+    {
+      "label": "G7-remove:0",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g7",
+      "body": null,
+      "before": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g7",
+        "name": "enforcement-g7",
+        "properties": {
+          "addressPrefix": "10.60.1.4/32",
+          "hasBgpOverride": false,
+          "nextHopType": "VnetLocal",
+          "provisioningState": "Succeeded"
+        },
+        "type": "Microsoft.Network/routeTables/routes"
+      },
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "delete",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g7?api-version=2025-01-01"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G7-remove:0",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g7",
+          "body": {
+            "properties": {
+              "addressPrefix": "10.60.1.4/32",
+              "nextHopType": "VnetLocal"
+            }
+          },
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "put",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g7?api-version=2025-01-01",
+            "--body",
+            "{\"properties\":{\"addressPrefix\":\"10.60.1.4/32\",\"nextHopType\":\"VnetLocal\"}}"
+          ]
+        }
+      ],
+      "phase": "G7-remove",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G7-remove",
+      "utc": "2026-10-05T08:17:58.443189+00:00",
+      "after": null
+    },
+    {
+      "label": "G8-add:route",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g8",
+      "body": {
+        "properties": {
+          "addressPrefix": "10.60.1.4/32",
+          "nextHopType": "VNetPeering"
+        }
+      },
+      "before": null,
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "put",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g8?api-version=2025-01-01",
+        "--body",
+        "{\"properties\":{\"addressPrefix\":\"10.60.1.4/32\",\"nextHopType\":\"VNetPeering\"}}"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G8-add:route",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g8",
+          "body": null,
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "delete",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g8?api-version=2025-01-01"
+          ]
+        }
+      ],
+      "trial": true,
+      "phase": "G8-add",
+      "status": "unknown",
+      "lease": "enforcement-direct-20261005-G8-add",
+      "utc": "2026-10-05T08:18:34.407742+00:00"
+    },
+    {
+      "label": "G10:peer-hub-to-sap-rise",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise",
+      "body": null,
+      "before": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise",
+        "name": "peer-hub-to-sap-rise",
+        "properties": {
+          "allowForwardedTraffic": true,
+          "allowGatewayTransit": false,
+          "allowVirtualNetworkAccess": true,
+          "doNotVerifyRemoteGateways": false,
+          "localAddressSpace": {
+            "addressPrefixes": [
+              "10.40.1.0/27"
+            ]
+          },
+          "localSubnetNames": [
+            "snet-hub-nva"
+          ],
+          "localVirtualNetworkAddressSpace": {
+            "addressPrefixes": [
+              "10.40.1.0/27"
+            ]
+          },
+          "peerCompleteVnets": false,
+          "peeringState": "Connected",
+          "peeringSyncLevel": "FullyInSync",
+          "provisioningState": "Succeeded",
+          "remoteAddressSpace": {
+            "addressPrefixes": [
+              "10.60.0.0/27"
+            ]
+          },
+          "remoteSubnetNames": [
+            "snet-spoke-nva"
+          ],
+          "remoteVirtualNetwork": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise"
+          },
+          "remoteVirtualNetworkAddressSpace": {
+            "addressPrefixes": [
+              "10.60.0.0/27"
+            ]
+          },
+          "resourceGuid": "[REDACTED]",
+          "routeServiceVips": {},
+          "useRemoteGateways": false
+        },
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+      },
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "delete",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise?api-version=2025-01-01"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G10:peer-hub-to-sap-rise",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise",
+          "body": {
+            "properties": {
+              "allowVirtualNetworkAccess": true,
+              "allowForwardedTraffic": true,
+              "allowGatewayTransit": false,
+              "useRemoteGateways": false,
+              "doNotVerifyRemoteGateways": false,
+              "remoteVirtualNetwork": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise"
+              },
+              "peerCompleteVnets": false,
+              "localSubnetNames": [
+                "snet-hub-nva"
+              ],
+              "remoteSubnetNames": [
+                "snet-spoke-nva"
+              ]
+            }
+          },
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "put",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise?api-version=2025-01-01",
+            "--body",
+            "{\"properties\":{\"allowVirtualNetworkAccess\":true,\"allowForwardedTraffic\":true,\"allowGatewayTransit\":false,\"useRemoteGateways\":false,\"doNotVerifyRemoteGateways\":false,\"remoteVirtualNetwork\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise\"},\"peerCompleteVnets\":false,\"localSubnetNames\":[\"snet-hub-nva\"],\"remoteSubnetNames\":[\"snet-spoke-nva\"]}}"
+          ]
+        }
+      ],
+      "phase": "G10",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G10",
+      "utc": "2026-10-05T08:21:41.638338+00:00",
+      "after": null
+    },
+    {
+      "label": "G10:peer-sap-rise-to-hub",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub",
+      "body": null,
+      "before": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub",
+        "name": "peer-sap-rise-to-hub",
+        "properties": {
+          "allowForwardedTraffic": true,
+          "allowGatewayTransit": false,
+          "allowVirtualNetworkAccess": true,
+          "doNotVerifyRemoteGateways": false,
+          "localAddressSpace": {
+            "addressPrefixes": [
+              "10.60.0.0/27"
+            ]
+          },
+          "localSubnetNames": [
+            "snet-spoke-nva"
+          ],
+          "localVirtualNetworkAddressSpace": {
+            "addressPrefixes": [
+              "10.60.0.0/27"
+            ]
+          },
+          "peerCompleteVnets": false,
+          "peeringState": "Disconnected",
+          "peeringSyncLevel": "FullyInSync",
+          "provisioningState": "Succeeded",
+          "remoteAddressSpace": {
+            "addressPrefixes": [
+              "10.40.1.0/27"
+            ]
+          },
+          "remoteSubnetNames": [
+            "snet-hub-nva"
+          ],
+          "remoteVirtualNetwork": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub"
+          },
+          "remoteVirtualNetworkAddressSpace": {
+            "addressPrefixes": [
+              "10.40.1.0/27"
+            ]
+          },
+          "resourceGuid": "[REDACTED]",
+          "routeServiceVips": {},
+          "useRemoteGateways": false
+        },
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+      },
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "delete",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub?api-version=2025-01-01"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G10:peer-sap-rise-to-hub",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub",
+          "body": {
+            "properties": {
+              "allowVirtualNetworkAccess": true,
+              "allowForwardedTraffic": true,
+              "allowGatewayTransit": false,
+              "useRemoteGateways": false,
+              "doNotVerifyRemoteGateways": false,
+              "remoteVirtualNetwork": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub"
+              },
+              "peerCompleteVnets": false,
+              "localSubnetNames": [
+                "snet-spoke-nva"
+              ],
+              "remoteSubnetNames": [
+                "snet-hub-nva"
+              ]
+            }
+          },
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "put",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub?api-version=2025-01-01",
+            "--body",
+            "{\"properties\":{\"allowVirtualNetworkAccess\":true,\"allowForwardedTraffic\":true,\"allowGatewayTransit\":false,\"useRemoteGateways\":false,\"doNotVerifyRemoteGateways\":false,\"remoteVirtualNetwork\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub\"},\"peerCompleteVnets\":false,\"localSubnetNames\":[\"snet-spoke-nva\"],\"remoteSubnetNames\":[\"snet-hub-nva\"]}}"
+          ]
+        }
+      ],
+      "phase": "G10",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G10",
+      "utc": "2026-10-05T08:21:58.252454+00:00",
+      "after": null
+    },
+    {
+      "label": "G11-add:peer-hub-to-sap-rise",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise",
+      "body": {
+        "properties": {
+          "allowVirtualNetworkAccess": true,
+          "allowForwardedTraffic": true,
+          "allowGatewayTransit": false,
+          "useRemoteGateways": false,
+          "doNotVerifyRemoteGateways": false,
+          "remoteVirtualNetwork": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise"
+          },
+          "peerCompleteVnets": true
+        }
+      },
+      "before": null,
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "put",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise?api-version=2025-01-01",
+        "--body",
+        "{\"properties\":{\"allowVirtualNetworkAccess\":true,\"allowForwardedTraffic\":true,\"allowGatewayTransit\":false,\"useRemoteGateways\":false,\"doNotVerifyRemoteGateways\":false,\"remoteVirtualNetwork\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise\"},\"peerCompleteVnets\":true}}"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G11-add:peer-hub-to-sap-rise",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise",
+          "body": null,
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "delete",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise?api-version=2025-01-01"
+          ]
+        }
+      ],
+      "phase": "G11-add",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G11-add",
+      "utc": "2026-10-05T08:22:28.816916+00:00",
+      "after": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise",
+        "name": "peer-hub-to-sap-rise",
+        "properties": {
+          "allowForwardedTraffic": true,
+          "allowGatewayTransit": false,
+          "allowVirtualNetworkAccess": true,
+          "doNotVerifyRemoteGateways": false,
+          "peerCompleteVnets": true,
+          "peeringState": "Initiated",
+          "peeringSyncLevel": "RemoteNotInSync",
+          "provisioningState": "Succeeded",
+          "remoteAddressSpace": {
+            "addressPrefixes": [
+              "10.60.0.0/16"
+            ]
+          },
+          "remoteVirtualNetwork": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise"
+          },
+          "remoteVirtualNetworkAddressSpace": {
+            "addressPrefixes": [
+              "10.60.0.0/16"
+            ]
+          },
+          "resourceGuid": "[REDACTED]",
+          "routeServiceVips": {},
+          "useRemoteGateways": false
+        },
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+      }
+    },
+    {
+      "label": "G11-add:peer-sap-rise-to-hub",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub",
+      "body": {
+        "properties": {
+          "allowVirtualNetworkAccess": true,
+          "allowForwardedTraffic": true,
+          "allowGatewayTransit": false,
+          "useRemoteGateways": false,
+          "doNotVerifyRemoteGateways": false,
+          "remoteVirtualNetwork": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub"
+          },
+          "peerCompleteVnets": true
+        }
+      },
+      "before": null,
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "put",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub?api-version=2025-01-01",
+        "--body",
+        "{\"properties\":{\"allowVirtualNetworkAccess\":true,\"allowForwardedTraffic\":true,\"allowGatewayTransit\":false,\"useRemoteGateways\":false,\"doNotVerifyRemoteGateways\":false,\"remoteVirtualNetwork\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub\"},\"peerCompleteVnets\":true}}"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G11-add:peer-sap-rise-to-hub",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub",
+          "body": null,
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "delete",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub?api-version=2025-01-01"
+          ]
+        }
+      ],
+      "phase": "G11-add",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G11-add",
+      "utc": "2026-10-05T08:22:45.432420+00:00",
+      "after": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub",
+        "name": "peer-sap-rise-to-hub",
+        "properties": {
+          "allowForwardedTraffic": true,
+          "allowGatewayTransit": false,
+          "allowVirtualNetworkAccess": true,
+          "doNotVerifyRemoteGateways": false,
+          "peerCompleteVnets": true,
+          "peeringState": "Connected",
+          "peeringSyncLevel": "FullyInSync",
+          "provisioningState": "Succeeded",
+          "remoteAddressSpace": {
+            "addressPrefixes": [
+              "10.40.0.0/16"
+            ]
+          },
+          "remoteVirtualNetwork": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub"
+          },
+          "remoteVirtualNetworkAddressSpace": {
+            "addressPrefixes": [
+              "10.40.0.0/16"
+            ]
+          },
+          "resourceGuid": "[REDACTED]",
+          "routeServiceVips": {},
+          "useRemoteGateways": false
+        },
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+      }
+    },
+    {
+      "label": "G11-remove:peer-hub-to-sap-rise",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise",
+      "body": null,
+      "before": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise",
+        "name": "peer-hub-to-sap-rise",
+        "properties": {
+          "allowForwardedTraffic": true,
+          "allowGatewayTransit": false,
+          "allowVirtualNetworkAccess": true,
+          "doNotVerifyRemoteGateways": false,
+          "peerCompleteVnets": true,
+          "peeringState": "Connected",
+          "peeringSyncLevel": "FullyInSync",
+          "provisioningState": "Succeeded",
+          "remoteAddressSpace": {
+            "addressPrefixes": [
+              "10.60.0.0/16"
+            ]
+          },
+          "remoteVirtualNetwork": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise"
+          },
+          "remoteVirtualNetworkAddressSpace": {
+            "addressPrefixes": [
+              "10.60.0.0/16"
+            ]
+          },
+          "resourceGuid": "[REDACTED]",
+          "routeServiceVips": {},
+          "useRemoteGateways": false
+        },
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+      },
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "delete",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise?api-version=2025-01-01"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G11-remove:peer-hub-to-sap-rise",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise",
+          "body": {
+            "properties": {
+              "allowVirtualNetworkAccess": true,
+              "allowForwardedTraffic": true,
+              "allowGatewayTransit": false,
+              "useRemoteGateways": false,
+              "doNotVerifyRemoteGateways": false,
+              "remoteVirtualNetwork": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise"
+              },
+              "peerCompleteVnets": true
+            }
+          },
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "put",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise?api-version=2025-01-01",
+            "--body",
+            "{\"properties\":{\"allowVirtualNetworkAccess\":true,\"allowForwardedTraffic\":true,\"allowGatewayTransit\":false,\"useRemoteGateways\":false,\"doNotVerifyRemoteGateways\":false,\"remoteVirtualNetwork\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise\"},\"peerCompleteVnets\":true}}"
+          ]
+        }
+      ],
+      "phase": "G11-remove",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G11-remove",
+      "utc": "2026-10-05T08:25:07.056002+00:00",
+      "after": null
+    },
+    {
+      "label": "G11-remove:peer-sap-rise-to-hub",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub",
+      "body": null,
+      "before": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub",
+        "name": "peer-sap-rise-to-hub",
+        "properties": {
+          "allowForwardedTraffic": true,
+          "allowGatewayTransit": false,
+          "allowVirtualNetworkAccess": true,
+          "doNotVerifyRemoteGateways": false,
+          "peerCompleteVnets": true,
+          "peeringState": "Disconnected",
+          "peeringSyncLevel": "FullyInSync",
+          "provisioningState": "Succeeded",
+          "remoteAddressSpace": {
+            "addressPrefixes": [
+              "10.40.0.0/16"
+            ]
+          },
+          "remoteVirtualNetwork": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub"
+          },
+          "remoteVirtualNetworkAddressSpace": {
+            "addressPrefixes": [
+              "10.40.0.0/16"
+            ]
+          },
+          "resourceGuid": "[REDACTED]",
+          "routeServiceVips": {},
+          "useRemoteGateways": false
+        },
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+      },
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "delete",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub?api-version=2025-01-01"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G11-remove:peer-sap-rise-to-hub",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub",
+          "body": {
+            "properties": {
+              "allowVirtualNetworkAccess": true,
+              "allowForwardedTraffic": true,
+              "allowGatewayTransit": false,
+              "useRemoteGateways": false,
+              "doNotVerifyRemoteGateways": false,
+              "remoteVirtualNetwork": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub"
+              },
+              "peerCompleteVnets": true
+            }
+          },
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "put",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub?api-version=2025-01-01",
+            "--body",
+            "{\"properties\":{\"allowVirtualNetworkAccess\":true,\"allowForwardedTraffic\":true,\"allowGatewayTransit\":false,\"useRemoteGateways\":false,\"doNotVerifyRemoteGateways\":false,\"remoteVirtualNetwork\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub\"},\"peerCompleteVnets\":true}}"
+          ]
+        }
+      ],
+      "phase": "G11-remove",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G11-remove",
+      "utc": "2026-10-05T08:25:25.256016+00:00",
+      "after": null
+    },
+    {
+      "label": "G12:peer-hub-to-sap-rise",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise",
+      "body": {
+        "properties": {
+          "allowVirtualNetworkAccess": true,
+          "allowForwardedTraffic": true,
+          "allowGatewayTransit": false,
+          "useRemoteGateways": false,
+          "doNotVerifyRemoteGateways": false,
+          "remoteVirtualNetwork": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise"
+          },
+          "peerCompleteVnets": false,
+          "localSubnetNames": [
+            "snet-hub-nva"
+          ],
+          "remoteSubnetNames": [
+            "snet-spoke-nva"
+          ]
+        }
+      },
+      "before": null,
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "put",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise?api-version=2025-01-01",
+        "--body",
+        "{\"properties\":{\"allowVirtualNetworkAccess\":true,\"allowForwardedTraffic\":true,\"allowGatewayTransit\":false,\"useRemoteGateways\":false,\"doNotVerifyRemoteGateways\":false,\"remoteVirtualNetwork\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise\"},\"peerCompleteVnets\":false,\"localSubnetNames\":[\"snet-hub-nva\"],\"remoteSubnetNames\":[\"snet-spoke-nva\"]}}"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G12:peer-hub-to-sap-rise",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise",
+          "body": null,
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "delete",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise?api-version=2025-01-01"
+          ]
+        }
+      ],
+      "phase": "G12",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G12",
+      "utc": "2026-10-05T08:25:55.198848+00:00",
+      "after": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise",
+        "name": "peer-hub-to-sap-rise",
+        "properties": {
+          "allowForwardedTraffic": true,
+          "allowGatewayTransit": false,
+          "allowVirtualNetworkAccess": true,
+          "doNotVerifyRemoteGateways": false,
+          "localAddressSpace": {
+            "addressPrefixes": [
+              "10.40.1.0/27"
+            ]
+          },
+          "localSubnetNames": [
+            "snet-hub-nva"
+          ],
+          "localVirtualNetworkAddressSpace": {
+            "addressPrefixes": [
+              "10.40.1.0/27"
+            ]
+          },
+          "peerCompleteVnets": false,
+          "peeringState": "Initiated",
+          "peeringSyncLevel": "RemoteNotInSync",
+          "provisioningState": "Succeeded",
+          "remoteAddressSpace": {
+            "addressPrefixes": [
+              "10.60.0.0/27"
+            ]
+          },
+          "remoteSubnetNames": [
+            "snet-spoke-nva"
+          ],
+          "remoteVirtualNetwork": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise"
+          },
+          "remoteVirtualNetworkAddressSpace": {
+            "addressPrefixes": [
+              "10.60.0.0/27"
+            ]
+          },
+          "resourceGuid": "[REDACTED]",
+          "routeServiceVips": {},
+          "useRemoteGateways": false
+        },
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+      }
+    },
+    {
+      "label": "G12:peer-sap-rise-to-hub",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub",
+      "body": {
+        "properties": {
+          "allowVirtualNetworkAccess": true,
+          "allowForwardedTraffic": true,
+          "allowGatewayTransit": false,
+          "useRemoteGateways": false,
+          "doNotVerifyRemoteGateways": false,
+          "remoteVirtualNetwork": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub"
+          },
+          "peerCompleteVnets": false,
+          "localSubnetNames": [
+            "snet-spoke-nva"
+          ],
+          "remoteSubnetNames": [
+            "snet-hub-nva"
+          ]
+        }
+      },
+      "before": null,
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "put",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub?api-version=2025-01-01",
+        "--body",
+        "{\"properties\":{\"allowVirtualNetworkAccess\":true,\"allowForwardedTraffic\":true,\"allowGatewayTransit\":false,\"useRemoteGateways\":false,\"doNotVerifyRemoteGateways\":false,\"remoteVirtualNetwork\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub\"},\"peerCompleteVnets\":false,\"localSubnetNames\":[\"snet-spoke-nva\"],\"remoteSubnetNames\":[\"snet-hub-nva\"]}}"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G12:peer-sap-rise-to-hub",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub",
+          "body": null,
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "delete",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub?api-version=2025-01-01"
+          ]
+        }
+      ],
+      "phase": "G12",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G12",
+      "utc": "2026-10-05T08:26:15.668028+00:00",
+      "after": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub",
+        "name": "peer-sap-rise-to-hub",
+        "properties": {
+          "allowForwardedTraffic": true,
+          "allowGatewayTransit": false,
+          "allowVirtualNetworkAccess": true,
+          "doNotVerifyRemoteGateways": false,
+          "localAddressSpace": {
+            "addressPrefixes": [
+              "10.60.0.0/27"
+            ]
+          },
+          "localSubnetNames": [
+            "snet-spoke-nva"
+          ],
+          "localVirtualNetworkAddressSpace": {
+            "addressPrefixes": [
+              "10.60.0.0/27"
+            ]
+          },
+          "peerCompleteVnets": false,
+          "peeringState": "Connected",
+          "peeringSyncLevel": "FullyInSync",
+          "provisioningState": "Succeeded",
+          "remoteAddressSpace": {
+            "addressPrefixes": [
+              "10.40.1.0/27"
+            ]
+          },
+          "remoteSubnetNames": [
+            "snet-hub-nva"
+          ],
+          "remoteVirtualNetwork": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub"
+          },
+          "remoteVirtualNetworkAddressSpace": {
+            "addressPrefixes": [
+              "10.40.1.0/27"
+            ]
+          },
+          "resourceGuid": "[REDACTED]",
+          "routeServiceVips": {},
+          "useRemoteGateways": false
+        },
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+      }
+    },
+    {
+      "label": "G13:0",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/securityRules/Allow-PeeringEnforcement-ICMP",
+      "body": null,
+      "before": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/securityRules/Allow-PeeringEnforcement-ICMP",
+        "name": "Allow-PeeringEnforcement-ICMP",
+        "properties": {
+          "access": "Allow",
+          "destinationAddressPrefixes": [
+            "10.40.2.4/32",
+            "10.40.1.4/32",
+            "10.60.0.4/32",
+            "10.60.1.4/32"
+          ],
+          "destinationPortRange": "*",
+          "destinationPortRanges": [],
+          "direction": "Inbound",
+          "priority": 105,
+          "protocol": "Icmp",
+          "provisioningState": "Succeeded",
+          "sourceAddressPrefixes": [
+            "10.40.2.4/32",
+            "10.40.1.4/32",
+            "10.60.0.4/32",
+            "10.60.1.4/32"
+          ],
+          "sourcePortRange": "*",
+          "sourcePortRanges": []
+        },
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+      },
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "delete",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/securityRules/Allow-PeeringEnforcement-ICMP?api-version=2025-01-01"
+      ],
+      "inverse": [],
+      "phase": "G13",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G13",
+      "utc": "2026-10-05T08:28:37.478235+00:00",
+      "after": null
+    },
+    {
+      "label": "G13:1",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/securityRules/Allow-PeeringEnforcement-ICMP",
+      "body": null,
+      "before": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/securityRules/Allow-PeeringEnforcement-ICMP",
+        "name": "Allow-PeeringEnforcement-ICMP",
+        "properties": {
+          "access": "Allow",
+          "destinationAddressPrefixes": [
+            "10.40.2.4/32",
+            "10.40.1.4/32",
+            "10.60.0.4/32",
+            "10.60.1.4/32"
+          ],
+          "destinationPortRange": "*",
+          "destinationPortRanges": [],
+          "direction": "Inbound",
+          "priority": 105,
+          "protocol": "Icmp",
+          "provisioningState": "Succeeded",
+          "sourceAddressPrefixes": [
+            "10.40.2.4/32",
+            "10.40.1.4/32",
+            "10.60.0.4/32",
+            "10.60.1.4/32"
+          ],
+          "sourcePortRange": "*",
+          "sourcePortRanges": []
+        },
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+      },
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "delete",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/securityRules/Allow-PeeringEnforcement-ICMP?api-version=2025-01-01"
+      ],
+      "inverse": [],
+      "phase": "G13",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G13",
+      "utc": "2026-10-05T08:28:58.805705+00:00",
+      "after": null
+    },
+    {
+      "label": "G14:vm",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test",
+      "body": null,
+      "before": {
+        "etag": "\"1\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test",
+        "location": "swedencentral",
+        "name": "vm-hub-test",
+        "properties": {
+          "hardwareProfile": {
+            "vmSize": "Standard_B2ts_v2"
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test",
+                "properties": {
+                  "deleteOption": "Detach",
+                  "primary": true
+                }
+              }
+            ]
+          },
+          "osProfile": {
+            "adminUsername": "azurelabuser",
+            "allowExtensionOperations": true,
+            "computerName": "vm-hub-test",
+            "linuxConfiguration": {
+              "disablePasswordAuthentication": true,
+              "enableVMAgentPlatformUpdates": true,
+              "patchSettings": {
+                "assessmentMode": "ImageDefault",
+                "patchMode": "ImageDefault"
+              },
+              "provisionVMAgent": true,
+              "ssh": {
+                "publicKeys": [
+                  {
+                    "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/",
+                    "path": "/home/azurelabuser/.ssh/authorized_keys"
+                  }
+                ]
+              }
+            },
+            "requireGuestProvisionSignal": true,
+            "secrets": []
+          },
+          "provisioningState": "Succeeded",
+          "storageProfile": {
+            "dataDisks": [],
+            "diskControllerType": "SCSI",
+            "imageReference": {
+              "exactVersion": "22.04.202608060",
+              "offer": "0001-com-ubuntu-server-jammy",
+              "publisher": "Canonical",
+              "sku": "22_04-lts-gen2",
+              "version": "latest"
+            },
+            "osDisk": {
+              "caching": "ReadWrite",
+              "createOption": "FromImage",
+              "deleteOption": "Detach",
+              "diskSizeGB": 30,
+              "managedDisk": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/osdisk-enforcement-hub-test",
+                "storageAccountType": "StandardSSD_LRS"
+              },
+              "name": "osdisk-enforcement-hub-test",
+              "osType": "Linux"
+            }
+          },
+          "timeCreated": "2026-10-05T07:54:35.0869703+00:00",
+          "vmId": "[REDACTED]"
+        },
+        "resources": [
+          {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test/extensions/MDE.Linux"
+          }
+        ],
+        "tags": {
+          "ephemeral": "true",
+          "lab": "sap-rise-scoped-peering-fwaas",
+          "owner": "jose"
+        },
+        "type": "Microsoft.Compute/virtualMachines"
+      },
+      "cost": 1,
+      "compute": true,
+      "argv": [
+        "rest",
+        "--method",
+        "delete",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test?api-version=2024-07-01"
+      ],
+      "inverse": [],
+      "identity": {
+        "vmId": "[REDACTED]"
+      },
+      "phase": "G14",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G14",
+      "utc": "2026-10-05T08:29:37.845743+00:00",
+      "after": null
+    },
+    {
+      "label": "G14:disk",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/osdisk-enforcement-hub-test",
+      "body": null,
+      "before": {
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/osdisk-enforcement-hub-test",
+        "location": "swedencentral",
+        "name": "osdisk-enforcement-hub-test",
+        "properties": {
+          "LastOwnershipUpdateTime": "2026-10-05T08:29:51.1936969+00:00",
+          "creationData": {
+            "createOption": "FromImage",
+            "imageReference": {
+              "id": "/Subscriptions/[REDACTED]/Providers/Microsoft.Compute/Locations/SwedenCentral/Publishers/Canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-jammy/Skus/22_04-lts-gen2/Versions/22.04.202608060"
+            }
+          },
+          "diskIOPSReadWrite": 500,
+          "diskMBpsReadWrite": 100,
+          "diskSizeBytes": 32213303296,
+          "diskSizeGB": 30,
+          "diskState": "Unattached",
+          "encryption": {
+            "type": "EncryptionAtRestWithPlatformKey"
+          },
+          "hyperVGeneration": "V2",
+          "networkAccessPolicy": "AllowAll",
+          "osType": "Linux",
+          "provisioningState": "Succeeded",
+          "publicNetworkAccess": "Enabled",
+          "supportedCapabilities": {
+            "acceleratedNetwork": true,
+            "architecture": "x64",
+            "diskControllerTypes": "SCSI, NVMe"
+          },
+          "supportsHibernation": true,
+          "timeCreated": "2026-10-05T07:54:37.2390833+00:00",
+          "uniqueId": "[REDACTED]"
+        },
+        "sku": {
+          "name": "StandardSSD_LRS",
+          "tier": "Standard"
+        },
+        "tags": {
+          "ephemeral": "true",
+          "lab": "sap-rise-scoped-peering-fwaas",
+          "owner": "jose"
+        },
+        "type": "Microsoft.Compute/disks"
+      },
+      "cost": 1,
+      "compute": true,
+      "argv": [
+        "rest",
+        "--method",
+        "delete",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/osdisk-enforcement-hub-test?api-version=2024-03-02"
+      ],
+      "inverse": [],
+      "identity": {
+        "uniqueId": "[REDACTED]"
+      },
+      "phase": "G14",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G14",
+      "utc": "2026-10-05T08:30:25.866896+00:00",
+      "after": null
+    },
+    {
+      "label": "G15:0",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test",
+      "body": null,
+      "before": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test",
+        "kind": "Regular",
+        "location": "swedencentral",
+        "name": "nic-hub-test",
+        "properties": {
+          "allowPort25Out": true,
+          "auxiliaryMode": "None",
+          "auxiliarySku": "None",
+          "defaultOutboundConnectivityEnabled": false,
+          "disableTcpStateTracking": false,
+          "dnsSettings": {
+            "appliedDnsServers": [],
+            "dnsServers": []
+          },
+          "enableAcceleratedNetworking": false,
+          "enableIPForwarding": false,
+          "hostedWorkloads": [],
+          "ipConfigurations": [
+            {
+              "etag": "W/\"[REDACTED]\"",
+              "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test/ipConfigurations/ipconfig1",
+              "name": "ipconfig1",
+              "properties": {
+                "primary": true,
+                "privateIPAddress": "10.40.2.4",
+                "privateIPAddressVersion": "IPv4",
+                "privateIPAllocationMethod": "Static",
+                "provisioningState": "Succeeded",
+                "subnet": {
+                  "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test"
+                }
+              },
+              "type": "Microsoft.Network/networkInterfaces/ipConfigurations"
+            }
+          ],
+          "macAddress": "70-A8-A5-78-75-FF",
+          "nicType": "Standard",
+          "provisioningState": "Succeeded",
+          "resourceGuid": "[REDACTED]",
+          "tapConfigurations": [],
+          "vnetEncryptionSupported": false
+        },
+        "tags": {
+          "ephemeral": "true",
+          "lab": "sap-rise-scoped-peering-fwaas",
+          "owner": "jose"
+        },
+        "type": "Microsoft.Network/networkInterfaces"
+      },
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "delete",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test?api-version=2025-01-01"
+      ],
+      "inverse": [],
+      "phase": "G15",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G15",
+      "utc": "2026-10-05T08:31:00.183488+00:00",
+      "after": null
+    },
+    {
+      "label": "G15:1",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test",
+      "body": null,
+      "before": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test",
+        "name": "snet-hub-test",
+        "properties": {
+          "addressPrefix": "10.40.2.0/27",
+          "delegations": [],
+          "networkSecurityGroup": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva"
+          },
+          "privateEndpointNetworkPolicies": "Disabled",
+          "privateLinkServiceNetworkPolicies": "Enabled",
+          "provisioningState": "Succeeded",
+          "routeTable": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source"
+          }
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      },
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "delete",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test?api-version=2025-01-01"
+      ],
+      "inverse": [],
+      "phase": "G15",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G15",
+      "utc": "2026-10-05T08:31:16.774704+00:00",
+      "after": null
+    },
+    {
+      "label": "G15:2",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source",
+      "body": null,
+      "before": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source",
+        "location": "swedencentral",
+        "name": "rt-enforcement-source",
+        "properties": {
+          "disableBgpRoutePropagation": true,
+          "provisioningState": "Succeeded",
+          "resourceGuid": "[REDACTED]",
+          "routes": []
+        },
+        "tags": {
+          "ephemeral": "true",
+          "lab": "sap-rise-scoped-peering-fwaas",
+          "owner": "jose"
+        },
+        "type": "Microsoft.Network/routeTables"
+      },
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "delete",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source?api-version=2025-01-01"
+      ],
+      "inverse": [],
+      "phase": "G15",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-G15",
+      "utc": "2026-10-05T08:31:33.846137+00:00",
+      "after": null
+    },
+    {
+      "label": "power-close:workload",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-workload-probe",
+      "body": {
+        "power": "deallocated"
+      },
+      "before": {
+        "power": "running"
+      },
+      "cost": 1,
+      "compute": true,
+      "argv": [
+        "vm",
+        "deallocate",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-workload-probe"
+      ],
+      "inverse": [],
+      "power": true,
+      "timeout": 600,
+      "phase": "power-close",
+      "status": "applied",
+      "lease": "enforcement-direct-20261005-power-close",
+      "utc": "2026-10-05T08:32:07.232671+00:00",
+      "after": {
+        "power": "deallocated"
+      }
+    }
+  ],
+  "checkpoint": "power-close",
+  "originalRestored": false,
+  "rollbackErrors": [],
+  "error": "Original state comparison differs",
+  "reconciliations": [
+    {
+      "utc": "2026-10-05T08:19:59.359253+00:00",
+      "phase": "G8-add",
+      "outcome": "service-rejected-route-absent",
+      "priorError": "Command failed; inspect labs\\sap-rise-scoped-peering-fwaas\\show-output\\enforcement-direct-20261005T081250Z\\G8-add\\02-G8-add-route.json",
+      "lease": "enforcement-direct-20261005-reconcile-rejection",
+      "writeReplayed": false
+    }
+  ]
+}

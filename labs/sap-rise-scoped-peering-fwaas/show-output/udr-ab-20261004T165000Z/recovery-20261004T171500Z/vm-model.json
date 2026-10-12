@@ -1,0 +1,26 @@
+{
+  "linuxConfiguration": {
+    "disablePasswordAuthentication": true,
+    "enableVMAgentPlatformUpdates": true,
+    "patchSettings": {
+      "assessmentMode": "AutomaticByPlatform",
+      "automaticByPlatformSettings": {
+        "bypassPlatformSafetyChecksOnUserSchedule": true
+      },
+      "patchMode": "AutomaticByPlatform"
+    },
+    "provisionVMAgent": true,
+    "ssh": {
+      "publicKeys": [
+        {
+          "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDX6SO8Wpo21BDhUYHWqYfMiWPyfgpEMhVMEeJNLHk30q48DumZKSDsBvQrkOdtg67vPlng/uu5GqRKLaFIAiCJSxLp1yDcRtdXOlAMXgKh9A+JKq6O9ExkEfsqQ4NKCBrrhGPNlOWEvPSFbhE4RhNJeWxASEDrxvpbsSDj+3E/YGSI7GHPuvs5DMH/G4SF4bF4N7c4x2NwLn9lKHIiFgNfE3wivgP1lZjfH088SHO33Yyxl5qGGiB9A0pP11sslpqBBEYAVYHTQTCJS44ddj7Vsopyxn8RUn81ZsacRQMINfZGjw5iRsIJ6+SHCpdtq3/KltPppxcOOccm3Vd0EgYZ",
+          "path": "/home/azurelabuser/.ssh/authorized_keys"
+        }
+      ]
+    }
+  },
+  "name": "vm-workload-probe",
+  "osType": "Linux",
+  "provisioningState": "Updating",
+  "vmSize": "Standard_B2s_v2"
+}

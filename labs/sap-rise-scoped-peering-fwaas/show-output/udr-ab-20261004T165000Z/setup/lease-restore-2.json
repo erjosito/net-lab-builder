@@ -1,0 +1,83 @@
+{
+  "calls": [
+    {
+      "label": "restore:17:0",
+      "argv": [
+        "network",
+        "nsg",
+        "rule",
+        "delete",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "Allow-UdrAB-TCP22",
+        "--nsg-name",
+        "nsg-spoke-nva"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 38956,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "restore:16:0",
+      "argv": [
+        "network",
+        "nsg",
+        "rule",
+        "delete",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "Allow-UdrAB-ICMP",
+        "--nsg-name",
+        "nsg-spoke-nva"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 41616,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "restore:15:0",
+      "argv": [
+        "network",
+        "nsg",
+        "rule",
+        "delete",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "Allow-UdrAB-TCP22",
+        "--nsg-name",
+        "nsg-hub-nva"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 38924,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-2-nsg",
+      "argv": [
+        "network",
+        "nsg",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 18732,
+      "exitCode": 0,
+      "stderr": ""
+    }
+  ],
+  "mutations": 3,
+  "forward": 0,
+  "reserved": 0,
+  "taskId": "udr-restore-2"
+}

@@ -1,0 +1,126 @@
+{
+  "status": "PASS",
+  "verifiedAtUtc": "2026-10-04T18:12:32.743967+00:00",
+  "groups": [
+    {
+      "utc": "2026-10-04T18:00:08.036297+00:00",
+      "group": 1,
+      "checks": {
+        "group_journal_restored": true,
+        "guest_rules_match_original": true,
+        "guest_routes_match_original": true,
+        "guest_policy_4242_absent": true,
+        "restoration_cli_processes_zero": true
+      },
+      "localCliProcesses": 0,
+      "pendingCloudOperations": 0,
+      "cloudOperationEvidence": "All inverse commands fully waited, no --no-wait; read-only postconditions passed."
+    },
+    {
+      "utc": "2026-10-04T18:00:53.043914+00:00",
+      "group": 2,
+      "checks": {
+        "group_journal_restored": true,
+        "entry_17_rule_absent": true,
+        "entry_16_rule_absent": true,
+        "entry_15_rule_absent": true,
+        "restoration_cli_processes_zero": true
+      },
+      "localCliProcesses": 0,
+      "pendingCloudOperations": 0,
+      "cloudOperationEvidence": "All inverse commands fully waited, no --no-wait; read-only postconditions passed."
+    },
+    {
+      "utc": "2026-10-04T18:01:44.637150+00:00",
+      "group": 3,
+      "checks": {
+        "group_journal_restored": true,
+        "entry_14_rule_absent": true,
+        "entry_12_route_absent": true,
+        "entry_13_route_absent": true,
+        "restoration_cli_processes_zero": true
+      },
+      "localCliProcesses": 0,
+      "pendingCloudOperations": 0,
+      "cloudOperationEvidence": "All inverse commands fully waited, no --no-wait; read-only postconditions passed."
+    },
+    {
+      "utc": "2026-10-04T18:02:35.345935+00:00",
+      "group": 4,
+      "checks": {
+        "group_journal_restored": true,
+        "hub_experiment_table_absent": true,
+        "hub_original_association_restored": true,
+        "restoration_cli_processes_zero": true
+      },
+      "localCliProcesses": 0,
+      "pendingCloudOperations": 0,
+      "cloudOperationEvidence": "All inverse commands fully waited, no --no-wait; read-only postconditions passed."
+    },
+    {
+      "utc": "2026-10-04T18:04:41.307165+00:00",
+      "group": 5,
+      "checks": {
+        "group_journal_restored": true,
+        "workload_deallocated": true,
+        "temporary_vm_absent": true,
+        "temporary_disk_absent": true,
+        "no_pending_vm_provisioning": true,
+        "restoration_cli_processes_zero": true
+      },
+      "localCliProcesses": 0,
+      "pendingCloudOperations": 0,
+      "cloudOperationEvidence": "All inverse commands fully waited, no --no-wait; read-only postconditions passed."
+    },
+    {
+      "utc": "2026-10-04T18:07:48.388617+00:00",
+      "group": 6,
+      "checks": {
+        "group_journal_restored": true,
+        "workload_deallocated": true,
+        "all_original_vms_deallocated": true,
+        "source_association_removed": true,
+        "no_pending_vm_provisioning": true,
+        "restoration_cli_processes_zero": true
+      },
+      "localCliProcesses": 0,
+      "pendingCloudOperations": 0,
+      "cloudOperationEvidence": "All inverse commands fully waited, no --no-wait; read-only postconditions passed."
+    },
+    {
+      "utc": "2026-10-04T18:12:32.743967+00:00",
+      "group": 7,
+      "checks": {
+        "group_journal_restored": true,
+        "associated-nsg_normalized_matches_s0": true,
+        "associated-route-table_normalized_matches_s0": true,
+        "relevant-nics_normalized_matches_s0": true,
+        "vnet-hub_normalized_matches_s0": true,
+        "vnet-sap-rise_normalized_matches_s0": true,
+        "temporary_nic_absent": true,
+        "temporary_tables_absent": true,
+        "temporary_subnet_absent": true,
+        "original_four_vms_deallocated": true,
+        "s0_captured_vm_ids_preserved": true,
+        "original_four_vm_names_preserved": true,
+        "s0_captured_vm_nic_attachments_preserved": true,
+        "all_original_vm_nics_present": true,
+        "original_four_vm_os_disks_present": true,
+        "all_original_vms_and_disks_succeeded": true,
+        "route_server_resource_present": true,
+        "temporary_vm_disk_absent": true,
+        "er_resources_not_recreated": true,
+        "all_journal_entries_restored": true,
+        "restoration_cli_processes_zero": true
+      },
+      "localCliProcesses": 0,
+      "pendingCloudOperations": 0,
+      "cloudOperationEvidence": "All inverse commands fully waited, no --no-wait; read-only postconditions passed."
+    }
+  ],
+  "remainingOperations": [],
+  "localCliProcesses": 0,
+  "pendingCloudOperations": 0,
+  "journal": "[LOCAL_PATH_REDACTED]",
+  "normalization": "Ignore etag/provisioningState/resourceGuid and list ordering; compare all original named network resources. VNet top-level fields projected to s0 captured fields. Exclude GatewaySubnet ipConfigurations belonging to intentionally permanently deleted ER gateway; preserve GatewaySubnet itself. s0 VM/NIC snapshots contain the three experiment VMs; additionally verify original CE VM remains deallocated with its NIC and attached disk present."
+}

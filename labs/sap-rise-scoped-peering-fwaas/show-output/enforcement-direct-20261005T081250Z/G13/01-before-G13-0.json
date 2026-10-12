@@ -1,0 +1,19 @@
+{
+  "label": "before-G13:0",
+  "argv": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/securityRules?api-version=2025-01-01"
+  ],
+  "utc": "2026-10-05T08:28:34.302441+00:00",
+  "cost": 0,
+  "timeoutSeconds": 120,
+  "status": "succeeded",
+  "pid": 23832,
+  "stdout": "{\n  \"value\": [\n    {\n      \"etag\": \"W/\\\"[REDACTED]\\\"\",\n      \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/securityRules/Allow-PeeringEnforcement-ICMP\",\n      \"name\": \"Allow-PeeringEnforcement-ICMP\",\n      \"properties\": {\n        \"access\": \"Allow\",\n        \"destinationAddressPrefixes\": [\n          \"10.40.2.4/32\",\n          \"10.40.1.4/32\",\n          \"10.60.0.4/32\",\n          \"10.60.1.4/32\"\n        ],\n        \"destinationPortRange\": \"*\",\n        \"destinationPortRanges\": [],\n        \"direction\": \"Inbound\",\n        \"priority\": 105,\n        \"protocol\": \"Icmp\",\n        \"provisioningState\": \"Succeeded\",\n        \"sourceAddressPrefixes\": [\n          \"10.40.2.4/32\",\n          \"10.40.1.4/32\",\n          \"10.60.0.4/32\",\n          \"10.60.1.4/32\"\n        ],\n        \"sourcePortRange\": \"*\",\n        \"sourcePortRanges\": []\n      },\n      \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n    }\n  ]\n}\n",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T08:28:37.442279+00:00"
+}

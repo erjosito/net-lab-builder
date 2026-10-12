@@ -1,0 +1,21 @@
+{
+  "label": "G7-add:route",
+  "argv": [
+    "rest",
+    "--method",
+    "put",
+    "--url",
+    "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g7?api-version=2025-01-01",
+    "--body",
+    "{\"properties\":{\"addressPrefix\":\"10.60.1.4/32\",\"nextHopType\":\"VnetLocal\"}}"
+  ],
+  "utc": "2026-10-05T08:15:53.886725+00:00",
+  "cost": 1,
+  "timeoutSeconds": 120,
+  "status": "succeeded",
+  "pid": 25964,
+  "stdout": "{\n  \"etag\": \"W/\\\"[REDACTED]\\\"\",\n  \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g7\",\n  \"name\": \"enforcement-g7\",\n  \"properties\": {\n    \"addressPrefix\": \"10.60.1.4/32\",\n    \"hasBgpOverride\": false,\n    \"nextHopType\": \"VnetLocal\",\n    \"provisioningState\": \"Updating\"\n  },\n  \"type\": \"Microsoft.Network/routeTables/routes\"\n}\n",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T08:15:57.592560+00:00"
+}

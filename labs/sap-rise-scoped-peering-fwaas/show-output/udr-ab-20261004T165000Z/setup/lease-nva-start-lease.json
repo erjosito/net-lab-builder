@@ -1,0 +1,74 @@
+{
+  "calls": [
+    {
+      "label": "before-start-hub",
+      "argv": [
+        "vm",
+        "get-instance-view",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-hub-nva"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 41040,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "start-hub",
+      "argv": [
+        "vm",
+        "start",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-hub-nva",
+        "--no-wait"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 29564,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "before-start-spoke",
+      "argv": [
+        "vm",
+        "get-instance-view",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-spoke-nva"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 41960,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "start-spoke",
+      "argv": [
+        "vm",
+        "start",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-spoke-nva",
+        "--no-wait"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 34692,
+      "exitCode": 0,
+      "stderr": ""
+    }
+  ],
+  "mutations": 2,
+  "forward": 2,
+  "reserved": 2,
+  "taskId": "udr-nva-start"
+}

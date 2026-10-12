@@ -1,0 +1,19 @@
+{
+  "label": "direct-check-rt-spoke-nva-return",
+  "argv": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-spoke-nva-return?api-version=2025-01-01"
+  ],
+  "utc": "2026-10-05T08:26:51.471777+00:00",
+  "cost": 0,
+  "timeoutSeconds": 120,
+  "status": "succeeded",
+  "pid": 34472,
+  "stdout": "{\n  \"etag\": \"W/\\\"[REDACTED]\\\"\",\n  \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-spoke-nva-return\",\n  \"location\": \"swedencentral\",\n  \"name\": \"rt-spoke-nva-return\",\n  \"properties\": {\n    \"disableBgpRoutePropagation\": true,\n    \"provisioningState\": \"Succeeded\",\n    \"resourceGuid\": \"[REDACTED]\",\n    \"routes\": [\n      {\n        \"etag\": \"W/\\\"[REDACTED]\\\"\",\n        \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-spoke-nva-return/routes/route-to-onprem-sim-via-hub\",\n        \"name\": \"route-to-onprem-sim-via-hub\",\n        \"properties\": {\n          \"addressPrefix\": \"172.40.100.0/24\",\n          \"hasBgpOverride\": false,\n          \"nextHopIpAddress\": \"10.40.1.4\",\n          \"nextHopType\": \"VirtualAppliance\",\n          \"provisioningState\": \"Succeeded\"\n        },\n        \"type\": \"Microsoft.Network/routeTables/routes\"\n      }\n    ],\n    \"subnets\": [\n      {\n        \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/subnets/snet-spoke-nva\"\n      }\n    ]\n  },\n  \"type\": \"Microsoft.Network/routeTables\"\n}\n",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T08:26:55.472806+00:00"
+}

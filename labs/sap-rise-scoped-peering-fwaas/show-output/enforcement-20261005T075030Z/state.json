@@ -1,0 +1,712 @@
+{
+  "startedAtUtc": "2026-10-05T07:50:30.008996+00:00",
+  "subscriptionId": "[REDACTED]",
+  "calls": 41,
+  "mutations": 10,
+  "completed": [
+    "inventory",
+    "G1",
+    "G2"
+  ],
+  "journal": [
+    {
+      "label": "G1:table",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source",
+      "body": {
+        "location": "swedencentral",
+        "tags": {
+          "lab": "sap-rise-scoped-peering-fwaas",
+          "owner": "jose",
+          "ephemeral": "true"
+        },
+        "properties": {
+          "disableBgpRoutePropagation": true,
+          "routes": []
+        }
+      },
+      "before": null,
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "put",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source?api-version=2025-01-01",
+        "--body",
+        "{\"location\":\"swedencentral\",\"tags\":{\"lab\":\"sap-rise-scoped-peering-fwaas\",\"owner\":\"jose\",\"ephemeral\":\"true\"},\"properties\":{\"disableBgpRoutePropagation\":true,\"routes\":[]}}"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G1:table",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source",
+          "body": null,
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "delete",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source?api-version=2025-01-01"
+          ]
+        }
+      ],
+      "phase": "G1",
+      "status": "applied",
+      "lease": "enforcement-20261005-G1",
+      "utc": "2026-10-05T07:51:40.729799+00:00",
+      "after": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source",
+        "location": "swedencentral",
+        "name": "rt-enforcement-source",
+        "properties": {
+          "disableBgpRoutePropagation": true,
+          "provisioningState": "Succeeded",
+          "resourceGuid": "[REDACTED]",
+          "routes": []
+        },
+        "tags": {
+          "ephemeral": "true",
+          "lab": "sap-rise-scoped-peering-fwaas",
+          "owner": "jose"
+        },
+        "type": "Microsoft.Network/routeTables"
+      }
+    },
+    {
+      "label": "G1:subnet",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test",
+      "body": {
+        "properties": {
+          "addressPrefix": "10.40.2.0/27",
+          "routeTable": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source"
+          },
+          "networkSecurityGroup": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva"
+          }
+        }
+      },
+      "before": null,
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "put",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test?api-version=2025-01-01",
+        "--body",
+        "{\"properties\":{\"addressPrefix\":\"10.40.2.0/27\",\"routeTable\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source\"},\"networkSecurityGroup\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva\"}}}"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G1:subnet",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test",
+          "body": null,
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "delete",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test?api-version=2025-01-01"
+          ]
+        }
+      ],
+      "phase": "G1",
+      "status": "applied",
+      "lease": "enforcement-20261005-G1",
+      "utc": "2026-10-05T07:51:53.574083+00:00",
+      "after": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test",
+        "name": "snet-hub-test",
+        "properties": {
+          "addressPrefix": "10.40.2.0/27",
+          "delegations": [],
+          "networkSecurityGroup": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva"
+          },
+          "privateEndpointNetworkPolicies": "Disabled",
+          "privateLinkServiceNetworkPolicies": "Enabled",
+          "provisioningState": "Succeeded",
+          "routeTable": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source"
+          }
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      }
+    },
+    {
+      "label": "G1:nic",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test",
+      "body": {
+        "location": "swedencentral",
+        "tags": {
+          "lab": "sap-rise-scoped-peering-fwaas",
+          "owner": "jose",
+          "ephemeral": "true"
+        },
+        "properties": {
+          "enableIPForwarding": false,
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "privateIPAllocationMethod": "Static",
+                "privateIPAddress": "10.40.2.4",
+                "subnet": {
+                  "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "before": null,
+      "cost": 1,
+      "compute": false,
+      "argv": [
+        "rest",
+        "--method",
+        "put",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test?api-version=2025-01-01",
+        "--body",
+        "{\"location\":\"swedencentral\",\"tags\":{\"lab\":\"sap-rise-scoped-peering-fwaas\",\"owner\":\"jose\",\"ephemeral\":\"true\"},\"properties\":{\"enableIPForwarding\":false,\"ipConfigurations\":[{\"name\":\"ipconfig1\",\"properties\":{\"privateIPAllocationMethod\":\"Static\",\"privateIPAddress\":\"10.40.2.4\",\"subnet\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test\"}}}]}}"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G1:nic",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test",
+          "body": null,
+          "compute": false,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "delete",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test?api-version=2025-01-01"
+          ]
+        }
+      ],
+      "phase": "G1",
+      "status": "applied",
+      "lease": "enforcement-20261005-G1",
+      "utc": "2026-10-05T07:52:05.339995+00:00",
+      "after": {
+        "etag": "W/\"[REDACTED]\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test",
+        "kind": "Regular",
+        "location": "swedencentral",
+        "name": "nic-hub-test",
+        "properties": {
+          "allowPort25Out": true,
+          "auxiliaryMode": "None",
+          "auxiliarySku": "None",
+          "defaultOutboundConnectivityEnabled": false,
+          "disableTcpStateTracking": false,
+          "dnsSettings": {
+            "appliedDnsServers": [],
+            "dnsServers": [],
+            "internalDomainNameSuffix": "kfuukhuvatmepdc5fbtop05jcb.gvxx.internal.cloudapp.net"
+          },
+          "enableAcceleratedNetworking": false,
+          "enableIPForwarding": false,
+          "hostedWorkloads": [],
+          "ipConfigurations": [
+            {
+              "etag": "W/\"[REDACTED]\"",
+              "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test/ipConfigurations/ipconfig1",
+              "name": "ipconfig1",
+              "properties": {
+                "primary": true,
+                "privateIPAddress": "10.40.2.4",
+                "privateIPAddressVersion": "IPv4",
+                "privateIPAllocationMethod": "Static",
+                "provisioningState": "Succeeded",
+                "subnet": {
+                  "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test"
+                }
+              },
+              "type": "Microsoft.Network/networkInterfaces/ipConfigurations"
+            }
+          ],
+          "nicType": "Standard",
+          "provisioningState": "Succeeded",
+          "resourceGuid": "[REDACTED]",
+          "tapConfigurations": [],
+          "vnetEncryptionSupported": false
+        },
+        "tags": {
+          "ephemeral": "true",
+          "lab": "sap-rise-scoped-peering-fwaas",
+          "owner": "jose"
+        },
+        "type": "Microsoft.Network/networkInterfaces"
+      }
+    },
+    {
+      "label": "G2:vm-and-disk",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test",
+      "body": {
+        "location": "swedencentral",
+        "tags": {
+          "lab": "sap-rise-scoped-peering-fwaas",
+          "owner": "jose",
+          "ephemeral": "true"
+        },
+        "properties": {
+          "hardwareProfile": {
+            "vmSize": "Standard_B2ts_v2"
+          },
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "Canonical",
+              "offer": "0001-com-ubuntu-server-jammy",
+              "sku": "22_04-lts-gen2",
+              "version": "latest"
+            },
+            "osDisk": {
+              "name": "osdisk-enforcement-hub-test",
+              "createOption": "FromImage",
+              "deleteOption": "Detach",
+              "managedDisk": {
+                "storageAccountType": "StandardSSD_LRS"
+              }
+            }
+          },
+          "osProfile": {
+            "computerName": "vm-hub-test",
+            "adminUsername": "azurelabuser",
+            "linuxConfiguration": {
+              "disablePasswordAuthentication": true,
+              "ssh": {
+                "publicKeys": [
+                  {
+                    "path": "/home/azurelabuser/.ssh/authorized_keys",
+                    "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/"
+                  }
+                ]
+              }
+            }
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test",
+                "properties": {
+                  "primary": true,
+                  "deleteOption": "Detach"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "before": null,
+      "cost": 2,
+      "compute": true,
+      "argv": [
+        "rest",
+        "--method",
+        "put",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test?api-version=2024-07-01",
+        "--body",
+        "{\"location\":\"swedencentral\",\"tags\":{\"lab\":\"sap-rise-scoped-peering-fwaas\",\"owner\":\"jose\",\"ephemeral\":\"true\"},\"properties\":{\"hardwareProfile\":{\"vmSize\":\"Standard_B2ts_v2\"},\"storageProfile\":{\"imageReference\":{\"publisher\":\"Canonical\",\"offer\":\"0001-com-ubuntu-server-jammy\",\"sku\":\"22_04-lts-gen2\",\"version\":\"latest\"},\"osDisk\":{\"name\":\"osdisk-enforcement-hub-test\",\"createOption\":\"FromImage\",\"deleteOption\":\"Detach\",\"managedDisk\":{\"storageAccountType\":\"StandardSSD_LRS\"}}},\"osProfile\":{\"computerName\":\"vm-hub-test\",\"adminUsername\":\"azurelabuser\",\"linuxConfiguration\":{\"disablePasswordAuthentication\":true,\"ssh\":{\"publicKeys\":[{\"path\":\"/home/azurelabuser/.ssh/authorized_keys\",\"keyData\":\"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/\"}]}}},\"networkProfile\":{\"networkInterfaces\":[{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test\",\"properties\":{\"primary\":true,\"deleteOption\":\"Detach\"}}]}}}"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G2:vm-and-disk",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test",
+          "body": null,
+          "compute": true,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "delete",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test?api-version=2024-07-01"
+          ]
+        },
+        {
+          "label": "undo:G2:disk",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/osdisk-enforcement-hub-test",
+          "body": null,
+          "compute": true,
+          "cost": 1,
+          "argv": [
+            "rest",
+            "--method",
+            "delete",
+            "--url",
+            "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/osdisk-enforcement-hub-test?api-version=2024-03-02"
+          ]
+        }
+      ],
+      "resourceCosts": [
+        {
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test",
+          "cost": 1,
+          "before": null
+        },
+        {
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/osdisk-enforcement-hub-test",
+          "cost": 1,
+          "before": null
+        }
+      ],
+      "additionalReads": 1,
+      "wait": [
+        "vm",
+        "wait",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-hub-test",
+        "--created",
+        "--interval",
+        "30",
+        "--timeout",
+        "600"
+      ],
+      "phase": "G2",
+      "status": "applied",
+      "lease": "enforcement-20261005-G2",
+      "utc": "2026-10-05T07:54:32.230165+00:00",
+      "after": {
+        "etag": "\"1\"",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test",
+        "location": "swedencentral",
+        "name": "vm-hub-test",
+        "properties": {
+          "hardwareProfile": {
+            "vmSize": "Standard_B2ts_v2"
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test",
+                "properties": {
+                  "deleteOption": "Detach",
+                  "primary": true
+                }
+              }
+            ]
+          },
+          "osProfile": {
+            "adminUsername": "azurelabuser",
+            "allowExtensionOperations": true,
+            "computerName": "vm-hub-test",
+            "linuxConfiguration": {
+              "disablePasswordAuthentication": true,
+              "enableVMAgentPlatformUpdates": true,
+              "patchSettings": {
+                "assessmentMode": "ImageDefault",
+                "patchMode": "ImageDefault"
+              },
+              "provisionVMAgent": true,
+              "ssh": {
+                "publicKeys": [
+                  {
+                    "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/",
+                    "path": "/home/azurelabuser/.ssh/authorized_keys"
+                  }
+                ]
+              }
+            },
+            "requireGuestProvisionSignal": true,
+            "secrets": []
+          },
+          "provisioningState": "Succeeded",
+          "storageProfile": {
+            "dataDisks": [],
+            "diskControllerType": "SCSI",
+            "imageReference": {
+              "exactVersion": "22.04.202608060",
+              "offer": "0001-com-ubuntu-server-jammy",
+              "publisher": "Canonical",
+              "sku": "22_04-lts-gen2",
+              "version": "latest"
+            },
+            "osDisk": {
+              "caching": "ReadWrite",
+              "createOption": "FromImage",
+              "deleteOption": "Detach",
+              "diskSizeGB": 30,
+              "managedDisk": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/osdisk-enforcement-hub-test",
+                "storageAccountType": "StandardSSD_LRS"
+              },
+              "name": "osdisk-enforcement-hub-test",
+              "osType": "Linux"
+            }
+          },
+          "timeCreated": "2026-10-05T07:54:35.0869703+00:00",
+          "vmId": "[REDACTED]"
+        },
+        "tags": {
+          "ephemeral": "true",
+          "lab": "sap-rise-scoped-peering-fwaas",
+          "owner": "jose"
+        },
+        "type": "Microsoft.Compute/virtualMachines"
+      },
+      "diskAfter": {
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/osdisk-enforcement-hub-test",
+        "location": "swedencentral",
+        "managedBy": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test",
+        "name": "osdisk-enforcement-hub-test",
+        "properties": {
+          "LastOwnershipUpdateTime": "2026-10-05T07:54:37.2390833+00:00",
+          "creationData": {
+            "createOption": "FromImage",
+            "imageReference": {
+              "id": "/Subscriptions/[REDACTED]/Providers/Microsoft.Compute/Locations/SwedenCentral/Publishers/Canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-jammy/Skus/22_04-lts-gen2/Versions/22.04.202608060"
+            }
+          },
+          "diskIOPSReadWrite": 500,
+          "diskMBpsReadWrite": 100,
+          "diskSizeBytes": 32213303296,
+          "diskSizeGB": 30,
+          "diskState": "Attached",
+          "encryption": {
+            "type": "EncryptionAtRestWithPlatformKey"
+          },
+          "hyperVGeneration": "V2",
+          "networkAccessPolicy": "AllowAll",
+          "osType": "Linux",
+          "provisioningState": "Succeeded",
+          "publicNetworkAccess": "Enabled",
+          "supportedCapabilities": {
+            "acceleratedNetwork": true,
+            "architecture": "x64",
+            "diskControllerTypes": "SCSI, NVMe"
+          },
+          "supportsHibernation": true,
+          "timeCreated": "2026-10-05T07:54:37.2390833+00:00",
+          "uniqueId": "[REDACTED]"
+        },
+        "sku": {
+          "name": "StandardSSD_LRS",
+          "tier": "Standard"
+        },
+        "tags": {
+          "ephemeral": "true",
+          "lab": "sap-rise-scoped-peering-fwaas",
+          "owner": "jose"
+        },
+        "type": "Microsoft.Compute/disks"
+      }
+    },
+    {
+      "label": "G3:vm-hub-nva",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-nva",
+      "body": {
+        "power": "running"
+      },
+      "before": {
+        "power": "deallocated"
+      },
+      "cost": 1,
+      "compute": true,
+      "argv": [
+        "vm",
+        "start",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-hub-nva"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G3:vm-hub-nva",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-nva",
+          "body": {
+            "power": "deallocated"
+          },
+          "compute": true,
+          "cost": 1,
+          "argv": [
+            "vm",
+            "deallocate",
+            "-g",
+            "rg-saprise-swedencentral",
+            "-n",
+            "vm-hub-nva"
+          ],
+          "power": true,
+          "timeout": 600
+        }
+      ],
+      "power": true,
+      "timeout": 600,
+      "phase": "G3",
+      "status": "restored",
+      "lease": "enforcement-20261005-G3",
+      "utc": "2026-10-05T07:55:33.981382+00:00",
+      "after": {
+        "power": "running"
+      },
+      "rollback": [
+        {
+          "label": "undo:G3:vm-hub-nva",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-nva",
+          "body": {
+            "power": "deallocated"
+          },
+          "compute": true,
+          "cost": 1,
+          "argv": [
+            "vm",
+            "deallocate",
+            "-g",
+            "rg-saprise-swedencentral",
+            "-n",
+            "vm-hub-nva"
+          ],
+          "power": true,
+          "timeout": 600,
+          "status": "restored",
+          "before": {
+            "power": "running"
+          }
+        }
+      ]
+    },
+    {
+      "label": "G3:vm-spoke-nva",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-spoke-nva",
+      "body": {
+        "power": "running"
+      },
+      "before": {
+        "power": "deallocated"
+      },
+      "cost": 1,
+      "compute": true,
+      "argv": [
+        "vm",
+        "start",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-spoke-nva"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G3:vm-spoke-nva",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-spoke-nva",
+          "body": {
+            "power": "deallocated"
+          },
+          "compute": true,
+          "cost": 1,
+          "argv": [
+            "vm",
+            "deallocate",
+            "-g",
+            "rg-saprise-swedencentral",
+            "-n",
+            "vm-spoke-nva"
+          ],
+          "power": true,
+          "timeout": 600
+        }
+      ],
+      "power": true,
+      "timeout": 600,
+      "phase": "G3",
+      "status": "restored",
+      "lease": "enforcement-20261005-G3",
+      "utc": "2026-10-05T07:56:57.713104+00:00",
+      "after": {
+        "power": "running"
+      },
+      "rollback": [
+        {
+          "label": "undo:G3:vm-spoke-nva",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-spoke-nva",
+          "body": {
+            "power": "deallocated"
+          },
+          "compute": true,
+          "cost": 1,
+          "argv": [
+            "vm",
+            "deallocate",
+            "-g",
+            "rg-saprise-swedencentral",
+            "-n",
+            "vm-spoke-nva"
+          ],
+          "power": true,
+          "timeout": 600,
+          "status": "restored",
+          "before": {
+            "power": "running"
+          }
+        }
+      ]
+    },
+    {
+      "label": "G3:vm-workload-probe",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-workload-probe",
+      "body": {
+        "power": "running"
+      },
+      "before": {
+        "power": "deallocated"
+      },
+      "cost": 1,
+      "compute": true,
+      "argv": [
+        "vm",
+        "start",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-workload-probe"
+      ],
+      "inverse": [
+        {
+          "label": "undo:G3:vm-workload-probe",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-workload-probe",
+          "body": {
+            "power": "deallocated"
+          },
+          "compute": true,
+          "cost": 1,
+          "argv": [
+            "vm",
+            "deallocate",
+            "-g",
+            "rg-saprise-swedencentral",
+            "-n",
+            "vm-workload-probe"
+          ],
+          "power": true,
+          "timeout": 600
+        }
+      ],
+      "power": true,
+      "timeout": 600,
+      "phase": "G3",
+      "status": "unknown",
+      "lease": "enforcement-20261005-G3",
+      "utc": "2026-10-05T07:58:22.898003+00:00"
+    }
+  ],
+  "status": "blocked",
+  "checkpoint": "G2",
+  "originalRestored": false,
+  "rollbackErrors": [],
+  "error": "Local timeout; remote completion UNKNOWN"
+}

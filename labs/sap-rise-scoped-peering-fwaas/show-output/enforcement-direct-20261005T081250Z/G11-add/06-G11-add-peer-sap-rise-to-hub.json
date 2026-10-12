@@ -1,0 +1,21 @@
+{
+  "label": "G11-add:peer-sap-rise-to-hub",
+  "argv": [
+    "rest",
+    "--method",
+    "put",
+    "--url",
+    "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub?api-version=2025-01-01",
+    "--body",
+    "{\"properties\":{\"allowVirtualNetworkAccess\":true,\"allowForwardedTraffic\":true,\"allowGatewayTransit\":false,\"useRemoteGateways\":false,\"doNotVerifyRemoteGateways\":false,\"remoteVirtualNetwork\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub\"},\"peerCompleteVnets\":true}}"
+  ],
+  "utc": "2026-10-05T08:22:45.443382+00:00",
+  "cost": 1,
+  "timeoutSeconds": 120,
+  "status": "succeeded",
+  "pid": 10792,
+  "stdout": "{\n  \"etag\": \"W/\\\"[REDACTED]\\\"\",\n  \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub\",\n  \"name\": \"peer-sap-rise-to-hub\",\n  \"properties\": {\n    \"allowForwardedTraffic\": true,\n    \"allowGatewayTransit\": false,\n    \"allowVirtualNetworkAccess\": true,\n    \"doNotVerifyRemoteGateways\": false,\n    \"peerCompleteVnets\": true,\n    \"peeringState\": \"Connected\",\n    \"peeringSyncLevel\": \"FullyInSync\",\n    \"provisioningState\": \"Updating\",\n    \"remoteAddressSpace\": {\n      \"addressPrefixes\": [\n        \"10.40.0.0/16\"\n      ]\n    },\n    \"remoteVirtualNetwork\": {\n      \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub\"\n    },\n    \"remoteVirtualNetworkAddressSpace\": {\n      \"addressPrefixes\": [\n        \"10.40.0.0/16\"\n      ]\n    },\n    \"resourceGuid\": \"[REDACTED]\",\n    \"routeServiceVips\": {},\n    \"useRemoteGateways\": false\n  },\n  \"type\": \"Microsoft.Network/virtualNetworks/virtualNetworkPeerings\"\n}\n",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T08:22:49.359730+00:00"
+}

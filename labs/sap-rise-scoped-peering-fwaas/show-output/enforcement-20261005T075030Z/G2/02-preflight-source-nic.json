@@ -1,0 +1,19 @@
+{
+  "label": "preflight-source-nic",
+  "argv": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test?api-version=2025-01-01"
+  ],
+  "utc": "2026-10-05T07:54:23.337578+00:00",
+  "cost": 0,
+  "timeoutSeconds": 120,
+  "status": "succeeded",
+  "pid": 8880,
+  "stdout": "{\n  \"etag\": \"W/\\\"[REDACTED]\\\"\",\n  \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test\",\n  \"kind\": \"Regular\",\n  \"location\": \"swedencentral\",\n  \"name\": \"nic-hub-test\",\n  \"properties\": {\n    \"allowPort25Out\": true,\n    \"auxiliaryMode\": \"None\",\n    \"auxiliarySku\": \"None\",\n    \"defaultOutboundConnectivityEnabled\": false,\n    \"disableTcpStateTracking\": false,\n    \"dnsSettings\": {\n      \"appliedDnsServers\": [],\n      \"dnsServers\": [],\n      \"internalDomainNameSuffix\": \"kfuukhuvatmepdc5fbtop05jcb.gvxx.internal.cloudapp.net\"\n    },\n    \"enableAcceleratedNetworking\": false,\n    \"enableIPForwarding\": false,\n    \"hostedWorkloads\": [],\n    \"ipConfigurations\": [\n      {\n        \"etag\": \"W/\\\"[REDACTED]\\\"\",\n        \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test/ipConfigurations/ipconfig1\",\n        \"name\": \"ipconfig1\",\n        \"properties\": {\n          \"primary\": true,\n          \"privateIPAddress\": \"10.40.2.4\",\n          \"privateIPAddressVersion\": \"IPv4\",\n          \"privateIPAllocationMethod\": \"Static\",\n          \"provisioningState\": \"Succeeded\",\n          \"subnet\": {\n            \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test\"\n          }\n        },\n        \"type\": \"Microsoft.Network/networkInterfaces/ipConfigurations\"\n      }\n    ],\n    \"nicType\": \"Standard\",\n    \"provisioningState\": \"Succeeded\",\n    \"resourceGuid\": \"[REDACTED]\",\n    \"tapConfigurations\": [],\n    \"vnetEncryptionSupported\": false\n  },\n  \"tags\": {\n    \"ephemeral\": \"true\",\n    \"lab\": \"sap-rise-scoped-peering-fwaas\",\n    \"owner\": \"jose\"\n  },\n  \"type\": \"Microsoft.Network/networkInterfaces\"\n}\n",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T07:54:26.315925+00:00"
+}

@@ -1,6 +1,62 @@
 # SAP RISE Scoped Peering + FWaaS
 
-> 📝 **Blog post:** _pending publication_ (Kid)
+## Current state (2026-10-05)
+
+The lab's ExpressRoute connection, private peering, gateway and circuit have
+been removed. Its Megaport VXC and exclusive MCR are decommissioned.
+The original four VMs are deallocated; VNets, subnet peerings, original routing
+and NSG configuration, and Azure Route Server remain.
+The older ExpressRoute design descriptions below are historical, not live-state
+assertions. See [teardown evidence](show-output/er-teardown-20261004T165829Z/state.json).
+
+### Direct isolation: subnet versus full VNet peering (2026-10-05)
+
+With both NVAs deallocated, the same source (`10.40.2.4`) and workload
+(`10.60.1.4`) returned **0/5 pings under subnet peering, 5/5 under full VNet
+peering, and 0/5 after subnet peering was restored**. Full peering selected
+remote `/16` routes on both endpoint NICs; mtr showed only `10.60.1.4`.
+The source table was empty and the workload default UDR remained unchanged.
+This demonstrates prevention of the tested direct path, not every possible
+administrative bypass.
+
+A remote-workload `/32` configured with `VnetLocal` was accepted, but its
+effective next-hop type was `None`. An ARM request for a `VNetPeering` UDR
+was rejected by the service. Skipping only the hub NVA with a next hop at the
+spoke NVA remains untested; a visible peering route alone does not prove delivery.
+
+The workload's existing effective-route captures include `10.60.0.0/16`
+with `VnetLocal` and `10.40.1.0/27` with `VNetPeering`. These rows were omitted
+from the earlier post excerpts, not from the raw captures.
+
+[Independent verdict](show-output/enforcement-direct-20261005T081250Z/verdict.json)
+and [restoration proof](show-output/enforcement-direct-20261005T081250Z/restore-verification.json)
+confirm the result and restored original resource configuration and power states.
+These independent proofs supersede the runner's conservative blocked status:
+its final comparison differed only in service-generated ETags and disk ownership
+timestamps. All temporary test resources and rules are gone.
+
+### Same-VM subnet peering and UDR comparison (2026-10-04)
+
+The same temporary hub VM (`10.40.2.4`) in a non-peered subnet targeted the same
+SAP workload VM (`10.60.1.4`). Common NVA transit/return routes and NSG rules
+were held constant, and BGP propagation was disabled on the source route table.
+Only the source UDR, `10.60.1.4/32 -> VirtualAppliance 10.40.1.4`, changed:
+
+| State | ICMP replies | Source ICMP mtr |
+|---|---|---|
+| A: without source UDR | 0/5 | No responding hops |
+| B: with source UDR | 5/5 | `10.40.1.4 -> 10.60.0.4 -> 10.60.1.4` |
+| A2: source UDR removed | 0/5 | No responding hops |
+
+Effective routes on all four NICs confirm only that source route changed.
+This verifies the demonstrated ICMP path through both NVAs, not application
+availability or a universal fabric-level source-filtering guarantee.
+[Validated evidence](show-output/udr-ab-20261004T165000Z/verdict.json) includes
+the exact capture paths. All temporary test resources and configuration were
+[restored or removed](show-output/udr-ab-20261004T165000Z/restore-verification.json);
+the ExpressRoute/Megaport deletion is permanent.
+
+> 📝 **Blog post:** [Subnet peering prevents the direct path that full VNet peering allows](https://github.com/erjosito/azure-networking-blog/tree/main/2026-10-subnet-peering-udr-nva-transit)
 
 ---
 
@@ -117,4 +173,3 @@ Once Tank deploys and Niobe captures evidence:
 3. Tank deploys IaC.
 4. Niobe captures live evidence, completes validation.md pass/fail, writes lessons-learned.md.
 5. Morpheus coordinates teardown with Tank.
-

@@ -1,0 +1,19 @@
+{
+  "label": "scope-peer-hub-to-sap-rise",
+  "argv": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise?api-version=2025-01-01"
+  ],
+  "utc": "2026-10-05T08:13:58.613103+00:00",
+  "cost": 0,
+  "timeoutSeconds": 120,
+  "status": "succeeded",
+  "pid": 25960,
+  "stdout": "{\n  \"etag\": \"W/\\\"[REDACTED]\\\"\",\n  \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise\",\n  \"name\": \"peer-hub-to-sap-rise\",\n  \"properties\": {\n    \"allowForwardedTraffic\": true,\n    \"allowGatewayTransit\": false,\n    \"allowVirtualNetworkAccess\": true,\n    \"doNotVerifyRemoteGateways\": false,\n    \"localAddressSpace\": {\n      \"addressPrefixes\": [\n        \"10.40.1.0/27\"\n      ]\n    },\n    \"localSubnetNames\": [\n      \"snet-hub-nva\"\n    ],\n    \"localVirtualNetworkAddressSpace\": {\n      \"addressPrefixes\": [\n        \"10.40.1.0/27\"\n      ]\n    },\n    \"peerCompleteVnets\": false,\n    \"peeringState\": \"Connected\",\n    \"peeringSyncLevel\": \"FullyInSync\",\n    \"provisioningState\": \"Succeeded\",\n    \"remoteAddressSpace\": {\n      \"addressPrefixes\": [\n        \"10.60.0.0/27\"\n      ]\n    },\n    \"remoteSubnetNames\": [\n      \"snet-spoke-nva\"\n    ],\n    \"remoteVirtualNetwork\": {\n      \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise\"\n    },\n    \"remoteVirtualNetworkAddressSpace\": {\n      \"addressPrefixes\": [\n        \"10.60.0.0/27\"\n      ]\n    },\n    \"resourceGuid\": \"[REDACTED]\",\n    \"routeServiceVips\": {},\n    \"useRemoteGateways\": false\n  },\n  \"type\": \"Microsoft.Network/virtualNetworks/virtualNetworkPeerings\"\n}\n",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T08:14:05.555537+00:00"
+}

@@ -1,0 +1,25 @@
+{
+  "label": "wait-G4:vnet-sap-rise-snet-workload-nsg-swedencentral",
+  "argv": [
+    "resource",
+    "wait",
+    "--ids",
+    "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/securityRules/Allow-PeeringEnforcement-ICMP",
+    "--api-version",
+    "2025-01-01",
+    "--created",
+    "--interval",
+    "30",
+    "--timeout",
+    "120"
+  ],
+  "utc": "2026-10-05T08:13:24.255041+00:00",
+  "cost": 0,
+  "timeoutSeconds": 120,
+  "status": "succeeded",
+  "pid": 38516,
+  "stdout": "",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T08:13:29.120388+00:00"
+}

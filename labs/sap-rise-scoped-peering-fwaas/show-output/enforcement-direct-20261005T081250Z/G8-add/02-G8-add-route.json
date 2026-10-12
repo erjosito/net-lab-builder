@@ -1,0 +1,21 @@
+{
+  "label": "G8-add:route",
+  "argv": [
+    "rest",
+    "--method",
+    "put",
+    "--url",
+    "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g8?api-version=2025-01-01",
+    "--body",
+    "{\"properties\":{\"addressPrefix\":\"10.60.1.4/32\",\"nextHopType\":\"VNetPeering\"}}"
+  ],
+  "utc": "2026-10-05T08:18:34.454144+00:00",
+  "cost": 1,
+  "timeoutSeconds": 120,
+  "status": "unknown",
+  "pid": 42428,
+  "stdout": "",
+  "stderr": "ERROR: ({\"error\":{\"code\":\"InvalidRequestFormat\",\"message\":\"Cannot parse the request.\",\"details\":[{\"code\":\"InvalidJson\",\"message\":\"Error converting value \\\"VNetPeering\\\" to type 'Microsoft.WindowsAzure.Networking.Nrp.Frontend.Contract.Csm.Public.NextHopType'. Path 'properties.nextHopType', line 1, position 73.\"}]}})\n",
+  "exitCode": 1,
+  "finishedAtUtc": "2026-10-05T08:18:39.829482+00:00"
+}

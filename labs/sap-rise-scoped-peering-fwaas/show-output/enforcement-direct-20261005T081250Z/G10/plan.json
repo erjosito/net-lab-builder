@@ -1,0 +1,140 @@
+[
+  {
+    "label": "G10:peer-hub-to-sap-rise",
+    "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise",
+    "body": null,
+    "before": {
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "doNotVerifyRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise"
+        },
+        "peerCompleteVnets": false,
+        "localSubnetNames": [
+          "snet-hub-nva"
+        ],
+        "remoteSubnetNames": [
+          "snet-spoke-nva"
+        ]
+      }
+    },
+    "cost": 1,
+    "compute": false,
+    "argv": [
+      "rest",
+      "--method",
+      "delete",
+      "--url",
+      "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise?api-version=2025-01-01"
+    ],
+    "inverse": [
+      {
+        "label": "undo:G10:peer-hub-to-sap-rise",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise",
+        "body": {
+          "properties": {
+            "allowVirtualNetworkAccess": true,
+            "allowForwardedTraffic": true,
+            "allowGatewayTransit": false,
+            "useRemoteGateways": false,
+            "doNotVerifyRemoteGateways": false,
+            "remoteVirtualNetwork": {
+              "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise"
+            },
+            "peerCompleteVnets": false,
+            "localSubnetNames": [
+              "snet-hub-nva"
+            ],
+            "remoteSubnetNames": [
+              "snet-spoke-nva"
+            ]
+          }
+        },
+        "compute": false,
+        "cost": 1,
+        "argv": [
+          "rest",
+          "--method",
+          "put",
+          "--url",
+          "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise?api-version=2025-01-01",
+          "--body",
+          "{\"properties\":{\"allowVirtualNetworkAccess\":true,\"allowForwardedTraffic\":true,\"allowGatewayTransit\":false,\"useRemoteGateways\":false,\"doNotVerifyRemoteGateways\":false,\"remoteVirtualNetwork\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise\"},\"peerCompleteVnets\":false,\"localSubnetNames\":[\"snet-hub-nva\"],\"remoteSubnetNames\":[\"snet-spoke-nva\"]}}"
+        ]
+      }
+    ]
+  },
+  {
+    "label": "G10:peer-sap-rise-to-hub",
+    "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub",
+    "body": null,
+    "before": {
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "doNotVerifyRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub"
+        },
+        "peerCompleteVnets": false,
+        "localSubnetNames": [
+          "snet-spoke-nva"
+        ],
+        "remoteSubnetNames": [
+          "snet-hub-nva"
+        ]
+      }
+    },
+    "cost": 1,
+    "compute": false,
+    "argv": [
+      "rest",
+      "--method",
+      "delete",
+      "--url",
+      "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub?api-version=2025-01-01"
+    ],
+    "inverse": [
+      {
+        "label": "undo:G10:peer-sap-rise-to-hub",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub",
+        "body": {
+          "properties": {
+            "allowVirtualNetworkAccess": true,
+            "allowForwardedTraffic": true,
+            "allowGatewayTransit": false,
+            "useRemoteGateways": false,
+            "doNotVerifyRemoteGateways": false,
+            "remoteVirtualNetwork": {
+              "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub"
+            },
+            "peerCompleteVnets": false,
+            "localSubnetNames": [
+              "snet-spoke-nva"
+            ],
+            "remoteSubnetNames": [
+              "snet-hub-nva"
+            ]
+          }
+        },
+        "compute": false,
+        "cost": 1,
+        "argv": [
+          "rest",
+          "--method",
+          "put",
+          "--url",
+          "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub?api-version=2025-01-01",
+          "--body",
+          "{\"properties\":{\"allowVirtualNetworkAccess\":true,\"allowForwardedTraffic\":true,\"allowGatewayTransit\":false,\"useRemoteGateways\":false,\"doNotVerifyRemoteGateways\":false,\"remoteVirtualNetwork\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub\"},\"peerCompleteVnets\":false,\"localSubnetNames\":[\"snet-spoke-nva\"],\"remoteSubnetNames\":[\"snet-hub-nva\"]}}"
+        ]
+      }
+    ]
+  }
+]

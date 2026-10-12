@@ -1,0 +1,10 @@
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\nDefault gateway: 10.40.2.1\n=== Adding manual route to 10.60.0.0/27 via real default gateway (bypassing the broken onlink bird route) ===\n10.60.0.0/27 via 10.40.2.1 dev eth0 \n=== Ping spoke NVA (10.60.0.4) via real gateway route ===\nPING 10.60.0.4 (10.60.0.4) 56(84) bytes of data.\n\n--- 10.60.0.4 ping statistics ---\n4 packets transmitted, 0 received, 100% packet loss, time 3088ms\n\n=== cleanup: remove manual route ===\n\n[stderr]\n++ ip route show default\n++ awk '{print $3}'\n+ GW=10.40.2.1\n+ echo 'Default gateway: 10.40.2.1'\n+ echo '=== Adding manual route to 10.60.0.0/27 via real default gateway (bypassing the broken onlink bird route) ==='\n+ sudo ip route add 10.60.0.0/27 via 10.40.2.1 dev eth0\n+ ip route show\n+ grep 10.60\n+ echo '=== Ping spoke NVA (10.60.0.4) via real gateway route ==='\n+ ping -c 4 -W 2 10.60.0.4\n+ echo '=== cleanup: remove manual route ==='\n+ sudo ip route del 10.60.0.0/27 via 10.40.2.1 dev eth0\n"
+    }
+  ]
+}

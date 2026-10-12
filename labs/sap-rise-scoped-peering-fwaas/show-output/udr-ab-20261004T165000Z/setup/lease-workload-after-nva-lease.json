@@ -1,0 +1,41 @@
+{
+  "calls": [
+    {
+      "label": "before-start-workload",
+      "argv": [
+        "vm",
+        "get-instance-view",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-workload-probe"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 20064,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "start-workload",
+      "argv": [
+        "vm",
+        "start",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-workload-probe",
+        "--no-wait"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 39388,
+      "exitCode": 0,
+      "stderr": ""
+    }
+  ],
+  "mutations": 1,
+  "forward": 1,
+  "reserved": 1,
+  "taskId": "udr-workload-after-egress-ready"
+}

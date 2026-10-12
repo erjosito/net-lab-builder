@@ -1,0 +1,10 @@
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\n=== Ping spoke NVA (10.60.0.4) with NSG now allowing this source subnet ===\nPING 10.60.0.4 (10.60.0.4) 56(84) bytes of data.\n\n--- 10.60.0.4 ping statistics ---\n4 packets transmitted, 0 received, 100% packet loss, time 3058ms\n\n=== Traceroute to spoke NVA (10.60.0.4) ===\ntraceroute to 10.60.0.4 (10.60.0.4), 30 hops max, 60 byte packets\n 1  *\n 2  *\n 3  *\n 4  *\n 5  *\n 6  *\n 7  *\n 8  *\n 9  *\n10  *\n11  *\n12  *\n13  *\n14  *\n15  *\n16  *\n17  *\n18  *\n19  *\n20  *\n21  *\n22  *\n23  *\n24  *\n25  *\n26  *\n27  *\n28  *\n29  *\n30  *\n=== Ping workload VM (10.60.1.4) - still not NSG-allowed, still no route expected ===\nPING 10.60.1.4 (10.60.1.4) 56(84) bytes of data.\n\n--- 10.60.1.4 ping statistics ---\n4 packets transmitted, 0 received, 100% packet loss, time 3080ms\n\n\n[stderr]\n+ echo '=== Ping spoke NVA (10.60.0.4) with NSG now allowing this source subnet ==='\n+ ping -c 4 -W 2 10.60.0.4\n+ echo '=== Traceroute to spoke NVA (10.60.0.4) ==='\n+ traceroute -n -w 2 -q 1 10.60.0.4\n+ echo '=== Ping workload VM (10.60.1.4) - still not NSG-allowed, still no route expected ==='\n+ ping -c 4 -W 2 10.60.1.4\n"
+    }
+  ]
+}

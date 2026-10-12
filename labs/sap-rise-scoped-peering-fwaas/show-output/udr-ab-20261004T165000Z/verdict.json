@@ -1,0 +1,66 @@
+{
+  "verdict": "PASS",
+  "scope": "Offline controlled-source-UDR ICMP A/B/A2 comparison only",
+  "evidenceRoot": "[LOCAL_PATH_REDACTED]",
+  "canonicalPathsRelativeToEvidenceRoot": {
+    "A": "A\\A-vm-hub-test-comparison-in-2-0.json",
+    "B": "B\\B-vm-hub-test-comparison-in-1-0.json",
+    "A2": "A2\\A2-vm-hub-test-comparison-in-1-0.json",
+    "invalidPreservedNotUsed": "A\\A-vm-hub-test-comparison-in-1-0.json",
+    "setup": "setup\\changes.json",
+    "guestBefore": ["setup\\hub-guest-before.json", "setup\\spoke-guest-before.json", "setup\\source-guest-before.json"],
+    "routes": [
+      "A\\A-vm-hub-test-effective-routes-in-1-0.json",
+      "A\\A-vm-hub-nva-effective-routes-in-1-0.json",
+      "A\\A-vm-spoke-nva-effective-routes-in-1-0.json",
+      "A\\A-vm-workload-probe-effective-routes-in-1-0.json",
+      "B\\B-vm-hub-test-effective-routes-in-1-0.json",
+      "B\\B-vm-hub-nva-effective-routes-in-1-0.json",
+      "B\\B-vm-spoke-nva-effective-routes-in-1-0.json",
+      "B\\B-vm-workload-probe-effective-routes-in-1-0.json",
+      "A2\\A2-vm-hub-test-effective-routes-in-1-0.json",
+      "A2\\A2-vm-hub-nva-effective-routes-in-1-0.json",
+      "A2\\A2-vm-spoke-nva-effective-routes-in-1-0.json",
+      "A2\\A2-vm-workload-probe-effective-routes-in-1-0.json"
+    ]
+  },
+  "source": "10.40.2.4",
+  "destination": "10.60.1.4",
+  "ping": {
+    "A": {"sent": 5, "received": 0, "lossPercent": 100},
+    "B": {"sent": 5, "received": 5, "lossPercent": 0},
+    "A2": {"sent": 5, "received": 0, "lossPercent": 100}
+  },
+  "mtrB": {
+    "protocol": "default ICMP",
+    "hops": ["10.40.1.4", "10.60.0.4", "10.60.1.4"],
+    "verifiedHopCount": 3,
+    "verifiedNvaHopCount": 2,
+    "sentPerHop": 5,
+    "lossPercentPerHop": [0, 0, 0]
+  },
+  "routeChanges": {
+    "normalization": "All fields retained; recursively sort object keys and array values; compare route multisets per NIC, ignoring ordering only.",
+    "AtoB": {"nic": "vm-hub-test", "added": {"addressPrefix": ["10.60.1.4/32"], "disableBgpRoutePropagation": true, "name": "ab-workload-via-hub", "nextHopIpAddress": ["10.40.1.4"], "nextHopType": "VirtualAppliance", "source": "User", "state": "Active"}, "removed": []},
+    "BtoA2": "Exactly the AtoB added route removed; nothing added.",
+    "AequalsA2": true,
+    "allOtherRoutesOnAllFourNicsConstant": true,
+    "routeCountsA_B_A2": {"source": [43, 44, 43], "hubNva": [45, 45, 45], "spokeNva": [44, 44, 44], "workload": [5, 5, 5]}
+  },
+  "commonSetup": [
+    "Ledger records source route table rt-ab-hub-test with disableBgpRoutePropagation=true and source subnet association; propagated ARS/ER routes are excluded from this source-table comparison.",
+    "Constant effective user routes: hub destination 10.60.1.4/32 via 10.60.0.4; spoke return 10.40.2.4/32 via 10.40.1.4; workload return 10.40.2.4/32 via 10.60.0.4.",
+    "Ledger records narrow endpoint ICMP/TCP22 NSG allows and hub policy table 4242 via local Azure gateway 10.40.1.1 for workload/peer destinations, bypassing existing remote-onlink BIRD selection.",
+    "Pre-test snapshots show forwarding enabled on both NVAs, empty hub NAT rules, and spoke private-destination NAT exclusions. Ledger contains no NAT changes."
+  ],
+  "assumptionsAndLimitations": [
+    "Common NSG/guest policy/NAT setup remained constant according to the supplied change ledger; guest-before snapshots are not per-phase guest-state or packet captures.",
+    "Invalid A sample1 uses unsupported mtr --icmp; preserved but excluded. Valid A sample2 and A2 have empty mtr hop reports: their measured 100% loss comes from ping, not mtr.",
+    "Source traceroute executable unavailable; successful B default-ICMP mtr visibly identifies both NVAs and destination.",
+    "Workload guest-agent unavailability and TCP22 liveness failure are supplied scope constraints, not independently re-tested here. No application/TCP verification or workload-originated trace; not a PASS for the entire initial Trinity TCP/packet-proof scope.",
+    "Peering restricts exported prefixes; UDR plus forwarding enforces the demonstrated path. This does not establish fabric-level source filtering, all bypasses prevented, or unobserved reverse-hop order.",
+    "Restoration status below is scoped to A2 and the supplied handoff; no live-state or ER/Megaport deletion verification was performed."
+  ],
+  "errors": [],
+  "restorationState": "A2 source UDR removed; common test setup and running VMs still await restore; ER/Megaport deletion intentionally permanent"
+}

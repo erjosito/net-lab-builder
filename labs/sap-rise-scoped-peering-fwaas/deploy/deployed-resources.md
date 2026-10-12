@@ -1,5 +1,17 @@
 # Deployed Resources — sap-rise-scoped-peering-fwaas
 
+> **Current state, verified 2026-10-04:** The lab's ExpressRoute connection,
+> private peering, gateway and circuit were deleted; its Megaport VXC and
+> exclusive MCR are decommissioned. The original four VMs are deallocated.
+> VNets, subnets, peerings, original NSGs/routes, ARS and its public IP remain.
+> The temporary same-VM UDR experiment was fully restored and its source
+> VM/NIC/disk/subnet and temporary tables removed.
+> [Restoration proof](../show-output/udr-ab-20261004T165000Z/restore-verification.json)
+> and [ER teardown proof](../show-output/er-teardown-20261004T165829Z/state.json)
+> supersede the historical status and resource inventory below. Do not use the
+> old ER/Megaport entries as live targets or run a full Terraform apply to
+> recreate them.
+
 **Deployed:** 2026-09-29
 **Deployed by:** Tank (IaC Engineer), on explicit go-ahead from Jose Moreno
 **IaC tool:** Terraform (`src/terraform/sap-rise-scoped-peering-fwaas/`)
@@ -43,8 +55,8 @@ resource ID is shown.
 | ER Circuit | `er-sap-rise`, SKU/peering location **Frankfurt** (see deviation note below) |
 | ER Gateway | `ergw-sap-rise`, SKU `ErGw1AZ`, `provisioningState: Succeeded` |
 | ER Gateway public IP | Auto-assigned by Azure ("HOBO" IP) since azurerm v4.81 no longer allows explicit assignment. Not independently visible via `az network public-ip list`; the gateway's own `ipConfigurations` show the binding is managed internally by Azure. Gateway is confirmed `Succeeded`. |
-| Megaport MCR UID | `ee8c1d71-a901-48a7-91ab-67293b239dd9` (location: Equinix Frankfurt FR5) |
-| Megaport VXC UID | `72a59981-2bfe-4c87-8440-b0d5981c06cf` |
+| Megaport MCR UID | `[REDACTED]` (location: Equinix Frankfurt FR5) |
+| Megaport VXC UID | `[REDACTED]` |
 | Megaport MCR ASN | `64512` |
 | Azure peering ASN | `12076` |
 | VLAN | `2063` |

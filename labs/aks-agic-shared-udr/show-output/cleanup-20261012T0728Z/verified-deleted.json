@@ -1,0 +1,23 @@
+{
+  "verifiedAtUtc": "2026-10-12T07:42:44.6598048+00:00",
+  "taskId": "aks-agic-cleanup-20261012",
+  "scope": "active default Azure subscription",
+  "checks": [
+    {
+      "command": "az group exists -n rg-aks-agic-shared-udr -o tsv",
+      "timestampUtc": "2026-10-12T07:42:41.0848112+00:00",
+      "exitCode": 0,
+      "timedOut": false,
+      "stdout": "false",
+      "stderr": ""
+    },
+    {
+      "command": "az group exists -n MC_rg-aks-agic-shared-udr_aks1_swedencentral -o tsv",
+      "timestampUtc": "2026-10-12T07:42:44.6594796+00:00",
+      "exitCode": 0,
+      "timedOut": false,
+      "stdout": "false",
+      "stderr": ""
+    }
+  ]
+}

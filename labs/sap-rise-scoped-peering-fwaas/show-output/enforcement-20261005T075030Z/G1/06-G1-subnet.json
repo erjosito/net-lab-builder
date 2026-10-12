@@ -1,0 +1,21 @@
+{
+  "label": "G1:subnet",
+  "argv": [
+    "rest",
+    "--method",
+    "put",
+    "--url",
+    "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test?api-version=2025-01-01",
+    "--body",
+    "{\"properties\":{\"addressPrefix\":\"10.40.2.0/27\",\"routeTable\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source\"},\"networkSecurityGroup\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva\"}}}"
+  ],
+  "utc": "2026-10-05T07:51:53.580398+00:00",
+  "cost": 1,
+  "timeoutSeconds": 120,
+  "status": "succeeded",
+  "pid": 3932,
+  "stdout": "{\n  \"etag\": \"W/\\\"[REDACTED]\\\"\",\n  \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test\",\n  \"name\": \"snet-hub-test\",\n  \"properties\": {\n    \"addressPrefix\": \"10.40.2.0/27\",\n    \"delegations\": [],\n    \"networkSecurityGroup\": {\n      \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva\"\n    },\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\n    \"privateLinkServiceNetworkPolicies\": \"Enabled\",\n    \"provisioningState\": \"Updating\",\n    \"routeTable\": {\n      \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source\"\n    }\n  },\n  \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\n}\n",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T07:51:56.128904+00:00"
+}

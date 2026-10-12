@@ -1,0 +1,19 @@
+{
+  "label": "preflight-source-subnet",
+  "argv": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test?api-version=2025-01-01"
+  ],
+  "utc": "2026-10-05T07:54:26.328099+00:00",
+  "cost": 0,
+  "timeoutSeconds": 120,
+  "status": "succeeded",
+  "pid": 42600,
+  "stdout": "{\n  \"etag\": \"W/\\\"[REDACTED]\\\"\",\n  \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test\",\n  \"name\": \"snet-hub-test\",\n  \"properties\": {\n    \"addressPrefix\": \"10.40.2.0/27\",\n    \"delegations\": [],\n    \"ipConfigurations\": [\n      {\n        \"id\": \"/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Network/networkInterfaces/NIC-HUB-TEST/ipConfigurations/IPCONFIG1\"\n      }\n    ],\n    \"networkSecurityGroup\": {\n      \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva\"\n    },\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\n    \"privateLinkServiceNetworkPolicies\": \"Enabled\",\n    \"provisioningState\": \"Succeeded\",\n    \"routeTable\": {\n      \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source\"\n    }\n  },\n  \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\n}\n",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T07:54:29.643178+00:00"
+}

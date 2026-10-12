@@ -1,0 +1,166 @@
+{
+  "calls": [
+    {
+      "label": "inventory-hub-table-rt-ab-hub-nva",
+      "argv": [
+        "network",
+        "route-table",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 41232,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "hub-table",
+      "argv": [
+        "network",
+        "route-table",
+        "create",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "rt-ab-hub-nva",
+        "-l",
+        "swedencentral",
+        "--disable-bgp-route-propagation",
+        "false"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 32272,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "before-hub-association-snet-hub-nva",
+      "argv": [
+        "network",
+        "vnet",
+        "subnet",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "snet-hub-nva",
+        "--vnet-name",
+        "vnet-hub"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 44004,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "before-hub-association-rt-ab-hub-nva",
+      "argv": [
+        "network",
+        "route-table",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "rt-ab-hub-nva"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 36556,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "hub-association",
+      "argv": [
+        "network",
+        "vnet",
+        "subnet",
+        "update",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "snet-hub-nva",
+        "--vnet-name",
+        "vnet-hub",
+        "--route-table",
+        "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-ab-hub-nva"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 35380,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "before-hub-route-rt-ab-hub-nva",
+      "argv": [
+        "network",
+        "route-table",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "rt-ab-hub-nva"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 32524,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "before-hub-route-snet-hub-nva",
+      "argv": [
+        "network",
+        "vnet",
+        "subnet",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "snet-hub-nva",
+        "--vnet-name",
+        "vnet-hub"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 36280,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "hub-route",
+      "argv": [
+        "network",
+        "route-table",
+        "route",
+        "create",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "ab-workload-via-spoke",
+        "--route-table-name",
+        "rt-ab-hub-nva",
+        "--address-prefix",
+        "10.60.1.4/32",
+        "--next-hop-type",
+        "VirtualAppliance",
+        "--next-hop-ip-address",
+        "10.60.0.4"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 41904,
+      "exitCode": 0,
+      "stderr": ""
+    }
+  ],
+  "mutations": 3,
+  "forward": 3,
+  "reserved": 3,
+  "taskId": "udr-hub-transit-routing"
+}

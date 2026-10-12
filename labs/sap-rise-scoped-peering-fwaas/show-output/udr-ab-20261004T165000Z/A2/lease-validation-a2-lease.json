@@ -1,0 +1,97 @@
+{
+  "calls": [
+    {
+      "label": "A2-vm-hub-test-effective-routes-in-1-0",
+      "argv": [
+        "network",
+        "nic",
+        "show-effective-route-table",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "nic-hub-test"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 24120,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "A2-vm-hub-nva-effective-routes-in-1-0",
+      "argv": [
+        "network",
+        "nic",
+        "show-effective-route-table",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "nic-hub-nva"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 18156,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "A2-vm-spoke-nva-effective-routes-in-1-0",
+      "argv": [
+        "network",
+        "nic",
+        "show-effective-route-table",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "nic-spoke-nva"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 2072,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "A2-vm-workload-probe-effective-routes-in-1-0",
+      "argv": [
+        "network",
+        "nic",
+        "show-effective-route-table",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "nic-workload-probe"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 12988,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "A2-vm-hub-test-comparison-in-1-0",
+      "argv": [
+        "vm",
+        "run-command",
+        "invoke",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-hub-test",
+        "--command-id",
+        "RunShellScript",
+        "--scripts",
+        "command -v python3 >/dev/null 2>&1 || { echo 'ERROR missing binary: python3'; exit 127; }\npython3 -c '\nimport json, os, signal, shutil, subprocess, sys\ncmd = ['\"'\"'bash'\"'\"', '\"'\"'-c'\"'\"', \"date -u; ip route get 10.60.1.4; echo '\"'\"'=== ICMP connectivity ==='\"'\"'; timeout 12 ping -n -c 5 -W 1 10.60.1.4; echo PING_STATUS=$?; echo '\"'\"'=== ICMP mtr ==='\"'\"'; timeout 20 mtr -n -r -c 5 --max-ttl 8 10.60.1.4; echo MTR_STATUS=$?; echo '\"'\"'=== ICMP traceroute ==='\"'\"'; if command -v traceroute >/dev/null; then timeout 12 traceroute -n -I -m 8 -q 1 -w 1 10.60.1.4; echo TRACE_STATUS=$?; else echo '\"'\"'NOT_CAPTURED: traceroute unavailable; ICMP mtr captured above'\"'\"'; fi\"]\nif not shutil.which(cmd[0]):\n    print('\"'\"'ERROR missing binary: '\"'\"' + cmd[0]); print('\"'\"'COMMAND_STATUS=127'\"'\"'); sys.exit(127)\np = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)\ntry:\n    data, _ = p.communicate(timeout=55)\n    status = p.returncode\nexcept subprocess.TimeoutExpired:\n    os.killpg(p.pid, signal.SIGKILL)\n    data, _ = p.communicate(timeout=3)\n    status = 124\noffset = 0 * 2800\nprint(json.dumps({'\"'\"'command'\"'\"': cmd, '\"'\"'status'\"'\"': status, '\"'\"'bytes'\"'\"': len(data),\n                  '\"'\"'chunk'\"'\"': 0, '\"'\"'chunks'\"'\"': max(1, (len(data)+2799)//2800)}))\nprint(data[offset:offset+2800].decode('\"'\"'utf-8'\"'\"', errors='\"'\"'replace'\"'\"'))\nif len(data) > 2800:\n    print('\"'\"'ERROR OUTPUT_PAGED: not a complete atomic snapshot; never treat as full packet proof'\"'\"')\nprint('\"'\"'COMMAND_STATUS='\"'\"' + str(status))\nprint('\"'\"'UDR_STATUS=0'\"'\"')\n'"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 32000,
+      "exitCode": 0,
+      "stderr": ""
+    }
+  ],
+  "mutations": 0,
+  "forward": 0,
+  "reserved": 0,
+  "taskId": "udr-icmp-comparison-A2"
+}

@@ -1,0 +1,107 @@
+{
+  "calls": [
+    {
+      "label": "inventory-vm",
+      "argv": [
+        "vm",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 37736,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "inventory-disk",
+      "argv": [
+        "disk",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 25820,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "before-source-vm-nic-hub-test",
+      "argv": [
+        "network",
+        "nic",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "nic-hub-test"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 17744,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "before-source-vm-snet-hub-test",
+      "argv": [
+        "network",
+        "vnet",
+        "subnet",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "snet-hub-test",
+        "--vnet-name",
+        "vnet-hub"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 26452,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "before-source-vm-rt-ab-hub-test",
+      "argv": [
+        "network",
+        "route-table",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "rt-ab-hub-test"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 17860,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "source-vm",
+      "argv": [
+        "rest",
+        "--method",
+        "put",
+        "--url",
+        "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-test?api-version=2024-07-01",
+        "--body",
+        "{\"location\": \"swedencentral\", \"tags\": {\"lab\": \"sap-rise-scoped-peering-fwaas\", \"owner\": \"jose\", \"ephemeral\": \"true\"}, \"properties\": {\"hardwareProfile\": {\"vmSize\": \"Standard_B2ts_v2\"}, \"storageProfile\": {\"imageReference\": {\"publisher\": \"Canonical\", \"offer\": \"0001-com-ubuntu-server-jammy\", \"sku\": \"22_04-lts-gen2\", \"version\": \"latest\"}, \"osDisk\": {\"name\": \"osdisk-udr-hub-test\", \"createOption\": \"FromImage\", \"deleteOption\": \"Detach\", \"managedDisk\": {\"storageAccountType\": \"StandardSSD_LRS\"}}}, \"osProfile\": {\"computerName\": \"vm-hub-test\", \"adminUsername\": \"azurelabuser\", \"linuxConfiguration\": {\"disablePasswordAuthentication\": true, \"ssh\": {\"publicKeys\": [{\"path\": \"/home/azurelabuser/.ssh/authorized_keys\", \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/\"}]}}}, \"networkProfile\": {\"networkInterfaces\": [{\"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test\", \"properties\": {\"primary\": true, \"deleteOption\": \"Detach\"}}]}}}"
+      ],
+      "cost": 2,
+      "status": "succeeded",
+      "pid": 30760,
+      "exitCode": 0,
+      "stderr": ""
+    }
+  ],
+  "mutations": 2,
+  "forward": 2,
+  "reserved": 2,
+  "taskId": "udr-source-vm"
+}

@@ -1,0 +1,100 @@
+{
+  "calls": [
+    {
+      "label": "inventory-source-table-rt-ab-hub-test",
+      "argv": [
+        "network",
+        "route-table",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 18048,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "source-table",
+      "argv": [
+        "network",
+        "route-table",
+        "create",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "rt-ab-hub-test",
+        "-l",
+        "swedencentral",
+        "--disable-bgp-route-propagation",
+        "true"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 28580,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "before-source-subnet-vnet-hub",
+      "argv": [
+        "network",
+        "vnet",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vnet-hub"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 12260,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "before-source-subnet-rt-ab-hub-test",
+      "argv": [
+        "network",
+        "route-table",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "rt-ab-hub-test"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 21148,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "source-subnet",
+      "argv": [
+        "network",
+        "vnet",
+        "subnet",
+        "create",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "snet-hub-test",
+        "--vnet-name",
+        "vnet-hub",
+        "--address-prefixes",
+        "10.40.2.0/27"
+      ],
+      "cost": 1,
+      "status": "unknown",
+      "pid": 37884,
+      "exitCode": 1,
+      "stderr": "ERROR: (RetryableError) A retryable error occurred.\nCode: RetryableError\nMessage: A retryable error occurred.\nException Details:\t(ReferencedResourceNotProvisioned) Cannot proceed with operation because resource /subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworkGateways/ergw-sap-rise used by resource /subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test is not in Succeeded state. Resource is in Deleting state and the last operation that updated/is updating the resource is DeleteVirtualNetworkGatewayOperation.\n\tCode: ReferencedResourceNotProvisioned\n\tMessage: Cannot proceed with operation because resource /subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworkGateways/ergw-sap-rise used by resource /subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test is not in Succeeded state. Resource is in Deleting state and the last operation that updated/is updating the resource is DeleteVirtualNetworkGatewayOperation.\n"
+    }
+  ],
+  "mutations": 2,
+  "forward": 2,
+  "reserved": 2,
+  "taskId": "udr-source-network"
+}

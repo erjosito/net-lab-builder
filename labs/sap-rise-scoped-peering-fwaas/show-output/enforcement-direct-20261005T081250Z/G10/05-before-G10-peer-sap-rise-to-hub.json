@@ -1,0 +1,19 @@
+{
+  "label": "before-G10:peer-sap-rise-to-hub",
+  "argv": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings?api-version=2025-01-01"
+  ],
+  "utc": "2026-10-05T08:21:53.988521+00:00",
+  "cost": 0,
+  "timeoutSeconds": 120,
+  "status": "succeeded",
+  "pid": 44604,
+  "stdout": "{\n  \"value\": [\n    {\n      \"etag\": \"W/\\\"[REDACTED]\\\"\",\n      \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub\",\n      \"name\": \"peer-sap-rise-to-hub\",\n      \"properties\": {\n        \"allowForwardedTraffic\": true,\n        \"allowGatewayTransit\": false,\n        \"allowVirtualNetworkAccess\": true,\n        \"doNotVerifyRemoteGateways\": false,\n        \"localAddressSpace\": {\n          \"addressPrefixes\": [\n            \"10.60.0.0/27\"\n          ]\n        },\n        \"localSubnetNames\": [\n          \"snet-spoke-nva\"\n        ],\n        \"localVirtualNetworkAddressSpace\": {\n          \"addressPrefixes\": [\n            \"10.60.0.0/27\"\n          ]\n        },\n        \"peerCompleteVnets\": false,\n        \"peeringState\": \"Disconnected\",\n        \"peeringSyncLevel\": \"FullyInSync\",\n        \"provisioningState\": \"Succeeded\",\n        \"remoteAddressSpace\": {\n          \"addressPrefixes\": [\n            \"10.40.1.0/27\"\n          ]\n        },\n        \"remoteSubnetNames\": [\n          \"snet-hub-nva\"\n        ],\n        \"remoteVirtualNetwork\": {\n          \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub\"\n        },\n        \"remoteVirtualNetworkAddressSpace\": {\n          \"addressPrefixes\": [\n            \"10.40.1.0/27\"\n          ]\n        },\n        \"resourceGuid\": \"[REDACTED]\",\n        \"routeServiceVips\": {},\n        \"useRemoteGateways\": false\n      },\n      \"type\": \"Microsoft.Network/virtualNetworks/virtualNetworkPeerings\"\n    }\n  ]\n}\n",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T08:21:58.220671+00:00"
+}

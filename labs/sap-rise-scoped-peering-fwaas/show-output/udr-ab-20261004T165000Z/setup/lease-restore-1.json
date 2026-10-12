@@ -1,0 +1,92 @@
+{
+  "calls": [
+    {
+      "label": "restore:20:0",
+      "argv": [
+        "vm",
+        "run-command",
+        "invoke",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-hub-nva",
+        "--command-id",
+        "RunShellScript",
+        "--scripts",
+        "set -eu\nip rule del pref 10421 to 10.60.0.4/32 lookup 4242\nprintf '\\nUDR_STATUS=0\\n'\n"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 34436,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "restore:19:0",
+      "argv": [
+        "vm",
+        "run-command",
+        "invoke",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-hub-nva",
+        "--command-id",
+        "RunShellScript",
+        "--scripts",
+        "set -eu\nip rule del pref 10420 to 10.60.1.4/32 lookup 4242\nprintf '\\nUDR_STATUS=0\\n'\n"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 41392,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "restore:18:0",
+      "argv": [
+        "vm",
+        "run-command",
+        "invoke",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-hub-nva",
+        "--command-id",
+        "RunShellScript",
+        "--scripts",
+        "set -eu\nip route del table 4242 default via 10.40.1.1 dev eth0\nprintf '\\nUDR_STATUS=0\\n'\n"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 2324,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-1-guest",
+      "argv": [
+        "vm",
+        "run-command",
+        "invoke",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-hub-nva",
+        "--command-id",
+        "RunShellScript",
+        "--scripts",
+        "set -eu\nprintf 'RULES\\n'\nip -j rule show\nprintf 'ROUTES\\n'\nip -j route show table all\nprintf 'BIRD_CONFIG_SHA256\\n'\nsha256sum /etc/bird/bird.conf\nprintf 'BIRD_ROUTES\\n'\nbirdc show route\nprintf 'UDR_STATUS=0\\n'\n"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 43004,
+      "exitCode": 0,
+      "stderr": ""
+    }
+  ],
+  "mutations": 3,
+  "forward": 0,
+  "reserved": 0,
+  "taskId": "udr-restore-1"
+}

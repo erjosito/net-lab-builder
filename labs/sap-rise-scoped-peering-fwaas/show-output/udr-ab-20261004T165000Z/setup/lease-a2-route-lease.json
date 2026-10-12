@@ -1,0 +1,45 @@
+{
+  "calls": [
+    {
+      "label": "before-source-route-rt-ab-hub-test",
+      "argv": [
+        "network",
+        "route-table",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "rt-ab-hub-test"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 40868,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "restore:21:0",
+      "argv": [
+        "network",
+        "route-table",
+        "route",
+        "delete",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "ab-workload-via-hub",
+        "--route-table-name",
+        "rt-ab-hub-test"
+      ],
+      "cost": 1,
+      "status": "unknown",
+      "pid": 1136,
+      "exitCode": 0,
+      "stderr": ""
+    }
+  ],
+  "mutations": 1,
+  "forward": 0,
+  "reserved": 0,
+  "taskId": "udr-source-B-to-A2"
+}

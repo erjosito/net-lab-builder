@@ -1,0 +1,144 @@
+[
+  {
+    "label": "G1:table",
+    "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source",
+    "body": {
+      "location": "swedencentral",
+      "tags": {
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "properties": {
+        "disableBgpRoutePropagation": true,
+        "routes": []
+      }
+    },
+    "before": null,
+    "cost": 1,
+    "compute": false,
+    "argv": [
+      "rest",
+      "--method",
+      "put",
+      "--url",
+      "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source?api-version=2025-01-01",
+      "--body",
+      "{\"location\":\"swedencentral\",\"tags\":{\"lab\":\"sap-rise-scoped-peering-fwaas\",\"owner\":\"jose\",\"ephemeral\":\"true\"},\"properties\":{\"disableBgpRoutePropagation\":true,\"routes\":[]}}"
+    ],
+    "inverse": [
+      {
+        "label": "undo:G1:table",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source",
+        "body": null,
+        "compute": false,
+        "cost": 1,
+        "argv": [
+          "rest",
+          "--method",
+          "delete",
+          "--url",
+          "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source?api-version=2025-01-01"
+        ]
+      }
+    ]
+  },
+  {
+    "label": "G1:subnet",
+    "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test",
+    "body": {
+      "properties": {
+        "addressPrefix": "10.40.2.0/27",
+        "routeTable": {
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source"
+        },
+        "networkSecurityGroup": {
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva"
+        }
+      }
+    },
+    "before": null,
+    "cost": 1,
+    "compute": false,
+    "argv": [
+      "rest",
+      "--method",
+      "put",
+      "--url",
+      "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test?api-version=2025-01-01",
+      "--body",
+      "{\"properties\":{\"addressPrefix\":\"10.40.2.0/27\",\"routeTable\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source\"},\"networkSecurityGroup\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva\"}}}"
+    ],
+    "inverse": [
+      {
+        "label": "undo:G1:subnet",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test",
+        "body": null,
+        "compute": false,
+        "cost": 1,
+        "argv": [
+          "rest",
+          "--method",
+          "delete",
+          "--url",
+          "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test?api-version=2025-01-01"
+        ]
+      }
+    ]
+  },
+  {
+    "label": "G1:nic",
+    "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test",
+    "body": {
+      "location": "swedencentral",
+      "tags": {
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "properties": {
+        "enableIPForwarding": false,
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.40.2.4",
+              "subnet": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "before": null,
+    "cost": 1,
+    "compute": false,
+    "argv": [
+      "rest",
+      "--method",
+      "put",
+      "--url",
+      "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test?api-version=2025-01-01",
+      "--body",
+      "{\"location\":\"swedencentral\",\"tags\":{\"lab\":\"sap-rise-scoped-peering-fwaas\",\"owner\":\"jose\",\"ephemeral\":\"true\"},\"properties\":{\"enableIPForwarding\":false,\"ipConfigurations\":[{\"name\":\"ipconfig1\",\"properties\":{\"privateIPAllocationMethod\":\"Static\",\"privateIPAddress\":\"10.40.2.4\",\"subnet\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-test\"}}}]}}"
+    ],
+    "inverse": [
+      {
+        "label": "undo:G1:nic",
+        "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test",
+        "body": null,
+        "compute": false,
+        "cost": 1,
+        "argv": [
+          "rest",
+          "--method",
+          "delete",
+          "--url",
+          "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-test?api-version=2025-01-01"
+        ]
+      }
+    ]
+  }
+]

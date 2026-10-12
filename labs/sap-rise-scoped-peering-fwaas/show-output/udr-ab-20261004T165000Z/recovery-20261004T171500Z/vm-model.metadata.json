@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "C:\\Program Files\\Microsoft SDKs\\Azure\\CLI2\\python.exe",
+    "-IBm",
+    "azure.cli",
+    "vm",
+    "show",
+    "-g",
+    "rg-saprise-swedencentral",
+    "-n",
+    "vm-workload-probe",
+    "--subscription",
+    "[REDACTED]",
+    "--query",
+    "{name:name,provisioningState:provisioningState,linuxConfiguration:osProfile.linuxConfiguration,osType:storageProfile.osDisk.osType,vmSize:hardwareProfile.vmSize}",
+    "--only-show-errors",
+    "-o",
+    "json"
+  ],
+  "startedAtUtc": "2026-10-04T17:21:15.641693+00:00",
+  "timeoutSeconds": 90,
+  "mutation": false,
+  "exitCode": 0,
+  "completedAtUtc": "2026-10-04T17:21:19.372379+00:00"
+}

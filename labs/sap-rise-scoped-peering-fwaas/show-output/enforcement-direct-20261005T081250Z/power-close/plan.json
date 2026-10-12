@@ -1,0 +1,25 @@
+[
+  {
+    "label": "power-close:workload",
+    "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-workload-probe",
+    "body": {
+      "power": "deallocated"
+    },
+    "before": {
+      "power": "running"
+    },
+    "cost": 1,
+    "compute": true,
+    "argv": [
+      "vm",
+      "deallocate",
+      "-g",
+      "rg-saprise-swedencentral",
+      "-n",
+      "vm-workload-probe"
+    ],
+    "inverse": [],
+    "power": true,
+    "timeout": 600
+  }
+]

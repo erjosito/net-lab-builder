@@ -1,0 +1,76 @@
+[
+  {
+    "label": "G13:0",
+    "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/securityRules/Allow-PeeringEnforcement-ICMP",
+    "body": null,
+    "before": {
+      "properties": {
+        "priority": 105,
+        "direction": "Inbound",
+        "access": "Allow",
+        "protocol": "Icmp",
+        "sourceAddressPrefixes": [
+          "10.40.2.4/32",
+          "10.40.1.4/32",
+          "10.60.0.4/32",
+          "10.60.1.4/32"
+        ],
+        "destinationAddressPrefixes": [
+          "10.40.2.4/32",
+          "10.40.1.4/32",
+          "10.60.0.4/32",
+          "10.60.1.4/32"
+        ],
+        "sourcePortRange": "*",
+        "destinationPortRange": "*"
+      }
+    },
+    "cost": 1,
+    "compute": false,
+    "argv": [
+      "rest",
+      "--method",
+      "delete",
+      "--url",
+      "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/securityRules/Allow-PeeringEnforcement-ICMP?api-version=2025-01-01"
+    ],
+    "inverse": []
+  },
+  {
+    "label": "G13:1",
+    "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/securityRules/Allow-PeeringEnforcement-ICMP",
+    "body": null,
+    "before": {
+      "properties": {
+        "priority": 105,
+        "direction": "Inbound",
+        "access": "Allow",
+        "protocol": "Icmp",
+        "sourceAddressPrefixes": [
+          "10.40.2.4/32",
+          "10.40.1.4/32",
+          "10.60.0.4/32",
+          "10.60.1.4/32"
+        ],
+        "destinationAddressPrefixes": [
+          "10.40.2.4/32",
+          "10.40.1.4/32",
+          "10.60.0.4/32",
+          "10.60.1.4/32"
+        ],
+        "sourcePortRange": "*",
+        "destinationPortRange": "*"
+      }
+    },
+    "cost": 1,
+    "compute": false,
+    "argv": [
+      "rest",
+      "--method",
+      "delete",
+      "--url",
+      "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/securityRules/Allow-PeeringEnforcement-ICMP?api-version=2025-01-01"
+    ],
+    "inverse": []
+  }
+]

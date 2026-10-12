@@ -1,0 +1,71 @@
+{
+  "calls": [
+    {
+      "label": "before-source-route-rt-ab-hub-test",
+      "argv": [
+        "network",
+        "route-table",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "rt-ab-hub-test"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 11868,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "before-source-route-snet-hub-test",
+      "argv": [
+        "network",
+        "vnet",
+        "subnet",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "snet-hub-test",
+        "--vnet-name",
+        "vnet-hub"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 28036,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "source-route",
+      "argv": [
+        "network",
+        "route-table",
+        "route",
+        "create",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "ab-workload-via-hub",
+        "--route-table-name",
+        "rt-ab-hub-test",
+        "--address-prefix",
+        "10.60.1.4/32",
+        "--next-hop-type",
+        "VirtualAppliance",
+        "--next-hop-ip-address",
+        "10.40.1.4"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 35624,
+      "exitCode": 0,
+      "stderr": ""
+    }
+  ],
+  "mutations": 1,
+  "forward": 1,
+  "reserved": 1,
+  "taskId": "udr-source-A-to-B"
+}

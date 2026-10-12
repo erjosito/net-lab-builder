@@ -1,0 +1,10 @@
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\n=== CONTROL: Ping workload VM (10.60.1.4) from legitimate peered subnet (snet-hub-nva), via spoke NVA transit ===\nPING 10.60.1.4 (10.60.1.4) 56(84) bytes of data.\nFrom 10.40.1.4 icmp_seq=1 Destination Host Unreachable\nFrom 10.40.1.4 icmp_seq=2 Destination Host Unreachable\nFrom 10.40.1.4 icmp_seq=3 Destination Host Unreachable\n\n--- 10.60.1.4 ping statistics ---\n4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3078ms\npipe 3\n=== CONTROL: ip route get 10.60.1.4 ===\n10.60.1.4 via 10.60.0.4 dev eth0 src 10.40.1.4 uid 0 \n    cache \n=== CONTROL: traceroute to 10.60.1.4 ===\ntraceroute to 10.60.1.4 (10.60.1.4), 30 hops max, 60 byte packets\n 1  10.40.1.4  1064.806 ms !H\n\n[stderr]\n+ echo '=== CONTROL: Ping workload VM (10.60.1.4) from legitimate peered subnet (snet-hub-nva), via spoke NVA transit ==='\n+ ping -c 4 -W 2 10.60.1.4\n+ echo '=== CONTROL: ip route get 10.60.1.4 ==='\n+ ip route get 10.60.1.4\n+ echo '=== CONTROL: traceroute to 10.60.1.4 ==='\n+ which traceroute\n+ traceroute -n -w 2 -q 1 10.60.1.4\n"
+    }
+  ]
+}

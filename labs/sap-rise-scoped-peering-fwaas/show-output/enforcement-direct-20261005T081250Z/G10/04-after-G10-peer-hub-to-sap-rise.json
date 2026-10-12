@@ -1,0 +1,19 @@
+{
+  "label": "after-G10:peer-hub-to-sap-rise",
+  "argv": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings?api-version=2025-01-01"
+  ],
+  "utc": "2026-10-05T08:21:50.248082+00:00",
+  "cost": 0,
+  "timeoutSeconds": 120,
+  "status": "succeeded",
+  "pid": 31964,
+  "stdout": "{\n  \"value\": [\n    {\n      \"etag\": \"W/\\\"[REDACTED]\\\"\",\n      \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-onprem-sim\",\n      \"name\": \"peer-hub-to-onprem-sim\",\n      \"properties\": {\n        \"allowForwardedTraffic\": true,\n        \"allowGatewayTransit\": false,\n        \"allowVirtualNetworkAccess\": true,\n        \"doNotVerifyRemoteGateways\": false,\n        \"peerCompleteVnets\": true,\n        \"peeringState\": \"Connected\",\n        \"peeringSyncLevel\": \"FullyInSync\",\n        \"provisioningState\": \"Succeeded\",\n        \"remoteAddressSpace\": {\n          \"addressPrefixes\": [\n            \"172.40.100.0/24\"\n          ]\n        },\n        \"remoteVirtualNetwork\": {\n          \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-onprem-sim\"\n        },\n        \"remoteVirtualNetworkAddressSpace\": {\n          \"addressPrefixes\": [\n            \"172.40.100.0/24\"\n          ]\n        },\n        \"resourceGuid\": \"[REDACTED]\",\n        \"routeServiceVips\": {},\n        \"useRemoteGateways\": false\n      },\n      \"type\": \"Microsoft.Network/virtualNetworks/virtualNetworkPeerings\"\n    }\n  ]\n}\n",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T08:21:53.920612+00:00"
+}

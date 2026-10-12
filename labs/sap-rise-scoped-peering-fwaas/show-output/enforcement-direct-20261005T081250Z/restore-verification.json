@@ -1,0 +1,120 @@
+{
+  "verifier": "Niobe",
+  "mode": "independent-offline-saved-evidence",
+  "verdict": "PASS",
+  "scope": "Original ARM resource configuration, identities and saved final VM power state restored; no Azure calls or mutations performed by this verifier.",
+  "authoritativeFor": "Offline restoration conclusion only, not a claim that the live runner verification passed.",
+  "evidenceRoot": "labs\\sap-rise-scoped-peering-fwaas\\show-output\\enforcement-direct-20261005T081250Z",
+  "pathConvention": "Evidence paths below are relative to evidenceRoot unless explicitly prefixed with ..",
+  "originals": {
+    "path": "originals.json",
+    "sha256": "a9bf55db6ad4b9da1aed2c6973ac315778a9d3e3b1b24142b77ab83658626bc1",
+    "identicalToPriorOriginals": true,
+    "priorPath": "..\\enforcement-20261005T075030Z\\originals.json"
+  },
+  "final": {
+    "path": "final.json",
+    "sha256": "ec7eb183ac3e603a93d2e7dfabdfe87d55db018824aaf8d8af228588ed1708a7",
+    "exactlyReconstructedFromEightSavedReadResponses": true,
+    "readWindowUtc": ["2026-10-05T08:33:01.833985+00:00", "2026-10-05T08:33:47.587337+00:00"],
+    "responses": [
+      "verify\\01-inventory-vnets.json",
+      "verify\\02-inventory-nics.json",
+      "verify\\03-inventory-nsgs.json",
+      "verify\\04-inventory-tables.json",
+      "verify\\05-inventory-vms.json",
+      "verify\\06-inventory-disks.json",
+      "verify\\07-inventory-power.json",
+      "verify\\08-inventory-identities.json"
+    ],
+    "allResponsesSucceeded": true
+  },
+  "comparison": {
+    "method": "Independent recursive comparison of original and final JSON, preserving list order, all resource identities and all configuration fields. Enumerate every unequal leaf before applying narrowly defined metadata exclusions.",
+    "rawUnequalLeafCount": 44,
+    "etagOnlyDifferences": 41,
+    "remainingDifferences": [
+      {
+        "jsonPointer": "/disks/2/properties/LastOwnershipUpdateTime",
+        "disk": "vm-hub-nva_OsDisk_1_2e6edf0ceea34b53aafb61b96a4db07a",
+        "original": "2026-10-04T18:06:38.8711464+00:00",
+        "final": "2026-10-05T08:06:37.6568711+00:00"
+      },
+      {
+        "jsonPointer": "/disks/5/properties/LastOwnershipUpdateTime",
+        "disk": "vm-spoke-nva_OsDisk_1_922d9fbd50734b2a807dc7abb5420629",
+        "original": "2026-10-04T18:05:27.0085813+00:00",
+        "final": "2026-10-05T08:05:54.292912+00:00"
+      },
+      {
+        "jsonPointer": "/disks/6/properties/LastOwnershipUpdateTime",
+        "disk": "vm-workload-probe_OsDisk_1_27a40cab6f1d40d0a45349f2040fee59",
+        "original": "2026-10-04T18:03:17.3760664+00:00",
+        "final": "2026-10-05T08:32:22.5181115+00:00"
+      }
+    ],
+    "additionalServiceStateExclusionsNeeded": [],
+    "configurationDifferencesAfterMetadataNormalization": [],
+    "explanation": "Only ETags and exactly three disk ownership-update timestamps differ. LastOwnershipUpdateTime has uppercase L; normalizing only lowercase lastOwnershipUpdateTime leaves these three nonconfiguration fields unequal. No blanket provisioning-state, resourceGuid, identity, network, disk attachment or other configuration exclusions were needed for this comparison."
+  },
+  "identities": {
+    "resourceCountOriginalAndFinal": 32,
+    "allResourceIdsEqual": true,
+    "counts": {"vnets": 3, "nics": 4, "nsgs": 4, "tables": 3, "vms": 4, "disks": 8, "power": 4, "resources": 32},
+    "originalVmIdsPreserved": {
+      "vm-ce-onprem": "[REDACTED]",
+      "vm-hub-nva": "[REDACTED]",
+      "vm-spoke-nva": "[REDACTED]",
+      "vm-workload-probe": "[REDACTED]"
+    },
+    "finalPower": {
+      "vm-ce-onprem": "VM deallocated",
+      "vm-hub-nva": "VM deallocated",
+      "vm-spoke-nva": "VM deallocated",
+      "vm-workload-probe": "VM deallocated"
+    }
+  },
+  "restoredPeering": {
+    "peerCompleteVnets": false,
+    "hubSubnet": "snet-hub-nva",
+    "hubPrefix": "10.40.1.0/27",
+    "spokeSubnet": "snet-spoke-nva",
+    "spokePrefix": "10.60.0.0/27",
+    "bothDirectionsConnectedAndFullyInSync": true,
+    "evidence": ["collect-restored\\04-scope-peer-hub-to-sap-rise.json", "collect-restored\\05-scope-peer-sap-rise-to-hub.json", "final.json"]
+  },
+  "cleanup": {
+    "G13": "Only the two Allow-PeeringEnforcement-ICMP test rules deleted; original NSG configurations restored.",
+    "G14": "vm-hub-test and osdisk-enforcement-hub-test deleted.",
+    "G15": "nic-hub-test, snet-hub-test and rt-enforcement-source deleted.",
+    "powerClose": "Original workload VM deallocated.",
+    "proof": [
+      "G13\\plan.json", "G13\\04-after-G13-0.json", "G13\\08-after-G13-1.json",
+      "G14\\plan.json", "G14\\04-after-G14-vm.json", "G14\\08-after-G14-disk.json",
+      "G15\\plan.json", "G15\\04-after-G15-0.json", "G15\\08-after-G15-1.json", "G15\\12-after-G15-2.json",
+      "power-close\\03-after-power-close-workload.json", "final.json"
+    ]
+  },
+  "historicalChildren": {
+    "checkedAtUtc": "2026-10-05T08:37:37.2779234Z",
+    "method": "Enumerated numeric top-level pid fields in this evidence root's saved JSON command records, then Get-Process -Id for each unique PID. Any existing PID would require process-start-time comparison to detect reuse.",
+    "uniquePidsChecked": 122,
+    "existingPids": [],
+    "processesKilled": false
+  },
+  "runnerHistory": {
+    "statePath": "state.json",
+    "stateSha256": "261c4df686f4e87903574353e7aae072087fd5b9a8f2948ddff31aeb094ad420",
+    "retainedStatus": "blocked",
+    "retainedOriginalRestored": false,
+    "retainedError": "Original state comparison differs",
+    "stateEdited": false,
+    "earlierUnknownsAndErrorsPreserved": true,
+    "note": "This separate proof resolves restoration without rewriting or claiming success for the failed runner verification. The casing defect is demonstrated independently by the exact JSON diff; no live rerun was performed."
+  },
+  "limitations": [
+    "Point-in-time conclusion from saved final reads, not a fresh Azure observation.",
+    "Does not claim byte-identical disk contents or independent guest filesystem restoration.",
+    "No runner source-code review or runner test execution was needed for the stricter independent exact-diff proof."
+  ]
+}

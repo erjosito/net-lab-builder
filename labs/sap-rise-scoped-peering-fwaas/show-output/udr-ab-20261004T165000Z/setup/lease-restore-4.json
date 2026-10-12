@@ -1,0 +1,102 @@
+{
+  "calls": [
+    {
+      "label": "restore:11:0",
+      "argv": [
+        "network",
+        "route-table",
+        "route",
+        "delete",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "ab-workload-via-spoke",
+        "--route-table-name",
+        "rt-ab-hub-nva"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 37028,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "restore:10:0",
+      "argv": [
+        "network",
+        "vnet",
+        "subnet",
+        "update",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "snet-hub-nva",
+        "--vnet-name",
+        "vnet-hub",
+        "--remove",
+        "routeTable"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 17652,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "restore:9:0",
+      "argv": [
+        "network",
+        "route-table",
+        "delete",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "rt-ab-hub-nva"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 33748,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-4-route-table",
+      "argv": [
+        "network",
+        "route-table",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 27304,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-4-hub-subnet",
+      "argv": [
+        "network",
+        "vnet",
+        "subnet",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "--vnet-name",
+        "vnet-hub",
+        "-n",
+        "snet-hub-nva"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 29072,
+      "exitCode": 0,
+      "stderr": ""
+    }
+  ],
+  "mutations": 3,
+  "forward": 0,
+  "reserved": 0,
+  "taskId": "udr-restore-4"
+}

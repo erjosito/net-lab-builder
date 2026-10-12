@@ -1,0 +1,134 @@
+{
+  "calls": [
+    {
+      "label": "before-hub-policy-default",
+      "argv": [
+        "vm",
+        "run-command",
+        "invoke",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-hub-nva",
+        "--command-id",
+        "RunShellScript",
+        "--scripts",
+        "set -eu\nip -j route show table all\nprintf '\\nUDR_STATUS=0\\n'\n"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 18680,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "hub-policy-default",
+      "argv": [
+        "vm",
+        "run-command",
+        "invoke",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-hub-nva",
+        "--command-id",
+        "RunShellScript",
+        "--scripts",
+        "set -eu\n! ip route show table all | grep -q 'table 4242'\nip route add table 4242 default via 10.40.1.1 dev eth0\nprintf '\\nUDR_STATUS=0\\n'\n"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 37868,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "before-hub-policy-workload",
+      "argv": [
+        "vm",
+        "run-command",
+        "invoke",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-hub-nva",
+        "--command-id",
+        "RunShellScript",
+        "--scripts",
+        "set -eu\nip -j rule show\nprintf '\\nUDR_STATUS=0\\n'\n"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 19880,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "hub-policy-workload",
+      "argv": [
+        "vm",
+        "run-command",
+        "invoke",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-hub-nva",
+        "--command-id",
+        "RunShellScript",
+        "--scripts",
+        "set -eu\n! ip rule show | grep -q '^10420:'\nip route show table 4242 | grep -q '^default via 10.40.1.1 dev eth0'\nip rule add pref 10420 to 10.60.1.4/32 lookup 4242\nprintf '\\nUDR_STATUS=0\\n'\n"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 28036,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "before-hub-policy-peer",
+      "argv": [
+        "vm",
+        "run-command",
+        "invoke",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-hub-nva",
+        "--command-id",
+        "RunShellScript",
+        "--scripts",
+        "set -eu\nip -j rule show\nprintf '\\nUDR_STATUS=0\\n'\n"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 39712,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "hub-policy-peer",
+      "argv": [
+        "vm",
+        "run-command",
+        "invoke",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-hub-nva",
+        "--command-id",
+        "RunShellScript",
+        "--scripts",
+        "set -eu\n! ip rule show | grep -q '^10421:'\nip route show table 4242 | grep -q '^default via 10.40.1.1 dev eth0'\nip rule add pref 10421 to 10.60.0.4/32 lookup 4242\nprintf '\\nUDR_STATUS=0\\n'\n"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 26040,
+      "exitCode": 0,
+      "stderr": ""
+    }
+  ],
+  "mutations": 3,
+  "forward": 3,
+  "reserved": 3,
+  "taskId": "udr-hub-guest-forwarding"
+}

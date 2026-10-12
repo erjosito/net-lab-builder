@@ -1,0 +1,19 @@
+{
+  "label": "before-G7-remove:0",
+  "argv": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes?api-version=2025-01-01"
+  ],
+  "utc": "2026-10-05T08:17:55.727760+00:00",
+  "cost": 0,
+  "timeoutSeconds": 120,
+  "status": "succeeded",
+  "pid": 22752,
+  "stdout": "{\n  \"value\": [\n    {\n      \"etag\": \"W/\\\"[REDACTED]\\\"\",\n      \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source/routes/enforcement-g7\",\n      \"name\": \"enforcement-g7\",\n      \"properties\": {\n        \"addressPrefix\": \"10.60.1.4/32\",\n        \"hasBgpOverride\": false,\n        \"nextHopType\": \"VnetLocal\",\n        \"provisioningState\": \"Succeeded\"\n      },\n      \"type\": \"Microsoft.Network/routeTables/routes\"\n    }\n  ]\n}\n",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T08:17:58.433901+00:00"
+}

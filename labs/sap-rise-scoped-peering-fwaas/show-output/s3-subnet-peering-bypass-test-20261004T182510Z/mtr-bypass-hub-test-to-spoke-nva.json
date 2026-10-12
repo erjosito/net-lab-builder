@@ -1,0 +1,10 @@
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\n=== mtr to 10.60.0.4 (report mode, 5 cycles) ===\nStart: 2026-10-04T16:37:10+0000\nHOST: vm-hub-test                 Loss%   Snt   Last   Avg  Best  Wrst StDev\n=== traceroute to 10.60.0.4 ===\ntraceroute to 10.60.0.4 (10.60.0.4), 30 hops max, 60 byte packets\n 1  *\n 2  *\n 3  *\n 4  *\n 5  *\n 6  *\n 7  *\n 8  *\n 9  *\n10  *\n11  *\n12  *\n13  *\n14  *\n15  *\n16  *\n17  *\n18  *\n19  *\n20  *\n21  *\n22  *\n23  *\n24  *\n25  *\n26  *\n27  *\n28  *\n29  *\n30  *\n\n[stderr]\n++ ip route show default\n++ awk '{print $3}'\n+ GW=10.40.2.1\n+ sudo ip route add 10.60.0.0/27 via 10.40.2.1 dev eth0\n+ echo '=== mtr to 10.60.0.4 (report mode, 5 cycles) ==='\n+ sudo mtr -r -c 5 -n 10.60.0.4\n+ echo '=== traceroute to 10.60.0.4 ==='\n+ traceroute -n -w 2 -q 1 10.60.0.4\n+ sudo ip route del 10.60.0.0/27 via 10.40.2.1 dev eth0\n"
+    }
+  ]
+}

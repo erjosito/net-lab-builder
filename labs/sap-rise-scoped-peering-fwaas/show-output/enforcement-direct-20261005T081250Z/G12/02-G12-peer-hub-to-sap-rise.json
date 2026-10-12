@@ -1,0 +1,21 @@
+{
+  "label": "G12:peer-hub-to-sap-rise",
+  "argv": [
+    "rest",
+    "--method",
+    "put",
+    "--url",
+    "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise?api-version=2025-01-01",
+    "--body",
+    "{\"properties\":{\"allowVirtualNetworkAccess\":true,\"allowForwardedTraffic\":true,\"allowGatewayTransit\":false,\"useRemoteGateways\":false,\"doNotVerifyRemoteGateways\":false,\"remoteVirtualNetwork\":{\"id\":\"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise\"},\"peerCompleteVnets\":false,\"localSubnetNames\":[\"snet-hub-nva\"],\"remoteSubnetNames\":[\"snet-spoke-nva\"]}}"
+  ],
+  "utc": "2026-10-05T08:25:55.222356+00:00",
+  "cost": 1,
+  "timeoutSeconds": 120,
+  "status": "succeeded",
+  "pid": 44064,
+  "stdout": "{\n  \"etag\": \"W/\\\"[REDACTED]\\\"\",\n  \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise\",\n  \"name\": \"peer-hub-to-sap-rise\",\n  \"properties\": {\n    \"allowForwardedTraffic\": true,\n    \"allowGatewayTransit\": false,\n    \"allowVirtualNetworkAccess\": true,\n    \"doNotVerifyRemoteGateways\": false,\n    \"localAddressSpace\": {\n      \"addressPrefixes\": [\n        \"10.40.1.0/27\"\n      ]\n    },\n    \"localSubnetNames\": [\n      \"snet-hub-nva\"\n    ],\n    \"localVirtualNetworkAddressSpace\": {\n      \"addressPrefixes\": [\n        \"10.40.1.0/27\"\n      ]\n    },\n    \"peerCompleteVnets\": false,\n    \"peeringState\": \"Initiated\",\n    \"peeringSyncLevel\": \"RemoteNotInSync\",\n    \"provisioningState\": \"Updating\",\n    \"remoteAddressSpace\": {\n      \"addressPrefixes\": [\n        \"10.60.0.0/27\"\n      ]\n    },\n    \"remoteSubnetNames\": [\n      \"snet-spoke-nva\"\n    ],\n    \"remoteVirtualNetwork\": {\n      \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise\"\n    },\n    \"remoteVirtualNetworkAddressSpace\": {\n      \"addressPrefixes\": [\n        \"10.60.0.0/27\"\n      ]\n    },\n    \"resourceGuid\": \"[REDACTED]\",\n    \"routeServiceVips\": {},\n    \"useRemoteGateways\": false\n  },\n  \"type\": \"Microsoft.Network/virtualNetworks/virtualNetworkPeerings\"\n}\n",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T08:26:02.224252+00:00"
+}

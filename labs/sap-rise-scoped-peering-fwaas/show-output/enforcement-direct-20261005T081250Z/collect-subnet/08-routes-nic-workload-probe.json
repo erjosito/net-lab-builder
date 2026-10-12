@@ -1,0 +1,21 @@
+{
+  "label": "routes-nic-workload-probe",
+  "argv": [
+    "network",
+    "nic",
+    "show-effective-route-table",
+    "-g",
+    "rg-saprise-swedencentral",
+    "-n",
+    "nic-workload-probe"
+  ],
+  "utc": "2026-10-05T08:14:38.813910+00:00",
+  "cost": 0,
+  "timeoutSeconds": 120,
+  "status": "succeeded",
+  "pid": 23428,
+  "stdout": "{\n  \"value\": [\n    {\n      \"addressPrefix\": [\n        \"10.60.0.0/16\"\n      ],\n      \"disableBgpRoutePropagation\": true,\n      \"nextHopIpAddress\": [],\n      \"nextHopType\": \"VnetLocal\",\n      \"source\": \"Default\",\n      \"state\": \"Active\"\n    },\n    {\n      \"addressPrefix\": [\n        \"10.40.1.0/27\"\n      ],\n      \"disableBgpRoutePropagation\": true,\n      \"nextHopIpAddress\": [],\n      \"nextHopType\": \"VNetPeering\",\n      \"source\": \"Default\",\n      \"state\": \"Active\"\n    },\n    {\n      \"addressPrefix\": [\n        \"0.0.0.0/0\"\n      ],\n      \"disableBgpRoutePropagation\": true,\n      \"nextHopIpAddress\": [],\n      \"nextHopType\": \"Internet\",\n      \"source\": \"Default\",\n      \"state\": \"Invalid\"\n    },\n    {\n      \"addressPrefix\": [\n        \"0.0.0.0/0\"\n      ],\n      \"disableBgpRoutePropagation\": true,\n      \"name\": \"default-via-spoke-nva\",\n      \"nextHopIpAddress\": [\n        \"10.60.0.4\"\n      ],\n      \"nextHopType\": \"None\",\n      \"source\": \"User\",\n      \"state\": \"Active\"\n    }\n  ]\n}\n",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T08:14:45.981988+00:00"
+}

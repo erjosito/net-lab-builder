@@ -1,0 +1,385 @@
+{
+  "calls": [
+    {
+      "label": "restore:3:0",
+      "argv": [
+        "network",
+        "nic",
+        "delete",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "nic-hub-test"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 2408,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "restore:2:0",
+      "argv": [
+        "network",
+        "vnet",
+        "subnet",
+        "delete",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "snet-hub-test",
+        "--vnet-name",
+        "vnet-hub"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 18580,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "restore:0:0",
+      "argv": [
+        "network",
+        "route-table",
+        "delete",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "rt-ab-hub-test"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 34128,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-nsg",
+      "argv": [
+        "network",
+        "nsg",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 18940,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-route-table",
+      "argv": [
+        "network",
+        "route-table",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 41372,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-nic",
+      "argv": [
+        "network",
+        "nic",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 28820,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-vnet-hub",
+      "argv": [
+        "network",
+        "vnet",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vnet-hub"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 23504,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-vnet-sap-rise",
+      "argv": [
+        "network",
+        "vnet",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vnet-sap-rise"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 37620,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-nsg",
+      "argv": [
+        "network",
+        "nsg",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 8848,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-route-table",
+      "argv": [
+        "network",
+        "route-table",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 25616,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-nic",
+      "argv": [
+        "network",
+        "nic",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 16476,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-vnet-hub",
+      "argv": [
+        "network",
+        "vnet",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vnet-hub"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 41408,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-vnet-sap-rise",
+      "argv": [
+        "network",
+        "vnet",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vnet-sap-rise"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 34804,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-vms",
+      "argv": [
+        "vm",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-d"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 42384,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-disks",
+      "argv": [
+        "disk",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 40152,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-resources",
+      "argv": [
+        "resource",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 28936,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-nsg",
+      "argv": [
+        "network",
+        "nsg",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 38500,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-route-table",
+      "argv": [
+        "network",
+        "route-table",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 29424,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-nic",
+      "argv": [
+        "network",
+        "nic",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 37732,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-vnet-hub",
+      "argv": [
+        "network",
+        "vnet",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vnet-hub"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 24144,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-vnet-sap-rise",
+      "argv": [
+        "network",
+        "vnet",
+        "show",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vnet-sap-rise"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 30304,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-vms",
+      "argv": [
+        "vm",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-d"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 40400,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-disks",
+      "argv": [
+        "disk",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 40048,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-7-resources",
+      "argv": [
+        "resource",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 11388,
+      "exitCode": 0,
+      "stderr": ""
+    }
+  ],
+  "mutations": 3,
+  "forward": 0,
+  "reserved": 0,
+  "taskId": "udr-restore-7"
+}

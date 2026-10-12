@@ -1,0 +1,3478 @@
+{
+  "vnets": [
+    {
+      "etag": "W/\"[REDACTED]\"",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub",
+      "location": "swedencentral",
+      "name": "vnet-hub",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.40.0.0/16"
+          ]
+        },
+        "dhcpOptions": {
+          "dnsServers": []
+        },
+        "enableDdosProtection": false,
+        "privateEndpointVNetPolicies": "Disabled",
+        "provisioningState": "Succeeded",
+        "resourceGuid": "[REDACTED]",
+        "subnets": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/RouteServerSubnet",
+            "name": "RouteServerSubnet",
+            "properties": {
+              "addressPrefix": "10.40.0.32/27",
+              "defaultOutboundAccess": true,
+              "delegations": [],
+              "ipConfigurations": [
+                {
+                  "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Network/virtualHubs/ARS-HUB/ipConfigurations/IPCONFIG1"
+                },
+                {
+                  "id": "/subscriptions/[REDACTED]/resourceGroups/ARMRG-[REDACTED]/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/RS/VIRTUALMACHINES/0/NETWORKINTERFACES/CUSTNIC/ipConfigurations/IPCONFIG"
+                },
+                {
+                  "id": "/subscriptions/[REDACTED]/resourceGroups/ARMRG-[REDACTED]/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/RS/VIRTUALMACHINES/1/NETWORKINTERFACES/CUSTNIC/ipConfigurations/IPCONFIG"
+                }
+              ],
+              "privateEndpointNetworkPolicies": "Disabled",
+              "privateLinkServiceNetworkPolicies": "Enabled",
+              "provisioningState": "Succeeded",
+              "serviceEndpoints": []
+            },
+            "type": "Microsoft.Network/virtualNetworks/subnets"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/GatewaySubnet",
+            "name": "GatewaySubnet",
+            "properties": {
+              "addressPrefix": "10.40.0.0/27",
+              "defaultOutboundAccess": true,
+              "delegations": [],
+              "privateEndpointNetworkPolicies": "Disabled",
+              "privateLinkServiceNetworkPolicies": "Enabled",
+              "provisioningState": "Succeeded",
+              "serviceEndpoints": []
+            },
+            "type": "Microsoft.Network/virtualNetworks/subnets"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-nva",
+            "name": "snet-hub-nva",
+            "properties": {
+              "addressPrefix": "10.40.1.0/27",
+              "defaultOutboundAccess": true,
+              "delegations": [],
+              "ipConfigurations": [
+                {
+                  "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Network/networkInterfaces/NIC-HUB-NVA/ipConfigurations/IPCONFIG1"
+                }
+              ],
+              "networkSecurityGroup": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva"
+              },
+              "privateEndpointNetworkPolicies": "Disabled",
+              "privateLinkServiceNetworkPolicies": "Enabled",
+              "provisioningState": "Succeeded",
+              "serviceEndpoints": []
+            },
+            "type": "Microsoft.Network/virtualNetworks/subnets"
+          }
+        ],
+        "virtualNetworkPeerings": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-onprem-sim",
+            "name": "peer-hub-to-onprem-sim",
+            "properties": {
+              "allowForwardedTraffic": true,
+              "allowGatewayTransit": false,
+              "allowVirtualNetworkAccess": true,
+              "doNotVerifyRemoteGateways": false,
+              "peerCompleteVnets": true,
+              "peeringState": "Connected",
+              "peeringSyncLevel": "FullyInSync",
+              "provisioningState": "Succeeded",
+              "remoteAddressSpace": {
+                "addressPrefixes": [
+                  "172.40.100.0/24"
+                ]
+              },
+              "remoteVirtualNetwork": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-onprem-sim"
+              },
+              "remoteVirtualNetworkAddressSpace": {
+                "addressPrefixes": [
+                  "172.40.100.0/24"
+                ]
+              },
+              "resourceGuid": "[REDACTED]",
+              "routeServiceVips": {},
+              "useRemoteGateways": false
+            },
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/virtualNetworkPeerings/peer-hub-to-sap-rise",
+            "name": "peer-hub-to-sap-rise",
+            "properties": {
+              "allowForwardedTraffic": true,
+              "allowGatewayTransit": false,
+              "allowVirtualNetworkAccess": true,
+              "doNotVerifyRemoteGateways": false,
+              "localAddressSpace": {
+                "addressPrefixes": [
+                  "10.40.1.0/27"
+                ]
+              },
+              "localSubnetNames": [
+                "snet-hub-nva"
+              ],
+              "localVirtualNetworkAddressSpace": {
+                "addressPrefixes": [
+                  "10.40.1.0/27"
+                ]
+              },
+              "peerCompleteVnets": false,
+              "peeringState": "Connected",
+              "peeringSyncLevel": "FullyInSync",
+              "provisioningState": "Succeeded",
+              "remoteAddressSpace": {
+                "addressPrefixes": [
+                  "10.60.0.0/27"
+                ]
+              },
+              "remoteSubnetNames": [
+                "snet-spoke-nva"
+              ],
+              "remoteVirtualNetwork": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise"
+              },
+              "remoteVirtualNetworkAddressSpace": {
+                "addressPrefixes": [
+                  "10.60.0.0/27"
+                ]
+              },
+              "resourceGuid": "[REDACTED]",
+              "routeServiceVips": {},
+              "useRemoteGateways": false
+            },
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+          }
+        ]
+      },
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/virtualNetworks"
+    },
+    {
+      "etag": "W/\"[REDACTED]\"",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-onprem-sim",
+      "location": "swedencentral",
+      "name": "vnet-onprem-sim",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "172.40.100.0/24"
+          ]
+        },
+        "dhcpOptions": {
+          "dnsServers": []
+        },
+        "enableDdosProtection": false,
+        "privateEndpointVNetPolicies": "Disabled",
+        "provisioningState": "Succeeded",
+        "resourceGuid": "[REDACTED]",
+        "subnets": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-onprem-sim/subnets/snet-ce-onprem",
+            "name": "snet-ce-onprem",
+            "properties": {
+              "addressPrefix": "172.40.100.0/25",
+              "defaultOutboundAccess": true,
+              "delegations": [],
+              "ipConfigurations": [
+                {
+                  "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Network/networkInterfaces/NIC-CE-ONPREM/ipConfigurations/IPCONFIG1"
+                }
+              ],
+              "networkSecurityGroup": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-onprem-sim-snet-ce-onprem-nsg-swedencentral"
+              },
+              "privateEndpointNetworkPolicies": "Disabled",
+              "privateLinkServiceNetworkPolicies": "Enabled",
+              "provisioningState": "Succeeded",
+              "routeTable": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-ce-onprem"
+              },
+              "serviceEndpoints": []
+            },
+            "type": "Microsoft.Network/virtualNetworks/subnets"
+          }
+        ],
+        "virtualNetworkPeerings": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-onprem-sim/virtualNetworkPeerings/peer-onprem-sim-to-hub",
+            "name": "peer-onprem-sim-to-hub",
+            "properties": {
+              "allowForwardedTraffic": true,
+              "allowGatewayTransit": false,
+              "allowVirtualNetworkAccess": true,
+              "doNotVerifyRemoteGateways": false,
+              "peerCompleteVnets": true,
+              "peeringState": "Connected",
+              "peeringSyncLevel": "FullyInSync",
+              "provisioningState": "Succeeded",
+              "remoteAddressSpace": {
+                "addressPrefixes": [
+                  "10.40.0.0/16"
+                ]
+              },
+              "remoteVirtualNetwork": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub"
+              },
+              "remoteVirtualNetworkAddressSpace": {
+                "addressPrefixes": [
+                  "10.40.0.0/16"
+                ]
+              },
+              "resourceGuid": "[REDACTED]",
+              "routeServiceVips": {},
+              "useRemoteGateways": false
+            },
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+          }
+        ]
+      },
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/virtualNetworks"
+    },
+    {
+      "etag": "W/\"[REDACTED]\"",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise",
+      "location": "swedencentral",
+      "name": "vnet-sap-rise",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.60.0.0/16"
+          ]
+        },
+        "dhcpOptions": {
+          "dnsServers": []
+        },
+        "enableDdosProtection": false,
+        "privateEndpointVNetPolicies": "Disabled",
+        "provisioningState": "Succeeded",
+        "resourceGuid": "[REDACTED]",
+        "subnets": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/subnets/snet-workload",
+            "name": "snet-workload",
+            "properties": {
+              "addressPrefix": "10.60.1.0/24",
+              "defaultOutboundAccess": true,
+              "delegations": [],
+              "ipConfigurations": [
+                {
+                  "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Network/networkInterfaces/NIC-WORKLOAD-PROBE/ipConfigurations/IPCONFIG1"
+                }
+              ],
+              "networkSecurityGroup": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral"
+              },
+              "privateEndpointNetworkPolicies": "Disabled",
+              "privateLinkServiceNetworkPolicies": "Enabled",
+              "provisioningState": "Succeeded",
+              "routeTable": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-spoke-workload"
+              },
+              "serviceEndpoints": []
+            },
+            "type": "Microsoft.Network/virtualNetworks/subnets"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/subnets/snet-spoke-nva",
+            "name": "snet-spoke-nva",
+            "properties": {
+              "addressPrefix": "10.60.0.0/27",
+              "defaultOutboundAccess": true,
+              "delegations": [],
+              "ipConfigurations": [
+                {
+                  "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Network/networkInterfaces/NIC-SPOKE-NVA/ipConfigurations/IPCONFIG1"
+                }
+              ],
+              "networkSecurityGroup": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke-nva"
+              },
+              "privateEndpointNetworkPolicies": "Disabled",
+              "privateLinkServiceNetworkPolicies": "Enabled",
+              "provisioningState": "Succeeded",
+              "routeTable": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-spoke-nva-return"
+              },
+              "serviceEndpoints": []
+            },
+            "type": "Microsoft.Network/virtualNetworks/subnets"
+          }
+        ],
+        "virtualNetworkPeerings": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/virtualNetworkPeerings/peer-sap-rise-to-hub",
+            "name": "peer-sap-rise-to-hub",
+            "properties": {
+              "allowForwardedTraffic": true,
+              "allowGatewayTransit": false,
+              "allowVirtualNetworkAccess": true,
+              "doNotVerifyRemoteGateways": false,
+              "localAddressSpace": {
+                "addressPrefixes": [
+                  "10.60.0.0/27"
+                ]
+              },
+              "localSubnetNames": [
+                "snet-spoke-nva"
+              ],
+              "localVirtualNetworkAddressSpace": {
+                "addressPrefixes": [
+                  "10.60.0.0/27"
+                ]
+              },
+              "peerCompleteVnets": false,
+              "peeringState": "Connected",
+              "peeringSyncLevel": "FullyInSync",
+              "provisioningState": "Succeeded",
+              "remoteAddressSpace": {
+                "addressPrefixes": [
+                  "10.40.1.0/27"
+                ]
+              },
+              "remoteSubnetNames": [
+                "snet-hub-nva"
+              ],
+              "remoteVirtualNetwork": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub"
+              },
+              "remoteVirtualNetworkAddressSpace": {
+                "addressPrefixes": [
+                  "10.40.1.0/27"
+                ]
+              },
+              "resourceGuid": "[REDACTED]",
+              "routeServiceVips": {},
+              "useRemoteGateways": false
+            },
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+          }
+        ]
+      },
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/virtualNetworks"
+    }
+  ],
+  "nics": [
+    {
+      "etag": "W/\"[REDACTED]\"",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-ce-onprem",
+      "kind": "Regular",
+      "location": "swedencentral",
+      "name": "nic-ce-onprem",
+      "properties": {
+        "allowPort25Out": true,
+        "auxiliaryMode": "None",
+        "auxiliarySku": "None",
+        "defaultOutboundConnectivityEnabled": false,
+        "disableTcpStateTracking": false,
+        "dnsSettings": {
+          "appliedDnsServers": [],
+          "dnsServers": []
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": false,
+        "hostedWorkloads": [],
+        "ipConfigurations": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-ce-onprem/ipConfigurations/ipconfig1",
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAddress": "172.40.100.4",
+              "privateIPAddressVersion": "IPv4",
+              "privateIPAllocationMethod": "Static",
+              "provisioningState": "Succeeded",
+              "subnet": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-onprem-sim/subnets/snet-ce-onprem"
+              }
+            },
+            "type": "Microsoft.Network/networkInterfaces/ipConfigurations"
+          }
+        ],
+        "macAddress": "7C-1E-52-3F-C4-A3",
+        "nicType": "Standard",
+        "primary": true,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "[REDACTED]",
+        "tapConfigurations": [],
+        "virtualMachine": {
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-ce-onprem"
+        },
+        "vnetEncryptionSupported": false
+      },
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "etag": "W/\"[REDACTED]\"",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-nva",
+      "kind": "Regular",
+      "location": "swedencentral",
+      "name": "nic-hub-nva",
+      "properties": {
+        "allowPort25Out": true,
+        "auxiliaryMode": "None",
+        "auxiliarySku": "None",
+        "defaultOutboundConnectivityEnabled": false,
+        "disableTcpStateTracking": false,
+        "dnsSettings": {
+          "appliedDnsServers": [],
+          "dnsServers": []
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": true,
+        "hostedWorkloads": [],
+        "ipConfigurations": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-nva/ipConfigurations/ipconfig1",
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAddress": "10.40.1.4",
+              "privateIPAddressVersion": "IPv4",
+              "privateIPAllocationMethod": "Static",
+              "provisioningState": "Succeeded",
+              "subnet": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-hub-nva"
+              }
+            },
+            "type": "Microsoft.Network/networkInterfaces/ipConfigurations"
+          }
+        ],
+        "macAddress": "7C-1E-52-33-5E-AE",
+        "nicType": "Standard",
+        "primary": true,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "[REDACTED]",
+        "tapConfigurations": [],
+        "virtualMachine": {
+          "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/virtualMachines/vm-hub-nva"
+        },
+        "vnetEncryptionSupported": false
+      },
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "etag": "W/\"[REDACTED]\"",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-spoke-nva",
+      "kind": "Regular",
+      "location": "swedencentral",
+      "name": "nic-spoke-nva",
+      "properties": {
+        "allowPort25Out": true,
+        "auxiliaryMode": "None",
+        "auxiliarySku": "None",
+        "defaultOutboundConnectivityEnabled": false,
+        "disableTcpStateTracking": false,
+        "dnsSettings": {
+          "appliedDnsServers": [],
+          "dnsServers": []
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": true,
+        "hostedWorkloads": [],
+        "ipConfigurations": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-spoke-nva/ipConfigurations/ipconfig1",
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAddress": "10.60.0.4",
+              "privateIPAddressVersion": "IPv4",
+              "privateIPAllocationMethod": "Static",
+              "provisioningState": "Succeeded",
+              "subnet": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/subnets/snet-spoke-nva"
+              }
+            },
+            "type": "Microsoft.Network/networkInterfaces/ipConfigurations"
+          }
+        ],
+        "macAddress": "7C-ED-8D-B4-00-E4",
+        "nicType": "Standard",
+        "primary": true,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "[REDACTED]",
+        "tapConfigurations": [],
+        "virtualMachine": {
+          "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/virtualMachines/vm-spoke-nva"
+        },
+        "vnetEncryptionSupported": false
+      },
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "etag": "W/\"[REDACTED]\"",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-workload-probe",
+      "kind": "Regular",
+      "location": "swedencentral",
+      "name": "nic-workload-probe",
+      "properties": {
+        "allowPort25Out": true,
+        "auxiliaryMode": "None",
+        "auxiliarySku": "None",
+        "defaultOutboundConnectivityEnabled": false,
+        "disableTcpStateTracking": false,
+        "dnsSettings": {
+          "appliedDnsServers": [],
+          "dnsServers": []
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": false,
+        "hostedWorkloads": [],
+        "ipConfigurations": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-workload-probe/ipConfigurations/ipconfig1",
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAddress": "10.60.1.4",
+              "privateIPAddressVersion": "IPv4",
+              "privateIPAllocationMethod": "Dynamic",
+              "provisioningState": "Succeeded",
+              "subnet": {
+                "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/subnets/snet-workload"
+              }
+            },
+            "type": "Microsoft.Network/networkInterfaces/ipConfigurations"
+          }
+        ],
+        "macAddress": "7C-ED-8D-AD-BC-40",
+        "nicType": "Standard",
+        "primary": true,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "[REDACTED]",
+        "tapConfigurations": [],
+        "virtualMachine": {
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-workload-probe"
+        },
+        "vnetEncryptionSupported": false
+      },
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/networkInterfaces"
+    }
+  ],
+  "nsgs": [
+    {
+      "etag": "W/\"[REDACTED]\"",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva",
+      "location": "swedencentral",
+      "name": "nsg-hub-nva",
+      "properties": {
+        "defaultSecurityRules": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/defaultSecurityRules/AllowVnetInBound",
+            "name": "AllowVnetInBound",
+            "properties": {
+              "access": "Allow",
+              "description": "Allow inbound traffic from all VMs in VNET",
+              "destinationAddressPrefix": "VirtualNetwork",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 65000,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "VirtualNetwork",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/defaultSecurityRules/AllowAzureLoadBalancerInBound",
+            "name": "AllowAzureLoadBalancerInBound",
+            "properties": {
+              "access": "Allow",
+              "description": "Allow inbound traffic from azure load balancer",
+              "destinationAddressPrefix": "*",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 65001,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "AzureLoadBalancer",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/defaultSecurityRules/DenyAllInBound",
+            "name": "DenyAllInBound",
+            "properties": {
+              "access": "Deny",
+              "description": "Deny all inbound traffic",
+              "destinationAddressPrefix": "*",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 65500,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "*",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/defaultSecurityRules/AllowVnetOutBound",
+            "name": "AllowVnetOutBound",
+            "properties": {
+              "access": "Allow",
+              "description": "Allow outbound traffic from all VMs to all VMs in VNET",
+              "destinationAddressPrefix": "VirtualNetwork",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Outbound",
+              "priority": 65000,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "VirtualNetwork",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/defaultSecurityRules/AllowInternetOutBound",
+            "name": "AllowInternetOutBound",
+            "properties": {
+              "access": "Allow",
+              "description": "Allow outbound traffic from all VMs to Internet",
+              "destinationAddressPrefix": "Internet",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Outbound",
+              "priority": 65001,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "*",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/defaultSecurityRules/DenyAllOutBound",
+            "name": "DenyAllOutBound",
+            "properties": {
+              "access": "Deny",
+              "description": "Deny all outbound traffic",
+              "destinationAddressPrefix": "*",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Outbound",
+              "priority": 65500,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "*",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          }
+        ],
+        "provisioningState": "Succeeded",
+        "resourceGuid": "[REDACTED]",
+        "securityRules": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/securityRules/Allow-OnpremSim-BGP-In",
+            "name": "Allow-OnpremSim-BGP-In",
+            "properties": {
+              "access": "Allow",
+              "destinationAddressPrefix": "VirtualNetwork",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "179",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 120,
+              "protocol": "Tcp",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "172.40.100.0/24",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/securityRules/DenyAllInbound",
+            "name": "DenyAllInbound",
+            "properties": {
+              "access": "Deny",
+              "destinationAddressPrefix": "*",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 4096,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "*",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/securityRules/Allow-SpokeNVA-In",
+            "name": "Allow-SpokeNVA-In",
+            "properties": {
+              "access": "Allow",
+              "destinationAddressPrefix": "VirtualNetwork",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 110,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "10.60.0.0/27",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/securityRules/Allow-ARS-BGP-In",
+            "name": "Allow-ARS-BGP-In",
+            "properties": {
+              "access": "Allow",
+              "destinationAddressPrefix": "VirtualNetwork",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "179",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 100,
+              "protocol": "Tcp",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "10.40.0.32/27",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/securityRules/Allow-Workload-In",
+            "name": "Allow-Workload-In",
+            "properties": {
+              "access": "Allow",
+              "destinationAddressPrefix": "VirtualNetwork",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 115,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "10.60.1.0/24",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+          }
+        ],
+        "subnets": [
+          {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Network/virtualNetworks/VNET-HUB/subnets/SNET-HUB-NVA"
+          }
+        ]
+      },
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "etag": "W/\"[REDACTED]\"",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke-nva",
+      "location": "swedencentral",
+      "name": "nsg-spoke-nva",
+      "properties": {
+        "defaultSecurityRules": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke-nva/defaultSecurityRules/AllowVnetInBound",
+            "name": "AllowVnetInBound",
+            "properties": {
+              "access": "Allow",
+              "description": "Allow inbound traffic from all VMs in VNET",
+              "destinationAddressPrefix": "VirtualNetwork",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 65000,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "VirtualNetwork",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke-nva/defaultSecurityRules/AllowAzureLoadBalancerInBound",
+            "name": "AllowAzureLoadBalancerInBound",
+            "properties": {
+              "access": "Allow",
+              "description": "Allow inbound traffic from azure load balancer",
+              "destinationAddressPrefix": "*",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 65001,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "AzureLoadBalancer",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke-nva/defaultSecurityRules/DenyAllInBound",
+            "name": "DenyAllInBound",
+            "properties": {
+              "access": "Deny",
+              "description": "Deny all inbound traffic",
+              "destinationAddressPrefix": "*",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 65500,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "*",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke-nva/defaultSecurityRules/AllowVnetOutBound",
+            "name": "AllowVnetOutBound",
+            "properties": {
+              "access": "Allow",
+              "description": "Allow outbound traffic from all VMs to all VMs in VNET",
+              "destinationAddressPrefix": "VirtualNetwork",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Outbound",
+              "priority": 65000,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "VirtualNetwork",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke-nva/defaultSecurityRules/AllowInternetOutBound",
+            "name": "AllowInternetOutBound",
+            "properties": {
+              "access": "Allow",
+              "description": "Allow outbound traffic from all VMs to Internet",
+              "destinationAddressPrefix": "Internet",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Outbound",
+              "priority": 65001,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "*",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke-nva/defaultSecurityRules/DenyAllOutBound",
+            "name": "DenyAllOutBound",
+            "properties": {
+              "access": "Deny",
+              "description": "Deny all outbound traffic",
+              "destinationAddressPrefix": "*",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Outbound",
+              "priority": 65500,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "*",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          }
+        ],
+        "provisioningState": "Succeeded",
+        "resourceGuid": "[REDACTED]",
+        "securityRules": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke-nva/securityRules/Allow-HubNVA-In",
+            "name": "Allow-HubNVA-In",
+            "properties": {
+              "access": "Allow",
+              "destinationAddressPrefix": "VirtualNetwork",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 100,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "10.40.1.0/27",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke-nva/securityRules/DenyAllInbound",
+            "name": "DenyAllInbound",
+            "properties": {
+              "access": "Deny",
+              "destinationAddressPrefix": "*",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 4096,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "*",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke-nva/securityRules/Allow-Workload-In",
+            "name": "Allow-Workload-In",
+            "properties": {
+              "access": "Allow",
+              "destinationAddressPrefix": "VirtualNetwork",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 110,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "10.60.1.0/24",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+          }
+        ],
+        "subnets": [
+          {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Network/virtualNetworks/VNET-SAP-RISE/subnets/SNET-SPOKE-NVA"
+          }
+        ]
+      },
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "etag": "W/\"[REDACTED]\"",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-onprem-sim-snet-ce-onprem-nsg-swedencentral",
+      "location": "swedencentral",
+      "name": "vnet-onprem-sim-snet-ce-onprem-nsg-swedencentral",
+      "properties": {
+        "defaultSecurityRules": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-onprem-sim-snet-ce-onprem-nsg-swedencentral/defaultSecurityRules/AllowVnetInBound",
+            "name": "AllowVnetInBound",
+            "properties": {
+              "access": "Allow",
+              "description": "Allow inbound traffic from all VMs in VNET",
+              "destinationAddressPrefix": "VirtualNetwork",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 65000,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "VirtualNetwork",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-onprem-sim-snet-ce-onprem-nsg-swedencentral/defaultSecurityRules/AllowAzureLoadBalancerInBound",
+            "name": "AllowAzureLoadBalancerInBound",
+            "properties": {
+              "access": "Allow",
+              "description": "Allow inbound traffic from azure load balancer",
+              "destinationAddressPrefix": "*",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 65001,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "AzureLoadBalancer",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-onprem-sim-snet-ce-onprem-nsg-swedencentral/defaultSecurityRules/DenyAllInBound",
+            "name": "DenyAllInBound",
+            "properties": {
+              "access": "Deny",
+              "description": "Deny all inbound traffic",
+              "destinationAddressPrefix": "*",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 65500,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "*",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-onprem-sim-snet-ce-onprem-nsg-swedencentral/defaultSecurityRules/AllowVnetOutBound",
+            "name": "AllowVnetOutBound",
+            "properties": {
+              "access": "Allow",
+              "description": "Allow outbound traffic from all VMs to all VMs in VNET",
+              "destinationAddressPrefix": "VirtualNetwork",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Outbound",
+              "priority": 65000,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "VirtualNetwork",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-onprem-sim-snet-ce-onprem-nsg-swedencentral/defaultSecurityRules/AllowInternetOutBound",
+            "name": "AllowInternetOutBound",
+            "properties": {
+              "access": "Allow",
+              "description": "Allow outbound traffic from all VMs to Internet",
+              "destinationAddressPrefix": "Internet",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Outbound",
+              "priority": 65001,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "*",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-onprem-sim-snet-ce-onprem-nsg-swedencentral/defaultSecurityRules/DenyAllOutBound",
+            "name": "DenyAllOutBound",
+            "properties": {
+              "access": "Deny",
+              "description": "Deny all outbound traffic",
+              "destinationAddressPrefix": "*",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Outbound",
+              "priority": 65500,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "*",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          }
+        ],
+        "provisioningState": "Succeeded",
+        "resourceGuid": "[REDACTED]",
+        "securityRules": [],
+        "subnets": [
+          {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Network/virtualNetworks/VNET-ONPREM-SIM/subnets/SNET-CE-ONPREM"
+          }
+        ]
+      },
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "etag": "W/\"[REDACTED]\"",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral",
+      "location": "swedencentral",
+      "name": "vnet-sap-rise-snet-workload-nsg-swedencentral",
+      "properties": {
+        "defaultSecurityRules": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/defaultSecurityRules/AllowVnetInBound",
+            "name": "AllowVnetInBound",
+            "properties": {
+              "access": "Allow",
+              "description": "Allow inbound traffic from all VMs in VNET",
+              "destinationAddressPrefix": "VirtualNetwork",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 65000,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "VirtualNetwork",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/defaultSecurityRules/AllowAzureLoadBalancerInBound",
+            "name": "AllowAzureLoadBalancerInBound",
+            "properties": {
+              "access": "Allow",
+              "description": "Allow inbound traffic from azure load balancer",
+              "destinationAddressPrefix": "*",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 65001,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "AzureLoadBalancer",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/defaultSecurityRules/DenyAllInBound",
+            "name": "DenyAllInBound",
+            "properties": {
+              "access": "Deny",
+              "description": "Deny all inbound traffic",
+              "destinationAddressPrefix": "*",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 65500,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "*",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/defaultSecurityRules/AllowVnetOutBound",
+            "name": "AllowVnetOutBound",
+            "properties": {
+              "access": "Allow",
+              "description": "Allow outbound traffic from all VMs to all VMs in VNET",
+              "destinationAddressPrefix": "VirtualNetwork",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Outbound",
+              "priority": 65000,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "VirtualNetwork",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/defaultSecurityRules/AllowInternetOutBound",
+            "name": "AllowInternetOutBound",
+            "properties": {
+              "access": "Allow",
+              "description": "Allow outbound traffic from all VMs to Internet",
+              "destinationAddressPrefix": "Internet",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Outbound",
+              "priority": 65001,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "*",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          },
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral/defaultSecurityRules/DenyAllOutBound",
+            "name": "DenyAllOutBound",
+            "properties": {
+              "access": "Deny",
+              "description": "Deny all outbound traffic",
+              "destinationAddressPrefix": "*",
+              "destinationAddressPrefixes": [],
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Outbound",
+              "priority": 65500,
+              "protocol": "*",
+              "provisioningState": "Succeeded",
+              "sourceAddressPrefix": "*",
+              "sourceAddressPrefixes": [],
+              "sourcePortRange": "*",
+              "sourcePortRanges": []
+            },
+            "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+          }
+        ],
+        "provisioningState": "Succeeded",
+        "resourceGuid": "[REDACTED]",
+        "securityRules": [],
+        "subnets": [
+          {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Network/virtualNetworks/VNET-SAP-RISE/subnets/SNET-WORKLOAD"
+          }
+        ]
+      },
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/networkSecurityGroups"
+    }
+  ],
+  "tables": [
+    {
+      "etag": "W/\"[REDACTED]\"",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-ce-onprem",
+      "location": "swedencentral",
+      "name": "rt-ce-onprem",
+      "properties": {
+        "disableBgpRoutePropagation": false,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "[REDACTED]",
+        "routes": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-ce-onprem/routes/route-to-spoke",
+            "name": "route-to-spoke",
+            "properties": {
+              "addressPrefix": "10.60.0.0/16",
+              "hasBgpOverride": false,
+              "nextHopIpAddress": "10.40.1.4",
+              "nextHopType": "VirtualAppliance",
+              "provisioningState": "Succeeded"
+            },
+            "type": "Microsoft.Network/routeTables/routes"
+          }
+        ],
+        "subnets": [
+          {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-onprem-sim/subnets/snet-ce-onprem"
+          }
+        ]
+      },
+      "type": "Microsoft.Network/routeTables"
+    },
+    {
+      "etag": "W/\"[REDACTED]\"",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-spoke-nva-return",
+      "location": "swedencentral",
+      "name": "rt-spoke-nva-return",
+      "properties": {
+        "disableBgpRoutePropagation": true,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "[REDACTED]",
+        "routes": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-spoke-nva-return/routes/route-to-onprem-sim-via-hub",
+            "name": "route-to-onprem-sim-via-hub",
+            "properties": {
+              "addressPrefix": "172.40.100.0/24",
+              "hasBgpOverride": false,
+              "nextHopIpAddress": "10.40.1.4",
+              "nextHopType": "VirtualAppliance",
+              "provisioningState": "Succeeded"
+            },
+            "type": "Microsoft.Network/routeTables/routes"
+          }
+        ],
+        "subnets": [
+          {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/subnets/snet-spoke-nva"
+          }
+        ]
+      },
+      "type": "Microsoft.Network/routeTables"
+    },
+    {
+      "etag": "W/\"[REDACTED]\"",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-spoke-workload",
+      "location": "swedencentral",
+      "name": "rt-spoke-workload",
+      "properties": {
+        "disableBgpRoutePropagation": true,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "[REDACTED]",
+        "routes": [
+          {
+            "etag": "W/\"[REDACTED]\"",
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-spoke-workload/routes/default-via-spoke-nva",
+            "name": "default-via-spoke-nva",
+            "properties": {
+              "addressPrefix": "0.0.0.0/0",
+              "hasBgpOverride": false,
+              "nextHopIpAddress": "10.60.0.4",
+              "nextHopType": "VirtualAppliance",
+              "provisioningState": "Succeeded"
+            },
+            "type": "Microsoft.Network/routeTables/routes"
+          }
+        ],
+        "subnets": [
+          {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise/subnets/snet-workload"
+          }
+        ]
+      },
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/routeTables"
+    }
+  ],
+  "vms": [
+    {
+      "etag": "\"6\"",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-ce-onprem",
+      "location": "swedencentral",
+      "name": "vm-ce-onprem",
+      "properties": {
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": false
+          }
+        },
+        "extensionsTimeBudget": "PT1H30M",
+        "hardwareProfile": {
+          "vmSize": "Standard_B2s_v2"
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-ce-onprem",
+              "properties": {
+                "primary": true
+              }
+            }
+          ]
+        },
+        "osProfile": {
+          "adminUsername": "azurelabuser",
+          "allowExtensionOperations": true,
+          "computerName": "vm-ce-onprem",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "enableVMAgentPlatformUpdates": true,
+            "patchSettings": {
+              "assessmentMode": "AutomaticByPlatform",
+              "automaticByPlatformSettings": {
+                "bypassPlatformSafetyChecksOnUserSchedule": true
+              },
+              "patchMode": "AutomaticByPlatform"
+            },
+            "provisionVMAgent": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDX6SO8Wpo21BDhUYHWqYfMiWPyfgpEMhVMEeJNLHk30q48DumZKSDsBvQrkOdtg67vPlng/uu5GqRKLaFIAiCJSxLp1yDcRtdXOlAMXgKh9A+JKq6O9ExkEfsqQ4NKCBrrhGPNlOWEvPSFbhE4RhNJeWxASEDrxvpbsSDj+3E/YGSI7GHPuvs5DMH/G4SF4bF4N7c4x2NwLn9lKHIiFgNfE3wivgP1lZjfH088SHO33Yyxl5qGGiB9A0pP11sslpqBBEYAVYHTQTCJS44ddj7Vsopyxn8RUn81ZsacRQMINfZGjw5iRsIJ6+SHCpdtq3/KltPppxcOOccm3Vd0EgYZ",
+                  "path": "/home/azurelabuser/.ssh/authorized_keys"
+                }
+              ]
+            }
+          },
+          "requireGuestProvisionSignal": true,
+          "secrets": []
+        },
+        "priority": "Regular",
+        "provisioningState": "Succeeded",
+        "storageProfile": {
+          "dataDisks": [],
+          "diskControllerType": "SCSI",
+          "imageReference": {
+            "exactVersion": "22.04.202608060",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "publisher": "Canonical",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "caching": "ReadWrite",
+            "createOption": "FromImage",
+            "deleteOption": "Detach",
+            "managedDisk": {
+              "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/vm-ce-onprem_OsDisk_1_f6af06eefc9c41f1b8b10250bfaa2a36"
+            },
+            "name": "vm-ce-onprem_OsDisk_1_f6af06eefc9c41f1b8b10250bfaa2a36",
+            "osType": "Linux",
+            "writeAcceleratorEnabled": false
+          }
+        },
+        "timeCreated": "2026-09-29T13:27:05.2258445+00:00",
+        "vmId": "[REDACTED]"
+      },
+      "resources": [
+        {
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-ce-onprem/extensions/MDE.Linux"
+        }
+      ],
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "etag": "\"26\"",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-nva",
+      "location": "swedencentral",
+      "name": "vm-hub-nva",
+      "properties": {
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": false
+          }
+        },
+        "extensionsTimeBudget": "PT1H30M",
+        "hardwareProfile": {
+          "vmSize": "Standard_B2s_v2"
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-nva",
+              "properties": {
+                "primary": true
+              }
+            }
+          ]
+        },
+        "osProfile": {
+          "adminUsername": "azurelabuser",
+          "allowExtensionOperations": true,
+          "computerName": "vm-hub-nva",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "enableVMAgentPlatformUpdates": true,
+            "patchSettings": {
+              "assessmentMode": "AutomaticByPlatform",
+              "automaticByPlatformSettings": {
+                "bypassPlatformSafetyChecksOnUserSchedule": true
+              },
+              "patchMode": "AutomaticByPlatform"
+            },
+            "provisionVMAgent": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDX6SO8Wpo21BDhUYHWqYfMiWPyfgpEMhVMEeJNLHk30q48DumZKSDsBvQrkOdtg67vPlng/uu5GqRKLaFIAiCJSxLp1yDcRtdXOlAMXgKh9A+JKq6O9ExkEfsqQ4NKCBrrhGPNlOWEvPSFbhE4RhNJeWxASEDrxvpbsSDj+3E/YGSI7GHPuvs5DMH/G4SF4bF4N7c4x2NwLn9lKHIiFgNfE3wivgP1lZjfH088SHO33Yyxl5qGGiB9A0pP11sslpqBBEYAVYHTQTCJS44ddj7Vsopyxn8RUn81ZsacRQMINfZGjw5iRsIJ6+SHCpdtq3/KltPppxcOOccm3Vd0EgYZ",
+                  "path": "/home/azurelabuser/.ssh/authorized_keys"
+                }
+              ]
+            }
+          },
+          "requireGuestProvisionSignal": true,
+          "secrets": []
+        },
+        "priority": "Regular",
+        "provisioningState": "Succeeded",
+        "storageProfile": {
+          "dataDisks": [],
+          "diskControllerType": "SCSI",
+          "imageReference": {
+            "exactVersion": "22.04.202608060",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "publisher": "Canonical",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "caching": "ReadWrite",
+            "createOption": "FromImage",
+            "deleteOption": "Detach",
+            "managedDisk": {
+              "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/disks/vm-hub-nva_OsDisk_1_2e6edf0ceea34b53aafb61b96a4db07a"
+            },
+            "name": "vm-hub-nva_OsDisk_1_2e6edf0ceea34b53aafb61b96a4db07a",
+            "osType": "Linux",
+            "writeAcceleratorEnabled": false
+          }
+        },
+        "timeCreated": "2026-09-29T13:27:04.864996+00:00",
+        "vmId": "[REDACTED]"
+      },
+      "resources": [
+        {
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-nva/extensions/MDE.Linux"
+        }
+      ],
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "etag": "\"26\"",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-spoke-nva",
+      "location": "swedencentral",
+      "name": "vm-spoke-nva",
+      "properties": {
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": false
+          }
+        },
+        "extensionsTimeBudget": "PT1H30M",
+        "hardwareProfile": {
+          "vmSize": "Standard_B2s_v2"
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-spoke-nva",
+              "properties": {
+                "primary": true
+              }
+            }
+          ]
+        },
+        "osProfile": {
+          "adminUsername": "azurelabuser",
+          "allowExtensionOperations": true,
+          "computerName": "vm-spoke-nva",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "enableVMAgentPlatformUpdates": true,
+            "patchSettings": {
+              "assessmentMode": "AutomaticByPlatform",
+              "automaticByPlatformSettings": {
+                "bypassPlatformSafetyChecksOnUserSchedule": true
+              },
+              "patchMode": "AutomaticByPlatform"
+            },
+            "provisionVMAgent": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDX6SO8Wpo21BDhUYHWqYfMiWPyfgpEMhVMEeJNLHk30q48DumZKSDsBvQrkOdtg67vPlng/uu5GqRKLaFIAiCJSxLp1yDcRtdXOlAMXgKh9A+JKq6O9ExkEfsqQ4NKCBrrhGPNlOWEvPSFbhE4RhNJeWxASEDrxvpbsSDj+3E/YGSI7GHPuvs5DMH/G4SF4bF4N7c4x2NwLn9lKHIiFgNfE3wivgP1lZjfH088SHO33Yyxl5qGGiB9A0pP11sslpqBBEYAVYHTQTCJS44ddj7Vsopyxn8RUn81ZsacRQMINfZGjw5iRsIJ6+SHCpdtq3/KltPppxcOOccm3Vd0EgYZ",
+                  "path": "/home/azurelabuser/.ssh/authorized_keys"
+                }
+              ]
+            }
+          },
+          "requireGuestProvisionSignal": true,
+          "secrets": []
+        },
+        "priority": "Regular",
+        "provisioningState": "Succeeded",
+        "storageProfile": {
+          "dataDisks": [],
+          "diskControllerType": "SCSI",
+          "imageReference": {
+            "exactVersion": "22.04.202608060",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "publisher": "Canonical",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "caching": "ReadWrite",
+            "createOption": "FromImage",
+            "deleteOption": "Detach",
+            "managedDisk": {
+              "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/disks/vm-spoke-nva_OsDisk_1_922d9fbd50734b2a807dc7abb5420629"
+            },
+            "name": "vm-spoke-nva_OsDisk_1_922d9fbd50734b2a807dc7abb5420629",
+            "osType": "Linux",
+            "writeAcceleratorEnabled": false
+          }
+        },
+        "timeCreated": "2026-09-29T13:27:04.9782686+00:00",
+        "vmId": "[REDACTED]"
+      },
+      "resources": [
+        {
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-spoke-nva/extensions/MDE.Linux"
+        }
+      ],
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "etag": "\"22\"",
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-workload-probe",
+      "location": "swedencentral",
+      "name": "vm-workload-probe",
+      "properties": {
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": false
+          }
+        },
+        "extensionsTimeBudget": "PT1H30M",
+        "hardwareProfile": {
+          "vmSize": "Standard_B2s_v2"
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-workload-probe",
+              "properties": {
+                "primary": true
+              }
+            }
+          ]
+        },
+        "osProfile": {
+          "adminUsername": "azurelabuser",
+          "allowExtensionOperations": true,
+          "computerName": "vm-workload-probe",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "enableVMAgentPlatformUpdates": true,
+            "patchSettings": {
+              "assessmentMode": "AutomaticByPlatform",
+              "automaticByPlatformSettings": {
+                "bypassPlatformSafetyChecksOnUserSchedule": true
+              },
+              "patchMode": "AutomaticByPlatform"
+            },
+            "provisionVMAgent": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDX6SO8Wpo21BDhUYHWqYfMiWPyfgpEMhVMEeJNLHk30q48DumZKSDsBvQrkOdtg67vPlng/uu5GqRKLaFIAiCJSxLp1yDcRtdXOlAMXgKh9A+JKq6O9ExkEfsqQ4NKCBrrhGPNlOWEvPSFbhE4RhNJeWxASEDrxvpbsSDj+3E/YGSI7GHPuvs5DMH/G4SF4bF4N7c4x2NwLn9lKHIiFgNfE3wivgP1lZjfH088SHO33Yyxl5qGGiB9A0pP11sslpqBBEYAVYHTQTCJS44ddj7Vsopyxn8RUn81ZsacRQMINfZGjw5iRsIJ6+SHCpdtq3/KltPppxcOOccm3Vd0EgYZ",
+                  "path": "/home/azurelabuser/.ssh/authorized_keys"
+                }
+              ]
+            }
+          },
+          "requireGuestProvisionSignal": true,
+          "secrets": []
+        },
+        "priority": "Regular",
+        "provisioningState": "Succeeded",
+        "storageProfile": {
+          "dataDisks": [],
+          "diskControllerType": "SCSI",
+          "imageReference": {
+            "exactVersion": "22.04.202608060",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "publisher": "Canonical",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "caching": "ReadWrite",
+            "createOption": "FromImage",
+            "deleteOption": "Detach",
+            "managedDisk": {
+              "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/disks/vm-workload-probe_OsDisk_1_27a40cab6f1d40d0a45349f2040fee59"
+            },
+            "name": "vm-workload-probe_OsDisk_1_27a40cab6f1d40d0a45349f2040fee59",
+            "osType": "Linux",
+            "writeAcceleratorEnabled": false
+          }
+        },
+        "timeCreated": "2026-09-29T13:27:07.2108118+00:00",
+        "vmId": "[REDACTED]"
+      },
+      "resources": [
+        {
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-workload-probe/extensions/MDE.Linux"
+        }
+      ],
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Compute/virtualMachines"
+    }
+  ],
+  "disks": [
+    {
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/vm-ce-onprem_OsDisk_1_5ba53389b5714cf6b25c4242e23e4d6c",
+      "location": "swedencentral",
+      "name": "vm-ce-onprem_OsDisk_1_5ba53389b5714cf6b25c4242e23e4d6c",
+      "properties": {
+        "LastOwnershipUpdateTime": "2026-09-29T13:22:33.9640218+00:00",
+        "creationData": {
+          "createOption": "FromImage",
+          "imageReference": {
+            "id": "/Subscriptions/[REDACTED]/Providers/Microsoft.Compute/Locations/SwedenCentral/Publishers/Canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-jammy/Skus/22_04-lts-gen2/Versions/22.04.202608060"
+          }
+        },
+        "diskIOPSReadWrite": 500,
+        "diskMBpsReadWrite": 60,
+        "diskSizeBytes": 32213303296,
+        "diskSizeGB": 30,
+        "diskState": "Unattached",
+        "encryption": {
+          "type": "EncryptionAtRestWithPlatformKey"
+        },
+        "hyperVGeneration": "V2",
+        "networkAccessPolicy": "AllowAll",
+        "osType": "Linux",
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Enabled",
+        "supportedCapabilities": {
+          "acceleratedNetwork": true,
+          "architecture": "x64",
+          "diskControllerTypes": "SCSI, NVMe"
+        },
+        "supportsHibernation": true,
+        "timeCreated": "2026-09-29T12:14:57.1291751+00:00",
+        "uniqueId": "[REDACTED]"
+      },
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/vm-ce-onprem_OsDisk_1_f6af06eefc9c41f1b8b10250bfaa2a36",
+      "location": "swedencentral",
+      "managedBy": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-ce-onprem",
+      "name": "vm-ce-onprem_OsDisk_1_f6af06eefc9c41f1b8b10250bfaa2a36",
+      "properties": {
+        "LastOwnershipUpdateTime": "2026-09-29T23:51:42.0471598+00:00",
+        "creationData": {
+          "createOption": "FromImage",
+          "imageReference": {
+            "id": "/Subscriptions/[REDACTED]/Providers/Microsoft.Compute/Locations/SwedenCentral/Publishers/Canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-jammy/Skus/22_04-lts-gen2/Versions/22.04.202608060"
+          }
+        },
+        "diskIOPSReadWrite": 500,
+        "diskMBpsReadWrite": 60,
+        "diskSizeBytes": 32213303296,
+        "diskSizeGB": 30,
+        "diskState": "Reserved",
+        "encryption": {
+          "type": "EncryptionAtRestWithPlatformKey"
+        },
+        "hyperVGeneration": "V2",
+        "networkAccessPolicy": "AllowAll",
+        "osType": "Linux",
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Enabled",
+        "supportedCapabilities": {
+          "acceleratedNetwork": true,
+          "architecture": "x64",
+          "diskControllerTypes": "SCSI, NVMe"
+        },
+        "supportsHibernation": true,
+        "timeCreated": "2026-09-29T13:27:06.4047684+00:00",
+        "uniqueId": "[REDACTED]"
+      },
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/vm-hub-nva_OsDisk_1_2e6edf0ceea34b53aafb61b96a4db07a",
+      "location": "swedencentral",
+      "managedBy": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-nva",
+      "name": "vm-hub-nva_OsDisk_1_2e6edf0ceea34b53aafb61b96a4db07a",
+      "properties": {
+        "LastOwnershipUpdateTime": "2026-10-04T18:06:38.8711464+00:00",
+        "creationData": {
+          "createOption": "FromImage",
+          "imageReference": {
+            "id": "/Subscriptions/[REDACTED]/Providers/Microsoft.Compute/Locations/SwedenCentral/Publishers/Canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-jammy/Skus/22_04-lts-gen2/Versions/22.04.202608060"
+          }
+        },
+        "diskIOPSReadWrite": 500,
+        "diskMBpsReadWrite": 60,
+        "diskSizeBytes": 32213303296,
+        "diskSizeGB": 30,
+        "diskState": "Reserved",
+        "encryption": {
+          "type": "EncryptionAtRestWithPlatformKey"
+        },
+        "hyperVGeneration": "V2",
+        "networkAccessPolicy": "AllowAll",
+        "osType": "Linux",
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Enabled",
+        "supportedCapabilities": {
+          "acceleratedNetwork": true,
+          "architecture": "x64",
+          "diskControllerTypes": "SCSI, NVMe"
+        },
+        "supportsHibernation": true,
+        "timeCreated": "2026-09-29T13:27:06.0378121+00:00",
+        "uniqueId": "[REDACTED]"
+      },
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/vm-hub-nva_OsDisk_1_7a03a091b2cf4ce9963a0b81c604a68a",
+      "location": "swedencentral",
+      "name": "vm-hub-nva_OsDisk_1_7a03a091b2cf4ce9963a0b81c604a68a",
+      "properties": {
+        "LastOwnershipUpdateTime": "2026-09-29T13:23:23.0531871+00:00",
+        "creationData": {
+          "createOption": "FromImage",
+          "imageReference": {
+            "id": "/Subscriptions/[REDACTED]/Providers/Microsoft.Compute/Locations/SwedenCentral/Publishers/Canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-jammy/Skus/22_04-lts-gen2/Versions/22.04.202608060"
+          }
+        },
+        "diskIOPSReadWrite": 500,
+        "diskMBpsReadWrite": 60,
+        "diskSizeBytes": 32213303296,
+        "diskSizeGB": 30,
+        "diskState": "Unattached",
+        "encryption": {
+          "type": "EncryptionAtRestWithPlatformKey"
+        },
+        "hyperVGeneration": "V2",
+        "networkAccessPolicy": "AllowAll",
+        "osType": "Linux",
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Enabled",
+        "supportedCapabilities": {
+          "acceleratedNetwork": true,
+          "architecture": "x64",
+          "diskControllerTypes": "SCSI, NVMe"
+        },
+        "supportsHibernation": true,
+        "timeCreated": "2026-09-29T12:15:13.1169517+00:00",
+        "uniqueId": "[REDACTED]"
+      },
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/vm-spoke-nva_OsDisk_1_607aec67e0634220960f6bcd112c3e8b",
+      "location": "swedencentral",
+      "name": "vm-spoke-nva_OsDisk_1_607aec67e0634220960f6bcd112c3e8b",
+      "properties": {
+        "LastOwnershipUpdateTime": "2026-09-29T13:23:58.1315835+00:00",
+        "creationData": {
+          "createOption": "FromImage",
+          "imageReference": {
+            "id": "/Subscriptions/[REDACTED]/Providers/Microsoft.Compute/Locations/SwedenCentral/Publishers/Canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-jammy/Skus/22_04-lts-gen2/Versions/22.04.202608060"
+          }
+        },
+        "diskIOPSReadWrite": 500,
+        "diskMBpsReadWrite": 60,
+        "diskSizeBytes": 32213303296,
+        "diskSizeGB": 30,
+        "diskState": "Unattached",
+        "encryption": {
+          "type": "EncryptionAtRestWithPlatformKey"
+        },
+        "hyperVGeneration": "V2",
+        "networkAccessPolicy": "AllowAll",
+        "osType": "Linux",
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Enabled",
+        "supportedCapabilities": {
+          "acceleratedNetwork": true,
+          "architecture": "x64",
+          "diskControllerTypes": "SCSI, NVMe"
+        },
+        "supportsHibernation": true,
+        "timeCreated": "2026-09-29T12:15:04.1743402+00:00",
+        "uniqueId": "[REDACTED]"
+      },
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/vm-spoke-nva_OsDisk_1_922d9fbd50734b2a807dc7abb5420629",
+      "location": "swedencentral",
+      "managedBy": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-spoke-nva",
+      "name": "vm-spoke-nva_OsDisk_1_922d9fbd50734b2a807dc7abb5420629",
+      "properties": {
+        "LastOwnershipUpdateTime": "2026-10-04T18:05:27.0085813+00:00",
+        "creationData": {
+          "createOption": "FromImage",
+          "imageReference": {
+            "id": "/Subscriptions/[REDACTED]/Providers/Microsoft.Compute/Locations/SwedenCentral/Publishers/Canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-jammy/Skus/22_04-lts-gen2/Versions/22.04.202608060"
+          }
+        },
+        "diskIOPSReadWrite": 500,
+        "diskMBpsReadWrite": 60,
+        "diskSizeBytes": 32213303296,
+        "diskSizeGB": 30,
+        "diskState": "Reserved",
+        "encryption": {
+          "type": "EncryptionAtRestWithPlatformKey"
+        },
+        "hyperVGeneration": "V2",
+        "networkAccessPolicy": "AllowAll",
+        "osType": "Linux",
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Enabled",
+        "supportedCapabilities": {
+          "acceleratedNetwork": true,
+          "architecture": "x64",
+          "diskControllerTypes": "SCSI, NVMe"
+        },
+        "supportsHibernation": true,
+        "timeCreated": "2026-09-29T13:27:06.2016804+00:00",
+        "uniqueId": "[REDACTED]"
+      },
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/vm-workload-probe_OsDisk_1_27a40cab6f1d40d0a45349f2040fee59",
+      "location": "swedencentral",
+      "managedBy": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-workload-probe",
+      "name": "vm-workload-probe_OsDisk_1_27a40cab6f1d40d0a45349f2040fee59",
+      "properties": {
+        "LastOwnershipUpdateTime": "2026-10-04T18:03:17.3760664+00:00",
+        "creationData": {
+          "createOption": "FromImage",
+          "imageReference": {
+            "id": "/Subscriptions/[REDACTED]/Providers/Microsoft.Compute/Locations/SwedenCentral/Publishers/Canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-jammy/Skus/22_04-lts-gen2/Versions/22.04.202608060"
+          }
+        },
+        "diskIOPSReadWrite": 500,
+        "diskMBpsReadWrite": 60,
+        "diskSizeBytes": 32213303296,
+        "diskSizeGB": 30,
+        "diskState": "Reserved",
+        "encryption": {
+          "type": "EncryptionAtRestWithPlatformKey"
+        },
+        "hyperVGeneration": "V2",
+        "networkAccessPolicy": "AllowAll",
+        "osType": "Linux",
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Enabled",
+        "supportedCapabilities": {
+          "acceleratedNetwork": true,
+          "architecture": "x64",
+          "diskControllerTypes": "SCSI, NVMe"
+        },
+        "supportsHibernation": true,
+        "timeCreated": "2026-09-29T13:27:08.0254562+00:00",
+        "uniqueId": "[REDACTED]"
+      },
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/vm-workload-probe_OsDisk_1_5e958cff046245db95301db03a3429d5",
+      "location": "swedencentral",
+      "name": "vm-workload-probe_OsDisk_1_5e958cff046245db95301db03a3429d5",
+      "properties": {
+        "LastOwnershipUpdateTime": "2026-09-29T13:24:32.6238128+00:00",
+        "creationData": {
+          "createOption": "FromImage",
+          "imageReference": {
+            "id": "/Subscriptions/[REDACTED]/Providers/Microsoft.Compute/Locations/SwedenCentral/Publishers/Canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-jammy/Skus/22_04-lts-gen2/Versions/22.04.202608060"
+          }
+        },
+        "diskIOPSReadWrite": 500,
+        "diskMBpsReadWrite": 60,
+        "diskSizeBytes": 32213303296,
+        "diskSizeGB": 30,
+        "diskState": "Unattached",
+        "encryption": {
+          "type": "EncryptionAtRestWithPlatformKey"
+        },
+        "hyperVGeneration": "V2",
+        "networkAccessPolicy": "AllowAll",
+        "osType": "Linux",
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Enabled",
+        "supportedCapabilities": {
+          "acceleratedNetwork": true,
+          "architecture": "x64",
+          "diskControllerTypes": "SCSI, NVMe"
+        },
+        "supportsHibernation": true,
+        "timeCreated": "2026-09-29T12:15:28.6258754+00:00",
+        "uniqueId": "[REDACTED]"
+      },
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "type": "Microsoft.Compute/disks"
+    }
+  ],
+  "power": [
+    {
+      "diagnosticsProfile": {
+        "bootDiagnostics": {
+          "enabled": false
+        }
+      },
+      "etag": "\"6\"",
+      "extensionsTimeBudget": "PT1H30M",
+      "fqdns": "",
+      "hardwareProfile": {
+        "vmSize": "Standard_B2s_v2"
+      },
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-ce-onprem",
+      "location": "swedencentral",
+      "macAddresses": "7C-1E-52-3F-C4-A3",
+      "name": "vm-ce-onprem",
+      "networkProfile": {
+        "networkInterfaces": [
+          {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-ce-onprem",
+            "primary": true,
+            "resourceGroup": "rg-saprise-swedencentral"
+          }
+        ]
+      },
+      "osProfile": {
+        "adminUsername": "azurelabuser",
+        "allowExtensionOperations": true,
+        "computerName": "vm-ce-onprem",
+        "linuxConfiguration": {
+          "disablePasswordAuthentication": true,
+          "enableVMAgentPlatformUpdates": true,
+          "patchSettings": {
+            "assessmentMode": "AutomaticByPlatform",
+            "automaticByPlatformSettings": {
+              "bypassPlatformSafetyChecksOnUserSchedule": true
+            },
+            "patchMode": "AutomaticByPlatform"
+          },
+          "provisionVMAgent": true,
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDX6SO8Wpo21BDhUYHWqYfMiWPyfgpEMhVMEeJNLHk30q48DumZKSDsBvQrkOdtg67vPlng/uu5GqRKLaFIAiCJSxLp1yDcRtdXOlAMXgKh9A+JKq6O9ExkEfsqQ4NKCBrrhGPNlOWEvPSFbhE4RhNJeWxASEDrxvpbsSDj+3E/YGSI7GHPuvs5DMH/G4SF4bF4N7c4x2NwLn9lKHIiFgNfE3wivgP1lZjfH088SHO33Yyxl5qGGiB9A0pP11sslpqBBEYAVYHTQTCJS44ddj7Vsopyxn8RUn81ZsacRQMINfZGjw5iRsIJ6+SHCpdtq3/KltPppxcOOccm3Vd0EgYZ",
+                "path": "/home/azurelabuser/.ssh/authorized_keys"
+              }
+            ]
+          }
+        },
+        "requireGuestProvisionSignal": true,
+        "secrets": []
+      },
+      "powerState": "VM deallocated",
+      "priority": "Regular",
+      "privateIps": "172.40.100.4",
+      "provisioningState": "Succeeded",
+      "publicIps": "",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "resources": [
+        {
+          "autoUpgradeMinorVersion": true,
+          "forceUpdateTag": "[REDACTED]",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-ce-onprem/extensions/MDE.Linux",
+          "location": "swedencentral",
+          "name": "MDE.Linux",
+          "provisioningState": "Succeeded",
+          "publisher": "Microsoft.Azure.AzureDefenderForServers",
+          "resourceGroup": "rg-saprise-swedencentral",
+          "settings": {
+            "autoUpdate": true,
+            "azureResourceId": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/virtualMachines/vm-ce-onprem",
+            "forceReOnboarding": false,
+            "vNextEnabled": false
+          },
+          "typeHandlerVersion": "1.0",
+          "typePropertiesType": "MDE.Linux"
+        }
+      ],
+      "storageProfile": {
+        "dataDisks": [],
+        "diskControllerType": "SCSI",
+        "imageReference": {
+          "exactVersion": "22.04.202608060",
+          "offer": "0001-com-ubuntu-server-jammy",
+          "publisher": "Canonical",
+          "sku": "22_04-lts-gen2",
+          "version": "latest"
+        },
+        "osDisk": {
+          "caching": "ReadWrite",
+          "createOption": "FromImage",
+          "deleteOption": "Detach",
+          "managedDisk": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/disks/vm-ce-onprem_OsDisk_1_f6af06eefc9c41f1b8b10250bfaa2a36",
+            "resourceGroup": "rg-saprise-swedencentral"
+          },
+          "name": "vm-ce-onprem_OsDisk_1_f6af06eefc9c41f1b8b10250bfaa2a36",
+          "osType": "Linux",
+          "writeAcceleratorEnabled": false
+        }
+      },
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "timeCreated": "2026-09-29T13:27:05.2258445+00:00",
+      "type": "Microsoft.Compute/virtualMachines",
+      "vmId": "[REDACTED]"
+    },
+    {
+      "diagnosticsProfile": {
+        "bootDiagnostics": {
+          "enabled": false
+        }
+      },
+      "etag": "\"26\"",
+      "extensionsTimeBudget": "PT1H30M",
+      "fqdns": "",
+      "hardwareProfile": {
+        "vmSize": "Standard_B2s_v2"
+      },
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-nva",
+      "location": "swedencentral",
+      "macAddresses": "7C-1E-52-33-5E-AE",
+      "name": "vm-hub-nva",
+      "networkProfile": {
+        "networkInterfaces": [
+          {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-nva",
+            "primary": true,
+            "resourceGroup": "rg-saprise-swedencentral"
+          }
+        ]
+      },
+      "osProfile": {
+        "adminUsername": "azurelabuser",
+        "allowExtensionOperations": true,
+        "computerName": "vm-hub-nva",
+        "linuxConfiguration": {
+          "disablePasswordAuthentication": true,
+          "enableVMAgentPlatformUpdates": true,
+          "patchSettings": {
+            "assessmentMode": "AutomaticByPlatform",
+            "automaticByPlatformSettings": {
+              "bypassPlatformSafetyChecksOnUserSchedule": true
+            },
+            "patchMode": "AutomaticByPlatform"
+          },
+          "provisionVMAgent": true,
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDX6SO8Wpo21BDhUYHWqYfMiWPyfgpEMhVMEeJNLHk30q48DumZKSDsBvQrkOdtg67vPlng/uu5GqRKLaFIAiCJSxLp1yDcRtdXOlAMXgKh9A+JKq6O9ExkEfsqQ4NKCBrrhGPNlOWEvPSFbhE4RhNJeWxASEDrxvpbsSDj+3E/YGSI7GHPuvs5DMH/G4SF4bF4N7c4x2NwLn9lKHIiFgNfE3wivgP1lZjfH088SHO33Yyxl5qGGiB9A0pP11sslpqBBEYAVYHTQTCJS44ddj7Vsopyxn8RUn81ZsacRQMINfZGjw5iRsIJ6+SHCpdtq3/KltPppxcOOccm3Vd0EgYZ",
+                "path": "/home/azurelabuser/.ssh/authorized_keys"
+              }
+            ]
+          }
+        },
+        "requireGuestProvisionSignal": true,
+        "secrets": []
+      },
+      "powerState": "VM deallocated",
+      "priority": "Regular",
+      "privateIps": "10.40.1.4",
+      "provisioningState": "Succeeded",
+      "publicIps": "",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "resources": [
+        {
+          "autoUpgradeMinorVersion": true,
+          "forceUpdateTag": "[REDACTED]",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-nva/extensions/MDE.Linux",
+          "location": "swedencentral",
+          "name": "MDE.Linux",
+          "provisioningState": "Succeeded",
+          "publisher": "Microsoft.Azure.AzureDefenderForServers",
+          "resourceGroup": "rg-saprise-swedencentral",
+          "settings": {
+            "autoUpdate": true,
+            "azureResourceId": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/virtualMachines/vm-hub-nva",
+            "forceReOnboarding": false,
+            "vNextEnabled": false
+          },
+          "typeHandlerVersion": "1.0",
+          "typePropertiesType": "MDE.Linux"
+        }
+      ],
+      "storageProfile": {
+        "dataDisks": [],
+        "diskControllerType": "SCSI",
+        "imageReference": {
+          "exactVersion": "22.04.202608060",
+          "offer": "0001-com-ubuntu-server-jammy",
+          "publisher": "Canonical",
+          "sku": "22_04-lts-gen2",
+          "version": "latest"
+        },
+        "osDisk": {
+          "caching": "ReadWrite",
+          "createOption": "FromImage",
+          "deleteOption": "Detach",
+          "managedDisk": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/disks/vm-hub-nva_OsDisk_1_2e6edf0ceea34b53aafb61b96a4db07a",
+            "resourceGroup": "RG-SAPRISE-SWEDENCENTRAL"
+          },
+          "name": "vm-hub-nva_OsDisk_1_2e6edf0ceea34b53aafb61b96a4db07a",
+          "osType": "Linux",
+          "writeAcceleratorEnabled": false
+        }
+      },
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "timeCreated": "2026-09-29T13:27:04.864996+00:00",
+      "type": "Microsoft.Compute/virtualMachines",
+      "vmId": "[REDACTED]"
+    },
+    {
+      "diagnosticsProfile": {
+        "bootDiagnostics": {
+          "enabled": false
+        }
+      },
+      "etag": "\"26\"",
+      "extensionsTimeBudget": "PT1H30M",
+      "fqdns": "",
+      "hardwareProfile": {
+        "vmSize": "Standard_B2s_v2"
+      },
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-spoke-nva",
+      "location": "swedencentral",
+      "macAddresses": "7C-ED-8D-B4-00-E4",
+      "name": "vm-spoke-nva",
+      "networkProfile": {
+        "networkInterfaces": [
+          {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-spoke-nva",
+            "primary": true,
+            "resourceGroup": "rg-saprise-swedencentral"
+          }
+        ]
+      },
+      "osProfile": {
+        "adminUsername": "azurelabuser",
+        "allowExtensionOperations": true,
+        "computerName": "vm-spoke-nva",
+        "linuxConfiguration": {
+          "disablePasswordAuthentication": true,
+          "enableVMAgentPlatformUpdates": true,
+          "patchSettings": {
+            "assessmentMode": "AutomaticByPlatform",
+            "automaticByPlatformSettings": {
+              "bypassPlatformSafetyChecksOnUserSchedule": true
+            },
+            "patchMode": "AutomaticByPlatform"
+          },
+          "provisionVMAgent": true,
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDX6SO8Wpo21BDhUYHWqYfMiWPyfgpEMhVMEeJNLHk30q48DumZKSDsBvQrkOdtg67vPlng/uu5GqRKLaFIAiCJSxLp1yDcRtdXOlAMXgKh9A+JKq6O9ExkEfsqQ4NKCBrrhGPNlOWEvPSFbhE4RhNJeWxASEDrxvpbsSDj+3E/YGSI7GHPuvs5DMH/G4SF4bF4N7c4x2NwLn9lKHIiFgNfE3wivgP1lZjfH088SHO33Yyxl5qGGiB9A0pP11sslpqBBEYAVYHTQTCJS44ddj7Vsopyxn8RUn81ZsacRQMINfZGjw5iRsIJ6+SHCpdtq3/KltPppxcOOccm3Vd0EgYZ",
+                "path": "/home/azurelabuser/.ssh/authorized_keys"
+              }
+            ]
+          }
+        },
+        "requireGuestProvisionSignal": true,
+        "secrets": []
+      },
+      "powerState": "VM deallocated",
+      "priority": "Regular",
+      "privateIps": "10.60.0.4",
+      "provisioningState": "Succeeded",
+      "publicIps": "",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "resources": [
+        {
+          "autoUpgradeMinorVersion": true,
+          "forceUpdateTag": "[REDACTED]",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-spoke-nva/extensions/MDE.Linux",
+          "location": "swedencentral",
+          "name": "MDE.Linux",
+          "provisioningState": "Succeeded",
+          "publisher": "Microsoft.Azure.AzureDefenderForServers",
+          "resourceGroup": "rg-saprise-swedencentral",
+          "settings": {
+            "autoUpdate": true,
+            "azureResourceId": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/virtualMachines/vm-spoke-nva",
+            "forceReOnboarding": false,
+            "vNextEnabled": false
+          },
+          "typeHandlerVersion": "1.0",
+          "typePropertiesType": "MDE.Linux"
+        }
+      ],
+      "storageProfile": {
+        "dataDisks": [],
+        "diskControllerType": "SCSI",
+        "imageReference": {
+          "exactVersion": "22.04.202608060",
+          "offer": "0001-com-ubuntu-server-jammy",
+          "publisher": "Canonical",
+          "sku": "22_04-lts-gen2",
+          "version": "latest"
+        },
+        "osDisk": {
+          "caching": "ReadWrite",
+          "createOption": "FromImage",
+          "deleteOption": "Detach",
+          "managedDisk": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/disks/vm-spoke-nva_OsDisk_1_922d9fbd50734b2a807dc7abb5420629",
+            "resourceGroup": "RG-SAPRISE-SWEDENCENTRAL"
+          },
+          "name": "vm-spoke-nva_OsDisk_1_922d9fbd50734b2a807dc7abb5420629",
+          "osType": "Linux",
+          "writeAcceleratorEnabled": false
+        }
+      },
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "timeCreated": "2026-09-29T13:27:04.9782686+00:00",
+      "type": "Microsoft.Compute/virtualMachines",
+      "vmId": "[REDACTED]"
+    },
+    {
+      "diagnosticsProfile": {
+        "bootDiagnostics": {
+          "enabled": false
+        }
+      },
+      "etag": "\"22\"",
+      "extensionsTimeBudget": "PT1H30M",
+      "fqdns": "",
+      "hardwareProfile": {
+        "vmSize": "Standard_B2s_v2"
+      },
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-workload-probe",
+      "location": "swedencentral",
+      "macAddresses": "7C-ED-8D-AD-BC-40",
+      "name": "vm-workload-probe",
+      "networkProfile": {
+        "networkInterfaces": [
+          {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-workload-probe",
+            "primary": true,
+            "resourceGroup": "rg-saprise-swedencentral"
+          }
+        ]
+      },
+      "osProfile": {
+        "adminUsername": "azurelabuser",
+        "allowExtensionOperations": true,
+        "computerName": "vm-workload-probe",
+        "linuxConfiguration": {
+          "disablePasswordAuthentication": true,
+          "enableVMAgentPlatformUpdates": true,
+          "patchSettings": {
+            "assessmentMode": "AutomaticByPlatform",
+            "automaticByPlatformSettings": {
+              "bypassPlatformSafetyChecksOnUserSchedule": true
+            },
+            "patchMode": "AutomaticByPlatform"
+          },
+          "provisionVMAgent": true,
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDX6SO8Wpo21BDhUYHWqYfMiWPyfgpEMhVMEeJNLHk30q48DumZKSDsBvQrkOdtg67vPlng/uu5GqRKLaFIAiCJSxLp1yDcRtdXOlAMXgKh9A+JKq6O9ExkEfsqQ4NKCBrrhGPNlOWEvPSFbhE4RhNJeWxASEDrxvpbsSDj+3E/YGSI7GHPuvs5DMH/G4SF4bF4N7c4x2NwLn9lKHIiFgNfE3wivgP1lZjfH088SHO33Yyxl5qGGiB9A0pP11sslpqBBEYAVYHTQTCJS44ddj7Vsopyxn8RUn81ZsacRQMINfZGjw5iRsIJ6+SHCpdtq3/KltPppxcOOccm3Vd0EgYZ",
+                "path": "/home/azurelabuser/.ssh/authorized_keys"
+              }
+            ]
+          }
+        },
+        "requireGuestProvisionSignal": true,
+        "secrets": []
+      },
+      "powerState": "VM deallocated",
+      "priority": "Regular",
+      "privateIps": "10.60.1.4",
+      "provisioningState": "Succeeded",
+      "publicIps": "",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "resources": [
+        {
+          "autoUpgradeMinorVersion": true,
+          "forceUpdateTag": "[REDACTED]",
+          "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-workload-probe/extensions/MDE.Linux",
+          "location": "swedencentral",
+          "name": "MDE.Linux",
+          "provisioningState": "Failed",
+          "publisher": "Microsoft.Azure.AzureDefenderForServers",
+          "resourceGroup": "rg-saprise-swedencentral",
+          "settings": {
+            "autoUpdate": true,
+            "azureResourceId": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/virtualMachines/vm-workload-probe",
+            "forceReOnboarding": false,
+            "vNextEnabled": false
+          },
+          "typeHandlerVersion": "1.0",
+          "typePropertiesType": "MDE.Linux"
+        }
+      ],
+      "storageProfile": {
+        "dataDisks": [],
+        "diskControllerType": "SCSI",
+        "imageReference": {
+          "exactVersion": "22.04.202608060",
+          "offer": "0001-com-ubuntu-server-jammy",
+          "publisher": "Canonical",
+          "sku": "22_04-lts-gen2",
+          "version": "latest"
+        },
+        "osDisk": {
+          "caching": "ReadWrite",
+          "createOption": "FromImage",
+          "deleteOption": "Detach",
+          "managedDisk": {
+            "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/disks/vm-workload-probe_OsDisk_1_27a40cab6f1d40d0a45349f2040fee59",
+            "resourceGroup": "RG-SAPRISE-SWEDENCENTRAL"
+          },
+          "name": "vm-workload-probe_OsDisk_1_27a40cab6f1d40d0a45349f2040fee59",
+          "osType": "Linux",
+          "writeAcceleratorEnabled": false
+        }
+      },
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "timeCreated": "2026-09-29T13:27:07.2108118+00:00",
+      "type": "Microsoft.Compute/virtualMachines",
+      "vmId": "[REDACTED]"
+    }
+  ],
+  "resources": [
+    {
+      "changedTime": "2026-09-29T17:27:10.165315+00:00",
+      "createdTime": "2026-09-29T12:14:15.309915+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "nsg-hub-nva",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "changedTime": "2026-09-29T12:14:18.352843+00:00",
+      "createdTime": "2026-09-29T12:14:15.385422+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/publicIPAddresses/pip-ars-hub",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "pip-ars-hub",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": {
+        "capacity": null,
+        "family": null,
+        "model": null,
+        "name": "Standard",
+        "size": null,
+        "tier": null
+      },
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/publicIPAddresses"
+    },
+    {
+      "changedTime": "2026-09-29T18:26:45.690099+00:00",
+      "createdTime": "2026-09-29T12:14:15.476991+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-spoke-nva",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "nsg-spoke-nva",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "changedTime": "2026-09-29T12:14:18.018083+00:00",
+      "createdTime": "2026-09-29T12:14:15.689446+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-spoke-workload",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "rt-spoke-workload",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/routeTables"
+    },
+    {
+      "changedTime": "2026-09-29T14:13:45.524325+00:00",
+      "createdTime": "2026-09-29T12:14:16.219507+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-sap-rise",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "vnet-sap-rise",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/virtualNetworks"
+    },
+    {
+      "changedTime": "2026-09-30T10:05:18.926485+00:00",
+      "createdTime": "2026-09-29T12:14:16.394062+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-hub",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "vnet-hub",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/virtualNetworks"
+    },
+    {
+      "changedTime": "2026-09-29T14:13:41.755859+00:00",
+      "createdTime": "2026-09-29T12:14:16.504308+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualNetworks/vnet-onprem-sim",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "vnet-onprem-sim",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/virtualNetworks"
+    },
+    {
+      "changedTime": "2026-09-29T12:24:35.116892+00:00",
+      "createdTime": "2026-09-29T12:14:34.511416+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-ce-onprem",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "nic-ce-onprem",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "changedTime": "2026-09-30T09:54:33.180475+00:00",
+      "createdTime": "2026-09-29T12:14:48.878776+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/virtualHubs/ars-hub",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "ars-hub",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/virtualHubs"
+    },
+    {
+      "changedTime": "2026-09-29T12:24:49.695154+00:00",
+      "createdTime": "2026-09-29T12:14:49.055134+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-spoke-nva",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "nic-spoke-nva",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "changedTime": "2026-09-30T08:09:16.886532+00:00",
+      "createdTime": "2026-09-29T13:27:05.189461+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-ce-onprem",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "vm-ce-onprem",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "changedTime": "2026-09-29T12:24:58.180614+00:00",
+      "createdTime": "2026-09-29T12:14:57.266173+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-hub-nva",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "nic-hub-nva",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "changedTime": "2026-09-30T00:06:32.487487+00:00",
+      "createdTime": "2026-09-29T12:14:57.589675+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/disks/vm-ce-onprem_OsDisk_1_5ba53389b5714cf6b25c4242e23e4d6c",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "vm-ce-onprem_OsDisk_1_5ba53389b5714cf6b25c4242e23e4d6c",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "RG-SAPRISE-SWEDENCENTRAL",
+      "sku": {
+        "capacity": null,
+        "family": null,
+        "model": null,
+        "name": "Standard_LRS",
+        "size": null,
+        "tier": "Standard"
+      },
+      "tags": null,
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "changedTime": "2026-09-30T08:09:15.181857+00:00",
+      "createdTime": "2026-09-29T13:27:04.946642+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-spoke-nva",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "vm-spoke-nva",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "changedTime": "2026-09-30T00:06:34.114805+00:00",
+      "createdTime": "2026-09-29T12:15:04.564347+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/disks/vm-spoke-nva_OsDisk_1_607aec67e0634220960f6bcd112c3e8b",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "vm-spoke-nva_OsDisk_1_607aec67e0634220960f6bcd112c3e8b",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "RG-SAPRISE-SWEDENCENTRAL",
+      "sku": {
+        "capacity": null,
+        "family": null,
+        "model": null,
+        "name": "Standard_LRS",
+        "size": null,
+        "tier": "Standard"
+      },
+      "tags": null,
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "changedTime": "2026-09-30T08:09:14.309352+00:00",
+      "createdTime": "2026-09-29T13:27:04.760442+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-nva",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "vm-hub-nva",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "changedTime": "2026-09-29T12:25:13.670268+00:00",
+      "createdTime": "2026-09-29T12:15:12.043694+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkInterfaces/nic-workload-probe",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "nic-workload-probe",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "changedTime": "2026-09-30T00:06:31.523480+00:00",
+      "createdTime": "2026-09-29T12:15:13.550545+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/disks/vm-hub-nva_OsDisk_1_7a03a091b2cf4ce9963a0b81c604a68a",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "vm-hub-nva_OsDisk_1_7a03a091b2cf4ce9963a0b81c604a68a",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "RG-SAPRISE-SWEDENCENTRAL",
+      "sku": {
+        "capacity": null,
+        "family": null,
+        "model": null,
+        "name": "Standard_LRS",
+        "size": null,
+        "tier": "Standard"
+      },
+      "tags": null,
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "changedTime": "2026-09-30T08:09:14.198191+00:00",
+      "createdTime": "2026-09-29T13:27:07.179220+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-workload-probe",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "vm-workload-probe",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "changedTime": "2026-09-30T00:06:32.193373+00:00",
+      "createdTime": "2026-09-29T12:15:29.572100+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/disks/vm-workload-probe_OsDisk_1_5e958cff046245db95301db03a3429d5",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "vm-workload-probe_OsDisk_1_5e958cff046245db95301db03a3429d5",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "RG-SAPRISE-SWEDENCENTRAL",
+      "sku": {
+        "capacity": null,
+        "family": null,
+        "model": null,
+        "name": "Standard_LRS",
+        "size": null,
+        "tier": "Standard"
+      },
+      "tags": null,
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "changedTime": "2026-09-30T00:06:33.622896+00:00",
+      "createdTime": "2026-09-29T13:27:06.622068+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/disks/vm-hub-nva_OsDisk_1_2e6edf0ceea34b53aafb61b96a4db07a",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-hub-nva",
+      "name": "vm-hub-nva_OsDisk_1_2e6edf0ceea34b53aafb61b96a4db07a",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "RG-SAPRISE-SWEDENCENTRAL",
+      "sku": {
+        "capacity": null,
+        "family": null,
+        "model": null,
+        "name": "Standard_LRS",
+        "size": null,
+        "tier": "Standard"
+      },
+      "tags": null,
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "changedTime": "2026-09-30T00:06:31.917601+00:00",
+      "createdTime": "2026-09-29T13:27:06.803930+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/disks/vm-spoke-nva_OsDisk_1_922d9fbd50734b2a807dc7abb5420629",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-spoke-nva",
+      "name": "vm-spoke-nva_OsDisk_1_922d9fbd50734b2a807dc7abb5420629",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "RG-SAPRISE-SWEDENCENTRAL",
+      "sku": {
+        "capacity": null,
+        "family": null,
+        "model": null,
+        "name": "Standard_LRS",
+        "size": null,
+        "tier": "Standard"
+      },
+      "tags": null,
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "changedTime": "2026-09-30T00:06:33.370779+00:00",
+      "createdTime": "2026-09-29T13:27:06.811561+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/disks/vm-ce-onprem_OsDisk_1_f6af06eefc9c41f1b8b10250bfaa2a36",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-ce-onprem",
+      "name": "vm-ce-onprem_OsDisk_1_f6af06eefc9c41f1b8b10250bfaa2a36",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "RG-SAPRISE-SWEDENCENTRAL",
+      "sku": {
+        "capacity": null,
+        "family": null,
+        "model": null,
+        "name": "Standard_LRS",
+        "size": null,
+        "tier": "Standard"
+      },
+      "tags": null,
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "changedTime": "2026-09-30T00:06:29.434079+00:00",
+      "createdTime": "2026-09-29T13:27:08.147777+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/disks/vm-workload-probe_OsDisk_1_27a40cab6f1d40d0a45349f2040fee59",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Compute/virtualMachines/vm-workload-probe",
+      "name": "vm-workload-probe_OsDisk_1_27a40cab6f1d40d0a45349f2040fee59",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "RG-SAPRISE-SWEDENCENTRAL",
+      "sku": {
+        "capacity": null,
+        "family": null,
+        "model": null,
+        "name": "Standard_LRS",
+        "size": null,
+        "tier": "Standard"
+      },
+      "tags": null,
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "changedTime": "2026-09-29T13:33:55.675826+00:00",
+      "createdTime": "2026-09-29T13:32:31.043770+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/virtualMachines/vm-ce-onprem/extensions/MDE.Linux",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "vm-ce-onprem/MDE.Linux",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "RG-SAPRISE-SWEDENCENTRAL",
+      "sku": null,
+      "tags": null,
+      "type": "Microsoft.Compute/virtualMachines/extensions"
+    },
+    {
+      "changedTime": "2026-09-29T13:33:45.233031+00:00",
+      "createdTime": "2026-09-29T13:32:32.161326+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/virtualMachines/vm-hub-nva/extensions/MDE.Linux",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "vm-hub-nva/MDE.Linux",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "RG-SAPRISE-SWEDENCENTRAL",
+      "sku": null,
+      "tags": null,
+      "type": "Microsoft.Compute/virtualMachines/extensions"
+    },
+    {
+      "changedTime": "2026-09-29T13:33:53.392260+00:00",
+      "createdTime": "2026-09-29T13:32:42.360007+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/virtualMachines/vm-spoke-nva/extensions/MDE.Linux",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "vm-spoke-nva/MDE.Linux",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "RG-SAPRISE-SWEDENCENTRAL",
+      "sku": null,
+      "tags": null,
+      "type": "Microsoft.Compute/virtualMachines/extensions"
+    },
+    {
+      "changedTime": "2026-09-29T13:46:25.748469+00:00",
+      "createdTime": "2026-09-29T13:33:02.742328+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/RG-SAPRISE-SWEDENCENTRAL/providers/Microsoft.Compute/virtualMachines/vm-workload-probe/extensions/MDE.Linux",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "vm-workload-probe/MDE.Linux",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "RG-SAPRISE-SWEDENCENTRAL",
+      "sku": null,
+      "tags": null,
+      "type": "Microsoft.Compute/virtualMachines/extensions"
+    },
+    {
+      "changedTime": "2026-09-29T14:13:38.859618+00:00",
+      "createdTime": "2026-09-29T14:13:35.450380+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-onprem-sim-snet-ce-onprem-nsg-swedencentral",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "vnet-onprem-sim-snet-ce-onprem-nsg-swedencentral",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "changedTime": "2026-09-29T14:13:38.711810+00:00",
+      "createdTime": "2026-09-29T14:13:36.761167+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/vnet-sap-rise-snet-workload-nsg-swedencentral",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "vnet-sap-rise-snet-workload-nsg-swedencentral",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": {
+        "correlation_id": "7bb27d99",
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "sap-rise-scoped-peering-fwaas",
+        "owner": "jose",
+        "run_id": "7bb27d99"
+      },
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "changedTime": "2026-09-29T16:33:57.283627+00:00",
+      "createdTime": "2026-09-29T16:33:53.900035+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-ce-onprem",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "rt-ce-onprem",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": null,
+      "type": "Microsoft.Network/routeTables"
+    },
+    {
+      "changedTime": "2026-09-29T17:38:53.344543+00:00",
+      "createdTime": "2026-09-29T17:38:51.107390+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-spoke-nva-return",
+      "identity": null,
+      "kind": null,
+      "location": "swedencentral",
+      "managedBy": null,
+      "name": "rt-spoke-nva-return",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-saprise-swedencentral",
+      "sku": null,
+      "tags": null,
+      "type": "Microsoft.Network/routeTables"
+    }
+  ]
+}

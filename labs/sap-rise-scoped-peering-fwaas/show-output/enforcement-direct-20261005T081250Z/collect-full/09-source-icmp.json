@@ -1,0 +1,25 @@
+{
+  "label": "source-icmp",
+  "argv": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-saprise-swedencentral",
+    "-n",
+    "vm-hub-test",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "command -v python3 >/dev/null 2>&1 || { echo 'ERROR missing binary: python3'; exit 127; }\npython3 -c '\nimport json, os, signal, shutil, subprocess, sys\ncmd = ['\"'\"'bash'\"'\"', '\"'\"'-c'\"'\"', '\"'\"'date -u; ip route get 10.60.1.4; timeout 10 ping -n -c 5 -W 1 10.60.1.4; echo PING_STATUS=$?; if command -v mtr >/dev/null; then timeout 18 mtr -n -r -c 5 --max-ttl 8 10.60.1.4; echo MTR_STATUS=$?; else echo MTR_UNAVAILABLE; fi'\"'\"']\nif not shutil.which(cmd[0]):\n    print('\"'\"'ERROR missing binary: '\"'\"' + cmd[0]); print('\"'\"'COMMAND_STATUS=127'\"'\"'); sys.exit(127)\np = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)\ntry:\n    data, _ = p.communicate(timeout=30)\n    status = p.returncode\nexcept subprocess.TimeoutExpired:\n    os.killpg(p.pid, signal.SIGKILL)\n    data, _ = p.communicate(timeout=3)\n    status = 124\noffset = 0 * 2800\nprint(json.dumps({'\"'\"'command'\"'\"': cmd, '\"'\"'status'\"'\"': status, '\"'\"'bytes'\"'\"': len(data),\n                  '\"'\"'chunk'\"'\"': 0, '\"'\"'chunks'\"'\"': max(1, (len(data)+2799)//2800)}))\nprint(data[offset:offset+2800].decode('\"'\"'utf-8'\"'\"', errors='\"'\"'replace'\"'\"'))\nif len(data) > 2800:\n    print('\"'\"'ERROR OUTPUT_PAGED: not a complete atomic snapshot; never treat as full packet proof'\"'\"')\nprint('\"'\"'COMMAND_STATUS='\"'\"' + str(status))\nprint('\"'\"'UDR_STATUS=0'\"'\"')\n'"
+  ],
+  "utc": "2026-10-05T08:24:06.087545+00:00",
+  "cost": 0,
+  "timeoutSeconds": 300,
+  "status": "succeeded",
+  "pid": 41508,
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\n{\\\"command\\\": [\\\"bash\\\", \\\"-c\\\", \\\"date -u; ip route get 10.60.1.4; timeout 10 ping -n -c 5 -W 1 10.60.1.4; echo PING_STATUS=$?; if command -v mtr >/dev/null; then timeout 18 mtr -n -r -c 5 --max-ttl 8 10.60.1.4; echo MTR_STATUS=$?; else echo MTR_UNAVAILABLE; fi\\\"], \\\"status\\\": 0, \\\"bytes\\\": 787, \\\"chunk\\\": 0, \\\"chunks\\\": 1}\\nMon Oct  5 08:24:16 UTC 2026\\n10.60.1.4 via 10.40.2.1 dev eth0 src 10.40.2.4 uid 0 \\n    cache \\nPING 10.60.1.4 (10.60.1.4) 56(84) bytes of data.\\n64 bytes from 10.60.1.4: icmp_seq=1 ttl=64 time=2.05 ms\\n64 bytes from 10.60.1.4: icmp_seq=2 ttl=64 time=0.892 ms\\n64 bytes from 10.60.1.4: icmp_seq=3 ttl=64 time=1.63 ms\\n64 bytes from 10.60.1.4: icmp_seq=4 ttl=64 time=0.900 ms\\n64 bytes from 10.60.1.4: icmp_seq=5 ttl=64 time=0.911 ms\\n\\n--- 10.60.1.4 ping statistics ---\\n5 packets transmitted, 5 received, 0% packet loss, time 4059ms\\nrtt min/avg/max/mdev = 0.892/1.276/2.052/0.479 ms\\nPING_STATUS=0\\nStart: 2026-10-05T08:24:20+0000\\nHOST: vm-hub-test                 Loss%   Snt   Last   Avg  Best  Wrst StDev\\n  1.|-- 10.60.1.4                  0.0%     5    1.1   1.0   0.9   1.2   0.1\\nMTR_STATUS=0\\n\\nCOMMAND_STATUS=0\\nUDR_STATUS=0\\n\\n[stderr]\\n\"\n    }\n  ]\n}\n",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T08:24:43.510812+00:00"
+}

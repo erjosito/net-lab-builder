@@ -1,0 +1,23 @@
+{
+  "label": "sku-catalog",
+  "argv": [
+    "vm",
+    "list-skus",
+    "-l",
+    "swedencentral",
+    "--resource-type",
+    "virtualMachines",
+    "--size",
+    "Standard_B2ts_v2",
+    "--all"
+  ],
+  "utc": "2026-10-05T07:52:34.088763+00:00",
+  "cost": 0,
+  "timeoutSeconds": 180,
+  "status": "succeeded",
+  "pid": 16660,
+  "stdout": "[\n  {\n    \"capabilities\": [\n      {\n        \"name\": \"MaxResourceVolumeMB\",\n        \"value\": \"0\"\n      },\n      {\n        \"name\": \"OSVhdSizeMB\",\n        \"value\": \"1047552\"\n      },\n      {\n        \"name\": \"vCPUs\",\n        \"value\": \"2\"\n      },\n      {\n        \"name\": \"MemoryPreservingMaintenanceSupported\",\n        \"value\": \"True\"\n      },\n      {\n        \"name\": \"HyperVGenerations\",\n        \"value\": \"V1,V2\"\n      },\n      {\n        \"name\": \"SupportedCapacityReservationTypes\",\n        \"value\": \"Open,Targeted\"\n      },\n      {\n        \"name\": \"MemoryGB\",\n        \"value\": \"1\"\n      },\n      {\n        \"name\": \"MaxDataDiskCount\",\n        \"value\": \"4\"\n      },\n      {\n        \"name\": \"CpuArchitectureType\",\n        \"value\": \"x64\"\n      },\n      {\n        \"name\": \"LowPriorityCapable\",\n        \"value\": \"True\"\n      },\n      {\n        \"name\": \"PremiumIO\",\n        \"value\": \"True\"\n      },\n      {\n        \"name\": \"VMDeploymentTypes\",\n        \"value\": \"IaaS\"\n      },\n      {\n        \"name\": \"vCPUsConstraintsAllowed\",\n        \"value\": \"1, 2\"\n      },\n      {\n        \"name\": \"vCPUsAvailable\",\n        \"value\": \"2\"\n      },\n      {\n        \"name\": \"vCPUsPerCore\",\n        \"value\": \"2\"\n      },\n      {\n        \"name\": \"CombinedTempDiskAndCachedIOPS\",\n        \"value\": \"9000\"\n      },\n      {\n        \"name\": \"CombinedTempDiskAndCachedReadBytesPerSecond\",\n        \"value\": \"125000000\"\n      },\n      {\n        \"name\": \"CombinedTempDiskAndCachedWriteBytesPerSecond\",\n        \"value\": \"125000000\"\n      },\n      {\n        \"name\": \"UncachedDiskIOPS\",\n        \"value\": \"3750\"\n      },\n      {\n        \"name\": \"UncachedDiskBytesPerSecond\",\n        \"value\": \"85000000\"\n      },\n      {\n        \"name\": \"EphemeralOSDiskSupported\",\n        \"value\": \"False\"\n      },\n      {\n        \"name\": \"EncryptionAtHostSupported\",\n        \"value\": \"True\"\n      },\n      {\n        \"name\": \"CapacityReservationSupported\",\n        \"value\": \"True\"\n      },\n      {\n        \"name\": \"AcceleratedNetworkingEnabled\",\n        \"value\": \"True\"\n      },\n      {\n        \"name\": \"RdmaEnabled\",\n        \"value\": \"False\"\n      },\n      {\n        \"name\": \"MaxNetworkInterfaces\",\n        \"value\": \"2\"\n      }\n    ],\n    \"family\": \"standardBsv2Family\",\n    \"locationInfo\": [\n      {\n        \"location\": \"SwedenCentral\",\n        \"zoneDetails\": [\n          {\n            \"capabilities\": [\n              {\n                \"name\": \"UltraSSDAvailable\",\n                \"value\": \"True\"\n              }\n            ],\n            \"name\": [\n              \"3\",\n              \"2\",\n              \"1\"\n            ]\n          }\n        ],\n        \"zones\": [\n          \"3\",\n          \"2\",\n          \"1\"\n        ]\n      }\n    ],\n    \"locations\": [\n      \"SwedenCentral\"\n    ],\n    \"name\": \"Standard_B2ts_v2\",\n    \"resourceType\": \"virtualMachines\",\n    \"restrictions\": [],\n    \"size\": \"B2ts_v2\",\n    \"tier\": \"Standard\"\n  }\n]\n",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T07:53:50.831666+00:00"
+}

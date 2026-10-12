@@ -1,0 +1,25 @@
+{
+  "label": "wait-G4:nsg-hub-nva",
+  "argv": [
+    "resource",
+    "wait",
+    "--ids",
+    "/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/networkSecurityGroups/nsg-hub-nva/securityRules/Allow-PeeringEnforcement-ICMP",
+    "--api-version",
+    "2025-01-01",
+    "--created",
+    "--interval",
+    "30",
+    "--timeout",
+    "120"
+  ],
+  "utc": "2026-10-05T08:13:05.112303+00:00",
+  "cost": 0,
+  "timeoutSeconds": 120,
+  "status": "succeeded",
+  "pid": 39292,
+  "stdout": "",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T08:13:10.376022+00:00"
+}

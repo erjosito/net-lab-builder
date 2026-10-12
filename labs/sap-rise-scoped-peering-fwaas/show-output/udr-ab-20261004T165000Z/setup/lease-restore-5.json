@@ -1,0 +1,87 @@
+{
+  "calls": [
+    {
+      "label": "restore:8:0",
+      "argv": [
+        "vm",
+        "deallocate",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-workload-probe"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 43172,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "restore:7:0",
+      "argv": [
+        "vm",
+        "delete",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "vm-hub-test",
+        "--yes"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 35112,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "restore:7:1",
+      "argv": [
+        "disk",
+        "delete",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-n",
+        "osdisk-udr-hub-test",
+        "--yes"
+      ],
+      "cost": 1,
+      "status": "succeeded",
+      "pid": 37772,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-5-vms",
+      "argv": [
+        "vm",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral",
+        "-d"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 22880,
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "label": "verify-5-disks",
+      "argv": [
+        "disk",
+        "list",
+        "-g",
+        "rg-saprise-swedencentral"
+      ],
+      "cost": 0,
+      "status": "succeeded",
+      "pid": 31692,
+      "exitCode": 0,
+      "stderr": ""
+    }
+  ],
+  "mutations": 3,
+  "forward": 0,
+  "reserved": 0,
+  "taskId": "udr-restore-5"
+}

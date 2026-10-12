@@ -1,0 +1,21 @@
+{
+  "label": "G1:table",
+  "argv": [
+    "rest",
+    "--method",
+    "put",
+    "--url",
+    "https://management.azure.com/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source?api-version=2025-01-01",
+    "--body",
+    "{\"location\":\"swedencentral\",\"tags\":{\"lab\":\"sap-rise-scoped-peering-fwaas\",\"owner\":\"jose\",\"ephemeral\":\"true\"},\"properties\":{\"disableBgpRoutePropagation\":true,\"routes\":[]}}"
+  ],
+  "utc": "2026-10-05T07:51:40.735295+00:00",
+  "cost": 1,
+  "timeoutSeconds": 120,
+  "status": "succeeded",
+  "pid": 7968,
+  "stdout": "{\n  \"etag\": \"W/\\\"[REDACTED]\\\"\",\n  \"id\": \"/subscriptions/[REDACTED]/resourceGroups/rg-saprise-swedencentral/providers/Microsoft.Network/routeTables/rt-enforcement-source\",\n  \"location\": \"swedencentral\",\n  \"name\": \"rt-enforcement-source\",\n  \"properties\": {\n    \"disableBgpRoutePropagation\": true,\n    \"provisioningState\": \"Updating\",\n    \"resourceGuid\": \"[REDACTED]\",\n    \"routes\": []\n  },\n  \"tags\": {\n    \"ephemeral\": \"true\",\n    \"lab\": \"sap-rise-scoped-peering-fwaas\",\n    \"owner\": \"jose\"\n  },\n  \"type\": \"Microsoft.Network/routeTables\"\n}\n",
+  "stderr": "",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-05T07:51:44.181964+00:00"
+}

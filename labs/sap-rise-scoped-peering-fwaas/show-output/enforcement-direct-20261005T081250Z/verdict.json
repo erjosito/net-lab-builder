@@ -1,0 +1,103 @@
+{
+  "verifier": "Niobe",
+  "mode": "independent-offline-saved-evidence",
+  "verdict": "PASS_WITH_LIMITATIONS",
+  "narrowVerdict": "The same source 10.40.2.4 and workload 10.60.1.4 show scoped/full/restored ICMP delivery of 0/5, 5/5, 0/5. Full peering permits this tested direct flow without either NVA forwarding. Original saved configuration and power are restored.",
+  "evidenceRoot": "labs\\sap-rise-scoped-peering-fwaas\\show-output\\enforcement-direct-20261005T081250Z",
+  "pathConvention": "Evidence paths below are relative to evidenceRoot.",
+  "endpoints": {
+    "source": {"name": "vm-hub-test", "ip": "10.40.2.4", "vmId": "[REDACTED]"},
+    "workload": {"name": "vm-workload-probe", "ip": "10.60.1.4", "vmId": "[REDACTED]"},
+    "sameIdentitiesAcrossThreeStates": true,
+    "identityProof": ["collect-subnet\\06-power-controls.json", "collect-full\\06-power-controls.json", "collect-restored\\06-power-controls.json"]
+  },
+  "dataPlane": {
+    "protocol": "ICMP only",
+    "scoped": {"sent": 5, "received": 0, "proof": "collect-subnet\\09-source-icmp.json"},
+    "full": {"sent": 5, "received": 5, "proof": "collect-full\\09-source-icmp.json"},
+    "restored": {"sent": 5, "received": 0, "proof": "collect-restored\\09-source-icmp.json"},
+    "fullMtr": {"onlyReportedHop": "10.60.1.4", "hopNumber": 1, "sent": 5, "lossPercent": 0, "proof": "collect-full\\09-source-icmp.json"},
+    "forwardingControls": {
+      "vm-ce-onprem": "VM deallocated in every saved collection",
+      "vm-hub-nva": "VM deallocated in every saved collection",
+      "vm-spoke-nva": "VM deallocated in every saved collection",
+      "proof": ["collect-subnet\\06-power-controls.json", "collect-vnetlocal\\01-power-controls.json", "collect-vnetpeering\\01-power-controls.json", "collect-full\\06-power-controls.json", "collect-restored\\06-power-controls.json"],
+      "qualification": "Saved phase snapshots and absence of power mutations in the phase journal support the controls; these are not continuous telemetry."
+    },
+    "returnPath": "No reverse trace was captured. Successful echo replies while both NVAs were deallocated exclude either NVA forwarding those successful exchanges, without requiring a reverse-hop trace.",
+    "endpointAlive": "Full-state 5/5 replies prove workload availability for the successful comparison; no guest-agent debugging inference is required."
+  },
+  "routing": {
+    "fullSourceLongestActiveMatch": {"prefix": "10.60.0.0/16", "source": "Default", "nextHopType": "VNetPeering", "proof": "collect-full\\07-routes-nic-hub-test.json"},
+    "fullWorkloadLongestActiveMatch": {"prefix": "10.40.0.0/16", "source": "Default", "nextHopType": "VNetPeering", "proof": "collect-full\\08-routes-nic-workload-probe.json"},
+    "sourceConfiguredRoutes": "Empty during scoped, full and restored comparison.",
+    "workloadConfiguredRoutes": "Unchanged sole 0.0.0.0/0 -> VirtualAppliance 10.60.0.4; the effective table reports this User route as Active/None while that NVA is off.",
+    "noEndpointHostOrSpecificOverrideDuringComparison": true,
+    "routeTableProof": [
+      "collect-subnet\\01-direct-check-rt-enforcement-source.json", "collect-subnet\\02-direct-check-rt-spoke-workload.json",
+      "collect-full\\01-direct-check-rt-enforcement-source.json", "collect-full\\02-direct-check-rt-spoke-workload.json",
+      "collect-restored\\01-direct-check-rt-enforcement-source.json", "collect-restored\\02-direct-check-rt-spoke-workload.json"
+    ],
+    "sourceNativeRouteObservedUnchanged": "10.60.1.4 via 10.40.2.1 dev eth0 src 10.40.2.4 uid 0",
+    "sourceNativeRouteProof": ["collect-subnet\\09-source-icmp.json", "collect-full\\09-source-icmp.json", "collect-restored\\09-source-icmp.json"],
+    "workloadNativeGuestRoute": "NOT_INDEPENDENTLY_OBSERVED: permitted evidence contains no corresponding per-state workload guest ip route snapshot. No workload guest-route mutation appears in the saved phase journal. Unchanged Azure routes/configuration must not be presented as direct observation of an unchanged workload guest route."
+  },
+  "nsgControls": {
+    "rule": "Allow-PeeringEnforcement-ICMP",
+    "priority": 105,
+    "protocol": "Icmp",
+    "access": "Allow",
+    "direction": "Inbound",
+    "sourceAndDestinationPrefixes": ["10.40.2.4/32", "10.40.1.4/32", "10.60.0.4/32", "10.60.1.4/32"],
+    "bothEndpointNsgRulesIdentical": true,
+    "evidence": ["G4\\04-after-G4-nsg-hub-nva.json", "G4\\08-after-G4-vnet-sap-rise-snet-workload-nsg-swedencentral.json", "G13\\01-before-G13-0.json", "G13\\05-before-G13-1.json", "state.json"],
+    "qualification": "Rules match at creation and pre-removal; saved mutation chronology contains no intervening NSG edits. Separate per-state NSG reads were not collected."
+  },
+  "peeringControls": {
+    "scopeOnlyConfigurationChange": true,
+    "scoped": "snet-hub-nva 10.40.1.0/27 <-> snet-spoke-nva 10.60.0.0/27; peerCompleteVnets=false",
+    "full": "peerCompleteVnets=true; full remote VNet /16 address spaces",
+    "restoredMatchesScoped": true,
+    "unchangedFlags": {"allowVirtualNetworkAccess": true, "allowForwardedTraffic": true, "allowGatewayTransit": false, "useRemoteGateways": false, "doNotVerifyRemoteGateways": false},
+    "lifecycle": "Delete/recreate changes ETag/resourceGuid and derived scope address fields; these are not additional forwarding-policy changes.",
+    "proof": [
+      "collect-subnet\\04-scope-peer-hub-to-sap-rise.json", "collect-subnet\\05-scope-peer-sap-rise-to-hub.json",
+      "G10\\plan.json", "G11-add\\plan.json", "G11-remove\\plan.json", "G12\\plan.json",
+      "collect-full\\04-scope-peer-hub-to-sap-rise.json", "collect-full\\05-scope-peer-sap-rise-to-hub.json",
+      "collect-restored\\04-scope-peer-hub-to-sap-rise.json", "collect-restored\\05-scope-peer-sap-rise-to-hub.json"
+    ]
+  },
+  "controlPlaneProbes": {
+    "G7": {
+      "verdict": "ACCEPTED_CONFIGURATION_WITH_EFFECTIVE_NONE",
+      "configured": {"prefix": "10.60.1.4/32", "nextHopType": "VnetLocal"},
+      "effective": {"source": "User", "state": "Active", "nextHopType": "None"},
+      "icmpReceived": 0,
+      "icmpSent": 5,
+      "proof": ["G7-add\\04-after-G7-add-route.json", "collect-vnetlocal\\02-routes-nic-hub-test.json", "collect-vnetlocal\\04-source-icmp.json"],
+      "limit": "The failed ping is not by itself universal blocking proof: the workload return NVA was also off. Configuration acceptance is not delivery."
+    },
+    "G8": {
+      "verdict": "SERVICE_REJECTED",
+      "requestedNextHopType": "VNetPeering",
+      "errorCode": "InvalidRequestFormat",
+      "detailCode": "InvalidJson",
+      "detail": "Cannot convert VNetPeering to Microsoft.WindowsAzure.Networking.Nrp.Frontend.Contract.Csm.Public.NextHopType at properties.nextHopType.",
+      "httpStatus": null,
+      "httpStatusNote": "Raw stderr contains no numeric HTTP status. Do not label this HTTP 400.",
+      "rawTransportStatusRetained": "unknown",
+      "reconciledTableEmpty": true,
+      "writeReplayed": false,
+      "proof": ["G8-add\\02-G8-add-route.json", "collect-reconcile-rejection\\01-reconcile-source-table.json", "rejection-reconciliation.json"],
+      "classificationNote": "Structured service rejection is present despite the original transport classifier's unknown label. Independent table read supports route absence; historical unknown is retained."
+    }
+  },
+  "restoration": {"verdict": "PASS", "authoritativeProof": "restore-verification.json", "rawRunnerStatusStillBlocked": true, "stateEdited": false},
+  "untested": [
+    "Direct-spoke-NVA-only bypass hypothesis: UNTESTED. Neither NVA forwarded in the tested direct control.",
+    "Reverse-direction initiated probe and reverse traceroute.",
+    "TCP/UDP/application traffic and universal enforcement across other endpoint pairs.",
+    "Independent per-state workload native guest-route snapshots."
+  ],
+  "publicationGuidance": "Kid may cite the exact phase packet, power, route and peering files above and the separate restoration proof. Keep route visibility distinct from delivery. Do not publish raw secrets or turn the untested spoke-NVA-only bypass hypothesis into a result."
+}

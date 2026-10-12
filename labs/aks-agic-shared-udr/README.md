@@ -48,7 +48,13 @@ Post-scale `rt-shared` snapshot (2026-10-09 14:41:28–14:41:35 UTC; not a curre
 
 ## Retained state
 
-At the last captured state on 2026-10-09, the user had chosen to retain the treatment and nothing was restored or deleted. No live check was made for this report; resource existence, configuration, and cost are unknown as of 2026-10-12. Remove it with `deploy\deploy.ps1 -Action Cleanup -ConfirmDelete rg-aks-agic-shared-udr` if it is still deployed and no longer needed.
+The treatment was retained at the last captured state on 2026-10-09. On
+2026-10-12, cleanup was approved and the resource group deletion completed.
+Independent `az group exists` checks returned `false` for both the lab resource
+group and its AKS-managed node resource group. See the
+[cleanup evidence](show-output/cleanup-20261012T0728Z/verified-deleted.json).
+No live check was made after those verification commands; resource existence,
+configuration, and cost are not asserted beyond that captured time.
 
 ## Reproduction
 
@@ -79,6 +85,14 @@ az network route-table route list -g rg-aks-agic-shared-udr --route-table-name r
 
 Capture each command's timestamp, exit code, stdout, and stderr. Compare the pre/post pool and route snapshots; check health for every backend on both settings. Pod egress requires successful `kubectl exec` calls from each pod and should be reported separately from controller/gateway checks. The Oct 9 scale capture did not include a valid pre-scale pool query, and its later egress rechecks could not reach the Kubernetes API. See the [offline evidence verdict](show-output/scale-two-validation-20261009T1454Z/validation-verdict.md) for scope, exact observations, and timing caveats. Do not infer that the retained two-replica lab state still exists: `deploy\k8s\sample.yaml` intentionally remains a one-replica initial baseline.
 
+The bounded capture helper is `deploy\scale-two-run.ps1`; it records pre/post
+state to a new timestamped directory and uses PowerShell `ShouldProcess` before
+scaling. `-WhatIf` still makes read-only Azure and Kubernetes queries. The
+historical validation runner at
+`show-output\scale-two-validation-20261009T1454Z\run_validation.py` writes each
+run to a new timestamped directory and refuses to overwrite an existing output
+directory. Neither helper was executed for this publication.
+
 ## Limitations
 
 - Single run, one region, one node, one backend; timings are first-observation bounds.
@@ -91,4 +105,7 @@ Capture each command's timestamp, exit code, stdout, and stderr. Compare the pre
 
 [`show-output/`](show-output/): `baseline-20261009T1228Z`, `forced-control-mutation-20261009T1241Z`, `split-default-mutation-20261009T1251Z`, `split-default-validation-20261009T1254Z`, `gatewaymanager-mutation-20261009T1306Z`, `gatewaymanager-validation-20261009T1309Z`, `scale-two-mutation-20261009T1439Z`, and `scale-two-validation-20261009T1454Z`. Planning documents: [lab-card.md](lab-card.md), [design.md](design.md) (historical).
 
-**Sanitization:** subscription GUIDs in earlier captures were replaced with `00000000-0000-0000-0000-000000000000`; new scale evidence redacts local paths, generated node/pod identifiers, the AKS API hostname, and GUIDs. Runtime control files and kubeconfigs are gitignored and not published. The NVA public IP is an ordinary lab address.
+**Sanitization:** subscription and tenant GUIDs, account names, user addresses,
+resource UIDs, and AKS control-plane hostnames are redacted in retained captures.
+Runtime control files and kubeconfigs are gitignored and not published. The NVA
+public IP is an ordinary lab address.
