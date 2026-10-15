@@ -1,0 +1,25 @@
+{
+  "timestampUtc": "2026-10-14T18:04:53.705596+00:00",
+  "finishedUtc": "2026-10-14T18:04:57.721871+00:00",
+  "command": [
+    "C:\\Program Files\\Microsoft SDKs\\Azure\\CLI2\\wbin\\az.CMD",
+    "rest",
+    "--method",
+    "post",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/effectiveRoutes",
+    "--url-parameters",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\show-output\\b0-unsecured-er\\20261014T180438Z\\hub-eu-snapshot1-query.json",
+    "--body",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\b0-hub-eu-snapshot1-body.json",
+    "--subscription",
+    "<SUBSCRIPTION_ID>",
+    "--only-show-errors",
+    "-o",
+    "json"
+  ],
+  "exitCode": 0,
+  "stdout": "",
+  "stderr": "",
+  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

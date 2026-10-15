@@ -1,0 +1,39 @@
+{
+  "timestampUtc": "2026-10-14T18:32:54.789553+00:00",
+  "finishedUtc": "2026-10-14T18:32:58.822510+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp/runCommands/guest-aspath-proof-before",
+    "--url-parameters",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\aspath-query.json"
+  ],
+  "stdout": "{\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp/runCommands/guest-aspath-proof-before\",\n  \"location\": \"japaneast\",\n  \"name\": \"guest-aspath-proof-before\",\n  \"properties\": {\n    \"asyncExecution\": false,\n    \"instanceView\": {\n      \"endTime\": \"2026-10-14T18:31:50+00:00\",\n      \"error\": \"\",\n      \"executionMessage\": \"Execution completed\",\n      \"executionState\": \"Succeeded\",\n      \"exitCode\": 0,\n      \"output\": \"PROOF_BEGIN\\n89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006  /etc/bird/bird.conf\\nBIRD 2.0.8 ready.\\nName       Proto      Table      State  Since         Info\\ndevices    Device     ---        up     17:56:49.040  \\nconnected  Direct     ---        up     17:56:49.040  \\ncontrol_pins Static     underlay4  up     17:56:49.040  \\nown_dc     Static     lab4       up     17:56:49.040  \\nkernel_lab Kernel     lab4       up     17:56:49.040  \\nmesh_eu    BGP        ---        up     17:56:53.493  Established   \\nmesh_us    BGP        ---        up     17:56:53.842  Established   \\nmesh_cn    BGP        ---        up     17:56:54.039  Established   \\nazure_0    BGP        ---        up     17:56:53.019  Established   \\nazure_1    BGP        ---        up     17:56:53.067  Established   \\nvng1: #35, ESTABLISHED, IKEv2, 8b1e8ef8d733a8ab_i* dd585dbef0bd7154_r\\n  s2s1: #2, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128\\n  s2s1: #4, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128/MODP_2048\\nvng0: #34, ESTABLISHED, IKEv2, 4973a03a3929664f_i* 8e3361eb86c6aa6e_r\\n  s2s0: #1, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128\\n  s2s0: #3, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128/MODP_2048\\nPROOF_END\\n\",\n      \"startTime\": \"2026-10-14T18:31:50+00:00\"\n    },\n    \"provisioningState\": \"Succeeded\",\n    \"source\": {\n      \"script\": \"#!/bin/bash\\nset -euo pipefail\\necho PROOF_BEGIN\\nsha256sum /etc/bird/bird.conf\\nbirdc show protocols\\nswanctl --list-sas | grep -E 'ESTABLISHED|INSTALLED'\\necho PROOF_END\\n\"\n    },\n    \"timeoutInSeconds\": 120,\n    \"treatFailureAsDeploymentFailure\": true\n  },\n  \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n}\n",
+  "result": {
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp/runCommands/guest-aspath-proof-before",
+    "location": "japaneast",
+    "name": "guest-aspath-proof-before",
+    "properties": {
+      "asyncExecution": false,
+      "instanceView": {
+        "endTime": "2026-10-14T18:31:50+00:00",
+        "error": "",
+        "executionMessage": "Execution completed",
+        "executionState": "Succeeded",
+        "exitCode": 0,
+        "output": "PROOF_BEGIN\n89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006  /etc/bird/bird.conf\nBIRD 2.0.8 ready.\nName       Proto      Table      State  Since         Info\ndevices    Device     ---        up     17:56:49.040  \nconnected  Direct     ---        up     17:56:49.040  \ncontrol_pins Static     underlay4  up     17:56:49.040  \nown_dc     Static     lab4       up     17:56:49.040  \nkernel_lab Kernel     lab4       up     17:56:49.040  \nmesh_eu    BGP        ---        up     17:56:53.493  Established   \nmesh_us    BGP        ---        up     17:56:53.842  Established   \nmesh_cn    BGP        ---        up     17:56:54.039  Established   \nazure_0    BGP        ---        up     17:56:53.019  Established   \nazure_1    BGP        ---        up     17:56:53.067  Established   \nvng1: #35, ESTABLISHED, IKEv2, 8b1e8ef8d733a8ab_i* dd585dbef0bd7154_r\n  s2s1: #2, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128\n  s2s1: #4, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128/MODP_2048\nvng0: #34, ESTABLISHED, IKEv2, 4973a03a3929664f_i* 8e3361eb86c6aa6e_r\n  s2s0: #1, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128\n  s2s0: #3, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128/MODP_2048\nPROOF_END\n",
+        "startTime": "2026-10-14T18:31:50+00:00"
+      },
+      "provisioningState": "Succeeded",
+      "source": {
+        "script": "#!/bin/bash\nset -euo pipefail\necho PROOF_BEGIN\nsha256sum /etc/bird/bird.conf\nbirdc show protocols\nswanctl --list-sas | grep -E 'ESTABLISHED|INSTALLED'\necho PROOF_END\n"
+      },
+      "timeoutInSeconds": 120,
+      "treatFailureAsDeploymentFailure": true
+    },
+    "type": "Microsoft.Compute/virtualMachines/runCommands"
+  },
+  "sha256": "34b6d8b42b7051fd33ca3f837325cb0d544baefa73299e68b0653490cc5ac4ba"
+}

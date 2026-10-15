@@ -1,0 +1,21 @@
+{
+  "timestampUtc": "2026-10-15T07:48:05.375180+00:00",
+  "finishedUtc": "2026-10-15T07:48:08.172080+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-cn/runCommands/guest-aspath-proof-after",
+    "--url-parameters",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\direct-mesh-ports\\instance-query.json",
+    "--query",
+    "{id:id,name:name,location:location,properties:{provisioningState:properties.provisioningState,instanceView:properties.instanceView}}"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "{\r\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-cn/runCommands/guest-aspath-proof-after\",\r\n  \"location\": \"japaneast\",\r\n  \"name\": \"guest-aspath-proof-after\",\r\n  \"properties\": {\r\n    \"instanceView\": {\r\n      \"endTime\": \"2026-10-14T19:19:21+00:00\",\r\n      \"error\": \"\",\r\n      \"executionMessage\": \"Execution completed\",\r\n      \"executionState\": \"Succeeded\",\r\n      \"exitCode\": 0,\r\n      \"output\": \"PROOF_BEGIN\\n10e5591a16159a4a6e17350cb23f437623372f2ffd635ef20736f133c4738346  /etc/bird/bird.conf\\nBIRD 2.0.8 ready.\\nName       Proto      Table      State  Since         Info\\ndevices    Device     ---        up     17:56:50.787  \\nconnected  Direct     ---        up     17:56:50.787  \\ncontrol_pins Static     underlay4  up     17:56:50.787  \\nown_dc     Static     lab4       up     17:56:50.787  \\nkernel_lab Kernel     lab4       up     17:56:50.787  \\nmesh_eu    BGP        ---        up     17:56:54.915  Established   \\nmesh_us    BGP        ---        up     17:56:55.454  Established   \\nmesh_jp    BGP        ---        up     17:56:54.038  Established   \\nPROOF_END\\n\",\r\n      \"startTime\": \"2026-10-14T19:19:21+00:00\"\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  }\r\n}\r\n",
+  "stderr": "",
+  "expectedAbsent": false,
+  "stdoutSha256": "babce1a2cb45de914325bae3910f704c63a114c7646f93d7a852d0be2e87e580"
+}

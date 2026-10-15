@@ -1,0 +1,24 @@
+{
+  "timestampUtc": "2026-10-14T20:03:02.729088+00:00",
+  "command": [
+    "az",
+    "network",
+    "watcher",
+    "test-ip-flow",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "--vm",
+    "probe-dc-us",
+    "--nic",
+    "nic-probe-dc-us",
+    "--direction",
+    "Outbound",
+    "--protocol",
+    "TCP",
+    "--local",
+    "10.120.0.10:52000",
+    "--remote",
+    "10.10.0.10:5201"
+  ],
+  "mutation": false
+}

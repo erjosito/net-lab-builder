@@ -1,0 +1,21 @@
+{
+  "timestampUtc": "2026-10-15T07:54:31.934520+00:00",
+  "finishedUtc": "2026-10-15T07:54:37.932878+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/runCommands/guest-aspath-proof-after",
+    "--url-parameters",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\direct-mesh-ports\\instance-query.json",
+    "--query",
+    "{id:id,name:name,location:location,properties:{provisioningState:properties.provisioningState,instanceView:properties.instanceView}}"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "{\r\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/runCommands/guest-aspath-proof-after\",\r\n  \"location\": \"westeurope\",\r\n  \"name\": \"guest-aspath-proof-after\",\r\n  \"properties\": {\r\n    \"instanceView\": {\r\n      \"endTime\": \"2026-10-15T07:51:31+00:00\",\r\n      \"error\": \"\",\r\n      \"executionMessage\": \"Execution completed\",\r\n      \"executionState\": \"Succeeded\",\r\n      \"exitCode\": 0,\r\n      \"output\": \"DIRECT_MESH_OK {\\\"site\\\":\\\"eu\\\",\\\"healthy\\\":false,\\\"protocols\\\":{\\\"mesh_us\\\":\\\"Established\\\",\\\"mesh_jp\\\":\\\"Connect\\\",\\\"mesh_cn\\\":\\\"Connect\\\",\\\"azure_0\\\":\\\"Established\\\",\\\"azure_1\\\":\\\"Established\\\"},\\\"handshakes\\\":{\\\"wgeuus\\\":1792050636,\\\"wgeujp\\\":0,\\\"wgeucn\\\":0},\\\"exports\\\":{\\\"azure_0\\\":{\\\"10.110.0.0/24\\\":[],\\\"10.120.0.0/24\\\":[65012]},\\\"azure_1\\\":{\\\"10.110.0.0/24\\\":[],\\\"10.120.0.0/24\\\":[65012]}},\\\"ikeEstablished\\\":null,\\\"bird\\\":{\\\"sha256\\\":\\\"20fbaef367e78dd78b3e7d55e791d5c69dbae0a00fbd3c50ee0c2a740bdb4120\\\",\\\"uid\\\":113,\\\"gid\\\":122,\\\"mode\\\":384,\\\"mtimeNs\\\":1792000607648606479},\\\"protectedUnchanged\\\":true,\\\"underlayUnchanged\\\":true,\\\"endpoints\\\":{\\\"wgeuus\\\":\\\"10.220.0.4:51820\\\",\\\"wgeujp\\\":\\\"10.130.0.4:51820\\\",\\\"wgeucn\\\":\\\"10.140.0.4:51820\\\"},\\\"rollback\\\":true,\\\"natTranslationAbsent\\\":false}\\n\",\r\n      \"startTime\": \"2026-10-15T07:51:31+00:00\"\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  }\r\n}\r\n",
+  "stderr": "",
+  "expectedAbsent": false,
+  "stdoutSha256": "e2bd60992b47221880d2d50d2049346cc6d6a184c45313cb0b886638f8843a48"
+}

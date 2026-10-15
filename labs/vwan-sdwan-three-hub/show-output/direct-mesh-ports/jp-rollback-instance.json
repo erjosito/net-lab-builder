@@ -1,0 +1,21 @@
+{
+  "timestampUtc": "2026-10-15T07:54:41.884512+00:00",
+  "finishedUtc": "2026-10-15T07:54:46.138097+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp/runCommands/guest-aspath-proof-after",
+    "--url-parameters",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\direct-mesh-ports\\instance-query.json",
+    "--query",
+    "{id:id,name:name,location:location,properties:{provisioningState:properties.provisioningState,instanceView:properties.instanceView}}"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "{\r\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp/runCommands/guest-aspath-proof-after\",\r\n  \"location\": \"japaneast\",\r\n  \"name\": \"guest-aspath-proof-after\",\r\n  \"properties\": {\r\n    \"instanceView\": {\r\n      \"endTime\": \"2026-10-14T19:19:34+00:00\",\r\n      \"error\": \"\",\r\n      \"executionMessage\": \"Execution completed\",\r\n      \"executionState\": \"Succeeded\",\r\n      \"exitCode\": 0,\r\n      \"output\": \"PROOF_BEGIN\\n89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006  /etc/bird/bird.conf\\nBIRD 2.0.8 ready.\\nName       Proto      Table      State  Since         Info\\ndevices    Device     ---        up     17:56:49.040  \\nconnected  Direct     ---        up     17:56:49.040  \\ncontrol_pins Static     underlay4  up     17:56:49.040  \\nown_dc     Static     lab4       up     17:56:49.040  \\nkernel_lab Kernel     lab4       up     17:56:49.040  \\nmesh_eu    BGP        ---        up     17:56:53.493  Established   \\nmesh_us    BGP        ---        up     17:56:53.842  Established   \\nmesh_cn    BGP        ---        up     17:56:54.039  Established   \\nazure_0    BGP        ---        up     17:56:53.019  Established   \\nazure_1    BGP        ---        up     17:56:53.067  Established   \\nvng1: #35, ESTABLISHED, IKEv2, 8b1e8ef8d733a8ab_i* dd585dbef0bd7154_r\\n  s2s1: #5, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128/MODP_2048\\n  s2s1: #7, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128/MODP_2048\\nvng0: #34, ESTABLISHED, IKEv2, 4973a03a3929664f_i* 8e3361eb86c6aa6e_r\\n  s2s0: #6, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128/MODP_2048\\n  s2s0: #8, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128/MODP_2048\\nPROOF_END\\n\",\r\n      \"startTime\": \"2026-10-14T19:19:34+00:00\"\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  }\r\n}\r\n",
+  "stderr": "",
+  "expectedAbsent": false,
+  "stdoutSha256": "ba6541b42774d28dc0eae8cf45fa7017c536f025e668af27343400254d289e3f"
+}

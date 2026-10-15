@@ -1,0 +1,233 @@
+{
+  "timestampUtc": "2026-10-15T07:07:20.585008+00:00",
+  "verdict": "BLOCKED",
+  "baselineVerified": false,
+  "restoreState": "blocked-guest-unavailable",
+  "originalEvidence": "..\\show-output\\vpn-sdwan-aspath-boundaries\\sweep-verdict.json",
+  "initialActual": {},
+  "finalActual": {},
+  "currentWinnerRows": [],
+  "snapshotCount": 1,
+  "pairedStable": null,
+  "snapshotSpacingMinimumSeconds": null,
+  "actualHubMetadata": {
+    "eu": {
+      "timestampUtc": "2026-10-15T07:04:13.505520+00:00",
+      "hub": {
+        "etag": "W/\"b582ca2f-b87f-4f30-aebe-13104b48f40a\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu",
+        "location": "westeurope",
+        "name": "hub-eu",
+        "properties": {
+          "addressPrefix": "10.250.0.0/23",
+          "allowBranchToBranchTraffic": false,
+          "hubRoutingPreference": "ASPath",
+          "networkVirtualAppliances": [],
+          "provisioningState": "Succeeded",
+          "routeTable": {
+            "routes": []
+          },
+          "routingState": "Provisioned",
+          "sku": "Standard",
+          "virtualHubRouteTableV2s": [],
+          "virtualRouterAsn": 65515,
+          "virtualRouterAutoScaleConfiguration": {
+            "minCapacity": 2
+          },
+          "virtualRouterIps": [
+            "10.250.0.69",
+            "10.250.0.70"
+          ],
+          "virtualWan": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub"
+          }
+        },
+        "tags": {
+          "created_by": "copilot-lab",
+          "ephemeral": "true",
+          "lab": "true",
+          "owner": "jose",
+          "run_id": "20261014-threehub"
+        },
+        "type": "Microsoft.Network/virtualHubs"
+      },
+      "routingIntent": {
+        "value": []
+      }
+    },
+    "us": {
+      "timestampUtc": "2026-10-15T07:06:37.605626+00:00",
+      "hub": {
+        "etag": "W/\"fb4909d5-6ec8-4c32-aede-fa0ebd22c983\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us",
+        "location": "northcentralus",
+        "name": "hub-us",
+        "properties": {
+          "addressPrefix": "10.250.2.0/23",
+          "allowBranchToBranchTraffic": false,
+          "hubRoutingPreference": "ASPath",
+          "networkVirtualAppliances": [],
+          "provisioningState": "Succeeded",
+          "routeTable": {
+            "routes": []
+          },
+          "routingState": "Provisioned",
+          "sku": "Standard",
+          "virtualHubRouteTableV2s": [],
+          "virtualRouterAsn": 65515,
+          "virtualRouterAutoScaleConfiguration": {
+            "minCapacity": 2
+          },
+          "virtualRouterIps": [
+            "10.250.2.70",
+            "10.250.2.69"
+          ],
+          "virtualWan": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub"
+          }
+        },
+        "tags": {
+          "created_by": "copilot-lab",
+          "ephemeral": "true",
+          "lab": "true",
+          "owner": "jose",
+          "run_id": "20261014-threehub"
+        },
+        "type": "Microsoft.Network/virtualHubs"
+      },
+      "routingIntent": {
+        "value": []
+      }
+    },
+    "jp": {
+      "timestampUtc": "2026-10-15T07:07:02.054343+00:00",
+      "hub": {
+        "etag": "W/\"014d5b9c-c9b4-4c8d-ba81-6d56683b72f5\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp",
+        "location": "japaneast",
+        "name": "hub-jp",
+        "properties": {
+          "addressPrefix": "10.250.4.0/23",
+          "allowBranchToBranchTraffic": false,
+          "hubRoutingPreference": "ASPath",
+          "networkVirtualAppliances": [],
+          "provisioningState": "Succeeded",
+          "routeTable": {
+            "routes": []
+          },
+          "routingState": "Provisioned",
+          "sku": "Standard",
+          "virtualHubRouteTableV2s": [],
+          "virtualRouterAsn": 65515,
+          "virtualRouterAutoScaleConfiguration": {
+            "minCapacity": 2
+          },
+          "virtualRouterIps": [
+            "10.250.4.70",
+            "10.250.4.69"
+          ],
+          "virtualWan": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub"
+          },
+          "vpnGateway": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+          }
+        },
+        "tags": {
+          "created_by": "copilot-lab",
+          "ephemeral": "true",
+          "lab": "true",
+          "owner": "jose",
+          "run_id": "20261014-threehub"
+        },
+        "type": "Microsoft.Network/virtualHubs"
+      },
+      "routingIntent": {
+        "value": []
+      }
+    }
+  },
+  "errors": [
+    "eu-before: ERROR: (OperationNotAllowed) The operation requires the VM to be running (or set to run).\r\nCode: OperationNotAllowed\r\nMessage: The operation requires the VM to be running (or set to run).\r\n",
+    "eu: guest unavailable; power state is not running",
+    "us: guest unavailable; power state is not running",
+    "jp: guest unavailable; power state is not running",
+    "cn: guest unavailable; power state is not running"
+  ],
+  "callsUsed": 14,
+  "mutationsUsed": 0,
+  "azureFacingBGPSessions": null,
+  "uniqueWireGuardAdjacencies": null,
+  "defaultRouteTablesQueried": false,
+  "newScenarios": 0,
+  "children": [],
+  "noDataPlaneClaim": true,
+  "vmPowerStates": {
+    "eu": {
+      "timestampUtc": "2026-10-15T07:03:56.070894+00:00",
+      "statuses": [
+        {
+          "code": "ProvisioningState/succeeded",
+          "displayStatus": "Provisioning succeeded",
+          "level": "Info",
+          "time": "2026-10-14T23:51:44.5728239+00:00"
+        },
+        {
+          "code": "PowerState/deallocated",
+          "displayStatus": "VM deallocated",
+          "level": "Info"
+        }
+      ]
+    },
+    "us": {
+      "timestampUtc": "2026-10-15T07:04:00.393465+00:00",
+      "statuses": [
+        {
+          "code": "ProvisioningState/succeeded",
+          "displayStatus": "Provisioning succeeded",
+          "level": "Info",
+          "time": "2026-10-14T23:51:44.0438946+00:00"
+        },
+        {
+          "code": "PowerState/deallocated",
+          "displayStatus": "VM deallocated",
+          "level": "Info"
+        }
+      ]
+    },
+    "jp": {
+      "timestampUtc": "2026-10-15T07:04:04.135757+00:00",
+      "statuses": [
+        {
+          "code": "ProvisioningState/succeeded",
+          "displayStatus": "Provisioning succeeded",
+          "level": "Info",
+          "time": "2026-10-14T23:51:37.3190434+00:00"
+        },
+        {
+          "code": "PowerState/deallocated",
+          "displayStatus": "VM deallocated",
+          "level": "Info"
+        }
+      ]
+    },
+    "cn": {
+      "timestampUtc": "2026-10-15T07:04:07.621970+00:00",
+      "statuses": [
+        {
+          "code": "ProvisioningState/succeeded",
+          "displayStatus": "Provisioning succeeded",
+          "level": "Info",
+          "time": "2026-10-14T23:51:36.882129+00:00"
+        },
+        {
+          "code": "PowerState/deallocated",
+          "displayStatus": "VM deallocated",
+          "level": "Info"
+        }
+      ]
+    }
+  },
+  "closureActual": {},
+  "baselineClearedForNextExperiment": false
+}

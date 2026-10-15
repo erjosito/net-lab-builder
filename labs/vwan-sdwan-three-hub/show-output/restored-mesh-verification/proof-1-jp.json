@@ -1,0 +1,105 @@
+{
+  "site": "jp",
+  "now": 1792053310,
+  "utc": "2026-10-15T08:35:10.420531+00:00",
+  "bird": {
+    "sha256": "89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006",
+    "stat": {
+      "uid": 113,
+      "gid": 122,
+      "mode": 384,
+      "mtimeNs": 1792000606196722098
+    }
+  },
+  "protocols": {
+    "mesh_eu": {
+      "state": "up",
+      "since": "08:31:52.967",
+      "info": "Established"
+    },
+    "mesh_us": {
+      "state": "up",
+      "since": "08:31:05.573",
+      "info": "Established"
+    },
+    "mesh_cn": {
+      "state": "up",
+      "since": "08:32:25.926",
+      "info": "Established"
+    },
+    "azure_0": {
+      "state": "up",
+      "since": "07:10:16.761",
+      "info": "Established"
+    },
+    "azure_1": {
+      "state": "up",
+      "since": "07:42:23.174",
+      "info": "Established"
+    }
+  },
+  "exports": {
+    "azure_0": {
+      "10.110.0.0/24": [
+        65011
+      ],
+      "10.140.0.0/24": [
+        65014
+      ],
+      "10.130.0.0/24": [],
+      "10.120.0.0/24": [
+        65012
+      ]
+    },
+    "azure_1": {
+      "10.110.0.0/24": [
+        65011
+      ],
+      "10.140.0.0/24": [
+        65014
+      ],
+      "10.130.0.0/24": [],
+      "10.120.0.0/24": [
+        65012
+      ]
+    }
+  },
+  "rules": "0:\tfrom all lookup local\n100:\tfrom all fwmark 0x200 lookup 100\n32766:\tfrom all lookup main\n32767:\tfrom all lookup default\n",
+  "table100": "default via 10.130.0.1 dev eth0 onlink \n10.140.0.4 via 10.130.0.1 dev eth0 onlink \n10.210.0.4 via 10.130.0.1 dev eth0 onlink \n10.220.0.4 via 10.130.0.1 dev eth0 onlink \n",
+  "wg": {
+    "wgeujp": {
+      "peerPublicId": "2Uzrd2QRoPZT4YQ5mAQX8nTaZ/n/Dbmdalc+qZcFmXQ=",
+      "endpoint": "10.210.0.4:51822",
+      "listenPort": 51822,
+      "fwmark": "0x200",
+      "latestHandshake": 1792053289,
+      "markedRoute": "10.210.0.4 via 10.130.0.1 dev eth0 table 100 src 10.130.0.4 mark 0x200 uid 0 \n    cache",
+      "expectedPeer": "10.210.0.4",
+      "expectedPort": 51822
+    },
+    "wgusjp": {
+      "peerPublicId": "yJTm6CbLmD6bdSoEsZwNVS/Bjerrj+uFRVagA9lq1CI=",
+      "endpoint": "10.220.0.4:51824",
+      "listenPort": 51824,
+      "fwmark": "0x200",
+      "latestHandshake": 1792053268,
+      "markedRoute": "10.220.0.4 via 10.130.0.1 dev eth0 table 100 src 10.130.0.4 mark 0x200 uid 0 \n    cache",
+      "expectedPeer": "10.220.0.4",
+      "expectedPort": 51824
+    },
+    "wgjpcn": {
+      "peerPublicId": "JpAv8f1aPPTDXD8umgend+cbls+UBy4R6Yit7plfIF8=",
+      "endpoint": "10.140.0.4:51826",
+      "listenPort": 51826,
+      "fwmark": "0x200",
+      "latestHandshake": 1792053288,
+      "markedRoute": "10.140.0.4 via 10.130.0.1 dev eth0 table 100 src 10.130.0.4 mark 0x200 uid 0 \n    cache",
+      "expectedPeer": "10.140.0.4",
+      "expectedPort": 51826
+    }
+  },
+  "natTranslationPresent": false,
+  "ordinaryCnRoute": "10.140.0.4 dev wgjpcn src 172.31.0.21 uid 0 \n    cache",
+  "ikeEstablished": 2,
+  "childInstalled": 4
+}

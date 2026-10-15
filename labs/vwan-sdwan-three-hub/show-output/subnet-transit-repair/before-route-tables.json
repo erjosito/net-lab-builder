@@ -1,0 +1,212 @@
+{
+  "value": [
+    {
+      "etag": "W/\"c88edda8-62f7-4e12-9172-b4a578a24108\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/rt-dc-eu",
+      "location": "westeurope",
+      "name": "rt-dc-eu",
+      "properties": {
+        "disableBgpRoutePropagation": false,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "cccdcdd6-25c1-469f-afa9-454f3aff83fb",
+        "routes": [
+          {
+            "etag": "W/\"c88edda8-62f7-4e12-9172-b4a578a24108\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/rt-dc-eu/routes/data-1",
+            "name": "data-1",
+            "properties": {
+              "addressPrefix": "10.120.0.0/24",
+              "hasBgpOverride": false,
+              "nextHopIpAddress": "10.210.0.4",
+              "nextHopType": "VirtualAppliance",
+              "provisioningState": "Succeeded"
+            },
+            "type": "Microsoft.Network/routeTables/routes"
+          },
+          {
+            "etag": "W/\"c88edda8-62f7-4e12-9172-b4a578a24108\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/rt-dc-eu/routes/data-2",
+            "name": "data-2",
+            "properties": {
+              "addressPrefix": "10.130.0.0/24",
+              "hasBgpOverride": false,
+              "nextHopIpAddress": "10.210.0.4",
+              "nextHopType": "VirtualAppliance",
+              "provisioningState": "Succeeded"
+            },
+            "type": "Microsoft.Network/routeTables/routes"
+          },
+          {
+            "etag": "W/\"c88edda8-62f7-4e12-9172-b4a578a24108\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/rt-dc-eu/routes/data-3",
+            "name": "data-3",
+            "properties": {
+              "addressPrefix": "10.140.0.0/24",
+              "hasBgpOverride": false,
+              "nextHopIpAddress": "10.210.0.4",
+              "nextHopType": "VirtualAppliance",
+              "provisioningState": "Succeeded"
+            },
+            "type": "Microsoft.Network/routeTables/routes"
+          },
+          {
+            "etag": "W/\"c88edda8-62f7-4e12-9172-b4a578a24108\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/rt-dc-eu/routes/data-4",
+            "name": "data-4",
+            "properties": {
+              "addressPrefix": "10.10.0.0/24",
+              "hasBgpOverride": false,
+              "nextHopIpAddress": "10.210.0.4",
+              "nextHopType": "VirtualAppliance",
+              "provisioningState": "Succeeded"
+            },
+            "type": "Microsoft.Network/routeTables/routes"
+          },
+          {
+            "etag": "W/\"c88edda8-62f7-4e12-9172-b4a578a24108\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/rt-dc-eu/routes/data-5",
+            "name": "data-5",
+            "properties": {
+              "addressPrefix": "10.20.0.0/24",
+              "hasBgpOverride": false,
+              "nextHopIpAddress": "10.210.0.4",
+              "nextHopType": "VirtualAppliance",
+              "provisioningState": "Succeeded"
+            },
+            "type": "Microsoft.Network/routeTables/routes"
+          },
+          {
+            "etag": "W/\"c88edda8-62f7-4e12-9172-b4a578a24108\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/rt-dc-eu/routes/data-6",
+            "name": "data-6",
+            "properties": {
+              "addressPrefix": "10.30.0.0/24",
+              "hasBgpOverride": false,
+              "nextHopIpAddress": "10.210.0.4",
+              "nextHopType": "VirtualAppliance",
+              "provisioningState": "Succeeded"
+            },
+            "type": "Microsoft.Network/routeTables/routes"
+          }
+        ],
+        "subnets": [
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-eu/subnets/workload"
+          }
+        ]
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "jose",
+        "run_id": "20261014-threehub"
+      },
+      "type": "Microsoft.Network/routeTables"
+    },
+    {
+      "etag": "W/\"6ac9e351-cb1c-4cf8-8e9d-959f5f7cb57c\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/rt-dc-us",
+      "location": "northcentralus",
+      "name": "rt-dc-us",
+      "properties": {
+        "disableBgpRoutePropagation": false,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "89bc6ef9-7864-4725-9e38-c5122519c443",
+        "routes": [
+          {
+            "etag": "W/\"6ac9e351-cb1c-4cf8-8e9d-959f5f7cb57c\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/rt-dc-us/routes/data-0",
+            "name": "data-0",
+            "properties": {
+              "addressPrefix": "10.110.0.0/24",
+              "hasBgpOverride": false,
+              "nextHopIpAddress": "10.220.0.4",
+              "nextHopType": "VirtualAppliance",
+              "provisioningState": "Succeeded"
+            },
+            "type": "Microsoft.Network/routeTables/routes"
+          },
+          {
+            "etag": "W/\"6ac9e351-cb1c-4cf8-8e9d-959f5f7cb57c\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/rt-dc-us/routes/data-2",
+            "name": "data-2",
+            "properties": {
+              "addressPrefix": "10.130.0.0/24",
+              "hasBgpOverride": false,
+              "nextHopIpAddress": "10.220.0.4",
+              "nextHopType": "VirtualAppliance",
+              "provisioningState": "Succeeded"
+            },
+            "type": "Microsoft.Network/routeTables/routes"
+          },
+          {
+            "etag": "W/\"6ac9e351-cb1c-4cf8-8e9d-959f5f7cb57c\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/rt-dc-us/routes/data-3",
+            "name": "data-3",
+            "properties": {
+              "addressPrefix": "10.140.0.0/24",
+              "hasBgpOverride": false,
+              "nextHopIpAddress": "10.220.0.4",
+              "nextHopType": "VirtualAppliance",
+              "provisioningState": "Succeeded"
+            },
+            "type": "Microsoft.Network/routeTables/routes"
+          },
+          {
+            "etag": "W/\"6ac9e351-cb1c-4cf8-8e9d-959f5f7cb57c\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/rt-dc-us/routes/data-4",
+            "name": "data-4",
+            "properties": {
+              "addressPrefix": "10.10.0.0/24",
+              "hasBgpOverride": false,
+              "nextHopIpAddress": "10.220.0.4",
+              "nextHopType": "VirtualAppliance",
+              "provisioningState": "Succeeded"
+            },
+            "type": "Microsoft.Network/routeTables/routes"
+          },
+          {
+            "etag": "W/\"6ac9e351-cb1c-4cf8-8e9d-959f5f7cb57c\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/rt-dc-us/routes/data-5",
+            "name": "data-5",
+            "properties": {
+              "addressPrefix": "10.20.0.0/24",
+              "hasBgpOverride": false,
+              "nextHopIpAddress": "10.220.0.4",
+              "nextHopType": "VirtualAppliance",
+              "provisioningState": "Succeeded"
+            },
+            "type": "Microsoft.Network/routeTables/routes"
+          },
+          {
+            "etag": "W/\"6ac9e351-cb1c-4cf8-8e9d-959f5f7cb57c\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/rt-dc-us/routes/data-6",
+            "name": "data-6",
+            "properties": {
+              "addressPrefix": "10.30.0.0/24",
+              "hasBgpOverride": false,
+              "nextHopIpAddress": "10.220.0.4",
+              "nextHopType": "VirtualAppliance",
+              "provisioningState": "Succeeded"
+            },
+            "type": "Microsoft.Network/routeTables/routes"
+          }
+        ],
+        "subnets": [
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-us/subnets/workload"
+          }
+        ]
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "jose",
+        "run_id": "20261014-threehub"
+      },
+      "type": "Microsoft.Network/routeTables"
+    }
+  ]
+}

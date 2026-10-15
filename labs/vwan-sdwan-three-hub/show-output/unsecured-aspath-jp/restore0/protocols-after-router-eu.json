@@ -1,0 +1,39 @@
+{
+  "timestampUtc": "2026-10-14T19:20:13.446086+00:00",
+  "finishedUtc": "2026-10-14T19:20:19.204205+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/runCommands/guest-aspath-proof-after",
+    "--url-parameters",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\aspath-query.json"
+  ],
+  "stdout": "{\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/runCommands/guest-aspath-proof-after\",\n  \"location\": \"westeurope\",\n  \"name\": \"guest-aspath-proof-after\",\n  \"properties\": {\n    \"asyncExecution\": false,\n    \"instanceView\": {\n      \"endTime\": \"2026-10-14T19:19:20+00:00\",\n      \"error\": \"\",\n      \"executionMessage\": \"Execution completed\",\n      \"executionState\": \"Succeeded\",\n      \"exitCode\": 0,\n      \"output\": \"PROOF_BEGIN\\n20fbaef367e78dd78b3e7d55e791d5c69dbae0a00fbd3c50ee0c2a740bdb4120  /etc/bird/bird.conf\\nBIRD 2.0.8 ready.\\nName       Proto      Table      State  Since         Info\\ndevices    Device     ---        up     17:56:49.644  \\nconnected  Direct     ---        up     17:56:49.644  \\ncontrol_pins Static     underlay4  up     17:56:49.644  \\nown_dc     Static     lab4       up     17:56:49.644  \\nkernel_lab Kernel     lab4       up     17:56:49.644  \\nmesh_us    BGP        ---        up     17:56:54.329  Established   \\nmesh_jp    BGP        ---        up     17:56:53.377  Established   \\nmesh_cn    BGP        ---        up     17:56:55.026  Established   \\nazure_0    BGP        ---        up     17:56:53.469  Established   \\nazure_1    BGP        ---        up     17:56:51.794  Established   \\nPROOF_END\\n\",\n      \"startTime\": \"2026-10-14T19:19:20+00:00\"\n    },\n    \"provisioningState\": \"Succeeded\",\n    \"source\": {\n      \"script\": \"#!/bin/bash\\nset -euo pipefail\\necho PROOF_BEGIN\\nsha256sum /etc/bird/bird.conf\\nbirdc show protocols\\necho PROOF_END\\n\"\n    },\n    \"timeoutInSeconds\": 120,\n    \"treatFailureAsDeploymentFailure\": true\n  },\n  \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n}\n",
+  "result": {
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/runCommands/guest-aspath-proof-after",
+    "location": "westeurope",
+    "name": "guest-aspath-proof-after",
+    "properties": {
+      "asyncExecution": false,
+      "instanceView": {
+        "endTime": "2026-10-14T19:19:20+00:00",
+        "error": "",
+        "executionMessage": "Execution completed",
+        "executionState": "Succeeded",
+        "exitCode": 0,
+        "output": "PROOF_BEGIN\n20fbaef367e78dd78b3e7d55e791d5c69dbae0a00fbd3c50ee0c2a740bdb4120  /etc/bird/bird.conf\nBIRD 2.0.8 ready.\nName       Proto      Table      State  Since         Info\ndevices    Device     ---        up     17:56:49.644  \nconnected  Direct     ---        up     17:56:49.644  \ncontrol_pins Static     underlay4  up     17:56:49.644  \nown_dc     Static     lab4       up     17:56:49.644  \nkernel_lab Kernel     lab4       up     17:56:49.644  \nmesh_us    BGP        ---        up     17:56:54.329  Established   \nmesh_jp    BGP        ---        up     17:56:53.377  Established   \nmesh_cn    BGP        ---        up     17:56:55.026  Established   \nazure_0    BGP        ---        up     17:56:53.469  Established   \nazure_1    BGP        ---        up     17:56:51.794  Established   \nPROOF_END\n",
+        "startTime": "2026-10-14T19:19:20+00:00"
+      },
+      "provisioningState": "Succeeded",
+      "source": {
+        "script": "#!/bin/bash\nset -euo pipefail\necho PROOF_BEGIN\nsha256sum /etc/bird/bird.conf\nbirdc show protocols\necho PROOF_END\n"
+      },
+      "timeoutInSeconds": 120,
+      "treatFailureAsDeploymentFailure": true
+    },
+    "type": "Microsoft.Compute/virtualMachines/runCommands"
+  },
+  "sha256": "06db118e266370c6d93abb064aeca3b50624105d893a3dd22981878ed737fc4b"
+}

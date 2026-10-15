@@ -1,0 +1,21 @@
+{
+  "timestampUtc": "2026-10-15T07:50:43.591008+00:00",
+  "finishedUtc": "2026-10-15T07:50:49.412346+00:00",
+  "command": [
+    "deployment",
+    "group",
+    "show",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "direct-mesh-guest",
+    "--query",
+    "{state:properties.provisioningState,error:properties.error}"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "{\r\n  \"error\": {\r\n    \"additionalInfo\": null,\r\n    \"code\": \"DeploymentFailed\",\r\n    \"details\": [\r\n      {\r\n        \"additionalInfo\": null,\r\n        \"code\": \"ResourceDeploymentFailure\",\r\n        \"details\": null,\r\n        \"message\": \"The resource write operation failed to complete successfully, because it reached terminal provisioning state 'Failed'.\",\r\n        \"target\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/runCommands/guest-aspath-proof-after\"\r\n      },\r\n      {\r\n        \"additionalInfo\": null,\r\n        \"code\": \"ResourceDeploymentFailure\",\r\n        \"details\": null,\r\n        \"message\": \"The resource write operation failed to complete successfully, because it reached terminal provisioning state 'Failed'.\",\r\n        \"target\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-us/runCommands/guest-aspath-proof-after\"\r\n      },\r\n      {\r\n        \"additionalInfo\": null,\r\n        \"code\": \"ResourceDeploymentFailure\",\r\n        \"details\": null,\r\n        \"message\": \"The resource write operation failed to complete successfully, because it reached terminal provisioning state 'Failed'.\",\r\n        \"target\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-cn/runCommands/guest-aspath-proof-after\"\r\n      },\r\n      {\r\n        \"additionalInfo\": null,\r\n        \"code\": \"BadRequest\",\r\n        \"details\": null,\r\n        \"message\": \"The maximum number of managed Run commands (max=25, current=25) has been exceeded. Use fewer Run commands and retry the request. To list Run commands, refer: https://aka.ms/RunCommandManaged#list-all-deployed-runcommand-resources-on-a-vm-1 and then delete a Run command: https://aka.ms/RunCommandManaged#delete-runcommand-resource-from-the-vm-1 \",\r\n        \"target\": null\r\n      }\r\n    ],\r\n    \"message\": \"At least one resource deployment operation failed. Please list deployment operations for details. Please see https://aka.ms/arm-deployment-operations for usage details.\",\r\n    \"target\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Resources/deployments/direct-mesh-guest\"\r\n  },\r\n  \"state\": \"Failed\"\r\n}\r\n",
+  "stderr": "",
+  "expectedAbsent": false,
+  "stdoutSha256": "007444df16592f37f2729f2a49015fa9182b2664511f6f2a94dc03108a7017cc"
+}

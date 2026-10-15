@@ -1,0 +1,641 @@
+{
+  "value": [
+    {
+      "etag": "W/\"99107d76-b768-41bd-968a-322abaca6698\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-dc-eu",
+      "kind": "Regular",
+      "location": "westeurope",
+      "name": "nic-probe-dc-eu",
+      "properties": {
+        "allowPort25Out": true,
+        "auxiliaryMode": "None",
+        "auxiliarySku": "None",
+        "defaultOutboundConnectivityEnabled": false,
+        "disableTcpStateTracking": false,
+        "dnsSettings": {
+          "appliedDnsServers": [],
+          "dnsServers": [],
+          "internalDomainNameSuffix": "ymtv2vazlj0e3jasz5uovhulfg.ax.internal.cloudapp.net"
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": false,
+        "hostedWorkloads": [],
+        "ipConfigurations": [
+          {
+            "etag": "W/\"99107d76-b768-41bd-968a-322abaca6698\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-dc-eu/ipConfigurations/ipconfig1",
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAddress": "10.110.0.10",
+              "privateIPAddressVersion": "IPv4",
+              "privateIPAllocationMethod": "Static",
+              "provisioningState": "Succeeded",
+              "publicIPAddress": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-probe-dc-eu"
+              },
+              "subnet": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-eu/subnets/workload"
+              }
+            },
+            "type": "Microsoft.Network/networkInterfaces/ipConfigurations"
+          }
+        ],
+        "macAddress": "70-A8-A5-3A-8F-81",
+        "networkSecurityGroup": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-probe-dc-eu"
+        },
+        "nicType": "Standard",
+        "primary": true,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "7cd5aa48-ea35-4ede-9bcb-c2bc87804ab4",
+        "tapConfigurations": [],
+        "virtualMachine": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-eu"
+        },
+        "vnetEncryptionSupported": false
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "jose",
+        "run_id": "20261014-threehub"
+      },
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "etag": "W/\"d6c5f848-231c-40a9-a78f-928800446c54\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-spoke-eu",
+      "kind": "Regular",
+      "location": "westeurope",
+      "name": "nic-probe-spoke-eu",
+      "properties": {
+        "allowPort25Out": true,
+        "auxiliaryMode": "None",
+        "auxiliarySku": "None",
+        "defaultOutboundConnectivityEnabled": false,
+        "disableTcpStateTracking": false,
+        "dnsSettings": {
+          "appliedDnsServers": [],
+          "dnsServers": [],
+          "internalDomainNameSuffix": "3wkvbjrxeygeldkgmzfyhi4lqa.ax.internal.cloudapp.net"
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": false,
+        "hostedWorkloads": [],
+        "ipConfigurations": [
+          {
+            "etag": "W/\"d6c5f848-231c-40a9-a78f-928800446c54\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-spoke-eu/ipConfigurations/ipconfig1",
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAddress": "10.10.0.10",
+              "privateIPAddressVersion": "IPv4",
+              "privateIPAllocationMethod": "Static",
+              "provisioningState": "Succeeded",
+              "publicIPAddress": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-probe-spoke-eu"
+              },
+              "subnet": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-spoke-eu/subnets/workload"
+              }
+            },
+            "type": "Microsoft.Network/networkInterfaces/ipConfigurations"
+          }
+        ],
+        "macAddress": "70-A8-A5-3C-52-F5",
+        "networkSecurityGroup": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-probe-spoke-eu"
+        },
+        "nicType": "Standard",
+        "primary": true,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "67292e58-eefc-49dc-9961-5453756251b1",
+        "tapConfigurations": [],
+        "virtualMachine": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-eu"
+        },
+        "vnetEncryptionSupported": false
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "jose",
+        "run_id": "20261014-threehub"
+      },
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "etag": "W/\"27bf293c-e80f-4cda-a15e-c97ff51896bb\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-eu",
+      "kind": "Regular",
+      "location": "westeurope",
+      "name": "nic-router-eu",
+      "properties": {
+        "allowPort25Out": true,
+        "auxiliaryMode": "None",
+        "auxiliarySku": "None",
+        "defaultOutboundConnectivityEnabled": false,
+        "disableTcpStateTracking": false,
+        "dnsSettings": {
+          "appliedDnsServers": [],
+          "dnsServers": [],
+          "internalDomainNameSuffix": "xl1jcmgu1bwernrkgatlpss3fa.ax.internal.cloudapp.net"
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": true,
+        "hostedWorkloads": [],
+        "ipConfigurations": [
+          {
+            "etag": "W/\"27bf293c-e80f-4cda-a15e-c97ff51896bb\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-eu/ipConfigurations/ipconfig1",
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAddress": "10.210.0.4",
+              "privateIPAddressVersion": "IPv4",
+              "privateIPAllocationMethod": "Static",
+              "provisioningState": "Succeeded",
+              "publicIPAddress": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-router-eu"
+              },
+              "subnet": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-transit-eu/subnets/workload"
+              }
+            },
+            "type": "Microsoft.Network/networkInterfaces/ipConfigurations"
+          }
+        ],
+        "macAddress": "70-A8-A5-59-DE-AB",
+        "networkSecurityGroup": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-eu"
+        },
+        "nicType": "Standard",
+        "primary": true,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "e83acf8a-7142-44a9-9ace-8151c0361b6e",
+        "tapConfigurations": [],
+        "virtualMachine": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu"
+        },
+        "vnetEncryptionSupported": false
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "jose",
+        "run_id": "20261014-threehub"
+      },
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "etag": "W/\"8e6ca2f9-bdfe-4c36-a7c5-5332ec801d21\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-dc-us",
+      "kind": "Regular",
+      "location": "northcentralus",
+      "name": "nic-probe-dc-us",
+      "properties": {
+        "allowPort25Out": true,
+        "auxiliaryMode": "None",
+        "auxiliarySku": "None",
+        "defaultOutboundConnectivityEnabled": false,
+        "disableTcpStateTracking": false,
+        "dnsSettings": {
+          "appliedDnsServers": [],
+          "dnsServers": [],
+          "internalDomainNameSuffix": "ihaoeni3wkfuvefewlucpi1mjh.ex.internal.cloudapp.net"
+        },
+        "enableIPForwarding": false,
+        "hostedWorkloads": [],
+        "ipConfigurations": [
+          {
+            "etag": "W/\"8e6ca2f9-bdfe-4c36-a7c5-5332ec801d21\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-dc-us/ipConfigurations/ipconfig1",
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAddress": "10.120.0.10",
+              "privateIPAddressVersion": "IPv4",
+              "privateIPAllocationMethod": "Static",
+              "provisioningState": "Succeeded",
+              "publicIPAddress": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-probe-dc-us"
+              },
+              "subnet": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-us/subnets/workload"
+              }
+            },
+            "type": "Microsoft.Network/networkInterfaces/ipConfigurations"
+          }
+        ],
+        "macAddress": "00-22-48-8E-EB-BD",
+        "networkSecurityGroup": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-probe-dc-us"
+        },
+        "nicType": "Standard",
+        "primary": true,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "424a6a5a-7ba9-47a7-bac2-30d620f572bc",
+        "tapConfigurations": [],
+        "virtualMachine": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-us"
+        },
+        "vnetEncryptionSupported": false
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "jose",
+        "run_id": "20261014-threehub"
+      },
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "etag": "W/\"2b55634c-c3ee-45d8-9a1f-4bbcc2c6133a\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-spoke-us",
+      "kind": "Regular",
+      "location": "northcentralus",
+      "name": "nic-probe-spoke-us",
+      "properties": {
+        "allowPort25Out": true,
+        "auxiliaryMode": "None",
+        "auxiliarySku": "None",
+        "defaultOutboundConnectivityEnabled": false,
+        "disableTcpStateTracking": false,
+        "dnsSettings": {
+          "appliedDnsServers": [],
+          "dnsServers": [],
+          "internalDomainNameSuffix": "rtfkclrg0yrefadx4hrjsd5lga.ex.internal.cloudapp.net"
+        },
+        "enableIPForwarding": false,
+        "hostedWorkloads": [],
+        "ipConfigurations": [
+          {
+            "etag": "W/\"2b55634c-c3ee-45d8-9a1f-4bbcc2c6133a\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-spoke-us/ipConfigurations/ipconfig1",
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAddress": "10.20.0.10",
+              "privateIPAddressVersion": "IPv4",
+              "privateIPAllocationMethod": "Static",
+              "provisioningState": "Succeeded",
+              "publicIPAddress": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-probe-spoke-us"
+              },
+              "subnet": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-spoke-us/subnets/workload"
+              }
+            },
+            "type": "Microsoft.Network/networkInterfaces/ipConfigurations"
+          }
+        ],
+        "macAddress": "00-22-48-8E-E0-A1",
+        "networkSecurityGroup": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-probe-spoke-us"
+        },
+        "nicType": "Standard",
+        "primary": true,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "61dca9fd-304d-4ffc-a9a0-afdbf96f7c7f",
+        "tapConfigurations": [],
+        "virtualMachine": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-us"
+        },
+        "vnetEncryptionSupported": false
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "jose",
+        "run_id": "20261014-threehub"
+      },
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "etag": "W/\"2442353a-e96e-4167-875c-52197661f516\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-us",
+      "kind": "Regular",
+      "location": "northcentralus",
+      "name": "nic-router-us",
+      "properties": {
+        "allowPort25Out": true,
+        "auxiliaryMode": "None",
+        "auxiliarySku": "None",
+        "defaultOutboundConnectivityEnabled": false,
+        "disableTcpStateTracking": false,
+        "dnsSettings": {
+          "appliedDnsServers": [],
+          "dnsServers": [],
+          "internalDomainNameSuffix": "zy2id35k4mlefomu1azdynelqb.ex.internal.cloudapp.net"
+        },
+        "enableIPForwarding": true,
+        "hostedWorkloads": [],
+        "ipConfigurations": [
+          {
+            "etag": "W/\"2442353a-e96e-4167-875c-52197661f516\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-us/ipConfigurations/ipconfig1",
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAddress": "10.220.0.4",
+              "privateIPAddressVersion": "IPv4",
+              "privateIPAllocationMethod": "Static",
+              "provisioningState": "Succeeded",
+              "publicIPAddress": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-router-us"
+              },
+              "subnet": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-transit-us/subnets/workload"
+              }
+            },
+            "type": "Microsoft.Network/networkInterfaces/ipConfigurations"
+          }
+        ],
+        "macAddress": "7C-ED-8D-55-1D-FF",
+        "networkSecurityGroup": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-us"
+        },
+        "nicType": "Standard",
+        "primary": true,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "44d4a39f-7a86-49bf-b51d-d5c55cae14fd",
+        "tapConfigurations": [],
+        "virtualMachine": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-us"
+        },
+        "vnetEncryptionSupported": false
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "jose",
+        "run_id": "20261014-threehub"
+      },
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "etag": "W/\"794c4a39-4794-416d-956a-5557ac86f00c\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-dc-jp",
+      "kind": "Regular",
+      "location": "japaneast",
+      "name": "nic-probe-dc-jp",
+      "properties": {
+        "allowPort25Out": true,
+        "auxiliaryMode": "None",
+        "auxiliarySku": "None",
+        "defaultOutboundConnectivityEnabled": false,
+        "disableTcpStateTracking": false,
+        "dnsSettings": {
+          "appliedDnsServers": [],
+          "dnsServers": [],
+          "internalDomainNameSuffix": "ay2arp10jtze1d1eev1uxrf2ra.lx.internal.cloudapp.net"
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": false,
+        "hostedWorkloads": [],
+        "ipConfigurations": [
+          {
+            "etag": "W/\"794c4a39-4794-416d-956a-5557ac86f00c\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-dc-jp/ipConfigurations/ipconfig1",
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAddress": "10.130.0.10",
+              "privateIPAddressVersion": "IPv4",
+              "privateIPAllocationMethod": "Static",
+              "provisioningState": "Succeeded",
+              "publicIPAddress": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-probe-dc-jp"
+              },
+              "subnet": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-jp/subnets/workload"
+              }
+            },
+            "type": "Microsoft.Network/networkInterfaces/ipConfigurations"
+          }
+        ],
+        "macAddress": "00-0D-3A-52-45-D5",
+        "networkSecurityGroup": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-probe-dc-jp"
+        },
+        "nicType": "Standard",
+        "primary": true,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "a2c31883-0cab-4fa0-97d5-db0ba9a17dca",
+        "tapConfigurations": [],
+        "virtualMachine": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-jp"
+        },
+        "vnetEncryptionSupported": false
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "jose",
+        "run_id": "20261014-threehub"
+      },
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "etag": "W/\"148b522a-b552-455e-9d1f-210282a84ee0\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-spoke-jp",
+      "kind": "Regular",
+      "location": "japaneast",
+      "name": "nic-probe-spoke-jp",
+      "properties": {
+        "allowPort25Out": true,
+        "auxiliaryMode": "None",
+        "auxiliarySku": "None",
+        "defaultOutboundConnectivityEnabled": false,
+        "disableTcpStateTracking": false,
+        "dnsSettings": {
+          "appliedDnsServers": [],
+          "dnsServers": [],
+          "internalDomainNameSuffix": "t2vusa3zmctuznzgwvwi2uhaoa.lx.internal.cloudapp.net"
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": false,
+        "hostedWorkloads": [],
+        "ipConfigurations": [
+          {
+            "etag": "W/\"148b522a-b552-455e-9d1f-210282a84ee0\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-spoke-jp/ipConfigurations/ipconfig1",
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAddress": "10.30.0.10",
+              "privateIPAddressVersion": "IPv4",
+              "privateIPAllocationMethod": "Static",
+              "provisioningState": "Succeeded",
+              "publicIPAddress": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-probe-spoke-jp"
+              },
+              "subnet": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-spoke-jp/subnets/workload"
+              }
+            },
+            "type": "Microsoft.Network/networkInterfaces/ipConfigurations"
+          }
+        ],
+        "macAddress": "7C-1E-52-38-83-BF",
+        "networkSecurityGroup": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-probe-spoke-jp"
+        },
+        "nicType": "Standard",
+        "primary": true,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "66831e8d-7638-4a2b-acca-0ef12a430ed6",
+        "tapConfigurations": [],
+        "virtualMachine": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-jp"
+        },
+        "vnetEncryptionSupported": false
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "jose",
+        "run_id": "20261014-threehub"
+      },
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "etag": "W/\"8136580a-bba8-4d86-91f8-630cb8e8fec1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-cn",
+      "kind": "Regular",
+      "location": "japaneast",
+      "name": "nic-router-cn",
+      "properties": {
+        "allowPort25Out": true,
+        "auxiliaryMode": "None",
+        "auxiliarySku": "None",
+        "defaultOutboundConnectivityEnabled": false,
+        "disableTcpStateTracking": false,
+        "dnsSettings": {
+          "appliedDnsServers": [],
+          "dnsServers": [],
+          "internalDomainNameSuffix": "5kj5mafrjxtu1j1cy0omqzgu0a.lx.internal.cloudapp.net"
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": true,
+        "hostedWorkloads": [],
+        "ipConfigurations": [
+          {
+            "etag": "W/\"8136580a-bba8-4d86-91f8-630cb8e8fec1\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-cn/ipConfigurations/ipconfig1",
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAddress": "10.140.0.4",
+              "privateIPAddressVersion": "IPv4",
+              "privateIPAllocationMethod": "Static",
+              "provisioningState": "Succeeded",
+              "publicIPAddress": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-router-cn"
+              },
+              "subnet": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-cn/subnets/workload"
+              }
+            },
+            "type": "Microsoft.Network/networkInterfaces/ipConfigurations"
+          }
+        ],
+        "macAddress": "7C-1E-52-4B-BD-95",
+        "networkSecurityGroup": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-cn"
+        },
+        "nicType": "Standard",
+        "primary": true,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "fb1881df-8d6c-4da5-aea7-be0e9381d796",
+        "tapConfigurations": [],
+        "virtualMachine": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-cn"
+        },
+        "vnetEncryptionSupported": false
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "jose",
+        "run_id": "20261014-threehub"
+      },
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "etag": "W/\"b237aabb-f745-4172-99ec-d0f392b0daa0\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-jp",
+      "kind": "Regular",
+      "location": "japaneast",
+      "name": "nic-router-jp",
+      "properties": {
+        "allowPort25Out": true,
+        "auxiliaryMode": "None",
+        "auxiliarySku": "None",
+        "defaultOutboundConnectivityEnabled": false,
+        "disableTcpStateTracking": false,
+        "dnsSettings": {
+          "appliedDnsServers": [],
+          "dnsServers": [],
+          "internalDomainNameSuffix": "ay2arp10jtze1d1eev1uxrf2ra.lx.internal.cloudapp.net"
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": true,
+        "hostedWorkloads": [],
+        "ipConfigurations": [
+          {
+            "etag": "W/\"b237aabb-f745-4172-99ec-d0f392b0daa0\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-jp/ipConfigurations/ipconfig1",
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAddress": "10.130.0.4",
+              "privateIPAddressVersion": "IPv4",
+              "privateIPAllocationMethod": "Static",
+              "provisioningState": "Succeeded",
+              "publicIPAddress": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-router-jp"
+              },
+              "subnet": {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-jp/subnets/workload"
+              }
+            },
+            "type": "Microsoft.Network/networkInterfaces/ipConfigurations"
+          }
+        ],
+        "macAddress": "7C-ED-8D-E9-65-84",
+        "networkSecurityGroup": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp"
+        },
+        "nicType": "Standard",
+        "primary": true,
+        "provisioningState": "Succeeded",
+        "resourceGuid": "19c9b1d5-431c-4c35-99ca-7dbccebeed69",
+        "tapConfigurations": [],
+        "virtualMachine": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp"
+        },
+        "vnetEncryptionSupported": false
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "jose",
+        "run_id": "20261014-threehub"
+      },
+      "type": "Microsoft.Network/networkInterfaces"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "timestampUtc": "2026-10-15T07:06:32.073867+00:00",
+  "finishedUtc": "2026-10-15T07:06:34.978006+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us?api-version=2024-05-01"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "{\r\n  \"etag\": \"W/\\\"fb4909d5-6ec8-4c32-aede-fa0ebd22c983\\\"\",\r\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us\",\r\n  \"location\": \"northcentralus\",\r\n  \"name\": \"hub-us\",\r\n  \"properties\": {\r\n    \"addressPrefix\": \"10.250.2.0/23\",\r\n    \"allowBranchToBranchTraffic\": false,\r\n    \"hubRoutingPreference\": \"ASPath\",\r\n    \"networkVirtualAppliances\": [],\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"routeTable\": {\r\n      \"routes\": []\r\n    },\r\n    \"routingState\": \"Provisioned\",\r\n    \"sku\": \"Standard\",\r\n    \"virtualHubRouteTableV2s\": [],\r\n    \"virtualRouterAsn\": 65515,\r\n    \"virtualRouterAutoScaleConfiguration\": {\r\n      \"minCapacity\": 2\r\n    },\r\n    \"virtualRouterIps\": [\r\n      \"10.250.2.70\",\r\n      \"10.250.2.69\"\r\n    ],\r\n    \"virtualWan\": {\r\n      \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub\"\r\n    }\r\n  },\r\n  \"tags\": {\r\n    \"created_by\": \"copilot-lab\",\r\n    \"ephemeral\": \"true\",\r\n    \"lab\": \"true\",\r\n    \"owner\": \"jose\",\r\n    \"run_id\": \"20261014-threehub\"\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualHubs\"\r\n}\r\n",
+  "stderr": "",
+  "expectedAbsent": false,
+  "stdoutSha256": "29cc883681145ee8fbddb3c6447b1a019e297bcdbbaab98525028a2c83d09f1a"
+}

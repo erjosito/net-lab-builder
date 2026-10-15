@@ -1,0 +1,112 @@
+{
+  "timestampUtc": "2026-10-14T19:43:29.935204+00:00",
+  "finishedUtc": "2026-10-14T19:46:13.437451+00:00",
+  "command": [
+    "deployment",
+    "group",
+    "create",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "--name",
+    "aspath-source-4",
+    "--template-file",
+    "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\aspath-source-4-template.json",
+    "--parameters",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\aspath-source-4-parameters.json"
+  ],
+  "stdout": "{\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Resources/deployments/aspath-source-4\",\n  \"location\": null,\n  \"name\": \"aspath-source-4\",\n  \"properties\": {\n    \"correlationId\": \"f06788a4-bbea-4495-88c1-ef9c285b4c9c\",\n    \"debugSetting\": null,\n    \"dependencies\": [\n      {\n        \"dependsOn\": [\n          {\n            \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp/runCommands/guest-aspath-4-a\",\n            \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n            \"resourceName\": \"router-jp/guest-aspath-4-a\",\n            \"resourceType\": \"Microsoft.Compute/virtualMachines/runCommands\"\n          }\n        ],\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp/runCommands/guest-aspath-4-b\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"resourceName\": \"router-jp/guest-aspath-4-b\",\n        \"resourceType\": \"Microsoft.Compute/virtualMachines/runCommands\"\n      }\n    ],\n    \"diagnostics\": null,\n    \"duration\": \"PT2M5.8753374S\",\n    \"error\": null,\n    \"extensions\": [],\n    \"mode\": \"Incremental\",\n    \"onErrorDeployment\": null,\n    \"outputResources\": [\n      {\n        \"apiVersion\": null,\n        \"extension\": null,\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp/runCommands/guest-aspath-4-a\",\n        \"identifiers\": null,\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"resourceType\": \"Microsoft.Compute/virtualMachines/runCommands\"\n      },\n      {\n        \"apiVersion\": null,\n        \"extension\": null,\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp/runCommands/guest-aspath-4-b\",\n        \"identifiers\": null,\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"resourceType\": \"Microsoft.Compute/virtualMachines/runCommands\"\n      }\n    ],\n    \"outputs\": null,\n    \"parameters\": {\n      \"peer1\": {\n        \"type\": \"SecureString\"\n      },\n      \"router_jp\": {\n        \"type\": \"SecureString\"\n      }\n    },\n    \"parametersLink\": null,\n    \"providers\": [\n      {\n        \"id\": null,\n        \"namespace\": \"Microsoft.Compute\",\n        \"providerAuthorizationConsentState\": null,\n        \"registrationPolicy\": null,\n        \"registrationState\": null,\n        \"resourceTypes\": [\n          {\n            \"aliases\": null,\n            \"apiProfiles\": null,\n            \"apiVersions\": null,\n            \"capabilities\": null,\n            \"defaultApiVersion\": null,\n            \"locationMappings\": null,\n            \"locations\": [\n              \"japaneast\"\n            ],\n            \"properties\": null,\n            \"resourceType\": \"virtualMachines/runCommands\",\n            \"zoneMappings\": null\n          }\n        ]\n      }\n    ],\n    \"provisioningState\": \"Succeeded\",\n    \"templateHash\": \"11207038812934527303\",\n    \"templateLink\": null,\n    \"timestamp\": \"2026-10-14T19:45:43.173506+00:00\",\n    \"validatedResources\": null,\n    \"validationLevel\": null\n  },\n  \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n  \"tags\": null,\n  \"type\": \"Microsoft.Resources/deployments\"\n}\n",
+  "result": {
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Resources/deployments/aspath-source-4",
+    "location": null,
+    "name": "aspath-source-4",
+    "properties": {
+      "correlationId": "f06788a4-bbea-4495-88c1-ef9c285b4c9c",
+      "debugSetting": null,
+      "dependencies": [
+        {
+          "dependsOn": [
+            {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp/runCommands/guest-aspath-4-a",
+              "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+              "resourceName": "router-jp/guest-aspath-4-a",
+              "resourceType": "Microsoft.Compute/virtualMachines/runCommands"
+            }
+          ],
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp/runCommands/guest-aspath-4-b",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "resourceName": "router-jp/guest-aspath-4-b",
+          "resourceType": "Microsoft.Compute/virtualMachines/runCommands"
+        }
+      ],
+      "diagnostics": null,
+      "duration": "PT2M5.8753374S",
+      "error": null,
+      "extensions": [],
+      "mode": "Incremental",
+      "onErrorDeployment": null,
+      "outputResources": [
+        {
+          "apiVersion": null,
+          "extension": null,
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp/runCommands/guest-aspath-4-a",
+          "identifiers": null,
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "resourceType": "Microsoft.Compute/virtualMachines/runCommands"
+        },
+        {
+          "apiVersion": null,
+          "extension": null,
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp/runCommands/guest-aspath-4-b",
+          "identifiers": null,
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "resourceType": "Microsoft.Compute/virtualMachines/runCommands"
+        }
+      ],
+      "outputs": null,
+      "parameters": {
+        "peer1": {
+          "type": "SecureString"
+        },
+        "router_jp": {
+          "type": "SecureString"
+        }
+      },
+      "parametersLink": null,
+      "providers": [
+        {
+          "id": null,
+          "namespace": "Microsoft.Compute",
+          "providerAuthorizationConsentState": null,
+          "registrationPolicy": null,
+          "registrationState": null,
+          "resourceTypes": [
+            {
+              "aliases": null,
+              "apiProfiles": null,
+              "apiVersions": null,
+              "capabilities": null,
+              "defaultApiVersion": null,
+              "locationMappings": null,
+              "locations": [
+                "japaneast"
+              ],
+              "properties": null,
+              "resourceType": "virtualMachines/runCommands",
+              "zoneMappings": null
+            }
+          ]
+        }
+      ],
+      "provisioningState": "Succeeded",
+      "templateHash": "11207038812934527303",
+      "templateLink": null,
+      "timestamp": "2026-10-14T19:45:43.173506+00:00",
+      "validatedResources": null,
+      "validationLevel": null
+    },
+    "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+    "tags": null,
+    "type": "Microsoft.Resources/deployments"
+  },
+  "sha256": "05885a081300d065322bc66d37689d1a3c196a6b4a9ff866560b352f5ca31926"
+}

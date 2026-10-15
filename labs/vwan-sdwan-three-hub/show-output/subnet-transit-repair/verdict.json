@@ -1,0 +1,129 @@
+{
+  "timestampUtc": "2026-10-14T20:05:03.315991+00:00",
+  "taskId": "vwan-three-hub-private-transit-subnet-20261014",
+  "verdict": "INCONCLUSIVE",
+  "state": "blocked",
+  "flow": {
+    "direction": "Outbound",
+    "protocol": "TCP",
+    "source": "10.120.0.10:52000",
+    "destination": "10.10.0.10:5201",
+    "result": {
+      "access": "Allow",
+      "ruleName": "securityRules/out-private-http"
+    }
+  },
+  "sourceUdr": [
+    {
+      "addressPrefix": [
+        "10.10.0.0/24"
+      ],
+      "disableBgpRoutePropagation": false,
+      "name": "data-4",
+      "nextHopIpAddress": [
+        "10.220.0.4"
+      ],
+      "nextHopType": "VirtualAppliance",
+      "source": "User",
+      "state": "Active"
+    }
+  ],
+  "scope": [
+    {
+      "vnet": "vnet-dc-eu",
+      "subnet": "workload",
+      "nsg": "vnet-dc-eu-workload-nsg-westeurope",
+      "runTagMatches": true,
+      "exclusiveTaskSubnet": true,
+      "systemCreatedAt": null,
+      "customRuleCount": 0
+    },
+    {
+      "vnet": "vnet-spoke-eu",
+      "subnet": "workload",
+      "nsg": "vnet-spoke-eu-workload-nsg-westeurope",
+      "runTagMatches": true,
+      "exclusiveTaskSubnet": true,
+      "systemCreatedAt": null,
+      "customRuleCount": 0
+    },
+    {
+      "vnet": "vnet-transit-eu",
+      "subnet": "workload",
+      "nsg": "vnet-transit-eu-workload-nsg-westeurope",
+      "runTagMatches": true,
+      "exclusiveTaskSubnet": true,
+      "systemCreatedAt": null,
+      "customRuleCount": 0
+    },
+    {
+      "vnet": "vnet-dc-us",
+      "subnet": "workload",
+      "nsg": "vnet-dc-us-workload-nsg-northcentralus",
+      "runTagMatches": true,
+      "exclusiveTaskSubnet": true,
+      "systemCreatedAt": null,
+      "customRuleCount": 0
+    },
+    {
+      "vnet": "vnet-spoke-us",
+      "subnet": "workload",
+      "nsg": "vnet-spoke-us-workload-nsg-northcentralus",
+      "runTagMatches": true,
+      "exclusiveTaskSubnet": true,
+      "systemCreatedAt": null,
+      "customRuleCount": 0
+    },
+    {
+      "vnet": "vnet-transit-us",
+      "subnet": "workload",
+      "nsg": "vnet-transit-us-workload-nsg-northcentralus",
+      "runTagMatches": true,
+      "exclusiveTaskSubnet": true,
+      "systemCreatedAt": null,
+      "customRuleCount": 0
+    },
+    {
+      "vnet": "vnet-dc-cn",
+      "subnet": "workload",
+      "nsg": "vnet-dc-cn-workload-nsg-japaneast",
+      "runTagMatches": true,
+      "exclusiveTaskSubnet": true,
+      "systemCreatedAt": null,
+      "customRuleCount": 0
+    },
+    {
+      "vnet": "vnet-dc-jp",
+      "subnet": "workload",
+      "nsg": "vnet-dc-jp-workload-nsg-japaneast",
+      "runTagMatches": true,
+      "exclusiveTaskSubnet": true,
+      "systemCreatedAt": null,
+      "customRuleCount": 0
+    },
+    {
+      "vnet": "vnet-spoke-jp",
+      "subnet": "workload",
+      "nsg": "vnet-spoke-jp-workload-nsg-japaneast",
+      "runTagMatches": true,
+      "exclusiveTaskSubnet": true,
+      "systemCreatedAt": null,
+      "customRuleCount": 0
+    }
+  ],
+  "subnetNsgCount": 9,
+  "missingProof": [
+    "VirtualNetwork source/destination expansions absent in the three effective NSG responses",
+    "systemData creation timestamps absent on all nine VNets and subnet NSGs",
+    "No exact-flow subnet Deny rule observed"
+  ],
+  "failure": "subnet-before-raw-effective-probe-dc-us: exit 1",
+  "repairAuthorizedByEvidence": false,
+  "azureCalls": 10,
+  "mutations": 0,
+  "forwardBeforeAfter": "Not run: lease blocked by failed raw-API read; B0 remains historical FAIL",
+  "rollback": "Not required: no ARM submission or persistent guest writes",
+  "baselinePreservation": "No hub, AS_PATH, BIRD, IPsec, WireGuard, route, NSG or policy writes",
+  "children": [],
+  "queuedWork": false
+}

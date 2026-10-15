@@ -1,0 +1,4149 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "sshPublicKey": {
+      "type": "secureString"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/routeTables",
+      "apiVersion": "2024-05-01",
+      "name": "rt-dc-eu",
+      "properties": {
+        "disableBgpRoutePropagation": false,
+        "routes": [
+          {
+            "name": "data-1",
+            "properties": {
+              "addressPrefix": "10.120.0.0/24",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "10.210.0.4"
+            }
+          },
+          {
+            "name": "data-2",
+            "properties": {
+              "addressPrefix": "10.130.0.0/24",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "10.210.0.4"
+            }
+          },
+          {
+            "name": "data-3",
+            "properties": {
+              "addressPrefix": "10.140.0.0/24",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "10.210.0.4"
+            }
+          },
+          {
+            "name": "data-4",
+            "properties": {
+              "addressPrefix": "10.10.0.0/24",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "10.210.0.4"
+            }
+          },
+          {
+            "name": "data-5",
+            "properties": {
+              "addressPrefix": "10.20.0.0/24",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "10.210.0.4"
+            }
+          },
+          {
+            "name": "data-6",
+            "properties": {
+              "addressPrefix": "10.30.0.0/24",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "10.210.0.4"
+            }
+          }
+        ]
+      },
+      "location": "westeurope",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/routeTables",
+      "apiVersion": "2024-05-01",
+      "name": "rt-dc-us",
+      "properties": {
+        "disableBgpRoutePropagation": false,
+        "routes": [
+          {
+            "name": "data-0",
+            "properties": {
+              "addressPrefix": "10.110.0.0/24",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "10.220.0.4"
+            }
+          },
+          {
+            "name": "data-2",
+            "properties": {
+              "addressPrefix": "10.130.0.0/24",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "10.220.0.4"
+            }
+          },
+          {
+            "name": "data-3",
+            "properties": {
+              "addressPrefix": "10.140.0.0/24",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "10.220.0.4"
+            }
+          },
+          {
+            "name": "data-4",
+            "properties": {
+              "addressPrefix": "10.10.0.0/24",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "10.220.0.4"
+            }
+          },
+          {
+            "name": "data-5",
+            "properties": {
+              "addressPrefix": "10.20.0.0/24",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "10.220.0.4"
+            }
+          },
+          {
+            "name": "data-6",
+            "properties": {
+              "addressPrefix": "10.30.0.0/24",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "10.220.0.4"
+            }
+          }
+        ]
+      },
+      "location": "northcentralus",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-eu",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.110.0.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "workload",
+            "properties": {
+              "addressPrefix": "10.110.0.0/24",
+              "defaultOutboundAccess": false,
+              "routeTable": {
+                "id": "[resourceId('Microsoft.Network/routeTables', 'rt-dc-eu')]"
+              }
+            }
+          }
+        ]
+      },
+      "location": "westeurope",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/routeTables', 'rt-dc-eu')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-us",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.120.0.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "workload",
+            "properties": {
+              "addressPrefix": "10.120.0.0/24",
+              "defaultOutboundAccess": false,
+              "routeTable": {
+                "id": "[resourceId('Microsoft.Network/routeTables', 'rt-dc-us')]"
+              }
+            }
+          }
+        ]
+      },
+      "location": "northcentralus",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/routeTables', 'rt-dc-us')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-jp",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.130.0.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "workload",
+            "properties": {
+              "addressPrefix": "10.130.0.0/24",
+              "defaultOutboundAccess": false
+            }
+          }
+        ]
+      },
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-cn",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.140.0.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "workload",
+            "properties": {
+              "addressPrefix": "10.140.0.0/24",
+              "defaultOutboundAccess": false
+            }
+          }
+        ]
+      },
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-transit-eu",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.210.0.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "workload",
+            "properties": {
+              "addressPrefix": "10.210.0.0/24",
+              "defaultOutboundAccess": false
+            }
+          }
+        ]
+      },
+      "location": "westeurope",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-transit-us",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.220.0.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "workload",
+            "properties": {
+              "addressPrefix": "10.220.0.0/24",
+              "defaultOutboundAccess": false
+            }
+          }
+        ]
+      },
+      "location": "northcentralus",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-spoke-eu",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.10.0.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "workload",
+            "properties": {
+              "addressPrefix": "10.10.0.0/24",
+              "defaultOutboundAccess": false
+            }
+          }
+        ]
+      },
+      "location": "westeurope",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-spoke-us",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.20.0.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "workload",
+            "properties": {
+              "addressPrefix": "10.20.0.0/24",
+              "defaultOutboundAccess": false
+            }
+          }
+        ]
+      },
+      "location": "northcentralus",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-spoke-jp",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.30.0.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "workload",
+            "properties": {
+              "addressPrefix": "10.30.0.0/24",
+              "defaultOutboundAccess": false
+            }
+          }
+        ]
+      },
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-eu/to-dc-us",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-us')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-eu')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-us')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-us/to-dc-eu",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-eu')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-us')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-eu')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-dc-eu', 'to-dc-us')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-eu/to-dc-jp",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-jp')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-eu')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-jp')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-dc-us', 'to-dc-eu')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-jp/to-dc-eu",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-eu')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-jp')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-eu')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-dc-eu', 'to-dc-jp')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-eu/to-dc-cn",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-cn')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-eu')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-cn')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-dc-jp', 'to-dc-eu')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-cn/to-dc-eu",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-eu')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-cn')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-eu')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-dc-eu', 'to-dc-cn')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-us/to-dc-jp",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-jp')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-us')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-jp')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-dc-cn', 'to-dc-eu')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-jp/to-dc-us",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-us')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-jp')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-us')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-dc-us', 'to-dc-jp')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-us/to-dc-cn",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-cn')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-us')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-cn')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-dc-jp', 'to-dc-us')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-cn/to-dc-us",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-us')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-cn')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-us')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-dc-us', 'to-dc-cn')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-jp/to-dc-cn",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-cn')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-jp')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-cn')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-dc-cn', 'to-dc-us')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-cn/to-dc-jp",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-jp')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-cn')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-jp')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-dc-jp', 'to-dc-cn')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-eu/to-transit-eu",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-eu')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-eu')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-eu')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-dc-cn', 'to-dc-jp')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-transit-eu/to-dc-eu",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-eu')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-eu')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-eu')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-dc-eu', 'to-transit-eu')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-us/to-transit-us",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-us')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-us')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-us')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-transit-eu', 'to-dc-eu')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-transit-us/to-dc-us",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-us')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-us')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-us')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-dc-us', 'to-transit-us')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-transit-eu/to-transit-us",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-us')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-eu')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-us')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-transit-us', 'to-dc-us')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-transit-us/to-transit-eu",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-eu')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-us')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-eu')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-transit-eu', 'to-transit-us')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-transit-eu/to-dc-jp",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-jp')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-eu')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-jp')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-transit-us', 'to-transit-eu')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-jp/to-transit-eu",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-eu')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-jp')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-eu')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-transit-eu', 'to-dc-jp')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-transit-eu/to-dc-cn",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-cn')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-eu')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-cn')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-dc-jp', 'to-transit-eu')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-cn/to-transit-eu",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-eu')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-cn')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-eu')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-transit-eu', 'to-dc-cn')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-transit-us/to-dc-jp",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-jp')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-us')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-jp')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-dc-cn', 'to-transit-eu')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-jp/to-transit-us",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-us')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-jp')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-us')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-transit-us', 'to-dc-jp')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-transit-us/to-dc-cn",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-cn')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-us')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-cn')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-dc-jp', 'to-transit-us')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2024-05-01",
+      "name": "vnet-dc-cn/to-transit-us",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-us')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-cn')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-us')]",
+        "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', 'vnet-transit-us', 'to-dc-cn')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2024-05-01",
+      "name": "nsg-router-eu",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.210.0.4",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.210.0.4",
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "out-private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.210.0.4",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "out-private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.210.0.4",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "bootstrap-web",
+            "properties": {
+              "priority": 200,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.210.0.4",
+              "destinationAddressPrefix": "Internet",
+              "destinationPortRanges": [
+                "80",
+                "443"
+              ]
+            }
+          },
+          {
+            "name": "platform-agent",
+            "properties": {
+              "priority": 202,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.210.0.4",
+              "destinationAddressPrefixes": [
+                "168.63.129.16",
+                "169.254.169.254"
+              ],
+              "destinationPortRanges": [
+                "80",
+                "32526"
+              ]
+            }
+          },
+          {
+            "name": "wireguard-private",
+            "properties": {
+              "priority": 100,
+              "protocol": "Udp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.220.0.4/32",
+                "10.130.0.4/32",
+                "10.140.0.4/32"
+              ],
+              "destinationAddressPrefix": "10.210.0.4",
+              "destinationPortRange": "51820"
+            }
+          },
+          {
+            "name": "out-wireguard-private",
+            "properties": {
+              "priority": 100,
+              "protocol": "Udp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.210.0.4",
+              "destinationAddressPrefixes": [
+                "10.220.0.4/32",
+                "10.130.0.4/32",
+                "10.140.0.4/32"
+              ],
+              "destinationPortRange": "51820"
+            }
+          },
+          {
+            "name": "forward-private",
+            "properties": {
+              "priority": 140,
+              "protocol": "*",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "out-forward-private",
+            "properties": {
+              "priority": 140,
+              "protocol": "*",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "hub-bgp",
+            "properties": {
+              "priority": 110,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.250.0.0/23",
+              "destinationAddressPrefix": "10.210.0.4",
+              "destinationPortRange": "179"
+            }
+          },
+          {
+            "name": "out-hub-bgp",
+            "properties": {
+              "priority": 110,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.210.0.4",
+              "destinationAddressPrefix": "10.250.0.0/23",
+              "destinationPortRange": "179"
+            }
+          },
+          {
+            "name": "deny-other-inbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "deny-other-outbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          }
+        ]
+      },
+      "location": "westeurope",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2024-05-01",
+      "name": "pip-router-eu",
+      "properties": {
+        "publicIPAllocationMethod": "Static",
+        "publicIPAddressVersion": "IPv4"
+      },
+      "location": "westeurope",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "sku": {
+        "name": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2024-05-01",
+      "name": "nic-router-eu",
+      "properties": {
+        "enableIPForwarding": true,
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-router-eu')]"
+        },
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.210.0.4",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-router-eu')]"
+              },
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-transit-eu', 'workload')]"
+              }
+            }
+          }
+        ]
+      },
+      "location": "westeurope",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-eu')]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-router-eu')]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-router-eu')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-07-01",
+      "name": "router-eu",
+      "location": "westeurope",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', 'nic-router-eu')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_B2ts_v2"
+        },
+        "priority": "Regular",
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "osdisk-router-eu",
+            "createOption": "FromImage",
+            "diskSizeGB": 30,
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
+          }
+        },
+        "osProfile": {
+          "computerName": "router-eu",
+          "adminUsername": "azurelabuser",
+          "customData": "I2Nsb3VkLWNvbmZpZwpwYWNrYWdlX3VwZGF0ZTogdHJ1ZQpwYWNrYWdlczoKICAtIHB5dGhvbjMKICAtIGN1cmwKICAtIHRjcGR1bXAKICAtIGJpcmQyCiAgLSBzdHJvbmdzd2FuCiAgLSBzdHJvbmdzd2FuLXN3YW5jdGwKICAtIGNoYXJvbi1zeXN0ZW1kCiAgLSB3aXJlZ3VhcmQKd3JpdGVfZmlsZXM6CiAgLSBwYXRoOiAvZXRjL3N5c3RlbWQvc3lzdGVtL2xhYi1odHRwLnNlcnZpY2UKICAgIHBlcm1pc3Npb25zOiAnMDY0NCcKICAgIGNvbnRlbnQ6IHwKICAgICAgW1VuaXRdCiAgICAgIERlc2NyaXB0aW9uPVByaXZhdGUgbGFiIEhUVFAgcHJvYmUKICAgICAgQWZ0ZXI9bmV0d29yay1vbmxpbmUudGFyZ2V0CiAgICAgIFdhbnRzPW5ldHdvcmstb25saW5lLnRhcmdldAogICAgICBbU2VydmljZV0KICAgICAgVXNlcj1ub2JvZHkKICAgICAgRXhlY1N0YXJ0PS91c3IvYmluL3B5dGhvbjMgLW0gaHR0cC5zZXJ2ZXIgNTIwMSAtLWRpcmVjdG9yeSAvdmFyL2xpYi9sYWItaHR0cAogICAgICBSZXN0YXJ0PW9uLWZhaWx1cmUKICAgICAgW0luc3RhbGxdCiAgICAgIFdhbnRlZEJ5PW11bHRpLXVzZXIudGFyZ2V0CiAgLSBwYXRoOiAvZXRjL3N5c2N0bC5kLzkwLWxhYi1mb3J3YXJkaW5nLmNvbmYKICAgIHBlcm1pc3Npb25zOiAnMDY0NCcKICAgIGNvbnRlbnQ6IHwKICAgICAgbmV0LmlwdjQuaXBfZm9yd2FyZD0xCiAgICAgIG5ldC5pcHY0LmNvbmYuYWxsLnJwX2ZpbHRlcj0wCiAgICAgIG5ldC5pcHY0LmNvbmYuZGVmYXVsdC5ycF9maWx0ZXI9MApydW5jbWQ6CiAgLSBta2RpciAtcCAvdmFyL2xpYi9sYWItaHR0cAogIC0gc2ggLWMgJ2VjaG8gbGFiLWJvb3RzdHJhcC1yZWFkeSA+IC92YXIvbGliL2xhYi1odHRwL2luZGV4Lmh0bWwnCiAgLSBzeXN0ZW1jdGwgZGFlbW9uLXJlbG9hZAogIC0gc3lzdGVtY3RsIGVuYWJsZSAtLW5vdyBsYWItaHR0cC5zZXJ2aWNlCiAgLSBzeXNjdGwgLS1zeXN0ZW0KICAtIHN5c3RlbWN0bCBkaXNhYmxlIC0tbm93IGJpcmQK",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "/home/azurelabuser/.ssh/authorized_keys",
+                  "keyData": "[parameters('sshPublicKey')]"
+                }
+              ]
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'nic-router-eu')]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2024-05-01",
+      "name": "nsg-router-us",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.220.0.4",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.220.0.4",
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "out-private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.220.0.4",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "out-private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.220.0.4",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "bootstrap-web",
+            "properties": {
+              "priority": 200,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.220.0.4",
+              "destinationAddressPrefix": "Internet",
+              "destinationPortRanges": [
+                "80",
+                "443"
+              ]
+            }
+          },
+          {
+            "name": "platform-agent",
+            "properties": {
+              "priority": 202,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.220.0.4",
+              "destinationAddressPrefixes": [
+                "168.63.129.16",
+                "169.254.169.254"
+              ],
+              "destinationPortRanges": [
+                "80",
+                "32526"
+              ]
+            }
+          },
+          {
+            "name": "wireguard-private",
+            "properties": {
+              "priority": 100,
+              "protocol": "Udp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.210.0.4/32",
+                "10.130.0.4/32",
+                "10.140.0.4/32"
+              ],
+              "destinationAddressPrefix": "10.220.0.4",
+              "destinationPortRange": "51820"
+            }
+          },
+          {
+            "name": "out-wireguard-private",
+            "properties": {
+              "priority": 100,
+              "protocol": "Udp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.220.0.4",
+              "destinationAddressPrefixes": [
+                "10.210.0.4/32",
+                "10.130.0.4/32",
+                "10.140.0.4/32"
+              ],
+              "destinationPortRange": "51820"
+            }
+          },
+          {
+            "name": "forward-private",
+            "properties": {
+              "priority": 140,
+              "protocol": "*",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "out-forward-private",
+            "properties": {
+              "priority": 140,
+              "protocol": "*",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "hub-bgp",
+            "properties": {
+              "priority": 110,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.250.2.0/23",
+              "destinationAddressPrefix": "10.220.0.4",
+              "destinationPortRange": "179"
+            }
+          },
+          {
+            "name": "out-hub-bgp",
+            "properties": {
+              "priority": 110,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.220.0.4",
+              "destinationAddressPrefix": "10.250.2.0/23",
+              "destinationPortRange": "179"
+            }
+          },
+          {
+            "name": "deny-other-inbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "deny-other-outbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          }
+        ]
+      },
+      "location": "northcentralus",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2024-05-01",
+      "name": "pip-router-us",
+      "properties": {
+        "publicIPAllocationMethod": "Static",
+        "publicIPAddressVersion": "IPv4"
+      },
+      "location": "northcentralus",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "sku": {
+        "name": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2024-05-01",
+      "name": "nic-router-us",
+      "properties": {
+        "enableIPForwarding": true,
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-router-us')]"
+        },
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.220.0.4",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-router-us')]"
+              },
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-transit-us', 'workload')]"
+              }
+            }
+          }
+        ]
+      },
+      "location": "northcentralus",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-transit-us')]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-router-us')]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-router-us')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-07-01",
+      "name": "router-us",
+      "location": "northcentralus",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', 'nic-router-us')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_B2als_v2"
+        },
+        "priority": "Regular",
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "osdisk-router-us",
+            "createOption": "FromImage",
+            "diskSizeGB": 30,
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
+          }
+        },
+        "osProfile": {
+          "computerName": "router-us",
+          "adminUsername": "azurelabuser",
+          "customData": "I2Nsb3VkLWNvbmZpZwpwYWNrYWdlX3VwZGF0ZTogdHJ1ZQpwYWNrYWdlczoKICAtIHB5dGhvbjMKICAtIGN1cmwKICAtIHRjcGR1bXAKICAtIGJpcmQyCiAgLSBzdHJvbmdzd2FuCiAgLSBzdHJvbmdzd2FuLXN3YW5jdGwKICAtIGNoYXJvbi1zeXN0ZW1kCiAgLSB3aXJlZ3VhcmQKd3JpdGVfZmlsZXM6CiAgLSBwYXRoOiAvZXRjL3N5c3RlbWQvc3lzdGVtL2xhYi1odHRwLnNlcnZpY2UKICAgIHBlcm1pc3Npb25zOiAnMDY0NCcKICAgIGNvbnRlbnQ6IHwKICAgICAgW1VuaXRdCiAgICAgIERlc2NyaXB0aW9uPVByaXZhdGUgbGFiIEhUVFAgcHJvYmUKICAgICAgQWZ0ZXI9bmV0d29yay1vbmxpbmUudGFyZ2V0CiAgICAgIFdhbnRzPW5ldHdvcmstb25saW5lLnRhcmdldAogICAgICBbU2VydmljZV0KICAgICAgVXNlcj1ub2JvZHkKICAgICAgRXhlY1N0YXJ0PS91c3IvYmluL3B5dGhvbjMgLW0gaHR0cC5zZXJ2ZXIgNTIwMSAtLWRpcmVjdG9yeSAvdmFyL2xpYi9sYWItaHR0cAogICAgICBSZXN0YXJ0PW9uLWZhaWx1cmUKICAgICAgW0luc3RhbGxdCiAgICAgIFdhbnRlZEJ5PW11bHRpLXVzZXIudGFyZ2V0CiAgLSBwYXRoOiAvZXRjL3N5c2N0bC5kLzkwLWxhYi1mb3J3YXJkaW5nLmNvbmYKICAgIHBlcm1pc3Npb25zOiAnMDY0NCcKICAgIGNvbnRlbnQ6IHwKICAgICAgbmV0LmlwdjQuaXBfZm9yd2FyZD0xCiAgICAgIG5ldC5pcHY0LmNvbmYuYWxsLnJwX2ZpbHRlcj0wCiAgICAgIG5ldC5pcHY0LmNvbmYuZGVmYXVsdC5ycF9maWx0ZXI9MApydW5jbWQ6CiAgLSBta2RpciAtcCAvdmFyL2xpYi9sYWItaHR0cAogIC0gc2ggLWMgJ2VjaG8gbGFiLWJvb3RzdHJhcC1yZWFkeSA+IC92YXIvbGliL2xhYi1odHRwL2luZGV4Lmh0bWwnCiAgLSBzeXN0ZW1jdGwgZGFlbW9uLXJlbG9hZAogIC0gc3lzdGVtY3RsIGVuYWJsZSAtLW5vdyBsYWItaHR0cC5zZXJ2aWNlCiAgLSBzeXNjdGwgLS1zeXN0ZW0KICAtIHN5c3RlbWN0bCBkaXNhYmxlIC0tbm93IGJpcmQK",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "/home/azurelabuser/.ssh/authorized_keys",
+                  "keyData": "[parameters('sshPublicKey')]"
+                }
+              ]
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'nic-router-us')]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2024-05-01",
+      "name": "nsg-router-jp",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.130.0.4",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.130.0.4",
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "out-private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.130.0.4",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "out-private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.130.0.4",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "bootstrap-web",
+            "properties": {
+              "priority": 200,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.130.0.4",
+              "destinationAddressPrefix": "Internet",
+              "destinationPortRanges": [
+                "80",
+                "443"
+              ]
+            }
+          },
+          {
+            "name": "platform-agent",
+            "properties": {
+              "priority": 202,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.130.0.4",
+              "destinationAddressPrefixes": [
+                "168.63.129.16",
+                "169.254.169.254"
+              ],
+              "destinationPortRanges": [
+                "80",
+                "32526"
+              ]
+            }
+          },
+          {
+            "name": "wireguard-private",
+            "properties": {
+              "priority": 100,
+              "protocol": "Udp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.210.0.4/32",
+                "10.220.0.4/32",
+                "10.140.0.4/32"
+              ],
+              "destinationAddressPrefix": "10.130.0.4",
+              "destinationPortRange": "51820"
+            }
+          },
+          {
+            "name": "out-wireguard-private",
+            "properties": {
+              "priority": 100,
+              "protocol": "Udp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.130.0.4",
+              "destinationAddressPrefixes": [
+                "10.210.0.4/32",
+                "10.220.0.4/32",
+                "10.140.0.4/32"
+              ],
+              "destinationPortRange": "51820"
+            }
+          },
+          {
+            "name": "forward-private",
+            "properties": {
+              "priority": 140,
+              "protocol": "*",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "out-forward-private",
+            "properties": {
+              "priority": 140,
+              "protocol": "*",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "deny-other-inbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "deny-other-outbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          }
+        ]
+      },
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2024-05-01",
+      "name": "pip-router-jp",
+      "properties": {
+        "publicIPAllocationMethod": "Static",
+        "publicIPAddressVersion": "IPv4"
+      },
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "sku": {
+        "name": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2024-05-01",
+      "name": "nic-router-jp",
+      "properties": {
+        "enableIPForwarding": true,
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-router-jp')]"
+        },
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.130.0.4",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-router-jp')]"
+              },
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-dc-jp', 'workload')]"
+              }
+            }
+          }
+        ]
+      },
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-jp')]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-router-jp')]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-router-jp')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-07-01",
+      "name": "router-jp",
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', 'nic-router-jp')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_B2ts_v2"
+        },
+        "priority": "Regular",
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "osdisk-router-jp",
+            "createOption": "FromImage",
+            "diskSizeGB": 30,
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
+          }
+        },
+        "osProfile": {
+          "computerName": "router-jp",
+          "adminUsername": "azurelabuser",
+          "customData": "I2Nsb3VkLWNvbmZpZwpwYWNrYWdlX3VwZGF0ZTogdHJ1ZQpwYWNrYWdlczoKICAtIHB5dGhvbjMKICAtIGN1cmwKICAtIHRjcGR1bXAKICAtIGJpcmQyCiAgLSBzdHJvbmdzd2FuCiAgLSBzdHJvbmdzd2FuLXN3YW5jdGwKICAtIGNoYXJvbi1zeXN0ZW1kCiAgLSB3aXJlZ3VhcmQKd3JpdGVfZmlsZXM6CiAgLSBwYXRoOiAvZXRjL3N5c3RlbWQvc3lzdGVtL2xhYi1odHRwLnNlcnZpY2UKICAgIHBlcm1pc3Npb25zOiAnMDY0NCcKICAgIGNvbnRlbnQ6IHwKICAgICAgW1VuaXRdCiAgICAgIERlc2NyaXB0aW9uPVByaXZhdGUgbGFiIEhUVFAgcHJvYmUKICAgICAgQWZ0ZXI9bmV0d29yay1vbmxpbmUudGFyZ2V0CiAgICAgIFdhbnRzPW5ldHdvcmstb25saW5lLnRhcmdldAogICAgICBbU2VydmljZV0KICAgICAgVXNlcj1ub2JvZHkKICAgICAgRXhlY1N0YXJ0PS91c3IvYmluL3B5dGhvbjMgLW0gaHR0cC5zZXJ2ZXIgNTIwMSAtLWRpcmVjdG9yeSAvdmFyL2xpYi9sYWItaHR0cAogICAgICBSZXN0YXJ0PW9uLWZhaWx1cmUKICAgICAgW0luc3RhbGxdCiAgICAgIFdhbnRlZEJ5PW11bHRpLXVzZXIudGFyZ2V0CiAgLSBwYXRoOiAvZXRjL3N5c2N0bC5kLzkwLWxhYi1mb3J3YXJkaW5nLmNvbmYKICAgIHBlcm1pc3Npb25zOiAnMDY0NCcKICAgIGNvbnRlbnQ6IHwKICAgICAgbmV0LmlwdjQuaXBfZm9yd2FyZD0xCiAgICAgIG5ldC5pcHY0LmNvbmYuYWxsLnJwX2ZpbHRlcj0wCiAgICAgIG5ldC5pcHY0LmNvbmYuZGVmYXVsdC5ycF9maWx0ZXI9MApydW5jbWQ6CiAgLSBta2RpciAtcCAvdmFyL2xpYi9sYWItaHR0cAogIC0gc2ggLWMgJ2VjaG8gbGFiLWJvb3RzdHJhcC1yZWFkeSA+IC92YXIvbGliL2xhYi1odHRwL2luZGV4Lmh0bWwnCiAgLSBzeXN0ZW1jdGwgZGFlbW9uLXJlbG9hZAogIC0gc3lzdGVtY3RsIGVuYWJsZSAtLW5vdyBsYWItaHR0cC5zZXJ2aWNlCiAgLSBzeXNjdGwgLS1zeXN0ZW0KICAtIHN5c3RlbWN0bCBkaXNhYmxlIC0tbm93IGJpcmQK",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "/home/azurelabuser/.ssh/authorized_keys",
+                  "keyData": "[parameters('sshPublicKey')]"
+                }
+              ]
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'nic-router-jp')]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2024-05-01",
+      "name": "nsg-router-cn",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.140.0.4",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.140.0.4",
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "out-private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.140.0.4",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "out-private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.140.0.4",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "bootstrap-web",
+            "properties": {
+              "priority": 200,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.140.0.4",
+              "destinationAddressPrefix": "Internet",
+              "destinationPortRanges": [
+                "80",
+                "443"
+              ]
+            }
+          },
+          {
+            "name": "platform-agent",
+            "properties": {
+              "priority": 202,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.140.0.4",
+              "destinationAddressPrefixes": [
+                "168.63.129.16",
+                "169.254.169.254"
+              ],
+              "destinationPortRanges": [
+                "80",
+                "32526"
+              ]
+            }
+          },
+          {
+            "name": "wireguard-private",
+            "properties": {
+              "priority": 100,
+              "protocol": "Udp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.210.0.4/32",
+                "10.220.0.4/32",
+                "10.130.0.4/32"
+              ],
+              "destinationAddressPrefix": "10.140.0.4",
+              "destinationPortRange": "51820"
+            }
+          },
+          {
+            "name": "out-wireguard-private",
+            "properties": {
+              "priority": 100,
+              "protocol": "Udp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.140.0.4",
+              "destinationAddressPrefixes": [
+                "10.210.0.4/32",
+                "10.220.0.4/32",
+                "10.130.0.4/32"
+              ],
+              "destinationPortRange": "51820"
+            }
+          },
+          {
+            "name": "forward-private",
+            "properties": {
+              "priority": 140,
+              "protocol": "*",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "out-forward-private",
+            "properties": {
+              "priority": 140,
+              "protocol": "*",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "deny-other-inbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "deny-other-outbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          }
+        ]
+      },
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2024-05-01",
+      "name": "pip-router-cn",
+      "properties": {
+        "publicIPAllocationMethod": "Static",
+        "publicIPAddressVersion": "IPv4"
+      },
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "sku": {
+        "name": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2024-05-01",
+      "name": "nic-router-cn",
+      "properties": {
+        "enableIPForwarding": true,
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-router-cn')]"
+        },
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.140.0.4",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-router-cn')]"
+              },
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-dc-cn', 'workload')]"
+              }
+            }
+          }
+        ]
+      },
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-cn')]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-router-cn')]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-router-cn')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-07-01",
+      "name": "router-cn",
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', 'nic-router-cn')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_B2ts_v2"
+        },
+        "priority": "Regular",
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "osdisk-router-cn",
+            "createOption": "FromImage",
+            "diskSizeGB": 30,
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
+          }
+        },
+        "osProfile": {
+          "computerName": "router-cn",
+          "adminUsername": "azurelabuser",
+          "customData": "I2Nsb3VkLWNvbmZpZwpwYWNrYWdlX3VwZGF0ZTogdHJ1ZQpwYWNrYWdlczoKICAtIHB5dGhvbjMKICAtIGN1cmwKICAtIHRjcGR1bXAKICAtIGJpcmQyCiAgLSBzdHJvbmdzd2FuCiAgLSBzdHJvbmdzd2FuLXN3YW5jdGwKICAtIGNoYXJvbi1zeXN0ZW1kCiAgLSB3aXJlZ3VhcmQKd3JpdGVfZmlsZXM6CiAgLSBwYXRoOiAvZXRjL3N5c3RlbWQvc3lzdGVtL2xhYi1odHRwLnNlcnZpY2UKICAgIHBlcm1pc3Npb25zOiAnMDY0NCcKICAgIGNvbnRlbnQ6IHwKICAgICAgW1VuaXRdCiAgICAgIERlc2NyaXB0aW9uPVByaXZhdGUgbGFiIEhUVFAgcHJvYmUKICAgICAgQWZ0ZXI9bmV0d29yay1vbmxpbmUudGFyZ2V0CiAgICAgIFdhbnRzPW5ldHdvcmstb25saW5lLnRhcmdldAogICAgICBbU2VydmljZV0KICAgICAgVXNlcj1ub2JvZHkKICAgICAgRXhlY1N0YXJ0PS91c3IvYmluL3B5dGhvbjMgLW0gaHR0cC5zZXJ2ZXIgNTIwMSAtLWRpcmVjdG9yeSAvdmFyL2xpYi9sYWItaHR0cAogICAgICBSZXN0YXJ0PW9uLWZhaWx1cmUKICAgICAgW0luc3RhbGxdCiAgICAgIFdhbnRlZEJ5PW11bHRpLXVzZXIudGFyZ2V0CiAgLSBwYXRoOiAvZXRjL3N5c2N0bC5kLzkwLWxhYi1mb3J3YXJkaW5nLmNvbmYKICAgIHBlcm1pc3Npb25zOiAnMDY0NCcKICAgIGNvbnRlbnQ6IHwKICAgICAgbmV0LmlwdjQuaXBfZm9yd2FyZD0xCiAgICAgIG5ldC5pcHY0LmNvbmYuYWxsLnJwX2ZpbHRlcj0wCiAgICAgIG5ldC5pcHY0LmNvbmYuZGVmYXVsdC5ycF9maWx0ZXI9MApydW5jbWQ6CiAgLSBta2RpciAtcCAvdmFyL2xpYi9sYWItaHR0cAogIC0gc2ggLWMgJ2VjaG8gbGFiLWJvb3RzdHJhcC1yZWFkeSA+IC92YXIvbGliL2xhYi1odHRwL2luZGV4Lmh0bWwnCiAgLSBzeXN0ZW1jdGwgZGFlbW9uLXJlbG9hZAogIC0gc3lzdGVtY3RsIGVuYWJsZSAtLW5vdyBsYWItaHR0cC5zZXJ2aWNlCiAgLSBzeXNjdGwgLS1zeXN0ZW0KICAtIHN5c3RlbWN0bCBkaXNhYmxlIC0tbm93IGJpcmQK",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "/home/azurelabuser/.ssh/authorized_keys",
+                  "keyData": "[parameters('sshPublicKey')]"
+                }
+              ]
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'nic-router-cn')]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2024-05-01",
+      "name": "nsg-probe-dc-eu",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.110.0.10",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.110.0.10",
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "out-private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.110.0.10",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "out-private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.110.0.10",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "bootstrap-web",
+            "properties": {
+              "priority": 200,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.110.0.10",
+              "destinationAddressPrefix": "Internet",
+              "destinationPortRanges": [
+                "80",
+                "443"
+              ]
+            }
+          },
+          {
+            "name": "platform-agent",
+            "properties": {
+              "priority": 202,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.110.0.10",
+              "destinationAddressPrefixes": [
+                "168.63.129.16",
+                "169.254.169.254"
+              ],
+              "destinationPortRanges": [
+                "80",
+                "32526"
+              ]
+            }
+          },
+          {
+            "name": "deny-other-inbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "deny-other-outbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          }
+        ]
+      },
+      "location": "westeurope",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2024-05-01",
+      "name": "pip-probe-dc-eu",
+      "properties": {
+        "publicIPAllocationMethod": "Static",
+        "publicIPAddressVersion": "IPv4"
+      },
+      "location": "westeurope",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "sku": {
+        "name": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2024-05-01",
+      "name": "nic-probe-dc-eu",
+      "properties": {
+        "enableIPForwarding": false,
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-probe-dc-eu')]"
+        },
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.110.0.10",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-probe-dc-eu')]"
+              },
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-dc-eu', 'workload')]"
+              }
+            }
+          }
+        ]
+      },
+      "location": "westeurope",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-eu')]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-probe-dc-eu')]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-probe-dc-eu')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-07-01",
+      "name": "probe-dc-eu",
+      "location": "westeurope",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', 'nic-probe-dc-eu')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_B2ts_v2"
+        },
+        "priority": "Regular",
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "osdisk-probe-dc-eu",
+            "createOption": "FromImage",
+            "diskSizeGB": 30,
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
+          }
+        },
+        "osProfile": {
+          "computerName": "probe-dc-eu",
+          "adminUsername": "azurelabuser",
+          "customData": "I2Nsb3VkLWNvbmZpZwpwYWNrYWdlX3VwZGF0ZTogdHJ1ZQpwYWNrYWdlczoKICAtIHB5dGhvbjMKICAtIGN1cmwKICAtIHRjcGR1bXAKd3JpdGVfZmlsZXM6CiAgLSBwYXRoOiAvZXRjL3N5c3RlbWQvc3lzdGVtL2xhYi1odHRwLnNlcnZpY2UKICAgIHBlcm1pc3Npb25zOiAnMDY0NCcKICAgIGNvbnRlbnQ6IHwKICAgICAgW1VuaXRdCiAgICAgIERlc2NyaXB0aW9uPVByaXZhdGUgbGFiIEhUVFAgcHJvYmUKICAgICAgQWZ0ZXI9bmV0d29yay1vbmxpbmUudGFyZ2V0CiAgICAgIFdhbnRzPW5ldHdvcmstb25saW5lLnRhcmdldAogICAgICBbU2VydmljZV0KICAgICAgVXNlcj1ub2JvZHkKICAgICAgRXhlY1N0YXJ0PS91c3IvYmluL3B5dGhvbjMgLW0gaHR0cC5zZXJ2ZXIgNTIwMSAtLWRpcmVjdG9yeSAvdmFyL2xpYi9sYWItaHR0cAogICAgICBSZXN0YXJ0PW9uLWZhaWx1cmUKICAgICAgW0luc3RhbGxdCiAgICAgIFdhbnRlZEJ5PW11bHRpLXVzZXIudGFyZ2V0CnJ1bmNtZDoKICAtIG1rZGlyIC1wIC92YXIvbGliL2xhYi1odHRwCiAgLSBzaCAtYyAnZWNobyBsYWItYm9vdHN0cmFwLXJlYWR5ID4gL3Zhci9saWIvbGFiLWh0dHAvaW5kZXguaHRtbCcKICAtIHN5c3RlbWN0bCBkYWVtb24tcmVsb2FkCiAgLSBzeXN0ZW1jdGwgZW5hYmxlIC0tbm93IGxhYi1odHRwLnNlcnZpY2UK",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "/home/azurelabuser/.ssh/authorized_keys",
+                  "keyData": "[parameters('sshPublicKey')]"
+                }
+              ]
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'nic-probe-dc-eu')]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2024-05-01",
+      "name": "nsg-probe-dc-us",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.120.0.10",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.120.0.10",
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "out-private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.120.0.10",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "out-private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.120.0.10",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "bootstrap-web",
+            "properties": {
+              "priority": 200,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.120.0.10",
+              "destinationAddressPrefix": "Internet",
+              "destinationPortRanges": [
+                "80",
+                "443"
+              ]
+            }
+          },
+          {
+            "name": "platform-agent",
+            "properties": {
+              "priority": 202,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.120.0.10",
+              "destinationAddressPrefixes": [
+                "168.63.129.16",
+                "169.254.169.254"
+              ],
+              "destinationPortRanges": [
+                "80",
+                "32526"
+              ]
+            }
+          },
+          {
+            "name": "deny-other-inbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "deny-other-outbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          }
+        ]
+      },
+      "location": "northcentralus",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2024-05-01",
+      "name": "pip-probe-dc-us",
+      "properties": {
+        "publicIPAllocationMethod": "Static",
+        "publicIPAddressVersion": "IPv4"
+      },
+      "location": "northcentralus",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "sku": {
+        "name": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2024-05-01",
+      "name": "nic-probe-dc-us",
+      "properties": {
+        "enableIPForwarding": false,
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-probe-dc-us')]"
+        },
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.120.0.10",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-probe-dc-us')]"
+              },
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-dc-us', 'workload')]"
+              }
+            }
+          }
+        ]
+      },
+      "location": "northcentralus",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-us')]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-probe-dc-us')]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-probe-dc-us')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-07-01",
+      "name": "probe-dc-us",
+      "location": "northcentralus",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', 'nic-probe-dc-us')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_B2als_v2"
+        },
+        "priority": "Regular",
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "osdisk-probe-dc-us",
+            "createOption": "FromImage",
+            "diskSizeGB": 30,
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
+          }
+        },
+        "osProfile": {
+          "computerName": "probe-dc-us",
+          "adminUsername": "azurelabuser",
+          "customData": "I2Nsb3VkLWNvbmZpZwpwYWNrYWdlX3VwZGF0ZTogdHJ1ZQpwYWNrYWdlczoKICAtIHB5dGhvbjMKICAtIGN1cmwKICAtIHRjcGR1bXAKd3JpdGVfZmlsZXM6CiAgLSBwYXRoOiAvZXRjL3N5c3RlbWQvc3lzdGVtL2xhYi1odHRwLnNlcnZpY2UKICAgIHBlcm1pc3Npb25zOiAnMDY0NCcKICAgIGNvbnRlbnQ6IHwKICAgICAgW1VuaXRdCiAgICAgIERlc2NyaXB0aW9uPVByaXZhdGUgbGFiIEhUVFAgcHJvYmUKICAgICAgQWZ0ZXI9bmV0d29yay1vbmxpbmUudGFyZ2V0CiAgICAgIFdhbnRzPW5ldHdvcmstb25saW5lLnRhcmdldAogICAgICBbU2VydmljZV0KICAgICAgVXNlcj1ub2JvZHkKICAgICAgRXhlY1N0YXJ0PS91c3IvYmluL3B5dGhvbjMgLW0gaHR0cC5zZXJ2ZXIgNTIwMSAtLWRpcmVjdG9yeSAvdmFyL2xpYi9sYWItaHR0cAogICAgICBSZXN0YXJ0PW9uLWZhaWx1cmUKICAgICAgW0luc3RhbGxdCiAgICAgIFdhbnRlZEJ5PW11bHRpLXVzZXIudGFyZ2V0CnJ1bmNtZDoKICAtIG1rZGlyIC1wIC92YXIvbGliL2xhYi1odHRwCiAgLSBzaCAtYyAnZWNobyBsYWItYm9vdHN0cmFwLXJlYWR5ID4gL3Zhci9saWIvbGFiLWh0dHAvaW5kZXguaHRtbCcKICAtIHN5c3RlbWN0bCBkYWVtb24tcmVsb2FkCiAgLSBzeXN0ZW1jdGwgZW5hYmxlIC0tbm93IGxhYi1odHRwLnNlcnZpY2UK",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "/home/azurelabuser/.ssh/authorized_keys",
+                  "keyData": "[parameters('sshPublicKey')]"
+                }
+              ]
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'nic-probe-dc-us')]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2024-05-01",
+      "name": "nsg-probe-dc-jp",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.130.0.10",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.130.0.10",
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "out-private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.130.0.10",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "out-private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.130.0.10",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "bootstrap-web",
+            "properties": {
+              "priority": 200,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.130.0.10",
+              "destinationAddressPrefix": "Internet",
+              "destinationPortRanges": [
+                "80",
+                "443"
+              ]
+            }
+          },
+          {
+            "name": "platform-agent",
+            "properties": {
+              "priority": 202,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.130.0.10",
+              "destinationAddressPrefixes": [
+                "168.63.129.16",
+                "169.254.169.254"
+              ],
+              "destinationPortRanges": [
+                "80",
+                "32526"
+              ]
+            }
+          },
+          {
+            "name": "deny-other-inbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "deny-other-outbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          }
+        ]
+      },
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2024-05-01",
+      "name": "pip-probe-dc-jp",
+      "properties": {
+        "publicIPAllocationMethod": "Static",
+        "publicIPAddressVersion": "IPv4"
+      },
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "sku": {
+        "name": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2024-05-01",
+      "name": "nic-probe-dc-jp",
+      "properties": {
+        "enableIPForwarding": false,
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-probe-dc-jp')]"
+        },
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.130.0.10",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-probe-dc-jp')]"
+              },
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-dc-jp', 'workload')]"
+              }
+            }
+          }
+        ]
+      },
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-dc-jp')]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-probe-dc-jp')]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-probe-dc-jp')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-07-01",
+      "name": "probe-dc-jp",
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', 'nic-probe-dc-jp')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_B2ts_v2"
+        },
+        "priority": "Regular",
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "osdisk-probe-dc-jp",
+            "createOption": "FromImage",
+            "diskSizeGB": 30,
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
+          }
+        },
+        "osProfile": {
+          "computerName": "probe-dc-jp",
+          "adminUsername": "azurelabuser",
+          "customData": "I2Nsb3VkLWNvbmZpZwpwYWNrYWdlX3VwZGF0ZTogdHJ1ZQpwYWNrYWdlczoKICAtIHB5dGhvbjMKICAtIGN1cmwKICAtIHRjcGR1bXAKd3JpdGVfZmlsZXM6CiAgLSBwYXRoOiAvZXRjL3N5c3RlbWQvc3lzdGVtL2xhYi1odHRwLnNlcnZpY2UKICAgIHBlcm1pc3Npb25zOiAnMDY0NCcKICAgIGNvbnRlbnQ6IHwKICAgICAgW1VuaXRdCiAgICAgIERlc2NyaXB0aW9uPVByaXZhdGUgbGFiIEhUVFAgcHJvYmUKICAgICAgQWZ0ZXI9bmV0d29yay1vbmxpbmUudGFyZ2V0CiAgICAgIFdhbnRzPW5ldHdvcmstb25saW5lLnRhcmdldAogICAgICBbU2VydmljZV0KICAgICAgVXNlcj1ub2JvZHkKICAgICAgRXhlY1N0YXJ0PS91c3IvYmluL3B5dGhvbjMgLW0gaHR0cC5zZXJ2ZXIgNTIwMSAtLWRpcmVjdG9yeSAvdmFyL2xpYi9sYWItaHR0cAogICAgICBSZXN0YXJ0PW9uLWZhaWx1cmUKICAgICAgW0luc3RhbGxdCiAgICAgIFdhbnRlZEJ5PW11bHRpLXVzZXIudGFyZ2V0CnJ1bmNtZDoKICAtIG1rZGlyIC1wIC92YXIvbGliL2xhYi1odHRwCiAgLSBzaCAtYyAnZWNobyBsYWItYm9vdHN0cmFwLXJlYWR5ID4gL3Zhci9saWIvbGFiLWh0dHAvaW5kZXguaHRtbCcKICAtIHN5c3RlbWN0bCBkYWVtb24tcmVsb2FkCiAgLSBzeXN0ZW1jdGwgZW5hYmxlIC0tbm93IGxhYi1odHRwLnNlcnZpY2UK",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "/home/azurelabuser/.ssh/authorized_keys",
+                  "keyData": "[parameters('sshPublicKey')]"
+                }
+              ]
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'nic-probe-dc-jp')]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2024-05-01",
+      "name": "nsg-probe-spoke-eu",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.10.0.10",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.10.0.10",
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "out-private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.10.0.10",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "out-private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.10.0.10",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "bootstrap-web",
+            "properties": {
+              "priority": 200,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.10.0.10",
+              "destinationAddressPrefix": "Internet",
+              "destinationPortRanges": [
+                "80",
+                "443"
+              ]
+            }
+          },
+          {
+            "name": "platform-agent",
+            "properties": {
+              "priority": 202,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.10.0.10",
+              "destinationAddressPrefixes": [
+                "168.63.129.16",
+                "169.254.169.254"
+              ],
+              "destinationPortRanges": [
+                "80",
+                "32526"
+              ]
+            }
+          },
+          {
+            "name": "deny-other-inbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "deny-other-outbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          }
+        ]
+      },
+      "location": "westeurope",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2024-05-01",
+      "name": "pip-probe-spoke-eu",
+      "properties": {
+        "publicIPAllocationMethod": "Static",
+        "publicIPAddressVersion": "IPv4"
+      },
+      "location": "westeurope",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "sku": {
+        "name": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2024-05-01",
+      "name": "nic-probe-spoke-eu",
+      "properties": {
+        "enableIPForwarding": false,
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-probe-spoke-eu')]"
+        },
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.10.0.10",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-probe-spoke-eu')]"
+              },
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-spoke-eu', 'workload')]"
+              }
+            }
+          }
+        ]
+      },
+      "location": "westeurope",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-eu')]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-probe-spoke-eu')]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-probe-spoke-eu')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-07-01",
+      "name": "probe-spoke-eu",
+      "location": "westeurope",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', 'nic-probe-spoke-eu')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_B2ts_v2"
+        },
+        "priority": "Regular",
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "osdisk-probe-spoke-eu",
+            "createOption": "FromImage",
+            "diskSizeGB": 30,
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
+          }
+        },
+        "osProfile": {
+          "computerName": "probe-spoke-eu",
+          "adminUsername": "azurelabuser",
+          "customData": "I2Nsb3VkLWNvbmZpZwpwYWNrYWdlX3VwZGF0ZTogdHJ1ZQpwYWNrYWdlczoKICAtIHB5dGhvbjMKICAtIGN1cmwKICAtIHRjcGR1bXAKd3JpdGVfZmlsZXM6CiAgLSBwYXRoOiAvZXRjL3N5c3RlbWQvc3lzdGVtL2xhYi1odHRwLnNlcnZpY2UKICAgIHBlcm1pc3Npb25zOiAnMDY0NCcKICAgIGNvbnRlbnQ6IHwKICAgICAgW1VuaXRdCiAgICAgIERlc2NyaXB0aW9uPVByaXZhdGUgbGFiIEhUVFAgcHJvYmUKICAgICAgQWZ0ZXI9bmV0d29yay1vbmxpbmUudGFyZ2V0CiAgICAgIFdhbnRzPW5ldHdvcmstb25saW5lLnRhcmdldAogICAgICBbU2VydmljZV0KICAgICAgVXNlcj1ub2JvZHkKICAgICAgRXhlY1N0YXJ0PS91c3IvYmluL3B5dGhvbjMgLW0gaHR0cC5zZXJ2ZXIgNTIwMSAtLWRpcmVjdG9yeSAvdmFyL2xpYi9sYWItaHR0cAogICAgICBSZXN0YXJ0PW9uLWZhaWx1cmUKICAgICAgW0luc3RhbGxdCiAgICAgIFdhbnRlZEJ5PW11bHRpLXVzZXIudGFyZ2V0CnJ1bmNtZDoKICAtIG1rZGlyIC1wIC92YXIvbGliL2xhYi1odHRwCiAgLSBzaCAtYyAnZWNobyBsYWItYm9vdHN0cmFwLXJlYWR5ID4gL3Zhci9saWIvbGFiLWh0dHAvaW5kZXguaHRtbCcKICAtIHN5c3RlbWN0bCBkYWVtb24tcmVsb2FkCiAgLSBzeXN0ZW1jdGwgZW5hYmxlIC0tbm93IGxhYi1odHRwLnNlcnZpY2UK",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "/home/azurelabuser/.ssh/authorized_keys",
+                  "keyData": "[parameters('sshPublicKey')]"
+                }
+              ]
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'nic-probe-spoke-eu')]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2024-05-01",
+      "name": "nsg-probe-spoke-us",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.20.0.10",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.20.0.10",
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "out-private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.20.0.10",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "out-private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.20.0.10",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "bootstrap-web",
+            "properties": {
+              "priority": 200,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.20.0.10",
+              "destinationAddressPrefix": "Internet",
+              "destinationPortRanges": [
+                "80",
+                "443"
+              ]
+            }
+          },
+          {
+            "name": "platform-agent",
+            "properties": {
+              "priority": 202,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.20.0.10",
+              "destinationAddressPrefixes": [
+                "168.63.129.16",
+                "169.254.169.254"
+              ],
+              "destinationPortRanges": [
+                "80",
+                "32526"
+              ]
+            }
+          },
+          {
+            "name": "deny-other-inbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "deny-other-outbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          }
+        ]
+      },
+      "location": "northcentralus",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2024-05-01",
+      "name": "pip-probe-spoke-us",
+      "properties": {
+        "publicIPAllocationMethod": "Static",
+        "publicIPAddressVersion": "IPv4"
+      },
+      "location": "northcentralus",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "sku": {
+        "name": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2024-05-01",
+      "name": "nic-probe-spoke-us",
+      "properties": {
+        "enableIPForwarding": false,
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-probe-spoke-us')]"
+        },
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.20.0.10",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-probe-spoke-us')]"
+              },
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-spoke-us', 'workload')]"
+              }
+            }
+          }
+        ]
+      },
+      "location": "northcentralus",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-us')]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-probe-spoke-us')]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-probe-spoke-us')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-07-01",
+      "name": "probe-spoke-us",
+      "location": "northcentralus",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', 'nic-probe-spoke-us')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_B2als_v2"
+        },
+        "priority": "Regular",
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "osdisk-probe-spoke-us",
+            "createOption": "FromImage",
+            "diskSizeGB": 30,
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
+          }
+        },
+        "osProfile": {
+          "computerName": "probe-spoke-us",
+          "adminUsername": "azurelabuser",
+          "customData": "I2Nsb3VkLWNvbmZpZwpwYWNrYWdlX3VwZGF0ZTogdHJ1ZQpwYWNrYWdlczoKICAtIHB5dGhvbjMKICAtIGN1cmwKICAtIHRjcGR1bXAKd3JpdGVfZmlsZXM6CiAgLSBwYXRoOiAvZXRjL3N5c3RlbWQvc3lzdGVtL2xhYi1odHRwLnNlcnZpY2UKICAgIHBlcm1pc3Npb25zOiAnMDY0NCcKICAgIGNvbnRlbnQ6IHwKICAgICAgW1VuaXRdCiAgICAgIERlc2NyaXB0aW9uPVByaXZhdGUgbGFiIEhUVFAgcHJvYmUKICAgICAgQWZ0ZXI9bmV0d29yay1vbmxpbmUudGFyZ2V0CiAgICAgIFdhbnRzPW5ldHdvcmstb25saW5lLnRhcmdldAogICAgICBbU2VydmljZV0KICAgICAgVXNlcj1ub2JvZHkKICAgICAgRXhlY1N0YXJ0PS91c3IvYmluL3B5dGhvbjMgLW0gaHR0cC5zZXJ2ZXIgNTIwMSAtLWRpcmVjdG9yeSAvdmFyL2xpYi9sYWItaHR0cAogICAgICBSZXN0YXJ0PW9uLWZhaWx1cmUKICAgICAgW0luc3RhbGxdCiAgICAgIFdhbnRlZEJ5PW11bHRpLXVzZXIudGFyZ2V0CnJ1bmNtZDoKICAtIG1rZGlyIC1wIC92YXIvbGliL2xhYi1odHRwCiAgLSBzaCAtYyAnZWNobyBsYWItYm9vdHN0cmFwLXJlYWR5ID4gL3Zhci9saWIvbGFiLWh0dHAvaW5kZXguaHRtbCcKICAtIHN5c3RlbWN0bCBkYWVtb24tcmVsb2FkCiAgLSBzeXN0ZW1jdGwgZW5hYmxlIC0tbm93IGxhYi1odHRwLnNlcnZpY2UK",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "/home/azurelabuser/.ssh/authorized_keys",
+                  "keyData": "[parameters('sshPublicKey')]"
+                }
+              ]
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'nic-probe-spoke-us')]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2024-05-01",
+      "name": "nsg-probe-spoke-jp",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.30.0.10",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationAddressPrefix": "10.30.0.10",
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "out-private-icmp",
+            "properties": {
+              "priority": 130,
+              "protocol": "Icmp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.30.0.10",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "out-private-http",
+            "properties": {
+              "priority": 131,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.30.0.10",
+              "destinationAddressPrefixes": [
+                "10.110.0.0/24",
+                "10.120.0.0/24",
+                "10.130.0.0/24",
+                "10.140.0.0/24",
+                "10.10.0.0/24",
+                "10.20.0.0/24",
+                "10.30.0.0/24"
+              ],
+              "destinationPortRange": "5201"
+            }
+          },
+          {
+            "name": "bootstrap-web",
+            "properties": {
+              "priority": 200,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.30.0.10",
+              "destinationAddressPrefix": "Internet",
+              "destinationPortRanges": [
+                "80",
+                "443"
+              ]
+            }
+          },
+          {
+            "name": "platform-agent",
+            "properties": {
+              "priority": 202,
+              "protocol": "Tcp",
+              "access": "Allow",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "10.30.0.10",
+              "destinationAddressPrefixes": [
+                "168.63.129.16",
+                "169.254.169.254"
+              ],
+              "destinationPortRanges": [
+                "80",
+                "32526"
+              ]
+            }
+          },
+          {
+            "name": "deny-other-inbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          },
+          {
+            "name": "deny-other-outbound",
+            "properties": {
+              "priority": 4000,
+              "protocol": "*",
+              "access": "Deny",
+              "direction": "Outbound",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "*"
+            }
+          }
+        ]
+      },
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2024-05-01",
+      "name": "pip-probe-spoke-jp",
+      "properties": {
+        "publicIPAllocationMethod": "Static",
+        "publicIPAddressVersion": "IPv4"
+      },
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "sku": {
+        "name": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2024-05-01",
+      "name": "nic-probe-spoke-jp",
+      "properties": {
+        "enableIPForwarding": false,
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-probe-spoke-jp')]"
+        },
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.30.0.10",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-probe-spoke-jp')]"
+              },
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-spoke-jp', 'workload')]"
+              }
+            }
+          }
+        ]
+      },
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-spoke-jp')]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-probe-spoke-jp')]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-probe-spoke-jp')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-07-01",
+      "name": "probe-spoke-jp",
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', 'nic-probe-spoke-jp')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_B2ts_v2"
+        },
+        "priority": "Regular",
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "osdisk-probe-spoke-jp",
+            "createOption": "FromImage",
+            "diskSizeGB": 30,
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
+          }
+        },
+        "osProfile": {
+          "computerName": "probe-spoke-jp",
+          "adminUsername": "azurelabuser",
+          "customData": "I2Nsb3VkLWNvbmZpZwpwYWNrYWdlX3VwZGF0ZTogdHJ1ZQpwYWNrYWdlczoKICAtIHB5dGhvbjMKICAtIGN1cmwKICAtIHRjcGR1bXAKd3JpdGVfZmlsZXM6CiAgLSBwYXRoOiAvZXRjL3N5c3RlbWQvc3lzdGVtL2xhYi1odHRwLnNlcnZpY2UKICAgIHBlcm1pc3Npb25zOiAnMDY0NCcKICAgIGNvbnRlbnQ6IHwKICAgICAgW1VuaXRdCiAgICAgIERlc2NyaXB0aW9uPVByaXZhdGUgbGFiIEhUVFAgcHJvYmUKICAgICAgQWZ0ZXI9bmV0d29yay1vbmxpbmUudGFyZ2V0CiAgICAgIFdhbnRzPW5ldHdvcmstb25saW5lLnRhcmdldAogICAgICBbU2VydmljZV0KICAgICAgVXNlcj1ub2JvZHkKICAgICAgRXhlY1N0YXJ0PS91c3IvYmluL3B5dGhvbjMgLW0gaHR0cC5zZXJ2ZXIgNTIwMSAtLWRpcmVjdG9yeSAvdmFyL2xpYi9sYWItaHR0cAogICAgICBSZXN0YXJ0PW9uLWZhaWx1cmUKICAgICAgW0luc3RhbGxdCiAgICAgIFdhbnRlZEJ5PW11bHRpLXVzZXIudGFyZ2V0CnJ1bmNtZDoKICAtIG1rZGlyIC1wIC92YXIvbGliL2xhYi1odHRwCiAgLSBzaCAtYyAnZWNobyBsYWItYm9vdHN0cmFwLXJlYWR5ID4gL3Zhci9saWIvbGFiLWh0dHAvaW5kZXguaHRtbCcKICAtIHN5c3RlbWN0bCBkYWVtb24tcmVsb2FkCiAgLSBzeXN0ZW1jdGwgZW5hYmxlIC0tbm93IGxhYi1odHRwLnNlcnZpY2UK",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "/home/azurelabuser/.ssh/authorized_keys",
+                  "keyData": "[parameters('sshPublicKey')]"
+                }
+              ]
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'nic-probe-spoke-jp')]"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "timestampUtc": "2026-10-15T07:23:36.457718+00:00",
+  "finishedUtc": "2026-10-15T07:24:42.486101+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-eu",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\show-output\\mesh-reboot-recovery\\packets.sh"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "{\r\n  \"value\": [\r\n    {\r\n      \"code\": \"ProvisioningState/succeeded\",\r\n      \"displayStatus\": \"Provisioning succeeded\",\r\n      \"level\": \"Info\",\r\n      \"message\": \"Enable succeeded: \\n[stdout]\\nMESH_DIAGNOSTIC {\\\"capture\\\":\\\"07:24:07.641578 IP 10.210.0.4.51820 > 10.130.0.4.51820: UDP, length 148\\\\n07:24:07.705572 IP 10.210.0.4.51820 > 10.140.0.4.51820: UDP, length 148\\\\n07:24:07.865194 IP 10.130.0.4.51820 > 10.210.0.4.51820: UDP, length 92\\\\n07:24:07.929426 IP 10.140.0.4.51820 > 10.210.0.4.51820: UDP, length 92\\\\n07:24:12.825569 IP 10.210.0.4.51820 > 10.140.0.4.51820: UDP, length 148\\\\n07:24:13.049594 IP 10.140.0.4.51820 > 10.210.0.4.51820: UDP, length 92\\\\n07:24:13.337572 IP 10.210.0.4.51820 > 10.130.0.4.51820: UDP, length 148\\\\n07:24:13.561168 IP 10.130.0.4.51820 > 10.210.0.4.51820: UDP, length 92\\\\n\\\\ntcpdump: verbose output suppressed, use -v[v]... for full protocol decode\\\\nlistening on eth0, link-type EN10MB (Ethernet), snapshot length 262144 bytes\\\\n8 packets captured\\\\n8 packets received by filter\\\\n0 packets dropped by kernel\\\",\\\"natCounters\\\":\\\"Chain TH_WG_IN (1 references)\\\\n    pkts      bytes target     prot opt in     out     source               destination         \\\\n       0        0 REDIRECT   udp  --  eth0   *       10.220.0.4           10.210.0.4           udp dpt:51820 redir ports 51821\\\\n     191    24992 REDIRECT   udp  --  eth0   *       10.130.0.4           10.210.0.4           udp dpt:51820 redir ports 51822\\\\n     160    19480 REDIRECT   udp  --  eth0   *       10.140.0.4           10.210.0.4           udp dpt:51820 redir ports 51823\\\\nChain TH_WG_OUT (1 references)\\\\n    pkts      bytes target     prot opt in     out     source               destination         \\\\n       1      176 SNAT       udp  --  *      eth0    10.210.0.4           10.220.0.4           udp spt:51821 dpt:51820 to:10.210.0.4:51820\\\\n     154    27104 SNAT       udp  --  *      eth0    10.210.0.4           10.130.0.4           udp spt:51822 dpt:51820 to:10.210.0.4:51820\\\\n     155    27280 SNAT       udp  --  *      eth0    10.210.0.4           10.140.0.4           udp spt:51823 dpt:51820 to:10.210.0.4:51820\\\",\\\"conntrack\\\":\\\"conntrack-unavailable\\\",\\\"routeMarked\\\":\\\"local 10.210.0.4 dev lo table local src 10.210.0.4 mark 0x200 uid 0 \\\\n    cache <local>\\\",\\\"routeUnmarked\\\":\\\"local 10.210.0.4 dev lo table local src 10.210.0.4 uid 0 \\\\n    cache <local>\\\",\\\"unit\\\":\\\"# /etc/systemd/system/threehub-network.service\\\\n[Unit]\\\\nDescription=Threehub underlay pins and forwarding\\\\nWants=network-online.target\\\\nAfter=network-online.target\\\\n\\\\n[Service]\\\\nType=oneshot\\\\nExecStart=/opt/threehub/network.sh\\\\nRemainAfterExit=yes\\\\nTimeoutStartSec=180\\\\n[Install]\\\\nWantedBy=multi-user.target\\\"}\\n\\n[stderr]\\n\"\r\n    }\r\n  ]\r\n}\r\n",
+  "stderr": "",
+  "expectedAbsent": false,
+  "stdoutSha256": "67bbb0a67d219820482a7e9e6a131ee750939ddb05caf96636d24e2fe6b49b71"
+}

@@ -1,0 +1,64 @@
+{
+  "site": "cn",
+  "mode": "health",
+  "bird": {
+    "sha256": "10e5591a16159a4a6e17350cb23f437623372f2ffd635ef20736f133c4738346",
+    "uid": 113,
+    "gid": 122,
+    "mode": 384,
+    "mtimeNs": 1792000608839202133
+  },
+  "protocols": {
+    "mesh_eu": "Established",
+    "mesh_us": "Established",
+    "mesh_jp": "expired"
+  },
+  "runtime": {
+    "wgeucn": {
+      "endpoint": "10.210.0.4:51823",
+      "listen": 51823,
+      "fwmark": "0x200",
+      "allowedHash": "18c76f3b47092f7b8ef59c5aa250c848c0cf6a314687a47ede155b8a4b2dd1b6"
+    },
+    "wguscn": {
+      "endpoint": "10.220.0.4:51825",
+      "listen": 51825,
+      "fwmark": "0x200",
+      "allowedHash": "c769bcd30e2fcedc924fa2a55d5898136be20a1f120fd81609e22a6018cd0b7c"
+    },
+    "wgjpcn": {
+      "endpoint": "10.130.0.4:51826",
+      "listen": 51826,
+      "fwmark": "0x200",
+      "allowedHash": "e322267614b5924d821075d3ce4823c6108a8e13298ee1a9713df84e2969920f"
+    }
+  },
+  "handshakes": {
+    "wgeucn": 1792051980,
+    "wguscn": 1792052004,
+    "wgjpcn": 1792052157
+  },
+  "now": 1792052167,
+  "units": {
+    "threehub-network.service": {
+      "enabled": "enabled",
+      "active": "active"
+    },
+    "wg-quick@wgeucn.service": {
+      "enabled": "enabled",
+      "active": "active"
+    },
+    "wg-quick@wguscn.service": {
+      "enabled": "enabled",
+      "active": "active"
+    },
+    "wg-quick@wgjpcn.service": {
+      "enabled": "enabled",
+      "active": "active"
+    }
+  },
+  "natTranslationPresent": false,
+  "networkHash": "394ecc1d058687f8f4509fbf91ed0aa9d91fe1d302886e60fa7ae8fddc2b0d84",
+  "backup": true,
+  "ikeEstablished": null
+}

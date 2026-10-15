@@ -1,0 +1,21 @@
+{
+  "timestampUtc": "2026-10-15T07:52:37.190857+00:00",
+  "finishedUtc": "2026-10-15T07:52:47.264716+00:00",
+  "command": [
+    "deployment",
+    "group",
+    "show",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "direct-mesh-guest-restore",
+    "--query",
+    "{state:properties.provisioningState,error:properties.error}"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "{\r\n  \"error\": {\r\n    \"additionalInfo\": null,\r\n    \"code\": \"DeploymentFailed\",\r\n    \"details\": [\r\n      {\r\n        \"additionalInfo\": null,\r\n        \"code\": \"BadRequest\",\r\n        \"details\": null,\r\n        \"message\": \"The maximum number of managed Run commands (max=25, current=25) has been exceeded. Use fewer Run commands and retry the request. To list Run commands, refer: https://aka.ms/RunCommandManaged#list-all-deployed-runcommand-resources-on-a-vm-1 and then delete a Run command: https://aka.ms/RunCommandManaged#delete-runcommand-resource-from-the-vm-1 \",\r\n        \"target\": null\r\n      }\r\n    ],\r\n    \"message\": \"At least one resource deployment operation failed. Please list deployment operations for details. Please see https://aka.ms/arm-deployment-operations for usage details.\",\r\n    \"target\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Resources/deployments/direct-mesh-guest-restore\"\r\n  },\r\n  \"state\": \"Failed\"\r\n}\r\n",
+  "stderr": "",
+  "expectedAbsent": false,
+  "stdoutSha256": "e0e0b0c2a33e0596c440fbeb7035f84d6950d01dd2fadc5881ac50a130352b26"
+}

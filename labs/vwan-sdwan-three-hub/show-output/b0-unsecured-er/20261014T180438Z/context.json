@@ -1,0 +1,328 @@
+{
+  "lease": {
+    "taskId": "vwan-three-hub-baseline-routes-20261014",
+    "ownerRole": "Niobe",
+    "objective": "Capture all-hub effective routes and verify the zero-prepend unsecured ExpressRoute-preference baseline",
+    "allowedMutations": [],
+    "diagnosticExecution": "Read-only guest commands, temporary bounded packet capture and traffic probes are allowed; no persistent guest or Azure routing changes",
+    "forbiddenWork": [
+      "Changing hub preference",
+      "Changing advertisements",
+      "Guest repair",
+      "Routing intent",
+      "Bulk documentation"
+    ],
+    "expiresAtUtc": "2026-10-14T18:32:00Z",
+    "maxToolCalls": 75,
+    "maxMutations": 0,
+    "commandTimeoutSeconds": 600,
+    "restoreTimeoutMinutes": 0,
+    "lastCheckpointUtc": "2026-10-14T18:01:30Z",
+    "state": "active"
+  },
+  "correlation": "20261014T180438Z",
+  "scenario": "B0",
+  "HRP": "ExpressRoute",
+  "routingIntent": false,
+  "additionalPrepends": 0,
+  "activationProof": {
+    "taskId": "vwan-three-hub-activate-corrected-guests-20261014",
+    "verdict": "PASS",
+    "vmCount": 10,
+    "activatedVmCount": 10,
+    "failures": [],
+    "proofs": {
+      "router-eu": {
+        "activation": "PASS",
+        "filesChecksumVerified": true,
+        "originalBackupsPreserved": true,
+        "filesManifestSha256": "24091c98807b12c2652694c133be12f355a0767e3610a5530fd780efe1feff8a",
+        "services": {
+          "lab-http": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "bird": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "threehub-network": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "wg-quick@wgeuus": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "wg-quick@wgeujp": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "wg-quick@wgeucn": {
+            "enabled": "enabled",
+            "active": "active"
+          }
+        },
+        "protocols": {
+          "mesh_us": "Established",
+          "mesh_jp": "Established",
+          "mesh_cn": "Established",
+          "azure_0": "Established",
+          "azure_1": "Established"
+        },
+        "routes": {
+          "10.110.0.10": "10.110.0.10 via 10.210.0.1 dev eth0 src 10.210.0.4 uid 0 ",
+          "10.120.0.10": "10.120.0.10 dev wgeuus src 172.31.0.1 uid 0 ",
+          "10.130.0.10": "10.130.0.10 dev wgeujp src 172.31.0.5 uid 0 ",
+          "10.140.0.4": "10.140.0.4 dev wgeucn src 172.31.0.9 uid 0 "
+        },
+        "established": 5,
+        "expectedPeers": 5
+      },
+      "router-us": {
+        "activation": "PASS",
+        "filesChecksumVerified": true,
+        "originalBackupsPreserved": true,
+        "filesManifestSha256": "0e8d5f5f39b73940897bdf281b1a0e74c766fbc63df985c4ff3bb414b56d18e4",
+        "services": {
+          "lab-http": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "bird": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "threehub-network": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "wg-quick@wgeuus": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "wg-quick@wgusjp": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "wg-quick@wguscn": {
+            "enabled": "enabled",
+            "active": "active"
+          }
+        },
+        "protocols": {
+          "mesh_eu": "Established",
+          "mesh_jp": "Established",
+          "mesh_cn": "Established",
+          "azure_0": "Established",
+          "azure_1": "Established"
+        },
+        "routes": {
+          "10.110.0.10": "10.110.0.10 dev wgeuus src 172.31.0.2 uid 0 ",
+          "10.120.0.10": "10.120.0.10 via 10.220.0.1 dev eth0 src 10.220.0.4 uid 0 ",
+          "10.130.0.10": "10.130.0.10 dev wgusjp src 172.31.0.13 uid 0 ",
+          "10.140.0.4": "10.140.0.4 dev wguscn src 172.31.0.17 uid 0 "
+        },
+        "established": 5,
+        "expectedPeers": 5
+      },
+      "router-jp": {
+        "activation": "PASS",
+        "filesChecksumVerified": true,
+        "originalBackupsPreserved": true,
+        "filesManifestSha256": "04ffa224d64abb6178b79ac9c1940844486fc83166e64c92fa1c84f6500ee6fd",
+        "services": {
+          "lab-http": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "bird": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "threehub-network": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "wg-quick@wgeujp": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "wg-quick@wgusjp": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "wg-quick@wgjpcn": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "strongswan": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "threehub-ipsec": {
+            "enabled": "enabled",
+            "active": "active"
+          }
+        },
+        "protocols": {
+          "mesh_eu": "Established",
+          "mesh_us": "Established",
+          "mesh_cn": "Established",
+          "azure_0": "Established",
+          "azure_1": "Established"
+        },
+        "routes": {
+          "10.110.0.10": "10.110.0.10 dev wgeujp src 172.31.0.6 uid 0 ",
+          "10.120.0.10": "10.120.0.10 via 10.130.0.1 dev eth0 src 10.130.0.4 uid 0 ",
+          "10.130.0.10": "10.130.0.10 dev eth0 src 10.130.0.4 uid 0 ",
+          "10.140.0.4": "10.140.0.4 dev wgjpcn src 172.31.0.21 uid 0 "
+        },
+        "established": 5,
+        "expectedPeers": 5
+      },
+      "router-cn": {
+        "activation": "PASS",
+        "filesChecksumVerified": true,
+        "originalBackupsPreserved": true,
+        "filesManifestSha256": "c0a7f77b8d2e3a994380fc0337f78dbd966c3703360e4b02fd7eaaba165ba143",
+        "services": {
+          "lab-http": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "bird": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "threehub-network": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "wg-quick@wgeucn": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "wg-quick@wguscn": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "wg-quick@wgjpcn": {
+            "enabled": "enabled",
+            "active": "active"
+          }
+        },
+        "protocols": {
+          "mesh_eu": "Established",
+          "mesh_us": "Established",
+          "mesh_jp": "Established"
+        },
+        "routes": {
+          "10.110.0.10": "10.110.0.10 dev wgeucn src 172.31.0.10 uid 0 ",
+          "10.120.0.10": "10.120.0.10 via 10.140.0.1 dev eth0 src 10.140.0.4 uid 0 ",
+          "10.130.0.10": "10.130.0.10 dev wgjpcn src 172.31.0.22 uid 0 ",
+          "10.140.0.4": "local 10.140.0.4 dev lo table local src 10.140.0.4 uid 0 "
+        },
+        "established": 3,
+        "expectedPeers": 3
+      },
+      "probe-dc-eu": {
+        "activation": "PASS",
+        "filesChecksumVerified": true,
+        "originalBackupsPreserved": true,
+        "filesManifestSha256": "faf450c6df0f7865a434b8aa35e54a6e94b88f790a73b6eaf531f0a4643c6019",
+        "services": {
+          "lab-http": {
+            "enabled": "enabled",
+            "active": "active"
+          }
+        },
+        "protocols": {},
+        "routes": {}
+      },
+      "probe-dc-us": {
+        "activation": "PASS",
+        "filesChecksumVerified": true,
+        "originalBackupsPreserved": true,
+        "filesManifestSha256": "a68a2b0d21594a262a0c76fee5ae732496dc48e2b1e8067fb6caf330fea66898",
+        "services": {
+          "lab-http": {
+            "enabled": "enabled",
+            "active": "active"
+          }
+        },
+        "protocols": {},
+        "routes": {}
+      },
+      "probe-dc-jp": {
+        "activation": "PASS",
+        "filesChecksumVerified": true,
+        "originalBackupsPreserved": true,
+        "filesManifestSha256": "e06c4054b90e05a82c207962a66eba1d668448ca027a62850f4ae1876123d1d2",
+        "services": {
+          "lab-http": {
+            "enabled": "enabled",
+            "active": "active"
+          },
+          "threehub-probe": {
+            "enabled": "enabled",
+            "active": "active"
+          }
+        },
+        "protocols": {},
+        "routes": {}
+      },
+      "probe-spoke-eu": {
+        "activation": "PASS",
+        "filesChecksumVerified": true,
+        "originalBackupsPreserved": true,
+        "filesManifestSha256": "538f07ef3c52a66feaf931f52d7c54541540f6aca37b87f3b1b6ed5149ee0d4b",
+        "services": {
+          "lab-http": {
+            "enabled": "enabled",
+            "active": "active"
+          }
+        },
+        "protocols": {},
+        "routes": {}
+      },
+      "probe-spoke-us": {
+        "activation": "PASS",
+        "filesChecksumVerified": true,
+        "originalBackupsPreserved": true,
+        "filesManifestSha256": "e7cee74b486cf6f092c79ea4fe729225acb29b06d180be9e4b1d8bcecf14676d",
+        "services": {
+          "lab-http": {
+            "enabled": "enabled",
+            "active": "active"
+          }
+        },
+        "protocols": {},
+        "routes": {}
+      },
+      "probe-spoke-jp": {
+        "activation": "PASS",
+        "filesChecksumVerified": true,
+        "originalBackupsPreserved": true,
+        "filesManifestSha256": "2281e96eaf1e3f69001da5170a9398aacfc1a4dbb2edfebb3ca2b4b8209a42f0",
+        "services": {
+          "lab-http": {
+            "enabled": "enabled",
+            "active": "active"
+          }
+        },
+        "protocols": {},
+        "routes": {}
+      }
+    },
+    "mutationsUsed": 1,
+    "liveCliCallsUsed": 17,
+    "completedAtUtc": "2026-10-14T18:00:09.633020+00:00",
+    "originalBackupsPreserved": true,
+    "restorePerformed": false,
+    "bgpDiagnosticOnly": true,
+    "activeChildren": 0,
+    "ownerState": "idle"
+  },
+  "diagnosticExecution": "Managed read batch only; zero configuration mutations"
+}

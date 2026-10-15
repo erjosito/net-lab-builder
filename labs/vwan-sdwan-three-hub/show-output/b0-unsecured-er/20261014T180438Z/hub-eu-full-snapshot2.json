@@ -1,0 +1,27 @@
+{
+  "timestampUtc": "2026-10-14T18:13:53.101962+00:00",
+  "finishedUtc": "2026-10-14T18:14:16.469541+00:00",
+  "command": [
+    "C:\\Program Files\\Microsoft SDKs\\Azure\\CLI2\\wbin\\az.CMD",
+    "network",
+    "vhub",
+    "get-effective-routes",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "hub-eu",
+    "--resource-id",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/hubRouteTables/defaultRouteTable",
+    "--resource-type",
+    "RouteTable",
+    "--subscription",
+    "<SUBSCRIPTION_ID>",
+    "--only-show-errors",
+    "-o",
+    "json"
+  ],
+  "exitCode": 0,
+  "stdout": "{\r\n  \"value\": []\r\n}\r\n",
+  "stderr": "",
+  "sha256": "6cc5f0b62a8d505d7c0844c2e90322f4385fe9e6be45addff485c801744aed92"
+}

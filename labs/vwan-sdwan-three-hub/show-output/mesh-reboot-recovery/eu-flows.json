@@ -1,0 +1,23 @@
+{
+  "timestampUtc": "2026-10-15T07:29:22.608195+00:00",
+  "finishedUtc": "2026-10-15T07:29:58.173237+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-eu",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\show-output\\mesh-reboot-recovery\\flows.sh"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "{\r\n  \"value\": [\r\n    {\r\n      \"code\": \"ProvisioningState/succeeded\",\r\n      \"displayStatus\": \"Provisioning succeeded\",\r\n      \"level\": \"Info\",\r\n      \"message\": \"Enable succeeded: \\n[stdout]\\nMESH_DIAGNOSTIC {\\\"flows\\\":[{\\\"orig\\\":[\\\"10.140.0.4\\\",51820,\\\"10.210.0.4\\\",51820],\\\"reply\\\":[\\\"10.210.0.4\\\",51820,\\\"10.140.0.4\\\",51820],\\\"status\\\":8},{\\\"orig\\\":[\\\"10.210.0.4\\\",51821,\\\"10.220.0.4\\\",51820],\\\"reply\\\":[\\\"10.220.0.4\\\",51820,\\\"10.210.0.4\\\",51820],\\\"status\\\":414},{\\\"orig\\\":[\\\"10.130.0.4\\\",51820,\\\"10.210.0.4\\\",51820],\\\"reply\\\":[\\\"10.210.0.4\\\",51820,\\\"10.130.0.4\\\",51820],\\\"status\\\":8}],\\\"rpFilter\\\":\\\"/proc/sys/net/ipv4/conf/all/rp_filter:0\\\\n/proc/sys/net/ipv4/conf/default/rp_filter:0\\\\n/proc/sys/net/ipv4/conf/enP61687s1/rp_filter:0\\\\n/proc/sys/net/ipv4/conf/eth0/rp_filter:0\\\\n/proc/sys/net/ipv4/conf/lo/rp_filter:0\\\\n/proc/sys/net/ipv4/conf/wgeucn/rp_filter:2\\\\n/proc/sys/net/ipv4/conf/wgeujp/rp_filter:2\\\\n/proc/sys/net/ipv4/conf/wgeuus/rp_filter:2\\\",\\\"allNat\\\":\\\"-P PREROUTING ACCEPT\\\\n-P INPUT ACCEPT\\\\n-P OUTPUT ACCEPT\\\\n-P POSTROUTING ACCEPT\\\\n-N TH_WG_IN\\\\n-N TH_WG_OUT\\\\n-A PREROUTING -j TH_WG_IN\\\\n-A POSTROUTING -j TH_WG_OUT\\\\n-A TH_WG_IN -s 10.220.0.4/32 -d 10.210.0.4/32 -i eth0 -p udp -m udp --dport 51820 -j REDIRECT --to-ports 51821\\\\n-A TH_WG_IN -s 10.130.0.4/32 -d 10.210.0.4/32 -i eth0 -p udp -m udp --dport 51820 -j REDIRECT --to-ports 51822\\\\n-A TH_WG_IN -s 10.140.0.4/32 -d 10.210.0.4/32 -i eth0 -p udp -m udp --dport 51820 -j REDIRECT --to-ports 51823\\\\n-A TH_WG_OUT -s 10.210.0.4/32 -d 10.220.0.4/32 -o eth0 -p udp -m udp --sport 51821 --dport 51820 -j SNAT --to-source 10.210.0.4:51820\\\\n-A TH_WG_OUT -s 10.210.0.4/32 -d 10.130.0.4/32 -o eth0 -p udp -m udp --sport 51822 --dport 51820 -j SNAT --to-source 10.210.0.4:51820\\\\n-A TH_WG_OUT -s 10.210.0.4/32 -d 10.140.0.4/32 -o eth0 -p udp -m udp --sport 51823 --dport 51820 -j SNAT --to-source 10.210.0.4:51820\\\",\\\"raw\\\":\\\"-P PREROUTING ACCEPT\\\\n-P OUTPUT ACCEPT\\\"}\\n\\n[stderr]\\n\"\r\n    }\r\n  ]\r\n}\r\n",
+  "stderr": "",
+  "expectedAbsent": false,
+  "stdoutSha256": "59140b8f9d385c41b9b60f820c5a12ed5140cc65ce81069f2e0079884ea6403f"
+}

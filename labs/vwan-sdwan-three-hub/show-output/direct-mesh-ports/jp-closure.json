@@ -1,0 +1,23 @@
+{
+  "timestampUtc": "2026-10-15T07:56:36.118459+00:00",
+  "finishedUtc": "2026-10-15T07:57:45.436174+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-jp",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\direct-mesh-ports\\closure-jp.sh"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "{\r\n  \"value\": [\r\n    {\r\n      \"code\": \"ProvisioningState/succeeded\",\r\n      \"displayStatus\": \"Provisioning succeeded\",\r\n      \"level\": \"Info\",\r\n      \"message\": \"Enable succeeded: \\n[stdout]\\nCLOSURE_COMPLETE {\\\"sha256\\\":\\\"89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006\\\",\\\"stat\\\":{\\\"uid\\\":113,\\\"gid\\\":122,\\\"mode\\\":384,\\\"mtimeNs\\\":1792000606196722098},\\\"protocols\\\":{\\\"mesh_eu\\\":\\\"Connect\\\",\\\"mesh_us\\\":\\\"Connect\\\",\\\"mesh_cn\\\":\\\"Connect\\\",\\\"azure_0\\\":\\\"Established\\\",\\\"azure_1\\\":\\\"Established\\\"},\\\"configs\\\":[{\\\"name\\\":\\\"wgusjp.conf\\\",\\\"endpoint\\\":\\\"10.220.0.4:51820\\\",\\\"mode\\\":384},{\\\"name\\\":\\\"wgeujp.conf\\\",\\\"endpoint\\\":\\\"10.210.0.4:51820\\\",\\\"mode\\\":384},{\\\"name\\\":\\\"wgjpcn.conf\\\",\\\"endpoint\\\":\\\"10.140.0.4:51820\\\",\\\"mode\\\":384}],\\\"networkSha256\\\":\\\"b47b02137efaa9abf422d4248f9d06c6051eb39c67ede0ee7698caa1d37b4afa\\\",\\\"wgTranslationPresent\\\":true,\\\"backupCreated\\\":false,\\\"ikeEstablished\\\":2}\\n\\n[stderr]\\n\"\r\n    }\r\n  ]\r\n}\r\n",
+  "stderr": "",
+  "expectedAbsent": false,
+  "stdoutSha256": "7912de65ceb03c3dc4b9d894db8a56edd3212a41e3681204b40f8f1928879d6b"
+}

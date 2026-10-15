@@ -1,0 +1,27 @@
+{
+  "timestampUtc": "2026-10-14T18:11:48.221946+00:00",
+  "finishedUtc": "2026-10-14T18:12:34.275647+00:00",
+  "command": [
+    "C:\\Program Files\\Microsoft SDKs\\Azure\\CLI2\\wbin\\az.CMD",
+    "deployment",
+    "group",
+    "create",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "--name",
+    "b0-small-read",
+    "--template-file",
+    "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\b0-small-read.json",
+    "--parameters",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\b0-small-read.parameters.json",
+    "--subscription",
+    "<SUBSCRIPTION_ID>",
+    "--only-show-errors",
+    "-o",
+    "json"
+  ],
+  "exitCode": 0,
+  "stdout": "{\r\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Resources/deployments/b0-small-read\",\r\n  \"location\": null,\r\n  \"name\": \"b0-small-read\",\r\n  \"properties\": {\r\n    \"correlationId\": \"d9e8df5f-88f1-480d-8956-336ac4bd3983\",\r\n    \"debugSetting\": null,\r\n    \"dependencies\": [],\r\n    \"diagnostics\": null,\r\n    \"duration\": \"PT30.4294959S\",\r\n    \"error\": null,\r\n    \"extensions\": [],\r\n    \"mode\": \"Incremental\",\r\n    \"onErrorDeployment\": null,\r\n    \"outputResources\": [\r\n      {\r\n        \"apiVersion\": null,\r\n        \"extension\": null,\r\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-cn/runCommands/guest-b0-small-20261014t180438z\",\r\n        \"identifiers\": null,\r\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\r\n        \"resourceType\": \"Microsoft.Compute/virtualMachines/runCommands\"\r\n      },\r\n      {\r\n        \"apiVersion\": null,\r\n        \"extension\": null,\r\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/runCommands/guest-b0-small-20261014t180438z\",\r\n        \"identifiers\": null,\r\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\r\n        \"resourceType\": \"Microsoft.Compute/virtualMachines/runCommands\"\r\n      },\r\n      {\r\n        \"apiVersion\": null,\r\n        \"extension\": null,\r\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp/runCommands/guest-b0-small-20261014t180438z\",\r\n        \"identifiers\": null,\r\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\r\n        \"resourceType\": \"Microsoft.Compute/virtualMachines/runCommands\"\r\n      },\r\n      {\r\n        \"apiVersion\": null,\r\n        \"extension\": null,\r\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-us/runCommands/guest-b0-small-20261014t180438z\",\r\n        \"identifiers\": null,\r\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\r\n        \"resourceType\": \"Microsoft.Compute/virtualMachines/runCommands\"\r\n      }\r\n    ],\r\n    \"outputs\": null,\r\n    \"parameters\": {\r\n      \"router_cn\": {\r\n        \"type\": \"SecureString\"\r\n      },\r\n      \"router_eu\": {\r\n        \"type\": \"SecureString\"\r\n      },\r\n      \"router_jp\": {\r\n        \"type\": \"SecureString\"\r\n      },\r\n      \"router_us\": {\r\n        \"type\": \"SecureString\"\r\n      }\r\n    },\r\n    \"parametersLink\": null,\r\n    \"providers\": [\r\n      {\r\n        \"id\": null,\r\n        \"namespace\": \"Microsoft.Compute\",\r\n        \"providerAuthorizationConsentState\": null,\r\n        \"registrationPolicy\": null,\r\n        \"registrationState\": null,\r\n        \"resourceTypes\": [\r\n          {\r\n            \"aliases\": null,\r\n            \"apiProfiles\": null,\r\n            \"apiVersions\": null,\r\n            \"capabilities\": null,\r\n            \"defaultApiVersion\": null,\r\n            \"locationMappings\": null,\r\n            \"locations\": [\r\n              \"westeurope\",\r\n              \"northcentralus\",\r\n              \"japaneast\"\r\n            ],\r\n            \"properties\": null,\r\n            \"resourceType\": \"virtualMachines/runCommands\",\r\n            \"zoneMappings\": null\r\n          }\r\n        ]\r\n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"templateHash\": \"2590572775982305851\",\r\n    \"templateLink\": null,\r\n    \"timestamp\": \"2026-10-14T18:12:27.196946+00:00\",\r\n    \"validatedResources\": null,\r\n    \"validationLevel\": null\r\n  },\r\n  \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\r\n  \"tags\": null,\r\n  \"type\": \"Microsoft.Resources/deployments\"\r\n}\r\n",
+  "stderr": "",
+  "sha256": "25cd7c356345117fcf370bfec647102a004fb4a567d797117648b9dcdf6cb59f"
+}

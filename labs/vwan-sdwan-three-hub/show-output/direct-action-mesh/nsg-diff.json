@@ -1,0 +1,392 @@
+{
+  "eu": {
+    "preservedRuleNames": [
+      "private-icmp",
+      "private-http",
+      "out-private-icmp",
+      "out-private-http",
+      "bootstrap-web",
+      "platform-agent",
+      "wireguard-private",
+      "out-wireguard-private",
+      "forward-private",
+      "out-forward-private",
+      "hub-bgp",
+      "out-hub-bgp",
+      "deny-other-inbound",
+      "deny-other-outbound"
+    ],
+    "added": [
+      {
+        "name": "direct-link-us-inbound",
+        "properties": {
+          "priority": 1000,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Inbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.220.0.4/32",
+          "destinationAddressPrefix": "10.210.0.4/32",
+          "destinationPortRange": "51821"
+        }
+      },
+      {
+        "name": "direct-link-us-outbound",
+        "properties": {
+          "priority": 1000,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Outbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.210.0.4/32",
+          "destinationAddressPrefix": "10.220.0.4/32",
+          "destinationPortRange": "51821"
+        }
+      },
+      {
+        "name": "direct-link-jp-inbound",
+        "properties": {
+          "priority": 1001,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Inbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.130.0.4/32",
+          "destinationAddressPrefix": "10.210.0.4/32",
+          "destinationPortRange": "51822"
+        }
+      },
+      {
+        "name": "direct-link-jp-outbound",
+        "properties": {
+          "priority": 1001,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Outbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.210.0.4/32",
+          "destinationAddressPrefix": "10.130.0.4/32",
+          "destinationPortRange": "51822"
+        }
+      },
+      {
+        "name": "direct-link-cn-inbound",
+        "properties": {
+          "priority": 1002,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Inbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.140.0.4/32",
+          "destinationAddressPrefix": "10.210.0.4/32",
+          "destinationPortRange": "51823"
+        }
+      },
+      {
+        "name": "direct-link-cn-outbound",
+        "properties": {
+          "priority": 1002,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Outbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.210.0.4/32",
+          "destinationAddressPrefix": "10.140.0.4/32",
+          "destinationPortRange": "51823"
+        }
+      }
+    ]
+  },
+  "us": {
+    "preservedRuleNames": [
+      "private-icmp",
+      "private-http",
+      "out-private-icmp",
+      "out-private-http",
+      "bootstrap-web",
+      "platform-agent",
+      "wireguard-private",
+      "out-wireguard-private",
+      "forward-private",
+      "out-forward-private",
+      "hub-bgp",
+      "out-hub-bgp",
+      "deny-other-inbound",
+      "deny-other-outbound"
+    ],
+    "added": [
+      {
+        "name": "direct-link-eu-inbound",
+        "properties": {
+          "priority": 1000,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Inbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.210.0.4/32",
+          "destinationAddressPrefix": "10.220.0.4/32",
+          "destinationPortRange": "51821"
+        }
+      },
+      {
+        "name": "direct-link-eu-outbound",
+        "properties": {
+          "priority": 1000,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Outbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.220.0.4/32",
+          "destinationAddressPrefix": "10.210.0.4/32",
+          "destinationPortRange": "51821"
+        }
+      },
+      {
+        "name": "direct-link-jp-inbound",
+        "properties": {
+          "priority": 1001,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Inbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.130.0.4/32",
+          "destinationAddressPrefix": "10.220.0.4/32",
+          "destinationPortRange": "51824"
+        }
+      },
+      {
+        "name": "direct-link-jp-outbound",
+        "properties": {
+          "priority": 1001,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Outbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.220.0.4/32",
+          "destinationAddressPrefix": "10.130.0.4/32",
+          "destinationPortRange": "51824"
+        }
+      },
+      {
+        "name": "direct-link-cn-inbound",
+        "properties": {
+          "priority": 1002,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Inbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.140.0.4/32",
+          "destinationAddressPrefix": "10.220.0.4/32",
+          "destinationPortRange": "51825"
+        }
+      },
+      {
+        "name": "direct-link-cn-outbound",
+        "properties": {
+          "priority": 1002,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Outbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.220.0.4/32",
+          "destinationAddressPrefix": "10.140.0.4/32",
+          "destinationPortRange": "51825"
+        }
+      }
+    ]
+  },
+  "jp": {
+    "preservedRuleNames": [
+      "private-icmp",
+      "private-http",
+      "out-private-icmp",
+      "out-private-http",
+      "bootstrap-web",
+      "platform-agent",
+      "wireguard-private",
+      "out-wireguard-private",
+      "forward-private",
+      "out-forward-private",
+      "jp-ike",
+      "out-jp-ike",
+      "deny-other-inbound",
+      "deny-other-outbound"
+    ],
+    "added": [
+      {
+        "name": "direct-link-eu-inbound",
+        "properties": {
+          "priority": 1000,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Inbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.210.0.4/32",
+          "destinationAddressPrefix": "10.130.0.4/32",
+          "destinationPortRange": "51822"
+        }
+      },
+      {
+        "name": "direct-link-eu-outbound",
+        "properties": {
+          "priority": 1000,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Outbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.130.0.4/32",
+          "destinationAddressPrefix": "10.210.0.4/32",
+          "destinationPortRange": "51822"
+        }
+      },
+      {
+        "name": "direct-link-us-inbound",
+        "properties": {
+          "priority": 1001,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Inbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.220.0.4/32",
+          "destinationAddressPrefix": "10.130.0.4/32",
+          "destinationPortRange": "51824"
+        }
+      },
+      {
+        "name": "direct-link-us-outbound",
+        "properties": {
+          "priority": 1001,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Outbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.130.0.4/32",
+          "destinationAddressPrefix": "10.220.0.4/32",
+          "destinationPortRange": "51824"
+        }
+      },
+      {
+        "name": "direct-link-cn-inbound",
+        "properties": {
+          "priority": 1002,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Inbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.140.0.4/32",
+          "destinationAddressPrefix": "10.130.0.4/32",
+          "destinationPortRange": "51826"
+        }
+      },
+      {
+        "name": "direct-link-cn-outbound",
+        "properties": {
+          "priority": 1002,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Outbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.130.0.4/32",
+          "destinationAddressPrefix": "10.140.0.4/32",
+          "destinationPortRange": "51826"
+        }
+      }
+    ]
+  },
+  "cn": {
+    "preservedRuleNames": [
+      "private-icmp",
+      "private-http",
+      "out-private-icmp",
+      "out-private-http",
+      "bootstrap-web",
+      "platform-agent",
+      "wireguard-private",
+      "out-wireguard-private",
+      "forward-private",
+      "out-forward-private",
+      "deny-other-inbound",
+      "deny-other-outbound"
+    ],
+    "added": [
+      {
+        "name": "direct-link-eu-inbound",
+        "properties": {
+          "priority": 1000,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Inbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.210.0.4/32",
+          "destinationAddressPrefix": "10.140.0.4/32",
+          "destinationPortRange": "51823"
+        }
+      },
+      {
+        "name": "direct-link-eu-outbound",
+        "properties": {
+          "priority": 1000,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Outbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.140.0.4/32",
+          "destinationAddressPrefix": "10.210.0.4/32",
+          "destinationPortRange": "51823"
+        }
+      },
+      {
+        "name": "direct-link-us-inbound",
+        "properties": {
+          "priority": 1001,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Inbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.220.0.4/32",
+          "destinationAddressPrefix": "10.140.0.4/32",
+          "destinationPortRange": "51825"
+        }
+      },
+      {
+        "name": "direct-link-us-outbound",
+        "properties": {
+          "priority": 1001,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Outbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.140.0.4/32",
+          "destinationAddressPrefix": "10.220.0.4/32",
+          "destinationPortRange": "51825"
+        }
+      },
+      {
+        "name": "direct-link-jp-inbound",
+        "properties": {
+          "priority": 1002,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Inbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.130.0.4/32",
+          "destinationAddressPrefix": "10.140.0.4/32",
+          "destinationPortRange": "51826"
+        }
+      },
+      {
+        "name": "direct-link-jp-outbound",
+        "properties": {
+          "priority": 1002,
+          "protocol": "Udp",
+          "access": "Allow",
+          "direction": "Outbound",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.140.0.4/32",
+          "destinationAddressPrefix": "10.130.0.4/32",
+          "destinationPortRange": "51826"
+        }
+      }
+    ]
+  }
+}

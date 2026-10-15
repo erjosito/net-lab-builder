@@ -1,0 +1,23 @@
+{
+  "timestampUtc": "2026-10-15T07:03:01.168730+00:00",
+  "finishedUtc": "2026-10-15T07:03:05.197585+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-eu",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\restart-eu-before.sh"
+  ],
+  "exitCode": 1,
+  "timedOut": false,
+  "stdout": "",
+  "stderr": "ERROR: (OperationNotAllowed) The operation requires the VM to be running (or set to run).\r\nCode: OperationNotAllowed\r\nMessage: The operation requires the VM to be running (or set to run).\r\n",
+  "expectedAbsent": false,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

@@ -1,0 +1,21 @@
+{
+  "timestampUtc": "2026-10-15T07:54:26.310099+00:00",
+  "finishedUtc": "2026-10-15T07:54:31.926658+00:00",
+  "command": [
+    "deployment",
+    "group",
+    "show",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "direct-mesh-nsg-restore",
+    "--query",
+    "{state:properties.provisioningState,error:properties.error}"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "{\r\n  \"error\": null,\r\n  \"state\": \"Succeeded\"\r\n}\r\n",
+  "stderr": "",
+  "expectedAbsent": false,
+  "stdoutSha256": "533c4abd37f80376b71a454ac7c2c9228cfc881fb3baa829620af9afa06ebb21"
+}
