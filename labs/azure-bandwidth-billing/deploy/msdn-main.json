@@ -1,0 +1,142 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "runId": { "type": "string", "minLength": 16, "maxLength": 16 },
+    "vmSize": { "type": "string", "allowedValues": ["Standard_B1s", "Standard_B2ts_v2"] },
+    "adminPublicKey": { "type": "securestring" }
+  },
+  "variables": {
+    "location": "swedencentral",
+    "tags": { "lab": "true", "created_by": "copilot-lab", "run_id": "[parameters('runId')]" }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2024-05-01",
+      "name": "[concat(parameters('runId'), '-vnet-t')]",
+      "location": "[variables('location')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "addressSpace": { "addressPrefixes": ["10.233.0.0/24"] },
+        "subnets": [{
+          "name": "lab",
+          "properties": { "addressPrefix": "10.233.0.0/24", "defaultOutboundAccess": false }
+        }]
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2024-05-01",
+      "name": "[concat(parameters('runId'), '-pip-t')]",
+      "location": "[variables('location')]",
+      "tags": "[variables('tags')]",
+      "sku": { "name": "Standard", "tier": "Regional" },
+      "properties": {
+        "publicIPAllocationMethod": "Static", "publicIPAddressVersion": "IPv4",
+        "idleTimeoutInMinutes": 4
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2024-05-01",
+      "name": "[concat(parameters('runId'), '-nsg-t')]",
+      "location": "[variables('location')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "securityRules": [{
+          "name": "DenyAllInboundUntilHarnessApproved",
+          "properties": {
+            "priority": 100, "direction": "Inbound", "access": "Deny", "protocol": "*",
+            "sourcePortRange": "*", "destinationPortRange": "*",
+            "sourceAddressPrefix": "*", "destinationAddressPrefix": "*"
+          }
+        }]
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2024-05-01",
+      "name": "[concat(parameters('runId'), '-nic-t')]",
+      "location": "[variables('location')]",
+      "tags": "[variables('tags')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', concat(parameters('runId'), '-vnet-t'))]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('runId'), '-pip-t'))]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('runId'), '-nsg-t'))]"
+      ],
+      "properties": {
+        "enableAcceleratedNetworking": false, "enableIPForwarding": false,
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('runId'), '-nsg-t'))]"
+        },
+        "ipConfigurations": [{
+          "name": "primary",
+          "properties": {
+            "primary": true, "privateIPAllocationMethod": "Static", "privateIPAddress": "10.233.0.4",
+            "subnet": {
+              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(parameters('runId'), '-vnet-t'), 'lab')]"
+            },
+            "publicIPAddress": {
+              "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('runId'), '-pip-t'))]"
+            }
+          }
+        }]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-07-01",
+      "name": "[concat(parameters('runId'), '-vm-t')]",
+      "location": "[variables('location')]",
+      "tags": "[variables('tags')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('runId'), '-nic-t'))]"
+      ],
+      "properties": {
+        "hardwareProfile": { "vmSize": "[parameters('vmSize')]" },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical", "offer": "0001-com-ubuntu-server-jammy",
+            "sku": "22_04-lts-gen2", "version": "latest"
+          },
+          "osDisk": {
+            "name": "[concat(parameters('runId'), '-os-t')]",
+            "createOption": "FromImage", "diskSizeGB": 30, "caching": "ReadWrite",
+            "deleteOption": "Delete", "managedDisk": { "storageAccountType": "StandardSSD_LRS" }
+          }
+        },
+        "osProfile": {
+          "computerName": "bwb-t", "adminUsername": "azurelabuser",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true, "provisionVMAgent": true,
+            "ssh": { "publicKeys": [{
+              "path": "/home/azurelabuser/.ssh/authorized_keys",
+              "keyData": "[parameters('adminPublicKey')]"
+            }] }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [{
+            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('runId'), '-nic-t'))]",
+            "properties": { "primary": true, "deleteOption": "Delete" }
+          }]
+        },
+        "diagnosticsProfile": { "bootDiagnostics": { "enabled": false } }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/tags",
+      "apiVersion": "2021-04-01",
+      "name": "default",
+      "scope": "[resourceId('Microsoft.Compute/disks', concat(parameters('runId'), '-os-t'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('runId'), '-vm-t'))]"
+      ],
+      "properties": { "tags": "[variables('tags')]" }
+    }
+  ],
+  "outputs": {
+    "state": { "type": "string", "value": "One isolated endpoint; all inbound denied; no harness." }
+  }
+}
