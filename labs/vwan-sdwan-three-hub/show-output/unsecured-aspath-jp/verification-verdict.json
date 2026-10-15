@@ -1,0 +1,62 @@
+{
+  "taskId": "vwan-three-hub-review-japan-sweep-20261014",
+  "correlationDirectory": "show-output\\unsecured-aspath-jp",
+  "reviewVerdict": "REJECT",
+  "scope": "Reject per-step server-accepted HRP proof, not the genuine bounded winner observations or restore.",
+  "findings": [
+    {
+      "severity": "evidence-acceptance",
+      "confidence": "high",
+      "source": "deploy\\aspath_sweep.py:capture",
+      "description": "Counts 0, 1, 2, 3 and restore0 manifest.json hardcode HRP=ASPath and routingIntent=false. capture() never GETs properties.hubRoutingPreference from the three hubs. Actual ASPath GETs exist at preflight only; current fresh GETs cannot retroactively supply the required server-property proof at every step.",
+      "minimalRepair": "Different owner Trinity must revise the bounded collector to record actual GET properties.hubRoutingPreference for all three hubs in each future step's metadata, fail on a mismatch, and distinguish observed fields from requested fields. Preserve historical files; do not fabricate per-step GETs. Tank remains locked out of revision."
+    }
+  ],
+  "completedCounts": [0, 1, 2, 3],
+  "skippedCounts": [4],
+  "boundedObservation": "Winning ingress/origin/next-hop did not switch through count 3; AS paths DID change. No unconditional ASPath algorithm conclusion is justified.",
+  "sourceExportVerification": {
+    "allFourPrefixesMatchRequestedAdditionalCopies": true,
+    "asn": 65013,
+    "bothPeersIdentical": "Recorded source-path-verification and executable comparison in source(); raw peer0 exports independently match counts 0..3.",
+    "sourceVersusAzure": "BIRD export inspection omits the normal eBGP sender-AS addition. Azure-observed JP winning paths contain one normal 65013 plus exactly n additional 65013 copies."
+  },
+  "jpObservedWinnerTable": [
+    {"additionalCopies": 0, "euDC": "65013-65011", "usDC": "65013-65012", "jpDC": "65013", "cnDC": "65013-65014"},
+    {"additionalCopies": 1, "euDC": "65013-65013-65011", "usDC": "65013-65013-65012", "jpDC": "65013-65013", "cnDC": "65013-65013-65014"},
+    {"additionalCopies": 2, "euDC": "65013-65013-65013-65011", "usDC": "65013-65013-65013-65012", "jpDC": "65013-65013-65013", "cnDC": "65013-65013-65013-65014"},
+    {"additionalCopies": 3, "euDC": "65013-65013-65013-65013-65011", "usDC": "65013-65013-65013-65013-65012", "jpDC": "65013-65013-65013-65013", "cnDC": "65013-65013-65013-65013-65014"}
+  ],
+  "prefixes": {"euDC": "10.110.0.0/24", "usDC": "10.120.0.0/24", "jpDC": "10.130.0.0/24", "cnDC": "10.140.0.0/24"},
+  "jpWinningIngressAllSteps": "VPN_S2S_Gateway vpngw-jp",
+  "freshness": {
+    "collector": "effective_routes.collect invokes az network vhub get-effective-routes each time with original spoke-connection ARM ID, completed value-list validation, and no client cache.",
+    "jpBothSnapshotsMatchNormalizedAnalysisAllCounts": true,
+    "jpSnapshot2StartMinusSnapshot1FinishSeconds": {"0": 202.068547, "1": 238.398696, "2": 200.413415, "3": 202.980388},
+    "identicalWithinStepResponseHashes": "Expected for stable routes; not evidence of caching. Stored hashes precede subscription redaction and cannot be recomputed directly over sanitized stdout.",
+    "allHubTwelveRowStability": "Recorded per-step analyses report twelve complete rows and stable pairs; JP raw pairs independently checked. EU/US raw pairs not independently reopened.",
+    "apiTraceLimit": "No per-count HTTP debug/async operation trace independently inspected; no server-generated collection timestamp available.",
+    "sourceManagedCommands": "Distinct count-specific guest-aspath-<count>-a/b resource names; source stdout dates advance across counts, with actual changed path attributes."
+  },
+  "visibilityLimits": "Effective routes expose winners, not losing NVA/inter-hub candidates. No measured shorter competing path or eligibility is invented; source exports are not proof of Azure alternative candidates.",
+  "restore": {
+    "verdict": "PASS",
+    "jpBaselineHash": "89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006",
+    "fourRouterBeforeAfterHashAndEstablishedCountsEqual": true,
+    "bgpEstablishedRecorded": {"router-eu": 5, "router-us": 5, "router-jp": 5, "router-cn": 3},
+    "totalBgpEstablishedRecorded": 18,
+    "jpIkeEstablishedRecorded": 2,
+    "jpManagedProofExecution": {"state": "Succeeded", "exitCode": 0, "endTimeUtc": "2026-10-14T19:19:34+00:00"},
+    "restore0SourcePathsEqualZeroBaseline": true,
+    "namedBaseline": "All hubs ASPath; Japan zero additional prepends",
+    "freshHubGetProperties": {"hub-eu": "ASPath", "hub-us": "ASPath", "hub-jp": "ASPath"},
+    "freshReadOnlyArmCalls": 4,
+    "freshJpManagedGet": "Failed; no fifth call or guest execution attempted. Guest restore evidence is the recorded successful end-of-sweep command, not a newly executed current diagnostic.",
+    "liveGetEvidence": "verification-live-gets.json"
+  },
+  "nextAction": "Trinity minimal collector/metadata revision under a new lease. After acceptance, a new bounded 4/8 extension is materially new work; do not rerun the full matrix or modify historical evidence.",
+  "forwarding": "Not tested or repaired. Existing B0 10/24 FAIL remains separate.",
+  "liveMutations": 0,
+  "children": [],
+  "leaseState": "completed"
+}

@@ -1,0 +1,23 @@
+{
+  "timestampUtc": "2026-10-15T07:13:11.733283+00:00",
+  "finishedUtc": "2026-10-15T07:13:47.803582+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-eu",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\restart-eu-before.sh"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "{\r\n  \"value\": [\r\n    {\r\n      \"code\": \"ProvisioningState/succeeded\",\r\n      \"displayStatus\": \"Provisioning succeeded\",\r\n      \"level\": \"Info\",\r\n      \"message\": \"Enable succeeded: \\n[stdout]\\nBACKUPS_COMPLETE {}\\nBOUNDARY_COMPLETE {\\\"site\\\":\\\"eu\\\",\\\"sha256\\\":\\\"20fbaef367e78dd78b3e7d55e791d5c69dbae0a00fbd3c50ee0c2a740bdb4120\\\",\\\"stat\\\":{\\\"uid\\\":113,\\\"gid\\\":122,\\\"mode\\\":384,\\\"mtimeNs\\\":1792000607648606479},\\\"protocols\\\":{\\\"mesh_us\\\":\\\"Established\\\",\\\"mesh_jp\\\":\\\"Connect\\\",\\\"mesh_cn\\\":\\\"Connect\\\",\\\"azure_0\\\":\\\"Established\\\",\\\"azure_1\\\":\\\"Established\\\"},\\\"exports\\\":{\\\"azure_0\\\":{\\\"routes\\\":{\\\"10.110.0.0/24\\\":[],\\\"10.120.0.0/24\\\":[65012]},\\\"rawSha256\\\":\\\"bc433f649d22a525938d5015f72256b4b01012a617ea9be174a5b901563ab2ae\\\"},\\\"azure_1\\\":{\\\"routes\\\":{\\\"10.110.0.0/24\\\":[],\\\"10.120.0.0/24\\\":[65012]},\\\"rawSha256\\\":\\\"bc433f649d22a525938d5015f72256b4b01012a617ea9be174a5b901563ab2ae\\\"}},\\\"ikeEstablished\\\":null,\\\"additionalPrepends\\\":0,\\\"configureOutput\\\":null,\\\"restored\\\":false}\\n\\n[stderr]\\n\"\r\n    }\r\n  ]\r\n}\r\n",
+  "stderr": "",
+  "expectedAbsent": false,
+  "stdoutSha256": "b5bb2eb5eb8c45199489fb6646e23eed8ef22ba977e9c03e9f4c5e4c21e6cf4c"
+}

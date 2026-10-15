@@ -1,0 +1,23 @@
+{
+  "timestampUtc": "2026-10-15T07:04:13.507011+00:00",
+  "finishedUtc": "2026-10-15T07:06:32.069566+00:00",
+  "command": [
+    "network",
+    "vhub",
+    "get-effective-routes",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "hub-eu",
+    "--resource-id",
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/hubVirtualNetworkConnections/conn-spoke-eu",
+    "--resource-type",
+    "HubVirtualNetworkConnection"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "{\r\n  \"value\": [\r\n    {\r\n      \"addressPrefixes\": [\r\n        \"10.210.0.0/24\"\r\n      ],\r\n      \"nextHopType\": \"Virtual Network Connection\",\r\n      \"nextHops\": [\r\n        \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/hubVirtualNetworkConnections/conn-transit-eu\"\r\n      ],\r\n      \"routeOrigin\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/hubVirtualNetworkConnections/conn-transit-eu\"\r\n    }\r\n  ]\r\n}\r\n",
+  "stderr": "",
+  "expectedAbsent": false,
+  "stdoutSha256": "b3dab91dad5fe07b9db6d0042ea2f72531da0af8503b9849c2af3a7a309b7d12"
+}

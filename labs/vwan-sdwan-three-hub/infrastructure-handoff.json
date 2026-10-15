@@ -1,0 +1,1619 @@
+{
+  "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+  "runId": "20261014-threehub",
+  "state": "completed",
+  "recordedAtUtc": "2026-10-14T17:08:54.252913+00:00",
+  "resources": [
+    {
+      "name": "vwan-threehub",
+      "type": "Microsoft.Network/virtualWans",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub"
+    },
+    {
+      "name": "hub-us",
+      "type": "Microsoft.Network/virtualHubs",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us"
+    },
+    {
+      "name": "hub-eu",
+      "type": "Microsoft.Network/virtualHubs",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu"
+    },
+    {
+      "name": "hub-jp",
+      "type": "Microsoft.Network/virtualHubs",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp"
+    },
+    {
+      "name": "nsg-probe-spoke-jp",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-probe-spoke-jp"
+    },
+    {
+      "name": "pip-probe-dc-eu",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-probe-dc-eu"
+    },
+    {
+      "name": "nsg-probe-dc-jp",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-probe-dc-jp"
+    },
+    {
+      "name": "pip-router-jp",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-router-jp"
+    },
+    {
+      "name": "pip-probe-dc-us",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-probe-dc-us"
+    },
+    {
+      "name": "pip-probe-spoke-eu",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-probe-spoke-eu"
+    },
+    {
+      "name": "pip-router-cn",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-router-cn"
+    },
+    {
+      "name": "pip-router-us",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-router-us"
+    },
+    {
+      "name": "nsg-router-us",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-us"
+    },
+    {
+      "name": "pip-router-eu",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-router-eu"
+    },
+    {
+      "name": "pip-probe-spoke-jp",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-probe-spoke-jp"
+    },
+    {
+      "name": "pip-probe-dc-jp",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-probe-dc-jp"
+    },
+    {
+      "name": "nsg-probe-dc-us",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-probe-dc-us"
+    },
+    {
+      "name": "vnet-spoke-eu",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-spoke-eu"
+    },
+    {
+      "name": "vnet-spoke-jp",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-spoke-jp"
+    },
+    {
+      "name": "nsg-probe-dc-eu",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-probe-dc-eu"
+    },
+    {
+      "name": "nsg-router-cn",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-cn"
+    },
+    {
+      "name": "vnet-transit-eu",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-transit-eu"
+    },
+    {
+      "name": "vnet-transit-us",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-transit-us"
+    },
+    {
+      "name": "nsg-probe-spoke-eu",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-probe-spoke-eu"
+    },
+    {
+      "name": "vnet-spoke-us",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-spoke-us"
+    },
+    {
+      "name": "rt-dc-eu",
+      "type": "Microsoft.Network/routeTables",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/rt-dc-eu"
+    },
+    {
+      "name": "nsg-router-jp",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp"
+    },
+    {
+      "name": "pip-probe-spoke-us",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-probe-spoke-us"
+    },
+    {
+      "name": "vnet-dc-cn",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-cn"
+    },
+    {
+      "name": "rt-dc-us",
+      "type": "Microsoft.Network/routeTables",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/rt-dc-us"
+    },
+    {
+      "name": "nsg-router-eu",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-eu"
+    },
+    {
+      "name": "nsg-probe-spoke-us",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-probe-spoke-us"
+    },
+    {
+      "name": "vnet-dc-jp",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-jp"
+    },
+    {
+      "name": "vnet-dc-us",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-us"
+    },
+    {
+      "name": "vnet-dc-eu",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-eu"
+    },
+    {
+      "name": "nic-probe-dc-jp",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-dc-jp"
+    },
+    {
+      "name": "nic-router-cn",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-cn"
+    },
+    {
+      "name": "nic-probe-spoke-jp",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-spoke-jp"
+    },
+    {
+      "name": "nic-router-jp",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-jp"
+    },
+    {
+      "name": "probe-dc-jp",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-jp"
+    },
+    {
+      "name": "router-jp",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp"
+    },
+    {
+      "name": "nic-probe-spoke-us",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-spoke-us"
+    },
+    {
+      "name": "nic-router-us",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-us"
+    },
+    {
+      "name": "router-cn",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-cn"
+    },
+    {
+      "name": "probe-spoke-jp",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-jp"
+    },
+    {
+      "name": "nic-probe-dc-us",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-dc-us"
+    },
+    {
+      "name": "osdisk-probe-dc-jp",
+      "type": "Microsoft.Compute/disks",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-probe-dc-jp"
+    },
+    {
+      "name": "osdisk-router-cn",
+      "type": "Microsoft.Compute/disks",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-router-cn"
+    },
+    {
+      "name": "osdisk-probe-spoke-jp",
+      "type": "Microsoft.Compute/disks",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-probe-spoke-jp"
+    },
+    {
+      "name": "nic-probe-dc-eu",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-dc-eu"
+    },
+    {
+      "name": "nic-probe-spoke-eu",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-spoke-eu"
+    },
+    {
+      "name": "probe-spoke-us",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-us"
+    },
+    {
+      "name": "router-us",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-us"
+    },
+    {
+      "name": "nic-router-eu",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-eu"
+    },
+    {
+      "name": "probe-dc-us",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-us"
+    },
+    {
+      "name": "osdisk-probe-spoke-us",
+      "type": "Microsoft.Compute/disks",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-probe-spoke-us"
+    },
+    {
+      "name": "osdisk-router-us",
+      "type": "Microsoft.Compute/disks",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-router-us"
+    },
+    {
+      "name": "osdisk-probe-dc-us",
+      "type": "Microsoft.Compute/disks",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-probe-dc-us"
+    },
+    {
+      "name": "probe-dc-eu",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-eu"
+    },
+    {
+      "name": "probe-spoke-eu",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-eu"
+    },
+    {
+      "name": "router-eu",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu"
+    },
+    {
+      "name": "osdisk-probe-spoke-eu",
+      "type": "Microsoft.Compute/disks",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-probe-spoke-eu"
+    },
+    {
+      "name": "osdisk-probe-dc-eu",
+      "type": "Microsoft.Compute/disks",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-probe-dc-eu"
+    },
+    {
+      "name": "osdisk-router-eu",
+      "type": "Microsoft.Compute/disks",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-router-eu"
+    },
+    {
+      "name": "osdisk-router-jp",
+      "type": "Microsoft.Compute/disks",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-router-jp"
+    },
+    {
+      "name": "probe-dc-us/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-us/extensions/MDE.Linux"
+    },
+    {
+      "name": "probe-spoke-us/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-us/extensions/MDE.Linux"
+    },
+    {
+      "name": "probe-spoke-jp/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-jp/extensions/MDE.Linux"
+    },
+    {
+      "name": "probe-spoke-eu/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-eu/extensions/MDE.Linux"
+    },
+    {
+      "name": "router-us/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "northcentralus",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/router-us/extensions/MDE.Linux"
+    },
+    {
+      "name": "router-cn/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/router-cn/extensions/MDE.Linux"
+    },
+    {
+      "name": "router-eu/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/extensions/MDE.Linux"
+    },
+    {
+      "name": "probe-dc-jp/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-jp/extensions/MDE.Linux"
+    },
+    {
+      "name": "router-jp/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "japaneast",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/router-jp/extensions/MDE.Linux"
+    },
+    {
+      "name": "probe-dc-eu/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "westeurope",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-eu/extensions/MDE.Linux"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+      "name": "vpngw-jp",
+      "type": "Microsoft.Network/vpnGateways",
+      "location": "japaneast"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnSites/site-dc-jp",
+      "name": "site-dc-jp",
+      "type": "Microsoft.Network/vpnSites",
+      "location": "japaneast"
+    }
+  ],
+  "deployments": [
+    {
+      "name": "threehub-hub-bindings",
+      "state": "Succeeded"
+    },
+    {
+      "name": "threehub-connections",
+      "state": "Succeeded"
+    },
+    {
+      "name": "threehub-vpn-gateway",
+      "state": "Succeeded"
+    },
+    {
+      "name": "threehub-compute",
+      "state": "Succeeded"
+    },
+    {
+      "name": "threehub-base",
+      "state": "Canceled"
+    },
+    {
+      "name": "threehub-vpn-bindings",
+      "state": "Succeeded"
+    }
+  ],
+  "resourceCounts": {
+    "Microsoft.Network/virtualNetworks": 9,
+    "Microsoft.Network/networkSecurityGroups": 10,
+    "Microsoft.Compute/virtualMachines/extensions": 10,
+    "Microsoft.Compute/virtualMachines": 10,
+    "Microsoft.Network/publicIPAddresses": 10,
+    "Microsoft.Network/vpnSites": 1,
+    "Microsoft.Network/vpnGateways": 1,
+    "Microsoft.Network/virtualWans": 1,
+    "Microsoft.Network/virtualHubs": 3,
+    "Microsoft.Network/networkInterfaces": 10,
+    "Microsoft.Network/routeTables": 2,
+    "Microsoft.Compute/disks": 10
+  },
+  "deploymentOperations": {
+    "threehub-compute": [
+      {
+        "resource": "vnet-dc-cn/to-transit-us",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-transit-us/to-dc-cn",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-jp/to-transit-us",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-transit-us/to-dc-jp",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "router-eu",
+        "type": "Microsoft.Compute/virtualMachines",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-cn/to-transit-eu",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-transit-eu/to-dc-cn",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "probe-spoke-eu",
+        "type": "Microsoft.Compute/virtualMachines",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-jp/to-transit-eu",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-transit-eu/to-dc-jp",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "probe-dc-eu",
+        "type": "Microsoft.Compute/virtualMachines",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-transit-us/to-transit-eu",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-transit-eu/to-transit-us",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-transit-us/to-dc-us",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-us/to-transit-us",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-transit-eu/to-dc-eu",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "probe-dc-us",
+        "type": "Microsoft.Compute/virtualMachines",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "router-us",
+        "type": "Microsoft.Compute/virtualMachines",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-eu/to-transit-eu",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "probe-spoke-us",
+        "type": "Microsoft.Compute/virtualMachines",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nic-router-eu",
+        "type": "Microsoft.Network/networkInterfaces",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-cn/to-dc-jp",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-jp/to-dc-cn",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-cn/to-dc-us",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nic-probe-spoke-eu",
+        "type": "Microsoft.Network/networkInterfaces",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-us/to-dc-cn",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-jp/to-dc-us",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nic-probe-dc-eu",
+        "type": "Microsoft.Network/networkInterfaces",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-us/to-dc-jp",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-cn/to-dc-eu",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-eu/to-dc-cn",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "probe-spoke-jp",
+        "type": "Microsoft.Compute/virtualMachines",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nic-probe-dc-us",
+        "type": "Microsoft.Network/networkInterfaces",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "router-cn",
+        "type": "Microsoft.Compute/virtualMachines",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "router-jp",
+        "type": "Microsoft.Compute/virtualMachines",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-jp/to-dc-eu",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "probe-dc-jp",
+        "type": "Microsoft.Compute/virtualMachines",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nic-router-us",
+        "type": "Microsoft.Network/networkInterfaces",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nic-probe-spoke-us",
+        "type": "Microsoft.Network/networkInterfaces",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-eu/to-dc-jp",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-us/to-dc-eu",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-eu/to-dc-us",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nic-router-jp",
+        "type": "Microsoft.Network/networkInterfaces",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nic-router-cn",
+        "type": "Microsoft.Network/networkInterfaces",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nic-probe-spoke-jp",
+        "type": "Microsoft.Network/networkInterfaces",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nic-probe-dc-jp",
+        "type": "Microsoft.Network/networkInterfaces",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-eu",
+        "type": "Microsoft.Network/virtualNetworks",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nsg-router-eu",
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nsg-probe-spoke-eu",
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nsg-probe-dc-eu",
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nsg-router-us",
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-us",
+        "type": "Microsoft.Network/virtualNetworks",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nsg-probe-dc-us",
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-spoke-eu",
+        "type": "Microsoft.Network/virtualNetworks",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-transit-eu",
+        "type": "Microsoft.Network/virtualNetworks",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "pip-probe-spoke-eu",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "rt-dc-eu",
+        "type": "Microsoft.Network/routeTables",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nsg-probe-spoke-us",
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "pip-probe-dc-eu",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "pip-router-eu",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-spoke-us",
+        "type": "Microsoft.Network/virtualNetworks",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-transit-us",
+        "type": "Microsoft.Network/virtualNetworks",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "pip-router-us",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "pip-probe-spoke-us",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "pip-probe-dc-us",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "rt-dc-us",
+        "type": "Microsoft.Network/routeTables",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nsg-probe-spoke-jp",
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nsg-router-cn",
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nsg-router-jp",
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "nsg-probe-dc-jp",
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-spoke-jp",
+        "type": "Microsoft.Network/virtualNetworks",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-cn",
+        "type": "Microsoft.Network/virtualNetworks",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "vnet-dc-jp",
+        "type": "Microsoft.Network/virtualNetworks",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "pip-router-cn",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "pip-probe-spoke-jp",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "pip-router-jp",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": "pip-probe-dc-jp",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "state": "Succeeded",
+        "error": null
+      },
+      {
+        "resource": null,
+        "type": null,
+        "state": "Succeeded",
+        "error": null
+      }
+    ],
+    "threehub-base": [
+      {
+        "resource": "hub-eu",
+        "type": "Microsoft.Network/virtualHubs",
+        "state": "Failed",
+        "error": {
+          "error": {
+            "additionalInfo": null,
+            "code": "DeploymentCanceled",
+            "details": null,
+            "message": "The deployment was canceled. This resource operation may have already been initiated, or may still be waiting to start. If it is in progress, it cannot be canceled and will continue to run to completion.",
+            "target": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu"
+          },
+          "status": "Failed"
+        }
+      },
+      {
+        "resource": "hub-us",
+        "type": "Microsoft.Network/virtualHubs",
+        "state": "Running",
+        "error": null
+      },
+      {
+        "resource": "hub-jp",
+        "type": "Microsoft.Network/virtualHubs",
+        "state": "Failed",
+        "error": {
+          "error": {
+            "additionalInfo": null,
+            "code": "DeploymentCanceled",
+            "details": null,
+            "message": "The deployment was canceled. This resource operation may have already been initiated, or may still be waiting to start. If it is in progress, it cannot be canceled and will continue to run to completion.",
+            "target": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp"
+          },
+          "status": "Failed"
+        }
+      },
+      {
+        "resource": "vwan-threehub",
+        "type": "Microsoft.Network/virtualWans",
+        "state": "Succeeded",
+        "error": null
+      }
+    ]
+  },
+  "directedPeerings": {
+    "succeeded": 26,
+    "expected": 26
+  },
+  "missing": [
+    "Guest BIRD/WireGuard/StrongSwan configuration"
+  ],
+  "bootstrapHttp": [
+    {
+      "vm": "router-eu",
+      "verdict": "INCONCLUSIVE",
+      "reason": "Run Command response contains empty stdout/stderr; HTTP readiness not proven"
+    }
+  ],
+  "liveComputeValidation": "Passed; deployment resource acceptance passed",
+  "failure": null,
+  "recoveryMutations": 2,
+  "priorMutations": 3,
+  "transferredBaseDeadlineUtc": null,
+  "bindings": {
+    "discoveredHubs": {
+      "eu": {
+        "virtualRouterAsn": 65515,
+        "virtualRouterIps": [
+          "10.250.0.69",
+          "10.250.0.70"
+        ],
+        "routingState": "Provisioned",
+        "provisioningState": "Succeeded"
+      },
+      "us": {
+        "virtualRouterAsn": 65515,
+        "virtualRouterIps": [
+          "10.250.2.70",
+          "10.250.2.69"
+        ],
+        "routingState": "Provisioned",
+        "provisioningState": "Succeeded"
+      },
+      "jp": {
+        "virtualRouterAsn": 65515,
+        "virtualRouterIps": [
+          "10.250.4.70",
+          "10.250.4.69"
+        ],
+        "routingState": "Provisioned",
+        "provisioningState": "Succeeded"
+      }
+    },
+    "connections": [
+      {
+        "name": "hub-eu/conn-transit-eu",
+        "allowHubToRemoteVnetTransit": true,
+        "allowRemoteVnetToUseHubVnetGateways": true,
+        "connectivityStatus": "Connected",
+        "enableInternetSecurity": false,
+        "provisioningState": "Succeeded",
+        "remoteVirtualNetwork": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-transit-eu"
+        },
+        "resourceGuid": "b49ab787-1a0c-48e7-a2f2-d1c6916eaf5e",
+        "routingConfiguration": {
+          "associatedRouteTable": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/hubRouteTables/defaultRouteTable"
+          },
+          "propagatedRouteTables": {
+            "ids": [
+              {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/hubRouteTables/defaultRouteTable"
+              }
+            ],
+            "labels": [
+              "Default"
+            ]
+          },
+          "vnetRoutes": {
+            "bgpConnections": [
+              {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+              }
+            ],
+            "staticRoutes": [],
+            "staticRoutesConfig": {
+              "propagateStaticRoutes": true,
+              "vnetLocalRouteOverrideCriteria": "Contains"
+            }
+          }
+        }
+      },
+      {
+        "name": "hub-eu/conn-spoke-eu",
+        "allowHubToRemoteVnetTransit": true,
+        "allowRemoteVnetToUseHubVnetGateways": true,
+        "connectivityStatus": "Connected",
+        "enableInternetSecurity": false,
+        "provisioningState": "Succeeded",
+        "remoteVirtualNetwork": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-spoke-eu"
+        },
+        "resourceGuid": "90738230-cf8b-4056-9aa7-d9c487b2ba27",
+        "routingConfiguration": {
+          "associatedRouteTable": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/hubRouteTables/defaultRouteTable"
+          },
+          "propagatedRouteTables": {
+            "ids": [
+              {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/hubRouteTables/defaultRouteTable"
+              }
+            ],
+            "labels": [
+              "Default"
+            ]
+          },
+          "vnetRoutes": {
+            "staticRoutes": [],
+            "staticRoutesConfig": {
+              "propagateStaticRoutes": true,
+              "vnetLocalRouteOverrideCriteria": "Contains"
+            }
+          }
+        }
+      },
+      {
+        "name": "hub-us/conn-transit-us",
+        "allowHubToRemoteVnetTransit": true,
+        "allowRemoteVnetToUseHubVnetGateways": true,
+        "connectivityStatus": "Connected",
+        "enableInternetSecurity": false,
+        "provisioningState": "Succeeded",
+        "remoteVirtualNetwork": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-transit-us"
+        },
+        "resourceGuid": "6e1d49b4-be2e-4926-90d4-1f8417c992a7",
+        "routingConfiguration": {
+          "associatedRouteTable": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubRouteTables/defaultRouteTable"
+          },
+          "propagatedRouteTables": {
+            "ids": [
+              {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubRouteTables/defaultRouteTable"
+              }
+            ],
+            "labels": [
+              "Default"
+            ]
+          },
+          "vnetRoutes": {
+            "bgpConnections": [
+              {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+              }
+            ],
+            "staticRoutes": [],
+            "staticRoutesConfig": {
+              "propagateStaticRoutes": true,
+              "vnetLocalRouteOverrideCriteria": "Contains"
+            }
+          }
+        }
+      },
+      {
+        "name": "hub-us/conn-spoke-us",
+        "allowHubToRemoteVnetTransit": true,
+        "allowRemoteVnetToUseHubVnetGateways": true,
+        "connectivityStatus": "Connected",
+        "enableInternetSecurity": false,
+        "provisioningState": "Succeeded",
+        "remoteVirtualNetwork": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-spoke-us"
+        },
+        "resourceGuid": "df68a055-948f-4b72-a0e1-25b50d682731",
+        "routingConfiguration": {
+          "associatedRouteTable": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubRouteTables/defaultRouteTable"
+          },
+          "propagatedRouteTables": {
+            "ids": [
+              {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubRouteTables/defaultRouteTable"
+              }
+            ],
+            "labels": [
+              "Default"
+            ]
+          },
+          "vnetRoutes": {
+            "staticRoutes": [],
+            "staticRoutesConfig": {
+              "propagateStaticRoutes": true,
+              "vnetLocalRouteOverrideCriteria": "Contains"
+            }
+          }
+        }
+      },
+      {
+        "name": "hub-jp/conn-spoke-jp",
+        "allowHubToRemoteVnetTransit": true,
+        "allowRemoteVnetToUseHubVnetGateways": true,
+        "connectivityStatus": "Connected",
+        "enableInternetSecurity": false,
+        "provisioningState": "Succeeded",
+        "remoteVirtualNetwork": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-spoke-jp"
+        },
+        "resourceGuid": "0db752a5-95b2-49aa-842b-04180b113337",
+        "routingConfiguration": {
+          "associatedRouteTable": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubRouteTables/defaultRouteTable"
+          },
+          "propagatedRouteTables": {
+            "ids": [
+              {
+                "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubRouteTables/defaultRouteTable"
+              }
+            ],
+            "labels": [
+              "Default"
+            ]
+          },
+          "vnetRoutes": {
+            "staticRoutes": [],
+            "staticRoutesConfig": {
+              "propagateStaticRoutes": true,
+              "vnetLocalRouteOverrideCriteria": "Contains"
+            }
+          }
+        }
+      }
+    ],
+    "bgpPeers": [
+      {
+        "name": "hub-eu/bgp-router-eu",
+        "hubVirtualNetworkConnection": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/hubVirtualNetworkConnections/conn-transit-eu"
+        },
+        "peerAsn": 65011,
+        "peerIp": "10.210.0.4",
+        "provisioningState": "Succeeded"
+      },
+      {
+        "name": "hub-us/bgp-router-us",
+        "hubVirtualNetworkConnection": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubVirtualNetworkConnections/conn-transit-us"
+        },
+        "peerAsn": 65012,
+        "peerIp": "10.220.0.4",
+        "provisioningState": "Succeeded"
+      }
+    ],
+    "state": "ready",
+    "vpnGateway": {
+      "name": "vpngw-jp",
+      "provisioningState": "Succeeded",
+      "vpnGatewayScaleUnit": 1,
+      "bgpSettings": {
+        "asn": 65515,
+        "bgpPeeringAddresses": [
+          {
+            "customBgpIpAddresses": [
+              "169.254.21.2"
+            ],
+            "defaultBgpIpAddresses": [
+              "10.250.4.13"
+            ],
+            "ipconfigurationId": "Instance0",
+            "tunnelIpAddresses": [
+              "20.27.135.137",
+              "10.250.4.4"
+            ]
+          },
+          {
+            "customBgpIpAddresses": [
+              "169.254.21.6"
+            ],
+            "defaultBgpIpAddresses": [
+              "10.250.4.12"
+            ],
+            "ipconfigurationId": "Instance1",
+            "tunnelIpAddresses": [
+              "4.190.54.71",
+              "10.250.4.5"
+            ]
+          }
+        ],
+        "peerWeight": 0
+      }
+    },
+    "vpnSite": {
+      "name": "site-dc-jp",
+      "deviceProperties": {
+        "linkSpeedInMbps": 0
+      },
+      "isSecuritySite": false,
+      "o365Policy": {
+        "breakOutCategories": {
+          "allow": false,
+          "default": false,
+          "optimize": false
+        }
+      },
+      "provisioningState": "Succeeded",
+      "virtualWan": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub"
+      },
+      "vpnSiteLinks": [
+        {
+          "etag": "W/\"f890c64e-f7bf-40b9-9642-ce2b7fbfe9de\"",
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnSites/site-dc-jp/vpnSiteLinks/link-jp",
+          "name": "link-jp",
+          "properties": {
+            "bgpProperties": {
+              "asn": 65013,
+              "bgpPeeringAddress": "169.254.21.1"
+            },
+            "ipAddress": "104.46.220.128",
+            "linkProperties": {
+              "linkSpeedInMbps": 10
+            },
+            "provisioningState": "Succeeded"
+          },
+          "type": "Microsoft.Network/vpnSites/vpnSiteLinks"
+        }
+      ]
+    },
+    "vpnConnection": {
+      "name": "vpngw-jp/conn-dc-jp",
+      "provisioningState": "Succeeded",
+      "links": [
+        {
+          "name": "link-jp",
+          "provisioningState": "Succeeded",
+          "connectionStatus": "NotConnected",
+          "enableBgp": true,
+          "vpnGatewayCustomBgpAddresses": [
+            {
+              "customBgpIpAddress": "169.254.21.2",
+              "ipConfigurationId": "Instance0"
+            },
+            {
+              "customBgpIpAddress": "169.254.21.6",
+              "ipConfigurationId": "Instance1"
+            }
+          ],
+          "vpnConnectionProtocolType": "IKEv2",
+          "ipsecPolicies": [
+            {
+              "dhGroup": "DHGroup14",
+              "ikeEncryption": "AES256",
+              "ikeIntegrity": "SHA256",
+              "ipsecEncryption": "AES256",
+              "ipsecIntegrity": "SHA256",
+              "pfsGroup": "PFS14",
+              "saDataSizeKilobytes": 102400000,
+              "saLifeTimeSeconds": 3600
+            }
+          ]
+        }
+      ]
+    },
+    "japanIkeRules": {
+      "gatewayScoped": true,
+      "rules": [
+        {
+          "name": "jp-ike",
+          "properties": {
+            "priority": 120,
+            "protocol": "Udp",
+            "access": "Allow",
+            "direction": "Inbound",
+            "sourcePortRange": "*",
+            "sourceAddressPrefixes": [
+              "20.27.135.137/32",
+              "4.190.54.71/32"
+            ],
+            "destinationAddressPrefix": "10.130.0.4",
+            "destinationPortRanges": [
+              "500",
+              "4500"
+            ]
+          }
+        },
+        {
+          "name": "out-jp-ike",
+          "properties": {
+            "priority": 120,
+            "protocol": "Udp",
+            "access": "Allow",
+            "direction": "Outbound",
+            "sourcePortRange": "*",
+            "sourceAddressPrefix": "10.130.0.4",
+            "destinationAddressPrefixes": [
+              "20.27.135.137/32",
+              "4.190.54.71/32"
+            ],
+            "destinationPortRanges": [
+              "500",
+              "4500"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "nextObjective": "Separate guest lease: configure existing BIRD/WireGuard/StrongSwan from actual bindings; no scenarios or RI",
+  "nextGuestObjective": "Fresh different Tank recovery owner: complete saved route/service restoration; Niobe read-only original-bootstrap baseline verification only after recovery succeeds; no B0 experiment yet",
+  "evidence": [
+    "deploy\\.runtime-control\\gateway-final-resource.stdout.json",
+    "deploy\\.runtime-control\\gateway-final-connection.stdout.json",
+    "deploy\\.runtime-control\\gateway-final-site.stdout.json",
+    "deploy\\.runtime-control\\gateway-final-nsg.stdout.json"
+  ],
+  "childProcesses": "terminated",
+  "runtimeEndpoints": {
+    "router-eu": {
+      "privateIp": "10.210.0.4",
+      "publicIp": "51.124.30.234",
+      "nicProvisioningState": "Succeeded",
+      "vnet": "transit-eu",
+      "adminUsername": "azurelabuser",
+      "router": true,
+      "asn": 65011
+    },
+    "router-us": {
+      "privateIp": "10.220.0.4",
+      "publicIp": "52.159.77.219",
+      "nicProvisioningState": "Succeeded",
+      "vnet": "transit-us",
+      "adminUsername": "azurelabuser",
+      "router": true,
+      "asn": 65012
+    },
+    "router-jp": {
+      "privateIp": "10.130.0.4",
+      "publicIp": "104.46.220.128",
+      "nicProvisioningState": "Succeeded",
+      "vnet": "dc-jp",
+      "adminUsername": "azurelabuser",
+      "router": true,
+      "asn": 65013
+    },
+    "router-cn": {
+      "privateIp": "10.140.0.4",
+      "publicIp": "20.43.85.49",
+      "nicProvisioningState": "Succeeded",
+      "vnet": "dc-cn",
+      "adminUsername": "azurelabuser",
+      "router": true,
+      "asn": 65014
+    },
+    "probe-dc-eu": {
+      "privateIp": "10.110.0.10",
+      "publicIp": "20.126.10.252",
+      "nicProvisioningState": "Succeeded",
+      "vnet": "dc-eu",
+      "adminUsername": "azurelabuser",
+      "router": false,
+      "asn": null
+    },
+    "probe-dc-us": {
+      "privateIp": "10.120.0.10",
+      "publicIp": "64.236.209.252",
+      "nicProvisioningState": "Succeeded",
+      "vnet": "dc-us",
+      "adminUsername": "azurelabuser",
+      "router": false,
+      "asn": null
+    },
+    "probe-dc-jp": {
+      "privateIp": "10.130.0.10",
+      "publicIp": "20.44.176.116",
+      "nicProvisioningState": "Succeeded",
+      "vnet": "dc-jp",
+      "adminUsername": "azurelabuser",
+      "router": false,
+      "asn": null
+    },
+    "probe-spoke-eu": {
+      "privateIp": "10.10.0.10",
+      "publicIp": "20.67.99.163",
+      "nicProvisioningState": "Succeeded",
+      "vnet": "spoke-eu",
+      "adminUsername": "azurelabuser",
+      "router": false,
+      "asn": null
+    },
+    "probe-spoke-us": {
+      "privateIp": "10.20.0.10",
+      "publicIp": "20.25.215.187",
+      "nicProvisioningState": "Succeeded",
+      "vnet": "spoke-us",
+      "adminUsername": "azurelabuser",
+      "router": false,
+      "asn": null
+    },
+    "probe-spoke-jp": {
+      "privateIp": "10.30.0.10",
+      "publicIp": "20.89.135.8",
+      "nicProvisioningState": "Succeeded",
+      "vnet": "spoke-jp",
+      "adminUsername": "azurelabuser",
+      "router": false,
+      "asn": null
+    }
+  },
+  "baseStop": "Cancellation accepted and deployment Canceled; resources retained, no deletion",
+  "mutationBreakdown": {
+    "correctedComputeSubmission": 1,
+    "baseStop": 1,
+    "hubBindings": 0,
+    "vpnBindings": 0,
+    "priorSeparateLeases": 3
+  },
+  "infrastructureReady": true,
+  "bindingRecoveryMutations": 3,
+  "bindingRecoveryMutationBreakdown": {
+    "threehub-vpn-gateway": 1,
+    "threehub-connections": 1,
+    "threehub-hub-bindings": 1
+  },
+  "runtimeVpnSecretFile": "deploy\\.runtime-control\\vpn.parameters.json (ignored; reuse for guest)",
+  "generatorCorrection": {
+    "initialGatewayCustomMappings": "Removed offline only; not live validated or submitted",
+    "tests": "14 passed"
+  },
+  "gatewayRecoveryMutations": 3,
+  "gatewayRecoveryToolCalls": 59,
+  "gatewayRecoveryTerminalStates": {
+    "threehub-vpn-gateway": "Succeeded",
+    "threehub-vpn-gateway-update": "Succeeded",
+    "threehub-vpn-bindings": "Succeeded",
+    "site-dc-jp": "Succeeded",
+    "conn-dc-jp": "Succeeded",
+    "nsg-router-jp": "Succeeded"
+  },
+  "guestReady": false,
+  "guestConfiguration": {
+    "state": "blocked",
+    "recordedAtUtc": "2026-10-14T17:36:44.742267+00:00",
+    "owner": "Tank",
+    "armBatches": 3,
+    "mutationsUsed": 3,
+    "toolCallsUsed": 126,
+    "guardedAzureCliCalls": 51,
+    "staticTestsPassed": 32,
+    "stageVmCount": 10,
+    "stageRouterParserPassCount": 4,
+    "activation": "Failed all10: HTTP404, public index0600/nobody permission mismatch",
+    "bgpHealth": "Unverified; no BGP smoke submitted; BIRD stopped during restore",
+    "restore": "Failed all10: ip route restore received non-seekable pipe; files checksum-verified, iptables/sysctl restored; service reload/re-enablement not reached",
+    "offlineCorrections": [
+      "Public listener content0644, keys/config private0600",
+      "ip route restore stdin=saved route file, not pipe"
+    ],
+    "liveRetries": 0,
+    "infrastructureChanged": false,
+    "guestCommandsRemaining": 0,
+    "localChildrenRemaining": 0,
+    "evidence": [
+      "deploy\\.runtime-control\\guest-stage-results.json",
+      "deploy\\.runtime-control\\guest-activate-results.json",
+      "deploy\\.runtime-control\\guest-restore-results.json"
+    ],
+    "nextOwner": "Fresh different Tank recovery owner: complete saved route/service restoration; Niobe read-only original-bootstrap baseline verification only after recovery succeeds; no B0 experiment yet"
+  },
+  "guestRestoreRecovery": {
+    "state": "completed",
+    "owner": "Trinity",
+    "verdict": "PASS",
+    "recordedAtUtc": "2026-10-14T17:44:23.397490+00:00",
+    "mutationsUsed": 1,
+    "restoreArmBatches": 1,
+    "toolCallsUsed": 49,
+    "guardedAzureCliCalls": 17,
+    "staticTestsPassed": 32,
+    "terminalVmCount": 10,
+    "filesChecksumVerified": true,
+    "routesSnapshotVerified": true,
+    "recordedEnablementVerified": true,
+    "historicalActiveStatesRecorded": false,
+    "currentServices": "router BIRD disabled/inactive; recorded enabled lab-http and router strongswan active; absent probe daemons inactive",
+    "infrastructureChanged": false,
+    "activationSubmitted": false,
+    "guestCommandsRemaining": 0,
+    "localChildrenRemaining": 0,
+    "queuedWork": false,
+    "evidence": [
+      "deploy\\.runtime-control\\guest-restore-recovery-proof.json",
+      "deploy\\.runtime-control\\guest-restore-results.json"
+    ],
+    "nextOwner": "Niobe: separately leased read-only original-bootstrap baseline verification; activation requires its own fresh lease"
+  }
+}

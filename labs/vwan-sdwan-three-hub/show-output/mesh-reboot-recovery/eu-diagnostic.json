@@ -1,0 +1,13 @@
+{
+  "listen-port": "wgeujp\t51822\nwgeucn\t51823\nwgeuus\t51821",
+  "fwmark": "wgeujp\t0x200\nwgeucn\t0x200\nwgeuus\t0x200",
+  "endpoints": "wgeujp\tx28S8Bc4tmgBiAzUElrF+UZOVrdWHavHXZCUkg4TT1Q=\t10.130.0.4:51820\nwgeucn\tJpAv8f1aPPTDXD8umgend+cbls+UBy4R6Yit7plfIF8=\t10.140.0.4:51820\nwgeuus\tyJTm6CbLmD6bdSoEsZwNVS/Bjerrj+uFRVagA9lq1CI=\t10.220.0.4:51820",
+  "latest-handshakes": "wgeujp\tx28S8Bc4tmgBiAzUElrF+UZOVrdWHavHXZCUkg4TT1Q=\t0\nwgeucn\tJpAv8f1aPPTDXD8umgend+cbls+UBy4R6Yit7plfIF8=\t0\nwgeuus\tyJTm6CbLmD6bdSoEsZwNVS/Bjerrj+uFRVagA9lq1CI=\t1792048610",
+  "transfer": "wgeujp\tx28S8Bc4tmgBiAzUElrF+UZOVrdWHavHXZCUkg4TT1Q=\t0\t13616\nwgeucn\tJpAv8f1aPPTDXD8umgend+cbls+UBy4R6Yit7plfIF8=\t0\t13616\nwgeuus\tyJTm6CbLmD6bdSoEsZwNVS/Bjerrj+uFRVagA9lq1CI=\t3600\t3808",
+  "rules": "0:\tfrom all lookup local\n100:\tfrom all fwmark 0x200 lookup 100\n220:\tfrom all lookup 220\n32766:\tfrom all lookup main\n32767:\tfrom all lookup default",
+  "table100": "default via 10.210.0.1 dev eth0 onlink \n10.130.0.4 via 10.210.0.1 dev eth0 onlink \n10.140.0.4 via 10.210.0.1 dev eth0 onlink \n10.220.0.4 via 10.210.0.1 dev eth0 onlink",
+  "nat": ":TH_WG_IN - [0:0]\n:TH_WG_OUT - [0:0]\n-A PREROUTING -j TH_WG_IN\n-A POSTROUTING -j TH_WG_OUT\n-A TH_WG_IN -s 10.220.0.4/32 -d 10.210.0.4/32 -i eth0 -p udp -m udp --dport 51820 -j REDIRECT --to-ports 51821\n-A TH_WG_IN -s 10.130.0.4/32 -d 10.210.0.4/32 -i eth0 -p udp -m udp --dport 51820 -j REDIRECT --to-ports 51822\n-A TH_WG_IN -s 10.140.0.4/32 -d 10.210.0.4/32 -i eth0 -p udp -m udp --dport 51820 -j REDIRECT --to-ports 51823\n-A TH_WG_OUT -s 10.210.0.4/32 -d 10.220.0.4/32 -o eth0 -p udp -m udp --sport 51821 --dport 51820 -j SNAT --to-source 10.210.0.4:51820\n-A TH_WG_OUT -s 10.210.0.4/32 -d 10.130.0.4/32 -o eth0 -p udp -m udp --sport 51822 --dport 51820 -j SNAT --to-source 10.210.0.4:51820\n-A TH_WG_OUT -s 10.210.0.4/32 -d 10.140.0.4/32 -o eth0 -p udp -m udp --sport 51823 --dport 51820 -j SNAT --to-source 10.210.0.4:51820",
+  "services": "Result=success\nExecMainStatus=0\nActiveState=active\nSubState=exited\nActiveEnterTimestamp=Thu 2026-10-15 07:10:17 UTC",
+  "default": "default via 10.210.0.1 dev eth0 proto dhcp src 10.210.0.4 metric 100",
+  "boot": "2026-10-15 07:10:04"
+}

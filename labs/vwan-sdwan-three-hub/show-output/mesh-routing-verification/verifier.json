@@ -1,0 +1,39 @@
+{
+  "verdict": "INCONCLUSIVE",
+  "meshEstablished": null,
+  "meshExpected": 12,
+  "allFourDcExportedToAllAzurePeers": null,
+  "complete": false,
+  "liveReadCalls": 4,
+  "mutations": 0,
+  "childrenRemaining": {},
+  "restore": "Not required; read-only",
+  "elapsedSeconds": 73.1,
+  "results": [
+    {
+      "site": "eu",
+      "error": "Missing compact proof marker",
+      "response": "Enable succeeded: \n[stdout]\n\n[stderr]\n"
+    },
+    {
+      "site": "cn",
+      "error": "Missing compact proof marker",
+      "response": "Enable succeeded: \n[stdout]\n\n[stderr]\n"
+    },
+    {
+      "site": "us",
+      "error": "Missing compact proof marker",
+      "response": "Enable succeeded: \n[stdout]\n\n[stderr]\n"
+    },
+    {
+      "site": "jp",
+      "error": "Missing compact proof marker",
+      "response": "Enable succeeded: \n[stdout]\n\n[stderr]\n"
+    }
+  ],
+  "innerRouteFaultProved": false,
+  "rootCause": "Undetermined: all four direct-action RunCommand responses reported Enable succeeded but contained empty stdout and stderr; no MESHVERIFY marker was returned.",
+  "minimalNextDelta": "Fresh read-only verification lease: deliver the same guest script using --scripts @<persistent project file> instead of an inline multiline Windows argument. Do not repair routing until actual source-specific route-get and BGP evidence is captured.",
+  "noConfigurationRepairAuthorized": true,
+  "closedAtUtc": "2026-10-15T08:22:22.875610+00:00"
+}

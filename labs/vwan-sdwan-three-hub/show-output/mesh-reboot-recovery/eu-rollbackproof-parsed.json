@@ -1,0 +1,5 @@
+{
+  "rollbackVerified": true,
+  "networkSha256": "a44f8561e92eca28285236999d9bfc18980bc9e012c420768f04fd570f39476b",
+  "rules": "-N TH_WG_IN\n-A TH_WG_IN -s 10.220.0.4/32 -d 10.210.0.4/32 -i eth0 -p udp -m udp --dport 51820 -j REDIRECT --to-ports 51821\n-A TH_WG_IN -s 10.130.0.4/32 -d 10.210.0.4/32 -i eth0 -p udp -m udp --dport 51820 -j REDIRECT --to-ports 51822\n-A TH_WG_IN -s 10.140.0.4/32 -d 10.210.0.4/32 -i eth0 -p udp -m udp --dport 51820 -j REDIRECT --to-ports 51823\n"
+}

@@ -1,0 +1,21 @@
+{
+  "timestampUtc": "2026-10-15T07:45:10.475242+00:00",
+  "finishedUtc": "2026-10-15T07:45:14.839967+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "list",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "--vm-name",
+    "router-eu",
+    "--query",
+    "[].{name:name,id:id,location:location,state:provisioningState}"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "[\r\n  {\r\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/runCommands/guest-activate\",\r\n    \"location\": \"westeurope\",\r\n    \"name\": \"guest-activate\",\r\n    \"state\": \"Succeeded\"\r\n  },\r\n  {\r\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/runCommands/guest-aspath-proof-after\",\r\n    \"location\": \"westeurope\",\r\n    \"name\": \"guest-aspath-proof-after\",\r\n    \"state\": \"Succeeded\"\r\n  },\r\n  {\r\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/runCommands/guest-aspath-proof-before\",\r\n    \"location\": \"westeurope\",\r\n    \"name\": \"guest-aspath-proof-before\",\r\n    \"state\": \"Succeeded\"\r\n  },\r\n  {\r\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/runCommands/guest-aspath-proof-boundary-before\",\r\n    \"location\": \"westeurope\",\r\n    \"name\": \"guest-aspath-proof-boundary-before\",\r\n    \"state\": \"Succeeded\"\r\n  },\r\n  {\r\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/runCommands/guest-b0-20261014t180438z\",\r\n    \"location\": \"westeurope\",\r\n    \"name\": \"guest-b0-20261014t180438z\",\r\n    \"state\": \"Succeeded\"\r\n  },\r\n  {\r\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/runCommands/guest-b0-small-20261014t180438z\",\r\n    \"location\": \"westeurope\",\r\n    \"name\": \"guest-b0-small-20261014t180438z\",\r\n    \"state\": \"Succeeded\"\r\n  },\r\n  {\r\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/runCommands/guest-restore\",\r\n    \"location\": \"westeurope\",\r\n    \"name\": \"guest-restore\",\r\n    \"state\": \"Succeeded\"\r\n  },\r\n  {\r\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/runCommands/guest-stage\",\r\n    \"location\": \"westeurope\",\r\n    \"name\": \"guest-stage\",\r\n    \"state\": \"Succeeded\"\r\n  }\r\n]\r\n",
+  "stderr": "",
+  "expectedAbsent": false,
+  "stdoutSha256": "f484245b4683f84b7dfcfd12ac60a31b6d9bcc39947d1c0e1c2f5f5491301dd9"
+}

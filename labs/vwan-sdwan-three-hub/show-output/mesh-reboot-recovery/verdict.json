@@ -1,0 +1,159 @@
+{
+  "timestampUtc": "2026-10-15T07:42:18.646912+00:00",
+  "verdict": "BLOCKED",
+  "rootCauseProven": false,
+  "persistentFixApplied": false,
+  "endpointEntriesObserved": 18,
+  "establishedEndpointEntries": 8,
+  "establishedMeshEndpointEntries": 2,
+  "establishedAzureEndpointEntries": 6,
+  "expectedUniqueAdjacencies": 12,
+  "expectedMeshEndpointEntries": 12,
+  "expectedAzureEndpointEntries": 6,
+  "birdIdentityUnchanged": true,
+  "japanIkeEstablished": 2,
+  "rollbackVerified": true,
+  "mutatingRunCommands": 1,
+  "guestWritePhases": 2,
+  "azureCliCalls": 19,
+  "childrenActive": 0,
+  "actual": {
+    "eu": {
+      "site": "eu",
+      "sha256": "20fbaef367e78dd78b3e7d55e791d5c69dbae0a00fbd3c50ee0c2a740bdb4120",
+      "stat": {
+        "uid": 113,
+        "gid": 122,
+        "mode": 384,
+        "mtimeNs": 1792000607648606479
+      },
+      "protocols": {
+        "mesh_us": "Established",
+        "mesh_jp": "Connect",
+        "mesh_cn": "Connect",
+        "azure_0": "Established",
+        "azure_1": "Established"
+      },
+      "exports": {
+        "azure_0": {
+          "routes": {
+            "10.110.0.0/24": [],
+            "10.120.0.0/24": [
+              65012
+            ]
+          },
+          "rawSha256": "bfdd3b42ade7e620f7c7f14935a3c2bd43f71e0ac5c48a5ebfdf179fed6cdb16"
+        },
+        "azure_1": {
+          "routes": {
+            "10.110.0.0/24": [],
+            "10.120.0.0/24": [
+              65012
+            ]
+          },
+          "rawSha256": "bfdd3b42ade7e620f7c7f14935a3c2bd43f71e0ac5c48a5ebfdf179fed6cdb16"
+        }
+      },
+      "ikeEstablished": null,
+      "configureOutput": null,
+      "restored": false,
+      "protectedBackups": {}
+    },
+    "us": {
+      "site": "us",
+      "sha256": "5634db09d84a79a68b94ffd9dab64aa9a4e63dc7cdb24379285b04a32328c4cb",
+      "stat": {
+        "uid": 113,
+        "gid": 122,
+        "mode": 384,
+        "mtimeNs": 1792000609620725084
+      },
+      "protocols": {
+        "mesh_eu": "Established",
+        "mesh_jp": "Connect",
+        "mesh_cn": "Connect",
+        "azure_0": "Established",
+        "azure_1": "Established"
+      },
+      "exports": {},
+      "ikeEstablished": null,
+      "configureOutput": null,
+      "restored": false,
+      "protectedBackups": {}
+    },
+    "jp": {
+      "site": "jp",
+      "sha256": "89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006",
+      "stat": {
+        "uid": 113,
+        "gid": 122,
+        "mode": 384,
+        "mtimeNs": 1792000606196722098
+      },
+      "protocols": {
+        "mesh_eu": "Connect",
+        "mesh_us": "Connect",
+        "mesh_cn": "Connect",
+        "azure_0": "Established",
+        "azure_1": "Established"
+      },
+      "exports": {
+        "azure_0": {
+          "routes": {
+            "10.130.0.0/24": []
+          },
+          "rawSha256": "78c177ba068b10d55469db82cb2427d4a7c75d874ebbbf8d32e1dd5c49ddea05"
+        },
+        "azure_1": {
+          "routes": {
+            "10.130.0.0/24": []
+          },
+          "rawSha256": "78c177ba068b10d55469db82cb2427d4a7c75d874ebbbf8d32e1dd5c49ddea05"
+        }
+      },
+      "ikeEstablished": 2,
+      "configureOutput": null,
+      "restored": false,
+      "protectedBackups": {
+        "/var/lib/threehub/vpn-sdwan-boundary-jp-baseline.conf": {
+          "sha256": "89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006",
+          "stat": {
+            "uid": 113,
+            "gid": 122,
+            "mode": 384,
+            "mtimeNs": 1792000606196722098
+          }
+        },
+        "/var/lib/threehub/aspath-jp-baseline.conf": {
+          "sha256": "89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006",
+          "stat": {
+            "uid": 113,
+            "gid": 122,
+            "mode": 384,
+            "mtimeNs": 1792000606196722098
+          }
+        }
+      }
+    },
+    "cn": {
+      "site": "cn",
+      "sha256": "10e5591a16159a4a6e17350cb23f437623372f2ffd635ef20736f133c4738346",
+      "stat": {
+        "uid": 113,
+        "gid": 122,
+        "mode": 384,
+        "mtimeNs": 1792000608839202133
+      },
+      "protocols": {
+        "mesh_eu": "Connect",
+        "mesh_us": "Connect",
+        "mesh_jp": "Connect"
+      },
+      "exports": {},
+      "ikeEstablished": null,
+      "configureOutput": null,
+      "restored": false,
+      "protectedBackups": {}
+    }
+  }
+}

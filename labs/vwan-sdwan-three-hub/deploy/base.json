@@ -1,0 +1,132 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {},
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualWans",
+      "apiVersion": "2024-05-01",
+      "name": "vwan-threehub",
+      "properties": {
+        "type": "Standard",
+        "allowBranchToBranchTraffic": true,
+        "disableVpnEncryption": false
+      },
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualHubs",
+      "apiVersion": "2024-05-01",
+      "name": "hub-eu",
+      "properties": {
+        "virtualWan": {
+          "id": "[resourceId('Microsoft.Network/virtualWans', 'vwan-threehub')]"
+        },
+        "addressPrefix": "10.250.0.0/23",
+        "sku": "Standard",
+        "hubRoutingPreference": "ExpressRoute",
+        "virtualRouterAutoScaleConfiguration": {
+          "minCapacity": 2
+        }
+      },
+      "location": "westeurope",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualWans', 'vwan-threehub')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualHubs",
+      "apiVersion": "2024-05-01",
+      "name": "hub-us",
+      "properties": {
+        "virtualWan": {
+          "id": "[resourceId('Microsoft.Network/virtualWans', 'vwan-threehub')]"
+        },
+        "addressPrefix": "10.250.2.0/23",
+        "sku": "Standard",
+        "hubRoutingPreference": "ExpressRoute",
+        "virtualRouterAutoScaleConfiguration": {
+          "minCapacity": 2
+        }
+      },
+      "location": "northcentralus",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualWans', 'vwan-threehub')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualHubs",
+      "apiVersion": "2024-05-01",
+      "name": "hub-jp",
+      "properties": {
+        "virtualWan": {
+          "id": "[resourceId('Microsoft.Network/virtualWans', 'vwan-threehub')]"
+        },
+        "addressPrefix": "10.250.4.0/23",
+        "sku": "Standard",
+        "hubRoutingPreference": "ExpressRoute",
+        "virtualRouterAutoScaleConfiguration": {
+          "minCapacity": 2
+        }
+      },
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualWans', 'vwan-threehub')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/vpnGateways",
+      "apiVersion": "2024-05-01",
+      "name": "vpngw-jp",
+      "properties": {
+        "virtualHub": {
+          "id": "[resourceId('Microsoft.Network/virtualHubs', 'hub-jp')]"
+        },
+        "vpnGatewayScaleUnit": 1,
+        "bgpSettings": {
+          "asn": 65515,
+          "peerWeight": 0
+        }
+      },
+      "location": "japaneast",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "run_id": "20261014-threehub",
+        "owner": "jose",
+        "ephemeral": "true"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualHubs', 'hub-jp')]"
+      ]
+    }
+  ]
+}

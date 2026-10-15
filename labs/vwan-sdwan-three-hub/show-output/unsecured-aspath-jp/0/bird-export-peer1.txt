@@ -1,0 +1,49 @@
+SOURCE_BEGIN
+2026-10-14T18:38:21Z
+89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006  /etc/bird/bird.conf
+89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006  /var/lib/threehub/aspath-jp-baseline.conf
+BIRD 2.0.8 ready.
+Name       Proto      Table      State  Since         Info
+devices    Device     ---        up     17:56:49.040  
+connected  Direct     ---        up     17:56:49.040  
+control_pins Static     underlay4  up     17:56:49.040  
+own_dc     Static     lab4       up     17:56:49.040  
+kernel_lab Kernel     lab4       up     17:56:49.040  
+mesh_eu    BGP        ---        up     17:56:53.493  Established   
+mesh_us    BGP        ---        up     17:56:53.842  Established   
+mesh_cn    BGP        ---        up     17:56:54.039  Established   
+azure_0    BGP        ---        up     17:56:53.019  Established   
+azure_1    BGP        ---        up     17:56:53.067  Established   
+EXPORT_BEGIN
+BIRD 2.0.8 ready.
+Table lab4:
+10.110.0.0/24        unicast [mesh_eu 17:56:53.762 from 172.31.0.5] * (100) [AS65011i]
+	dev wgeujp
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65011
+	BGP.next_hop: 172.31.0.5
+	BGP.local_pref: 100
+	BGP.community: 
+10.140.0.0/24        unicast [mesh_cn 17:56:54.131 from 172.31.0.22] * (100) [AS65014i]
+	dev wgjpcn
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65014
+	BGP.next_hop: 172.31.0.22
+	BGP.local_pref: 100
+	BGP.community: 
+10.130.0.0/24        unicast [own_dc 17:56:49.040] * (200)
+	dev eth0
+	Type: static univ
+10.120.0.0/24        unicast [mesh_us 17:56:54.331 from 172.31.0.13] * (100) [AS65012i]
+	dev wgusjp
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65012
+	BGP.next_hop: 172.31.0.13
+	BGP.local_pref: 100
+	BGP.community: 
+EXPORT_END
+SOURCE_END
+

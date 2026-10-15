@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-14T20:19:47.468293+00:00",
+  "finishedUtc": "2026-10-14T20:21:02.898958+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-jp",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\boundary-jp-jp-add4.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\nBOUNDARY_COMPLETE {\\\"site\\\":\\\"jp\\\",\\\"sha256\\\":\\\"852c2901cd0c3c5eb0b9aaadc2b39532a957df0f30ee27c1fc26fa5752bf5077\\\",\\\"stat\\\":{\\\"uid\\\":113,\\\"gid\\\":122,\\\"mode\\\":384,\\\"mtimeNs\\\":1792000606196722098},\\\"protocols\\\":{\\\"mesh_eu\\\":\\\"Established\\\",\\\"mesh_us\\\":\\\"Established\\\",\\\"mesh_cn\\\":\\\"Established\\\",\\\"azure_0\\\":\\\"Established\\\",\\\"azure_1\\\":\\\"Established\\\"},\\\"exports\\\":{\\\"azure_0\\\":{\\\"routes\\\":{\\\"10.110.0.0/24\\\":[65013,65013,65013,65013,65011],\\\"10.140.0.0/24\\\":[65013,65013,65013,65013,65014],\\\"10.130.0.0/24\\\":[65013,65013,65013,65013],\\\"10.120.0.0/24\\\":[65013,65013,65013,65013,65012]},\\\"rawSha256\\\":\\\"5c023b5810f8e03c18102518b57b73a0bc58a776166f3f4d510df32f58136ba2\\\"},\\\"azure_1\\\":{\\\"routes\\\":{\\\"10.110.0.0/24\\\":[65013,65013,65013,65013,65011],\\\"10.140.0.0/24\\\":[65013,65013,65013,65013,65014],\\\"10.130.0.0/24\\\":[65013,65013,65013,65013],\\\"10.120.0.0/24\\\":[65013,65013,65013,65013,65012]},\\\"rawSha256\\\":\\\"5c023b5810f8e03c18102518b57b73a0bc58a776166f3f4d510df32f58136ba2\\\"}},\\\"ikeEstablished\\\":2,\\\"additionalPrepends\\\":4,\\\"configureOutput\\\":\\\"BIRD 2.0.8 ready.\\\\nReading configuration from /etc/bird/bird.conf\\\\nReconfigured\\\",\\\"restored\\\":false}\\n\\n[stderr]\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\nBOUNDARY_COMPLETE {\"site\":\"jp\",\"sha256\":\"852c2901cd0c3c5eb0b9aaadc2b39532a957df0f30ee27c1fc26fa5752bf5077\",\"stat\":{\"uid\":113,\"gid\":122,\"mode\":384,\"mtimeNs\":1792000606196722098},\"protocols\":{\"mesh_eu\":\"Established\",\"mesh_us\":\"Established\",\"mesh_cn\":\"Established\",\"azure_0\":\"Established\",\"azure_1\":\"Established\"},\"exports\":{\"azure_0\":{\"routes\":{\"10.110.0.0/24\":[65013,65013,65013,65013,65011],\"10.140.0.0/24\":[65013,65013,65013,65013,65014],\"10.130.0.0/24\":[65013,65013,65013,65013],\"10.120.0.0/24\":[65013,65013,65013,65013,65012]},\"rawSha256\":\"5c023b5810f8e03c18102518b57b73a0bc58a776166f3f4d510df32f58136ba2\"},\"azure_1\":{\"routes\":{\"10.110.0.0/24\":[65013,65013,65013,65013,65011],\"10.140.0.0/24\":[65013,65013,65013,65013,65014],\"10.130.0.0/24\":[65013,65013,65013,65013],\"10.120.0.0/24\":[65013,65013,65013,65013,65012]},\"rawSha256\":\"5c023b5810f8e03c18102518b57b73a0bc58a776166f3f4d510df32f58136ba2\"}},\"ikeEstablished\":2,\"additionalPrepends\":4,\"configureOutput\":\"BIRD 2.0.8 ready.\\nReading configuration from /etc/bird/bird.conf\\nReconfigured\",\"restored\":false}\n\n[stderr]\n"
+      }
+    ]
+  },
+  "sha256": "4e5755b52d48a503f6dd4458fad35f82e3ae3506d1089d8d7466aabfd32e8cf9"
+}

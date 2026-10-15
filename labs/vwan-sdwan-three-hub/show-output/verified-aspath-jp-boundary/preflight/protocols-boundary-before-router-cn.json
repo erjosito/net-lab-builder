@@ -1,0 +1,39 @@
+{
+  "timestampUtc": "2026-10-14T19:36:33.739935+00:00",
+  "finishedUtc": "2026-10-14T19:36:39.264457+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-cn/runCommands/guest-aspath-proof-boundary-before",
+    "--url-parameters",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\aspath-query.json"
+  ],
+  "stdout": "{\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-cn/runCommands/guest-aspath-proof-boundary-before\",\n  \"location\": \"japaneast\",\n  \"name\": \"guest-aspath-proof-boundary-before\",\n  \"properties\": {\n    \"asyncExecution\": false,\n    \"instanceView\": {\n      \"endTime\": \"2026-10-14T19:34:57+00:00\",\n      \"error\": \"\",\n      \"executionMessage\": \"Execution completed\",\n      \"executionState\": \"Succeeded\",\n      \"exitCode\": 0,\n      \"output\": \"PROOF_BEGIN\\n10e5591a16159a4a6e17350cb23f437623372f2ffd635ef20736f133c4738346  /etc/bird/bird.conf\\nBIRD 2.0.8 ready.\\nName       Proto      Table      State  Since         Info\\ndevices    Device     ---        up     17:56:50.787  \\nconnected  Direct     ---        up     17:56:50.787  \\ncontrol_pins Static     underlay4  up     17:56:50.787  \\nown_dc     Static     lab4       up     17:56:50.787  \\nkernel_lab Kernel     lab4       up     17:56:50.787  \\nmesh_eu    BGP        ---        up     17:56:54.915  Established   \\nmesh_us    BGP        ---        up     17:56:55.454  Established   \\nmesh_jp    BGP        ---        up     17:56:54.038  Established   \\nPROOF_END\\n\",\n      \"startTime\": \"2026-10-14T19:34:57+00:00\"\n    },\n    \"provisioningState\": \"Succeeded\",\n    \"source\": {\n      \"script\": \"#!/bin/bash\\nset -euo pipefail\\necho PROOF_BEGIN\\nsha256sum /etc/bird/bird.conf\\nbirdc show protocols\\necho PROOF_END\\n\"\n    },\n    \"timeoutInSeconds\": 120,\n    \"treatFailureAsDeploymentFailure\": true\n  },\n  \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n}\n",
+  "result": {
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-cn/runCommands/guest-aspath-proof-boundary-before",
+    "location": "japaneast",
+    "name": "guest-aspath-proof-boundary-before",
+    "properties": {
+      "asyncExecution": false,
+      "instanceView": {
+        "endTime": "2026-10-14T19:34:57+00:00",
+        "error": "",
+        "executionMessage": "Execution completed",
+        "executionState": "Succeeded",
+        "exitCode": 0,
+        "output": "PROOF_BEGIN\n10e5591a16159a4a6e17350cb23f437623372f2ffd635ef20736f133c4738346  /etc/bird/bird.conf\nBIRD 2.0.8 ready.\nName       Proto      Table      State  Since         Info\ndevices    Device     ---        up     17:56:50.787  \nconnected  Direct     ---        up     17:56:50.787  \ncontrol_pins Static     underlay4  up     17:56:50.787  \nown_dc     Static     lab4       up     17:56:50.787  \nkernel_lab Kernel     lab4       up     17:56:50.787  \nmesh_eu    BGP        ---        up     17:56:54.915  Established   \nmesh_us    BGP        ---        up     17:56:55.454  Established   \nmesh_jp    BGP        ---        up     17:56:54.038  Established   \nPROOF_END\n",
+        "startTime": "2026-10-14T19:34:57+00:00"
+      },
+      "provisioningState": "Succeeded",
+      "source": {
+        "script": "#!/bin/bash\nset -euo pipefail\necho PROOF_BEGIN\nsha256sum /etc/bird/bird.conf\nbirdc show protocols\necho PROOF_END\n"
+      },
+      "timeoutInSeconds": 120,
+      "treatFailureAsDeploymentFailure": true
+    },
+    "type": "Microsoft.Compute/virtualMachines/runCommands"
+  },
+  "sha256": "897ccd96edeb0c9fa0ed09df37db30b11f063d4171e4c275e63c0ddc83abb263"
+}

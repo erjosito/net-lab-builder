@@ -1,0 +1,27 @@
+{
+  "timestampUtc": "2026-10-14T18:15:16.389499+00:00",
+  "finishedUtc": "2026-10-14T18:15:35.007319+00:00",
+  "command": [
+    "C:\\Program Files\\Microsoft SDKs\\Azure\\CLI2\\wbin\\az.CMD",
+    "network",
+    "vhub",
+    "get-effective-routes",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "hub-us",
+    "--resource-id",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubVirtualNetworkConnections/conn-spoke-us",
+    "--resource-type",
+    "HubVirtualNetworkConnection",
+    "--subscription",
+    "<SUBSCRIPTION_ID>",
+    "--only-show-errors",
+    "-o",
+    "json"
+  ],
+  "exitCode": 0,
+  "stdout": "{\r\n  \"value\": [\r\n    {\r\n      \"addressPrefixes\": [\r\n        \"10.220.0.0/24\"\r\n      ],\r\n      \"nextHopType\": \"Virtual Network Connection\",\r\n      \"nextHops\": [\r\n        \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubVirtualNetworkConnections/conn-transit-us\"\r\n      ],\r\n      \"routeOrigin\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubVirtualNetworkConnections/conn-transit-us\"\r\n    },\r\n    {\r\n      \"addressPrefixes\": [\r\n        \"10.110.0.0/24\"\r\n      ],\r\n      \"asPath\": \"65012-65011\",\r\n      \"nextHopType\": \"HubBgpConnection\",\r\n      \"nextHops\": [\r\n        \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us\"\r\n      ],\r\n      \"routeOrigin\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us\"\r\n    },\r\n    {\r\n      \"addressPrefixes\": [\r\n        \"10.120.0.0/24\"\r\n      ],\r\n      \"asPath\": \"65012\",\r\n      \"nextHopType\": \"HubBgpConnection\",\r\n      \"nextHops\": [\r\n        \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us\"\r\n      ],\r\n      \"routeOrigin\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us\"\r\n    },\r\n    {\r\n      \"addressPrefixes\": [\r\n        \"10.130.0.0/24\"\r\n      ],\r\n      \"asPath\": \"65012-65013\",\r\n      \"nextHopType\": \"HubBgpConnection\",\r\n      \"nextHops\": [\r\n        \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us\"\r\n      ],\r\n      \"routeOrigin\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us\"\r\n    },\r\n    {\r\n      \"addressPrefixes\": [\r\n        \"10.140.0.0/24\"\r\n      ],\r\n      \"asPath\": \"65012-65014\",\r\n      \"nextHopType\": \"HubBgpConnection\",\r\n      \"nextHops\": [\r\n        \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us\"\r\n      ],\r\n      \"routeOrigin\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us\"\r\n    }\r\n  ]\r\n}\r\n",
+  "stderr": "",
+  "sha256": "56b740d77b9fa117b99b572c260c28d1edde7019533ae8448f5ce525c3d3e350"
+}

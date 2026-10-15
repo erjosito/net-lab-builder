@@ -1,0 +1,23 @@
+{
+  "timestampUtc": "2026-10-15T07:34:13.562447+00:00",
+  "finishedUtc": "2026-10-15T07:36:21.433361+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-eu",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\show-output\\mesh-reboot-recovery\\eu-repair.sh"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "{\r\n  \"value\": [\r\n    {\r\n      \"code\": \"ProvisioningState/succeeded\",\r\n      \"displayStatus\": \"Provisioning succeeded\",\r\n      \"level\": \"Info\",\r\n      \"message\": \"Enable succeeded: \\n[stdout]\\nMESH_REPAIR {\\\"site\\\": \\\"eu\\\", \\\"state\\\": \\\"rolled-back\\\"}\\n\\n[stderr]\\nTraceback (most recent call last):\\n  File \\\"<stdin>\\\", line 29, in <module>\\nRuntimeError: WireGuard acceptance deadline\\n\"\r\n    }\r\n  ]\r\n}\r\n",
+  "stderr": "",
+  "expectedAbsent": false,
+  "stdoutSha256": "868dc13056cc8d8b025d1e662f576f1b25c72362a7c4d44cbf49c48d42686f4c"
+}

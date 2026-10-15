@@ -1,0 +1,23 @@
+{
+  "timestampUtc": "2026-10-14T18:04:38.885837+00:00",
+  "finishedUtc": "2026-10-14T18:04:44.772421+00:00",
+  "command": [
+    "C:\\Program Files\\Microsoft SDKs\\Azure\\CLI2\\wbin\\az.CMD",
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu",
+    "--url-parameters",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\show-output\\b0-unsecured-er\\20261014T180438Z\\hub-eu-config-before-query.json",
+    "--subscription",
+    "<SUBSCRIPTION_ID>",
+    "--only-show-errors",
+    "-o",
+    "json"
+  ],
+  "exitCode": 0,
+  "stdout": "{\r\n  \"etag\": \"W/\\\"2a394cd8-a502-4b4c-bc1a-253b937e24bc\\\"\",\r\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu\",\r\n  \"location\": \"westeurope\",\r\n  \"name\": \"hub-eu\",\r\n  \"properties\": {\r\n    \"addressPrefix\": \"10.250.0.0/23\",\r\n    \"allowBranchToBranchTraffic\": false,\r\n    \"allowVnetToVnetTraffic\": false,\r\n    \"hubRoutingPreference\": \"ExpressRoute\",\r\n    \"networkVirtualAppliances\": [],\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"routeTable\": {\r\n      \"routes\": []\r\n    },\r\n    \"routingState\": \"Provisioned\",\r\n    \"sku\": \"Standard\",\r\n    \"virtualHubRouteTableV2s\": [],\r\n    \"virtualRouterAsn\": 65515,\r\n    \"virtualRouterAutoScaleConfiguration\": {\r\n      \"minCapacity\": 2\r\n    },\r\n    \"virtualRouterIps\": [\r\n      \"10.250.0.69\",\r\n      \"10.250.0.70\"\r\n    ],\r\n    \"virtualRouterIpsV6\": [],\r\n    \"virtualWan\": {\r\n      \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub\"\r\n    }\r\n  },\r\n  \"tags\": {\r\n    \"created_by\": \"copilot-lab\",\r\n    \"ephemeral\": \"true\",\r\n    \"lab\": \"true\",\r\n    \"owner\": \"jose\",\r\n    \"run_id\": \"20261014-threehub\"\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualHubs\"\r\n}\r\n",
+  "stderr": "",
+  "sha256": "3e18beedbf4e26ffb964446fe2119a29c644bb740aa4002d77c24ff79c164bdd"
+}

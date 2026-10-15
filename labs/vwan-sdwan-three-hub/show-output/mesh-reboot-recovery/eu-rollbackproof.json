@@ -1,0 +1,23 @@
+{
+  "timestampUtc": "2026-10-15T07:40:55.691508+00:00",
+  "finishedUtc": "2026-10-15T07:41:32.369663+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-eu",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\show-output\\mesh-reboot-recovery\\eu-rollbackproof.sh"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "{\r\n  \"value\": [\r\n    {\r\n      \"code\": \"ProvisioningState/succeeded\",\r\n      \"displayStatus\": \"Provisioning succeeded\",\r\n      \"level\": \"Info\",\r\n      \"message\": \"Enable succeeded: \\n[stdout]\\nMESH_DIAGNOSTIC {\\\"rollbackVerified\\\":true,\\\"networkSha256\\\":\\\"a44f8561e92eca28285236999d9bfc18980bc9e012c420768f04fd570f39476b\\\",\\\"rules\\\":\\\"-N TH_WG_IN\\\\n-A TH_WG_IN -s 10.220.0.4/32 -d 10.210.0.4/32 -i eth0 -p udp -m udp --dport 51820 -j REDIRECT --to-ports 51821\\\\n-A TH_WG_IN -s 10.130.0.4/32 -d 10.210.0.4/32 -i eth0 -p udp -m udp --dport 51820 -j REDIRECT --to-ports 51822\\\\n-A TH_WG_IN -s 10.140.0.4/32 -d 10.210.0.4/32 -i eth0 -p udp -m udp --dport 51820 -j REDIRECT --to-ports 51823\\\\n\\\"}\\n\\n[stderr]\\n\"\r\n    }\r\n  ]\r\n}\r\n",
+  "stderr": "",
+  "expectedAbsent": false,
+  "stdoutSha256": "6f163a7a232c4be8205b99efe73e61d360662931acc17064feaa1691a91bd385"
+}

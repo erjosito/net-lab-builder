@@ -1,0 +1,28 @@
+{
+  "verdict": "FAIL",
+  "nsGExactPreservation": {
+    "nsg-router-eu": true,
+    "nsg-router-us": true,
+    "nsg-router-jp": true,
+    "nsg-router-cn": true
+  },
+  "comparisonNote": "Original verdict records a false NSG comparison failure caused solely by Azure adding empty plural arrays. Canonical comparison of the same captured responses passes; original raw verdict is retained. No additional live calls or mutations.",
+  "reason": "Mesh BGP acceptance incomplete: 6 of 12 directed mesh entries Established. Handshake ages exceed 180 seconds on some snapshots; no proven deeper root cause.",
+  "meshEntriesEstablished": 6,
+  "azureEntriesEstablished": 6,
+  "allSixWireguardPairsHaveRecordedHandshakes": true,
+  "japanIkeEstablished": 2,
+  "birdIdentityUnchangedAllFour": true,
+  "wgTranslationRemovedAllFour": true,
+  "transportRetained": true,
+  "rollbackNeeded": false,
+  "protectedBackupOnEachGuest": "/var/lib/threehub/direct-action-mesh-20261015",
+  "servicesRestarted": false,
+  "managedCommandResourcesChanged": false,
+  "mutations": 5,
+  "calls": 13,
+  "leaseState": "completed",
+  "children": "none",
+  "regressionTestsPassed": 38,
+  "timestampUtc": "2026-10-15T08:17:49.292449+00:00"
+}

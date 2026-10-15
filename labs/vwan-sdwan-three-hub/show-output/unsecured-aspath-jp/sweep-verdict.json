@@ -1,0 +1,833 @@
+{
+  "timestampUtc": "2026-10-14T19:20:34.224712+00:00",
+  "verdict": "INCONCLUSIVE",
+  "budgetStopReason": "Count4 intentionally skipped: insufficient remaining time for its bounded capture plus mandatory restore snapshots and all-router protocol proof. Closure requested during count3's final metadata command; no lease expiry occurred.",
+  "skippedCounts": [
+    4
+  ],
+  "completedCounts": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "HRP": "ASPath",
+  "routingIntent": false,
+  "mutationsUsed": 5,
+  "callsUsed": 84,
+  "originalHash": "89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006",
+  "restoredHash": "89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006",
+  "restored": true,
+  "errors": [
+    "Lease stopped or expired"
+  ],
+  "thresholds": [
+    {
+      "observer": "eu",
+      "prefix": "10.110.0.0/24",
+      "firstObservedSwitch": null,
+      "boundedNoSwitchThrough": 3,
+      "sequence": [
+        {
+          "count": 0,
+          "stable": true,
+          "winner": {
+            "observer": "eu",
+            "prefix": "10.110.0.0/24",
+            "asPath": "65011",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+            ]
+          }
+        },
+        {
+          "count": 1,
+          "stable": true,
+          "winner": {
+            "observer": "eu",
+            "prefix": "10.110.0.0/24",
+            "asPath": "65011",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+            ]
+          }
+        },
+        {
+          "count": 2,
+          "stable": true,
+          "winner": {
+            "observer": "eu",
+            "prefix": "10.110.0.0/24",
+            "asPath": "65011",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+            ]
+          }
+        },
+        {
+          "count": 3,
+          "stable": true,
+          "winner": {
+            "observer": "eu",
+            "prefix": "10.110.0.0/24",
+            "asPath": "65011",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "observer": "eu",
+      "prefix": "10.120.0.0/24",
+      "firstObservedSwitch": null,
+      "boundedNoSwitchThrough": 3,
+      "sequence": [
+        {
+          "count": 0,
+          "stable": true,
+          "winner": {
+            "observer": "eu",
+            "prefix": "10.120.0.0/24",
+            "asPath": "65011-65012",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+            ]
+          }
+        },
+        {
+          "count": 1,
+          "stable": true,
+          "winner": {
+            "observer": "eu",
+            "prefix": "10.120.0.0/24",
+            "asPath": "65011-65012",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+            ]
+          }
+        },
+        {
+          "count": 2,
+          "stable": true,
+          "winner": {
+            "observer": "eu",
+            "prefix": "10.120.0.0/24",
+            "asPath": "65011-65012",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+            ]
+          }
+        },
+        {
+          "count": 3,
+          "stable": true,
+          "winner": {
+            "observer": "eu",
+            "prefix": "10.120.0.0/24",
+            "asPath": "65011-65012",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "observer": "eu",
+      "prefix": "10.130.0.0/24",
+      "firstObservedSwitch": null,
+      "boundedNoSwitchThrough": 3,
+      "sequence": [
+        {
+          "count": 0,
+          "stable": true,
+          "winner": {
+            "observer": "eu",
+            "prefix": "10.130.0.0/24",
+            "asPath": "65011-65013",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+            ]
+          }
+        },
+        {
+          "count": 1,
+          "stable": true,
+          "winner": {
+            "observer": "eu",
+            "prefix": "10.130.0.0/24",
+            "asPath": "65011-65013",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+            ]
+          }
+        },
+        {
+          "count": 2,
+          "stable": true,
+          "winner": {
+            "observer": "eu",
+            "prefix": "10.130.0.0/24",
+            "asPath": "65011-65013",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+            ]
+          }
+        },
+        {
+          "count": 3,
+          "stable": true,
+          "winner": {
+            "observer": "eu",
+            "prefix": "10.130.0.0/24",
+            "asPath": "65011-65013",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "observer": "eu",
+      "prefix": "10.140.0.0/24",
+      "firstObservedSwitch": null,
+      "boundedNoSwitchThrough": 3,
+      "sequence": [
+        {
+          "count": 0,
+          "stable": true,
+          "winner": {
+            "observer": "eu",
+            "prefix": "10.140.0.0/24",
+            "asPath": "65011-65014",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+            ]
+          }
+        },
+        {
+          "count": 1,
+          "stable": true,
+          "winner": {
+            "observer": "eu",
+            "prefix": "10.140.0.0/24",
+            "asPath": "65011-65014",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+            ]
+          }
+        },
+        {
+          "count": 2,
+          "stable": true,
+          "winner": {
+            "observer": "eu",
+            "prefix": "10.140.0.0/24",
+            "asPath": "65011-65014",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+            ]
+          }
+        },
+        {
+          "count": 3,
+          "stable": true,
+          "winner": {
+            "observer": "eu",
+            "prefix": "10.140.0.0/24",
+            "asPath": "65011-65014",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "observer": "us",
+      "prefix": "10.110.0.0/24",
+      "firstObservedSwitch": null,
+      "boundedNoSwitchThrough": 3,
+      "sequence": [
+        {
+          "count": 0,
+          "stable": true,
+          "winner": {
+            "observer": "us",
+            "prefix": "10.110.0.0/24",
+            "asPath": "65012-65011",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+            ]
+          }
+        },
+        {
+          "count": 1,
+          "stable": true,
+          "winner": {
+            "observer": "us",
+            "prefix": "10.110.0.0/24",
+            "asPath": "65012-65011",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+            ]
+          }
+        },
+        {
+          "count": 2,
+          "stable": true,
+          "winner": {
+            "observer": "us",
+            "prefix": "10.110.0.0/24",
+            "asPath": "65012-65011",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+            ]
+          }
+        },
+        {
+          "count": 3,
+          "stable": true,
+          "winner": {
+            "observer": "us",
+            "prefix": "10.110.0.0/24",
+            "asPath": "65012-65011",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "observer": "us",
+      "prefix": "10.120.0.0/24",
+      "firstObservedSwitch": null,
+      "boundedNoSwitchThrough": 3,
+      "sequence": [
+        {
+          "count": 0,
+          "stable": true,
+          "winner": {
+            "observer": "us",
+            "prefix": "10.120.0.0/24",
+            "asPath": "65012",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+            ]
+          }
+        },
+        {
+          "count": 1,
+          "stable": true,
+          "winner": {
+            "observer": "us",
+            "prefix": "10.120.0.0/24",
+            "asPath": "65012",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+            ]
+          }
+        },
+        {
+          "count": 2,
+          "stable": true,
+          "winner": {
+            "observer": "us",
+            "prefix": "10.120.0.0/24",
+            "asPath": "65012",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+            ]
+          }
+        },
+        {
+          "count": 3,
+          "stable": true,
+          "winner": {
+            "observer": "us",
+            "prefix": "10.120.0.0/24",
+            "asPath": "65012",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "observer": "us",
+      "prefix": "10.130.0.0/24",
+      "firstObservedSwitch": null,
+      "boundedNoSwitchThrough": 3,
+      "sequence": [
+        {
+          "count": 0,
+          "stable": true,
+          "winner": {
+            "observer": "us",
+            "prefix": "10.130.0.0/24",
+            "asPath": "65012-65013",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+            ]
+          }
+        },
+        {
+          "count": 1,
+          "stable": true,
+          "winner": {
+            "observer": "us",
+            "prefix": "10.130.0.0/24",
+            "asPath": "65012-65013",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+            ]
+          }
+        },
+        {
+          "count": 2,
+          "stable": true,
+          "winner": {
+            "observer": "us",
+            "prefix": "10.130.0.0/24",
+            "asPath": "65012-65013",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+            ]
+          }
+        },
+        {
+          "count": 3,
+          "stable": true,
+          "winner": {
+            "observer": "us",
+            "prefix": "10.130.0.0/24",
+            "asPath": "65012-65013",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "observer": "us",
+      "prefix": "10.140.0.0/24",
+      "firstObservedSwitch": null,
+      "boundedNoSwitchThrough": 3,
+      "sequence": [
+        {
+          "count": 0,
+          "stable": true,
+          "winner": {
+            "observer": "us",
+            "prefix": "10.140.0.0/24",
+            "asPath": "65012-65014",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+            ]
+          }
+        },
+        {
+          "count": 1,
+          "stable": true,
+          "winner": {
+            "observer": "us",
+            "prefix": "10.140.0.0/24",
+            "asPath": "65012-65014",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+            ]
+          }
+        },
+        {
+          "count": 2,
+          "stable": true,
+          "winner": {
+            "observer": "us",
+            "prefix": "10.140.0.0/24",
+            "asPath": "65012-65014",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+            ]
+          }
+        },
+        {
+          "count": 3,
+          "stable": true,
+          "winner": {
+            "observer": "us",
+            "prefix": "10.140.0.0/24",
+            "asPath": "65012-65014",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us",
+            "nextHopType": "HubBgpConnection",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "observer": "jp",
+      "prefix": "10.110.0.0/24",
+      "firstObservedSwitch": null,
+      "boundedNoSwitchThrough": 3,
+      "sequence": [
+        {
+          "count": 0,
+          "stable": true,
+          "winner": {
+            "observer": "jp",
+            "prefix": "10.110.0.0/24",
+            "asPath": "65013-65011",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+            "nextHopType": "VPN_S2S_Gateway",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+            ]
+          }
+        },
+        {
+          "count": 1,
+          "stable": true,
+          "winner": {
+            "observer": "jp",
+            "prefix": "10.110.0.0/24",
+            "asPath": "65013-65013-65011",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+            "nextHopType": "VPN_S2S_Gateway",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+            ]
+          }
+        },
+        {
+          "count": 2,
+          "stable": true,
+          "winner": {
+            "observer": "jp",
+            "prefix": "10.110.0.0/24",
+            "asPath": "65013-65013-65013-65011",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+            "nextHopType": "VPN_S2S_Gateway",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+            ]
+          }
+        },
+        {
+          "count": 3,
+          "stable": true,
+          "winner": {
+            "observer": "jp",
+            "prefix": "10.110.0.0/24",
+            "asPath": "65013-65013-65013-65013-65011",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+            "nextHopType": "VPN_S2S_Gateway",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "observer": "jp",
+      "prefix": "10.120.0.0/24",
+      "firstObservedSwitch": null,
+      "boundedNoSwitchThrough": 3,
+      "sequence": [
+        {
+          "count": 0,
+          "stable": true,
+          "winner": {
+            "observer": "jp",
+            "prefix": "10.120.0.0/24",
+            "asPath": "65013-65012",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+            "nextHopType": "VPN_S2S_Gateway",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+            ]
+          }
+        },
+        {
+          "count": 1,
+          "stable": true,
+          "winner": {
+            "observer": "jp",
+            "prefix": "10.120.0.0/24",
+            "asPath": "65013-65013-65012",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+            "nextHopType": "VPN_S2S_Gateway",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+            ]
+          }
+        },
+        {
+          "count": 2,
+          "stable": true,
+          "winner": {
+            "observer": "jp",
+            "prefix": "10.120.0.0/24",
+            "asPath": "65013-65013-65013-65012",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+            "nextHopType": "VPN_S2S_Gateway",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+            ]
+          }
+        },
+        {
+          "count": 3,
+          "stable": true,
+          "winner": {
+            "observer": "jp",
+            "prefix": "10.120.0.0/24",
+            "asPath": "65013-65013-65013-65013-65012",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+            "nextHopType": "VPN_S2S_Gateway",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "observer": "jp",
+      "prefix": "10.130.0.0/24",
+      "firstObservedSwitch": null,
+      "boundedNoSwitchThrough": 3,
+      "sequence": [
+        {
+          "count": 0,
+          "stable": true,
+          "winner": {
+            "observer": "jp",
+            "prefix": "10.130.0.0/24",
+            "asPath": "65013",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+            "nextHopType": "VPN_S2S_Gateway",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+            ]
+          }
+        },
+        {
+          "count": 1,
+          "stable": true,
+          "winner": {
+            "observer": "jp",
+            "prefix": "10.130.0.0/24",
+            "asPath": "65013-65013",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+            "nextHopType": "VPN_S2S_Gateway",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+            ]
+          }
+        },
+        {
+          "count": 2,
+          "stable": true,
+          "winner": {
+            "observer": "jp",
+            "prefix": "10.130.0.0/24",
+            "asPath": "65013-65013-65013",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+            "nextHopType": "VPN_S2S_Gateway",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+            ]
+          }
+        },
+        {
+          "count": 3,
+          "stable": true,
+          "winner": {
+            "observer": "jp",
+            "prefix": "10.130.0.0/24",
+            "asPath": "65013-65013-65013-65013",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+            "nextHopType": "VPN_S2S_Gateway",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "observer": "jp",
+      "prefix": "10.140.0.0/24",
+      "firstObservedSwitch": null,
+      "boundedNoSwitchThrough": 3,
+      "sequence": [
+        {
+          "count": 0,
+          "stable": true,
+          "winner": {
+            "observer": "jp",
+            "prefix": "10.140.0.0/24",
+            "asPath": "65013-65014",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+            "nextHopType": "VPN_S2S_Gateway",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+            ]
+          }
+        },
+        {
+          "count": 1,
+          "stable": true,
+          "winner": {
+            "observer": "jp",
+            "prefix": "10.140.0.0/24",
+            "asPath": "65013-65013-65014",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+            "nextHopType": "VPN_S2S_Gateway",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+            ]
+          }
+        },
+        {
+          "count": 2,
+          "stable": true,
+          "winner": {
+            "observer": "jp",
+            "prefix": "10.140.0.0/24",
+            "asPath": "65013-65013-65013-65014",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+            "nextHopType": "VPN_S2S_Gateway",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+            ]
+          }
+        },
+        {
+          "count": 3,
+          "stable": true,
+          "winner": {
+            "observer": "jp",
+            "prefix": "10.140.0.0/24",
+            "asPath": "65013-65013-65013-65013-65014",
+            "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+            "nextHopType": "VPN_S2S_Gateway",
+            "nextHops": [
+              "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "children": [],
+  "protocolProofBefore": {
+    "router-eu": {
+      "established": 5,
+      "sha256": "20fbaef367e78dd78b3e7d55e791d5c69dbae0a00fbd3c50ee0c2a740bdb4120"
+    },
+    "router-us": {
+      "established": 5,
+      "sha256": "5634db09d84a79a68b94ffd9dab64aa9a4e63dc7cdb24379285b04a32328c4cb"
+    },
+    "router-jp": {
+      "established": 5,
+      "sha256": "89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006"
+    },
+    "router-cn": {
+      "established": 3,
+      "sha256": "10e5591a16159a4a6e17350cb23f437623372f2ffd635ef20736f133c4738346"
+    }
+  },
+  "protocolProofAfter": {
+    "router-eu": {
+      "established": 5,
+      "sha256": "20fbaef367e78dd78b3e7d55e791d5c69dbae0a00fbd3c50ee0c2a740bdb4120"
+    },
+    "router-us": {
+      "established": 5,
+      "sha256": "5634db09d84a79a68b94ffd9dab64aa9a4e63dc7cdb24379285b04a32328c4cb"
+    },
+    "router-jp": {
+      "established": 5,
+      "sha256": "89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006"
+    },
+    "router-cn": {
+      "established": 3,
+      "sha256": "10e5591a16159a4a6e17350cb23f437623372f2ffd635ef20736f133c4738346"
+    }
+  },
+  "forwarding": "B0 10/24 FAIL remains separate; no forwarding test or repair performed",
+  "losingAzurePaths": "Not exposed by effectiveRoutes; BIRD export evidence is source evidence only"
+}

@@ -1,0 +1,390 @@
+{
+  "timestampUtc": "2026-10-14T18:15:53.962140+00:00",
+  "scenario": "B0",
+  "verdict": "FAIL",
+  "winningRoutes": {
+    "eu": [
+      {
+        "addressPrefixes": [
+          "10.110.0.0/24"
+        ],
+        "asPath": "65011",
+        "nextHopType": "HubBgpConnection",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+      },
+      {
+        "addressPrefixes": [
+          "10.130.0.0/24"
+        ],
+        "asPath": "65011-65013",
+        "nextHopType": "HubBgpConnection",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+      },
+      {
+        "addressPrefixes": [
+          "10.120.0.0/24"
+        ],
+        "asPath": "65011-65012",
+        "nextHopType": "HubBgpConnection",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+      },
+      {
+        "addressPrefixes": [
+          "10.140.0.0/24"
+        ],
+        "asPath": "65011-65014",
+        "nextHopType": "HubBgpConnection",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+      }
+    ],
+    "us": [
+      {
+        "addressPrefixes": [
+          "10.110.0.0/24"
+        ],
+        "asPath": "65012-65011",
+        "nextHopType": "HubBgpConnection",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+      },
+      {
+        "addressPrefixes": [
+          "10.120.0.0/24"
+        ],
+        "asPath": "65012",
+        "nextHopType": "HubBgpConnection",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+      },
+      {
+        "addressPrefixes": [
+          "10.130.0.0/24"
+        ],
+        "asPath": "65012-65013",
+        "nextHopType": "HubBgpConnection",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+      },
+      {
+        "addressPrefixes": [
+          "10.140.0.0/24"
+        ],
+        "asPath": "65012-65014",
+        "nextHopType": "HubBgpConnection",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+      }
+    ],
+    "jp": [
+      {
+        "addressPrefixes": [
+          "10.110.0.0/24"
+        ],
+        "asPath": "65013-65011",
+        "nextHopType": "VPN_S2S_Gateway",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+      },
+      {
+        "addressPrefixes": [
+          "10.130.0.0/24"
+        ],
+        "asPath": "65013",
+        "nextHopType": "VPN_S2S_Gateway",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+      },
+      {
+        "addressPrefixes": [
+          "10.140.0.0/24"
+        ],
+        "asPath": "65013-65014",
+        "nextHopType": "VPN_S2S_Gateway",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+      },
+      {
+        "addressPrefixes": [
+          "10.120.0.0/24"
+        ],
+        "asPath": "65013-65012",
+        "nextHopType": "VPN_S2S_Gateway",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+      }
+    ]
+  },
+  "stableSnapshots": {
+    "eu": {
+      "snapshot1Utc": "2026-10-14T18:11:48.122582+00:00",
+      "snapshot2Utc": "2026-10-14T18:13:53.101962+00:00",
+      "defaultTableResponsesEqual": true,
+      "defaultTableRouteCount": 0,
+      "winnerStabilityProven": false
+    },
+    "us": {
+      "snapshot1Utc": "2026-10-14T18:11:48.146971+00:00",
+      "snapshot2Utc": "2026-10-14T18:13:53.132233+00:00",
+      "defaultTableResponsesEqual": true,
+      "defaultTableRouteCount": 0,
+      "winnerStabilityProven": false
+    },
+    "jp": {
+      "snapshot1Utc": "2026-10-14T18:11:48.186577+00:00",
+      "snapshot2Utc": "2026-10-14T18:13:53.156145+00:00",
+      "defaultTableResponsesEqual": true,
+      "defaultTableRouteCount": 0,
+      "winnerStabilityProven": false
+    }
+  },
+  "bgp": {
+    "eu": {
+      "established": 5,
+      "expected": 5
+    },
+    "us": {
+      "established": 5,
+      "expected": 5
+    },
+    "jp": {
+      "established": 5,
+      "expected": 5
+    },
+    "cn": {
+      "established": 3,
+      "expected": 3
+    }
+  },
+  "traffic": [
+    {
+      "source": "10.10.0.10",
+      "destination": "10.110.0.10",
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "evidence": "guest-probe-spoke-eu.txt"
+    },
+    {
+      "source": "10.10.0.10",
+      "destination": "10.120.0.10",
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "evidence": "guest-probe-spoke-eu.txt"
+    },
+    {
+      "source": "10.10.0.10",
+      "destination": "10.130.0.10",
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "evidence": "guest-probe-spoke-eu.txt"
+    },
+    {
+      "source": "10.10.0.10",
+      "destination": "10.140.0.4",
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "evidence": "guest-probe-spoke-eu.txt"
+    },
+    {
+      "source": "10.20.0.10",
+      "destination": "10.110.0.10",
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "evidence": "guest-probe-spoke-us.txt"
+    },
+    {
+      "source": "10.20.0.10",
+      "destination": "10.120.0.10",
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "evidence": "guest-probe-spoke-us.txt"
+    },
+    {
+      "source": "10.20.0.10",
+      "destination": "10.130.0.10",
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "evidence": "guest-probe-spoke-us.txt"
+    },
+    {
+      "source": "10.20.0.10",
+      "destination": "10.140.0.4",
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "evidence": "guest-probe-spoke-us.txt"
+    },
+    {
+      "source": "10.30.0.10",
+      "destination": "10.110.0.10",
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "evidence": "guest-probe-spoke-jp.txt"
+    },
+    {
+      "source": "10.30.0.10",
+      "destination": "10.120.0.10",
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "evidence": "guest-probe-spoke-jp.txt"
+    },
+    {
+      "source": "10.30.0.10",
+      "destination": "10.130.0.10",
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "evidence": "guest-probe-spoke-jp.txt"
+    },
+    {
+      "source": "10.30.0.10",
+      "destination": "10.140.0.4",
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "evidence": "guest-probe-spoke-jp.txt"
+    },
+    {
+      "source": "10.110.0.10",
+      "destination": "10.10.0.10",
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "evidence": "guest-probe-dc-eu.txt"
+    },
+    {
+      "source": "10.110.0.10",
+      "destination": "10.20.0.10",
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "evidence": "guest-probe-dc-eu.txt"
+    },
+    {
+      "source": "10.110.0.10",
+      "destination": "10.30.0.10",
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "evidence": "guest-probe-dc-eu.txt"
+    },
+    {
+      "source": "10.120.0.10",
+      "destination": "10.10.0.10",
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "evidence": "guest-probe-dc-us.txt"
+    },
+    {
+      "source": "10.120.0.10",
+      "destination": "10.20.0.10",
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "evidence": "guest-probe-dc-us.txt"
+    },
+    {
+      "source": "10.120.0.10",
+      "destination": "10.30.0.10",
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "evidence": "guest-probe-dc-us.txt"
+    },
+    {
+      "source": "10.130.0.10",
+      "destination": "10.10.0.10",
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "evidence": "guest-probe-dc-jp.txt"
+    },
+    {
+      "source": "10.130.0.10",
+      "destination": "10.20.0.10",
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "evidence": "guest-probe-dc-jp.txt"
+    },
+    {
+      "source": "10.130.0.10",
+      "destination": "10.30.0.10",
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "evidence": "guest-probe-dc-jp.txt"
+    },
+    {
+      "source": "10.140.0.4",
+      "destination": "10.10.0.10",
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "evidence": "guest-router-cn.txt"
+    },
+    {
+      "source": "10.140.0.4",
+      "destination": "10.20.0.10",
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "evidence": "guest-router-cn.txt"
+    },
+    {
+      "source": "10.140.0.4",
+      "destination": "10.30.0.10",
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "evidence": "guest-router-cn.txt"
+    }
+  ],
+  "tcpPass": 10,
+  "icmpPass": 10,
+  "expectedDirectionalCells": 24,
+  "configurationMutations": 0,
+  "packetCaptureVisibility": "UNAVAILABLE: initial router output exceeded instanceView 4096-byte limit; no path/symmetry or no-SNAT claim",
+  "competitors": "BIRD full lab4 and exports are ingress evidence, not raw Azure losing paths",
+  "restore": "No route/service/config writes performed; all hubs ExpressRoute before/after. Bounded captures already exited; JP both IKE SAs Established. Full pre/post guest-file drift proof unavailable because first router output truncated; no restore required for commands performed.",
+  "children": [],
+  "collectorErrors": [],
+  "winningRouteSource": "HubVirtualNetworkConnection effectiveRoutes",
+  "routePreferenceVerdict": "INCONCLUSIVE: all three defaultRouteTable responses are value=[]; one current connection snapshot reveals all twelve winners, not stability or losing Azure paths.",
+  "forward": {
+    "tcpPass": 5,
+    "icmpPass": 5,
+    "total": 12
+  },
+  "reverse": {
+    "tcpPass": 5,
+    "icmpPass": 5,
+    "total": 12
+  },
+  "jpIpsec": {
+    "ikeEstablished": 2,
+    "installedChildrenObserved": 4,
+    "rekeyOverlapPossible": true,
+    "configurationUnchangedByCollector": true,
+    "evidence": "guest-router-jp.txt"
+  },
+  "failures": [
+    "14 of 24 directional TCP and ICMP probes failed",
+    "Default-table winner stability unavailable despite equal empty snapshots",
+    "Packet-capture and initial router stdout truncated by managed instanceView"
+  ],
+  "nextLease": "Fresh bounded Tank/Trinity investigation: remote-DC forwarding (CN succeeds, EU/US only local DC succeeds, JP DC fails even locally); inspect existing WG AllowedIPs/spoke source forwarding and JP XFRM data forwarding. Do not change HRP/prepends, which do not remedy a failed data-plane baseline."
+}

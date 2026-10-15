@@ -1,0 +1,499 @@
+2026-10-14T18:12:04Z
+89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006  /etc/bird/bird.conf
+04ffa224d64abb6178b79ac9c1940844486fc83166e64c92fa1c84f6500ee6fd  /var/lib/threehub/activation-files.json
+BIRD 2.0.8 ready.
+Name       Proto      Table      State  Since         Info
+devices    Device     ---        up     17:56:49.040  
+
+connected  Direct     ---        up     17:56:49.040  
+  Channel ipv4
+    State:          UP
+    Table:          underlay4
+    Preference:     240
+    Input filter:   ACCEPT
+    Output filter:  REJECT
+    Routes:         4 imported, 0 exported, 4 preferred
+    Route change stats:     received   rejected   filtered    ignored   accepted
+      Import updates:              4          0          0          0          4
+      Import withdraws:            0          0        ---          0          0
+      Export updates:              0          0          0        ---          0
+      Export withdraws:            0        ---        ---        ---          0
+
+control_pins Static     underlay4  up     17:56:49.040  
+  Channel ipv4
+    State:          UP
+    Table:          underlay4
+    Preference:     200
+    Input filter:   ACCEPT
+    Output filter:  REJECT
+    Routes:         5 imported, 0 exported, 5 preferred
+    Route change stats:     received   rejected   filtered    ignored   accepted
+      Import updates:              5          0          0          0          5
+      Import withdraws:            0          0        ---          0          0
+      Export updates:              0          0          0        ---          0
+      Export withdraws:            0        ---        ---        ---          0
+
+own_dc     Static     lab4       up     17:56:49.040  
+  Channel ipv4
+    State:          UP
+    Table:          lab4
+    Preference:     200
+    Input filter:   ACCEPT
+    Output filter:  REJECT
+    Routes:         1 imported, 0 exported, 1 preferred
+    Route change stats:     received   rejected   filtered    ignored   accepted
+      Import updates:              1          0          0          0          1
+      Import withdraws:            0          0        ---          0          0
+      Export updates:              0          0          0        ---          0
+      Export withdraws:            0        ---        ---        ---          0
+
+kernel_lab Kernel     lab4       up     17:56:49.040  
+  Channel ipv4
+    State:          UP
+    Table:          lab4
+    Preference:     10
+    Input filter:   REJECT
+    Output filter:  (unnamed)
+    Routes:         0 imported, 6 exported, 0 preferred
+    Route change stats:     received   rejected   filtered    ignored   accepted
+      Import updates:              0          0          0          0          0
+      Import withdraws:            0          0        ---          0          0
+      Export updates:              8          0          1        ---          7
+      Export withdraws:            0        ---        ---        ---          0
+
+mesh_eu    BGP        ---        up     17:56:53.493  Established   
+  BGP state:          Established
+    Neighbor address: 172.31.0.5
+    Neighbor AS:      65011
+    Local AS:         65013
+    Neighbor ID:      10.210.0.4
+    Local capabilities
+      Multiprotocol
+        AF announced: ipv4
+      Route refresh
+      Graceful restart
+      4-octet AS numbers
+      Enhanced refresh
+      Long-lived graceful restart
+    Neighbor capabilities
+      Multiprotocol
+        AF announced: ipv4
+      Route refresh
+      Graceful restart
+      4-octet AS numbers
+      Enhanced refresh
+      Long-lived graceful restart
+    Session:          external multihop AS4
+    Source address:   172.31.0.6
+    Hold timer:       146.591/180
+    Keepalive timer:  49.566/60
+  Channel ipv4
+    State:          UP
+    Table:          lab4
+    Preference:     100
+    Input filter:   (unnamed)
+    Output filter:  mesh_export
+    Routes:         2 imported, 2 exported, 2 preferred
+    Route change stats:     received   rejected   filtered    ignored   accepted
+      Import updates:              3          0          0          1          2
+      Import withdraws:            0          0        ---          0          0
+      Export updates:              7          2          3        ---          2
+      Export withdraws:            0        ---        ---        ---          0
+    BGP Next hop:   172.31.0.6
+    IGP IPv4 table: underlay4
+
+mesh_us    BGP        ---        up     17:56:53.842  Established   
+  BGP state:          Established
+    Neighbor address: 172.31.0.13
+    Neighbor AS:      65012
+    Local AS:         65013
+    Neighbor ID:      10.220.0.4
+    Local capabilities
+      Multiprotocol
+        AF announced: ipv4
+      Route refresh
+      Graceful restart
+      4-octet AS numbers
+      Enhanced refresh
+      Long-lived graceful restart
+    Neighbor capabilities
+      Multiprotocol
+        AF announced: ipv4
+      Route refresh
+      Graceful restart
+      4-octet AS numbers
+      Enhanced refresh
+      Long-lived graceful restart
+    Session:          external multihop AS4
+    Source address:   172.31.0.14
+    Hold timer:       172.643/180
+    Keepalive timer:  34.852/60
+  Channel ipv4
+    State:          UP
+    Table:          lab4
+    Preference:     100
+    Input filter:   (unnamed)
+    Output filter:  mesh_export
+    Routes:         2 imported, 2 exported, 2 preferred
+    Route change stats:     received   rejected   filtered    ignored   accepted
+      Import updates:              3          0          0          1          2
+      Import withdraws:            0          0        ---          0          0
+      Export updates:              7          2          3        ---          2
+      Export withdraws:            0        ---        ---        ---          0
+    BGP Next hop:   172.31.0.14
+    IGP IPv4 table: underlay4
+
+mesh_cn    BGP        ---        up     17:56:54.039  Established   
+  BGP state:          Established
+    Neighbor address: 172.31.0.22
+    Neighbor AS:      65014
+    Local AS:         65013
+    Neighbor ID:      10.140.0.4
+    Local capabilities
+      Multiprotocol
+        AF announced: ipv4
+      Route refresh
+      Graceful restart
+      4-octet AS numbers
+      Enhanced refresh
+      Long-lived graceful restart
+    Neighbor capabilities
+      Multiprotocol
+        AF announced: ipv4
+      Route refresh
+      Graceful restart
+      4-octet AS numbers
+      Enhanced refresh
+      Long-lived graceful restart
+    Session:          external multihop AS4
+    Source address:   172.31.0.21
+    Hold timer:       155.669/180
+    Keepalive timer:  6.642/60
+  Channel ipv4
+    State:          UP
+    Table:          lab4
+    Preference:     100
+    Input filter:   (unnamed)
+    Output filter:  mesh_export
+    Routes:         1 imported, 2 exported, 1 preferred
+    Route change stats:     received   rejected   filtered    ignored   accepted
+      Import updates:              1          0          0          0          1
+      Import withdraws:            0          0        ---          0          0
+      Export updates:              7          1          4        ---          2
+      Export withdraws:            0        ---        ---        ---          0
+    BGP Next hop:   172.31.0.21
+    IGP IPv4 table: underlay4
+
+azure_0    BGP        ---        up     17:56:53.019  Established   
+  BGP state:          Established
+    Neighbor address: 169.254.21.2
+    Neighbor AS:      65515
+    Local AS:         65013
+    Neighbor ID:      10.250.4.13
+    Local capabilities
+      Multiprotocol
+        AF announced: ipv4
+      Route refresh
+      Graceful restart
+      4-octet AS numbers
+      Enhanced refresh
+      Long-lived graceful restart
+    Neighbor capabilities
+      Multiprotocol
+        AF announced: ipv4 ipv6
+      Route refresh
+      Graceful restart
+        Restart time: 120
+        AF supported: ipv4 ipv6
+        AF preserved:
+      4-octet AS numbers
+    Session:          external multihop AS4
+    Source address:   169.254.21.1
+    Hold timer:       148.543/180
+    Keepalive timer:  24.189/60
+  Channel ipv4
+    State:          UP
+    Table:          lab4
+    Preference:     100
+    Input filter:   (unnamed)
+    Output filter:  azure_export
+    Routes:         1 imported, 4 exported, 0 preferred
+    Route change stats:     received   rejected   filtered    ignored   accepted
+      Import updates:              2          0          1          0          1
+      Import withdraws:            0          0        ---          0          0
+      Export updates:              8          1          3        ---          4
+      Export withdraws:            0        ---        ---        ---          0
+    BGP Next hop:   169.254.21.1
+    IGP IPv4 table: underlay4
+
+azure_1    BGP        ---        up     17:56:53.067  Established   
+  BGP state:          Established
+    Neighbor address: 169.254.21.6
+    Neighbor AS:      65515
+    Local AS:         65013
+    Neighbor ID:      10.250.4.12
+    Local capabilities
+      Multiprotocol
+        AF announced: ipv4
+      Route refresh
+      Graceful restart
+      4-octet AS numbers
+      Enhanced refresh
+      Long-lived graceful restart
+    Neighbor capabilities
+      Multiprotocol
+        AF announced: ipv4 ipv6
+      Route refresh
+      Graceful restart
+        Restart time: 120
+        AF supported: ipv4 ipv6
+        AF preserved:
+      4-octet AS numbers
+    Session:          external multihop AS4
+    Source address:   169.254.21.1
+    Hold timer:       129.112/180
+    Keepalive timer:  27.905/60
+  Channel ipv4
+    State:          UP
+    Table:          lab4
+    Preference:     100
+    Input filter:   (unnamed)
+    Output filter:  azure_export
+    Routes:         1 imported, 4 exported, 1 preferred
+    Route change stats:     received   rejected   filtered    ignored   accepted
+      Import updates:              2          0          1          0          1
+      Import withdraws:            0          0        ---          0          0
+      Export updates:              8          1          3        ---          4
+      Export withdraws:            0        ---        ---        ---          0
+    BGP Next hop:   169.254.21.1
+    IGP IPv4 table: underlay4
+
+BIRD 2.0.8 ready.
+Table lab4:
+10.110.0.0/24        unicast [mesh_eu 17:56:53.762 from 172.31.0.5] * (100) [AS65011i]
+	dev wgeujp
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65011
+	BGP.next_hop: 172.31.0.5
+	BGP.local_pref: 100
+	BGP.community: 
+10.30.0.0/24         unicast [azure_1 17:56:53.071] ! (100/?) [AS65515i]
+	via 169.254.21.6 on xfrm42
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 169.254.21.6
+	BGP.local_pref: 300
+	BGP.community: (65013,1)
+                     unicast [azure_0 17:56:53.023] (100/?) [AS65515i]
+	via 169.254.21.2 on xfrm41
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 169.254.21.2
+	BGP.local_pref: 300
+	BGP.community: (65013,1)
+10.140.0.0/24        unicast [mesh_cn 17:56:54.131 from 172.31.0.22] * (100) [AS65014i]
+	dev wgjpcn
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65014
+	BGP.next_hop: 172.31.0.22
+	BGP.local_pref: 100
+	BGP.community: 
+10.20.0.0/24         unicast [mesh_us 17:56:54.184 from 172.31.0.13] * (100) [AS65515i]
+	dev wgusjp
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65012 65515
+	BGP.next_hop: 172.31.0.13
+	BGP.local_pref: 300
+	BGP.community: (65012,1)
+10.130.0.0/24        unicast [own_dc 17:56:49.040] * (200)
+	dev eth0
+	Type: static univ
+10.10.0.0/24         unicast [mesh_eu 17:56:53.762 from 172.31.0.5] * (100) [AS65515i]
+	dev wgeujp
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65011 65515
+	BGP.next_hop: 172.31.0.5
+	BGP.local_pref: 300
+	BGP.community: (65011,1)
+10.120.0.0/24        unicast [mesh_us 17:56:54.331 from 172.31.0.13] * (100) [AS65012i]
+	dev wgusjp
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65012
+	BGP.next_hop: 172.31.0.13
+	BGP.local_pref: 100
+	BGP.community: 
+0:	from all lookup local
+100:	from all fwmark 0x200 lookup 100
+220:	from all lookup 220
+32766:	from all lookup main
+32767:	from all lookup default
+default via 10.130.0.1 dev eth0 table 100 onlink 
+10.140.0.4 via 10.130.0.1 dev eth0 table 100 onlink 
+10.210.0.4 via 10.130.0.1 dev eth0 table 100 onlink 
+10.220.0.4 via 10.130.0.1 dev eth0 table 100 onlink 
+default via 10.130.0.1 dev eth0 proto dhcp src 10.130.0.4 metric 100 
+4.190.54.71 via 10.130.0.1 dev eth0 
+10.10.0.0/24 dev wgeujp proto bird scope link metric 80 
+10.20.0.0/24 dev wgusjp proto bird scope link metric 80 
+10.30.0.0/24 via 169.254.21.6 dev xfrm42 proto bird metric 80 
+10.110.0.0/24 dev wgeujp proto bird scope link metric 80 
+10.120.0.0/24 dev wgusjp proto bird scope link metric 80 
+10.130.0.0/24 dev eth0 proto kernel scope link src 10.130.0.4 metric 100 
+10.130.0.1 dev eth0 proto dhcp scope link src 10.130.0.4 metric 100 
+10.140.0.0/24 dev wgjpcn proto bird scope link metric 80 
+20.27.135.137 via 10.130.0.1 dev eth0 
+168.63.129.16 via 10.130.0.1 dev eth0 proto dhcp src 10.130.0.4 metric 100 
+169.254.21.2 dev xfrm41 scope link src 169.254.21.1 
+169.254.21.6 dev xfrm42 scope link src 169.254.21.1 
+169.254.169.254 via 10.130.0.1 dev eth0 proto dhcp src 10.130.0.4 metric 100 
+172.31.0.4/30 dev wgeujp proto kernel scope link src 172.31.0.6 
+172.31.0.12/30 dev wgusjp proto kernel scope link src 172.31.0.14 
+172.31.0.20/30 dev wgjpcn proto kernel scope link src 172.31.0.21 
+local 10.130.0.4 dev eth0 table local proto kernel scope host src 10.130.0.4 
+broadcast 10.130.0.255 dev eth0 table local proto kernel scope link src 10.130.0.4 
+local 127.0.0.0/8 dev lo table local proto kernel scope host src 127.0.0.1 
+local 127.0.0.1 dev lo table local proto kernel scope host src 127.0.0.1 
+broadcast 127.255.255.255 dev lo table local proto kernel scope link src 127.0.0.1 
+local 169.254.21.1 dev lo table local proto kernel scope host src 169.254.21.1 
+local 172.31.0.6 dev wgeujp table local proto kernel scope host src 172.31.0.6 
+broadcast 172.31.0.7 dev wgeujp table local proto kernel scope link src 172.31.0.6 
+local 172.31.0.14 dev wgusjp table local proto kernel scope host src 172.31.0.14 
+broadcast 172.31.0.15 dev wgusjp table local proto kernel scope link src 172.31.0.14 
+local 172.31.0.21 dev wgjpcn table local proto kernel scope host src 172.31.0.21 
+broadcast 172.31.0.23 dev wgjpcn table local proto kernel scope link src 172.31.0.21 
+::1 dev lo proto kernel metric 256 pref medium
+fe80::/64 dev eth0 proto kernel metric 256 pref medium
+fe80::/64 dev xfrm41 proto kernel metric 256 pref medium
+fe80::/64 dev xfrm42 proto kernel metric 256 pref medium
+local ::1 dev lo table local proto kernel metric 0 pref medium
+local fe80::7eed:8dff:fee9:6584 dev eth0 table local proto kernel metric 0 pref medium
+local fe80::c9f9:c155:f87f:88d6 dev xfrm42 table local proto kernel metric 0 pref medium
+local fe80::fbd6:6f9a:d0df:5c03 dev xfrm41 table local proto kernel metric 0 pref medium
+multicast ff00::/8 dev eth0 table local proto kernel metric 256 pref medium
+multicast ff00::/8 dev xfrm41 table local proto kernel metric 256 pref medium
+multicast ff00::/8 dev xfrm42 table local proto kernel metric 256 pref medium
+multicast ff00::/8 dev wgeujp table local proto kernel metric 256 pref medium
+multicast ff00::/8 dev wgusjp table local proto kernel metric 256 pref medium
+multicast ff00::/8 dev wgjpcn table local proto kernel metric 256 pref medium
+wgeujp	2Uzrd2QRoPZT4YQ5mAQX8nTaZ/n/Dbmdalc+qZcFmXQ=	10.210.0.4:51820
+wgusjp	yJTm6CbLmD6bdSoEsZwNVS/Bjerrj+uFRVagA9lq1CI=	10.220.0.4:51820
+wgjpcn	JpAv8f1aPPTDXD8umgend+cbls+UBy4R6Yit7plfIF8=	10.140.0.4:51820
+wgeujp	2Uzrd2QRoPZT4YQ5mAQX8nTaZ/n/Dbmdalc+qZcFmXQ=	6732	6680
+wgusjp	yJTm6CbLmD6bdSoEsZwNVS/Bjerrj+uFRVagA9lq1CI=	7132	6520
+wgjpcn	JpAv8f1aPPTDXD8umgend+cbls+UBy4R6Yit7plfIF8=	8060	7960
+BIRD 2.0.8 ready.
+Table lab4:
+10.110.0.0/24        unicast [mesh_eu 17:56:53.762 from 172.31.0.5] * (100) [AS65011i]
+	dev wgeujp
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65011
+	BGP.next_hop: 172.31.0.5
+	BGP.local_pref: 100
+	BGP.community: 
+10.140.0.0/24        unicast [mesh_cn 17:56:54.131 from 172.31.0.22] * (100) [AS65014i]
+	dev wgjpcn
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65014
+	BGP.next_hop: 172.31.0.22
+	BGP.local_pref: 100
+	BGP.community: 
+10.130.0.0/24        unicast [own_dc 17:56:49.040] * (200)
+	dev eth0
+	Type: static univ
+10.120.0.0/24        unicast [mesh_us 17:56:54.331 from 172.31.0.13] * (100) [AS65012i]
+	dev wgusjp
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65012
+	BGP.next_hop: 172.31.0.13
+	BGP.local_pref: 100
+	BGP.community: 
+BIRD 2.0.8 ready.
+Table lab4:
+10.110.0.0/24        unicast [mesh_eu 17:56:53.762 from 172.31.0.5] * (100) [AS65011i]
+	dev wgeujp
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65011
+	BGP.next_hop: 172.31.0.5
+	BGP.local_pref: 100
+	BGP.community: 
+10.140.0.0/24        unicast [mesh_cn 17:56:54.131 from 172.31.0.22] * (100) [AS65014i]
+	dev wgjpcn
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65014
+	BGP.next_hop: 172.31.0.22
+	BGP.local_pref: 100
+	BGP.community: 
+10.130.0.0/24        unicast [own_dc 17:56:49.040] * (200)
+	dev eth0
+	Type: static univ
+10.120.0.0/24        unicast [mesh_us 17:56:54.331 from 172.31.0.13] * (100) [AS65012i]
+	dev wgusjp
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65012
+	BGP.next_hop: 172.31.0.13
+	BGP.local_pref: 100
+	BGP.community: 
+vng1: #35, ESTABLISHED, IKEv2, 8b1e8ef8d733a8ab_i* dd585dbef0bd7154_r
+  local  '104.46.220.128' @ 10.130.0.4[4500]
+  remote '4.190.54.71' @ 4.190.54.71[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_2048
+  established 917s ago, rekeying in 13201s
+  s2s1: #2, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 917s ago, rekeying in 2683s, expires in 2683s
+    in  cf85b0ca (-|0x0000002a),      0 bytes,     0 packets,    21s ago
+    out 2982ca36 (-|0x0000002a),      0 bytes,     0 packets,    21s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+  s2s1: #4, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128/MODP_2048
+    installed 917s ago, rekeying in 2683s, expires in 2683s
+    in  c35097d4 (-|0x0000002a),   4277 bytes,    65 packets,    20s ago
+    out 8b87c7ba (-|0x0000002a),   4271 bytes,    61 packets,    20s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+vng0: #34, ESTABLISHED, IKEv2, 4973a03a3929664f_i* 8e3361eb86c6aa6e_r
+  local  '104.46.220.128' @ 10.130.0.4[4500]
+  remote '20.27.135.137' @ 20.27.135.137[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_2048
+  established 917s ago, rekeying in 12410s
+  s2s0: #1, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 917s ago, rekeying in 2683s, expires in 2683s
+    in  cbad9c0a (-|0x00000029),      0 bytes,     0 packets,    34s ago
+    out b33e9952 (-|0x00000029),      0 bytes,     0 packets,    34s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+  s2s0: #3, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128/MODP_2048
+    installed 917s ago, rekeying in 2683s, expires in 2683s
+    in  c63716b9 (-|0x00000029),   3604 bytes,    55 packets,     1s ago
+    out ed670b5c (-|0x00000029),   2966 bytes,    45 packets,     1s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+10.110.0.10 dev wgeujp src 172.31.0.6 uid 0 
+    cache 
+10.120.0.10 dev wgusjp src 172.31.0.14 uid 0 
+    cache 
+10.130.0.10 dev eth0 src 10.130.0.4 uid 0 
+    cache 
+10.140.0.4 dev wgjpcn src 172.31.0.21 uid 0 
+    cache 
+10.10.0.10 dev wgeujp src 172.31.0.6 uid 0 
+    cache 
+10.20.0.10 dev wgusjp src 172.31.0.14 uid 0 
+    cache 
+10.30.0.10 via 169.254.21.6 dev xfrm42 src 169.254.21.1 uid 0 
+    cache 
+10.140.0.4 via 10.130.0.1 dev eth0 table 100 src 10.130.0.4 mark 0x200 uid 0 
+    cache 
+B0_END
