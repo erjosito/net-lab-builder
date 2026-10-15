@@ -2,7 +2,8 @@
 
 > **IN PROGRESS — resources retained for the remaining experiments.**
 > Progress report dated 2026-10-15. Post-restart mesh recovery is verified.
-> **No Azure Firewall or routing intent (RI) has been deployed/tested.**
+> **Three Standard Azure Firewalls and PrivateTraffic routing intent are deployed.**
+> Secured route/forwarding validation and the static-VPN reproduction are unfinished.
 > The complete HRP/RI comparison and current forwarding validation are unfinished.
 > Completed control-plane states below do not establish end-to-end forwarding.
 
@@ -29,13 +30,17 @@ are needed to establish directionality/symmetry. No throughput claim is intended
 | [Exact-prefix withdrawal control](show-output/exact-cn-alternative-control-20261015/eligibility-verdict.json), 2026-10-15 | **PASS**, `restored: true`, `remoteCNEligible: false`: withdrawing only CN `10.140.0.0/24` from both Japan Azure exports removed that prefix from Japan's spoke-effective routes in two stable snapshots. EU and US retained their local CN winners. Japan's original file/metadata/exports, the twelve original winners and all four router sources/protocols were restored. This is a negative eligibility result, not proof of locality-first selection. |
 | [Independent reset verification](show-output/exact-cn-reset-verification-20261015/verification-verdict.json), 2026-10-15 | **PASS**, zero mutations: fresh four-router source/export/protocol checks matched the original baseline; all hubs were ASPath/no-RI with their original per-hub branch-transit flags `false`. |
 | [Branch-transit exact-prefix control](show-output/branch-transit-exact-cn-control-20261015/eligibility-verdict.json), 2026-10-15 | **PASS**, `restored: true`, `remoteCNEligible: false`: enabling `allowBranchToBranchTraffic` was accepted on all three hubs, but repeating the same CN-only withdrawal still left Japan without that prefix in both snapshots. The original hub flags, Japan file/exports, paired twelve-winner baseline and all-router source/protocol health were restored. Four bounded mutations; no IPsec, HRP or connection-label changes. The flag alone did not establish a remote competitor. |
+| [Private routing-intent deployment](show-output/private-routing-intent-deployment-20261015/deployment-verdict.json), 2026-10-15 | **PASS**: three Standard hub firewalls and PrivateTraffic-only intent were deployed. Actual hub/firewall bindings and all three private next-hop policies were verified. No Internet RI or HRP/VPN configuration change; resources retained for secured testing. This is infrastructure acceptance, not replication of a static-VPN routing test. |
+| [Firewall query discriminator control](show-output/firewall-resource-type-validation-20261015/probe-verdict.json), 2026-10-15 | **PASS**: the completed EU firewall query using **`AzureFirewalls` (plural)** exposed all four DC prefixes. The preceding secured collector used singular `AzureFirewall` and received empty responses; its route baseline was inconclusive and it ran no traffic probes. The helper and commands below are corrected. Empty responses to the wrong discriminator are not evidence of missing routes. |
+| [Secured baseline with corrected firewall query](show-output/secured-firewall-supported-type-baseline-20261015/forwarding-verdict.json), 2026-10-15 | Route baseline **PASS**: twelve stable DC-prefix winners in paired firewall snapshots, all four original router source/export/protocol checks passed. Forwarding **FAIL**: TCP and ICMP each passed **18/24 directions**. All six failures are to/from Japan's workload probe `10.130.0.10`; all six CN-target directions pass. This uses ASPath HRP and the existing BGP VPN, not the static-VPN/ExpressRoute-preference reproduction. Zero configuration mutations. |
 
 **Current decisive limitation:** the same CN prefix is advertised locally at EU
 and US, but neither controlled withdrawal demonstrated its remote availability
 at Japan. Consequently, the earlier no-switch prepend observations cannot
 establish an ASPath threshold or an unconditional preference for local routes.
 The remaining HRP/prepend comparisons require a proven same-prefix remote
-alternative. Forwarding and all secured/RI measurements remain unfinished.
+alternative. Forwarding and secured HRP/prepend measurements remain unfinished;
+the deployed firewalls alone do not establish the static-VPN reproduction.
 
 The historical restore attempt's `SNAPSHOT` failure remains a limitation of
 that experiment, not a description of current guest health. The later fresh
@@ -50,7 +55,7 @@ snapshot alone is not current health; use the dated recovery verification above.
 
 ## Actual topology
 
-![Current unsecured topology](diagrams/topology.svg)
+![Current secured topology](diagrams/topology.svg)
 
 [Editable topology](diagrams/topology.excalidraw) ·
 [Editable RI comparison](diagrams/routing-intent.excalidraw) ·
@@ -205,17 +210,14 @@ for the distinction between policy expectations and measured outcomes.
 
 ## Effective-route collection: without and with routing intent
 
-![Current versus planned RI evidence view](diagrams/routing-intent.svg)
+![Historical unsecured versus deployed RI evidence view](diagrams/routing-intent.svg)
 
-**These are future read-only collection instructions, not commands executed
-for this report.** All live owners are idle/closed; use a fresh authorized
-read lease before collecting anything. Firewalls do not exist yet. The local
-`az network vhub get-effective-routes --help` was checked with a 60-second
-subprocess limit: `--resource-id`, `--resource-type`, `-g`, `-n`, JSON output
-and normal LRO waiting are available. `--resource-type` is a free string, not
-a closed CLI enum; its help examples are non-exhaustive and omit
-`AzureFirewall`. A local `AzureFirewall --help` parse also succeeded.
-**Neither check is an Azure service execution/acceptance test.**
+Use a fresh authorized read lease before collecting anything. Three firewalls
+and PrivateTraffic RI are deployed. The **`AzureFirewalls` (plural)** resource
+type was verified against the live EU firewall and returned all four DC
+prefixes. The singular `AzureFirewall` parses locally but returned empty
+completed responses: local CLI help acceptance is not service validation.
+`--resource-type` is a free string; its help examples are non-exhaustive.
 
 Use ARM IDs beginning `/subscriptions/...` for `--resource-id`, **not**
 `https://management.azure.com/...`. Keep full JSON, not table-formatted output.
@@ -303,9 +305,8 @@ foreach ($Site in $Sites) {
 
 ### With PrivateTraffic RI: FIREWALL effective routes at the owning hub
 
-**PLANNED comparison only.** Deploy/approve three `AZFW_Hub` **Standard**
-firewalls and a scoped shared policy under a separate mutation lease, then
-enable PrivateTraffic RI sequentially EU/US/JP. Basic is unsupported.
+Three `AZFW_Hub` **Standard** firewalls, a scoped shared policy and PrivateTraffic
+RI are deployed and their actual bindings have passed acceptance.
 Do not collect the secured comparison until **all three** are converged.
 Direct peered-NVA BGP in a secured hub **without RI is unsupported**:
 firewall-only/mixed-RI states are bounded conversion interruptions, not baselines.
@@ -314,7 +315,7 @@ No InternetTraffic RI is part of this design.
 Under RI the hub default table contains **private aggregates with a firewall
 next hop**, not the post-inspection branch winners. The decisive query is
 `get-effective-routes` **on the owning hub**, with the **actual firewall ARM ID**
-and `--resource-type AzureFirewall`. `az network firewall show` below only
+and `--resource-type AzureFirewalls`. `az network firewall show` below only
 resolves/verifies that ID; **it does not retrieve routes**.
 
 After the same per-step setup/metadata capture:
@@ -333,7 +334,7 @@ foreach ($Site in $Sites) {
         --subscription $Sub --query id -o tsv
     if ($LASTEXITCODE -ne 0 -or !$FirewallId) { throw "Missing firewall ID: $Hub" }
     Save-AzJson @('network','vhub','get-effective-routes','-g',$Rg,'-n',$Hub,
-        '--resource-id',$FirewallId,'--resource-type','AzureFirewall') `
+        '--resource-id',$FirewallId,'--resource-type','AzureFirewalls') `
         (Join-Path $Out "$Site-firewall-effective.json")
 }
 ```
@@ -343,7 +344,8 @@ Preserve `value`, `addressPrefixes`, `nextHops`, `nextHopType`, `routeOrigin`,
 completed response. Pair this with default/connection views for context,
 BIRD/FIB/NIC/VPN evidence and correlated firewall flows. Routes alone do not
 prove inspection, reachability or symmetric stateful forwarding. The firewall
-commands have **not been run against this lab**.
+query discriminator is live-validated; full paired secured comparisons remain
+separate scenario evidence.
 
 ### Windows-safe REST equivalent and LRO caveat
 
@@ -367,7 +369,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Effective-routes POST failed' }
 
 The body uses an **ARM ID**, not an HTTPS URL; query parameters are separate
 arguments, avoiding Windows inline-`&` parsing. For RI, replace `resourceId`
-with the discovered firewall ID, `virtualWanResourceType` with `AzureFirewall`,
+with the discovered firewall ID, `virtualWanResourceType` with `AzureFirewalls`,
 and POST to **that firewall's owning hub**.
 
 **HTTP 202 is only acceptance, not route evidence.** Unlike the primary CLI
