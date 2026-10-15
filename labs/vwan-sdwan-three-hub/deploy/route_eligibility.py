@@ -1,5 +1,6 @@
 """Withdraw one Japan DC advertisement to test remote path eligibility, then restore."""
 import argparse
+import json
 import time
 
 import aspath_sweep as sweep
@@ -57,7 +58,8 @@ def main():
                     raise RuntimeError("Japan exact file/export restore differs")
                 dirty = False
                 states["restore"] = sweep.capture("restore", 0, firewall_ids=firewall_ids, parallel=True)
-                if states["restore"] != states["baseline"]:
+                if (states["restore"]["verdict"] != "PASS" or
+                        states["restore"]["rows"] != states["baseline"]["rows"]):
                     raise RuntimeError("Restored effective route matrix differs")
             sweep.CURRENT = sweep.OUT / "closure"
             after = boundary.invoke_all("closure")
@@ -69,21 +71,28 @@ def main():
             errors.append("RESTORE: " + str(exc))
         rows = states.get("withdrawal", {}).get("rows", [])
         candidate = [r for r in rows if r["observer"] == "jp" and r["prefix"] == "10.140.0.0/24"]
+        baseline_cn = [r for r in states.get("baseline", {}).get("rows", [])
+                       if r["observer"] == "jp" and r["prefix"] == "10.140.0.0/24"]
+        remote = (len(candidate) == 1 and len(baseline_cn) == 1 and
+                  sweep.winning_identity(candidate[0]) != sweep.winning_identity(baseline_cn[0]))
+        if candidate and not remote:
+            errors.append("Withdrawal still shows the original local winner; remote eligibility unproven")
         restored = not dirty and len(after) == 4 and not any(e.startswith("RESTORE:") for e in errors)
         complete = restored and len(states) == 3 and not errors
-        lease = control.guard(False)
+        # Persist the local verdict even when expiry forbids further live work.
+        lease = json.loads(control.LEASE.read_text(encoding="utf-8-sig"))
         verdict = "PASS" if complete else "INCONCLUSIVE" if restored else "BLOCKED"
         sweep.CURRENT = sweep.OUT
         sweep.save("eligibility-verdict.json", dict(
             timestampUtc=sweep.utc(), verdict=verdict, restored=restored,
-            japanRemoteCNRoute=candidate, remoteCNEligible=bool(candidate) if complete else None,
+            japanRemoteCNRoute=candidate, remoteCNEligible=remote if complete else None,
             states=states, errors=errors, sourceBefore=before, sourceAfter=after,
             callsUsed=lease["toolCallsUsed"], mutationsUsed=lease.get("mutationsUsed", 0),
             children=[], noDataPlaneClaim=True))
         lease.update(state="completed" if complete else "rolled-back" if restored else "blocked",
                      verdict=verdict, completedAtUtc=sweep.utc(), children=[], evidence=str(sweep.OUT))
         control.save(control.LEASE, lease)
-        print(f"FINAL {verdict} remote CN eligible={bool(candidate) if complete else 'UNKNOWN'} "
+        print(f"FINAL {verdict} remote CN eligible={remote if complete else 'UNKNOWN'} "
               f"restored={restored}", flush=True)
     if not complete:
         raise SystemExit(1)

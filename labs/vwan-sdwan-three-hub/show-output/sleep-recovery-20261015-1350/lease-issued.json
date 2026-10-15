@@ -1,0 +1,26 @@
+{
+  "taskId": "sleep-recovery-20261015-1350",
+  "ownerRole": "JapanRecovery",
+  "objective": "Verify actual Japan source, restore exact protected original only if different, and close all-four-router source health",
+  "allowedMutations": [
+    "Restore exact protected original Japan BIRD file only if current hash or metadata differs"
+  ],
+  "forbiddenWork": [
+    "effective-route APIs",
+    "new experiments",
+    "documentation",
+    "publication",
+    "IPsec/WireGuard/keys/NSGs/underlay changes"
+  ],
+  "rollback": "boundary.invoke('jp', restore=True) with original preflight proof and protected boundary backup",
+  "startedAtUtc": "2026-10-15T13:53:09.014897+00:00",
+  "expiresAtUtc": "2026-10-15T14:23:09.014897+00:00",
+  "maxToolCalls": 30,
+  "maxMutations": 2,
+  "commandTimeoutSeconds": 180,
+  "restoreTimeoutMinutes": 15,
+  "lastCheckpointUtc": "2026-10-15T13:53:09.014897+00:00",
+  "state": "active",
+  "toolCallsUsed": 0,
+  "mutationsUsed": 0
+}
