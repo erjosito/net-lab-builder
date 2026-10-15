@@ -1,6 +1,7 @@
 """Bounded, one-shot, bidirectional mTLS streaming. Python standard library only."""
 import argparse
 import concurrent.futures
+import contextlib
 import hashlib
 import http.client
 import http.server
@@ -74,13 +75,16 @@ class Guard:
         with self.lock:
             for connection in self.sockets:
                 try:
-                    connection.shutdown(socket.SHUT_RDWR)
+                    socket.socket.shutdown(connection, socket.SHUT_RDWR)
                 except OSError:
                     pass
 
     def track(self, connection):
         with self.lock:
             self.sockets.append(connection)
+            if self.cancel.is_set():
+                with contextlib.suppress(OSError):
+                    socket.socket.shutdown(connection, socket.SHUT_RDWR)
 
     def check(self):
         if self.cancel.is_set():
@@ -119,7 +123,25 @@ def context(config, server=False):
     return ctx
 
 
+def legs(config):
+    value = config.get("legs", ["up", "down"])
+    if not isinstance(value, list) or value not in (["up"], ["down"], ["up", "down"]):
+        raise ValueError("invalid_declared_legs")
+    return value
+
+
+def aliases(config):
+    value = config.get("aliases", {"client": "A", "server": "T"})
+    if (not isinstance(value, dict) or set(value) != {"client", "server"}
+            or any(not isinstance(v, str) or not re.fullmatch(r"[A-Z]", v)
+                   for v in value.values()) or value["client"] == value["server"]):
+        raise ValueError("invalid_endpoint_aliases")
+    return value
+
+
 def validate(config):
+    legs(config)
+    aliases(config)
     if type(config["bytes"]) is not int or not 0 < config["bytes"] <= MAX_BYTES:
         raise ValueError("invalid_byte_cap")
     if not 0 < config.get("rate", RATE) <= RATE:
@@ -128,6 +150,8 @@ def validate(config):
         raise ValueError("invalid_deadline")
     if not 0 < config.get("idle", 60) <= 120:
         raise ValueError("invalid_idle_timeout")
+    if not 0 < config.get("first_request_timeout", 180) <= 180:
+        raise ValueError("invalid_first_request_timeout")
     if not 0 < config["wire_cap"] <= 12 * GIB:
         raise ValueError("invalid_wire_cap")
     if not re.fullmatch(r"[a-f0-9]{32}", config["id"]):
@@ -138,8 +162,11 @@ def validate(config):
 
 
 def record(config, leg, peer):
-    return {"id": config["id"] + "-" + leg, "producer": "A" if leg == "up" else "T",
-            "consumer": "T" if leg == "up" else "A", "started": utc(), "peer": peer,
+    names = aliases(config)
+    return {"id": config["id"] + "-" + leg,
+            "producer": names["client" if leg == "up" else "server"],
+            "consumer": names["server" if leg == "up" else "client"],
+            "started": utc(), "peer": peer,
             "bytes": 0, "sha256": "", "status": "started", "http_status": 0, "retries": 0}
 
 
@@ -162,11 +189,14 @@ class TransferServer(http.server.ThreadingHTTPServer):
         self.attempts = 0
         self.probes = 0
         self.failed = False
+        self.failure = None
         self.done = threading.Event()
         super().__init__((config.get("bind", "0.0.0.0"), config.get("port", 443)), Handler)
         self.timeout = .2
+        self.first_request_deadline = time.monotonic() + config.get("first_request_timeout", 180)
 
     def process_request(self, request, address):
+        self.guard.track(request)
         self.attempts += 1
         if self.attempts > 32 or not self.slots.acquire(False):
             request.close()
@@ -179,9 +209,11 @@ class TransferServer(http.server.ThreadingHTTPServer):
     def process_request_thread(self, request, address):
         try:
             request.settimeout(self.config.get("idle", 60))
-            connection = self.tls.wrap_socket(request, server_side=True)
+            connection = self.tls.wrap_socket(request, server_side=True,
+                                              do_handshake_on_connect=False)
             self.guard.track(connection)
             with connection:
+                connection.do_handshake()
                 super().process_request_thread(connection, address)
         except (OSError, ssl.SSLError):
             self.probes += 1
@@ -199,17 +231,24 @@ class TransferServer(http.server.ThreadingHTTPServer):
         try:
             while not self.done.is_set():
                 self.guard.check()
+                with self.state_lock:
+                    if not self.claimed and time.monotonic() >= self.first_request_deadline:
+                        raise TimeoutError("first_request_timeout")
                 self.handle_request()
-        except Exception:
+        except Exception as error:
             self.failed = True
+            self.failure = str(error)
             self.guard.stop()
         finally:
             self.guard.stop()
             self.server_close()
-        report = {"role": "server_T", "started": started, "ended": utc(),
+        report = {"role": "server_" + aliases(self.config)["server"],
+                  "declared_legs": legs(self.config), "aliases": aliases(self.config),
+                  "started": started, "ended": utc(),
                   "legs": self.records, "nic": self.guard.evidence(),
+                  "failure": self.failure,
                   "handshake_or_empty_probes": self.probes, "requests": len(self.claimed)}
-        report["success"] = (not self.failed and len(self.records) == 2 and
+        report["success"] = (not self.failed and set(self.records) == set(legs(self.config)) and
                              all(x["status"] == "ok" for x in self.records.values()) and
                              report["nic"]["delta"]["wire_once"] < self.config["wire_cap"])
         save(self.config["report"], report)
@@ -254,6 +293,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
         cfg = server.config
         rec = record(cfg, leg, self.client_address[0])
         try:
+            if leg not in legs(cfg):
+                raise ValueError("undeclared_leg")
             if self.client_address[0] != cfg["expected_peer"]:
                 raise ValueError("unexpected_peer")
             if self.path != "/" + cfg["id"] + "/" + leg:
@@ -266,6 +307,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
             if leg == "down" and lengths:
                 raise ValueError("download_body_forbidden")
             with server.state_lock:
+                if not server.claimed and time.monotonic() >= server.first_request_deadline:
+                    raise TimeoutError("first_request_timeout")
                 if leg in server.claimed:
                     raise ValueError("one_shot_already_claimed")
                 server.claimed.add(leg)
@@ -301,7 +344,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
             rec["status"] = "ok"
             with server.state_lock:
                 server.records[leg] = rec
-                save(cfg["report"], {"role": "server_T", "legs": server.records})
+                save(cfg["report"], {"role": "server_" + aliases(cfg)["server"],
+                                    "legs": server.records})
             if leg == "up":
                 body = json.dumps(rec, separators=(",", ":")).encode()
                 self.send_response(200)
@@ -325,7 +369,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
         finally:
             with server.state_lock:
                 server.completed.add(leg)
-                if len(server.completed) == 2:
+                if server.completed == set(legs(cfg)):
                     server.done.set()
 
 
@@ -340,7 +384,8 @@ def client(config, counter=nic):
     prepared_connection = None
     for attempt in range(config.get("readiness_attempts", 1)):
         guard.check()
-        probe = {"at": utc(), "attempt": attempt + 1, "payload_bytes": 0, "reused_for": "up"}
+        probe = {"at": utc(), "attempt": attempt + 1, "payload_bytes": 0,
+                 "reused_for": legs(config)[0]}
         candidate = http.client.HTTPSConnection(
             config["host"], config.get("port", 443), context=tls, timeout=5)
         try:
@@ -359,7 +404,9 @@ def client(config, counter=nic):
             if attempt + 1 < config.get("readiness_attempts", 1):
                 guard.cancel.wait(5)
     if prepared_connection is None:
-        report = {"role": "client_A", "started": started, "ended": utc(), "legs": {},
+        report = {"role": "client_" + aliases(config)["client"],
+                  "declared_legs": legs(config), "aliases": aliases(config),
+                  "started": started, "ended": utc(), "legs": {},
                   "nic": guard.evidence(), "requests": 0, "readiness_probes": probes,
                   "success": False}
         save(config["report"], report)
@@ -367,12 +414,12 @@ def client(config, counter=nic):
 
     def leg_run(leg):
         rec = record(config, leg, config["host"])
-        connection = prepared_connection if leg == "up" else http.client.HTTPSConnection(
+        connection = prepared_connection if leg == legs(config)[0] else http.client.HTTPSConnection(
             config["host"], config.get("port", 443), context=tls,
             timeout=config.get("idle", 60))
         try:
             guard.check()
-            if leg != "up":
+            if leg != legs(config)[0]:
                 connection.connect()
             guard.track(connection.sock)
             rec["peer"] = connection.sock.getpeername()[0]
@@ -431,7 +478,7 @@ def client(config, counter=nic):
             results[leg] = rec
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
-        futures = [pool.submit(leg_run, leg) for leg in ("up", "down")]
+        futures = [pool.submit(leg_run, leg) for leg in legs(config)]
         while not all(f.done() for f in futures):
             try:
                 guard.check()
@@ -440,8 +487,10 @@ def client(config, counter=nic):
             time.sleep(.05)
         for future in futures:
             future.result()
-    report = {"role": "client_A", "started": started, "ended": utc(), "legs": results,
-              "nic": guard.evidence(), "requests": 2, "readiness_probes": probes}
+    report = {"role": "client_" + aliases(config)["client"],
+              "declared_legs": legs(config), "aliases": aliases(config),
+              "started": started, "ended": utc(), "legs": results,
+              "nic": guard.evidence(), "requests": len(legs(config)), "readiness_probes": probes}
     report["success"] = (all(r["status"] == "ok" for r in results.values()) and
                          report["nic"]["delta"]["wire_once"] < config["wire_cap"])
     save(config["report"], report)
@@ -451,14 +500,23 @@ def client(config, counter=nic):
 def verify(a, t):
     if not a["success"] or not t["success"]:
         raise ValueError("endpoint_failure")
-    for leg in ("up", "down"):
+    declared = a.get("declared_legs", ["up", "down"])
+    names = aliases(a)
+    if (declared != t.get("declared_legs", ["up", "down"]) or names != aliases(t)
+            or set(a["legs"]) != set(legs({"legs": declared}))
+            or set(t["legs"]) != set(declared)):
+        raise ValueError("declared_evidence_mismatch")
+    for leg in declared:
         x, y = a["legs"][leg], t["legs"][leg]
         for key in ("id", "producer", "consumer", "bytes", "sha256", "status", "retries"):
             if x[key] != y[key]:
                 raise ValueError("endpoint_evidence_mismatch")
         if x["status"] != "ok" or x["retries"] != 0:
             raise ValueError("incomplete_leg")
-    return {"transport": "PASS", "wire_once_A": a["nic"]["delta"]["wire_once"],
+        if (x["producer"] != names["client" if leg == "up" else "server"]
+                or x["consumer"] != names["server" if leg == "up" else "client"]):
+            raise ValueError("endpoint_role_mismatch")
+    return {"transport": "PASS", "wire_once_" + names["client"]: a["nic"]["delta"]["wire_once"],
             "billing": "INCONCLUSIVE"}
 
 

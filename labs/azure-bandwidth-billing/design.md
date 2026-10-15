@@ -1,42 +1,60 @@
 # Design: regional public-endpoint bandwidth classification
 
-Research date: 2026-10-15. Scenario state: NOT RUN.
-D0 A/B/P infrastructure is now deployed in Sweden Central and all three VMs
-are deallocated. Executable guarded ARM lives in `deploy`; see
-[deployment-log.md](deployment-log.md). C/NE and every traffic scenario remain
-unrun. All inbound remains denied pending a separately approved mTLS harness.
+Research date: 2026-10-15. Current scenario state: **A ↔ T same-region,
+cross-tenant public-IP transport PASS; restore PASS; billing INCONCLUSIVE**.
+The [completed result](results/2026-10-15-cross-tenant-public-ip.md) supersedes
+the original traffic order below, not historical deployment records. A/B/C/T
+are deployed/deallocated. P's VM/disk/NIC/dedicated NSG were retired before C
+was deployed in an isolated North Europe RG; shared networking was preserved.
+C → B v1 failed without bulk; v2 readiness passed but live blocked before guest
+commands. Independent baseline verification passed at **19:06:07Z**.
+Other bulk traffic families remain unrun; no charged positive control exists.
+Executable guarded ARM lives in `deploy`; see [deployment-log.md](deployment-log.md).
+The temporary peer-only T rule was restored to its original deny baseline.
 
 ## Supported answer and boundary
 
 Same-region exemption is the leading hypothesis for a public-IP VM simulator.
-The FAQ does not condition it on tenant ownership, but does not explicitly cover
-every cross-tenant SaaS architecture. Verify regional placement and meters.
+Published guidance does not establish tenant boundary alone as a charging trigger,
+but is not an experimental exemption for every cross-tenant SaaS architecture.
+Verify regional placement and meters.
+Verify IP ownership too: [the official BYOIP pricing exception](https://learn.microsoft.com/azure/virtual-network/ip-services/custom-ip-address-prefix#pricing)
+states “All traffic destined to a custom IP prefix range is charged the internet
+egress rate”; Azure-origin traffic is charged at the source region's Internet
+egress rate. This prevents a blanket same-region SaaS-free conclusion.
 Public endpoint does not mean Internet egress. Front Door/CDN/anycast and provider
 fees need separate analysis. Different subscriptions do not prove different tenants.
 
-## Official sources and short quotations
+## Official references and paraphrased guidance
 
-All retrieved 2026-10-15. USD retail values are public list prices, not negotiated,
+Research references recorded 2026-10-15. The bandwidth pricing raw HTML was
+verified at 15:48Z: **“Is data transfer between Azure services located within the
+same region charged?” — “No. For example, an Azure SQL database in the same region
+will not have any additional data transfer costs.”** This does not explicitly
+mention tenants. BYOIP pricing was independently fetched from official Learn
+during the offline control build. No Azure management calls were made.
+USD retail values are public list prices, not negotiated,
 credit-adjusted, tax-inclusive or guaranteed account prices.
 
-| Ref | Official source | Exact short quote / observed value | Meaning |
+| Ref | Official source | Guidance summary / previously recorded value | Meaning |
 |---|---|---|---|
-| S1 | [Bandwidth pricing](https://azure.microsoft.com/en-us/pricing/details/bandwidth/) | “Is data transfer between Azure services located within the same region charged?” / “No.” | Primary same-region exemption; FAQ does not specify tenant relationship or every frontend. |
-| S1b | same | “Outbound data transfer is charged at the normal rate and inbound data transfer is free.” | FAQ answer for services in two regions. |
-| S1c | same | “Between regions within Europe” / “$0.02 per GB” | Intra-continental inter-region list rate, each outbound direction. |
-| S1d | same | “First 100 GB/Month” / “Free” | Internet-egress table; do not apply this allowance to inter-region pricing. |
-| S1e | same | “From North America, Europe to any destination” / “$0.087 per GB” | First paid Internet tier, Microsoft network; ISP alternative $0.08/GB. |
-| S2 | [Routing preference](https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/routing-preference-overview) | “all traffic that goes to a destination within Azure continues to use the direct path within the Microsoft Wide Area Network.” | Even Internet-preference PIP does not force an Azure sink off-net. |
-| S2b | same | “You can't change a public IP routing preference after creation.” | Optional routing A/B requires new PIP, not in-place toggle. |
-| S3 | [Storage firewall limitations](https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security-limitations) | “Services deployed in the same region as the storage account use private Azure IP addresses for communication.” | Public Storage DNS is not a generic VM public-IP routing control. |
-| S3b | same | “IP network rules have no effect on requests that originate from the same Azure region as the storage account.” | Do not rely on a source PIP allowlist to secure this same-region Storage case. |
-| S4 | [Storage routing preference](https://learn.microsoft.com/en-us/azure/storage/common/network-routing-preference) | “The default routing preference applies to all traffic from clients outside Azure” | Storage routing variants do not force intra-Azure traffic onto the Internet. |
-| S5 | [App Service plans](https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans) | “Only apps in the same App Service plan share the same VM instances.” | B1 has dedicated plan workers, not a single-tenant service stamp. |
-| S6 | [ASE overview](https://learn.microsoft.com/en-us/azure/app-service/environment/overview) | “An App Service Environment is a single-tenant deployment of App Service that runs on your virtual network.” | True service-environment isolation, optional and expensive. |
-| S7 | [Cost data](https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/understand-cost-mgt-data) | “For pay-as-you-go subscriptions, it could take up to 72 hours” | No immediate zero-cost conclusion; credits excluded from consumption estimates. |
-| S8 | [Cost Details API](https://learn.microsoft.com/en-us/azure/cost-management-billing/automate/get-small-usage-datasets-on-demand) | “only available for customers with an Enterprise Agreement or Microsoft Customer Agreement” | MSDN/Visual Studio need an offer-appropriate detailed path. |
-| S9 | [Legacy offer details](https://learn.microsoft.com/en-us/azure/cost-management-billing/automate/get-usage-details-legacy-customer) | “The Cost Details API report isn't supported for your subscription type yet.” | MOSP/Visual Studio: Consumption details or approved Exports, not blind retries. |
-| S10 | [VNet FAQ](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq) | “Data transfer across peering connections is charged.” | Peering/private link processing is not the same-region bandwidth exemption. |
+| S1 | [Bandwidth pricing](https://azure.microsoft.com/en-us/pricing/details/bandwidth/) | Same-region Azure-service transfers are described as not charged. | Leading hypothesis, not a measured cross-tenant exemption or universal frontend promise. |
+| S1b | same | Cross-region guidance distinguishes charged outbound from free inbound. | Attribute bytes to the producer, not TCP initiator. |
+| S1c | same | Previously recorded Europe inter-region list rate: $0.02/GB. | Planning value per outbound direction, not account effective price. |
+| S1d | same | Previously recorded Internet allowance: first 100 GB/month free. | Do not apply this allowance to inter-region pricing. |
+| S1e | same | Previously recorded first paid Europe-origin Internet tier: $0.087/GB; ISP alternative $0.08/GB. | Planning comparison, not a classification of this public-IP test. |
+| S2 | [Routing preference](https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/routing-preference-overview) | Azure-destination traffic continues on the direct Microsoft WAN path. | Internet-preference PIP does not force an Azure sink off-net. |
+| S2b | same | Public IP routing preference cannot be changed after creation. | Optional routing A/B needs a new PIP. |
+| S3 | [Storage firewall limitations](https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security-limitations) | Same-region Azure services use private Azure addresses for Storage communication. | Public Storage DNS is not a generic VM public-IP routing control. |
+| S3b | same | Storage IP network rules do not constrain same-region Azure-origin requests in this model. | Do not rely on a source PIP allowlist for this case. |
+| S4 | [Storage routing preference](https://learn.microsoft.com/en-us/azure/storage/common/network-routing-preference) | Default preference governs clients outside Azure. | Storage variants do not force intra-Azure traffic onto the Internet. |
+| S5 | [App Service plans](https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans) | Apps within one plan share its VM instances. | B1 dedicated workers are not a single-tenant service stamp. |
+| S6 | [ASE overview](https://learn.microsoft.com/en-us/azure/app-service/environment/overview) | ASE is a single-tenant App Service environment in a VNet. | Optional, expensive and untested here. |
+| S7 | [Cost data](https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/understand-cost-mgt-data) | PAYG cost visibility can lag up to 72h. | No immediate zero-cost conclusion; reconcile credits separately. |
+| S8 | [Cost Details API](https://learn.microsoft.com/en-us/azure/cost-management-billing/automate/get-small-usage-datasets-on-demand) | Cost Details reports target EA/MCA customers. | MSDN/Visual Studio need an offer-appropriate detailed path. |
+| S9 | [Legacy offer details](https://learn.microsoft.com/en-us/azure/cost-management-billing/automate/get-usage-details-legacy-customer) | Legacy offers use Consumption or supported Exports rather than unsupported Cost Details reports. | Do not blindly retry an unsupported interface. |
+| S10 | [VNet FAQ](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq) | Peering has transfer charges. | Separate processing fees from the regional bandwidth hypothesis. |
+| S11 | [Custom IP prefix pricing](https://learn.microsoft.com/azure/virtual-network/ip-services/custom-ip-address-prefix#pricing) | Traffic destined to BYOIP ranges incurs Internet egress; Azure origins use source-region rates. | Determine destination IP ownership before applying same-region guidance. |
 
 ## Four scenario families and priorities
 
@@ -63,7 +81,16 @@ relationship are independent axes. Provider fees, cross-cloud, global edge,
 replication and inter-zone variants are deferred. Pin SC VMs to a common supported
 zone, or record placement and assess zone-related meters separately.
 
-## Topology and three-VM scheduling
+## Original topology and three-VM scheduling (not the actual test sequence)
+
+**Actual 15 October priority:** A SC ↔ T SC across unequal tenants/subscriptions,
+using instance public IPs, 5 GiB per direction concurrently. Only this bulk
+family ran that UTC day. The original D0/D1/D2 labels below describe the proposed
+core order, not completed tests. Schedule other bulk families on different UTC
+days. That initial next-control proposal (A SC ↔ C NE on 16 October) is
+superseded by the one-way **C NE → B SC** isolated-producer amendment below,
+now deployed, with v1 FAIL and v2 BLOCKED before bulk, not a successful control.
+The T payload reserve is spent; no extra T traffic is authorized.
 
 ```mermaid
 flowchart LR
@@ -125,7 +152,9 @@ Core's one-family/day also handles RG/day attribution, with overhead limitations
    No unbounded/unauthenticated upload endpoint. Management 2222 only from approved
    operator IP, never 0.0.0.0/0; use private relay for P. Token/keys ignored.
 4. Server enforces method/path, one-use transfer ID, maximum Content-Length,
-   read/write deadline, 5 GiB upper bound and concurrency one. Disable HTTP
+   read/write deadline and 5 GiB upper bound. The original core design used
+   concurrency one; the completed A/T harness uses exactly two concurrent
+   requests, one per direction, as documented in [transfers](transfers/README.md). Disable HTTP
    compression, CDN/proxy and caching; use deterministic uncompressible generated
    stream, incremental SHA-256, sink discards content. Downloads generated on
    producer; uploads streamed, no large disk buffering. No retry amplification.
@@ -164,6 +193,28 @@ documented meter unit. Unreconciled deviations are inconclusive, not a claim
 about Azure's algorithm.
 
 ## First-wave resource and cost approval
+
+**Minimal positive-control amendment (implemented, attempted, not passed):** use
+**C/NE → B/SC only**, 5 GiB at 20 Mbit/s, instead of bidirectional A/C.
+C is already part of the planned core lifecycle; its new isolated owned RG
+separates its outbound inter-region meter from the A/B headline RG.
+B receives bulk and returns only ACK/TLS/protocol traffic, which must not be
+misrepresented as zero egress. No new A bulk or MSDN payload. Each attempt
+reserves 6 GiB aggregate NIC wire at C once. After headline and both attempts:
+**35 − 12 − 6 − 6 = 11 GiB (11,811,160,064 bytes) remaining**, conservatively,
+not measured payload consumption. The old 17 GiB was before v2's reserve,
+not current headroom; no 12 GiB fallback is authorized.
+Estimated 5 GiB inter-region producer charge is ~$0.1074 before overhead at the
+recorded $0.02/decimal GB planning rate; actual quantity/rate remains to be observed.
+The existing $8/$4 caps, 12h/slot ceiling and earliest original core deadline
+(no later than 18 October 07:33Z conservatively) are unchanged.
+P VM/disk/NIC/dedicated NSG retirement completed; shared networking remains.
+C passed the gates and deployed as Standard_B2ts_v2. The inherited whole-core
+planning envelope is **$7.954831 < $8**, not actual spend. C's inherited slot
+has roughly **2h before deducting readiness and ~5m setup**, subject to private
+lifecycle reconciliation; replacement does not reset hours or TTL.
+See [control safeguards and outcomes](transfers/README.md#one-way-core-positive-control).
+This Windows control validates the Windows offer/feed only, not the MSDN feed.
 
 Counts are peak concurrent; replacement P→C is separately enumerated lifecycle.
 One new correlation-named RG; primary location SC, resources in SC and NE.
@@ -213,9 +264,9 @@ delayed and are **not** a spend hard stop; scheduler/owner enforce hours and byt
 
 Deploy 10–20 minutes plus bootstrap; ~36 minutes/leg, three UTC dates over <=72h.
 Billing: 72h after last transfer plus day-7 follow-up, **not compute lifetime**.
-Deallocate after each session; separately confirm cleanup, preferably after D2.
-If confirmation is delayed, flag disk/PIP costs before 72h; never delete without
-approval. Coordinator should arrange cleanup confirmation in advance.
+Deallocate after each session. Standing cleanup authority covers known owned
+assets only; a fresh exact-inventory lease must delete before the absolute
+**18 October 07:33Z** whole-lab cutoff (any earlier actual deadline wins).
 
 ## Staged gates / current preflight
 
@@ -239,7 +290,8 @@ approval. Coordinator should arrange cleanup confirmation in advance.
    before explicit approval.
 4. **Tank deployment lease:** check STOP/lease, catalog/quota/policy; then create
    approved dedicated preflight RG for bounded live validation. Never borrow an
-   unrelated RG. Capacity remains pending, not guaranteed by validation. Follow
+   unrelated RG. Validation alone does not guarantee allocation; C subsequently
+   passed actual provisioning. For any new approved deployment, follow
    ladder within approved cost; otherwise reapprove. Finalize manifest only after
    both catalog/live gates.
 5. **Niobe daily lease:** bounded tests/restore and prompt verdict. Separate
@@ -248,3 +300,52 @@ approval. Coordinator should arrange cleanup confirmation in advance.
    transfer/metric evidence and meter map. Preview, confirm, delete only tagged
    created inventory, verify deletion. Retain billing access after deletion (S7);
    private evidence 90 days/owner policy, signed URLs only until expiry.
+
+## Completed headline and remaining calendar
+
+Niobe independently validated recovered transport/restore after 14:09Z;
+the handoff was persisted at 14:17:09Z. Initial Windows billing was HTTP 200
+COMPLETE empty; WSL was HTTP 429 ERROR. Billing remains INCONCLUSIVE.
+Guest report persistence survived laptop sleep; the local orchestrator did
+not ensure cleanup during sleep, and a separate recovery owner was necessary.
+This is not automatic cloud cleanup.
+
+The $8 core/$4 extension caps remain unchanged, with conservative **11 GiB**
+core wire allowance after headline/v1/v2 reserves, and no T payload reserve left.
+A/T used conservatively ~4h10m per slot including readiness/recovery, not an
+asserted actual start time; hard limit stays <12h/slot.
+
+Follow up 15 October usage at **16/17/18 October 10:40:28Z** and, if needed,
+**22 October 10:40:28Z**, under fresh bounded read-only leases.
+Delete owned resources before TTL, not after billing matures: T deadline
+**18 October 08:20:59Z**; earliest recorded core-resource deadline
+**18 October 07:38:11Z**, with the RG potentially older. Use the conservative
+**18 October 07:33Z** core cleanup cutoff pending exact private RG timestamp
+confirmation (earlier timestamp wins). Use standing known-own-assets deletion authority and
+preserve historical IDs; query after deletion. The 72h billing follow-up is later
+than both resource TTLs. See the [result](results/2026-10-15-cross-tenant-public-ip.md).
+
+Latest billing refresh completed **18:22Z**: both aggregates HTTP 429 ERROR;
+Windows details HTTP 200 INCOMPLETE (1,000 unrelated rows discarded in memory,
+continuation remaining); WSL details HTTP 200 COMPLETE empty. Neither provides
+attributable quantity/rate or zero-charge proof.
+
+Control v1 **17:28:50–18:13:46Z FAIL**: 12 zero-payload connection/TLS
+timeouts, zero bulk, C RX+TX once 284,630 bytes. Root cause is unproven:
+NSG `Updating` is not evidence it caused the timeout. With corrected gates,
+v2 readiness **PASS**, live **BLOCKED** on NIC read timeout before guest
+submission; final NSG GET timeout left restoration initially unverified.
+Fresh independent Niobe verification (**5 read calls, 0 mutations**) confirmed
+B's original NSG `Succeeded`, exact policy/NIC association and B/C deallocated,
+with native idle proof **19:06:07Z**. No additional transfer is queued.
+Current safeguards require bounded exact NSG/NIC setup and restore readbacks,
+a 180-second first-request deadline, fail-fast visibility with bounded peer drain,
+and verified deallocation before NSG restore. **67 existing WSL tests passed**;
+no Windows suite pass is claimed.
+
+The tenant-boundary answer still needs mature meter quantity/unit/rate and
+provider policy confirmation; neither control established charged usage.
+No extra-cost work or MSDN payload is approved. No automatic follow-up or
+cleanup job exists: 16/17 October collections, pre-18 October 07:33Z cleanup,
+post-deletion 18 October 10:40:28Z and 22 October historical queries are
+explicit next actions, not scheduled automation.

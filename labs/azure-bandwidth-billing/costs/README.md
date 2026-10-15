@@ -3,7 +3,21 @@
 Read-only Python 3 standard-library collector, tested 2026-10-15. This is a
 first-class lab outcome: discover which cost API works for each authenticated
 offer, test its filters, and collect attributable bandwidth meters without
-retaining other resources' bills. It is **not a bandwidth billing result**.
+retaining other resources' bills. API access is **not a bandwidth billing
+verdict**. The later [completed A/T transport](../results/2026-10-15-cross-tenant-public-ip.md)
+has initial billing **INCONCLUSIVE**: Windows HTTP 200 COMPLETE empty versus
+WSL HTTP 429 rate_limited ERROR, not two successful empty snapshots.
+
+**Latest refresh, 18:22Z:** both aggregates returned **HTTP 429 ERROR**.
+Windows details returned **HTTP 200 INCOMPLETE**: 1,000 unrelated rows discarded
+in memory, zero retained, continuation remaining. WSL details returned
+**HTTP 200 COMPLETE empty**, not zero-charge proof. See the
+[sanitized snapshot](../results/2026-10-15-billing-refresh.json).
+This reinforces mandatory local inventory/RG/actual-usage-date filtering,
+bounded completeness checks and treating 429 as error, never zero usage.
+C → B v1 **FAIL** / v2 **BLOCKED before bulk** established no charged control.
+Mature meter quantity/unit/rate plus provider policy confirmation remain required
+to close the tenant-boundary answer; successful transport cannot do so.
 
 ## Executables and privacy contract
 
@@ -216,8 +230,18 @@ late records: rerun bounded adjacent receipt windows as authorized, then retain
 only actual experiment usage days. Full billing grade still needs a mature,
 attributable positive control, complete pages and quantity/rate provenance.
 Use the existing 24/48/72h and day-7 schedule; no running VM waits for billing.
+These are follow-up targets, **not automatic jobs**; none is established.
+The pricing FAQ addresses same-region Azure services, not explicit tenant
+boundaries. Preserve the official
+[BYOIP destination Internet-egress exception](https://learn.microsoft.com/azure/virtual-network/ip-services/custom-ip-address-prefix#pricing);
+empty cost output cannot establish a broader exemption.
 
 ## WSL deployment readiness and approved incremental cost
+
+This section records deployment approval/budget provenance, not current traffic
+status. The later 15 October A/T test consumed T's approved **10 GiB payload**
+reserve. No additional T payload is approved; $8 core/$4 extension caps have
+not increased. The initial infrastructure-only lease did not run traffic.
 
 **Billing access prerequisite passed:** a separate enabled subscription and
 tenant were verified in-memory; Query and date-bounded Consumption requests
@@ -231,14 +255,16 @@ authentication state changed. The created **Standard_B1s** endpoint T was
 verified deallocated at **08:22:55Z**, with six owned resources retained.
 Separate live quota enumeration was not needed: successful allocation is the
 authoritative result. See [deployment log](../msdn-deployment-log.md).
-Jose's **additional $4** approval was consumed for this endpoint, not traffic.
+Jose's **additional $4** approval covers this endpoint's incremental envelope;
+the later bounded traffic used its existing approved reserve, not a new budget.
 
 Approved expansion is **additional to**, not silently inside, the approved $8
 core: one Sweden Central Linux Standard_B1s (1 GiB; same verified hourly rate
 as the proposed Standard_B2ts_v2), 30 GiB Standard SSD
 (32 GiB E4 billing tier), NIC, NSG, Standard IPv4 PIP, VNet and dedicated RG.
 Target <=4 allocated hours, hard <=12 total; disk/PIP/resource lifetime <=72h.
-One optional future test: <=5 GiB each direction. **No test was run here.**
+The originally optional <=5 GiB each direction test was subsequently completed
+on 15 October. **No test was run under the deployment lease described here.**
 
 Public [Retail Prices API](https://prices.azure.com/api/retail/prices) reads on
 2026-10-15, USD, Sweden Central, Consumption prices, no continuation:
@@ -260,3 +286,74 @@ Virtual Network, then select the exact products above. These are reproducible
 public list-price estimates, not account effective rates. Month proration is an
 estimate. Stop if actual applicable tariffs, operations or lifetime exceed the
 envelope; do not silently substitute a larger SKU or add a paid gateway.
+
+## Dated follow-up commands for the completed run
+
+**Not executed by this offline publication.** Acquire a fresh approved bounded
+read-only API lease in the collector's existing runtime-control location first;
+the transfer/validation leases are completed and cannot authorize these commands.
+Do not bypass the collector's lease checks or reuse the validation owner's
+in-memory lease bridge. No auth/profile switching, packages or export resources
+are needed. Substitute absolute Windows paths under this lab's ignored private
+tree for contexts and **new** output files; use each native source's own context.
+Placeholders contain no identities or endpoint addresses.
+
+Run each native-source Query once per due collection, not repeatedly on 429.
+The existing collector's bounded short Retry-After handling remains unchanged.
+Set `$stamp` to the due collection date, not the usage date. At the earliest
+follow-up, **2026-10-16T10:40:28Z**, the entire requested usage day is in the past:
+
+```powershell
+$stamp = '20261016-24h' # later: 20261017-48h, 20261018-72h, 20261022-day7
+$windowsContext = '<ABSOLUTE_WINDOWS_PRIVATE_CONTEXT>'
+$wslContext = '<ABSOLUTE_WSL_PRIVATE_CONTEXT>'
+$privateOutput = '<ABSOLUTE_LAB_PRIVATE_COST_DIRECTORY>'
+$aLabRg = '<A_LAB_RG>'
+$tLabRg = '<T_LAB_RG>'
+
+python labs\azure-bandwidth-billing\costs\cost_api.py query --context $windowsContext --resource-group $aLabRg --start 2026-10-15 --end 2026-10-15 --grouping Meter --meter-category Bandwidth --max-pages 3 --max-seconds 75 --offer-alias windows-main --output "$privateOutput\$stamp-windows-bandwidth.private.json"
+python labs\azure-bandwidth-billing\costs\cost_api.py query --transport wsl --distribution Ubuntu-24.04 --context $wslContext --resource-group $tLabRg --start 2026-10-15 --end 2026-10-15 --grouping Meter --meter-category Bandwidth --max-pages 3 --max-seconds 75 --offer-alias wsl-msdn --output "$privateOutput\$stamp-wsl-bandwidth.private.json"
+```
+
+Due times are **16/17/18 October 10:40:28Z** and, if needed, **22 October
+10:40:28Z**. Date-only CLI inputs become the Query daily envelope
+2026-10-15T00:00:00Z–2026-10-15T23:59:59Z; never substitute the ingestion day.
+The WSL dispatch converts private Windows paths and uses native Linux CLI/tokens.
+Read columns by name and check all pages; COMPLETE is pagination completeness,
+not billing maturity. Retain 429 metadata as error, not empty/zero.
+
+When separately authorized to obtain detail, retain the historical inventory
+projection after cleanup and use valid **past** receipt-date coverage. For
+example, at/after the 17 October 48h follow-up, this bounded request examines
+15–16 October receipt coverage (not a guarantee all late 15 October usage is
+present):
+
+```powershell
+$windowsInventory = '<ABSOLUTE_WINDOWS_PRIVATE_HISTORICAL_INVENTORY_PROJECTION>'
+python labs\azure-bandwidth-billing\costs\cost_api.py details --context $windowsContext --inventory $windowsInventory --resource-group $aLabRg --start 2026-10-15 --end 2026-10-16 --filter-variant legacy-date --max-pages 3 --max-seconds 75 --offer-alias windows-main --output "$privateOutput\$stamp-windows-details.private.json"
+```
+
+For T use the analogous command with `--transport wsl --distribution Ubuntu-24.04`,
+its own context, RG, inventory and a distinct output. Both tested Consumption
+versions accepted valid past ranges in MSDN; errors about missing/future dates
+were not blanket offer rejection. Inspect normalized **actual usage UTC** and
+request further past receipt windows only under the collection lease if needed.
+Windows server RG filtering was observed to return unrelated rows: local
+inventory/RG/date filtering **before persistence is mandatory**. A remaining
+nextLink at a bound is INCOMPLETE, never zero. No cumulative snapshots are summed.
+Meter Query costs lack quantity/unit/effective-rate proof; credits and allowances
+cannot prove no charge. Require mature same-offer/feed known-charge positive
+control plus detail before a scoped no-charge-observed conclusion.
+
+These collections must not delay deletion: T expires **18 October 08:20:59Z**,
+but whole-lab cleanup is absolutely **before 18 October 07:33Z** (verify private
+RG creation for any earlier deadline). Standing cleanup authority covers known
+owned lab assets only, under a fresh exact-inventory lease.
+Preserve private IDs and query historical usage after deletion. Deallocated
+disks/PIPs still cost money. See the [full result and TTL rationale](../results/2026-10-15-cross-tenant-public-ip.md).
+The 16/17 October 10:40:28Z collections precede cleanup; 18 October
+10:40:28Z (72h) and 22 October (day 7) use historical IDs after deletion.
+No automatic collection or cleanup job is established. No extra-cost scope or
+additional MSDN payload is approved; core remaining wire reserve is **11 GiB**
+after both controls, not actual payload use. A/B/C/T remain deallocated;
+P's VM/disk/NIC/dedicated NSG are retired, with shared networking preserved.

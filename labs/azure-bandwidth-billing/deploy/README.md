@@ -1,5 +1,26 @@
 # D0 infrastructure
 
+The deployment descriptions below are historical. For the current retained
+A/B/C/T inventory, failed/blocked control attempts and cleanup **before
+2026-10-18 07:33Z**, see the [lab overview](../README.md).
+
+## Windows ownership checks and offline regression tests
+
+`Common.ps1` resolves the first native Azure CLI application, not a shadowing
+PowerShell function. Inventory ownership still requires all three lab tags.
+Known service-managed VM children (`MDE.Linux` and `RunCommandLinux`) may be
+untagged only when their exact parent ID resolves to one uniquely verified
+owned VM. They are not retagged, independently managed or counted as lab roots.
+Foreign tags, unknown untagged extensions, missing or duplicate owned parents
+and malformed child IDs fail closed.
+
+From repository root, these checks use no Azure CLI, authentication or network:
+
+```powershell
+.\labs\azure-bandwidth-billing\deploy\test_Common.ps1
+.\labs\azure-bandwidth-billing\deploy\Test-Local.ps1
+```
+
 ## Additional isolated MSDN endpoint T (native WSL)
 
 `msdn.py` + `msdn-main.json` are the separate one-VM deploy/cleanup pair;
