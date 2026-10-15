@@ -9,10 +9,11 @@
 ## Objective and result so far
 
 Measure **Azure → DC** route selection at **each** hub as the outbound DC
-AS path is prepended at one ingress, comparing `ExpressRoute`, `Vpn` and
+AS path is prepended at one ingress, comparing `ExpressRoute`, `VpnGateway` and
 `ASPath` hub routing preference (HRP), first unsecured and then with
 PrivateTraffic RI. There is **no ExpressRoute circuit**: ExpressRoute here
-is the policy name. Separate DC → Azure controls and bidirectional traffic
+is the policy name; `VpnGateway` is the ARM value for the portal's VPN option.
+Separate DC → Azure controls and bidirectional traffic
 are needed to establish directionality/symmetry. No throughput claim is intended.
 
 | Evidence | What it establishes / does not establish |
@@ -22,6 +23,9 @@ are needed to establish directionality/symmetry. No throughput claim is intended
 | [Latest ASPath boundary verdict: JP VPN versus EU peered-NVA](show-output/vpn-sdwan-aspath-boundaries/sweep-verdict.json), 2026-10-15 01:11 UTC | Overall **BLOCKED**, `restored: false`; only `baseline0`, `jp-add4`, `jp-add8` completed. These ASPath/no-RI control-plane states were stable with no JP winner change at sampled +4/+8 across twelve observer/prefix combinations. EU sweep did **not** run. The lease stopped/expired; failed restore/snapshot handling prevents acceptance of the run. No finite minimum threshold, successful recovery, or data-plane result follows. |
 | [Post-restart recovery verification](show-output/restored-mesh-verification/verification-summary.json), 2026-10-15 08:40 UTC | **PASS**: eighteen Established BIRD endpoint entries, corresponding to six unique mesh and six Azure-facing adjacencies; two Japanese IKE SAs; all four DC exports on both Azure peers at EU, US and JP. Two observations at least 174 seconds apart, original BIRD identities preserved, and marked outer transport routing verified. Hub winners and forwarding were not queried in this recovery check. |
 | [Europe +8 / HRP comparison](show-output/unsecured-hrp-comparison-20261015/comparison-verdict.json), 2026-10-15 | Overall **INCONCLUSIVE**. Fresh zero-prepend and EU +8 ASPath/no-RI states each had twelve stable winners in paired snapshots. All hubs continued to select their local ingress, including EU with eight additional ASNs. EU was restored exactly and all four routers passed source/protocol closure. A subsequent EU effective-route query timed out; paired restored winners and the Vpn/ExpressRoute comparisons were not completed. |
+| [Sleep recovery](show-output/sleep-recovery-20261015-1350/recovery-verdict.json), 2026-10-15 | **PASS**: a CN-only withdrawal had remained active on Japan after an interrupted experiment. The protected original Japan BIRD file and exact metadata were restored. All four original hashes, eighteen Established protocol endpoints, both Japan IKE SAs, and identical four-prefix exports on both Azure peers passed closure. No forwarding or hub-route claim. |
+| [Post-sleep HRP comparison](show-output/unsecured-hrp-after-sleep-20261015/comparison-verdict.json), 2026-10-15 | **INCONCLUSIVE**, `restored: true`: paired ASPath baseline and final restored winners passed, with exact four-router source closure. The VPN case was rejected because the controller used `Vpn` instead of the documented `VpnGateway` ARM value. The controller is corrected; this rejection is not a VPN routing result. |
+| [Supported-enum retry](show-output/unsecured-supported-hrp-enums-20261015/comparison-verdict.json), 2026-10-15 | **BLOCKED**: another laptop sleep expired the lease during the read-only baseline. Zero mutations occurred and no preference comparison completed. The finalizer now persists this status even after expiry. `restored: false` means closure was not completed; it does not imply that this run changed the configuration. |
 
 The historical restore attempt's `SNAPSHOT` failure remains a limitation of
 that experiment, not a description of current guest health. The later fresh
@@ -153,6 +157,37 @@ seconds apart. No switch at sampled 0/4/8 is a bounded observation through the
 tested range, **not infinity** or proof of every untested intermediate count.
 A first observed +4 switch only brackets a minimum in 1–4; refine integers.
 Do not reconstruct hidden Azure losing paths and label them raw evidence.
+
+### Interpreting local-versus-remote prepend tests
+
+The following are **documentation-backed expectations and acceptance controls**,
+not completed additional lab results. No private correspondence, screenshots,
+customer identifiers, or customer address plans are included in this report.
+
+| Assertion or question | Assessment |
+| --- | --- |
+| A local BGP NVA can remain selected after its AS path becomes longer than a remote VPN path. | Consistent with ExpressRoute/VPN HRP, which generally considers locality before AS-path length. Those policy names do not require an ExpressRoute circuit to exist. |
+| Does the hub always prefer local routes regardless of path length? | **No universal rule.** `ASPath` HRP compares path length before locality, subject to the documented remote-ExpressRoute exception. ExpressRoute/VPN HRP also has a documented convergence race when local paths are at least two ASNs longer. |
+| Does a selected longer local path prove the shorter remote alternative was eligible? | **No.** Effective routes show selected winners, not every losing candidate. Remote routes for other prefixes do not prove an alternative for the target prefix. Withdraw only the target local advertisement, verify a completed remote winner for that same prefix, and restore before comparing prepends. |
+| Does prepending repair an intentionally nonforwarding route injector? | Not by itself. If the injector remains selected and continues advertising, traffic can blackhole even while BGP is healthy. Route selection and actual reachability require separate verdicts. |
+| Does any route-map prepend influence the hub's choice? | Only an **inbound** map acts before hub best-path selection. An outbound map modifies advertisements after selection and cannot choose the Azure-side forwarding path. Capture the map attachment, direction, match, and resulting path. |
+| Is a statically configured VPN site prefix a static route in the virtual hub route table? | Not automatically. Record its actual origin; do not apply hub-static-route precedence merely because the S2S site does not run BGP. |
+
+For each decisive comparison, preserve the exact target prefix and prefix length,
+prove both Azure peer advertisements, read actual HRP on every hub, and compare
+paired completed effective-route snapshots before, during, and after the change.
+With private routing intent, query the owning firewall's effective routes and
+verify the actual private routing policy on **all** participating hubs. A hub
+table pointing to a firewall is not proof of the firewall's onward choice.
+
+Use supported two-byte ASNs for a reproducible baseline. The documented
+[NVA peering requirements](https://learn.microsoft.com/en-us/azure/virtual-wan/scenario-bgp-peering-hub)
+and [route-map limitations and directions](https://learn.microsoft.com/en-us/azure/virtual-wan/route-maps-about)
+must both be checked; route-map prepends have additional ASN restrictions.
+An accepted or visible configuration outside documented support is not a clean
+reference baseline. See the
+[HRP selection algorithm and exceptions](https://learn.microsoft.com/en-us/azure/virtual-wan/about-virtual-hub-routing-preference)
+for the distinction between policy expectations and measured outcomes.
 
 ## Effective-route collection: without and with routing intent
 
