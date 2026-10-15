@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 1,
+  "objective": "Bounded ActualCost refresh for the completed same-region cross-tenant headline transfer; separate from control validation",
+  "verdict": "INCONCLUSIVE",
+  "snapshotCompletedAtUtc": "2026-10-15T18:22:09.478501Z",
+  "headline": {
+    "startedAtUtc": "2026-10-15T10:04:25.588424Z",
+    "endedAtUtc": "2026-10-15T10:40:28.237747Z",
+    "payloadBytesEachDirection": 5368709120,
+    "decimalGBEachDirection": "5.36870912",
+    "transport": "PASS",
+    "sourceRegion": "swedencentral",
+    "destinationRegion": "swedencentral",
+    "billingAttribution": "Not established by this refresh; daily API rows cannot isolate the sub-day transfer interval."
+  },
+  "requestContract": {
+    "metric": "ActualCost",
+    "aggregateApiVersion": "2023-11-01",
+    "aggregate": "Daily Sum(PreTaxCost), ResourceGroup AND MeterCategory=Bandwidth, grouped by ResourceGroup and Meter",
+    "detailsApiVersion": "2024-08-01",
+    "details": "ResourceGroup predicate plus properties/usageStart ge day start and properties/usageEnd le context cutoff; properties/meterDetails expansion; top 1000",
+    "detailsDateSemantics": "Request receipt-date predicates do not establish actual usage dates. Actual row usage day, exact subscription/RG and full historical inventory are checked in memory before retention.",
+    "maximumPagesPerEndpoint": 1,
+    "endpointInvocationsPerContext": 1,
+    "httpAttemptsPerEndpoint": 1,
+    "retries": 0,
+    "continuationPolicy": "Stop at one page. Any remaining continuation is INCOMPLETE; do not infer empty success.",
+    "periodPolicy": "Current UTC day start through a captured past UTC cutoff, never end-of-day or a future usage day."
+  },
+  "contexts": [
+    {
+      "alias": "windows-core",
+      "nativeTransport": "Windows installed Azure CLI Python entry point",
+      "requestPeriodUtc": {
+        "from": "2026-10-15T00:00:00Z",
+        "to": "2026-10-15T18:21:24.371462Z"
+      },
+      "aggregate": {
+        "startedAtUtc": "2026-10-15T18:21:24.487490Z",
+        "endedAtUtc": "2026-10-15T18:21:41.504052Z",
+        "httpStatus": 429,
+        "state": "ERROR",
+        "code": "rate_limited",
+        "rowsComplete": false,
+        "interpretation": "No aggregate result obtained; not zero rows or zero cost."
+      },
+      "details": {
+        "startedAtUtc": "2026-10-15T18:21:42.307987Z",
+        "endedAtUtc": "2026-10-15T18:22:09.478501Z",
+        "httpStatus": 200,
+        "state": "INCOMPLETE",
+        "pages": 1,
+        "receivedRows": 1000,
+        "discardedInMemory": 1000,
+        "retainedRows": 0,
+        "unattributedLabRows": 0,
+        "reason": "page_limit",
+        "rowsComplete": false,
+        "interpretation": "Subscription-wide response despite RG predicate; all returned records failed lab/date attribution. Continuation remains. No unrelated billing values retained."
+      }
+    },
+    {
+      "alias": "wsl-msdn",
+      "nativeTransport": "Ubuntu-24.04 /usr/bin/az",
+      "requestPeriodUtc": {
+        "from": "2026-10-15T00:00:00Z",
+        "to": "2026-10-15T18:21:34.878222Z"
+      },
+      "aggregate": {
+        "startedAtUtc": "2026-10-15T18:21:35.088938Z",
+        "endedAtUtc": "2026-10-15T18:21:40.385448Z",
+        "httpStatus": 429,
+        "state": "ERROR",
+        "code": "rate_limited",
+        "rowsComplete": false,
+        "interpretation": "No aggregate result obtained; not zero rows or zero cost."
+      },
+      "details": {
+        "startedAtUtc": "2026-10-15T18:21:40.748839Z",
+        "endedAtUtc": "2026-10-15T18:21:50.272037Z",
+        "httpStatus": 200,
+        "state": "COMPLETE",
+        "pages": 1,
+        "receivedRows": 0,
+        "retainedRows": 0,
+        "rowsComplete": true,
+        "interpretation": "Complete empty response for this request, not mature billing evidence, a measured zero charge, or proof the receipt window contains all eventual usage."
+      }
+    }
+  ],
+  "attributableBandwidthEvidence": {
+    "rows": [],
+    "meterIds": [],
+    "quantity": null,
+    "unit": null,
+    "unitPrice": null,
+    "effectivePrice": null,
+    "cost": null,
+    "currency": null,
+    "resourceAttribution": "No matched bandwidth usage obtained",
+    "creditsOrAllowance": "Not established; missing quantities/prices/costs are not zero",
+    "decimalPolicy": "Numeric usage, cost and rates remain Decimal strings when available; never sum incompatible meters, units or currencies."
+  },
+  "control": {
+    "alias": "C-to-B",
+    "attempt": "v1",
+    "transport": "FAILED",
+    "requests": 0,
+    "plannedPayloadBytes": 5368709120,
+    "plannedPayloadSent": false,
+    "billingQueryPerformed": false,
+    "interpretation": "This failed run is not a positive control. No attributable positive-control outbound quantity is expected from its unsent 5-GiB payload; incidental background usage would not change that."
+  },
+  "subsequentControlStatus": {
+    "asOfUtc": "2026-10-15T19:06:07Z",
+    "scope": "Later closed handoffs; does not change the 18:22 billing snapshot or imply a new billing query.",
+    "deployment": "C deployed in an isolated North Europe owned RG after retirement of P VM/disk/NIC/dedicated NSG; shared network preserved.",
+    "v1": {
+      "transport": "FAIL",
+      "startedAtUtc": "2026-10-15T17:28:50Z",
+      "endedAtUtc": "2026-10-15T18:13:46Z",
+      "connectionTlsTimeouts": 12,
+      "bulkRequests": 0,
+      "bulkRetries": 0,
+      "cNicRxPlusTxOnceBytes": 284630,
+      "rootCause": "Unproven; an NSG Updating response does not establish that it caused a packet drop."
+    },
+    "v2": {
+      "freshReadiness": "PASS",
+      "transport": "BLOCKED_BEFORE_GUEST_COMMANDS",
+      "reason": "NIC read timeout at the setup gate; final NSG GET also timed out, leaving restore initially unverified.",
+      "guestCommandsSubmitted": 0,
+      "payloadBytes": 0,
+      "nicWireOnceBytes": null,
+      "nicWireInterpretation": "No guest transfer report; not a claim of zero NIC traffic."
+    },
+    "independentRestoration": {
+      "verdict": "PASS",
+      "azureReadCalls": 5,
+      "mutations": 0,
+      "originalBNSG": "Exact original policy and all rules Succeeded; expected NIC association confirmed.",
+      "bAndCDeallocated": true,
+      "nativeIdleVerifiedAtUtc": "2026-10-15T19:06:07Z",
+      "activeChildren": 0,
+      "additionalTransferQueued": false
+    },
+    "chargedPositiveControlEstablished": false,
+    "conservativeCoreRemainingGiB": 11,
+    "conservativeCoreRemainingBytes": 11811160064,
+    "reservationMeaning": "35 GiB minus 12 headline and 6 GiB per control attempt; not actual payload use and not the older 17-GiB remainder.",
+    "wholeCorePlanningEnvelopeUsd": "7.954831",
+    "coreCapUsd": "8",
+    "cleanupBeforeUtc": "2026-10-18T07:33:00Z",
+    "retainedState": "A/B/C/T deallocated; retained disks and public IPs continue accruing charges.",
+    "automaticFollowupOrCleanupJobsEstablished": false
+  },
+  "remainingRequired": [
+    "Fresh authorized collection after billing maturation, initially no earlier than 2026-10-16T10:40:28Z, then 48h/72h/day7 as necessary; do not keep resources merely for billing follow-up.",
+    "Successful non-rate-limited attributable aggregates and complete safely filtered details or an authorized supported detailed usage source.",
+    "Actual bandwidth meter quantity, unit, rate, currency, region and producer-resource attribution, distinguishing usage from zero-dollar, credits and allowance effects.",
+    "A separately approved, successfully transmitted and mature same-offer inter-region positive control; neither failed v1 nor pre-guest-blocked v2 satisfies it.",
+    "Provider policy confirmation for tenant-boundary applicability; the same-region Azure-services FAQ does not explicitly mention tenants and the official BYOIP destination Internet-egress exception remains."
+  ],
+  "policyInterpretation": "No SaaS exemption or explicit tenant billing policy established. Pricing FAQ text is not tenant policy; the known BYOIP exception must not be generalized.",
+  "closure": {
+    "azureMutations": 0,
+    "guestOrInfrastructureCalls": 0,
+    "activeCommands": 0,
+    "windowsOwnedRunnerCandidates": 0,
+    "wslOwnedRunnerCandidates": 0,
+    "nativeContextsUnchanged": true,
+    "nativeIdle": true,
+    "restore": "No changes made; prior verified restored/deallocated baseline left untouched."
+  }
+}

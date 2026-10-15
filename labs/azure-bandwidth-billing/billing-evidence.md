@@ -1,7 +1,12 @@
 # Billing extraction and reconciliation plan
 
 Reconciliation design plus [executable collectors and tested API matrix](costs/README.md).
-No experimental billing verdict or unrelated billing values retained. Updated 2026-10-15.
+Current experimental billing verdict: **INCONCLUSIVE** after completed
+same-region cross-tenant transport; no unrelated billing values retained.
+Updated 2026-10-15. See the [sanitized result](results/2026-10-15-cross-tenant-public-ip.md).
+Latest refresh completed **18:22Z**; independent B/C restoration/idle verification
+completed by **19:06:07Z**. C → B v1 **FAIL** and v2 **BLOCKED before bulk**
+did not establish a charged positive control.
 Use **ActualCost** consistently, not AmortizedCost: this experiment measures
 consumed bandwidth and its actual meter economics, not reservation allocation.
 PAYG Ubuntu avoids new reservation purchases. Existing discounts/credits still
@@ -44,8 +49,10 @@ No billing request was made during the D0 infrastructure deployment lease.
 `costs\cost_api.py` implements bounded Query and Consumption collection with
 offline contract tests. Cost Details asynchronous generation remains explicitly
 unimplemented, not a success-shaped fallback. Windows modern Consumption failed
-the tested RG predicates; WSL Consumption 2024-08-01 instead returned an
-offer-related 400. See the tested matrix for exact syntax, encoding and limits.
+the tested RG predicates. Earlier WSL Consumption 400s were resolved by
+valid explicit past usageStart/usageEnd ranges: **2019-10-01 and 2024-08-01
+both returned HTTP 200 empty**. Missing/future-date errors do not establish
+blanket offer rejection. See the tested matrix for exact syntax, encoding and limits.
 The executable keeps only normalized lab fields and a source-record hash;
 it intentionally does not retain full raw rows containing opaque metadata.
 
@@ -78,7 +85,10 @@ artifacts. ARM host is `https://management.azure.com`.
 }
 ```
 
-For the initial permission smoke-test omit grouping. At collection, discover
+For the initial permission smoke-test omit grouping. The executable collector
+uses **ResourceGroup + Meter**, which passed live tests; **MeterId returned
+HTTP 400**. The illustrative ResourceId grouping above is not the implemented
+collector request or a newly validated dimension. At collection, discover
 supported grouping/aggregation dimensions using the API contract/dimensions
 endpoint; if `Meter` is unavailable use supported meter category/subcategory.
 Honor Query's group-count limits; run separately filtered queries to refine.
@@ -219,12 +229,90 @@ zero dollars, a traceroute or a public source IP cannot alone pass billing.
 
 ## Bounded calendar, retention and teardown
 
+### Actual 15 October run and dated follow-ups
+
+Transport completed **10:04:25–10:40:28 UTC**, 5,368,709,120 bytes each
+direction, all four endpoint/direction records matching the expected SHA256.
+A's **10,818,818,041-byte RX+TX** delta is corroboration only: count it once,
+not A+T, and never label it billed outbound.
+
+Initial ActualCost Query was daily, lab RG AND MeterCategory=Bandwidth,
+grouped by ResourceGroup + Meter, Sum(PreTaxCost):
+
+| Producer context | Collection UTC on 15 October | Outcome | Interpretation |
+|---|---|---|---|
+| Windows / A | 14:14:58–14:15:07 | HTTP 200, COMPLETE, 1 page, 0 received/retained rows | Complete requested pagination, not mature billing or a measured zero charge. |
+| Native WSL / T | 14:15:07–14:15:11 | HTTP 429, rate_limited ERROR, no snapshot | No rows obtained and completeness not established; **not an empty result**. |
+
+Only ~3.6h had passed since transport. No mature same-offer/feed inter-region
+known-charge positive control, attributable quantity/unit or effective-rate
+evidence exists. **INCONCLUSIVE**, not a confirmed SaaS exemption, not “both
+queries succeeded,” and not “free.” Credits, allowances and zero aggregate
+cost cannot prove absence of charge. Bandwidth-only collection also omits
+possible service-specific processing/provider fees.
+
+### Latest bounded refresh, 18:22Z
+
+The [sanitized machine-readable snapshot](results/2026-10-15-billing-refresh.json)
+preserves the earlier results rather than replacing their historical meaning.
+One invocation/HTTP attempt per endpoint/context, one page maximum, no retries:
+
+| Context | Aggregate | Consumption details | Meaning |
+|---|---|---|---|
+| Windows core | HTTP 429, ERROR | HTTP 200, **INCOMPLETE**, 1,000 received/unrelated rows discarded in memory, 0 retained, continuation remains | RG predicate did not scope the response; no complete attributable result, not zero usage/cost. |
+| Native WSL / T | HTTP 429, ERROR | HTTP 200, **COMPLETE empty**, 1 page | Complete request pagination, not mature billing or zero-charge proof. |
+
+Receipt-date predicates cannot guarantee actual usage coverage. Mandatory
+local inventory/RG/actual-date filtering precedes retention; no unrelated raw
+billing rows were retained. Missing quantity/unit/rate/cost remain **null, not
+zero**. A known-charge positive control is still absent: v1 sent no bulk after
+12 connection/TLS timeouts (C NIC RX+TX once 284,630 bytes); v2 blocked before
+guest submission, zero payload and no guest NIC report. Do not call its
+unmeasured NIC traffic zero.
+
+Closing the tenant-boundary question requires mature attributable meter
+quantity/unit/rate and provider policy confirmation. The same-region Azure
+services FAQ does not explicitly mention tenants, and the official
+[BYOIP destination Internet-egress exception](https://learn.microsoft.com/azure/virtual-network/ip-services/custom-ip-address-prefix#pricing)
+continues to apply. Neither transport PASS nor empty Cost API output overrides it.
+
+| Follow-up | Not before UTC | Actual usage day |
+|---|---|---|
+| 24h | 2026-10-16T10:40:28Z | 2026-10-15 |
+| 48h | 2026-10-17T10:40:28Z | 2026-10-15 |
+| 72h | 2026-10-18T10:40:28Z | 2026-10-15 |
+| Day 7, if needed | 2026-10-22T10:40:28Z | 2026-10-15 |
+
+Use the [exact bounded collector templates](costs/README.md#dated-follow-up-commands-for-the-completed-run)
+under a new approved read-only API lease. Each is a new cumulative snapshot:
+compare revisions, **never sum repeated snapshots**. Query actual usage UTC,
+not ingestion day. Detailed Consumption date predicates can be receipt windows;
+avoid future ranges, inspect actual row dates and widen past receipt coverage
+only within an approved bound. Partial pages and 429 remain incomplete/errors,
+never zero usage.
+
+**No automatic follow-up or cleanup job is established.** The table is an
+action calendar, not evidence of scheduled automation. Use fresh bounded
+read-only leases for 16/17 October, then historical queries after deletion.
+Standing cleanup authority covers only known owned lab assets, under a fresh
+exact-inventory lease; delete **before 18 October 07:33Z**, earlier if required
+by actual creation time. No extra-cost scope or further MSDN payload is approved.
+A/B/C/T are deallocated but retained disks/PIPs still accrue charges.
+
+**Delete before resource TTL even though 72h billing is later:** T's deadline
+is **2026-10-18T08:20:59Z**. The earliest recorded core-resource creation gives
+**2026-10-18T07:38:11Z**; the RG can be older. Conservatively arrange confirmed
+core deletion before **07:33Z** that day (deployment lease start +72h), verifying
+the private RG timestamp for an earlier deadline. Preserve the private historical
+inventory, including deleted resource IDs; historical billing can be queried
+after deletion. Do not retain VM/disk/PIP for these follow-ups.
+
 - Collect once at **24, 48 and 72 hours after each test day's final transfer**.
   Coalesce due dates into at most one report request per usage day per calendar
   day. EA/MCA typically 8–24h; PAYG up to 72h, but uncommon delays can be longer.
 - At 72h: if positive control absent or relevant rows still changing, return
-  INCONCLUSIVE with exact missing evidence. Schedule one bounded **day-7**
-  follow-up, not an indefinitely running agent. If still absent close inconclusive
+  INCONCLUSIVE with exact missing evidence. Arrange one bounded **day-7**
+  follow-up (not currently scheduled), not an indefinitely running agent. If still absent close inconclusive
   and seek billing support/authorized invoice review as a separate task.
 - Keep VMs **deallocated between tests and deleted after confirmed cleanup**.
   Preserve read access and private ID/timestamp map; deletion does not erase
