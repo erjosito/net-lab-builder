@@ -1,0 +1,100 @@
+{
+  "timestampUtc": "2026-10-15T17:50:59.002479+00:00",
+  "finishedUtc": "2026-10-15T17:54:47.365120+00:00",
+  "command": [
+    "deployment",
+    "group",
+    "create",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "--name",
+    "aspath-cn-control-enable-transit",
+    "--template-file",
+    "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\aspath-cn-control-enable-transit-template.json",
+    "--parameters",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\aspath-cn-control-enable-transit-parameters.json"
+  ],
+  "stdout": "{\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Resources/deployments/aspath-cn-control-enable-transit\",\n  \"location\": null,\n  \"name\": \"aspath-cn-control-enable-transit\",\n  \"properties\": {\n    \"correlationId\": \"28a3bc52-b5a3-4eaf-9d39-0e4f3f32fb28\",\n    \"debugSetting\": null,\n    \"dependencies\": [],\n    \"diagnostics\": null,\n    \"duration\": \"PT3M21.176978S\",\n    \"error\": null,\n    \"extensions\": [],\n    \"mode\": \"Incremental\",\n    \"onErrorDeployment\": null,\n    \"outputResources\": [\n      {\n        \"apiVersion\": null,\n        \"extension\": null,\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu\",\n        \"identifiers\": null,\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"resourceType\": \"Microsoft.Network/virtualHubs\"\n      },\n      {\n        \"apiVersion\": null,\n        \"extension\": null,\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp\",\n        \"identifiers\": null,\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"resourceType\": \"Microsoft.Network/virtualHubs\"\n      },\n      {\n        \"apiVersion\": null,\n        \"extension\": null,\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us\",\n        \"identifiers\": null,\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"resourceType\": \"Microsoft.Network/virtualHubs\"\n      }\n    ],\n    \"outputs\": null,\n    \"parameters\": {},\n    \"parametersLink\": null,\n    \"providers\": [\n      {\n        \"id\": null,\n        \"namespace\": \"Microsoft.Network\",\n        \"providerAuthorizationConsentState\": null,\n        \"registrationPolicy\": null,\n        \"registrationState\": null,\n        \"resourceTypes\": [\n          {\n            \"aliases\": null,\n            \"apiProfiles\": null,\n            \"apiVersions\": null,\n            \"capabilities\": null,\n            \"defaultApiVersion\": null,\n            \"locationMappings\": null,\n            \"locations\": [\n              \"westeurope\",\n              \"northcentralus\",\n              \"japaneast\"\n            ],\n            \"properties\": null,\n            \"resourceType\": \"virtualHubs\",\n            \"zoneMappings\": null\n          }\n        ]\n      }\n    ],\n    \"provisioningState\": \"Succeeded\",\n    \"templateHash\": \"15296576049958584944\",\n    \"templateLink\": null,\n    \"timestamp\": \"2026-10-15T17:54:32.379279+00:00\",\n    \"validatedResources\": null,\n    \"validationLevel\": null\n  },\n  \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n  \"tags\": null,\n  \"type\": \"Microsoft.Resources/deployments\"\n}\n",
+  "result": {
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Resources/deployments/aspath-cn-control-enable-transit",
+    "location": null,
+    "name": "aspath-cn-control-enable-transit",
+    "properties": {
+      "correlationId": "28a3bc52-b5a3-4eaf-9d39-0e4f3f32fb28",
+      "debugSetting": null,
+      "dependencies": [],
+      "diagnostics": null,
+      "duration": "PT3M21.176978S",
+      "error": null,
+      "extensions": [],
+      "mode": "Incremental",
+      "onErrorDeployment": null,
+      "outputResources": [
+        {
+          "apiVersion": null,
+          "extension": null,
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu",
+          "identifiers": null,
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "resourceType": "Microsoft.Network/virtualHubs"
+        },
+        {
+          "apiVersion": null,
+          "extension": null,
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp",
+          "identifiers": null,
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "resourceType": "Microsoft.Network/virtualHubs"
+        },
+        {
+          "apiVersion": null,
+          "extension": null,
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us",
+          "identifiers": null,
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "resourceType": "Microsoft.Network/virtualHubs"
+        }
+      ],
+      "outputs": null,
+      "parameters": {},
+      "parametersLink": null,
+      "providers": [
+        {
+          "id": null,
+          "namespace": "Microsoft.Network",
+          "providerAuthorizationConsentState": null,
+          "registrationPolicy": null,
+          "registrationState": null,
+          "resourceTypes": [
+            {
+              "aliases": null,
+              "apiProfiles": null,
+              "apiVersions": null,
+              "capabilities": null,
+              "defaultApiVersion": null,
+              "locationMappings": null,
+              "locations": [
+                "westeurope",
+                "northcentralus",
+                "japaneast"
+              ],
+              "properties": null,
+              "resourceType": "virtualHubs",
+              "zoneMappings": null
+            }
+          ]
+        }
+      ],
+      "provisioningState": "Succeeded",
+      "templateHash": "15296576049958584944",
+      "templateLink": null,
+      "timestamp": "2026-10-15T17:54:32.379279+00:00",
+      "validatedResources": null,
+      "validationLevel": null
+    },
+    "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+    "tags": null,
+    "type": "Microsoft.Resources/deployments"
+  },
+  "sha256": "4a13c56efe85863bb74f595003cb4df1aaa0fab35630b6618a2d239c89790e79"
+}

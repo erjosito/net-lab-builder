@@ -1,10 +1,12 @@
 """Withdraw one Japan DC advertisement to test remote path eligibility, then restore."""
 import argparse
+import copy
 import json
 import time
 
 import aspath_sweep as sweep
 import control
+import infra
 import vpn_sdwan_boundary as boundary
 
 
@@ -13,6 +15,7 @@ def main():
     parser.add_argument("--lease", required=True)
     parser.add_argument("--out", required=True)
     parser.add_argument("--secured", action="store_true")
+    parser.add_argument("--enable-hub-transit", action="store_true")
     args = parser.parse_args()
     control.LEASE = control.RUNTIME / args.lease
     lease = control.guard(True)
@@ -30,12 +33,36 @@ def main():
     } if args.secured else None)
     before, after, states, errors = {}, {}, {}, []
     dirty = False
+    dirty_hubs = False
+    original_hubs = []
     try:
         before = boundary.invoke_all("baseline")
         boundary.BASE.update(before)
         states["baseline"] = sweep.capture("baseline", 0, firewall_ids=firewall_ids, parallel=True)
         if states["baseline"]["verdict"] != "PASS":
             raise RuntimeError("Incomplete baseline")
+        if args.enable_hub_transit:
+            values = sweep.az_batch([
+                (["rest", "--method", "get", "--url",
+                  sweep.network_url("virtualHubs", "hub-" + site) +
+                  "?api-version=2024-05-01"], "transit-before-" + site)
+                for site in sweep.SITES
+            ])
+            original_hubs = [sweep.hub_resource(v) for v in values]
+            candidate = copy.deepcopy(original_hubs)
+            for resource in candidate:
+                resource["properties"]["allowBranchToBranchTraffic"] = True
+            sweep.reserve_restore(control.guard(True))
+            dirty_hubs = True
+            sweep.submit(infra.template(candidate), {"parameters": {}},
+                         "cn-control-enable-transit", True)
+            states["transit-enabled"] = sweep.capture(
+                "transit-enabled", 0, firewall_ids=firewall_ids, parallel=True)
+            metadata = json.loads((sweep.CURRENT / "hub-metadata.json").read_text())
+            if (states["transit-enabled"]["verdict"] != "PASS" or
+                    not all(metadata["observed"][s]["hub"]["properties"].get(
+                        "allowBranchToBranchTraffic") is True for s in sweep.SITES)):
+                raise RuntimeError("Transit-enabled baseline incomplete or unaccepted")
         sweep.reserve_restore(control.guard(True))
         sweep.CURRENT = sweep.OUT / "withdraw-cn-jp"
         dirty = True
@@ -50,6 +77,7 @@ def main():
     finally:
         sweep.RESTORING = True
         sweep.RESTORE_DEADLINE = time.monotonic() + 900
+        changed = dirty or dirty_hubs
         try:
             if dirty:
                 sweep.CURRENT = sweep.OUT / "restore"
@@ -57,10 +85,22 @@ def main():
                 if any(proof[k] != before["jp"][k] for k in ("sha256", "stat", "exports")):
                     raise RuntimeError("Japan exact file/export restore differs")
                 dirty = False
+            if dirty_hubs:
+                sweep.submit(infra.template(original_hubs), {"parameters": {}},
+                             "cn-control-restore-transit", True)
+                dirty_hubs = False
+            if before and changed:
                 states["restore"] = sweep.capture("restore", 0, firewall_ids=firewall_ids, parallel=True)
                 if (states["restore"]["verdict"] != "PASS" or
                         states["restore"]["rows"] != states["baseline"]["rows"]):
                     raise RuntimeError("Restored effective route matrix differs")
+                if original_hubs:
+                    metadata = json.loads((sweep.CURRENT / "hub-metadata.json").read_text())
+                    if any(metadata["observed"][s]["hub"]["properties"].get(
+                            "allowBranchToBranchTraffic") !=
+                           original_hubs[i]["properties"].get("allowBranchToBranchTraffic")
+                           for i, s in enumerate(sweep.SITES)):
+                        raise RuntimeError("Original hub transit flags differ")
             sweep.CURRENT = sweep.OUT / "closure"
             after = boundary.invoke_all("closure")
             for site in (*sweep.SITES, "cn"):
@@ -77,8 +117,9 @@ def main():
                   sweep.winning_identity(candidate[0]) != sweep.winning_identity(baseline_cn[0]))
         if candidate and not remote:
             errors.append("Withdrawal still shows the original local winner; remote eligibility unproven")
-        restored = not dirty and len(after) == 4 and not any(e.startswith("RESTORE:") for e in errors)
-        complete = restored and len(states) == 3 and not errors
+        restored = not dirty and not dirty_hubs and len(after) == 4 and not any(
+            e.startswith("RESTORE:") for e in errors)
+        complete = restored and len(states) == (4 if args.enable_hub_transit else 3) and not errors
         # Persist the local verdict even when expiry forbids further live work.
         lease = json.loads(control.LEASE.read_text(encoding="utf-8-sig"))
         verdict = "PASS" if complete else "INCONCLUSIVE" if restored else "BLOCKED"

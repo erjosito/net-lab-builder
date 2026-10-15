@@ -26,6 +26,16 @@ are needed to establish directionality/symmetry. No throughput claim is intended
 | [Sleep recovery](show-output/sleep-recovery-20261015-1350/recovery-verdict.json), 2026-10-15 | **PASS**: a CN-only withdrawal had remained active on Japan after an interrupted experiment. The protected original Japan BIRD file and exact metadata were restored. All four original hashes, eighteen Established protocol endpoints, both Japan IKE SAs, and identical four-prefix exports on both Azure peers passed closure. No forwarding or hub-route claim. |
 | [Post-sleep HRP comparison](show-output/unsecured-hrp-after-sleep-20261015/comparison-verdict.json), 2026-10-15 | **INCONCLUSIVE**, `restored: true`: paired ASPath baseline and final restored winners passed, with exact four-router source closure. The VPN case was rejected because the controller used `Vpn` instead of the documented `VpnGateway` ARM value. The controller is corrected; this rejection is not a VPN routing result. |
 | [Supported-enum retry](show-output/unsecured-supported-hrp-enums-20261015/comparison-verdict.json), 2026-10-15 | **BLOCKED**: another laptop sleep expired the lease during the read-only baseline. Zero mutations occurred and no preference comparison completed. The finalizer now persists this status even after expiry. `restored: false` means closure was not completed; it does not imply that this run changed the configuration. |
+| [Exact-prefix withdrawal control](show-output/exact-cn-alternative-control-20261015/eligibility-verdict.json), 2026-10-15 | **PASS**, `restored: true`, `remoteCNEligible: false`: withdrawing only CN `10.140.0.0/24` from both Japan Azure exports removed that prefix from Japan's spoke-effective routes in two stable snapshots. EU and US retained their local CN winners. Japan's original file/metadata/exports, the twelve original winners and all four router sources/protocols were restored. This is a negative eligibility result, not proof of locality-first selection. |
+| [Independent reset verification](show-output/exact-cn-reset-verification-20261015/verification-verdict.json), 2026-10-15 | **PASS**, zero mutations: fresh four-router source/export/protocol checks matched the original baseline; all hubs were ASPath/no-RI with their original per-hub branch-transit flags `false`. |
+| [Branch-transit exact-prefix control](show-output/branch-transit-exact-cn-control-20261015/eligibility-verdict.json), 2026-10-15 | **PASS**, `restored: true`, `remoteCNEligible: false`: enabling `allowBranchToBranchTraffic` was accepted on all three hubs, but repeating the same CN-only withdrawal still left Japan without that prefix in both snapshots. The original hub flags, Japan file/exports, paired twelve-winner baseline and all-router source/protocol health were restored. Four bounded mutations; no IPsec, HRP or connection-label changes. The flag alone did not establish a remote competitor. |
+
+**Current decisive limitation:** the same CN prefix is advertised locally at EU
+and US, but neither controlled withdrawal demonstrated its remote availability
+at Japan. Consequently, the earlier no-switch prepend observations cannot
+establish an ASPath threshold or an unconditional preference for local routes.
+The remaining HRP/prepend comparisons require a proven same-prefix remote
+alternative. Forwarding and all secured/RI measurements remain unfinished.
 
 The historical restore attempt's `SNAPSHOT` failure remains a limitation of
 that experiment, not a description of current guest health. The later fresh
@@ -60,8 +70,12 @@ in the design history are not the deployed locations.
 
 ### Three separate connectivity layers
 
-1. **Azure Virtual WAN:** Standard `vwan-threehub`, branch-to-branch enabled,
-   three hubs with the managed **interhub full mesh**. Five VNet connections:
+1. **Azure Virtual WAN:** Standard `vwan-threehub`, WAN-level branch-to-branch
+   enabled, three hubs with the managed **interhub full-mesh topology**.
+   This topology alone is not evidence of route propagation: the per-hub
+   `allowBranchToBranchTraffic` values were `false`; temporarily enabling them
+   did not make the exact CN prefix available remotely in the control above.
+   Five VNet connections:
    `conn-spoke-eu`, `conn-spoke-us`, `conn-spoke-jp`,
    `conn-transit-eu`, `conn-transit-us` under their respective hubs.
    Default association and `Default` label propagation; no custom/static hub
