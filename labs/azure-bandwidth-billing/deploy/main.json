@@ -1,0 +1,139 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "runId": { "type": "string", "minLength": 16, "maxLength": 16 },
+    "vmSize": {
+      "type": "string",
+      "allowedValues": ["Standard_B1ls", "Standard_B1s", "Standard_B2ts_v2", "Standard_B2ls_v2", "Standard_B2s_v2"]
+    },
+    "adminPublicKey": { "type": "securestring" }
+  },
+  "variables": {
+    "location": "swedencentral",
+    "aliases": ["a", "b", "p"],
+    "vnetIndices": [0, 1, 0],
+    "privateAddresses": ["10.231.0.4", "10.232.0.4", "10.231.0.5"],
+    "tags": { "lab": "true", "created_by": "copilot-lab", "run_id": "[parameters('runId')]" }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}-vnet-{1}', parameters('runId'), copyIndex())]",
+      "location": "[variables('location')]",
+      "tags": "[variables('tags')]",
+      "copy": { "name": "vnets", "count": 2 },
+      "properties": {
+        "addressSpace": { "addressPrefixes": ["[format('10.{0}.0.0/24', add(231, copyIndex()))]"] },
+        "subnets": [{
+          "name": "lab",
+          "properties": {
+            "addressPrefix": "[format('10.{0}.0.0/24', add(231, copyIndex()))]",
+            "defaultOutboundAccess": false
+          }
+        }]
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}-pip-{1}', parameters('runId'), variables('aliases')[copyIndex()])]",
+      "location": "[variables('location')]",
+      "tags": "[variables('tags')]",
+      "sku": { "name": "Standard", "tier": "Regional" },
+      "copy": { "name": "pips", "count": 2 },
+      "properties": { "publicIPAllocationMethod": "Static", "publicIPAddressVersion": "IPv4", "idleTimeoutInMinutes": 4 }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}-nsg-{1}', parameters('runId'), variables('aliases')[copyIndex()])]",
+      "location": "[variables('location')]",
+      "tags": "[variables('tags')]",
+      "copy": { "name": "nsgs", "count": 3 },
+      "properties": {
+        "securityRules": [{
+          "name": "DenyAllInboundUntilHarnessApproved",
+          "properties": {
+            "priority": 100, "direction": "Inbound", "access": "Deny", "protocol": "*",
+            "sourcePortRange": "*", "destinationPortRange": "*",
+            "sourceAddressPrefix": "*", "destinationAddressPrefix": "*"
+          }
+        }]
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}-nic-{1}', parameters('runId'), variables('aliases')[copyIndex()])]",
+      "location": "[variables('location')]",
+      "tags": "[variables('tags')]",
+      "copy": { "name": "nics", "count": 3 },
+      "dependsOn": ["vnets", "pips", "nsgs"],
+      "properties": {
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": false,
+        "networkSecurityGroup": { "id": "[resourceId('Microsoft.Network/networkSecurityGroups', format('{0}-nsg-{1}', parameters('runId'), variables('aliases')[copyIndex()]))]" },
+        "ipConfigurations": [{
+          "name": "primary",
+          "properties": {
+            "primary": true,
+            "privateIPAllocationMethod": "Static",
+            "privateIPAddress": "[variables('privateAddresses')[copyIndex()]]",
+            "subnet": { "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', format('{0}-vnet-{1}', parameters('runId'), variables('vnetIndices')[copyIndex()]), 'lab')]" },
+            "publicIPAddress": "[if(less(copyIndex(), 2), createObject('id', resourceId('Microsoft.Network/publicIPAddresses', format('{0}-pip-{1}', parameters('runId'), variables('aliases')[copyIndex()]))), json('null'))]"
+          }
+        }]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-07-01",
+      "name": "[format('{0}-vm-{1}', parameters('runId'), variables('aliases')[copyIndex()])]",
+      "location": "[variables('location')]",
+      "tags": "[variables('tags')]",
+      "copy": { "name": "vms", "count": 3 },
+      "dependsOn": ["nics"],
+      "properties": {
+        "hardwareProfile": { "vmSize": "[parameters('vmSize')]" },
+        "storageProfile": {
+          "imageReference": { "publisher": "Canonical", "offer": "0001-com-ubuntu-server-jammy", "sku": "22_04-lts-gen2", "version": "latest" },
+          "osDisk": {
+            "name": "[format('{0}-os-{1}', parameters('runId'), variables('aliases')[copyIndex()])]",
+            "createOption": "FromImage", "diskSizeGB": 30, "caching": "ReadWrite", "deleteOption": "Delete",
+            "managedDisk": { "storageAccountType": "StandardSSD_LRS" }
+          }
+        },
+        "osProfile": {
+          "computerName": "[format('bwb-{0}', variables('aliases')[copyIndex()])]",
+          "adminUsername": "azurelabuser",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "provisionVMAgent": true,
+            "ssh": { "publicKeys": [{ "path": "/home/azurelabuser/.ssh/authorized_keys", "keyData": "[parameters('adminPublicKey')]" }] }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [{
+            "id": "[resourceId('Microsoft.Network/networkInterfaces', format('{0}-nic-{1}', parameters('runId'), variables('aliases')[copyIndex()]))]",
+            "properties": { "primary": true, "deleteOption": "Delete" }
+          }]
+        },
+        "diagnosticsProfile": { "bootDiagnostics": { "enabled": false } }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/tags",
+      "apiVersion": "2021-04-01",
+      "name": "default",
+      "scope": "[resourceId('Microsoft.Compute/disks', format('{0}-os-{1}', parameters('runId'), variables('aliases')[copyIndex()]))]",
+      "copy": { "name": "diskTags", "count": 3 },
+      "dependsOn": ["vms"],
+      "properties": { "tags": "[variables('tags')]" }
+    }
+  ],
+  "outputs": {
+    "state": { "type": "string", "value": "Infrastructure only; all inbound denied; transfer harness pending." }
+  }
+}
