@@ -1,0 +1,652 @@
+{
+  "timestampUtc": "2026-10-15T19:08:12.569560+00:00",
+  "finishedUtc": "2026-10-15T19:08:39.669931+00:00",
+  "command": [
+    "resource",
+    "list",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "--query",
+    "[].{name:name,type:type}"
+  ],
+  "stdout": "[\n  {\n    \"name\": \"vwan-threehub\",\n    \"type\": \"Microsoft.Network/virtualWans\"\n  },\n  {\n    \"name\": \"hub-us\",\n    \"type\": \"Microsoft.Network/virtualHubs\"\n  },\n  {\n    \"name\": \"hub-eu\",\n    \"type\": \"Microsoft.Network/virtualHubs\"\n  },\n  {\n    \"name\": \"hub-jp\",\n    \"type\": \"Microsoft.Network/virtualHubs\"\n  },\n  {\n    \"name\": \"nsg-probe-spoke-jp\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"pip-probe-dc-eu\",\n    \"type\": \"Microsoft.Network/publicIPAddresses\"\n  },\n  {\n    \"name\": \"nsg-probe-dc-jp\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"pip-probe-dc-us\",\n    \"type\": \"Microsoft.Network/publicIPAddresses\"\n  },\n  {\n    \"name\": \"pip-router-cn\",\n    \"type\": \"Microsoft.Network/publicIPAddresses\"\n  },\n  {\n    \"name\": \"pip-router-us\",\n    \"type\": \"Microsoft.Network/publicIPAddresses\"\n  },\n  {\n    \"name\": \"nsg-router-us\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"pip-probe-spoke-eu\",\n    \"type\": \"Microsoft.Network/publicIPAddresses\"\n  },\n  {\n    \"name\": \"pip-router-jp\",\n    \"type\": \"Microsoft.Network/publicIPAddresses\"\n  },\n  {\n    \"name\": \"pip-router-eu\",\n    \"type\": \"Microsoft.Network/publicIPAddresses\"\n  },\n  {\n    \"name\": \"nsg-probe-dc-us\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"pip-probe-dc-jp\",\n    \"type\": \"Microsoft.Network/publicIPAddresses\"\n  },\n  {\n    \"name\": \"vnet-spoke-jp\",\n    \"type\": \"Microsoft.Network/virtualNetworks\"\n  },\n  {\n    \"name\": \"nsg-probe-dc-eu\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"nsg-router-cn\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"vnet-transit-eu\",\n    \"type\": \"Microsoft.Network/virtualNetworks\"\n  },\n  {\n    \"name\": \"vnet-transit-us\",\n    \"type\": \"Microsoft.Network/virtualNetworks\"\n  },\n  {\n    \"name\": \"nsg-probe-spoke-eu\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"pip-probe-spoke-jp\",\n    \"type\": \"Microsoft.Network/publicIPAddresses\"\n  },\n  {\n    \"name\": \"rt-dc-eu\",\n    \"type\": \"Microsoft.Network/routeTables\"\n  },\n  {\n    \"name\": \"nsg-router-jp\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"vnet-spoke-eu\",\n    \"type\": \"Microsoft.Network/virtualNetworks\"\n  },\n  {\n    \"name\": \"vnet-dc-cn\",\n    \"type\": \"Microsoft.Network/virtualNetworks\"\n  },\n  {\n    \"name\": \"nsg-router-eu\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"nsg-probe-spoke-us\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"pip-probe-spoke-us\",\n    \"type\": \"Microsoft.Network/publicIPAddresses\"\n  },\n  {\n    \"name\": \"vnet-spoke-us\",\n    \"type\": \"Microsoft.Network/virtualNetworks\"\n  },\n  {\n    \"name\": \"rt-dc-us\",\n    \"type\": \"Microsoft.Network/routeTables\"\n  },\n  {\n    \"name\": \"vnet-dc-jp\",\n    \"type\": \"Microsoft.Network/virtualNetworks\"\n  },\n  {\n    \"name\": \"vnet-dc-us\",\n    \"type\": \"Microsoft.Network/virtualNetworks\"\n  },\n  {\n    \"name\": \"vnet-dc-eu\",\n    \"type\": \"Microsoft.Network/virtualNetworks\"\n  },\n  {\n    \"name\": \"nic-probe-dc-jp\",\n    \"type\": \"Microsoft.Network/networkInterfaces\"\n  },\n  {\n    \"name\": \"nic-router-cn\",\n    \"type\": \"Microsoft.Network/networkInterfaces\"\n  },\n  {\n    \"name\": \"nic-probe-spoke-jp\",\n    \"type\": \"Microsoft.Network/networkInterfaces\"\n  },\n  {\n    \"name\": \"nic-router-jp\",\n    \"type\": \"Microsoft.Network/networkInterfaces\"\n  },\n  {\n    \"name\": \"probe-dc-jp\",\n    \"type\": \"Microsoft.Compute/virtualMachines\"\n  },\n  {\n    \"name\": \"router-jp\",\n    \"type\": \"Microsoft.Compute/virtualMachines\"\n  },\n  {\n    \"name\": \"nic-probe-spoke-us\",\n    \"type\": \"Microsoft.Network/networkInterfaces\"\n  },\n  {\n    \"name\": \"nic-router-us\",\n    \"type\": \"Microsoft.Network/networkInterfaces\"\n  },\n  {\n    \"name\": \"router-cn\",\n    \"type\": \"Microsoft.Compute/virtualMachines\"\n  },\n  {\n    \"name\": \"probe-spoke-jp\",\n    \"type\": \"Microsoft.Compute/virtualMachines\"\n  },\n  {\n    \"name\": \"nic-probe-dc-us\",\n    \"type\": \"Microsoft.Network/networkInterfaces\"\n  },\n  {\n    \"name\": \"osdisk-probe-dc-jp\",\n    \"type\": \"Microsoft.Compute/disks\"\n  },\n  {\n    \"name\": \"osdisk-router-cn\",\n    \"type\": \"Microsoft.Compute/disks\"\n  },\n  {\n    \"name\": \"osdisk-probe-spoke-jp\",\n    \"type\": \"Microsoft.Compute/disks\"\n  },\n  {\n    \"name\": \"nic-probe-dc-eu\",\n    \"type\": \"Microsoft.Network/networkInterfaces\"\n  },\n  {\n    \"name\": \"nic-probe-spoke-eu\",\n    \"type\": \"Microsoft.Network/networkInterfaces\"\n  },\n  {\n    \"name\": \"probe-spoke-us\",\n    \"type\": \"Microsoft.Compute/virtualMachines\"\n  },\n  {\n    \"name\": \"router-us\",\n    \"type\": \"Microsoft.Compute/virtualMachines\"\n  },\n  {\n    \"name\": \"nic-router-eu\",\n    \"type\": \"Microsoft.Network/networkInterfaces\"\n  },\n  {\n    \"name\": \"probe-dc-us\",\n    \"type\": \"Microsoft.Compute/virtualMachines\"\n  },\n  {\n    \"name\": \"osdisk-probe-spoke-us\",\n    \"type\": \"Microsoft.Compute/disks\"\n  },\n  {\n    \"name\": \"osdisk-router-us\",\n    \"type\": \"Microsoft.Compute/disks\"\n  },\n  {\n    \"name\": \"osdisk-probe-dc-us\",\n    \"type\": \"Microsoft.Compute/disks\"\n  },\n  {\n    \"name\": \"probe-dc-eu\",\n    \"type\": \"Microsoft.Compute/virtualMachines\"\n  },\n  {\n    \"name\": \"probe-spoke-eu\",\n    \"type\": \"Microsoft.Compute/virtualMachines\"\n  },\n  {\n    \"name\": \"router-eu\",\n    \"type\": \"Microsoft.Compute/virtualMachines\"\n  },\n  {\n    \"name\": \"osdisk-probe-spoke-eu\",\n    \"type\": \"Microsoft.Compute/disks\"\n  },\n  {\n    \"name\": \"osdisk-probe-dc-eu\",\n    \"type\": \"Microsoft.Compute/disks\"\n  },\n  {\n    \"name\": \"osdisk-router-eu\",\n    \"type\": \"Microsoft.Compute/disks\"\n  },\n  {\n    \"name\": \"osdisk-router-jp\",\n    \"type\": \"Microsoft.Compute/disks\"\n  },\n  {\n    \"name\": \"probe-dc-us/MDE.Linux\",\n    \"type\": \"Microsoft.Compute/virtualMachines/extensions\"\n  },\n  {\n    \"name\": \"probe-spoke-us/MDE.Linux\",\n    \"type\": \"Microsoft.Compute/virtualMachines/extensions\"\n  },\n  {\n    \"name\": \"probe-spoke-jp/MDE.Linux\",\n    \"type\": \"Microsoft.Compute/virtualMachines/extensions\"\n  },\n  {\n    \"name\": \"probe-spoke-eu/MDE.Linux\",\n    \"type\": \"Microsoft.Compute/virtualMachines/extensions\"\n  },\n  {\n    \"name\": \"router-us/MDE.Linux\",\n    \"type\": \"Microsoft.Compute/virtualMachines/extensions\"\n  },\n  {\n    \"name\": \"router-cn/MDE.Linux\",\n    \"type\": \"Microsoft.Compute/virtualMachines/extensions\"\n  },\n  {\n    \"name\": \"router-eu/MDE.Linux\",\n    \"type\": \"Microsoft.Compute/virtualMachines/extensions\"\n  },\n  {\n    \"name\": \"probe-dc-jp/MDE.Linux\",\n    \"type\": \"Microsoft.Compute/virtualMachines/extensions\"\n  },\n  {\n    \"name\": \"router-jp/MDE.Linux\",\n    \"type\": \"Microsoft.Compute/virtualMachines/extensions\"\n  },\n  {\n    \"name\": \"probe-dc-eu/MDE.Linux\",\n    \"type\": \"Microsoft.Compute/virtualMachines/extensions\"\n  },\n  {\n    \"name\": \"vpngw-jp\",\n    \"type\": \"Microsoft.Network/vpnGateways\"\n  },\n  {\n    \"name\": \"site-dc-jp\",\n    \"type\": \"Microsoft.Network/vpnSites\"\n  },\n  {\n    \"name\": \"vnet-dc-eu-workload-nsg-westeurope\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"vnet-dc-cn-workload-nsg-japaneast\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"vnet-dc-jp-workload-nsg-japaneast\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"vnet-spoke-eu-workload-nsg-westeurope\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"vnet-transit-us-workload-nsg-northcentralus\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"vnet-dc-us-workload-nsg-northcentralus\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"vnet-spoke-jp-workload-nsg-japaneast\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"vnet-spoke-us-workload-nsg-northcentralus\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"vnet-transit-eu-workload-nsg-westeurope\",\n    \"type\": \"Microsoft.Network/networkSecurityGroups\"\n  },\n  {\n    \"name\": \"probe-dc-jp/guest-stage\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-spoke-jp/guest-stage\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-spoke-us/guest-stage\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-spoke-eu/guest-stage\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-us/guest-stage\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-dc-eu/guest-stage\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-eu/guest-stage\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-cn/guest-stage\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-dc-us/guest-stage\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-stage\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-dc-eu/guest-activate\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-activate\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-spoke-us/guest-activate\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-us/guest-activate\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-spoke-jp/guest-activate\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-dc-us/guest-activate\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-dc-jp/guest-activate\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-cn/guest-activate\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-spoke-eu/guest-activate\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-eu/guest-activate\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-cn/guest-restore\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-restore\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-spoke-eu/guest-restore\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-dc-eu/guest-restore\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-spoke-us/guest-restore\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-dc-us/guest-restore\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-us/guest-restore\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-eu/guest-restore\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-dc-jp/guest-restore\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-spoke-jp/guest-restore\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-dc-us/guest-b0-20261014t180438z\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-dc-eu/guest-b0-20261014t180438z\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-dc-jp/guest-b0-20261014t180438z\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-eu/guest-b0-20261014t180438z\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-us/guest-b0-20261014t180438z\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-spoke-jp/guest-b0-20261014t180438z\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-spoke-us/guest-b0-20261014t180438z\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"probe-spoke-eu/guest-b0-20261014t180438z\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-cn/guest-b0-20261014t180438z\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-b0-20261014t180438z\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-us/guest-b0-small-20261014t180438z\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-b0-small-20261014t180438z\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-eu/guest-b0-small-20261014t180438z\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-cn/guest-b0-small-20261014t180438z\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-before-a\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-before-b\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-cn/guest-aspath-proof-before\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-proof-before\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-eu/guest-aspath-proof-before\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-us/guest-aspath-proof-before\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-zero-a\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-zero-b\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-1-a\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-1-b\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-2-a\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-2-b\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-3-a\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-3-b\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-restore-a\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-restore-b\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-proof-after\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-us/guest-aspath-proof-after\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-eu/guest-aspath-proof-after\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-cn/guest-aspath-proof-after\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-boundary-before-a\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-boundary-before-b\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-cn/guest-aspath-proof-boundary-before\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-us/guest-aspath-proof-boundary-before\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-proof-boundary-before\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-eu/guest-aspath-proof-boundary-before\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-4-a\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-4-b\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  },\n  {\n    \"name\": \"router-jp/guest-aspath-restore-error-a\",\n    \"type\": \"Microsoft.Compute/virtualMachines/runCommands\"\n  }\n]\n",
+  "result": [
+    {
+      "name": "vwan-threehub",
+      "type": "Microsoft.Network/virtualWans"
+    },
+    {
+      "name": "hub-us",
+      "type": "Microsoft.Network/virtualHubs"
+    },
+    {
+      "name": "hub-eu",
+      "type": "Microsoft.Network/virtualHubs"
+    },
+    {
+      "name": "hub-jp",
+      "type": "Microsoft.Network/virtualHubs"
+    },
+    {
+      "name": "nsg-probe-spoke-jp",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "pip-probe-dc-eu",
+      "type": "Microsoft.Network/publicIPAddresses"
+    },
+    {
+      "name": "nsg-probe-dc-jp",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "pip-probe-dc-us",
+      "type": "Microsoft.Network/publicIPAddresses"
+    },
+    {
+      "name": "pip-router-cn",
+      "type": "Microsoft.Network/publicIPAddresses"
+    },
+    {
+      "name": "pip-router-us",
+      "type": "Microsoft.Network/publicIPAddresses"
+    },
+    {
+      "name": "nsg-router-us",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "pip-probe-spoke-eu",
+      "type": "Microsoft.Network/publicIPAddresses"
+    },
+    {
+      "name": "pip-router-jp",
+      "type": "Microsoft.Network/publicIPAddresses"
+    },
+    {
+      "name": "pip-router-eu",
+      "type": "Microsoft.Network/publicIPAddresses"
+    },
+    {
+      "name": "nsg-probe-dc-us",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "pip-probe-dc-jp",
+      "type": "Microsoft.Network/publicIPAddresses"
+    },
+    {
+      "name": "vnet-spoke-jp",
+      "type": "Microsoft.Network/virtualNetworks"
+    },
+    {
+      "name": "nsg-probe-dc-eu",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "nsg-router-cn",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "vnet-transit-eu",
+      "type": "Microsoft.Network/virtualNetworks"
+    },
+    {
+      "name": "vnet-transit-us",
+      "type": "Microsoft.Network/virtualNetworks"
+    },
+    {
+      "name": "nsg-probe-spoke-eu",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "pip-probe-spoke-jp",
+      "type": "Microsoft.Network/publicIPAddresses"
+    },
+    {
+      "name": "rt-dc-eu",
+      "type": "Microsoft.Network/routeTables"
+    },
+    {
+      "name": "nsg-router-jp",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "vnet-spoke-eu",
+      "type": "Microsoft.Network/virtualNetworks"
+    },
+    {
+      "name": "vnet-dc-cn",
+      "type": "Microsoft.Network/virtualNetworks"
+    },
+    {
+      "name": "nsg-router-eu",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "nsg-probe-spoke-us",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "pip-probe-spoke-us",
+      "type": "Microsoft.Network/publicIPAddresses"
+    },
+    {
+      "name": "vnet-spoke-us",
+      "type": "Microsoft.Network/virtualNetworks"
+    },
+    {
+      "name": "rt-dc-us",
+      "type": "Microsoft.Network/routeTables"
+    },
+    {
+      "name": "vnet-dc-jp",
+      "type": "Microsoft.Network/virtualNetworks"
+    },
+    {
+      "name": "vnet-dc-us",
+      "type": "Microsoft.Network/virtualNetworks"
+    },
+    {
+      "name": "vnet-dc-eu",
+      "type": "Microsoft.Network/virtualNetworks"
+    },
+    {
+      "name": "nic-probe-dc-jp",
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "name": "nic-router-cn",
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "name": "nic-probe-spoke-jp",
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "name": "nic-router-jp",
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "name": "probe-dc-jp",
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "name": "router-jp",
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "name": "nic-probe-spoke-us",
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "name": "nic-router-us",
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "name": "router-cn",
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "name": "probe-spoke-jp",
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "name": "nic-probe-dc-us",
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "name": "osdisk-probe-dc-jp",
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "name": "osdisk-router-cn",
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "name": "osdisk-probe-spoke-jp",
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "name": "nic-probe-dc-eu",
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "name": "nic-probe-spoke-eu",
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "name": "probe-spoke-us",
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "name": "router-us",
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "name": "nic-router-eu",
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "name": "probe-dc-us",
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "name": "osdisk-probe-spoke-us",
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "name": "osdisk-router-us",
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "name": "osdisk-probe-dc-us",
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "name": "probe-dc-eu",
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "name": "probe-spoke-eu",
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "name": "router-eu",
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "name": "osdisk-probe-spoke-eu",
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "name": "osdisk-probe-dc-eu",
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "name": "osdisk-router-eu",
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "name": "osdisk-router-jp",
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "name": "probe-dc-us/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions"
+    },
+    {
+      "name": "probe-spoke-us/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions"
+    },
+    {
+      "name": "probe-spoke-jp/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions"
+    },
+    {
+      "name": "probe-spoke-eu/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions"
+    },
+    {
+      "name": "router-us/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions"
+    },
+    {
+      "name": "router-cn/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions"
+    },
+    {
+      "name": "router-eu/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions"
+    },
+    {
+      "name": "probe-dc-jp/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions"
+    },
+    {
+      "name": "router-jp/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions"
+    },
+    {
+      "name": "probe-dc-eu/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions"
+    },
+    {
+      "name": "vpngw-jp",
+      "type": "Microsoft.Network/vpnGateways"
+    },
+    {
+      "name": "site-dc-jp",
+      "type": "Microsoft.Network/vpnSites"
+    },
+    {
+      "name": "vnet-dc-eu-workload-nsg-westeurope",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "vnet-dc-cn-workload-nsg-japaneast",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "vnet-dc-jp-workload-nsg-japaneast",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "vnet-spoke-eu-workload-nsg-westeurope",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "vnet-transit-us-workload-nsg-northcentralus",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "vnet-dc-us-workload-nsg-northcentralus",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "vnet-spoke-jp-workload-nsg-japaneast",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "vnet-spoke-us-workload-nsg-northcentralus",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "vnet-transit-eu-workload-nsg-westeurope",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "name": "probe-dc-jp/guest-stage",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-spoke-jp/guest-stage",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-spoke-us/guest-stage",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-spoke-eu/guest-stage",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-us/guest-stage",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-dc-eu/guest-stage",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-eu/guest-stage",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-cn/guest-stage",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-dc-us/guest-stage",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-stage",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-dc-eu/guest-activate",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-activate",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-spoke-us/guest-activate",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-us/guest-activate",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-spoke-jp/guest-activate",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-dc-us/guest-activate",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-dc-jp/guest-activate",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-cn/guest-activate",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-spoke-eu/guest-activate",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-eu/guest-activate",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-cn/guest-restore",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-restore",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-spoke-eu/guest-restore",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-dc-eu/guest-restore",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-spoke-us/guest-restore",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-dc-us/guest-restore",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-us/guest-restore",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-eu/guest-restore",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-dc-jp/guest-restore",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-spoke-jp/guest-restore",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-dc-us/guest-b0-20261014t180438z",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-dc-eu/guest-b0-20261014t180438z",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-dc-jp/guest-b0-20261014t180438z",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-eu/guest-b0-20261014t180438z",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-us/guest-b0-20261014t180438z",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-spoke-jp/guest-b0-20261014t180438z",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-spoke-us/guest-b0-20261014t180438z",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "probe-spoke-eu/guest-b0-20261014t180438z",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-cn/guest-b0-20261014t180438z",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-b0-20261014t180438z",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-us/guest-b0-small-20261014t180438z",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-b0-small-20261014t180438z",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-eu/guest-b0-small-20261014t180438z",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-cn/guest-b0-small-20261014t180438z",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-before-a",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-before-b",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-cn/guest-aspath-proof-before",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-proof-before",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-eu/guest-aspath-proof-before",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-us/guest-aspath-proof-before",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-zero-a",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-zero-b",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-1-a",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-1-b",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-2-a",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-2-b",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-3-a",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-3-b",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-restore-a",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-restore-b",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-proof-after",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-us/guest-aspath-proof-after",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-eu/guest-aspath-proof-after",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-cn/guest-aspath-proof-after",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-boundary-before-a",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-boundary-before-b",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-cn/guest-aspath-proof-boundary-before",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-us/guest-aspath-proof-boundary-before",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-proof-boundary-before",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-eu/guest-aspath-proof-boundary-before",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-4-a",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-4-b",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    },
+    {
+      "name": "router-jp/guest-aspath-restore-error-a",
+      "type": "Microsoft.Compute/virtualMachines/runCommands"
+    }
+  ],
+  "sha256": "602a9b3764e20d2c85d84db58db77c87c934996e870b5e2f84588f3c43f13f41"
+}

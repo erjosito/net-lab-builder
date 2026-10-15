@@ -1,0 +1,54 @@
+{
+  "timestampUtc": "2026-10-15T19:27:52.278640+00:00",
+  "finishedUtc": "2026-10-15T19:27:56.153676+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-us",
+    "--url-parameters",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\aspath-query.json"
+  ],
+  "stdout": "{\n  \"etag\": \"W/\\\"e546414f-2789-44f5-b70e-f1a20e8acf3c\\\"\",\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-us\",\n  \"location\": \"northcentralus\",\n  \"name\": \"fw-us\",\n  \"properties\": {\n    \"additionalProperties\": {},\n    \"firewallPolicy\": {\n      \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/firewallPolicies/policy-threehub\"\n    },\n    \"hubIPAddresses\": {\n      \"privateIPAddress\": \"10.250.2.132\",\n      \"publicIPs\": {\n        \"addresses\": [\n          {\n            \"address\": \"20.221.204.94\"\n          }\n        ],\n        \"count\": 1\n      }\n    },\n    \"provisioningState\": \"Succeeded\",\n    \"sku\": {\n      \"name\": \"AZFW_Hub\",\n      \"tier\": \"Standard\"\n    },\n    \"virtualHub\": {\n      \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us\"\n    }\n  },\n  \"tags\": {\n    \"created_by\": \"copilot-lab\",\n    \"ephemeral\": \"true\",\n    \"lab\": \"true\",\n    \"owner\": \"jose\",\n    \"run_id\": \"20261014-threehub\"\n  },\n  \"type\": \"Microsoft.Network/azureFirewalls\"\n}\n",
+  "result": {
+    "etag": "W/\"e546414f-2789-44f5-b70e-f1a20e8acf3c\"",
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-us",
+    "location": "northcentralus",
+    "name": "fw-us",
+    "properties": {
+      "additionalProperties": {},
+      "firewallPolicy": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/firewallPolicies/policy-threehub"
+      },
+      "hubIPAddresses": {
+        "privateIPAddress": "10.250.2.132",
+        "publicIPs": {
+          "addresses": [
+            {
+              "address": "20.221.204.94"
+            }
+          ],
+          "count": 1
+        }
+      },
+      "provisioningState": "Succeeded",
+      "sku": {
+        "name": "AZFW_Hub",
+        "tier": "Standard"
+      },
+      "virtualHub": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us"
+      }
+    },
+    "tags": {
+      "created_by": "copilot-lab",
+      "ephemeral": "true",
+      "lab": "true",
+      "owner": "jose",
+      "run_id": "20261014-threehub"
+    },
+    "type": "Microsoft.Network/azureFirewalls"
+  },
+  "sha256": "1e493c0621ddd0a29f1d177f58a642465ad0fc6c4674e8b92a4bfacb6f15a675"
+}

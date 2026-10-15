@@ -1,0 +1,212 @@
+{
+  "timestampUtc": "2026-10-15T19:20:16.149718+00:00",
+  "finishedUtc": "2026-10-15T19:20:23.725323+00:00",
+  "command": [
+    "deployment",
+    "group",
+    "show",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "--name",
+    "threehub-private-routing-intent"
+  ],
+  "stdout": "{\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Resources/deployments/threehub-private-routing-intent\",\n  \"location\": null,\n  \"name\": \"threehub-private-routing-intent\",\n  \"properties\": {\n    \"correlationId\": \"ab19b9b3-def5-4c91-8b74-c337be412e8c\",\n    \"debugSetting\": null,\n    \"dependencies\": [\n      {\n        \"dependsOn\": [\n          {\n            \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/firewallPolicies/policy-threehub\",\n            \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n            \"resourceName\": \"policy-threehub\",\n            \"resourceType\": \"Microsoft.Network/firewallPolicies\"\n          }\n        ],\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/firewallPolicies/policy-threehub/ruleCollectionGroups/lab-private\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"resourceName\": \"policy-threehub/lab-private\",\n        \"resourceType\": \"Microsoft.Network/firewallPolicies/ruleCollectionGroups\"\n      },\n      {\n        \"dependsOn\": [\n          {\n            \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/firewallPolicies/policy-threehub/ruleCollectionGroups/lab-private\",\n            \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n            \"resourceName\": \"policy-threehub/lab-private\",\n            \"resourceType\": \"Microsoft.Network/firewallPolicies/ruleCollectionGroups\"\n          }\n        ],\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-eu\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"resourceName\": \"fw-eu\",\n        \"resourceType\": \"Microsoft.Network/azureFirewalls\"\n      },\n      {\n        \"dependsOn\": [\n          {\n            \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-eu\",\n            \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n            \"resourceName\": \"fw-eu\",\n            \"resourceType\": \"Microsoft.Network/azureFirewalls\"\n          }\n        ],\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/routingIntent/private-traffic\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"resourceName\": \"hub-eu/private-traffic\",\n        \"resourceType\": \"Microsoft.Network/virtualHubs/routingIntent\"\n      },\n      {\n        \"dependsOn\": [\n          {\n            \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/firewallPolicies/policy-threehub/ruleCollectionGroups/lab-private\",\n            \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n            \"resourceName\": \"policy-threehub/lab-private\",\n            \"resourceType\": \"Microsoft.Network/firewallPolicies/ruleCollectionGroups\"\n          }\n        ],\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-us\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"resourceName\": \"fw-us\",\n        \"resourceType\": \"Microsoft.Network/azureFirewalls\"\n      },\n      {\n        \"dependsOn\": [\n          {\n            \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-us\",\n            \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n            \"resourceName\": \"fw-us\",\n            \"resourceType\": \"Microsoft.Network/azureFirewalls\"\n          }\n        ],\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/routingIntent/private-traffic\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"resourceName\": \"hub-us/private-traffic\",\n        \"resourceType\": \"Microsoft.Network/virtualHubs/routingIntent\"\n      },\n      {\n        \"dependsOn\": [\n          {\n            \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/firewallPolicies/policy-threehub/ruleCollectionGroups/lab-private\",\n            \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n            \"resourceName\": \"policy-threehub/lab-private\",\n            \"resourceType\": \"Microsoft.Network/firewallPolicies/ruleCollectionGroups\"\n          }\n        ],\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-jp\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"resourceName\": \"fw-jp\",\n        \"resourceType\": \"Microsoft.Network/azureFirewalls\"\n      },\n      {\n        \"dependsOn\": [\n          {\n            \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-jp\",\n            \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n            \"resourceName\": \"fw-jp\",\n            \"resourceType\": \"Microsoft.Network/azureFirewalls\"\n          }\n        ],\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/routingIntent/private-traffic\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"resourceName\": \"hub-jp/private-traffic\",\n        \"resourceType\": \"Microsoft.Network/virtualHubs/routingIntent\"\n      }\n    ],\n    \"diagnostics\": null,\n    \"duration\": \"PT10M48.7988263S\",\n    \"error\": null,\n    \"extensions\": null,\n    \"mode\": \"Incremental\",\n    \"onErrorDeployment\": null,\n    \"outputResources\": null,\n    \"outputs\": null,\n    \"parameters\": {},\n    \"parametersLink\": null,\n    \"providers\": [\n      {\n        \"id\": null,\n        \"namespace\": \"Microsoft.Network\",\n        \"providerAuthorizationConsentState\": null,\n        \"registrationPolicy\": null,\n        \"registrationState\": null,\n        \"resourceTypes\": [\n          {\n            \"aliases\": null,\n            \"apiProfiles\": null,\n            \"apiVersions\": null,\n            \"capabilities\": null,\n            \"defaultApiVersion\": null,\n            \"locationMappings\": null,\n            \"locations\": [\n              \"westeurope\"\n            ],\n            \"properties\": null,\n            \"resourceType\": \"firewallPolicies\",\n            \"zoneMappings\": null\n          },\n          {\n            \"aliases\": null,\n            \"apiProfiles\": null,\n            \"apiVersions\": null,\n            \"capabilities\": null,\n            \"defaultApiVersion\": null,\n            \"locationMappings\": null,\n            \"locations\": [\n              null\n            ],\n            \"properties\": null,\n            \"resourceType\": \"firewallPolicies/ruleCollectionGroups\",\n            \"zoneMappings\": null\n          },\n          {\n            \"aliases\": null,\n            \"apiProfiles\": null,\n            \"apiVersions\": null,\n            \"capabilities\": null,\n            \"defaultApiVersion\": null,\n            \"locationMappings\": null,\n            \"locations\": [\n              \"westeurope\",\n              \"northcentralus\",\n              \"japaneast\"\n            ],\n            \"properties\": null,\n            \"resourceType\": \"azureFirewalls\",\n            \"zoneMappings\": null\n          },\n          {\n            \"aliases\": null,\n            \"apiProfiles\": null,\n            \"apiVersions\": null,\n            \"capabilities\": null,\n            \"defaultApiVersion\": null,\n            \"locationMappings\": null,\n            \"locations\": [\n              null\n            ],\n            \"properties\": null,\n            \"resourceType\": \"virtualHubs/routingIntent\",\n            \"zoneMappings\": null\n          }\n        ]\n      }\n    ],\n    \"provisioningState\": \"Running\",\n    \"templateHash\": \"16550899241756646340\",\n    \"templateLink\": null,\n    \"timestamp\": \"2026-10-15T19:09:23.070757+00:00\",\n    \"validatedResources\": null,\n    \"validationLevel\": null\n  },\n  \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n  \"tags\": null,\n  \"type\": \"Microsoft.Resources/deployments\"\n}\n",
+  "result": {
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Resources/deployments/threehub-private-routing-intent",
+    "location": null,
+    "name": "threehub-private-routing-intent",
+    "properties": {
+      "correlationId": "ab19b9b3-def5-4c91-8b74-c337be412e8c",
+      "debugSetting": null,
+      "dependencies": [
+        {
+          "dependsOn": [
+            {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/firewallPolicies/policy-threehub",
+              "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+              "resourceName": "policy-threehub",
+              "resourceType": "Microsoft.Network/firewallPolicies"
+            }
+          ],
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/firewallPolicies/policy-threehub/ruleCollectionGroups/lab-private",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "resourceName": "policy-threehub/lab-private",
+          "resourceType": "Microsoft.Network/firewallPolicies/ruleCollectionGroups"
+        },
+        {
+          "dependsOn": [
+            {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/firewallPolicies/policy-threehub/ruleCollectionGroups/lab-private",
+              "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+              "resourceName": "policy-threehub/lab-private",
+              "resourceType": "Microsoft.Network/firewallPolicies/ruleCollectionGroups"
+            }
+          ],
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-eu",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "resourceName": "fw-eu",
+          "resourceType": "Microsoft.Network/azureFirewalls"
+        },
+        {
+          "dependsOn": [
+            {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-eu",
+              "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+              "resourceName": "fw-eu",
+              "resourceType": "Microsoft.Network/azureFirewalls"
+            }
+          ],
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/routingIntent/private-traffic",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "resourceName": "hub-eu/private-traffic",
+          "resourceType": "Microsoft.Network/virtualHubs/routingIntent"
+        },
+        {
+          "dependsOn": [
+            {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/firewallPolicies/policy-threehub/ruleCollectionGroups/lab-private",
+              "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+              "resourceName": "policy-threehub/lab-private",
+              "resourceType": "Microsoft.Network/firewallPolicies/ruleCollectionGroups"
+            }
+          ],
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-us",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "resourceName": "fw-us",
+          "resourceType": "Microsoft.Network/azureFirewalls"
+        },
+        {
+          "dependsOn": [
+            {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-us",
+              "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+              "resourceName": "fw-us",
+              "resourceType": "Microsoft.Network/azureFirewalls"
+            }
+          ],
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/routingIntent/private-traffic",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "resourceName": "hub-us/private-traffic",
+          "resourceType": "Microsoft.Network/virtualHubs/routingIntent"
+        },
+        {
+          "dependsOn": [
+            {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/firewallPolicies/policy-threehub/ruleCollectionGroups/lab-private",
+              "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+              "resourceName": "policy-threehub/lab-private",
+              "resourceType": "Microsoft.Network/firewallPolicies/ruleCollectionGroups"
+            }
+          ],
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-jp",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "resourceName": "fw-jp",
+          "resourceType": "Microsoft.Network/azureFirewalls"
+        },
+        {
+          "dependsOn": [
+            {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-jp",
+              "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+              "resourceName": "fw-jp",
+              "resourceType": "Microsoft.Network/azureFirewalls"
+            }
+          ],
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/routingIntent/private-traffic",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "resourceName": "hub-jp/private-traffic",
+          "resourceType": "Microsoft.Network/virtualHubs/routingIntent"
+        }
+      ],
+      "diagnostics": null,
+      "duration": "PT10M48.7988263S",
+      "error": null,
+      "extensions": null,
+      "mode": "Incremental",
+      "onErrorDeployment": null,
+      "outputResources": null,
+      "outputs": null,
+      "parameters": {},
+      "parametersLink": null,
+      "providers": [
+        {
+          "id": null,
+          "namespace": "Microsoft.Network",
+          "providerAuthorizationConsentState": null,
+          "registrationPolicy": null,
+          "registrationState": null,
+          "resourceTypes": [
+            {
+              "aliases": null,
+              "apiProfiles": null,
+              "apiVersions": null,
+              "capabilities": null,
+              "defaultApiVersion": null,
+              "locationMappings": null,
+              "locations": [
+                "westeurope"
+              ],
+              "properties": null,
+              "resourceType": "firewallPolicies",
+              "zoneMappings": null
+            },
+            {
+              "aliases": null,
+              "apiProfiles": null,
+              "apiVersions": null,
+              "capabilities": null,
+              "defaultApiVersion": null,
+              "locationMappings": null,
+              "locations": [
+                null
+              ],
+              "properties": null,
+              "resourceType": "firewallPolicies/ruleCollectionGroups",
+              "zoneMappings": null
+            },
+            {
+              "aliases": null,
+              "apiProfiles": null,
+              "apiVersions": null,
+              "capabilities": null,
+              "defaultApiVersion": null,
+              "locationMappings": null,
+              "locations": [
+                "westeurope",
+                "northcentralus",
+                "japaneast"
+              ],
+              "properties": null,
+              "resourceType": "azureFirewalls",
+              "zoneMappings": null
+            },
+            {
+              "aliases": null,
+              "apiProfiles": null,
+              "apiVersions": null,
+              "capabilities": null,
+              "defaultApiVersion": null,
+              "locationMappings": null,
+              "locations": [
+                null
+              ],
+              "properties": null,
+              "resourceType": "virtualHubs/routingIntent",
+              "zoneMappings": null
+            }
+          ]
+        }
+      ],
+      "provisioningState": "Running",
+      "templateHash": "16550899241756646340",
+      "templateLink": null,
+      "timestamp": "2026-10-15T19:09:23.070757+00:00",
+      "validatedResources": null,
+      "validationLevel": null
+    },
+    "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+    "tags": null,
+    "type": "Microsoft.Resources/deployments"
+  },
+  "sha256": "13dade23a404c94adcff810dea644a10997540326308b939c553ef58d266c41c"
+}

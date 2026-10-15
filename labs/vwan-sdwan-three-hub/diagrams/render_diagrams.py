@@ -84,8 +84,8 @@ class Scene:
             f'height="{self.height}" viewBox="0 0 {self.width} {self.height}" '
             f'role="img" aria-labelledby="title desc">'
             f'<title id="title">{html.escape(self.name)}</title>'
-            '<desc id="desc">Offline lab documentation. Current topology is '
-            'unsecured; routing intent comparison is planned, not tested.</desc>'
+            '<desc id="desc">Three secured hubs with Standard Azure Firewall '
+            'and PrivateTraffic routing intent. Static-VPN reproduction is pending.</desc>'
             f'<rect width="{self.width}" height="{self.height}" fill="white"/>'
             '<g font-family="Arial, Helvetica, sans-serif">'
             + "".join(self.svg) + "</g></svg>\n", encoding="utf-8")
@@ -94,7 +94,7 @@ class Scene:
 def topology():
     s = Scene("topology", 1800, 1980)
     s.text(40, 20, "Three-hub Virtual WAN / private SD-WAN model", 30, 1700)
-    s.text(40, 90, "CURRENT: unsecured, no firewall / no RI. IN PROGRESS; recovered mesh, resources retained.", 21, 1700)
+    s.text(40, 90, "CURRENT: three Standard firewalls + PrivateTraffic RI. Static-VPN reproduction remains in progress.", 21, 1700)
     s.box(30, 180, 1740, 450, color=BLUE)
     s.text(50, 190, "AZURE VIRTUAL WAN  |  vwan-threehub (Standard)  |  hub ASN 65515", 20, 1700)
     columns = [70, 680, 1290]
@@ -107,7 +107,7 @@ def topology():
               BLUE, "#a5d8ff", 18)
         s.line([(x + 220, 380), (x + 220, 430)])
         s.box(x, 430, 440, 130,
-              f"hub-{site.lower()} | {region}\n{hub_prefix} | ASN 65515",
+              f"hub-{site.lower()} | {region}\n{hub_prefix} | fw-{site.lower()} | Private RI",
               BLUE, "#a5d8ff", 18)
     s.line([(510, 485), (680, 485)])
     s.line([(1120, 485), (1290, 485)])
@@ -162,11 +162,11 @@ def topology():
 def routing_intent():
     s = Scene("routing-intent", 1800, 1510)
     s.text(40, 20, "Routing intent comparison: collect the right evidence", 30, 1700)
-    s.text(40, 90, "LEFT: current unsecured model. RIGHT: PLANNED only — no firewall / RI deployment or test yet.", 21, 1700)
+    s.text(40, 90, "LEFT: historical unsecured baseline. RIGHT: deployed PrivateTraffic RI; validation in progress.", 21, 1700)
     s.box(30, 190, 840, 1150, color=BLUE)
     s.box(930, 190, 840, 1150, color=ORANGE)
-    s.text(60, 210, "WITHOUT RI | current topology, not current health", 23, 790)
-    s.text(960, 210, "WITH PRIVATE RI | PLANNED / NOT TESTED", 23, 790)
+    s.text(60, 210, "WITHOUT RI | HISTORICAL BASELINE", 23, 790)
+    s.text(960, 210, "WITH PRIVATE RI | DEPLOYED", 23, 790)
     s.box(90, 320, 720, 180,
           "Azure spoke -> its hub\nRepeat for EU, US, JP\nRecord actual HRP + RI metadata each step", BLUE, "#a5d8ff", 20)
     s.box(990, 320, 720, 180,
@@ -177,7 +177,7 @@ def routing_intent():
           "READ: hub connection effective routes\nresourceId = actual conn-spoke-* ARM ID\nresource-type = HubVirtualNetworkConnection\nPreserve full winning prefixes / AS paths / next hops",
           BLUE, "#a5d8ff", 20)
     s.box(990, 590, 720, 230,
-          "Default table: private aggregates -> firewall\nNOT post-inspection branch winners\nAZFW_Hub Standard firewall (planned)\nOne firewall per hub; shared scoped policy",
+          "Default table: private aggregates -> firewall\nNOT post-inspection branch winners\nAZFW_Hub Standard firewall (deployed)\nOne firewall per hub; shared scoped policy",
           ORANGE, "#fff3bf", 20)
     s.line([(450, 810), (450, 900)])
     s.line([(1350, 810), (1350, 900)], ORANGE, True)
@@ -185,12 +185,12 @@ def routing_intent():
           "Optional: defaultRouteTable effective view\nKnown provider result value=[] is visibility only\nDo not infer zero learned routes or forwarding\nCorrelate BIRD, FIB, NIC, VPN and packet evidence",
           GRAY, "#dee2e6", 20)
     s.box(990, 900, 720, 230,
-          "DECISIVE READ: owning hub effectiveRoutes\nresourceId = ACTUAL Azure Firewall ARM ID\nresource-type = AzureFirewall\nThen correlate firewall flows + ingress candidates",
+          "DECISIVE READ: owning hub effectiveRoutes\nresourceId = ACTUAL Azure Firewall ARM ID\nresource-type = AzureFirewalls (PLURAL)\nThen correlate firewall flows + ingress candidates",
           ORANGE, "#fff3bf", 20)
     s.text(70, 1170, "CLI: az network vhub get-effective-routes\n-g <RG> -n <owning-hub> --resource-id <ARM-ID>\n--resource-type HubVirtualNetworkConnection -o json", 18, 780)
-    s.text(970, 1170, "CLI: az network vhub get-effective-routes\n-g <RG> -n <owning-hub> --resource-id <FIREWALL-ID>\n--resource-type AzureFirewall -o json", 18, 780)
+    s.text(970, 1170, "CLI: az network vhub get-effective-routes\n-g <RG> -n <owning-hub> --resource-id <FIREWALL-ID>\n--resource-type AzureFirewalls -o json", 18, 780)
     s.text(50, 1370, "Firewall show resolves identity ONLY; it is not route retrieval. Wait for LRO completion; HTTP 202 alone is not evidence.", 20, 1700)
-    s.text(50, 1430, "No measured RI winner, threshold, inspection, symmetry or reachability result is claimed. See README for copy-paste PowerShell.", 20, 1700)
+    s.text(50, 1430, "Paired RI routes measured; traffic 18/24. Static-VPN reproduction, prepend thresholds and symmetry remain pending.", 20, 1700)
     s.save()
 
 

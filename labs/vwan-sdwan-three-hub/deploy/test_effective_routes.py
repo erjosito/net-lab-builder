@@ -40,7 +40,7 @@ class EffectiveRouteTests(unittest.TestCase):
         effective_routes.collect(lambda args, label: calls.append(args) or {"value": []},
                                  "sub", "rg", "jp", "secured", firewall_id=firewall)
         self.assertEqual(calls[0][calls[0].index("--resource-id") + 1], firewall)
-        self.assertEqual(calls[0][calls[0].index("--resource-type") + 1], "AzureFirewall")
+        self.assertEqual(calls[0][calls[0].index("--resource-type") + 1], "AzureFirewalls")
         with self.assertRaises(ValueError):
             effective_routes.collect(None, "sub", "rg", "jp", "invalid",
                                      firewall_id="https://management.azure.com" + firewall)

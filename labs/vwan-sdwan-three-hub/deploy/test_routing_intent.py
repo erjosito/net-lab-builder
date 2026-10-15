@@ -1,10 +1,24 @@
 import copy
 import unittest
+from unittest.mock import patch
 
 import routing_intent
 
 
 class RoutingIntentTests(unittest.TestCase):
+    def test_new_resources_require_owned_group_and_absent_targets(self):
+        with patch.object(routing_intent.sweep, "az", side_effect=[
+                routing_intent.control.TAGS, []]):
+            routing_intent.assert_owned_deployment_scope()
+        with patch.object(routing_intent.sweep, "az", return_value={}):
+            with self.assertRaisesRegex(RuntimeError, "ownership tags"):
+                routing_intent.assert_owned_deployment_scope()
+        with patch.object(routing_intent.sweep, "az", side_effect=[
+                routing_intent.control.TAGS,
+                [{"name": "fw-jp", "type": "Microsoft.Network/azureFirewalls"}]]):
+            with self.assertRaisesRegex(RuntimeError, "overwrite"):
+                routing_intent.assert_owned_deployment_scope()
+
     def test_three_standard_hub_firewalls_and_private_intents(self):
         resources = routing_intent.secured_template()["resources"]
         firewalls = [r for r in resources if r["type"].endswith("/azureFirewalls")]

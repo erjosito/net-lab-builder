@@ -1,0 +1,54 @@
+{
+  "timestampUtc": "2026-10-15T19:28:08.693539+00:00",
+  "finishedUtc": "2026-10-15T19:28:16.216910+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-jp",
+    "--url-parameters",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\aspath-query.json"
+  ],
+  "stdout": "{\n  \"etag\": \"W/\\\"3f28243e-b293-4a2e-a89b-16b7956f5b26\\\"\",\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-jp\",\n  \"location\": \"japaneast\",\n  \"name\": \"fw-jp\",\n  \"properties\": {\n    \"additionalProperties\": {},\n    \"firewallPolicy\": {\n      \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/firewallPolicies/policy-threehub\"\n    },\n    \"hubIPAddresses\": {\n      \"privateIPAddress\": \"10.250.4.132\",\n      \"publicIPs\": {\n        \"addresses\": [\n          {\n            \"address\": \"20.210.235.206\"\n          }\n        ],\n        \"count\": 1\n      }\n    },\n    \"provisioningState\": \"Succeeded\",\n    \"sku\": {\n      \"name\": \"AZFW_Hub\",\n      \"tier\": \"Standard\"\n    },\n    \"virtualHub\": {\n      \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp\"\n    }\n  },\n  \"tags\": {\n    \"created_by\": \"copilot-lab\",\n    \"ephemeral\": \"true\",\n    \"lab\": \"true\",\n    \"owner\": \"jose\",\n    \"run_id\": \"20261014-threehub\"\n  },\n  \"type\": \"Microsoft.Network/azureFirewalls\"\n}\n",
+  "result": {
+    "etag": "W/\"3f28243e-b293-4a2e-a89b-16b7956f5b26\"",
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-jp",
+    "location": "japaneast",
+    "name": "fw-jp",
+    "properties": {
+      "additionalProperties": {},
+      "firewallPolicy": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/firewallPolicies/policy-threehub"
+      },
+      "hubIPAddresses": {
+        "privateIPAddress": "10.250.4.132",
+        "publicIPs": {
+          "addresses": [
+            {
+              "address": "20.210.235.206"
+            }
+          ],
+          "count": 1
+        }
+      },
+      "provisioningState": "Succeeded",
+      "sku": {
+        "name": "AZFW_Hub",
+        "tier": "Standard"
+      },
+      "virtualHub": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp"
+      }
+    },
+    "tags": {
+      "created_by": "copilot-lab",
+      "ephemeral": "true",
+      "lab": "true",
+      "owner": "jose",
+      "run_id": "20261014-threehub"
+    },
+    "type": "Microsoft.Network/azureFirewalls"
+  },
+  "sha256": "766978a2ada7493c3c86f8caf96411244175a6c6a380e31577bccc383d1a7882"
+}
