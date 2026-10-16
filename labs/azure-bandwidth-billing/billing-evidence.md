@@ -12,12 +12,37 @@ costs, all attributed to A by a complete ResourceId+Meter Query; those Query
 rows report no quantity, unit or rate. The latest CSV does report those fields,
 but not a scale-confirmed intraregional 5 GiB meter.
 “Intra Continent” is not “intra region.”
-Latest live CSV extraction closed **16 October 00:29:24Z**:
+**Current check, 16 October 06:50:38Z:** the
+[sanitized Query/CSV snapshot](results/2026-10-16-billing-check-0650.json)
+reports C's **16 October** quantity **0.6551259830594063 “1 GB”** at
+**USD 0.02**, cost **USD 0.013102519661188125**, on **Intra Continent Data
+Transfer Out**. C's separate **15 October** row is **0.000002402812242508
+“1 GB”**, cost **USD 4.80562448501586884E-8**. This is substantial
+bulk-sized-control evidence, **not a full quantity reconciliation** to the
+1-GiB transfer on 15 October 23:08–23:15Z. Partial ingestion is not proven:
+unit/coverage/attribution differences remain possible. Ingestion watermark,
+end-boundary inclusivity and day completeness are unknown; report dates are
+not receipt dates or exact request correlation.
+
+Both daily ActualCost Queries completed, from 15 October through the actual
+16 October 06:48Z request cutoffs; fresh Cost Details requested 15–16 October
+and retained seven Bandwidth rows. Exact historical VM attribution is **A: 3,
+B: 2, C: 2**, not five A rows; original A-group scope has five, C scope two.
+T's complete Query now returns one 15-October **EUR 7.4561667E-8** microcost
+row, no quantity/unit/rate; none were inferred. No headline-scale A/T charge
+is established. Five of six allowed HTTP requests, zero retries/mutations,
+contexts unchanged, lease closed, native children idle. **INCONCLUSIVE** after
+about 7.5 hours: six-hour read-only follow-up remains active, next around
+**12:50Z**, with two stable comparable snapshots at least six hours apart
+after the **16 October 23:15:33Z** control maturity threshold. Deleted owned
+assets are not retained for billing; late-arriving usage is not continuing rent.
+
+Historical live CSV extraction closed **16 October 00:29:24Z**:
 one generation, one poll and one streaming download; three HTTP requests, no
 retries/mutations. Actual mixed-case header mapping is now live-validated:
 `ResourceId` / `resourceGroupName` / `date` / `quantity` / `unitOfMeasure` /
 `effectivePrice` / `costInBillingCurrency` / `billingCurrency`.
-The report covers October 15–16 receipt dates; only exact owned October-15
+The report requested October 15–16; only exact owned October-15
 Bandwidth rows survive. Six rows retained (C: one; A source: three; B in original
 A group: two), 365 discarded before retention. C's actual quantity is
 **0.000002291053533554 “1 GB”**, effective price **USD 0.02**, cost
@@ -25,7 +50,7 @@ A group: two), 365 discarded before retention. C's actual quantity is
 A's source-VM quantities/rates are **0.000966296531260014 / 0.05**,
 **0.000003241002559662 / 0.02**, and **0.000295128673315048 / 0.083**;
 all units are reported “1 GB”, rates in USD. No division by expected traffic
-or default-zero fields was used. Latest owned usage date is October 15 only;
+or default-zero fields was used. That snapshot's latest owned usage date is October 15 only;
 date-only coverage cannot establish completeness. ActualCost reporting is not
 a final invoice. **Remaining blocker: billing maturity and transfer attribution**;
 T was not refreshed. Context/default-profile bytes unchanged, lease closed/idle,

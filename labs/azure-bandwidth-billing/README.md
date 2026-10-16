@@ -11,14 +11,34 @@ The later [C → B inter-region control v4](results/2026-10-15-cross-region-cont
 Read-only v3 inspection identified B's additional subnet NSG default deny at
 65500; v4 correctly allowed and restored **both NIC and subnet NSGs**.
 Independent validation passed at **23:25:22Z, 15 October** (11 reads, 0 mutations).
-Billing ingestion remains incomplete: this is not yet a billed positive control.
+Billing quantity reconciliation remains incomplete: this is not yet a fully
+reconciled billed positive control.
 Known-owned cleanup closed PASS at **00:00:11.806224Z, 16 October**:
 13 remaining original core assets absent, C/T groups gone, all known lab
 VMs/disks/PIPs deleted. **Core RG and one unproven-ownership NSG were preserved**,
 not adopted/deleted. No active children or further transfer is queued.
 Owner: Morpheus / Jose Moreno. Research retrieved **2026-10-15**.
 
-**16 October 00:29Z billing update:** actual Cost Details CSV extraction now
+**Current billing check, 16 October 06:50:38Z:** C now has an adjacent-day
+**16 October** CSV row of **0.6551259830594063 “1 GB”**, effective price
+**USD 0.02**, cost **USD 0.013102519661188125**, on
+**Intra Continent Data Transfer Out**. Its separate **15 October** row is
+**0.000002402812242508 “1 GB”**, cost **USD 4.80562448501586884E-8**.
+The substantial charge is consistent with a bulk-sized control, but is **not
+yet a full quantity match** to the 1-GiB transfer on 15 October 23:08–23:15Z.
+Ingestion, units, coverage and attribution remain unresolved; the report date
+is not a receipt date or exact transfer correlation. A has three endpoint rows,
+B two (the original A-group query contains five); T now has one **EUR
+7.4561667E-8** Query row, without quantity/unit/rate. No headline 5-GiB-scale
+A/T charge or zero-rated meter is established. **Billing remains INCONCLUSIVE.**
+Both Queries and fresh CSV extraction completed: five of six allowed HTTP
+requests, zero retries/mutations, lease closed and native children idle.
+See the [current sanitized check](results/2026-10-16-billing-check-0650.json).
+Six-hour read-only follow-up remains active, next expected around **12:50Z**;
+control maturity starts no earlier than **16 October 23:15:33Z**, followed by
+two stable comparable snapshots at least six hours apart.
+
+**Historical 16 October 00:29Z billing update:** actual Cost Details CSV extraction now
 works, with quantity/unit/effective-price preserved. C reports only
 **0.000002291053533554 “1 GB” at USD 0.02** (cost
 **USD 4.58210706710815400000E-8**), not the scale of the successful 1-GiB

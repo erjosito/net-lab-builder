@@ -9,8 +9,9 @@ Internet-egress charging.
 
 **Experimental verdict: transport PASS; invoice-level confirmation INCONCLUSIVE.**
 These are different conclusions, not a reason to withhold the practical pricing
-answer. The latest billing rows are tiny positive charges attributed to A/B/C,
-**not a measured zero-rated 5 GiB intraregional transfer**.
+answer. C now has a substantial adjacent-day charge, but not a full quantity
+match to the control; A/B/T still show only microcosts.
+**No measured zero-rated 5 GiB intraregional transfer is established.**
 
 **Update, 2026-10-16 UTC:** the separately completed
 [C → B v4 inter-region control](2026-10-15-cross-region-control.md) is now
@@ -23,9 +24,43 @@ Known-owned cleanup closed PASS **16 October 00:00:11.806224Z**, all known lab
 VMs/disks/PIPs deleted; **core RG and one unproven-ownership NSG were preserved**,
 not adopted/deleted. The older billing/provenance history below is retained.
 
-## Latest quantity evidence: 16 October 00:29Z
+## Current quantity evidence: 16 October 06:50:38Z
 
-The [latest sanitized reconciliation](2026-10-16-usage-reconciliation.json)
+The [current sanitized check](2026-10-16-billing-check-0650.json) contains:
+
+| Source | CSV usage/purchase date | Meter | Quantity, “1 GB” | Effective price, USD | Reported cost, USD |
+|---|---|---|---:|---:|---:|
+| C | 2026-10-15 | Intra Continent Data Transfer Out | 0.000002402812242508 | 0.02 | 4.80562448501586884E-8 |
+| C | 2026-10-16 | Intra Continent Data Transfer Out | 0.6551259830594063 | 0.02 | 0.013102519661188125 |
+
+The 16-October row first appears in this check, after the successful
+**15 October 23:08:23–23:15:32Z** 1-GiB control. Its substantial charge is
+consistent with a bulk-sized control, but **not yet a full quantity match**
+to roughly 1–1.1 reported GB. Do not call partial ingestion proven: units,
+coverage and attribution remain unresolved. No exact transfer-to-invoice
+correlation follows from daily dates. No cross-date or cross-snapshot sum
+was performed.
+
+Both ActualCost Queries are COMPLETE, covering 15 October through the actual
+16 October 06:48Z request cutoffs. A fresh CSV generation/poll/download
+returned 202/200/200 for requested 15–16 October dates, retaining seven
+Bandwidth rows: exact historical endpoints **A: 3, B: 2, C: 2**. The original
+A-group Query scope's **five** rows include B's two; they are not five A rows.
+T's complete Query now has one 15-October **Intra Continent Data Transfer Out**
+row, **EUR 7.4561667E-8**; it supplies no quantity/unit/rate, and none is
+inferred. No 5-GiB-scale headline A/T charge is proven.
+
+Fresh extraction is not proof of final ingestion. The ingestion watermark is
+unavailable; report-end inclusivity and day completeness remain unknown.
+The CSV date denotes usage/purchase, not receipt. Five of six allowed HTTP
+requests, zero retries or infrastructure mutations; contexts unchanged,
+lease closed and native children idle. **Experimental verdict remains
+INCONCLUSIVE**, about 7.5 hours after the control. Known-owned billable assets
+remain deleted; late-arriving usage does not imply continuing resource rent.
+
+## Historical quantity evidence: 16 October 00:29Z
+
+The [historical sanitized reconciliation](2026-10-16-usage-reconciliation.json)
 records successful actual Cost Details CSV extraction, superseding the
 historical 00:21Z schema failure. One generation, one poll and one download
 returned HTTP 202/200/200, with no retries or infrastructure mutations.
@@ -51,7 +86,7 @@ scale-confirmed billing match to the successful **1 GiB C→B** bulk transfer
 on **15 October 23:08:23–23:15:32Z**. These are actual daily usage fields,
 not traffic-derived quantities or retail-price estimates. Do not recompute
 the cost strings from rounded displayed quantity/rate fields or add successive
-Query/CSV snapshots. Receipt coverage spans 15–16 October, but owned usage
+Query/CSV snapshots. Requested dates span 15–16 October, but owned usage
 dates are only 15 October; that does not establish ingestion completeness.
 **Quantity/unit/effective price are now available; billing maturity and
 transfer attribution remain the blockers. Experimental verdict: INCONCLUSIVE.**
@@ -202,12 +237,13 @@ Headline maturity target: **16 October 10:40:28Z**. Control 24/48/72h targets:
 **16/17/18 October 23:15:33Z**, actual usage **15 October**; the last is after
 the original **18 October 07:33Z** resource deadline. Query private historical
 IDs after completed known-owned cleanup; no more transfers or MSDN tests needed.
-Require two stable future cumulative snapshots, both **at/after 16 October
-23:15:33Z**, with comparable A/T coverage and the scale-confirmed charged C
+Require two stable future cumulative snapshots **at least six hours apart**,
+both **at/after 16 October 23:15:33Z**, with comparable A/T coverage and the scale-confirmed charged C
 control before supporting a scoped **no additional charge observed** finding.
 Stable tiny rows alone are insufficient; neither stability nor absence of an
 explicit intraregional row proves a zero-rated meter or a final invoice.
-No automatic follow-up or cleanup job is established.
+Six-hour read-only billing follow-up is active, next expected around
+**16 October 12:50Z**. It does not authorize resource recreation or transfers.
 
 **Safety:** this documentation update is offline, zero Azure calls/mutations
 or payload. Latest independent v4 verification **23:25:22Z, 15 October**
