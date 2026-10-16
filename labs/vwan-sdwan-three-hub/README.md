@@ -1,11 +1,37 @@
 # Three-hub Virtual WAN / SD-WAN lab
 
-> **2026-10-16: secured backbone-first policy measured and original configuration restored.**
+> **2026-10-16: A/B backbone choices measured and original configuration restored.**
 > **Three Standard Azure Firewalls and PrivateTraffic routing intent are deployed.**
-> ASPath plus NVA import policy selected Azure instead of the inter-DC mesh.
-> With the temporary Japan workload UDR, Japan workload / EU spoke TCP and ICMP passed both directions.
-> This is not an all-pairs success: DC-to-DC failures remain. The full three-HRP matrix and static-VPN reproduction are unfinished.
+> **A:** ASPath plus NVA import policy selected Microsoft's backbone.
+> **B1:** ExpressRoute HRP alone did **not** reproduce customer-first hub selection in the matched control.
+> **B2:** ASPath with no extra nonlocal prepends selected local customer-mesh paths at the hub firewalls and NVAs.
+> B1/B2 are route-selection controls, not new forwarding tests. A is not an all-pairs forwarding success.
 > All ten VMs are back to their original **deallocated** states. Hubs, firewalls and VPN gateway remain deployed and billable.
+
+## A or B: which backbone should carry the traffic?
+
+The [A/B design comparison](show-output/ab-design-comparison-20261016/README.md)
+organizes the measured states around the operational choice: **A, Microsoft
+backbone preferred**, or **B, customer backbone preferred**. It links matched
+EU/Japan firewall tables and EU/Japan/China NVA configurations and routes for
+A, B1 and B2. US is collected as well.
+
+B1 used all-hub ExpressRoute HRP and two extra nonlocal prepends at EU/US.
+Their local Japan path had four ASNs versus three on the remote VPN path;
+both firewalls still selected the remote path. This does not reproduce the
+intended B1 design, and the result must not be presented as successful
+HRP-only customer-backbone preference. VPN HRP was not measured.
+
+B2 used all-hub ASPath HRP and removed EU/US extra nonlocal prepends. The
+local two-ASN Japan paths won at EU/US; Japan selected its local VPN ingress
+for the EU prefix. NVA mesh selections passed the customer-first assertions.
+Its original run records **BLOCKED** because the lease expired during
+read-only restoration proof, after the restore commands completed.
+The subsequent [independent recovery verification](show-output/ab-final-recovery-verification-20261016/verification-verdict.json)
+passed exact source/metadata, original mixed HRPs and paired firewall winners.
+[Power restoration](show-output/ab-router-power-restore-20261016/power-restore-verdict.json)
+returned only the four routers started for these controls to their saved
+states; all six probes were untouched.
 
 ## Latest result: two routing decisions, not one
 
