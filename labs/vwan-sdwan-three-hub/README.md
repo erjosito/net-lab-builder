@@ -1,11 +1,35 @@
 # Three-hub Virtual WAN / SD-WAN lab
 
-> **IN PROGRESS — resources retained for the remaining experiments.**
-> Progress report dated 2026-10-15. Post-restart mesh recovery is verified.
+> **2026-10-16: secured backbone-first policy measured and original configuration restored.**
 > **Three Standard Azure Firewalls and PrivateTraffic routing intent are deployed.**
-> Secured route/forwarding validation and the static-VPN reproduction are unfinished.
-> The complete HRP/RI comparison and current forwarding validation are unfinished.
-> Completed control-plane states below do not establish end-to-end forwarding.
+> ASPath plus NVA import policy selected Azure instead of the inter-DC mesh.
+> With the temporary Japan workload UDR, Japan workload / EU spoke TCP and ICMP passed both directions.
+> This is not an all-pairs success: DC-to-DC failures remain. The full three-HRP matrix and static-VPN reproduction are unfinished.
+> All ten VMs are back to their original **deallocated** states. Hubs, firewalls and VPN gateway remain deployed and billable.
+
+## Latest result: two routing decisions, not one
+
+The [matched three-state report](show-output/backbone-policy-design-20261016/README.md)
+compares the current user-configured baseline, ASPath plus NVA policy, and that
+same policy plus a temporary Japan workload UDR. Every state includes firewall
+effective tables, full BIRD configuration, selected routes, kernel routes and
+seven directional TCP/ICMP cells.
+
+At baseline, EU/US firewalls already selected the remote Japan VPN route
+`65520-65520-65013`, but their NVAs selected `mesh_jp` with path `65013`.
+After accepting foreign DC routes from Azure and assigning Azure imports
+local-pref 400, EU/US NVAs selected `azure_*` with path
+`65515-65520-65520-65013`. Japan selected EU DC and spoke routes through Azure
+too. This demonstrates why HRP and outbound prepends alone do not select the
+NVA's DC-to-Azure forwarding path.
+
+The [independent final verification](show-output/backbone-final-verification-20261016/verification-verdict.json)
+preserves the user's exact EU/US prepended BIRD files, original Japan/China
+files and metadata, mixed HRPs (EU/US ASPath, Japan ExpressRoute), eighteen
+Established BIRD endpoints, two Japan IKE SAs and original paired firewall
+winners. The temporary route table was deleted and Japan's original subnet
+association restored. [Power restoration](show-output/backbone-power-restoration-20261016/power-restoration-verdict.json)
+returned only the ten VMs started for this request to deallocated.
 
 ## Objective and result so far
 
@@ -34,13 +58,14 @@ are needed to establish directionality/symmetry. No throughput claim is intended
 | [Firewall query discriminator control](show-output/firewall-resource-type-validation-20261015/probe-verdict.json), 2026-10-15 | **PASS**: the completed EU firewall query using **`AzureFirewalls` (plural)** exposed all four DC prefixes. The preceding secured collector used singular `AzureFirewall` and received empty responses; its route baseline was inconclusive and it ran no traffic probes. The helper and commands below are corrected. Empty responses to the wrong discriminator are not evidence of missing routes. |
 | [Secured baseline with corrected firewall query](show-output/secured-firewall-supported-type-baseline-20261015/forwarding-verdict.json), 2026-10-15 | Route baseline **PASS**: twelve stable DC-prefix winners in paired firewall snapshots, all four original router source/export/protocol checks passed. Forwarding **FAIL**: TCP and ICMP each passed **18/24 directions**. All six failures are to/from Japan's workload probe `10.130.0.10`; all six CN-target directions pass. This uses ASPath HRP and the existing BGP VPN, not the static-VPN/ExpressRoute-preference reproduction. Zero configuration mutations. |
 
-**Current decisive limitation:** the same CN prefix is advertised locally at EU
+**Historical limitation of the 2026-10-15 withdrawal controls:** the same CN prefix is advertised locally at EU
 and US, but neither controlled withdrawal demonstrated its remote availability
 at Japan. Consequently, the earlier no-switch prepend observations cannot
 establish an ASPath threshold or an unconditional preference for local routes.
 The remaining HRP/prepend comparisons require a proven same-prefix remote
-alternative. Forwarding and secured HRP/prepend measurements remain unfinished;
-the deployed firewalls alone do not establish the static-VPN reproduction.
+alternative. Those controls do not invalidate the later same-prefix remote
+Japan winner above. The full forwarding matrix and static-VPN reproduction
+remain unfinished; deployed firewalls alone do not establish that reproduction.
 
 The historical restore attempt's `SNAPSHOT` failure remains a limitation of
 that experiment, not a description of current guest health. The later fresh
