@@ -1,0 +1,67 @@
+{
+  "timestampUtc": "2026-10-16T11:03:14.605161+00:00",
+  "finishedUtc": "2026-10-16T11:04:44.182055+00:00",
+  "command": [
+    "vm",
+    "list",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-d",
+    "--query",
+    "[].{id:id,name:name,powerState:powerState}"
+  ],
+  "stdout": "[\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-us\",\n    \"name\": \"probe-dc-us\",\n    \"powerState\": \"VM deallocated\"\n  },\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-us\",\n    \"name\": \"probe-spoke-us\",\n    \"powerState\": \"VM deallocated\"\n  },\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-us\",\n    \"name\": \"router-us\",\n    \"powerState\": \"VM deallocated\"\n  },\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-eu\",\n    \"name\": \"probe-dc-eu\",\n    \"powerState\": \"VM deallocated\"\n  },\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-eu\",\n    \"name\": \"probe-spoke-eu\",\n    \"powerState\": \"VM deallocated\"\n  },\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu\",\n    \"name\": \"router-eu\",\n    \"powerState\": \"VM deallocated\"\n  },\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-jp\",\n    \"name\": \"probe-dc-jp\",\n    \"powerState\": \"VM deallocated\"\n  },\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-jp\",\n    \"name\": \"probe-spoke-jp\",\n    \"powerState\": \"VM deallocated\"\n  },\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-cn\",\n    \"name\": \"router-cn\",\n    \"powerState\": \"VM deallocated\"\n  },\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp\",\n    \"name\": \"router-jp\",\n    \"powerState\": \"VM deallocated\"\n  }\n]\n",
+  "result": [
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-us",
+      "name": "probe-dc-us",
+      "powerState": "VM deallocated"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-us",
+      "name": "probe-spoke-us",
+      "powerState": "VM deallocated"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-us",
+      "name": "router-us",
+      "powerState": "VM deallocated"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-eu",
+      "name": "probe-dc-eu",
+      "powerState": "VM deallocated"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-eu",
+      "name": "probe-spoke-eu",
+      "powerState": "VM deallocated"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu",
+      "name": "router-eu",
+      "powerState": "VM deallocated"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-jp",
+      "name": "probe-dc-jp",
+      "powerState": "VM deallocated"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-jp",
+      "name": "probe-spoke-jp",
+      "powerState": "VM deallocated"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-cn",
+      "name": "router-cn",
+      "powerState": "VM deallocated"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp",
+      "name": "router-jp",
+      "powerState": "VM deallocated"
+    }
+  ],
+  "sha256": "e4671934fa0fc6134a9c328101f5bbf14ee0de1a5c9a79bf34845ef7ed1f9f5c"
+}

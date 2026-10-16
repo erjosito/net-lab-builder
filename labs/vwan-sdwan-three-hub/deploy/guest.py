@@ -388,7 +388,9 @@ def activate_script(site=None):
         commands += [f"systemctl enable --now wg-quick@{link['interface']}.service"
                      for link in links(site)]
         if site == "jp":
-            commands += ["systemctl enable --now strongswan.service",
+            commands += ["if systemctl list-unit-files strongswan-starter.service --no-legend | grep -q '^strongswan-starter.service'; then\n"
+                         "  systemctl disable --now strongswan-starter.service\nfi",
+                         "systemctl enable --now strongswan.service",
                          "systemctl enable --now threehub-ipsec.service"]
         commands += ["bird -p -c /etc/bird/bird.conf", "systemctl enable bird",
                      "systemctl restart bird"]

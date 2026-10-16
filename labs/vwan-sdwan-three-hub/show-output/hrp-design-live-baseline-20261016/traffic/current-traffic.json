@@ -1,0 +1,121 @@
+[
+  {
+    "source": "10.10.0.10",
+    "destination": "10.130.0.10",
+    "route": {
+      "exitCode": 0,
+      "stdout": "[{\"dst\":\"10.130.0.10\",\"from\":\"10.10.0.10\",\"gateway\":\"10.10.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+      "stderr": ""
+    },
+    "tcp": "FAIL",
+    "icmp": "FAIL",
+    "tcpDetail": {
+      "exitCode": 28,
+      "stdout": "000",
+      "stderr": "curl: (28) Connection timeout after 3000 ms"
+    },
+    "icmpExitCode": 1
+  },
+  {
+    "source": "10.10.0.10",
+    "destination": "10.130.0.4",
+    "route": {
+      "exitCode": 0,
+      "stdout": "[{\"dst\":\"10.130.0.4\",\"from\":\"10.10.0.10\",\"gateway\":\"10.10.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+      "stderr": ""
+    },
+    "tcp": "FAIL",
+    "icmp": "PASS",
+    "tcpDetail": {
+      "exitCode": 28,
+      "stdout": "000 10.10.0.10 10.130.0.4",
+      "stderr": "curl: (28) Operation timed out after 5001 milliseconds with 0 bytes received"
+    },
+    "icmpExitCode": 0
+  },
+  {
+    "source": "10.10.0.10",
+    "destination": "10.140.0.4",
+    "route": {
+      "exitCode": 0,
+      "stdout": "[{\"dst\":\"10.140.0.4\",\"from\":\"10.10.0.10\",\"gateway\":\"10.10.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+      "stderr": ""
+    },
+    "tcp": "FAIL",
+    "icmp": "PASS",
+    "tcpDetail": {
+      "exitCode": 28,
+      "stdout": "000 10.10.0.10 10.140.0.4",
+      "stderr": "curl: (28) Operation timed out after 5001 milliseconds with 0 bytes received"
+    },
+    "icmpExitCode": 0
+  },
+  {
+    "source": "10.110.0.10",
+    "destination": "10.130.0.10",
+    "route": {
+      "exitCode": 0,
+      "stdout": "[{\"dst\":\"10.130.0.10\",\"from\":\"10.110.0.10\",\"gateway\":\"10.110.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+      "stderr": ""
+    },
+    "tcp": "PASS",
+    "icmp": "PASS",
+    "tcpDetail": {
+      "exitCode": 0,
+      "stdout": "200 10.110.0.10 10.130.0.10",
+      "stderr": ""
+    },
+    "icmpExitCode": 0
+  },
+  {
+    "source": "10.110.0.10",
+    "destination": "10.130.0.4",
+    "route": {
+      "exitCode": 0,
+      "stdout": "[{\"dst\":\"10.130.0.4\",\"from\":\"10.110.0.10\",\"gateway\":\"10.110.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+      "stderr": ""
+    },
+    "tcp": "PASS",
+    "icmp": "PASS",
+    "tcpDetail": {
+      "exitCode": 0,
+      "stdout": "200 10.110.0.10 10.130.0.4",
+      "stderr": ""
+    },
+    "icmpExitCode": 0
+  },
+  {
+    "source": "10.130.0.10",
+    "destination": "10.110.0.10",
+    "route": {
+      "exitCode": 0,
+      "stdout": "[{\"dst\":\"10.110.0.10\",\"from\":\"10.130.0.10\",\"gateway\":\"10.130.0.4\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+      "stderr": ""
+    },
+    "tcp": "PASS",
+    "icmp": "PASS",
+    "tcpDetail": {
+      "exitCode": 0,
+      "stdout": "200 10.130.0.10 10.110.0.10",
+      "stderr": ""
+    },
+    "icmpExitCode": 0
+  },
+  {
+    "source": "10.130.0.10",
+    "destination": "10.10.0.10",
+    "route": {
+      "exitCode": 0,
+      "stdout": "[{\"dst\":\"10.10.0.10\",\"from\":\"10.130.0.10\",\"gateway\":\"10.130.0.4\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+      "stderr": ""
+    },
+    "tcp": "FAIL",
+    "icmp": "FAIL",
+    "tcpDetail": {
+      "exitCode": 28,
+      "stdout": "000",
+      "stderr": "curl: (28) Connection timeout after 3000 ms"
+    },
+    "icmpExitCode": 1
+  }
+]
