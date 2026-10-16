@@ -1,0 +1,477 @@
+{
+  "schemaVersion": 1,
+  "verdict": "INCONCLUSIVE",
+  "startedAtUtc": "2026-10-16T06:48:23.760432+00:00",
+  "checkedAtUtc": "2026-10-16T06:50:38.468093+00:00",
+  "scope": "Historical exact-owned core resource-group scope (source endpoints A and B), C/control and T only; Bandwidth; dates separate",
+  "queryCoverage": {
+    "fromUtc": "2026-10-15T00:00:00Z",
+    "coreToUtc": "2026-10-16T06:48:23.843160+00:00",
+    "TToUtc": "2026-10-16T06:48:36.439487+00:00",
+    "granularity": "Daily",
+    "aggregation": "Sum PreTaxCost",
+    "grouping": [
+      "ResourceId",
+      "Meter"
+    ],
+    "queryVersion": "2023-11-01"
+  },
+  "queryStates": {
+    "A_C": "COMPLETE",
+    "T": "COMPLETE"
+  },
+  "bandwidthRowsByUsageDate": {
+    "A": {
+      "2026-10-15": 3,
+      "2026-10-16": 0
+    },
+    "B": {
+      "2026-10-15": 2,
+      "2026-10-16": 0
+    },
+    "C": {
+      "2026-10-15": 1,
+      "2026-10-16": 1
+    },
+    "unknown": {
+      "2026-10-15": 0,
+      "2026-10-16": 0
+    }
+  },
+  "rows": [
+    {
+      "alias": "C",
+      "endpointAlias": "C",
+      "scopeAlias": "C",
+      "sourceClass": "exact_historical_vm",
+      "sourceRecordHash": "85906378e8adb626c31d2158ad5a7348d3b740457b6b59d3be8a0e212f1ba78a",
+      "day": "2026-10-15",
+      "dateSource": "date",
+      "dateOriginal": "10/15/2026",
+      "dateSemantics": "usage_or_purchase_date_not_receipt_date",
+      "usageStart": null,
+      "usageEnd": null,
+      "quantity": "0.000002402812242508",
+      "unit": "1 GB",
+      "effectivePrice": "0.02",
+      "unitPrice": "0.02",
+      "cost": "4.80562448501586884000E-8",
+      "currency": "USD",
+      "meterCategory": "Bandwidth",
+      "meterName": "Intra Continent Data Transfer Out",
+      "pricingCurrency": "USD",
+      "exchangeRatePricingToBilling": "1"
+    },
+    {
+      "alias": "A",
+      "endpointAlias": "A",
+      "scopeAlias": "A",
+      "sourceClass": "exact_historical_vm",
+      "sourceRecordHash": "a3ca3cb6f3b27751bc7fe1862850d499c8bbc4d642541717ee51d766d1b97d7a",
+      "day": "2026-10-15",
+      "dateSource": "date",
+      "dateOriginal": "10/15/2026",
+      "dateSemantics": "usage_or_purchase_date_not_receipt_date",
+      "usageStart": null,
+      "usageEnd": null,
+      "quantity": "0.000966296531260014",
+      "unit": "1 GB",
+      "effectivePrice": "0.05",
+      "unitPrice": "0.05",
+      "cost": "0.000048314826563000676",
+      "currency": "USD",
+      "meterCategory": "Bandwidth",
+      "meterName": "Inter Continent Data Transfer Out - NAM or EU To Any",
+      "pricingCurrency": "USD",
+      "exchangeRatePricingToBilling": "1"
+    },
+    {
+      "alias": "C",
+      "endpointAlias": "C",
+      "scopeAlias": "C",
+      "sourceClass": "exact_historical_vm",
+      "sourceRecordHash": "9434c37f5731bfcb86a8c287b295e1c42b1557ee151f067d2284719cff6ef7c2",
+      "day": "2026-10-16",
+      "dateSource": "date",
+      "dateOriginal": "10/16/2026",
+      "dateSemantics": "usage_or_purchase_date_not_receipt_date",
+      "usageStart": null,
+      "usageEnd": null,
+      "quantity": "0.6551259830594063",
+      "unit": "1 GB",
+      "effectivePrice": "0.02",
+      "unitPrice": "0.02",
+      "cost": "0.013102519661188125",
+      "currency": "USD",
+      "meterCategory": "Bandwidth",
+      "meterName": "Intra Continent Data Transfer Out",
+      "pricingCurrency": "USD",
+      "exchangeRatePricingToBilling": "1"
+    },
+    {
+      "alias": "B",
+      "endpointAlias": "B",
+      "scopeAlias": "A",
+      "sourceClass": "exact_historical_vm",
+      "sourceRecordHash": "a2177e8d863f5959304f6995a7c8087400d487178075e96dd25e6b88ddc7eac9",
+      "day": "2026-10-15",
+      "dateSource": "date",
+      "dateOriginal": "10/15/2026",
+      "dateSemantics": "usage_or_purchase_date_not_receipt_date",
+      "usageStart": null,
+      "usageEnd": null,
+      "quantity": "6.146728992460000000000E-7",
+      "unit": "1 GB",
+      "effectivePrice": "0.02",
+      "unitPrice": "0.02",
+      "cost": "1.22934579849243170000E-8",
+      "currency": "USD",
+      "meterCategory": "Bandwidth",
+      "meterName": "Intra Continent Data Transfer Out",
+      "pricingCurrency": "USD",
+      "exchangeRatePricingToBilling": "1"
+    },
+    {
+      "alias": "B",
+      "endpointAlias": "B",
+      "scopeAlias": "A",
+      "sourceClass": "exact_historical_vm",
+      "sourceRecordHash": "11aa2f73a6ff58c1493342fa2b7cceefcb5186657b3bc8101dbeca6ba911760f",
+      "day": "2026-10-15",
+      "dateSource": "date",
+      "dateOriginal": "10/15/2026",
+      "dateSemantics": "usage_or_purchase_date_not_receipt_date",
+      "usageStart": null,
+      "usageEnd": null,
+      "quantity": "0.000010550022125244",
+      "unit": "1 GB",
+      "effectivePrice": "0.083",
+      "unitPrice": "0.083",
+      "cost": "8.756518363952637000000E-7",
+      "currency": "USD",
+      "meterCategory": "Bandwidth",
+      "meterName": "Standard Data Transfer Out",
+      "pricingCurrency": "USD",
+      "exchangeRatePricingToBilling": "1"
+    },
+    {
+      "alias": "A",
+      "endpointAlias": "A",
+      "scopeAlias": "A",
+      "sourceClass": "exact_historical_vm",
+      "sourceRecordHash": "a9d5bad6e001a0be270ac95633578feeeeba349cd176f0386e757ed57a0f29de",
+      "day": "2026-10-15",
+      "dateSource": "date",
+      "dateOriginal": "10/15/2026",
+      "dateSemantics": "usage_or_purchase_date_not_receipt_date",
+      "usageStart": null,
+      "usageEnd": null,
+      "quantity": "0.000003241002559662",
+      "unit": "1 GB",
+      "effectivePrice": "0.02",
+      "unitPrice": "0.02",
+      "cost": "6.48200511932373042000E-8",
+      "currency": "USD",
+      "meterCategory": "Bandwidth",
+      "meterName": "Intra Continent Data Transfer Out",
+      "pricingCurrency": "USD",
+      "exchangeRatePricingToBilling": "1"
+    },
+    {
+      "alias": "A",
+      "endpointAlias": "A",
+      "scopeAlias": "A",
+      "sourceClass": "exact_historical_vm",
+      "sourceRecordHash": "112101fa03c9f8266019888b52f2e6b5ceed76bcef4c9d5832015ed8f4d38a9d",
+      "day": "2026-10-15",
+      "dateSource": "date",
+      "dateOriginal": "10/15/2026",
+      "dateSemantics": "usage_or_purchase_date_not_receipt_date",
+      "usageStart": null,
+      "usageEnd": null,
+      "quantity": "0.000295128673315048",
+      "unit": "1 GB",
+      "effectivePrice": "0.083",
+      "unitPrice": "0.083",
+      "cost": "0.000024495679885149002",
+      "currency": "USD",
+      "meterCategory": "Bandwidth",
+      "meterName": "Standard Data Transfer Out",
+      "pricingCurrency": "USD",
+      "exchangeRatePricingToBilling": "1"
+    }
+  ],
+  "TQueryRows": [
+    {
+      "PreTaxCost": "7.4561667E-8",
+      "UsageDate": 20261015,
+      "Meter": "Intra Continent Data Transfer Out",
+      "Currency": "EUR"
+    }
+  ],
+  "TQuantityUnitEffectivePrice": "Not provided by Cost Query; not inferred",
+  "AOutcome": "Three exact historical VM_A microcost rows; core query scope contains five rows including two exact VM_B rows. No headline-scale 5 GiB charge established; daily rows are not request-attributed.",
+  "COutcome": "New October 16 substantial bulk-sized-control charge observed; quantity is not a full match to the 1 GiB transfer. Ingestion, unit, coverage and attribution differences remain unresolved; partial ingestion is not proven.",
+  "TOutcome": "One October 15 microcost row now visible, not empty; no October 16 row, not an explicit zero-rated record",
+  "controlComparison": {
+    "previousReportedQuantity": "0.000002291053533554",
+    "previousReportedUnit": "1 GB",
+    "previousEffectivePriceUsd": "0.02",
+    "currentOctober15": {
+      "alias": "C",
+      "day": "2026-10-15",
+      "dateSource": "date",
+      "dateOriginal": "10/15/2026",
+      "dateSemantics": "usage_or_purchase_date_not_receipt_date",
+      "usageStart": null,
+      "usageEnd": null,
+      "quantity": "0.000002402812242508",
+      "unit": "1 GB",
+      "effectivePrice": "0.02",
+      "unitPrice": "0.02",
+      "cost": "4.80562448501586884000E-8",
+      "currency": "USD",
+      "meterCategory": "Bandwidth",
+      "meterName": "Intra Continent Data Transfer Out",
+      "pricingCurrency": "USD",
+      "exchangeRatePricingToBilling": "1",
+      "endpointAlias": "C",
+      "scopeAlias": "C",
+      "sourceClass": "exact_historical_vm",
+      "sourceRecordHash": "85906378e8adb626c31d2158ad5a7348d3b740457b6b59d3be8a0e212f1ba78a"
+    },
+    "newOctober16": {
+      "alias": "C",
+      "day": "2026-10-16",
+      "dateSource": "date",
+      "dateOriginal": "10/16/2026",
+      "dateSemantics": "usage_or_purchase_date_not_receipt_date",
+      "usageStart": null,
+      "usageEnd": null,
+      "quantity": "0.6551259830594063",
+      "unit": "1 GB",
+      "effectivePrice": "0.02",
+      "unitPrice": "0.02",
+      "cost": "0.013102519661188125",
+      "currency": "USD",
+      "meterCategory": "Bandwidth",
+      "meterName": "Intra Continent Data Transfer Out",
+      "pricingCurrency": "USD",
+      "exchangeRatePricingToBilling": "1",
+      "endpointAlias": "C",
+      "scopeAlias": "C",
+      "sourceClass": "exact_historical_vm",
+      "sourceRecordHash": "9434c37f5731bfcb86a8c287b295e1c42b1557ee151f067d2284719cff6ef7c2"
+    },
+    "meterChanged": false,
+    "unitChanged": false,
+    "effectivePriceChanged": false,
+    "volumeGate": {
+      "lower": "0.9",
+      "upper": "1.2",
+      "reportedUnit": "1 GB",
+      "passed": false
+    },
+    "unitReconciliation": "Outside gate: incomplete ingestion versus unit/coverage difference unresolved; no retail-rate quantity back-calculation",
+    "crossDateOrCrossSnapshotSumPerformed": false
+  },
+  "report": {
+    "state": "COMPLETE_EXTRACTION_NOT_FINAL_BILLING",
+    "newGenerationCount": 1,
+    "reusedSnapshot": false,
+    "reusedSnapshotReference": null,
+    "requestBody": {
+      "metric": "ActualCost",
+      "timePeriod": {
+        "start": "2026-10-15",
+        "end": "2026-10-16"
+      }
+    },
+    "echoedRequestBody": {
+      "metric": "ActualCost",
+      "timePeriod": {
+        "start": "2026-10-15T00:00:00",
+        "end": "2026-10-16T00:00:00"
+      },
+      "invoiceId": null,
+      "billingPeriod": null
+    },
+    "reportEndBoundaryConfirmed": false,
+    "DataIngestionEndMT": null,
+    "watermarkStatus": "Unknown; no watermark in response, manifest or captured HTTP headers",
+    "maxOwnedUsageDate": "2026-10-16",
+    "ownedRowsByDateBeforeBandwidthFilter": {
+      "2026-10-15": 27,
+      "2026-10-16": 5
+    },
+    "retainedBandwidthRows": 7,
+    "schemaMapping": {
+      "resourceId": "resourceid",
+      "resourceGroup": "resourcegroupname",
+      "date": "date",
+      "quantity": "quantity",
+      "unit": "unitofmeasure",
+      "effectivePrice": "effectiveprice",
+      "unitPrice": "unitprice",
+      "cost": "costinbillingcurrency",
+      "currency": "billingcurrency",
+      "meterCategory": "metercategory",
+      "meterName": "metername"
+    },
+    "generation202BodyEmpty": true,
+    "completedPollBodyEmpty": false,
+    "limitations": "Fresh generation is not proof of fresh/final ingestion; echoed end is October 16 00:00 without timezone. October 16 owned rows are present, but end inclusivity and day completeness remain unproven. No row has usageStart/usageEnd; daily costs cannot be attributed exactly to transfer intervals."
+  },
+  "maturity": {
+    "notBeforeUtc": "2026-10-16T23:15:33Z",
+    "thresholdMet": false,
+    "requiredStableCompleteComparisons": 2,
+    "separationHours": 6,
+    "qualifyingComparisons": 0,
+    "hardStopUtc": "2026-10-22T23:15:33Z"
+  },
+  "http": [
+    {
+      "method": "POST",
+      "kind": "arm",
+      "startedAtUtc": "2026-10-16T06:48:30.188749+00:00",
+      "httpStatus": 200,
+      "headers": {
+        "x-ms-request-id": "efeb62eb-6e3d-459d-89ab-c091d6b5e5cf",
+        "x-ms-ratelimit-remaining-subscription-resource-requests": "1099",
+        "Date": "Fri, 16 Oct 2026 06:48:35 GMT"
+      },
+      "bodyEmpty": false,
+      "endedAtUtc": "2026-10-16T06:48:35.036693+00:00"
+    },
+    {
+      "method": "POST",
+      "kind": "arm",
+      "startedAtUtc": "2026-10-16T06:48:38.419174+00:00",
+      "httpStatus": 200,
+      "headers": {
+        "x-ms-request-id": "145e96aa-4692-4892-abd5-71f3eddc84ba",
+        "x-ms-ratelimit-remaining-subscription-resource-requests": "1099",
+        "Date": "Fri, 16 Oct 2026 06:48:41 GMT"
+      },
+      "bodyEmpty": false,
+      "endedAtUtc": "2026-10-16T06:48:41.437614+00:00"
+    },
+    {
+      "method": "POST",
+      "kind": "arm",
+      "startedAtUtc": "2026-10-16T06:48:41.389805+00:00",
+      "httpStatus": 202,
+      "headers": {
+        "Retry-After": "20",
+        "x-ms-request-id": "2f256939-8d3e-48af-9655-80cdae21c4c7",
+        "x-ms-ratelimit-microsoft.costmanagement-scope-request-remaining-per-day": "45",
+        "x-ms-ratelimit-microsoft.costmanagement-scope-request-remaining-per-hour": "20",
+        "x-ms-ratelimit-microsoft.costmanagement-tenant-request-remaining-per-min": "10",
+        "x-ms-ratelimit-microsoft.costmanagement-clientAppId-requests-remaining-per-min": "59",
+        "x-ms-ratelimit-microsoft.costmanagement-scope-request-remaining-per-min": "2",
+        "x-ms-ratelimit-remaining-subscription-reads": "249",
+        "x-ms-ratelimit-remaining-subscription-global-reads": "3749",
+        "Date": "Fri, 16 Oct 2026 06:48:46 GMT"
+      },
+      "bodyEmpty": true,
+      "endedAtUtc": "2026-10-16T06:48:46.606224+00:00"
+    },
+    {
+      "method": "GET",
+      "kind": "arm",
+      "startedAtUtc": "2026-10-16T06:49:16.626255+00:00",
+      "httpStatus": 200,
+      "headers": {
+        "x-ms-request-id": "508473e7-9432-4545-9bcc-4db7c4d3a5ec",
+        "x-ms-ratelimit-remaining-subscription-reads": "249",
+        "x-ms-ratelimit-remaining-subscription-global-reads": "3749",
+        "Date": "Fri, 16 Oct 2026 06:49:18 GMT"
+      },
+      "bodyEmpty": false,
+      "endedAtUtc": "2026-10-16T06:49:18.588140+00:00"
+    },
+    {
+      "method": "GET",
+      "kind": "blob",
+      "startedAtUtc": "2026-10-16T06:49:18.592771+00:00",
+      "httpStatus": 200,
+      "contentType": "application/octet-stream",
+      "endedAtUtc": "2026-10-16T06:49:20.828788+00:00"
+    }
+  ],
+  "billingHttpRequestsUsed": 5,
+  "billingHttpRequestLimit": 6,
+  "retries": 0,
+  "infrastructureMutations": 0,
+  "contextFilesAndNativeProfilesUnchanged": true,
+  "nativeProcessProof": "Synchronous parent and WSL child returned; post-run process query found no matching billing runner",
+  "activeCommands": 0,
+  "ownedNativeChildren": 0,
+  "queuedWork": 0,
+  "restoreState": "No infrastructure commands issued; proven resources remain deleted; unknown NSG/core resource group preserved",
+  "scheduleContinues": true,
+  "nextCheckSuggestedUtc": "2026-10-16T12:50:38.468093+00:00",
+  "queryScopeRowCounts": {
+    "A": 5,
+    "C": 2,
+    "T": 1
+  },
+  "queryScopeClarification": "A is the original core resource-group query scope, containing A and B; five scope rows are not five VM_A rows. Endpoint attribution uses exact historical resource IDs, never amounts.",
+  "endpointRowCounts": {
+    "A": 3,
+    "B": 2,
+    "C": 2,
+    "unknown": 0
+  },
+  "bandwidthRowCountsByUsageDate": [
+    {
+      "endpointAlias": "A",
+      "day": "2026-10-15",
+      "count": 3
+    },
+    {
+      "endpointAlias": "A",
+      "day": "2026-10-16",
+      "count": 0
+    },
+    {
+      "endpointAlias": "B",
+      "day": "2026-10-15",
+      "count": 2
+    },
+    {
+      "endpointAlias": "B",
+      "day": "2026-10-16",
+      "count": 0
+    },
+    {
+      "endpointAlias": "C",
+      "day": "2026-10-15",
+      "count": 1
+    },
+    {
+      "endpointAlias": "C",
+      "day": "2026-10-16",
+      "count": 1
+    },
+    {
+      "endpointAlias": "unknown",
+      "day": "2026-10-15",
+      "count": 0
+    },
+    {
+      "endpointAlias": "unknown",
+      "day": "2026-10-16",
+      "count": 0
+    }
+  ],
+  "BOutcome": "Two exact historical VM_B microcost rows; protocol traffic is plausible but not established by daily billing.",
+  "offlineAttributionCorrection": {
+    "correctedAtUtc": "2026-10-16T06:57:20.734392+00:00",
+    "billingHttpRequestsUsed": 0,
+    "reportGenerationRequestsUsed": 0,
+    "basis": "Exact historical inventory IDs and endpoint plans; sourceRecordHash links each normalized retained row; original billing check timestamps and receipts unchanged.",
+    "deidentification": "Public aliases and existing normalized source-record hashes only; no resource IDs, tokens or IP addresses."
+  }
+}
