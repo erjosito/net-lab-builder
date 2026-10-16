@@ -18,6 +18,17 @@ VMs/disks/PIPs deleted. **Core RG and one unproven-ownership NSG were preserved*
 not adopted/deleted. No active children or further transfer is queued.
 Owner: Morpheus / Jose Moreno. Research retrieved **2026-10-15**.
 
+**16 October 00:29Z billing update:** actual Cost Details CSV extraction now
+works, with quantity/unit/effective-price preserved. C reports only
+**0.000002291053533554 “1 GB” at USD 0.02** (cost
+**USD 4.58210706710815400000E-8**), not the scale of the successful 1-GiB
+control. Three source-A daily rows and two original B rows were also projected;
+T was not refreshed. Six of 371 rows passed exact inventory/RG/date/Bandwidth
+filters. One generation + one poll + one download, no retries/mutations,
+contexts unchanged, lease closed/idle. The CSV schema blocker is resolved;
+**billing maturity/transfer attribution still blocks a zero-charge conclusion**.
+See [latest/history reconciliation](results/2026-10-16-usage-reconciliation.json).
+
 Question: does a customer's VNet pay bandwidth when exchanging data with a
 same-region Azure SaaS public endpoint, including another Entra tenant?
 
@@ -25,10 +36,10 @@ same-region Azure SaaS public endpoint, including another Entra tenant?
 endpoints in the same Azure billing region, **no additional bandwidth fee is
 expected merely because tenants differ**. The published rule is unqualified by
 tenant; this policy interpretation is separate from incomplete invoice proof.
-The [21:36Z billing verdict](results/2026-10-15-billing-verdict.md) now lists the
-exact three tiny **positive** USD charges, all resource-attributed to A, not a
-zero-rated 5 GiB intraregional meter. BYOIP and service-architecture exceptions
-still apply.
+The [billing verdict](results/2026-10-15-billing-verdict.md) preserves the
+21:36Z Query history and adds the latest actual quantity/unit/rate evidence;
+neither snapshot establishes a zero-rated 5 GiB intraregional meter. BYOIP and
+service-architecture exceptions still apply.
 
 **Additional deliverable:** discover and reproducibly query the Cost Analysis
 APIs, including offer/schema-specific filter restrictions. Executable collectors,
@@ -148,8 +159,9 @@ without changing this original headline result.
 Initial attributed billing collection at 14:14:58–14:15:11Z produced **Windows
 HTTP 200 COMPLETE empty**, but **WSL HTTP 429 rate_limited ERROR**, not two
 successful empty results. Neither proves free traffic. Mature quantity/unit/rate
-evidence and a known-charge positive control on the relevant offer/feed are
-still missing. The **18:22Z refresh** returned HTTP **429 ERROR** for both
+evidence and a scale-confirmed known-charge positive control on the relevant
+offer/feed remain necessary; tiny A/B/C quantities are now available from the
+00:29Z CSV. The **18:22Z refresh** returned HTTP **429 ERROR** for both
 aggregates. Windows details were **200 INCOMPLETE**: 1,000 unrelated rows
 discarded in memory and a continuation remaining. WSL details were **200
 COMPLETE empty**, not zero-charge proof. See the
@@ -205,9 +217,25 @@ COMPLETE empty**, not zero-charge proof. See the
   details timeout; T empty. None proves zero cost. Invoice-level confirmation
   needs mature attributable meter quantity/unit/rate evidence; the practical
   published-pricing answer above does not depend on more unapproved payload.
+- **Historical 16 October 00:21Z reconciliation was INCONCLUSIVE:** C-only daily
+  ActualCost now returns **USD 0.0000000458210706710815**, without quantity,
+  unit, effective rate or request attribution. Cost Details generation and a
+  memory-only CSV download succeeded, but CSV schema validation blocked
+  extraction; offline parser tests do not prove the discarded report parsed.
+  Fresh 00:29Z live projection subsequently resolved the schema blocker;
+  the reported control quantity remains far below 1 GiB, so billing is still
+  INCONCLUSIVE.
+  A/T were not refreshed. The bounded billing lease is closed/idle, zero
+  mutations/owned native children. See the
+  [sanitized reconciliation](results/2026-10-16-usage-reconciliation.json)
+  and [collector changes](costs/README.md#cost-details-route-investigation-16-october).
 - Control billing targets: **16/17/18 October 23:15:33Z** (24/48/72h);
   the 72h target is after the original **18 October 07:33Z** TTL deadline.
   No more transfers are needed; preserve and query historical IDs.
+  Require two stable future cumulative snapshots, both at/after **16 October
+  23:15:33Z**, with a scale-confirmed charged control and comparable A/T
+  coverage before supporting a scoped **no additional charge observed**
+  conclusion. Stability alone does not prove a zero-rated meter or final invoice.
 - Standing cleanup authority is limited to known owned assets. **No automatic
   follow-up or cleanup job is established**. These dates are action deadlines,
   not scheduled jobs. No extra-cost scope or further MSDN payload is approved.

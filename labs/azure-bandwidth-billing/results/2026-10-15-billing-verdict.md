@@ -9,7 +9,7 @@ Internet-egress charging.
 
 **Experimental verdict: transport PASS; invoice-level confirmation INCONCLUSIVE.**
 These are different conclusions, not a reason to withhold the practical pricing
-answer. The available billing rows are tiny positive charges attributed to A,
+answer. The latest billing rows are tiny positive charges attributed to A/B/C,
 **not a measured zero-rated 5 GiB intraregional transfer**.
 
 **Update, 2026-10-16 UTC:** the separately completed
@@ -22,6 +22,39 @@ a billed positive control.** No zero-dollar or invoice conclusion follows.
 Known-owned cleanup closed PASS **16 October 00:00:11.806224Z**, all known lab
 VMs/disks/PIPs deleted; **core RG and one unproven-ownership NSG were preserved**,
 not adopted/deleted. The older billing/provenance history below is retained.
+
+## Latest quantity evidence: 16 October 00:29Z
+
+The [latest sanitized reconciliation](2026-10-16-usage-reconciliation.json)
+records successful actual Cost Details CSV extraction, superseding the
+historical 00:21Z schema failure. One generation, one poll and one download
+returned HTTP 202/200/200, with no retries or infrastructure mutations.
+Actual headers include `ResourceId`, `resourceGroupName`, `date`, `quantity`,
+`unitOfMeasure`, `effectivePrice`, `costInBillingCurrency` and `billingCurrency`.
+Six of 371 rows passed exact owned inventory/RG/15-October/Bandwidth filtering;
+unrelated rows were discarded before persistence. T was **not refreshed**;
+its last empty snapshot is not new zero-charge evidence.
+
+All quantities below are reported in **“1 GB”**, prices in **USD per reported
+unit**, with decimal strings preserved directly from the CSV:
+
+| Source | Meter | Quantity | Effective price | Reported cost, USD |
+|---|---|---:|---:|---:|
+| C | Intra Continent Data Transfer Out | 0.000002291053533554 | 0.02 | 4.58210706710815400000E-8 |
+| A | Inter Continent Data Transfer Out - NAM or EU To Any | 0.000966296531260014 | 0.05 | 0.000048314826563000676 |
+| A | Intra Continent Data Transfer Out | 0.000003241002559662 | 0.02 | 6.48200511932373042000E-8 |
+| A | Standard Data Transfer Out | 0.000295128673315048 | 0.083 | 0.000024495679885149002 |
+
+The other two retained rows belong to original endpoint **B**, not source A;
+their exact values remain in the reconciliation. The C microcharge is not a
+scale-confirmed billing match to the successful **1 GiB C→B** bulk transfer
+on **15 October 23:08:23–23:15:32Z**. These are actual daily usage fields,
+not traffic-derived quantities or retail-price estimates. Do not recompute
+the cost strings from rounded displayed quantity/rate fields or add successive
+Query/CSV snapshots. Receipt coverage spans 15–16 October, but owned usage
+dates are only 15 October; that does not establish ingestion completeness.
+**Quantity/unit/effective price are now available; billing maturity and
+transfer attribution remain the blockers. Experimental verdict: INCONCLUSIVE.**
 
 ## Published rule and scope
 
@@ -51,7 +84,7 @@ Check these exceptions before answering for a real SaaS endpoint:
 - **Other fees:** SaaS-provider charges, public-IP rent and service-specific
   processing/transfer charges are separate from this Azure bandwidth rule.
 
-## What the three rows actually say
+## Historical 21:08Z/21:36Z Query: what the three rows actually say
 
 Both snapshots use **ActualCost**, daily usage **2026-10-15**, API
 **2023-11-01**, and the hard intersection **owned core RG AND
@@ -158,8 +191,9 @@ Private minimal evidence, under the lab's ignored directory:
 - `private\cost-snapshots\billing-verdict-20261015T213615Z\resource-meter.private.json`
 - `private\cost-snapshots\billing-verdict-20261015T213615Z\status.private.json`
 
-**Remaining evidence gap:** mature, source/day-attributable quantity/unit/
-effective-rate records and a **billing-confirmed** known-charge control are needed
+**Remaining evidence gap:** the latest CSV now supplies quantity/unit/effective
+price, but mature source/day-comparable coverage and a **scale-confirmed,
+billing-confirmed** known-charge control are still needed
 for a strong experimental billing confirmation. This gap limits invoice proof;
 it does not negate the general published same-region pricing rule. Do not
 restart transfers or retain billable resources merely to close the gap.
@@ -168,6 +202,11 @@ Headline maturity target: **16 October 10:40:28Z**. Control 24/48/72h targets:
 **16/17/18 October 23:15:33Z**, actual usage **15 October**; the last is after
 the original **18 October 07:33Z** resource deadline. Query private historical
 IDs after completed known-owned cleanup; no more transfers or MSDN tests needed.
+Require two stable future cumulative snapshots, both **at/after 16 October
+23:15:33Z**, with comparable A/T coverage and the scale-confirmed charged C
+control before supporting a scoped **no additional charge observed** finding.
+Stable tiny rows alone are insufficient; neither stability nor absence of an
+explicit intraregional row proves a zero-rated meter or a final invoice.
 No automatic follow-up or cleanup job is established.
 
 **Safety:** this documentation update is offline, zero Azure calls/mutations

@@ -22,6 +22,36 @@ Known-owned cleanup closed PASS **16 October 00:00:11.806224Z**:
 VMs/disks/PIPs deleted. **Core RG and an extra NSG remain preserved** because
 creation ownership is unproven; do not adopt/delete. No standalone RG/NSG rent.
 
+**00:29Z live CSV schema validation:** one fresh ActualCost report for October
+15–16 receipts completed (POST 202, poll 200, download 200; **three HTTP requests,
+no retries or infrastructure mutations**). No previous operation URL/ID had been
+preserved for reuse. Its 65 mixed-case MCA-compatible columns include actual
+`ResourceId`, `resourceGroupName`, `date`, `quantity`, `unitOfMeasure`,
+`effectivePrice`, `costInBillingCurrency`, and `billingCurrency`.
+Streaming exact-inventory/RG/October-15/Bandwidth projection retained six rows
+from 371; 344 non-inventory and 21 non-Bandwidth rows were discarded in memory.
+C reports **0.000002291053533554 × “1 GB” at USD 0.02**, cost
+**USD 4.58210706710815400000E-8**. This is not the 1-GiB control quantity.
+A's three source-VM quantities are **0.000966296531260014** at 0.05,
+**0.000003241002559662** at 0.02, and **0.000295128673315048** at 0.083
+USD per reported “1 GB”. Two additional rows belong to original endpoint B,
+not source A. Latest owned usage date is October 15, a date-only observation
+that cannot prove ingestion completeness. **Billing remains INCONCLUSIVE,
+maturity-blocked**; T was not refreshed. Original contexts/native default
+profile hashes are unchanged; the new lease is closed, idle, with no children.
+
+**Historical 00:21Z quantity-source investigation:** the C-only ActualCost Query now
+returns one daily “Intra Continent Data Transfer Out” row,
+**USD 0.0000000458210706710815**. Quantity/unit/rate remain NOT_REPORTED;
+this is not an attributable 1-GiB billed positive control. The modern Cost
+Details report route succeeded (202 → 200 and a 386,097-byte CSV download),
+but the runtime parser rejected required CSV columns. The downloaded broad
+report was memory-only and was not retained; its exact header mismatch cannot
+be reconstructed. No A/T query was refreshed in this phase.
+The [new reconciliation](../results/2026-10-16-usage-reconciliation.json)
+preserves those distinctions and the exhausted billing budget. No additional
+traffic, infrastructure/authentication changes, or background work occurred.
+
 **Historical refresh, 18:22Z:** both aggregates returned **HTTP 429 ERROR**.
 Windows details returned **HTTP 200 INCOMPLETE**: 1,000 unrelated rows discarded
 in memory, zero retained, continuation remaining. WSL details returned
@@ -31,8 +61,9 @@ This reinforces mandatory local inventory/RG/actual-usage-date filtering,
 bounded completeness checks and treating 429 as error, never zero usage.
 C → B v1 **FAIL** / v2 **BLOCKED before bulk** did not establish a control then;
 their historical records, and v3's outcome, are unchanged by v4's later PASS.
-Mature meter quantity/unit/rate remains required for experimental invoice proof;
-successful transport cannot supply it. The [later exact-row interpretation](../results/2026-10-15-billing-verdict.md)
+Mature, attributable meter quantity/unit/rate remains required for experimental
+invoice proof; the latest CSV supplies tiny quantities, not the scale-confirmed
+control. Successful transport cannot supply billing proof. The [later exact-row interpretation](../results/2026-10-15-billing-verdict.md)
 separately applies the published same-region rule across tenants for ordinary
 Azure-assigned regional endpoints. Its tiny positive A-attributed costs are not
 an intraregional 5 GiB quantity measurement.
@@ -45,11 +76,21 @@ an intraregional 5 GiB quantity measurement.
 - `preflight_compare.py`: bounded, repeatable Windows/native-Linux comparison,
   and optional provider/catalogue preflight. Requires this lab's active API lease.
 - `test_cost_api.py`: offline fixtures/mocked HTTP; no Azure access or dependencies.
+- `cost_details_csv` in `cost_api.py`: pure memory-only Cost Details CSV
+  projection, accepting documented ResourceId/InstanceId and case variants,
+  preserving decimals/nulls, filtering inventory/RG/date before retention.
+  This helper does **not** implement the CLI's asynchronous `cost-details`
+  command. `cost_details_csv_stream` also bounds downloaded/decompressed bytes,
+  supports one CSV ZIP member or gzip, captures safe headers before schema
+  validation, and requires exact Bandwidth category/service matching.
+  The fresh 00:29Z report successfully exercised the actual mixed-case schema;
+  the earlier discarded report was not reconstructed.
 
-Current validation: **12 contract tests passed on Windows and native Ubuntu-24.04
-Python**, including date-error classification, filtering, Decimal/units, name resolution, reordered Query
+Current validation: **21 contract tests passed on Windows** (the original 12
+also previously passed on native Ubuntu-24.04 Python), including date-error classification, filtering, Decimal/units, name resolution, reordered Query
 columns, exact continuation semantics, duplicate identities, truncation,
-timeouts/HTTP errors, context pinning and snapshot overwrite rejection.
+timeouts/HTTP errors, context pinning, snapshot overwrite rejection, in-memory
+token expiry/clock guards, and CSV schema/privacy/row-limit fixtures.
 
 Only the following source artifacts belong to this tooling: these three Python
 files and this README. Runtime context, inventories and snapshots must be under
@@ -60,9 +101,15 @@ the full raw lab row (which could contain opaque URLs/additional information).
 Snapshot filenames must be new: successive cumulative reports are never appended.
 Do not concatenate snapshots or deduplicate merely similar-looking line items.
 
-Each HTTP action checks expected subscription/tenant against the native CLI,
-requests a subscription-pinned ARM token in that environment, and keeps it in
-memory. Azure CLI rejects simultaneous subscription and tenant parameters on
+Initial authentication and refresh check expected subscription/tenant against
+the native CLI and request a subscription-pinned ARM token in that environment.
+Each HTTP action still checks its lease/deadline. Within one Transport only,
+tokens with a valid UTC `expires_on` epoch are cached in memory until two
+minutes before expiry, with monotonic expiry and backwards-wall-clock guards.
+Missing/invalid epochs and legacy local `expiresOn` never enable caching.
+This avoids two native CLI processes per continuation; it does not extend the
+75-second collection deadline or turn incomplete pagination into success.
+No token is persisted or transferred between environments. Azure CLI rejects simultaneous subscription and tenant parameters on
 `get-access-token`; the tool verifies both fields on its response instead.
 Windows uses the installed CLI's Python entry point with argv, not `az.cmd`
 shell quoting. WSL dispatch runs the same source using Linux `python3` and Linux
@@ -73,7 +120,8 @@ HTTP socket timeout <=20s with a deadline check between bounded reads; CLI <=15s
 invocation defaults to 75s (max 90s), 3 pages
 (max 20), <=8 MiB/page. A 429 is retried only once when numeric Retry-After <=2s
 fits the deadline; otherwise return rate-limited, not a background wait.
-Redirects are rejected. Continuations must match HTTPS ARM, exact subscription
+Redirects are rejected. Continuations must contain no raw whitespace/control
+characters and must match HTTPS ARM, exact subscription
 and API operation path/version; Query repeats POST with the original body,
 Consumption follows the original nextLink GET without reconstructing its token.
 Page limits, cycles, unattributed lab rows and elapsed/error exits cannot be
@@ -157,6 +205,37 @@ quantity, raw unit, effective/unit price (null if missing), meter, currency,
 cost, actual usage day and private resource identity. Never infer price=0 from
 missing fields or cost=0 from credits/free tier. 5 GiB is 5.36870912 decimal GB.
 Reconcile only like meter/unit/currency/day/rate groups.
+
+### Cost Details route investigation (16 October)
+
+The private bounded runtime tested the documented
+`generateCostDetailsReport?api-version=2025-03-01` route for the existing core
+subscription and the single receipt date 15 October, ActualCost. No billing
+agreement type was inferred from the successful operation alone.
+The response echoed optional `billingPeriod`/`invoiceId` null fields; exact
+dictionary equality incorrectly rejected otherwise matching request context.
+Validation now compares metric, scope and actual dates and rejects nonempty
+alternative selectors. A download-container restriction copied from the
+documentation's `/armreports/` example was also over-specific: the documented
+ARM manifest supplies the blob URL. The private downloader now requires an
+HTTPS Azure Blob account host, container/blob path and SAS signature, follows
+no redirects, and sends no ARM bearer token to Blob Storage. Links remain
+memory-only. Byte counts, one-day context and size/row caps are verified.
+
+The historical final CSV failed the old required-column test; its discarded
+header cannot be reconstructed. **A fresh authorized report passed live at
+00:29Z**, validating actual mixed-case headers, six owned Bandwidth rows and
+the source mapping now recorded in the reconciliation. It included October 16
+receipt while retaining only October 15 usage. The previous schema blocker is
+resolved, not the billing-maturity/transfer-attribution blocker.
+Honor the returned Retry-After and Microsoft's recommendation to request
+reports at most daily (reports refresh every four hours); this phase's bounded
+schema-debug attempts are not a recommended polling schedule.
+
+Official contracts:
+[generate report](https://learn.microsoft.com/en-us/rest/api/cost-management/generate-cost-details-report/create-operation?view=rest-cost-management-2025-03-01),
+[field definitions](https://learn.microsoft.com/en-us/azure/cost-management-billing/automate/understand-usage-details-fields),
+[availability, refresh and receipt-date semantics](https://learn.microsoft.com/en-us/azure/cost-management-billing/automate/get-small-usage-datasets-on-demand).
 
 ## Observed matrix, not a universal filter claim
 
@@ -369,6 +448,11 @@ nextLink at a bound is INCOMPLETE, never zero. No cumulative snapshots are summe
 Meter Query costs lack quantity/unit/effective-rate proof; credits and allowances
 cannot prove no charge. Require mature same-offer/feed known-charge positive
 control plus detail before a scoped no-charge-observed conclusion.
+Require two stable future cumulative snapshots, **both at/after 16 October
+23:15:33Z**, with comparable A/T coverage and the scale-confirmed charged C
+control. That supports a scoped **no additional charge observed** finding,
+not a zero-rated-meter claim or final invoice proof. Twenty-four hours and
+stability alone do not guarantee ingestion completeness.
 
 Collections did not delay known-owned deletion: cleanup closed
 **16 October 00:00:11.806224Z**, ahead of original **18 October 07:33Z**

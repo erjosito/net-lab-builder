@@ -1,8 +1,10 @@
 """Bounded, read-only Azure billing collector. Python standard library only."""
 import argparse
+import csv
 import datetime as dt
 from decimal import Decimal, InvalidOperation
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -114,6 +116,10 @@ class Transport:
         self.http = []
         self.context_verified = False
         self.guard = lambda: None
+        self._token = None
+        self._token_received_at = 0
+        self._token_expires_at = 0
+        self._token_deadline = 0
 
     def remaining(self):
         remaining = self.deadline - time.monotonic()
@@ -124,6 +130,11 @@ class Transport:
     def authorize(self):
         self.guard()
         remaining = self.remaining()
+        now = time.time()
+        if (self._token is not None and self._token_received_at <= now <
+                self._token_expires_at - 120 and time.monotonic() < self._token_deadline):
+            return self._token
+        self._token = None
         account = cli_json(["account", "show", "--subscription", self.subscription],
                            min(15, remaining))
         if (str(account.get("id", "")).lower() != self.subscription or
@@ -137,9 +148,22 @@ class Transport:
                 str(token.get("subscription", "")).lower() != self.subscription):
             raise Failure("token_context_mismatch")
         self.context_verified = True
+        # Only the unambiguous UTC epoch is cacheable; legacy local expiresOn is not.
+        try:
+            expires_at = float(token.get("expires_on", 0))
+        except (ValueError, TypeError, OverflowError):
+            expires_at = 0
+        now = time.time()
+        if now + 120 < expires_at < float("inf"):
+            self._token = token["accessToken"]
+            self._token_received_at = now
+            self._token_expires_at = expires_at
+            self._token_deadline = time.monotonic() + expires_at - now - 120
         return token["accessToken"]
 
     def validate(self, url, endpoint):
+        if any(char.isspace() or ord(char) < 32 for char in url):
+            raise Failure("unsafe_continuation")
         parsed = urllib.parse.urlsplit(url)
         path = self.scope + endpoint
         if (parsed.scheme != "https" or parsed.netloc.lower() != "management.azure.com" or
@@ -341,6 +365,157 @@ def normalize(item, resource):
             "meterCategory": p.get("meterCategory") or meter.get("meterCategory"),
             "meterSubCategory": p.get("meterSubCategory") or meter.get("meterSubCategory"),
             "sourceRecordHash": digest(item)}
+
+
+def cost_details_csv(raw, subscription, groups, inventory, start, end, max_rows=100000,
+                     check=None, schema=None):
+    """Project an in-memory report before retaining any non-inventory billing data."""
+    if len(raw) > 50 * 1024 * 1024 or not 1 <= max_rows <= 100000:
+        raise Failure("report_bounds")
+    subscription = valid_id(subscription)
+    return cost_details_csv_stream(io.BytesIO(raw), subscription, groups, inventory,
+                                  start, end, max_rows, check, schema)
+
+
+class BoundedReport(io.RawIOBase):
+    def __init__(self, source, check=None, limit=50 * 1024 * 1024):
+        self.source, self.check, self.limit, self.size = source, check, limit, 0
+
+    def readable(self):
+        return True
+
+    def readinto(self, buffer):
+        if self.check:
+            self.check()
+        data = self.source.read(min(len(buffer), self.limit - self.size + 1))
+        self.size += len(data)
+        if self.size > self.limit:
+            raise Failure("report_bounds")
+        buffer[:len(data)] = data
+        return len(data)
+
+
+def cost_details_csv_stream(source, subscription, groups, inventory, start, end,
+                            max_rows=100000, check=None, schema=None):
+    """Stream CSV; only exact-inventory/date/Bandwidth projections survive."""
+    if not 1 <= max_rows <= 100000:
+        raise Failure("report_bounds")
+    subscription = valid_id(subscription)
+    wire = BoundedReport(source, check)
+    bounded = io.BufferedReader(wire)
+    magic = bounded.peek(4)[:4]
+    if magic.startswith(b"\x1f\x8b"):
+        import gzip
+        bounded = io.BufferedReader(BoundedReport(gzip.GzipFile(fileobj=bounded), check))
+    elif magic.startswith(b"PK"):
+        import zipfile
+        archive = zipfile.ZipFile(io.BytesIO(bounded.read()))
+        entries = archive.infolist()
+        if (len(entries) != 1 or not entries[0].filename.lower().endswith(".csv")
+                or entries[0].file_size > 50 * 1024 * 1024 or entries[0].flag_bits & 1):
+            raise Failure("report_archive_bounds")
+        bounded = io.BufferedReader(BoundedReport(archive.open(entries[0]), check))
+    elif magic.lstrip().startswith(b"<"):
+        raise Failure("report_not_csv")
+    text = io.TextIOWrapper(bounded, encoding="utf-8-sig", newline="")
+    reader = csv.DictReader(text, strict=True)
+    fields = reader.fieldnames or []
+    if len(fields) > 128 or any(not re.fullmatch(r"[A-Za-z][A-Za-z0-9 _()/-]{0,100}",
+                                               field.strip()) for field in fields):
+        raise Failure("csv_header_bounds")
+    names = [name.strip().casefold() for name in fields]
+    aliases = {
+        "resourceId": ("resourceid", "instanceid"),
+        "resourceGroup": ("resourcegroup", "resourcegroupname"),
+        "date": ("date", "usagedate"),
+        "quantity": ("quantity", "usagequantity"),
+        "unit": ("unitofmeasure",),
+        "effectivePrice": ("effectiveprice",),
+        "unitPrice": ("unitprice",),
+        "cost": ("costinbillingcurrency", "pretaxcost", "cost"),
+        "currency": ("billingcurrencycode", "billingcurrency", "currency"),
+        "meterCategory": ("metercategory", "servicename"),
+        "meterName": ("metername",),
+    }
+    mapping = {key: next((name for name in choices if name in names), None)
+               for key, choices in aliases.items()}
+    metadata = {"headers": fields, "schemaMapping": mapping,
+                "reportFlavorCapability": (
+                    "MCA-compatible fields; not an account/offer determination"
+                    if {"billingprofileid", "costinbillingcurrency"}.issubset(names)
+                    else "Legacy/EA-compatible aliases; not an account/offer determination")}
+    if schema is not None:
+        schema(metadata)
+    if len(names) != len(set(names)):
+        raise Failure("csv_duplicate_columns")
+    if not all(mapping[key] for key in ("resourceId", "date", "quantity")):
+        raise Failure("csv_required_columns_missing")
+    result = {"rows": [], "received": 0, "discarded": 0, "columns": names,
+              "schemaMapping": mapping, "discardCounts": {
+                  "inventory": 0, "date": 0, "category": 0}, "datasetMaxUsageDate": None}
+    for source in reader:
+        if check is not None:
+            check()
+        result["received"] += 1
+        if result["received"] > max_rows:
+            raise Failure("report_row_limit")
+        if None in source or any(value is None for value in source.values()):
+            raise Failure("csv_row_shape")
+        row = {key.strip().casefold(): value for key, value in source.items()}
+        resource = (row.get(mapping["resourceId"]) or "").lower().rstrip("/")
+        match = next(((alias, group) for alias, group in groups.items()
+                      if resource.startswith(
+                          f"/subscriptions/{subscription}/resourcegroups/{group}/".lower())), None)
+        if resource not in inventory or match is None:
+            result["discarded"] += 1
+            result["discardCounts"]["inventory"] += 1
+            continue
+        actual_rg = row.get(mapping["resourceGroup"])
+        if actual_rg and actual_rg.lower() != match[1].lower():
+            raise Failure("csv_resource_group_mismatch")
+        value = row[mapping["date"]]
+        try:
+            parsed_date = dt.datetime.fromisoformat(value.replace("Z", "+00:00"))
+            if parsed_date.tzinfo and parsed_date.utcoffset() != dt.timedelta(0):
+                raise Failure("csv_non_utc_date")
+            date = parsed_date.date()
+        except ValueError:
+            try:
+                date = dt.datetime.strptime(value, "%m/%d/%Y").date()
+            except ValueError:
+                raise Failure("csv_lab_date_invalid") from None
+        result["datasetMaxUsageDate"] = max(result["datasetMaxUsageDate"] or "",
+                                             date.isoformat())
+        if not day(start) <= date <= day(end):
+            result["discarded"] += 1
+            result["discardCounts"]["date"] += 1
+            continue
+        category = row.get(mapping["meterCategory"])
+        if not any(row.get(key, "").strip().casefold() == "bandwidth"
+                   for key in ("metercategory", "servicename")):
+            result["discarded"] += 1
+            result["discardCounts"]["category"] += 1
+            continue
+        currency = row.get(mapping["currency"])
+        cost = row.get(mapping["cost"])
+        result["rows"].append({
+            "alias": match[0], "resourceId": resource, "day": date.isoformat(),
+            "resourceGroup": match[1], "dateSource": mapping["date"],
+            "quantity": decimal(row.get(mapping["quantity"]) or None),
+            "unit": row.get(mapping["unit"]) or None,
+            "effectivePrice": decimal(row.get(mapping["effectivePrice"]) or None),
+            "unitPrice": decimal(row.get(mapping["unitPrice"]) or None),
+            "cost": decimal(cost or None), "currency": currency or None,
+            "costSource": mapping["cost"], "currencySource": mapping["currency"],
+            "pricingCurrency": row.get("pricingcurrency") or None,
+            "exchangeRatePricingToBilling": decimal(
+                row.get("exchangeratepricingtobilling") or None),
+            "meterCategory": category or None,
+            "serviceName": row.get("servicename") or None,
+            "meterName": row.get(mapping["meterName"]) or None,
+            "sourceRecordHash": digest(source)})
+    result["downloadBytes"] = wire.size
+    return result
 
 
 def collect(transport, args, inventory):

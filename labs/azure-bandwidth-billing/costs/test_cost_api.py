@@ -1,5 +1,6 @@
 import argparse
 import copy
+import csv
 from decimal import Decimal
 import io
 import json
@@ -85,11 +86,183 @@ class CollectorTests(unittest.TestCase):
         self.assertIsNone(normalized["effectivePrice"])
         self.assertEqual(normalized["cost"], "0")
 
+    def test_token_cache_expiry_guard_and_clock_rollback(self):
+        account = {"id": SUB, "tenantId": TENANT, "state": "Enabled"}
+        token = {"subscription": SUB, "tenant": TENANT, "accessToken": "SECRET",
+                 "expires_on": "5000"}
+        transport = api.Transport(SUB, TENANT)
+        transport.guard = unittest.mock.Mock()
+        with patch("cost_api.time.time", return_value=1000), patch(
+                "cost_api.cli_json", side_effect=[account, token]) as cli:
+            self.assertEqual(transport.authorize(), "SECRET")
+            self.assertEqual(transport.authorize(), "SECRET")
+            self.assertEqual(cli.call_count, 2)
+            self.assertEqual(transport.guard.call_count, 2)
+        for clock in (900, 4880):
+            with patch("cost_api.time.time", return_value=clock), patch(
+                    "cost_api.cli_json", return_value={
+                        "id": SUB, "tenantId": SUB, "state": "Enabled"}):
+                with self.assertRaisesRegex(api.Failure, "context_mismatch"):
+                    transport.authorize()
+        transport = api.Transport(SUB, TENANT)
+        with patch("cost_api.time.time", return_value=1000), patch(
+                "cost_api.cli_json", side_effect=[account, token]):
+            transport.authorize()
+        transport._token_deadline = 0
+        with patch("cost_api.time.time", return_value=1000), patch(
+                "cost_api.cli_json", return_value=account) as cli:
+            with self.assertRaisesRegex(api.Failure, "token_context_mismatch"):
+                transport.authorize()
+            self.assertEqual(cli.call_count, 2)
+
+    def test_token_without_epoch_or_near_expiry_not_cached(self):
+        account = {"id": SUB, "tenantId": TENANT, "state": "Enabled"}
+        for expiry in (None, "bad", "NaN", "Infinity", "1100"):
+            transport = api.Transport(SUB, TENANT)
+            token = {"subscription": SUB, "tenant": TENANT, "accessToken": "SECRET",
+                     "expires_on": expiry}
+            with patch("cost_api.time.time", return_value=1000), patch(
+                    "cost_api.cli_json", side_effect=[account, token, account, token]) as cli:
+                transport.authorize()
+                transport.authorize()
+                self.assertEqual(cli.call_count, 4)
+
+    def test_cost_details_csv_header_case_decimal_and_inventory_filter(self):
+        header = ("resourceId,date,quantity,unitOfMeasure,effectivePrice,"
+                  "costInBillingCurrency,billingCurrencyCode,meterCategory,meterName\n")
+        csv = (header + f"{RID}unknown,2026-10-15,PRIVATE,GB,PRIVATE,PRIVATE,USD,Bandwidth,Other\n"
+               + f"{RID},2026-10-13,7,GB,0.02,0.14,USD,Bandwidth,Transfer\n"
+               + f"{RID},2026-10-14,1.073741824,GB,0.02,0.02147483648,USD,Bandwidth,Transfer\n")
+        result = api.cost_details_csv(csv.encode(), SUB, {"C": RG}, {RID.lower()},
+                                      "2026-10-14", "2026-10-14")
+        self.assertEqual((result["received"], result["discarded"]), (3, 2))
+        value = result["rows"][0]
+        self.assertEqual((value["quantity"], value["effectivePrice"], value["cost"]),
+                         ("1.073741824", "0.02", "0.02147483648"))
+        self.assertEqual(value["alias"], "C")
+        self.assertNotIn("PRIVATE", json.dumps(result))
+        legacy = (f"InstanceId,Date,Quantity,Cost,Currency,ServiceName\n"
+                  f"{RID},10/14/2026,1,0,USD,Bandwidth\n").encode("utf-8-sig")
+        value = api.cost_details_csv(legacy, SUB, {"A": RG}, {RID.lower()},
+                                    "2026-10-14", "2026-10-14")["rows"][0]
+        self.assertEqual(value["cost"], "0")
+        self.assertIsNone(value["unit"])
+        self.assertIsNone(value["effectivePrice"])
+
+    def test_cost_details_csv_fail_closed_schema_dates_and_bounds(self):
+        for raw, reason in [
+                (b"Date,Quantity\n2026-10-14,1\n", "csv_required_columns_missing"),
+                (b"ResourceId,resourceId,Date,Quantity\n", "csv_duplicate_columns"),
+                (f"ResourceId,Date,Quantity\n{RID},bad,1\n".encode(), "csv_lab_date_invalid"),
+                (f"ResourceId,Date,Quantity\n{RID},2026-10-14\n".encode(), "csv_row_shape"),
+                (f"ResourceId,Date,Quantity,ResourceGroup\n{RID},2026-10-14,1,foreign\n".encode(),
+                 "csv_resource_group_mismatch")]:
+            with self.assertRaisesRegex(api.Failure, reason):
+                api.cost_details_csv(raw, SUB, {"A": RG}, {RID.lower()},
+                                     "2026-10-14", "2026-10-14")
+        with self.assertRaisesRegex(api.Failure, "report_row_limit"):
+            api.cost_details_csv(
+                f"ResourceId,Date,Quantity\n{RID},2026-10-14,1\n{RID},2026-10-14,1\n".encode(),
+                SUB, {"A": RG}, {RID.lower()}, "2026-10-14", "2026-10-14", max_rows=1)
+
+    def test_actual_mca_header_fixture_with_only_synthetic_values(self):
+        headers = (
+            "invoiceId previousInvoiceId billingAccountId billingAccountName billingProfileId "
+            "billingProfileName invoiceSectionId invoiceSectionName resellerName resellerMpnId "
+            "costCenter billingPeriodEndDate billingPeriodStartDate servicePeriodEndDate "
+            "servicePeriodStartDate date serviceFamily productOrderId productOrderName "
+            "consumedService meterId meterName meterCategory meterSubCategory meterRegion "
+            "ProductId ProductName SubscriptionId subscriptionName publisherType publisherId "
+            "publisherName resourceGroupName ResourceId resourceLocation location effectivePrice "
+            "quantity unitOfMeasure chargeType billingCurrency pricingCurrency costInBillingCurrency "
+            "costInPricingCurrency costInUsd paygCostInBillingCurrency paygCostInUsd "
+            "exchangeRatePricingToBilling exchangeRateDate isAzureCreditEligible serviceInfo1 "
+            "serviceInfo2 additionalInfo tags PayGPrice frequency term reservationId reservationName "
+            "pricingModel unitPrice costAllocationRuleName benefitId benefitName provider").split()
+        values = dict(ResourceId=RID.upper(), resourceGroupName=RG.upper(), date="10/15/2026",
+                      quantity="0.000002", unitOfMeasure="1 GB", effectivePrice="0.02",
+                      unitPrice="0.02", costInBillingCurrency="0.00000004",
+                      billingCurrency="USD", meterCategory="Bandwidth", meterName="Synthetic")
+        output = io.StringIO(newline="")
+        writer = csv.DictWriter(output, fieldnames=headers)
+        writer.writeheader()
+        writer.writerow(values)
+        captured = []
+        result = api.cost_details_csv(output.getvalue().encode("utf-8-sig"), SUB, {"C": RG},
+                                      {RID.lower()}, "2026-10-15", "2026-10-15",
+                                      schema=captured.append)
+        self.assertEqual(captured[0]["headers"], headers)
+        self.assertEqual(result["schemaMapping"]["resourceGroup"], "resourcegroupname")
+        value = result["rows"][0]
+        self.assertEqual((value["quantity"], value["unit"], value["effectivePrice"]),
+                         ("0.000002", "1 GB", "0.02"))
+        self.assertEqual((value["costSource"], value["currencySource"]),
+                         ("costinbillingcurrency", "billingcurrency"))
+
+    def test_legacy_usage_aliases_and_bandwidth_service_exact_filter(self):
+        raw = (" InstanceId , UsageDate , UsageQuantity ,PreTaxCost,Currency,ServiceName\n"
+               f"{RID},10/15/2026,1.1234567890123456789,0,USD,Bandwidth\n"
+               f"{RID},10/15/2026,PRIVATE,PRIVATE,USD,NotBandwidth\n").encode()
+        result = api.cost_details_csv(raw, SUB, {"A": RG}, {RID.lower()},
+                                      "2026-10-15", "2026-10-15")
+        self.assertEqual(result["discardCounts"]["category"], 1)
+        self.assertEqual(result["rows"][0]["quantity"], "1.1234567890123456789")
+        self.assertEqual(result["rows"][0]["cost"], "0")
+        self.assertIsNone(result["rows"][0]["effectivePrice"])
+        self.assertNotIn("PRIVATE", json.dumps(result))
+
+    def test_actual_headers_persist_callback_even_missing_required_alias(self):
+        captured = []
+        with self.assertRaisesRegex(api.Failure, "csv_required_columns_missing"):
+            api.cost_details_csv(b"UnknownDate,UnknownResource,Quantity\n", SUB, {"A": RG},
+                                 {RID.lower()}, "2026-10-15", "2026-10-15",
+                                 schema=captured.append)
+        self.assertEqual(captured[0]["headers"], ["UnknownDate", "UnknownResource", "Quantity"])
+        self.assertIsNone(captured[0]["schemaMapping"]["date"])
+
+    def test_compression_and_stream_wire_byte_count(self):
+        import gzip
+        import zipfile
+        raw = (f"ResourceId,Date,Quantity,MeterCategory\n"
+               f"{RID},2026-10-15,1,Bandwidth\n").encode()
+        archive = io.BytesIO()
+        with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as zipped:
+            zipped.writestr("data.csv", raw)
+        for data in (raw, gzip.compress(raw), archive.getvalue()):
+            result = api.cost_details_csv_stream(io.BytesIO(data), SUB, {"A": RG},
+                                                {RID.lower()}, "2026-10-15", "2026-10-15")
+            self.assertEqual(result["downloadBytes"], len(data))
+            self.assertEqual(result["rows"][0]["quantity"], "1")
+        archive = io.BytesIO()
+        with zipfile.ZipFile(archive, "w") as zipped:
+            zipped.writestr("data.csv", raw)
+            zipped.writestr("other.csv", raw)
+        with self.assertRaisesRegex(api.Failure, "report_archive_bounds"):
+            api.cost_details_csv(archive.getvalue(), SUB, {"A": RG}, {RID.lower()},
+                                 "2026-10-15", "2026-10-15")
+
+    def test_stream_limit_deadline_and_non_utc_fail_closed(self):
+        with self.assertRaisesRegex(api.Failure, "report_bounds"):
+            io.BufferedReader(api.BoundedReport(io.BytesIO(b"12345"), limit=4)).read()
+        def elapsed():
+            raise api.Failure("elapsed_limit")
+        with self.assertRaisesRegex(api.Failure, "elapsed_limit"):
+            api.cost_details_csv_stream(io.BytesIO(b""), SUB, {"A": RG}, {RID.lower()},
+                                        "2026-10-15", "2026-10-15", check=elapsed)
+        with self.assertRaisesRegex(api.Failure, "csv_non_utc_date"):
+            api.cost_details_csv(
+                f"ResourceId,Date,Quantity\n{RID},2026-10-15T23:00:00-04:00,1\n".encode(),
+                SUB, {"A": RG}, {RID.lower()}, "2026-10-15", "2026-10-15")
+        with self.assertRaisesRegex(api.Failure, "report_not_csv"):
+            api.cost_details_csv(b"<xml>not a report</xml>", SUB, {"A": RG}, {RID.lower()},
+                                 "2026-10-15", "2026-10-15")
+
     def test_continuation_host_scope_version_and_redirect(self):
         transport = api.Transport(SUB, TENANT)
         for bad in (URL.replace("management.azure.com", "evil.example"),
                     URL.replace(SUB, TENANT), URL.replace("https:", "http:"),
                     URL.replace(api.DETAIL_VERSION, "1900-01-01"), URL + "#fragment",
+                    URL + "&$skiptoken=opaque token", URL + "\r\n",
                     URL.replace("management.azure.com", "management.azure.com@evil.example")):
             with self.assertRaises(api.Failure):
                 transport.validate(bad, ENDPOINT)
