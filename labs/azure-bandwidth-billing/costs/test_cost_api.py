@@ -7,6 +7,7 @@ import json
 import unittest
 from unittest.mock import patch
 import urllib.error
+import urllib.parse
 
 import cost_api as api
 
@@ -16,6 +17,12 @@ RG = "rg-test"
 RID = f"/subscriptions/{SUB}/resourceGroups/{RG}/providers/Microsoft.Compute/virtualMachines/a"
 ENDPOINT = "/providers/Microsoft.Consumption/usageDetails"
 URL = api.ARM + f"/subscriptions/{SUB}" + ENDPOINT + "?api-version=" + api.DETAIL_VERSION
+REPORT_POLL = (api.ARM + f"/subscriptions/{SUB}/providers/Microsoft.CostManagement/"
+               "costDetailsOperationResults/33333333-3333-3333-3333-333333333333")
+# Synthetic values preserve the prior working Location's parameter names and lengths.
+REPORT_POLL_PARAMS = {"api-version": api.REPORT_VERSION, "t": "638962560000000000",
+                      "c": "A_" * 1296, "s": "B-" * 171, "h": "C_" * 21 + "D"}
+REPORT_LOCATION = REPORT_POLL + "?" + urllib.parse.urlencode(REPORT_POLL_PARAMS)
 
 
 def row(**changes):
@@ -37,6 +44,111 @@ class CollectorTests(unittest.TestCase):
         transport = api.Transport(SUB, TENANT)
         transport.request = unittest.mock.Mock(side_effect=pages)
         return transport
+
+    def test_report_location_actual_signed_contract_and_arm_path_case(self):
+        transport = api.Transport(SUB, TENANT)
+        for location in (REPORT_LOCATION, REPORT_LOCATION.replace(
+                "/providers/Microsoft.CostManagement/costDetailsOperationResults/",
+                "/PROVIDERS/MICROSOFT.COSTMANAGEMENT/COSTDETAILSOPERATIONRESULTS/"),
+                REPORT_POLL + "?api-version=" + api.REPORT_VERSION,
+                REPORT_POLL.replace("costDetailsOperationResults", "costDetailsOperationStatus") +
+                "?api-version=" + api.REPORT_VERSION):
+            with self.subTest(location=location[:len(REPORT_POLL)]):
+                self.assertEqual(transport.validate_report(location), location)
+
+    def test_report_location_rejects_foreign_malformed_or_extra_contract(self):
+        transport = api.Transport(SUB, TENANT)
+        invalid = [
+            REPORT_LOCATION.replace("https:", "http:"),
+            REPORT_LOCATION.replace("management.azure.com", "other.management.azure.com"),
+            REPORT_LOCATION.replace("management.azure.com", "management.azure.com.evil.test"),
+            REPORT_LOCATION.replace("management.azure.com", "user@management.azure.com"),
+            REPORT_LOCATION.replace("management.azure.com", "management.azure.com:443"),
+            REPORT_LOCATION + "#fragment", REPORT_LOCATION + "#",
+            REPORT_LOCATION.replace(SUB, TENANT),
+            REPORT_LOCATION.replace("/providers/", "/resourceGroups/other/providers/"),
+            REPORT_LOCATION.replace("costDetailsOperationResults", "query"),
+            REPORT_LOCATION.replace("costDetailsOperationResults", "operations"),
+            REPORT_LOCATION.replace("costDetailsOperationResults/", "costDetailsOperationResults/../"),
+            REPORT_LOCATION.replace("costDetailsOperationResults/", "costDetailsOperationResults/%2e%2e/"),
+            REPORT_LOCATION.replace("costDetailsOperationResults/", "costDetailsOperationResults/%252e%252e/"),
+            REPORT_LOCATION.replace("33333333-3333-3333-3333-333333333333", "not-a-uuid"),
+            REPORT_LOCATION.replace(api.REPORT_VERSION, "2022-05-01"),
+            REPORT_LOCATION + "&api-version=" + api.REPORT_VERSION,
+            REPORT_LOCATION + "&scope=" + SUB,
+            REPORT_LOCATION + "&unknown=",
+            REPORT_LOCATION + "&h=another",
+            REPORT_LOCATION + "&malformed",
+            REPORT_LOCATION.replace("costDetailsOperationResults", "costDetailsOperationStatus"),
+        ]
+        for bad_path in (
+                "costDetailsOperationResults/not-a-uuid",
+                "costDetailsOperationResults/33333333333333333333333333333333",
+                "costDetailsOperationResults/%333333333-3333-3333-3333-333333333333",
+                "costDetailsOperationResults/../33333333-3333-3333-3333-333333333333",
+                "costDetailsOperationResults/33333333-3333-3333-3333-333333333333/extra",
+                "query/33333333-3333-3333-3333-333333333333"):
+            invalid.append(api.ARM + transport.scope + "/providers/Microsoft.CostManagement/" +
+                           bad_path + "?api-version=" + api.REPORT_VERSION)
+        for key, value in (("t", "1"), ("t", "a" * 18), ("c", "A" * 8193),
+                           ("s", "A" * 1025), ("h", "A" * 44),
+                           ("c", "../other"), ("s", "A+B"), ("h", "A/B")):
+            params = dict(REPORT_POLL_PARAMS, **{key: value})
+            invalid.append(REPORT_POLL + "?" + urllib.parse.urlencode(params))
+        for key in ("t", "c", "s", "h"):
+            for remove in (True, False):
+                params = REPORT_POLL_PARAMS.copy()
+                if remove:
+                    del params[key]
+                else:
+                    params[key] = ""
+                invalid.append(REPORT_POLL + "?" + urllib.parse.urlencode(params))
+        for location in invalid:
+            with self.subTest(location=location[:len(REPORT_POLL)], query_length=len(location)):
+                with self.assertRaisesRegex(api.Failure, "unsafe_report_url"):
+                    transport.validate_report(location)
+        with self.assertRaisesRegex(api.Failure, "unsafe_report_url"):
+            transport.validate_report(
+                api.ARM + transport.scope + api.REPORT_ENDPOINT + "?" +
+                urllib.parse.urlencode(REPORT_POLL_PARAMS), generation=True)
+
+    def test_report_generation_signed_location_poll_download_no_blob_arm_auth(self):
+        raw = ("ResourceId,Date,Quantity,MeterCategory,CostInBillingCurrency,BillingCurrency\n"
+               f"{RID},2026-10-14,1,Bandwidth,0.02,USD\n").encode()
+        blob = "https://testaccount.blob.core.windows.net/reports/test.csv?sig=synthetic"
+        manifest = {"dataFormat": "Csv", "compressData": False, "blobCount": 1,
+                    "byteCount": len(raw), "blobs": [{"blobLink": blob, "byteCount": len(raw)}]}
+
+        def response(status, headers, body):
+            stream = io.BytesIO(body)
+            stream.status, stream.headers = status, headers
+            return stream
+
+        transport = api.Transport(SUB, TENANT, seconds=300)
+        transport.authorize = unittest.mock.Mock(return_value="SYNTHETIC-ARM-TOKEN")
+        transport.opener.open = unittest.mock.Mock(side_effect=[
+            response(202, {"Location": REPORT_LOCATION, "Retry-After": "30"}, b"{}"),
+            response(200, {}, json.dumps({"status": "Completed", "manifest": manifest}).encode()),
+            response(200, {}, raw)])
+        request_args = args("cost-details")
+        request_args.max_polls, request_args.max_rows = 2, 100
+        with patch("cost_api.time.sleep") as sleep:
+            result = api.collect_report(transport, request_args, {RID.lower()})
+        self.assertEqual(result["state"], "COMPLETE", result.get("reason"))
+        self.assertTrue(result["extractionComplete"])
+        self.assertFalse(result["ingestionFinal"])
+        self.assertEqual((result["polls"], result["blobsDownloaded"], result["retained"]), (1, 1, 1))
+        self.assertEqual(result["rows"][0]["quantity"], "1")
+        sleep.assert_called_once_with(30)
+        requests = [call.args[0] for call in transport.opener.open.call_args_list]
+        self.assertEqual([request.full_url for request in requests[1:]], [REPORT_LOCATION, blob])
+        self.assertEqual([request.method for request in requests], ["POST", "GET", "GET"])
+        self.assertEqual(transport.authorize.call_count, 2)
+        self.assertTrue(all(request.has_header("Authorization") for request in requests[:2]))
+        self.assertFalse(requests[2].has_header("Authorization"))
+        self.assertNotIn("SYNTHETIC-ARM-TOKEN", json.dumps(result))
+        self.assertNotIn(REPORT_LOCATION, json.dumps(result))
+        self.assertNotIn(blob, json.dumps(result))
 
     def test_ignored_filter_rejected_before_storage(self):
         values = [row(resourceGroup="foreign"), row(resourceId=RID + "unknown"),
@@ -363,13 +475,19 @@ class CollectorTests(unittest.TestCase):
     def test_snapshot_existing_and_private_boundary(self):
         with self.assertRaises(api.Failure):
             api.private_path(str(api.LAB / "costs" / "bad.json"))
-        with patch("sys.stdout", new_callable=io.StringIO) as out:
-            code = api.main(["cost-details", "--start", "2026-10-14", "--end", "2026-10-14"])
+        with patch("cost_api.load_inventory", return_value={RID.lower()}), patch(
+                "sys.stdout", new_callable=io.StringIO) as out:
+            code = api.main(["cost-details", "--subscription", SUB, "--expected-tenant", TENANT,
+                             "--resource-group", RG, "--start", "2026-10-14", "--end", "2026-10-14",
+                             "--inventory", str(api.LAB / "private" / "inventory.json"),
+                             "--output", str(api.LAB / "private" / "new.json")])
         self.assertEqual(code, 2)
-        self.assertIn("not_implemented", out.getvalue())
+        self.assertNotIn("not_implemented", out.getvalue())
+        self.assertIn("cost_details_requires_csv_output", out.getvalue())
         with patch("cost_api.Path.exists", return_value=True), patch(
                 "sys.stdout", new_callable=io.StringIO) as out:
             code = api.main(["query", "--subscription", SUB, "--expected-tenant", TENANT,
+                             "--resource-group", RG,
                              "--start", "2026-10-14", "--end", "2026-10-14",
                              "--output", str(api.LAB / "private" / "existing.json")])
         self.assertEqual(code, 2)

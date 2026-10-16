@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "verdict": "PASS",
+  "objective": "Validate one unchanged public native Cost Details CSV command against real Azure",
+  "requestedBy": "Jose Moreno",
+  "startedAtUtc": "2026-10-16T08:51:32.474338+00:00",
+  "completedAtUtc": "2026-10-16T08:52:23.492031+00:00",
+  "elapsedSeconds": 51.01769369999238,
+  "command": "python labs\\azure-bandwidth-billing\\costs\\cost_api.py cost-details --context <PRIVATE_CONTROL_CONTEXT> --inventory <PRIVATE_CONTROL_INVENTORY> --resource-group <C_RESOURCE_GROUP> --start 2026-10-15 --end 2026-10-16 --max-seconds 300 --max-polls 3 --max-http-requests 6 --max-retries 0 --csv-output <NEW_PRIVATE_SNAPSHOT>\\details.csv --output <SAME_NEW_PRIVATE_SNAPSHOT>\\details.json",
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": {
+    "state": "COMPLETE",
+    "received": 475,
+    "discarded": 473,
+    "extractionComplete": true,
+    "ingestionFinal": false,
+    "retained": 2
+  },
+  "checks": {
+    "exitZero": true,
+    "completeExtractionNotFinalBilling": true,
+    "csvExists": true,
+    "csvJsonExactParity": true,
+    "retainedCounts": true,
+    "exactInventorySubscriptionGroupDateCategory": true,
+    "sourceHashesValid": true,
+    "allManifestBlobsDownloaded": true,
+    "metadataAndDownload200": true,
+    "httpBudgetNoRetries": true,
+    "autoOwnedLeaseClosed": true,
+    "protectedFilesUnchanged": true,
+    "noChildOrCollectorSurvivors": true,
+    "stderrEmpty": true
+  },
+  "httpRequestCount": 3,
+  "httpStatusCounts": {
+    "202": 1,
+    "200": 2
+  },
+  "httpStatusesInOrder": [
+    202,
+    200,
+    200
+  ],
+  "manifest": {
+    "blobCount": 1,
+    "byteCount": 490067,
+    "dataFormat": "Csv",
+    "compressData": false,
+    "manifestVersion": "2022-05-01"
+  },
+  "blobsDownloaded": 1,
+  "downloadBytes": 490067,
+  "polls": 1,
+  "received": 475,
+  "discarded": 473,
+  "discardCounts": {
+    "inventory": 465,
+    "date": 0,
+    "category": 8
+  },
+  "retained": 2,
+  "localRetention": {
+    "start": "2026-10-15",
+    "end": "2026-10-16",
+    "inclusive": true
+  },
+  "rows": [
+    {
+      "day": "2026-10-15",
+      "meterCategory": "Bandwidth",
+      "meterName": "Intra Continent Data Transfer Out",
+      "quantity": "0.000002402812242508",
+      "unit": "1 GB",
+      "effectivePrice": "0.02",
+      "unitPrice": "0.02",
+      "cost": "4.80562448501586884000E-8",
+      "currency": "USD",
+      "sourceRecordHash": "85906378e8adb626c31d2158ad5a7348d3b740457b6b59d3be8a0e212f1ba78a"
+    },
+    {
+      "day": "2026-10-16",
+      "meterCategory": "Bandwidth",
+      "meterName": "Intra Continent Data Transfer Out",
+      "quantity": "0.6551259830594063",
+      "unit": "1 GB",
+      "effectivePrice": "0.02",
+      "unitPrice": "0.02",
+      "cost": "0.013102519661188125",
+      "currency": "USD",
+      "sourceRecordHash": "9434c37f5731bfcb86a8c287b295e1c42b1557ee151f067d2284719cff6ef7c2"
+    }
+  ],
+  "quantityByUsageDay": {
+    "2026-10-15": "0.000002402812242508",
+    "2026-10-16": "0.6551259830594063"
+  },
+  "extractionState": "COMPLETE",
+  "ingestionFinal": false,
+  "billingInterpretation": "COMPLETE extraction is not finalized billing. The 1 GiB control remains unreconciled until approximately 1 to 1.1 reported meter units; no partial-ingestion or zero-cost conclusion.",
+  "allBlobProof": "Manifest count and byte totals equal downloaded totals, each blob byte count validated by unchanged public collector; final metadata and every download HTTP 200.",
+  "filteringProof": "Unchanged public collector projected exact saved C subscription/RG/deployment inventory, usage dates October 15/16 and Bandwidth in memory before output. No subscription-wide CSV persisted.",
+  "autoLease": {
+    "path": "labs\\azure-bandwidth-billing\\deploy\\.runtime-control\\cost-cli-989d51a9207947a689cf992b8161c20b.json",
+    "state": "idle",
+    "actualHttpRequests": 3,
+    "closedAtUtc": "2026-10-16T08:52:23.405603+00:00"
+  },
+  "privateArtifacts": [
+    "labs\\azure-bandwidth-billing\\private\\cost-snapshots\\public-cost-details-20261016T085128Z\\details.json",
+    "labs\\azure-bandwidth-billing\\private\\cost-snapshots\\public-cost-details-20261016T085128Z\\details.csv",
+    "labs\\azure-bandwidth-billing\\private\\cost-snapshots\\public-cost-details-20261016T085128Z\\execution.private.json"
+  ],
+  "restore": {
+    "infrastructureMutations": 0,
+    "trafficTransfers": 0,
+    "authenticationChanges": 0,
+    "sourceOrDocumentationChanges": 0,
+    "protectedFilesUnchanged": true,
+    "otherOwnersRuntimeFilesUnchanged": true,
+    "childProcessIdsRemaining": [],
+    "billingCollectorsRemaining": [],
+    "nativeDefaultProfileHashUnchanged": true,
+    "wslNotInvoked": true
+  },
+  "largerTransfers": "BLOCKED pending explicit user approval"
+}

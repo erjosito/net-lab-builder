@@ -1,0 +1,277 @@
+{
+  "schemaVersion": 1,
+  "verdict": "FAIL",
+  "objective": "Live public billing CLI validation against historical C and T; no new traffic",
+  "validatedAtUtc": "2026-10-16T08:43:16.754808+00:00",
+  "usageDateBounds": {
+    "start": "2026-10-15",
+    "end": "2026-10-16",
+    "reportEndSemantics": "UNKNOWN_NOT_PROOF_OF_FULL_DAY_COVERAGE"
+  },
+  "billingHttpRequests": 3,
+  "maxBillingHttpRequests": 6,
+  "requestsByOperation": [
+    {
+      "command": "query",
+      "statuses": [
+        200
+      ]
+    },
+    {
+      "command": "cost-details",
+      "statuses": [
+        202
+      ]
+    },
+    {
+      "command": "wsl-query",
+      "statuses": [
+        200
+      ]
+    }
+  ],
+  "apiVersions": {
+    "query": "2023-11-01",
+    "costDetails": "2025-03-01"
+  },
+  "commands": [
+    {
+      "name": "query",
+      "command": "python labs\\azure-bandwidth-billing\\costs\\cost_api.py query --context <CONTROL_CONTEXT_PRIVATE> --inventory <CONTROL_INVENTORY_PRIVATE> --resource-group <CONTROL_RG> --start 2026-10-15 --end 2026-10-16 --group-by ResourceId Meter --meter-category Bandwidth --max-retries 0 --max-http-requests 1 --output <NEW_PRIVATE_CORRELATION>\\query.json",
+      "exitStatus": 0,
+      "httpRequests": 1,
+      "stdout": {
+        "state": "COMPLETE",
+        "pages": 1,
+        "received": 2,
+        "discarded": 0,
+        "duplicates": 0,
+        "unattributedLabRows": 0,
+        "ingestionFinal": false
+      },
+      "stderrEmpty": true,
+      "timeout": false
+    },
+    {
+      "name": "cost-details",
+      "command": "python labs\\azure-bandwidth-billing\\costs\\cost_api.py cost-details --context <CONTROL_CONTEXT_PRIVATE> --inventory <CONTROL_INVENTORY_PRIVATE> --resource-group <CONTROL_RG> --start 2026-10-15 --end 2026-10-16 --max-seconds 300 --max-polls 2 --max-http-requests 4 --max-retries 0 --csv-output <NEW_PRIVATE_CORRELATION>\\details.csv --output <NEW_PRIVATE_CORRELATION>\\details.json",
+      "exitStatus": 3,
+      "httpRequests": 1,
+      "stdout": {
+        "state": "INCOMPLETE",
+        "received": 0,
+        "discarded": 0,
+        "extractionComplete": false,
+        "ingestionFinal": false,
+        "reason": "unsafe_report_url",
+        "httpStatus": null
+      },
+      "stderrEmpty": true,
+      "timeout": false
+    },
+    {
+      "name": "wsl-query",
+      "command": "python labs\\azure-bandwidth-billing\\costs\\cost_api.py query --transport wsl --distribution Ubuntu-24.04 --context <WSL_CONTEXT_PRIVATE> --inventory <T_INVENTORY_PRIVATE> --resource-group <T_RG> --start 2026-10-15 --end 2026-10-16 --group-by ResourceId Meter --meter-category Bandwidth --max-seconds 75 --max-retries 0 --max-http-requests 1 --output <NEW_PRIVATE_CORRELATION>\\wsl-query.json",
+      "exitStatus": 0,
+      "httpRequests": 1,
+      "stdout": {
+        "state": "COMPLETE",
+        "pages": 1,
+        "received": 1,
+        "discarded": 0,
+        "duplicates": 0,
+        "unattributedLabRows": 0,
+        "ingestionFinal": false
+      },
+      "stderrEmpty": true,
+      "timeout": false
+    }
+  ],
+  "checks": {
+    "nativeQueryExactInventoryResourceGroupAndDates": true,
+    "nativeQueryNonzeroControlCost": true,
+    "wslQueryExactInventoryResourceGroupAndDates": true,
+    "wslNativeSourceContextVerified": true,
+    "autoLeasesAllIdleClosed": true,
+    "exclusiveCollectorLockRemoved": true,
+    "nativeCommandProcessesExited": true,
+    "wslCollectorProcessesExited": true,
+    "csvExists": false,
+    "STOPPresentAtClosure": false
+  },
+  "nativeQuery": {
+    "state": "COMPLETE",
+    "pages": 1,
+    "received": 2,
+    "discarded": 0,
+    "rows": [
+      {
+        "date": "20261015",
+        "cost": "4.80562448501587E-8",
+        "currency": "USD",
+        "meter": "Intra Continent Data Transfer Out"
+      },
+      {
+        "date": "20261016",
+        "cost": "0.0131025196611881",
+        "currency": "USD",
+        "meter": "Intra Continent Data Transfer Out"
+      }
+    ],
+    "requestBody": {
+      "type": "ActualCost",
+      "timeframe": "Custom",
+      "timePeriod": {
+        "from": "2026-10-15T00:00:00Z",
+        "to": "2026-10-16T08:41:16.718462+00:00"
+      },
+      "dataset": {
+        "granularity": "Daily",
+        "aggregation": {
+          "totalCost": {
+            "name": "PreTaxCost",
+            "function": "Sum"
+          }
+        },
+        "filter": {
+          "and": [
+            {
+              "dimensions": {
+                "name": "ResourceGroup",
+                "operator": "In",
+                "values": [
+                  "<CONTROL_RG>"
+                ]
+              }
+            },
+            {
+              "dimensions": {
+                "name": "MeterCategory",
+                "operator": "In",
+                "values": [
+                  "Bandwidth"
+                ]
+              }
+            }
+          ]
+        },
+        "grouping": [
+          {
+            "type": "Dimension",
+            "name": "ResourceId"
+          },
+          {
+            "type": "Dimension",
+            "name": "Meter"
+          }
+        ]
+      }
+    },
+    "retainedSnapshotSha256": "59a8b2192d76b2662d3393c3ceacf938f09bc0ceed28ef705c7cf1bc2f980ac4"
+  },
+  "costDetails": {
+    "state": "INCOMPLETE",
+    "reason": "unsafe_report_url",
+    "extractionComplete": false,
+    "polls": 0,
+    "blobsDownloaded": 0,
+    "downloadBytes": 0,
+    "rows": 0,
+    "csvProof": "NO_CSV: collection rejected report Location after HTTP 202, before poll or blob download; header/quantity/rate/hash and JSON-CSV parity NOT VERIFIED",
+    "quantity": null,
+    "unit": null,
+    "effectivePrice": null,
+    "retainedSnapshotSha256": "8f8a76241ed28c43d7d1fc9a9f0259376f19c3b92e9510d4d9f3141b46f6af4c"
+  },
+  "wslQuery": {
+    "state": "COMPLETE",
+    "pages": 1,
+    "received": 1,
+    "rows": [
+      {
+        "date": "20261015",
+        "cost": "7.4561667E-8",
+        "currency": "EUR",
+        "meter": "Intra Continent Data Transfer Out"
+      }
+    ],
+    "requestBody": {
+      "type": "ActualCost",
+      "timeframe": "Custom",
+      "timePeriod": {
+        "from": "2026-10-15T00:00:00Z",
+        "to": "2026-10-16T08:42:21.274388+00:00"
+      },
+      "dataset": {
+        "granularity": "Daily",
+        "aggregation": {
+          "totalCost": {
+            "name": "PreTaxCost",
+            "function": "Sum"
+          }
+        },
+        "filter": {
+          "and": [
+            {
+              "dimensions": {
+                "name": "ResourceGroup",
+                "operator": "In",
+                "values": [
+                  "<T_RG>"
+                ]
+              }
+            },
+            {
+              "dimensions": {
+                "name": "MeterCategory",
+                "operator": "In",
+                "values": [
+                  "Bandwidth"
+                ]
+              }
+            }
+          ]
+        },
+        "grouping": [
+          {
+            "type": "Dimension",
+            "name": "ResourceId"
+          },
+          {
+            "type": "Dimension",
+            "name": "Meter"
+          }
+        ]
+      }
+    },
+    "scopeVerified": true,
+    "quantityOrZeroBillingNotEstablished": true
+  },
+  "autoLeases": [
+    {
+      "state": "idle",
+      "closedAtUtc": "2026-10-16T08:41:25.850745+00:00",
+      "httpRequests": 1
+    },
+    {
+      "state": "idle",
+      "closedAtUtc": "2026-10-16T08:41:38.384986+00:00",
+      "httpRequests": 1
+    },
+    {
+      "state": "idle",
+      "closedAtUtc": "2026-10-16T08:42:26.709610+00:00",
+      "httpRequests": 1
+    }
+  ],
+  "ingestionFinal": false,
+  "wslCostDetails": "NOT_LIVE_VALIDATED",
+  "bug": {
+    "code": "unsafe_report_url",
+    "publicCommand": "cost-details",
+    "observation": "Generation returned HTTP 202 but Location validation rejected before first poll. Public Query passed; report workflow did not produce CSV. Do not weaken URL safety without validating actual response shape under a separate revision scope.",
+    "likelyInspectionLocation": "cost_api.py Transport.validate_report and collect_report Location handling; exact rejected URL not retained"
+  },
+  "restoreState": "No infrastructure/auth/network-test mutations; all owned invocation leases closed, no owned collector children; scheduled billing check #2 unchanged",
+  "changes": "Only new private evidence, own phase control record, and this sanitized result; no code/docs/packages/shared git index changes"
+}

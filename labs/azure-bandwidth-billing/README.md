@@ -64,7 +64,10 @@ service-architecture exceptions still apply.
 **Additional deliverable:** discover and reproducibly query the Cost Analysis
 APIs, including offer/schema-specific filter restrictions. Executable collectors,
 offline contract tests, Windows versus native WSL findings, and the deployed
-cross-tenant extension are in [costs/README.md](costs/README.md). Both contexts'
+cross-tenant extension are in [costs/README.md](costs/README.md). Its
+[copyable public commands](costs/README.md#commands-powershell-from-repository-root)
+provide both daily ResourceId/Meter Query and filtered Cost Details CSV + JSON
+workflows, without private wrappers or manually activated agent leases. Both contexts'
 aggregate Query access works. WSL Consumption returned HTTP 200/empty with
 valid explicit past usageStart/usageEnd dates on both tested versions; RG-only
 HTTP 400 required dates, not blanket offer rejection. Empty data proves access,

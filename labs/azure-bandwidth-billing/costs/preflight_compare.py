@@ -81,6 +81,7 @@ def main():
             # Future dates are deliberate negative controls, never a broad bill enumeration.
             command = ["probe", "--subscription", sub, "--expected-tenant", tenant,
                        "--start", args.start, "--end", args.start,
+                       "--lease", str(lease_path),
                        "--filter-variant", args.variant, "--max-seconds", "75",
                        "--offer-alias", "windows-main" if args.environment == "windows" else "wsl-msdn",
                        "--output", str(output)]
