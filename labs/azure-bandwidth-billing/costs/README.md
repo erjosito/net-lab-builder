@@ -98,17 +98,18 @@ an intraregional 5 GiB quantity measurement.
 
 ## Executables and privacy contract
 
-- `cost_api.py`: `probe`, daily aggregate `query`, and normalized Consumption
-  `details`. `cost-details` explicitly returns an unsupported-interface error;
-  it never silently substitutes another API or starts an asynchronous report.
+- `cost_api.py`: daily aggregate `query`, complete asynchronous `cost-details`
+  generation/poll/download to **filtered CSV plus normalized JSON**, historical
+  Consumption `details`, and permission `probe`. The public commands below need
+  no private wrapper, helper import, or manually activated agent lease.
 - `preflight_compare.py`: bounded, repeatable Windows/native-Linux comparison,
   and optional provider/catalogue preflight. Requires this lab's active API lease.
 - `test_cost_api.py`: offline fixtures/mocked HTTP; no Azure access or dependencies.
 - `cost_details_csv` in `cost_api.py`: pure memory-only Cost Details CSV
   projection, accepting documented ResourceId/InstanceId and case variants,
   preserving decimals/nulls, filtering inventory/RG/date before retention.
-  This helper does **not** implement the CLI's asynchronous `cost-details`
-  command. `cost_details_csv_stream` also bounds downloaded/decompressed bytes,
+  The public `cost-details` command uses this projection before writing outputs.
+  `cost_details_csv_stream` also bounds downloaded/decompressed bytes,
   supports one CSV ZIP member or gzip, captures safe headers before schema
   validation, and requires exact Bandwidth category/service matching.
   It preserves the original reported date and optional usage interval fields,
@@ -118,14 +119,17 @@ an intraregional 5 GiB quantity measurement.
   The fresh 00:29Z report successfully exercised the actual mixed-case schema;
   the earlier discarded report was not reconstructed.
 
-Current validation: **23 contract tests passed on Windows** (the original 12
+Current validation: **45 offline tests passed on Windows** (the original 12
 also previously passed on native Ubuntu-24.04 Python), including date-error classification, filtering, Decimal/units, name resolution, reordered Query
 columns, exact continuation semantics, duplicate identities, truncation,
 timeouts/HTTP errors, context pinning, snapshot overwrite rejection, in-memory
-token expiry/clock guards, and CSV schema/privacy/row-limit fixtures.
+token expiry/clock guards, CSV schema/privacy/row-limit fixtures, public CLI
+leases, report polling, all-blob download, SAS-only authorization, atomic output
+failure cleanup and WSL report timeout forwarding. These new CLI workflows were
+validated offline; that is not a new live Azure or billing result.
 
-Only the following source artifacts belong to this tooling: these three Python
-files and this README. Runtime context, inventories and snapshots must be under
+The source artifacts are the collector, preflight and offline test Python files
+and this README. Runtime context, inventories and snapshots must be under
 the existing ignored `private` directory. Never track their contents. No tokens,
 raw API error messages, billing URLs, continuations or SAS URLs are saved.
 The collector retains a normalized projection and source-record hash, **not**
@@ -140,7 +144,7 @@ tokens with a valid UTC `expires_on` epoch are cached in memory until two
 minutes before expiry, with monotonic expiry and backwards-wall-clock guards.
 Missing/invalid epochs and legacy local `expiresOn` never enable caching.
 This avoids two native CLI processes per continuation; it does not extend the
-75-second collection deadline or turn incomplete pagination into success.
+selected collection deadline or turn incomplete pagination into success.
 No token is persisted or transferred between environments. Azure CLI rejects simultaneous subscription and tenant parameters on
 `get-access-token`; the tool verifies both fields on its response instead.
 Windows uses the installed CLI's Python entry point with argv, not `az.cmd`
@@ -148,10 +152,17 @@ shell quoting. WSL dispatch runs the same source using Linux `python3` and Linux
 `az`, with a bounded GNU `timeout` process group. Tokens never cross profiles.
 No login, account switching, configuration, extension or provider changes.
 
-HTTP socket timeout <=20s with a deadline check between bounded reads; CLI <=15s;
-invocation defaults to 75s (max 90s), 3 pages
-(max 20), <=8 MiB/page. A 429 is retried only once when numeric Retry-After <=2s
-fits the deadline; otherwise return rate-limited, not a background wait.
+HTTP socket timeout <=20s with guard/deadline checks between bounded reads;
+CLI <=15s. Query defaults to 75s; Cost Details defaults to 300s. The explicit
+maximum is 1800s. All commands default to six HTTP attempts, configurable with
+`--max-http-requests` (maximum 100). Query/Consumption default to three pages
+(maximum 20), <=8 MiB/page. Query defaults to one 429 retry only if the longest
+known Retry-After/Cost Management retry delay is <=2s and fits the deadline.
+Reports default to **zero retries**; `--max-retries 0` explicitly disables them
+for any command. Explicit report retries honor the longest known delay only
+when it fits the remaining deadline. Report generation is always attempted
+once, even when retries are enabled. 429/403 and other failures are never empty
+success or a trigger to log in, switch accounts or fall back to another API.
 Redirects are rejected. Continuations must contain no raw whitespace/control
 characters and must match HTTPS ARM, exact subscription
 and API operation path/version; Query repeats POST with the original body,
@@ -162,35 +173,82 @@ snapshot reached its final page, **not** that delayed billing is final.
 
 ## Commands (PowerShell, from repository root)
 
-An owner must open a fresh bounded read-only API lease before live commands.
-Use existing private contexts or supply `--subscription <id>
---expected-tenant <id>` privately at runtime. Context shape:
-`{"subscriptionId":"<private>","expectedTenantId":"<private>"}`.
+Both commands below are complete, directly callable workflows for the existing
+historical C control. Run them from the repository root. Deleted resources are
+fine: the context's saved resource group and deployment inventory identify the
+historical records. Each run uses new filenames; do not reuse a snapshot name.
+Query returns money, not quantity/unit/rate; use the CSV for the latter.
 
 ```powershell
-python -m unittest discover -s labs\azure-bandwidth-billing\costs -p test_cost_api.py -v
+$ctxPath = 'labs\azure-bandwidth-billing\private\control-context.private.json'
+$inventory = 'labs\azure-bandwidth-billing\private\control-inventory.private.json'
+$ctx = Get-Content -LiteralPath $ctxPath -Raw | ConvertFrom-Json
+$stamp = [DateTimeOffset]::UtcNow.ToString('yyyyMMddTHHmmssfffffffZ')
+python labs\azure-bandwidth-billing\costs\cost_api.py query `
+  --context $ctxPath --inventory $inventory --resource-group $ctx.resourceGroup `
+  --start 2026-10-15 --end 2026-10-16 --group-by ResourceId Meter `
+  --meter-category Bandwidth --max-seconds 75 --max-http-requests 3 --max-retries 0 `
+  --output "labs\azure-bandwidth-billing\private\reports\control-query-$stamp.json"
+if ($LASTEXITCODE -ne 0) { throw 'Query did not complete; inspect its sanitized summary.' }
+```
 
-python labs\azure-bandwidth-billing\costs\preflight_compare.py --environment windows --variant rg-only --output <absolute-lab-private-new-file>
-python labs\azure-bandwidth-billing\costs\preflight_compare.py --environment wsl --variant legacy-date --start 2026-10-14 --literal-keys --output <absolute-lab-private-new-file>
+```powershell
+$ctxPath = 'labs\azure-bandwidth-billing\private\control-context.private.json'
+$inventory = 'labs\azure-bandwidth-billing\private\control-inventory.private.json'
+$ctx = Get-Content -LiteralPath $ctxPath -Raw | ConvertFrom-Json
+$stamp = [DateTimeOffset]::UtcNow.ToString('yyyyMMddTHHmmssfffffffZ')
+python labs\azure-bandwidth-billing\costs\cost_api.py cost-details `
+  --context $ctxPath --inventory $inventory --resource-group $ctx.resourceGroup `
+  --start 2026-10-15 --end 2026-10-16 --max-seconds 300 `
+  --max-polls 3 --max-http-requests 6 --max-retries 0 `
+  --csv-output "labs\azure-bandwidth-billing\private\reports\control-details-$stamp.csv" `
+  --output "labs\azure-bandwidth-billing\private\reports\control-details-$stamp.json"
+if ($LASTEXITCODE -ne 0) { throw 'Report extraction did not complete; inspect its sanitized summary.' }
+```
 
-python labs\azure-bandwidth-billing\costs\cost_api.py query --context <absolute-lab-private-context> --resource-group <lab-rg> --start 2026-10-15 --end 2026-10-15 --grouping Meter --meter-category Bandwidth --output <absolute-lab-private-new-snapshot>
+Normal public CLI use creates its own unique, read-only invocation lease under
+ignored `deploy\.runtime-control`, bounded by the invocation deadline and HTTP
+budget (never more than 30 minutes). It records active/idle state and HTTP
+counters and closes in `finally`. A distinct exclusive ownership file prevents
+concurrent public collectors; an existing active billing/API lease or `STOP`
+fails closed. The CLI never overwrites somebody else's lease or steals stale
+ownership. If interrupted externally, have the coordinator confirm the owning
+process has ended before removing that invocation's stale ownership file.
+`--lease <path>` attaches an explicitly supplied active bounded read-only lease
+in the same runtime directory instead; it never edits or closes that caller's
+lease. Its remaining expiry, command timeout and request/tool-call budget can
+only lower the invocation's bounds. `preflight_compare.py` retains its existing
+coordinator lease contract.
 
-python labs\azure-bandwidth-billing\costs\cost_api.py details --context <absolute-lab-private-context> --inventory <absolute-lab-private-inventory> --resource-group <lab-rg> --start 2026-10-15 --end 2026-10-15 --max-pages 3 --output <absolute-lab-private-new-snapshot>
+Use existing private contexts or supply `--subscription <id>
+--expected-tenant <id>` privately. Context accepts `subscriptionId`,
+`expectedTenantId` and optional `resourceGroup`; explicit flags take precedence.
+Offline tests require only the existing Windows Python standard library:
+
+```powershell
+python -m unittest discover -s labs\azure-bandwidth-billing\costs -p 'test*.py' -v
 ```
 
 Add `--transport wsl --distribution Ubuntu-24.04` to `cost_api.py` for native WSL
 execution; use the **WSL** private context, never the Windows subscription.
-Windows paths must be absolute for WSL dispatch; conversion uses the standard
-`/mnt/<drive>` mount. Native Linux execution accepts its Linux paths directly.
+Windows paths, including relative context/inventory/output/CSV/lease paths,
+are resolved before conversion using the standard `/mnt/<drive>` mount.
+The WSL process timeout is the selected deadline **plus 30 seconds** for cleanup,
+not a fixed 100-second cutoff. Native WSL execution uses `python3` on this same
+source with Linux paths (normally `/mnt/c/Users/...`) and omits `--transport wsl`.
+Its native `/usr/bin/az` authentication remains separate and unchanged.
 WSL discovery in `preflight_compare.py` reads its existing default once, verifies
 different tenant **and** subscription from Windows privately, then pins every
 subsequent action. Its ignored `wsl-cost-context.private.json` is session context,
 not durable authentication or a promise the next session remains signed in.
 
-Inventory input is deliberately narrow:
-`{"resourceIds":["<exact VM/NIC/PIP/other lab ARM id>", "..."]}`. Capture all owned
-historical IDs before deletion/replacement; the existing deployment inventory
-needs an explicit projection to this format. Unknown IDs are discarded.
+Inventory accepts either `{"resourceIds":["<exact owned ARM id>", "..."]}` or
+the existing deployment format `{"resources":[{"id":"<exact owned ARM id>"}]}`.
+No private adapter is needed for `control-inventory.private.json`. Every ID must
+be within the pinned subscription/resource group; IDs are matched
+case-insensitively and duplicate IDs are rejected. Capture all owned historical
+IDs before deletion/replacement. Unknown report IDs are discarded in memory.
+Unknown same-RG ResourceId Query rows force INCOMPLETE, not silent success.
 Modern `instanceName` is accepted as an ID only if canonical; a bare name needs
 matching lab RG plus exactly one matching inventory name. Ambiguous names,
 wrong RG/subscription, unknown resources, missing dates and wrong usage days
@@ -202,7 +260,12 @@ are discarded in memory; no automatic broad/unfiltered fallback.
 Query version `2023-11-01` uses ActualCost, Daily, Sum(PreTaxCost) and an explicit
 ResourceGroup dimension filter. Collection groups by ResourceGroup plus one of
 `MeterId`, `Meter` or `MeterCategory`. `--grouping none` is probe-only.
-The default is the successfully tested `Meter`, not the rejected `MeterId`.
+The default remains the successfully tested `Meter`, not the rejected `MeterId`.
+`--group-by ResourceId Meter` explicitly selects those two dimensions instead;
+it requires inventory input and derives ResourceGroup from the verified
+resource ID when no RG column is returned. At most two unique dimensions are
+allowed, with either ResourceId or ResourceGroup for verifiable scope.
+`--grouping ResourceGroup` retains its old RG-only meaning.
 `--meter-category Bandwidth` intersects the lab RG filter with that exact meter
 category. First inspect an unfiltered lab-only meter-category snapshot to find
 the labels actually used: service-specific transfer/processing meters may use
@@ -237,6 +300,52 @@ quantity, raw unit, effective/unit price (null if missing), meter, currency,
 cost, actual usage day and private resource identity. Never infer price=0 from
 missing fields or cost=0 from credits/free tier. 5 GiB is 5.36870912 decimal GB.
 Reconcile only like meter/unit/currency/day/rate groups.
+
+### Public Cost Details workflow and output contract
+
+`cost-details` makes one ActualCost generation POST using API `2025-03-01`,
+then follows the validated exact ARM Location within the pinned subscription
+and approved Cost Management operation/version. It handles empty 202 bodies,
+repeated pending responses, or an immediate 200 Completed manifest. Polls wait
+at least 30 seconds and at least the longest recognized retry header, only if
+that wait fits the remaining deadline. Default poll budget is three.
+
+Every manifest blob is validated and downloaded, or extraction is INCOMPLETE.
+Empty manifests, duplicate blob identities, foreign scope/version, changing
+operation URLs, failed provisioning, unexpected formats and byte-count/row
+truncation fail closed. Downloads use HTTPS public Azure Blob account hosts,
+container/blob paths and a SAS signature, **without an ARM Authorization
+header**, and never follow redirects. All links remain in memory.
+Multiple manifest CSV partitions are supported; each blob may be plain CSV,
+gzip, or a ZIP containing exactly one CSV. Multi-member ZIPs are rejected,
+never silently reduced to their first member. Total wire and decoded bytes are
+each capped at 50 MiB; `--max-rows` defaults/maxes to 100,000 across all blobs.
+
+The subscription-wide report is streamed without ever writing raw CSV.
+Exact inventory + RG + inclusive local usage dates + Bandwidth category/service
+are applied before retaining a row. CSV output contains only the readable
+normalized fields: actual day and original date, resource alias/owned ID, meter,
+quantity, unit, effective/unit price, cost, currency, optional usage interval
+and source hash. Decimal strings are preserved; distinct report rows are never
+deduplicated just because they look alike. Normalized JSON additionally records
+API/metric, requested/returned periods, generation/completion times, actual
+owned usage dates, discard counts and extraction versus ingestion state.
+
+Both output paths must be new files under this lab's ignored `private`.
+Filtered data is staged there, fsynced and published exclusively; failed output
+publication removes only files owned by that invocation, never preexisting
+files. A COMPLETE empty extraction writes an explicit header-only CSV and zero
+retained records, **not billing-zero proof**. An INCOMPLETE report exits 3 and
+writes only its normalized diagnostic JSON, not a misleading completed CSV.
+Input/auth/transport setup errors exit 2. Stdout contains sanitized summary
+counts/status only, never resource IDs, tokens, Location or SAS URLs.
+
+Dates 15 and 16 are retained inclusively locally. The report API's end-date
+inclusivity remains **unknown**: the script does not shift its end into a future
+date or claim full-day coverage. Query is capped at the actual current UTC
+instant for today's end date. `extractionComplete=true` and HTTP 200 mean all
+returned CSV partitions were processed; `ingestionFinal=false` remains explicit.
+No CLI result revises the experiment's 1-GiB positive-control criterion.
 
 ### Cost Details route investigation (16 October)
 
@@ -343,14 +452,25 @@ Official references verified 2026-10-15:
    daily/offer-dependent delay, credit semantics and currency require explicit
    interpretation; HTTP 200/empty/zero cost never establishes free traffic.
 
-EA/MCA asynchronous route (documented, intentionally **not implemented/invoked**):
-POST `/subscriptions/{sub}/providers/Microsoft.CostManagement/generateCostDetailsReport?api-version=2022-05-01`
+EA/MCA asynchronous route (now implemented by the public `cost-details` command):
+POST `/subscriptions/{sub}/providers/Microsoft.CostManagement/generateCostDetailsReport?api-version=2025-03-01`
 with `{"metric":"ActualCost","timePeriod":{"start":"<day>","end":"<day>"}}`.
 202 requires bounded Location polling honoring Retry-After, then downloading
 **all** manifest blobs before expiry, checking partition count/bytes and applying
 lab/date predicates before retention. SAS links are secrets, not evidence URLs.
-No report generation happened here. Exports also require a separately approved
-export/storage mutation; none was created.
+The results Location can include the complete opaque signed query tuple
+`t`, `c`, `s`, `h` alongside `api-version`; requiring only `api-version` rejected
+the prior working Azure response shape before polling. The validator now accepts
+that bounded tuple only for `costDetailsOperationResults/{operation-uuid}` at the
+exact subscription, HTTPS management host and report API version. It rejects
+unknown/duplicate/blank parameters, malformed identifiers and cross-scope paths.
+Location values remain memory-only and must not be logged. This URL-validation
+revision passes offline fixtures, not a new live Cost Details/CSV validation;
+independent live revalidation requires approval.
+The earlier `2022-05-01` documentation-only investigation did not generate a
+report. The later private 2025-version runs above did; this public CLI change
+was tested offline only. Exports still require a separately approved
+export/storage mutation; none is created by these scripts.
 
 Legacy details normalize usageStart/instanceId/usageQuantity/pretaxCost and
 meterDetails; modern details normalize date/instanceName/quantity/unitOfMeasure/
