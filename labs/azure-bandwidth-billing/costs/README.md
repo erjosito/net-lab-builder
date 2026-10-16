@@ -8,16 +8,34 @@ verdict**. The later [completed A/T transport](../results/2026-10-15-cross-tenan
 has initial billing **INCONCLUSIVE**: Windows HTTP 200 COMPLETE empty versus
 WSL HTTP 429 rate_limited ERROR, not two successful empty snapshots.
 
-**Latest refresh, 18:22Z:** both aggregates returned **HTTP 429 ERROR**.
+**Current status, 2026-10-16 UTC:** [C → B v4](../results/2026-10-15-cross-region-control.md)
+transport/restoration PASS, **1 GiB / one upload / zero retries**; independent
+validation PASS (11 reads / 0 mutations). v3 read-only inspection identified
+the additional B subnet NSG default deny 65500, corrected on **both NSG layers**.
+**23:28Z billing** made three HTTP attempts: A's same three tiny daily costs
+total **USD 0.0000728753264993429373**, no quantity/unit/rate or request
+attribution; C Query no rows/details timeout; T empty. This is successful
+expected-charged transport, **not yet a billed positive control** or zero-cost
+proof. [Snapshot](../results/2026-10-15-control-billing.json).
+Known-owned cleanup closed PASS **16 October 00:00:11.806224Z**:
+13 remaining original core assets absent, C/T groups gone, all known lab
+VMs/disks/PIPs deleted. **Core RG and an extra NSG remain preserved** because
+creation ownership is unproven; do not adopt/delete. No standalone RG/NSG rent.
+
+**Historical refresh, 18:22Z:** both aggregates returned **HTTP 429 ERROR**.
 Windows details returned **HTTP 200 INCOMPLETE**: 1,000 unrelated rows discarded
 in memory, zero retained, continuation remaining. WSL details returned
 **HTTP 200 COMPLETE empty**, not zero-charge proof. See the
 [sanitized snapshot](../results/2026-10-15-billing-refresh.json).
 This reinforces mandatory local inventory/RG/actual-usage-date filtering,
 bounded completeness checks and treating 429 as error, never zero usage.
-C → B v1 **FAIL** / v2 **BLOCKED before bulk** established no charged control.
-Mature meter quantity/unit/rate plus provider policy confirmation remain required
-to close the tenant-boundary answer; successful transport cannot do so.
+C → B v1 **FAIL** / v2 **BLOCKED before bulk** did not establish a control then;
+their historical records, and v3's outcome, are unchanged by v4's later PASS.
+Mature meter quantity/unit/rate remains required for experimental invoice proof;
+successful transport cannot supply it. The [later exact-row interpretation](../results/2026-10-15-billing-verdict.md)
+separately applies the published same-region rule across tenants for ordinary
+Azure-assigned regional endpoints. Its tiny positive A-attributed costs are not
+an intraregional 5 GiB quantity measurement.
 
 ## Executables and privacy contract
 
@@ -322,6 +340,13 @@ The WSL dispatch converts private Windows paths and uses native Linux CLI/tokens
 Read columns by name and check all pages; COMPLETE is pagination completeness,
 not billing maturity. Retain 429 metadata as error, not empty/zero.
 
+The successful control's separate 24/48/72h targets are **16/17/18 October
+23:15:33Z**. Use C's private historical RG/inventory with the same
+**2026-10-15 actual usage day** and distinct filenames; coalesce due daily
+snapshots where appropriate, never sum cumulative snapshots. No extra transfer
+is required. Its 1 GiB is **1.073741824 decimal GB**, ~$0.0214748 before
+overhead at Europe's $0.02/GB **planning** rate, not actual quantity/rate/cost.
+
 When separately authorized to obtain detail, retain the historical inventory
 projection after cleanup and use valid **past** receipt-date coverage. For
 example, at/after the 17 October 48h follow-up, this bounded request examines
@@ -345,15 +370,15 @@ Meter Query costs lack quantity/unit/effective-rate proof; credits and allowance
 cannot prove no charge. Require mature same-offer/feed known-charge positive
 control plus detail before a scoped no-charge-observed conclusion.
 
-These collections must not delay deletion: T expires **18 October 08:20:59Z**,
-but whole-lab cleanup is absolutely **before 18 October 07:33Z** (verify private
-RG creation for any earlier deadline). Standing cleanup authority covers known
-owned lab assets only, under a fresh exact-inventory lease.
-Preserve private IDs and query historical usage after deletion. Deallocated
-disks/PIPs still cost money. See the [full result and TTL rationale](../results/2026-10-15-cross-tenant-public-ip.md).
-The 16/17 October 10:40:28Z collections precede cleanup; 18 October
-10:40:28Z (72h) and 22 October (day 7) use historical IDs after deletion.
+Collections did not delay known-owned deletion: cleanup closed
+**16 October 00:00:11.806224Z**, ahead of original **18 October 07:33Z**
+core / **08:20:59Z** T cutoffs. All known lab VMs/disks/PIPs are gone;
+the core RG and one NSG of unproven creation ownership remain preserved,
+not adopted/deleted. Historical IDs are retained privately for **all**
+future collections. The control's 72h target, **18 October 23:15:33Z**,
+is after the original TTL deadline.
+See the [control and cleanup result](../results/2026-10-15-cross-region-control.md).
 No automatic collection or cleanup job is established. No extra-cost scope or
-additional MSDN payload is approved; core remaining wire reserve is **11 GiB**
-after both controls, not actual payload use. A/B/C/T remain deallocated;
-P's VM/disk/NIC/dedicated NSG are retired, with shared networking preserved.
+additional MSDN payload is approved. The reconciled 5 GiB pre-v4 allowance
+minus its 2 GiB wire reservation leaves **3 GiB**, not actual payload use or
+permission for another transfer. The $8/$4 caps are not actual bills.

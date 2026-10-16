@@ -1,20 +1,34 @@
 # Azure public-endpoint bandwidth billing
 
-**Status, 2026-10-15: same-region cross-tenant public-IP transport PASS;
+**Status, 2026-10-16 UTC: same-region cross-tenant public-IP transport PASS;
 restoration PASS; bandwidth billing INCONCLUSIVE.** A ↔ T exchanged exactly
 5 GiB each direction at 10:04:25–10:40:28 UTC, with matching hashes and no bulk
 retries. Following laptop sleep, recovery restored T's original NSG and verified
 T/A deallocated at 14:07:37/14:07:40Z; independent validation reconfirmed both.
 See the [completed result and dated follow-ups](results/2026-10-15-cross-tenant-public-ip.md).
-The later **C → B inter-region control failed (v1) / blocked before bulk (v2)**;
-neither established a charged positive control. Fresh independent verification
-completed at **19:06:07Z**: B's exact original NSG was `Succeeded`, its NIC
-association matched, and B/C were deallocated. No active children or further
-transfer is queued.
+The later [C → B inter-region control v4](results/2026-10-15-cross-region-control.md)
+**transport/restoration PASS**: exactly **1 GiB**, one upload, zero retries.
+Read-only v3 inspection identified B's additional subnet NSG default deny at
+65500; v4 correctly allowed and restored **both NIC and subnet NSGs**.
+Independent validation passed at **23:25:22Z, 15 October** (11 reads, 0 mutations).
+Billing ingestion remains incomplete: this is not yet a billed positive control.
+Known-owned cleanup closed PASS at **00:00:11.806224Z, 16 October**:
+13 remaining original core assets absent, C/T groups gone, all known lab
+VMs/disks/PIPs deleted. **Core RG and one unproven-ownership NSG were preserved**,
+not adopted/deleted. No active children or further transfer is queued.
 Owner: Morpheus / Jose Moreno. Research retrieved **2026-10-15**.
 
 Question: does a customer's VNet pay bandwidth when exchanging data with a
 same-region Azure SaaS public endpoint, including another Entra tenant?
+
+**Practical answer:** for ordinary Microsoft-allocated regional Azure public
+endpoints in the same Azure billing region, **no additional bandwidth fee is
+expected merely because tenants differ**. The published rule is unqualified by
+tenant; this policy interpretation is separate from incomplete invoice proof.
+The [21:36Z billing verdict](results/2026-10-15-billing-verdict.md) now lists the
+exact three tiny **positive** USD charges, all resource-attributed to A, not a
+zero-rated 5 GiB intraregional meter. BYOIP and service-architecture exceptions
+still apply.
 
 **Additional deliverable:** discover and reproducibly query the Cost Analysis
 APIs, including offer/schema-specific filter restrictions. Executable collectors,
@@ -28,9 +42,10 @@ deallocated; its original deployment record is [msdn-deployment-log.md](msdn-dep
 
 Published Azure [bandwidth guidance](https://azure.microsoft.com/en-us/pricing/details/bandwidth/)
 indicates same-region Azure-service transfers are not charged. Public addressing alone
-does **not** establish Internet-egress billing. Cross-tenant applicability is a
-test hypothesis, not a confirmed experimental exemption or explicit
-tenant-specific promise. Connectivity does not prove tenant-independent billing.
+does **not** establish Internet-egress billing. Apply the general same-region
+rule across tenant boundaries as published-pricing guidance, not a confirmed
+experimental exemption or explicit tenant-specific promise. Connectivity alone
+does not prove tenant-independent billing.
 The verified pricing FAQ asks **“Is data transfer between Azure services located
 within the same region charged?”** and answers **“No. For example, an Azure SQL
 database in the same region will not have any additional data transfer costs.”**
@@ -81,7 +96,7 @@ power-state checks passed. This does **not** validate transport or billing.
 
 Six approved mutation commands were used (group create, ARM validation, ARM
 deployment, three deallocations); the deployment lease is completed and all
-owned child commands exited. **Disks and PIPs still incur rent**; enforce the
+owned child commands exited. **At that historical point, disks and PIPs still incurred rent**; enforce the
 72-hour resource lifetime. Standing cleanup authority now covers only known,
 owned lab assets under a fresh exact-inventory cleanup lease.
 At deployment closure, the next D0 step was to implement the bounded pinned-mTLS harness with peer-only 443
@@ -112,10 +127,10 @@ extension, listener or traffic harness was added. Four mutation commands:
 group create, ARM validation, deployment and deallocation. The lease is completed
 and owned processes are idle. See [deploy/README.md](deploy/README.md) for the
 reusable isolated WSL deploy/cleanup pair and ignored private inventory.
-**Disks and PIP keep accruing charges**: T's individual cutoff is
+**At that historical point, disks and PIP kept accruing charges**: T's individual cutoff was
 **2026-10-18 08:20:59Z**, but use the earlier whole-lab cleanup deadline
 **before 2026-10-18 07:33Z**, under standing own-assets cleanup authority and
-a fresh exact-inventory lease. T remains retained.
+a fresh exact-inventory lease. T was retained then; its group is now deleted.
 
 Jose approved the **$8 three-day core subject to prerequisites** on 2026-10-15.
 This does not approve optional phases, SKU/cost increases, or unrelated cleanup.
@@ -127,7 +142,8 @@ the original D0 private-control traffic. A is in the Windows native context;
 T is in native Ubuntu-24.04 WSL, with unequal tenants and subscriptions verified.
 Both are Sweden Central Linux VMs; Windows/WSL describe management contexts,
 not guest operating systems. Both TCP connections originated at A, while the
-download's bulk-byte producer was T. No other bulk family has completed successfully.
+download's bulk-byte producer was T. The later C → B v4 control also completed,
+without changing this original headline result.
 
 Initial attributed billing collection at 14:14:58–14:15:11Z produced **Windows
 HTTP 200 COMPLETE empty**, but **WSL HTTP 429 rate_limited ERROR**, not two
@@ -143,42 +159,55 @@ COMPLETE empty**, not zero-charge proof. See the
 
 - No budget increase or new resource creation during the transfer/recovery:
   **$8 core + $4 extension** remain the caps.
-- Conservatively reserve 12 GiB for the headline plus **6 GiB per control
-  attempt**: **35 − 12 − 6 − 6 = 11 GiB core remaining
-  (11,811,160,064 bytes)** after v2. This is reservation accounting, not actual
-  payload use; do not reuse the earlier 17 GiB remainder. T's approved 10 GiB payload reserve is
+- Historical reserves left **11 GiB after v2**, then **5 GiB before v4**.
+  v4 explicitly reserved **2 GiB wire for 1 GiB payload**, leaving
+  **3 GiB (3,221,225,472 bytes)** conservatively reserved. The default
+  control remains 5 GiB payload / 6 GiB wire. This is not measured payload use
+  or authorization for more transfers. T's approved 10 GiB payload reserve is
   consumed; additional T payload requires approval.
 - A/T allocation is conservatively about **4h10m each including readiness and
   recovery**, not a measured actual allocation-start time; hard limit remains
   <12h/slot. Recompute headroom from private lifecycle records before more work.
-  Deallocation stops compute, not retained disk/PIP charges.
+  Deallocation stopped compute, not retained disk/PIP charges; known assets
+  have now been deleted.
 - C replaced the retired P slot: P's VM/disk/NIC/dedicated NSG are gone;
-  shared networking and A/B were preserved. C is deployed in an isolated
-  North Europe owned RG. The inherited whole-core planning envelope is
-  **$7.954831 < $8**, not an actual bill. C's inherited slot has roughly **2h
+  shared networking and A/B were preserved then. C used an isolated
+  North Europe owned RG, now deleted. The inherited whole-core planning envelope was
+  **$7.954831 < $8**, not an actual bill. Pre-control, C's inherited slot had roughly **2h
   before deducting readiness and ~5m setup**; reconcile lifecycle records before
   proposing further allocation. Neither TTL nor the original slot is reset.
 - Collect 15 October usage no earlier than **16/17/18 October 10:40:28Z**
   (24/48/72h); if needed **22 October 10:40:28Z** (day 7).
-- **Cleanup precedes late billing:** T expires **18 October 08:20:59Z**;
+- **Cleanup completed before late billing:** T's original cutoff was **18 October 08:20:59Z**;
   the earliest recorded core resource expires **18 October 07:38:11Z**,
-  and the core RG may be older. Use standing known-own-assets cleanup authority
-  and a fresh exact-inventory lease to delete
-  absolutely before **18 October 07:33Z** (core deployment lease start
-  plus 72h), checking the private RG creation time for any earlier deadline.
-  Preserve historical IDs privately and query billing after deletion.
+  and the conservative original core deadline was **18 October 07:33Z**.
+  Known-owned cleanup closed **16 October 00:00:11.806224Z**.
+  Core RG and an extra NSG remain preserved for manual ownership review;
+  they have no standalone hourly rent. Query private historical IDs after deletion.
 - **Control v1, 17:28:50–18:13:46Z: FAIL**, 12 connection/TLS timeouts,
-  zero bulk requests, C RX+TX once **284,630 bytes**. Cause remains unproven;
-  the saved NSG `Updating` response does not prove it caused a drop.
+  zero bulk requests, C RX+TX once **284,630 bytes**. The saved NSG `Updating`
+  response did not prove causation; v3 read-only inspection later identified
+  the additional B subnet NSG deny missed by NIC-only setup.
 - **Control v2: fresh readiness PASS; guarded live BLOCKED** by a NIC read
   timeout before either guest command, **zero payload**. Final NSG GET also
   timed out; this unverified closure was subsequently resolved by fresh Niobe
   read-only verification (**5 calls, 0 mutations**, idle proof 19:06:07Z).
   See [control safeguards](transfers/README.md#one-way-core-positive-control).
-- A/B/C/T remain deallocated; retained disks/PIPs still accrue charges.
-  No charged positive control exists. Closing the tenant-boundary question
-  needs mature attributable meter quantity/unit/rate evidence and provider
-  policy confirmation, not more unapproved payload.
+- **v4 PASS**, live **15 October 23:06:00–23:19:39Z**, bulk
+  **23:08:23–23:15:32Z**, exactly **1,073,741,824 bytes C/NE → B/SC**,
+  one upload/zero retries, matching SHA256. C NIC RX+TX once
+  **1,085,524,745 bytes** is not billed quantity. Both original NSGs restored
+  `Succeeded`; independent validation PASS. **100 WSL tests passed**.
+- All known A/B/C/T VMs/disks/PIPs are deleted. A successful expected-charged
+  transport control now exists, but its **billing positive control is pending**.
+  The **23:28Z** snapshot made three billing requests: A's same three tiny
+  rows (~$0.000072875), no quantity/request attribution; C no Query rows and
+  details timeout; T empty. None proves zero cost. Invoice-level confirmation
+  needs mature attributable meter quantity/unit/rate evidence; the practical
+  published-pricing answer above does not depend on more unapproved payload.
+- Control billing targets: **16/17/18 October 23:15:33Z** (24/48/72h);
+  the 72h target is after the original **18 October 07:33Z** TTL deadline.
+  No more transfers are needed; preserve and query historical IDs.
 - Standing cleanup authority is limited to known owned assets. **No automatic
   follow-up or cleanup job is established**. These dates are action deadlines,
   not scheduled jobs. No extra-cost scope or further MSDN payload is approved.

@@ -2,6 +2,31 @@
 
 **Transport PASS · restored baseline PASS · billing INCONCLUSIVE**
 
+**Current update, 2026-10-16 UTC:** the original **5 GiB each direction**
+headline PASS below is unchanged. The later
+[C → B v4 control](2026-10-15-cross-region-control.md) is **transport/restore
+PASS**, exactly **1 GiB C/NE → B/SC**, one upload, zero retries; independent
+PASS **15 October 23:25:22Z**, 11 reads / 0 mutations. v3 read-only inspection
+identified B's additional subnet NSG default deny 65500, missed by NIC-only
+setup; v4 correctly allowed/restored both owned layers. Earlier v1/v2/v3
+failed/blocked records remain historical.
+The **23:28Z** billing snapshot still has only A's three tiny daily rows,
+**USD 0.0000728753264993429373**, no quantity/unit/rate/request attribution;
+C no Query rows/details timeout; T empty. This is **not yet a billed positive
+control**, not zero-charge proof or invoice confirmation.
+Known-owned cleanup closed PASS **16 October 00:00:11.806224Z**:
+13 remaining original core assets absent, C/T groups gone, all known lab
+VMs/disks/PIPs deleted. **Core RG and an extra NSG remain preserved**, creation
+ownership unproven; do not adopt/delete. No standalone RG/NSG hourly rent.
+The detailed earlier observations below are dated history, not current retention.
+
+**Later interpretation, 21:36Z:** [exact billing rows and practical pricing
+answer](2026-10-15-billing-verdict.md). For ordinary same-region Azure regional
+public endpoints, no additional bandwidth fee is expected just because tenants
+differ. This follows the general published rule, not invoice proof. The three
+observed rows are tiny positive costs attributed to A; “Intra Continent” is not
+an intraregional zero-rated 5 GiB meter. Historical snapshots below are unchanged.
+
 Published from the independent Niobe validation/cost handoff, persisted
 **2026-10-15T14:17:09Z**, after live/recovery owners were idle. This publication
 was offline: **zero Azure calls, zero Azure mutations, no new transfers,
@@ -9,7 +34,8 @@ resources or packages**. Private evidence was projected into this narrative;
 no raw reports, identities, endpoint addresses, resource names or keys are included.
 Updated offline after the **18:22Z billing refresh** and fresh independent
 control-baseline/idle verification at **19:06:07Z**. Headline verdicts stand;
-subsequent C→B control outcomes are **v1 FAIL / v2 BLOCKED**, not PASS.
+then-observed C→B control outcomes were **v1 FAIL / v2 BLOCKED**, not PASS.
+The later v4 PASS is a separate result, not a rewrite of those records.
 
 ## What was actually tested
 
@@ -124,7 +150,7 @@ permits at most one short eligible Retry-After retry internally; exact HTTP
 attempt count is not exposed by the sanitized failure and is not asserted.
 There was no second collector invocation, detailed-usage call or extra shape probe.
 
-Billing remains **INCONCLUSIVE** because no mature attributable bandwidth
+At that initial collection, billing was **INCONCLUSIVE** because no mature attributable bandwidth
 quantity/unit/effective-rate evidence or same-offer/feed known-charge positive
 control is available. Empty rows, zero aggregate cost, credits or allowances
 cannot establish absence of charge. This Bandwidth-category snapshot also cannot
@@ -172,7 +198,7 @@ validation used **34 passing tests**. Later one-way control support changes sour
 hashes and requires fresh readiness for any new run; it does not invalidate or
 rewrite the archived independent validation of the completed headline.
 
-## Caps, lifecycle and cleanup before billing maturity
+## Historical caps, lifecycle and cleanup requirements
 
 User caps remain **$8 core + $4 extension**, with no increase. Transfer/recovery
 created no other resources. No actual billed-dollar total is claimed.
@@ -182,6 +208,10 @@ created no other resources. No actual billed-dollar total is claimed.
   **35 − 12 − 6 − 6 = 11 GiB (11,811,160,064 bytes) core remaining**.
   This is conservative reservation accounting, not actual payload usage;
   the earlier 17 GiB before v2 is not current headroom.
+- **Later reconciliation:** 11 GiB was historical post-v2 headroom. Before v4
+  it was **5 GiB**; explicit **1 GiB payload / 2 GiB wire** left
+  **3 GiB**, not actual payload usage or permission for more tests.
+  The default control remains 5 GiB payload / 6 GiB wire.
 - T's approved **10 GiB payload reserve is consumed**. No additional T payload
   is approved; no approval is implied by remaining core bytes or time.
 - Conservatively allow **about 4h10m per A/T slot including readiness/recovery**,
@@ -192,8 +222,9 @@ created no other resources. No actual billed-dollar total is claimed.
   Their 72h lifetime must not extend for cost-data collection.
 - P's VM/disk/NIC/dedicated NSG were retired; shared networking was preserved.
   C deployed in an isolated North Europe owned RG and inherited P's slot.
-  A/B/C/T remain deallocated. The whole-core planning envelope is
-  **$7.954831 < $8**, not an actual bill. C's inherited slot has roughly **2h
+  A/B/C/T were then deallocated; known-owned assets are now deleted.
+  The whole-core planning envelope was
+  **$7.954831 < $8**, not an actual bill. Pre-control, C's inherited slot had roughly **2h
   before deducting readiness and ~5m setup**; reconcile lifecycle evidence before
   further proposals. Replacement does not reset hours or TTL.
 
@@ -203,12 +234,16 @@ created no other resources. No actual billed-dollar total is claimed.
 | Core | Earliest recorded resource creation **15 October 07:38:11.583268Z** → **18 October 07:38:11.583268Z**; RG can be older |
 | Conservative core cleanup scheduling | **Before 18 October 07:33Z**, using deployment-lease start +72h pending exact private RG creation check; any earlier actual deadline wins |
 
-Standing user cleanup authority covers known owned lab assets; use a fresh
+The original standing cleanup requirement covered known owned assets: use a fresh
 exact-inventory lease and delete absolutely **before 18 October 07:33Z**,
 earlier if actual creation requires it. Preserve private historical resource IDs, timestamps and
 ownership map first. **Delete before TTL and query historical IDs after deletion**.
 Do not keep any VM/disk/IP merely to reach the 72h/day-7 billing follow-ups.
 The recorded T TTL and earlier core cutoff both precede the 72h follow-up.
+Known-owned deletion completed at **16 October 00:00:11.806224Z**; the core RG
+and an unproven-ownership NSG were deliberately preserved for manual review.
+The earlier whole-group cleanup BLOCKED history was resolved for exact-owned
+roots, not by adopting or deleting unknown resources.
 
 ## Dated blockers and safe next work
 
@@ -229,7 +264,7 @@ These are not zero charges or a mature feed. Receipt-window predicates cannot
 guarantee eventual actual-usage coverage. RG filtering was not honored in the
 Windows response; mandatory local inventory/RG/actual-date filtering prevented
 unrelated billing retention. Missing quantity/unit/rate/cost remain null,
-not zero. No attributable charged positive control was established.
+not zero. No attributable charged positive control was established by that refresh.
 
 The minimal **C/North Europe → B/Sweden Central**, Windows-core, one-way 5 GiB
 control was deployed after P retirement, with C's producer RG isolated from
@@ -242,20 +277,23 @@ the headline RG. Its actual attempts were:
 | v2 guarded live | **BLOCKED before guest commands** | NIC read timeout before server/client submission; **0 payload**. No guest NIC report, so do not invent a zero wire count. Final NSG GET timed out, leaving restoration initially unverified. |
 | Fresh independent Niobe check | **PASS** | **5 reads, 0 mutations**; exact original B NSG policy/all rules `Succeeded`, NIC association correct, B/C deallocated. Native idle proof **19:06:07Z**, no active children, no further transfer queued. |
 
-v1's packet-path cause remains unproven. Its saved NSG `Updating` response
-exposed a missing gate but does **not** establish that the NSG caused a drop.
+At that time, v1's packet-path cause was unproven. Its saved NSG `Updating`
+response alone did **not** establish causation. Later v3 read-only inspection
+identified B's additional subnet default deny; v4 corrected both layers.
 The corrected runner now requires bounded `Succeeded`/exact intended NSG and
 NIC-association setup gates, exact original-policy `Succeeded` readback on
 restore, a **180-second first-request deadline**, immediate failure visibility,
 bounded peer drain and verified deallocation **before** NSG restore.
-**67 existing WSL tests passed**; no Windows-suite pass or successful live
-C→B transfer is claimed. Later restoration PASS does not rewrite v1/v2
+**67 existing WSL tests passed** at that correction; the later v4 suite reached
+**100 WSL tests**, and separately authorized v4 live transport passed.
+No Windows-suite pass is claimed. Later restoration PASS does not rewrite v1/v2
 transport verdicts. See [control safeguards](../transfers/README.md#one-way-core-positive-control).
 
 A Windows charged control would not establish MSDN feed completeness.
-Closing the tenant-boundary answer still needs mature meter quantity/unit/rate
-and provider policy confirmation. The FAQ lacks explicit tenant boundaries;
-the official BYOIP destination Internet-egress exception above remains.
+Closing the experimental invoice proof still needs mature meter quantity/unit/
+rate evidence. The FAQ's general same-region rule reasonably applies across
+tenant boundaries without enumerating them; the official BYOIP destination
+Internet-egress exception above remains.
 
 | Follow-up for 15 October usage | Earliest UTC |
 |---|---|
@@ -263,6 +301,10 @@ the official BYOIP destination Internet-egress exception above remains.
 | 48h | **2026-10-17T10:40:28Z** |
 | 72h | **2026-10-18T10:40:28Z** — after resource cleanup |
 | Day 7, if needed | **2026-10-22T10:40:28Z** — historical usage only |
+
+Control 24/48/72h targets are **16/17/18 October 23:15:33Z**; 72h is after
+the original **18 October 07:33Z** TTL deadline. All future snapshots use private
+historical IDs after known-owned cleanup, not new transfers. No schedules exist.
 
 Each requires a fresh approved read-only cost/API lease, new private per-source
 snapshots, bounded calls/pages, native context checks and no background waits.
@@ -278,8 +320,9 @@ original private D0 traffic priority. Put other bulk families on distinct UTC
 days to preserve producer/day attribution. The next intended known-charge
 positive control was initially **16 October, Sweden Central ↔ North Europe**;
 the later minimal amendment was **C/North Europe → B/Sweden Central only**.
-C is deployed; v1 failed and v2 blocked before bulk. No additional transfer
-is queued. Any further proposal must reconcile remaining core bytes/hours,
+C was deployed; v1 failed and v2 blocked before bulk. Later v4 succeeded with
+**1 GiB** and both NSG layers restored/independently verified, then known-owned
+cleanup completed. No additional transfer is needed or queued. Any further proposal must reconcile remaining core bytes/hours,
 budgets and cleanup timing and obtain fresh execution/validation leases.
 No extra T payload, resource expansion or higher SKU is authorized by this plan.
 

@@ -497,11 +497,15 @@ def client(config, counter=nic):
     return report
 
 
-def verify(a, t):
+def verify(a, t, expected=None):
     if not a["success"] or not t["success"]:
         raise ValueError("endpoint_failure")
     declared = a.get("declared_legs", ["up", "down"])
     names = aliases(a)
+    if expected is not None:
+        if (declared != expected.get("legs", ["up", "down"])
+                or names != aliases(expected)):
+            raise ValueError("declared_plan_mismatch")
     if (declared != t.get("declared_legs", ["up", "down"]) or names != aliases(t)
             or set(a["legs"]) != set(legs({"legs": declared}))
             or set(t["legs"]) != set(declared)):
@@ -513,6 +517,12 @@ def verify(a, t):
                 raise ValueError("endpoint_evidence_mismatch")
         if x["status"] != "ok" or x["retries"] != 0:
             raise ValueError("incomplete_leg")
+        if expected is not None and (
+                x["bytes"] != expected["bytes"] or x["sha256"] != expected["payload_sha256"]
+                or x["id"] != expected["id"] + "-" + leg
+                or any(report["nic"]["delta"]["wire_once"] >= expected["wire_cap"]
+                       for report in (a, t))):
+            raise ValueError("declared_payload_mismatch")
         if (x["producer"] != names["client" if leg == "up" else "server"]
                 or x["consumer"] != names["server" if leg == "up" else "client"]):
             raise ValueError("endpoint_role_mismatch")

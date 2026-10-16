@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "objective": "One aggregate throttling recheck per native context",
+  "snapshotCompletedAtUtc": "2026-10-15T21:09:12.129910Z",
+  "requestPeriodUtc": {
+    "from": "2026-10-15T00:00:00Z",
+    "to": "2026-10-15T21:08:35.078306Z"
+  },
+  "requestContract": "ActualCost Daily Sum(PreTaxCost); lab RG AND MeterCategory=Bandwidth; ResourceGroup+Meter grouping; one page, no retries",
+  "contexts": [
+    {
+      "alias": "windows-core",
+      "startedAtUtc": "2026-10-15T21:08:37.118634Z",
+      "requestPeriodUtc": {
+        "from": "2026-10-15T00:00:00Z",
+        "to": "2026-10-15T21:08:35.078306Z"
+      },
+      "httpStatus": 200,
+      "state": "COMPLETE",
+      "rowsComplete": true,
+      "retainedRows": 3,
+      "maximumPages": 1,
+      "retries": 0,
+      "receivedRows": 3,
+      "pages": 1,
+      "reason": null,
+      "endedAtUtc": "2026-10-15T21:08:56.382074Z",
+      "retryAfterHeaders": {},
+      "httpAttempts": 1,
+      "contextVerified": true,
+      "contextBytesUnchanged": true
+    },
+    {
+      "alias": "wsl-msdn",
+      "startedAtUtc": "2026-10-15T21:09:04.177120Z",
+      "requestPeriodUtc": {
+        "from": "2026-10-15T00:00:00Z",
+        "to": "2026-10-15T21:08:35.078306Z"
+      },
+      "httpStatus": 200,
+      "state": "COMPLETE",
+      "rowsComplete": true,
+      "retainedRows": 0,
+      "maximumPages": 1,
+      "retries": 0,
+      "receivedRows": 0,
+      "pages": 1,
+      "reason": null,
+      "endedAtUtc": "2026-10-15T21:09:12.297328Z",
+      "retryAfterHeaders": {},
+      "httpAttempts": 1,
+      "contextVerified": true,
+      "contextBytesUnchanged": true
+    }
+  ],
+  "interpretation": "HTTP 200 empty is not zero-charge proof; this checks throttling only.",
+  "closure": {
+    "mutations": 0,
+    "activeCommands": 0,
+    "nativeIdle": true
+  }
+}

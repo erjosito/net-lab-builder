@@ -3,10 +3,27 @@
 Reconciliation design plus [executable collectors and tested API matrix](costs/README.md).
 Current experimental billing verdict: **INCONCLUSIVE** after completed
 same-region cross-tenant transport; no unrelated billing values retained.
-Updated 2026-10-15. See the [sanitized result](results/2026-10-15-cross-tenant-public-ip.md).
-Latest refresh completed **18:22Z**; independent B/C restoration/idle verification
-completed by **19:06:07Z**. C → B v1 **FAIL** and v2 **BLOCKED before bulk**
-did not establish a charged positive control.
+Updated 2026-10-16 UTC. See the [sanitized result](results/2026-10-15-cross-tenant-public-ip.md).
+The [21:36Z interpretation](results/2026-10-15-billing-verdict.md) separates the
+practical published-pricing answer (no tenant-boundary surcharge expected for
+ordinary same-region Azure endpoints) from incomplete empirical invoice proof.
+The three returned bandwidth rows are tiny positive USD costs, all attributed
+to A by a complete ResourceId+Meter Query; none reports intraregional 5 GiB
+quantity, unit or rate. “Intra Continent” is not “intra region.”
+Latest bounded billing refresh is **15 October 23:28Z**, after
+[C → B v4 transport/restoration PASS](results/2026-10-15-cross-region-control.md):
+**1 GiB, one upload, zero retries**. The earlier v1/v2/v3 history is unchanged.
+Read-only v3 inspection identified B's additional subnet NSG default deny
+65500, missed by NIC-only setup; v4 corrected/restored both layers.
+Independent validation PASS used **11 reads / zero mutations**, closing
+**23:25:22Z**. Successful expected-charged transport is **not yet a billed
+positive control**: three billing requests still returned only A's three tiny
+daily rows, C no Query rows/details timeout, T empty. No quantity/unit/rate,
+per-request attribution or zero-dollar proof exists.
+Known-owned cleanup closed PASS **16 October 00:00:11.806224Z**: 13 remaining
+original core assets absent, C/T groups gone, all known VMs/disks/PIPs deleted.
+**Core RG and one extra NSG were preserved**, independent creation ownership
+unproven; no standalone RG/NSG hourly rent, no authority to adopt/delete.
 Use **ActualCost** consistently, not AmortizedCost: this experiment measures
 consumed bandwidth and its actual meter economics, not reservation allocation.
 PAYG Ubuntu avoids new reservation purchases. Existing discounts/credits still
@@ -251,7 +268,7 @@ queries succeeded,” and not “free.” Credits, allowances and zero aggregate
 cost cannot prove absence of charge. Bandwidth-only collection also omits
 possible service-specific processing/provider fees.
 
-### Latest bounded refresh, 18:22Z
+### Historical bounded refresh, 18:22Z
 
 The [sanitized machine-readable snapshot](results/2026-10-15-billing-refresh.json)
 preserves the earlier results rather than replacing their historical meaning.
@@ -265,14 +282,15 @@ One invocation/HTTP attempt per endpoint/context, one page maximum, no retries:
 Receipt-date predicates cannot guarantee actual usage coverage. Mandatory
 local inventory/RG/actual-date filtering precedes retention; no unrelated raw
 billing rows were retained. Missing quantity/unit/rate/cost remain **null, not
-zero**. A known-charge positive control is still absent: v1 sent no bulk after
+zero**. At that time no successful control existed: v1 sent no bulk after
 12 connection/TLS timeouts (C NIC RX+TX once 284,630 bytes); v2 blocked before
 guest submission, zero payload and no guest NIC report. Do not call its
 unmeasured NIC traffic zero.
 
-Closing the tenant-boundary question requires mature attributable meter
-quantity/unit/rate and provider policy confirmation. The same-region Azure
-services FAQ does not explicitly mention tenants, and the official
+Closing **invoice-level proof** requires mature attributable meter
+quantity/unit/rate and a billed positive control. The practical same-region
+pricing answer already follows the published rule, unqualified by tenant.
+The official
 [BYOIP destination Internet-egress exception](https://learn.microsoft.com/azure/virtual-network/ip-services/custom-ip-address-prefix#pricing)
 continues to apply. Neither transport PASS nor empty Cost API output overrides it.
 
@@ -282,6 +300,15 @@ continues to apply. Neither transport PASS nor empty Cost API output overrides i
 | 48h | 2026-10-17T10:40:28Z | 2026-10-15 |
 | 72h | 2026-10-18T10:40:28Z | 2026-10-15 |
 | Day 7, if needed | 2026-10-22T10:40:28Z | 2026-10-15 |
+
+For the successful **1 GiB C→B** control, separate 24/48/72h targets are
+**16/17/18 October 23:15:33Z** (actual usage day **15 October**).
+Its [23:28Z snapshot](results/2026-10-15-control-billing.json) used three billing
+HTTP attempts, no retry/mutation; A's exact total is
+**USD 0.0000728753264993429373**, not attributable to one request.
+C lacks ingested rows/quantity/rate and details timed out; T is empty.
+At $0.02/decimal GB planning only, 1 GiB would be ~$0.0214748 before overhead,
+not an observed rate/cost. Do not infer quantity from those retail estimates.
 
 Use the [exact bounded collector templates](costs/README.md#dated-follow-up-commands-for-the-completed-run)
 under a new approved read-only API lease. Each is a new cumulative snapshot:
@@ -297,9 +324,13 @@ read-only leases for 16/17 October, then historical queries after deletion.
 Standing cleanup authority covers only known owned lab assets, under a fresh
 exact-inventory lease; delete **before 18 October 07:33Z**, earlier if required
 by actual creation time. No extra-cost scope or further MSDN payload is approved.
-A/B/C/T are deallocated but retained disks/PIPs still accrue charges.
+These were the original cleanup requirements. **Known-owned cleanup is now
+complete** at **16 October 00:00:11.806224Z**; all known lab VMs/disks/PIPs
+are deleted. The core RG and an additional unproven-ownership NSG remain
+preserved for manual review, without standalone hourly rent. Do not adopt/delete
+unknown roots. The prior whole-group cleanup BLOCKED record remains historical.
 
-**Delete before resource TTL even though 72h billing is later:** T's deadline
+**Historical TTL rationale, satisfied for known-owned assets:** T's deadline
 is **2026-10-18T08:20:59Z**. The earliest recorded core-resource creation gives
 **2026-10-18T07:38:11Z**; the RG can be older. Conservatively arrange confirmed
 core deletion before **07:33Z** that day (deployment lease start +72h), verifying

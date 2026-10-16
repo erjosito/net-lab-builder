@@ -400,6 +400,12 @@ class WrapperTests(unittest.TestCase):
         self.assertEqual(calls[3:], ["deallocate-b", "deallocate-c", "restore-nsg"])
 
     def test_control_preparation_is_offline_and_real_alias_native_commands(self):
+        self.control_preparation()
+
+    def test_one_gib_control_preparation_exact_source_bound_plan_and_reservation(self):
+        self.control_preparation(stream.GIB)
+
+    def control_preparation(self, payload=None):
         plan = self.control()
         c, b = plan["C"], plan["B"]
         receiver = {"id": b["pip_id"], "location": "swedencentral", "ipAddress": "192.0.2.5",
@@ -409,7 +415,8 @@ class WrapperTests(unittest.TestCase):
         files = {run.LAB / "private" / "context.private.json": b,
                  run.LAB / "private" / "control-inventory.private.json": ci,
                  run.LAB / "private" / "inventory.private.json": {"runId": b["runId"]}}
-        args = mock.Mock(run="offline-control", control=True, core_remaining_bytes=23 * stream.GIB)
+        args = mock.Mock(run="offline-control", control=True, control_payload_bytes=payload,
+                         core_remaining_bytes=(5 if payload else 23) * stream.GIB)
         targets = iter((dict(c), dict(b)))
         written = {}
         with mock.patch.object(run, "read", side_effect=lambda p: files[p]), \
@@ -423,7 +430,14 @@ class WrapperTests(unittest.TestCase):
         self.assertNotIn("A", saved)
         self.assertNotIn("T", saved)
         self.assertEqual(saved["legs"], ["up"])
-        self.assertEqual(saved["wire_cap"], 6 * stream.GIB)
+        self.assertEqual(saved["bytes"], payload or 5 * stream.GIB)
+        self.assertEqual(saved["wire_cap"], (2 if payload else 6) * stream.GIB)
+        self.assertEqual(saved["C"], c)
+        self.assertEqual(saved["B"], b)
+        self.assertEqual(saved["aliases"], {"client": "C", "server": "B"})
+        if payload:
+            self.assertEqual(saved["payload_sha256"], stream.digest(payload))
+            self.assertEqual(saved["core_remaining_bytes"] - saved["wire_cap"], 3 * stream.GIB)
         certs.assert_called_once_with(run.PRIVATE / args.run / "tls", "192.0.2.5")
         commands = written["commands.private.json"]
         self.assertEqual(set(commands), set(run.operations(plan)))
@@ -431,7 +445,12 @@ class WrapperTests(unittest.TestCase):
         self.assertIn(c["vm"], commands["client"]["argv_before_native_path_conversion"])
         self.assertIn(b["vm"], commands["server"]["argv_before_native_path_conversion"])
         self.assertEqual(written["live-lease-template.private.json"]["allowedMutations"],
-                         list(run.operations(plan)))
+                         list(run.operations(plan)) + ["allow-subnet", "restore-subnet-nsg"])
+        self.assertEqual(written["live-lease-template.private.json"]["maxMutations"], 12)
+        self.assertEqual(written["live-lease-template.private.json"]["maxToolCalls"], 150)
+        self.assertEqual(written["live-lease-template.private.json"]["commandTimeoutSeconds"], 3000)
+        self.assertEqual(written["live-lease-template.private.json"]["namedCommandTimeoutSeconds"],
+                         {"server": 2500, "client": 2500})
         self.assertEqual(written["readiness-lease-template.private.json"]["allowedMutations"],
                          list(run.operations(plan, True)))
         self.assertEqual(written["snapshot-lease-template.private.json"]["maxMutations"], 0)
@@ -483,6 +502,8 @@ class WrapperTests(unittest.TestCase):
             clients.append(client)
         with mock.patch.object(run, "read", side_effect=lambda p: files[p]), \
                 mock.patch.object(run, "save", side_effect=lambda p, v: files.update({p: v})), \
+                mock.patch.object(run, "snapshot_subnet", return_value={
+                    "networkSecurityGroup": "", "nic_nsg": "nic-nsg"}), \
                 mock.patch.object(run, "metrics"), mock.patch.object(run, "guest_script"):
             run.snapshot(ROOT, plan, *clients)
             rule = files[ROOT / "nsg-allow.private.json"]["properties"]["securityRules"][-1]
@@ -854,7 +875,9 @@ class WrapperTests(unittest.TestCase):
                 "vm": dict(common, id="vm", networkProfile={"networkInterfaces": [{"id": "nic"}]}),
                 "nsg": dict(common, id="nsg", securityRules=[{
                     "name": "deny", "priority": 100, "access": "Deny",
-                    "direction": "Inbound", "protocol": "*"}]),
+                    "direction": "Inbound", "protocol": "*", "sourceAddressPrefix": "*",
+                    "destinationAddressPrefix": "*", "sourcePortRange": "*",
+                    "destinationPortRange": "*"}]),
                 "pip": dict(common, id="pip", ipAddress="192.0.2.1"),
                 "nic": dict(common, id="nic", networkSecurityGroup={"id": "nsg"},
                             ipConfigurations=[{"publicIPAddress": {"id": "pip"}}])}
@@ -877,6 +900,8 @@ class WrapperTests(unittest.TestCase):
 
         with mock.patch.object(run, "save", side_effect=saved), \
                 mock.patch.object(run, "read", side_effect=lambda p: files[p]), \
+                mock.patch.object(run, "snapshot_subnet", return_value={
+                    "networkSecurityGroup": "", "nic_nsg": "nic-nsg"}), \
                 mock.patch.object(run, "guest_script"), \
                 mock.patch.object(run, "metrics", side_effect=baseline) as metrics, \
                 mock.patch.object(run, "require_readiness",
@@ -1006,7 +1031,7 @@ class OrchestrationGateTests(unittest.TestCase):
         for call in self.client.cli.call_args_list:
             if call.args[0][0] == "network":
                 self.assertEqual(call.kwargs["operation"], "read-restore:restore-nsg")
-                self.assertLessEqual(call.kwargs["seconds"], 30)
+                self.assertLessEqual(call.kwargs["seconds"], 90)
 
     def test_restore_parent_or_rule_updating_requires_final_success_and_association(self):
         for parent in (False, True):
@@ -1064,7 +1089,7 @@ class OrchestrationGateTests(unittest.TestCase):
             run.execute(mock.Mock(action="restore-nsg", run="offline"))
         self.assertTrue(self.saved["nsg-restored.private.json"]["verified"])
         self.assertEqual(self.clock, 30)
-        self.client.authorize.assert_called_once_with("restore-nsg")
+        self.client.authorize.assert_called_once_with("restore-nsg", seconds=90)
         self.assert_single_restore_put()
 
     def test_restore_terminal_unknown_identity_semantics_metadata_and_nic_mismatch_block(self):
@@ -1105,7 +1130,7 @@ class OrchestrationGateTests(unittest.TestCase):
             if mode == "expiry":
                 self.clock = 3420
             if mode == "authorization":
-                self.client.authorize.side_effect = lambda op: setattr(self, "clock", 721)
+                self.client.authorize.side_effect = lambda op, **kw: setattr(self, "clock", 721)
             if mode == "read-late":
                 def late(argv, *a, **kw):
                     if argv[0] == "network":
@@ -1171,6 +1196,185 @@ class OrchestrationGateTests(unittest.TestCase):
         self.assertEqual(self.client.cli.call_args.kwargs["seconds"], 15)
         self.assertEqual(self.clock, 185, "no 30s sleep may spend the submission reserve")
 
+    def test_nsg_slow_exact_reads_succeed_with_90_second_ceiling(self):
+        results = iter([self.nsg, self.nic])
+
+        def response(argv, **kwargs):
+            self.assertEqual(kwargs["seconds"], 90)
+            self.clock += 40
+            return next(results)
+
+        self.client.cli.side_effect = response
+        with self.gates():
+            run.wait_nsg_allow(ROOT, {}, self.client)
+        self.assertTrue(self.saved["nsg-gate.private.json"]["verified"])
+        self.assertEqual(self.clock, 80)
+
+    def test_nsg_reads_clip_to_phase_and_reserve_and_reject_late_success(self):
+        for initial, first, expected in ((0, 120, 60), (100, 70, 30)):
+            self.clock = initial
+            self.client.reset_mock()
+
+            def response(argv, **kwargs):
+                if argv[1] == "nsg":
+                    self.clock += first
+                    return self.nsg
+                self.assertEqual(kwargs["seconds"], expected)
+                self.clock += expected
+                return self.nic
+
+            self.client.cli.side_effect = response
+            with self.subTest(initial=initial), self.gates(), self.assertRaises(RuntimeError):
+                run.wait_nsg_allow(ROOT, {}, self.client)
+            self.assertFalse(self.saved["nsg-gate.private.json"]["verified"])
+
+    def test_nsg_expired_submission_margin_never_queries(self):
+        self.clock = 201
+        with self.gates(), self.assertRaisesRegex(RuntimeError, "reserve_15_minutes"):
+            run.wait_nsg_allow(ROOT, {}, self.client)
+        self.client.cli.assert_not_called()
+        self.assertFalse(self.saved["nsg-gate.private.json"]["verified"])
+
+    def test_restore_slow_exact_reads_succeed_with_90_second_ceiling(self):
+        def response(argv, *args, **kwargs):
+            if argv[0] == "rest":
+                self.assertEqual(args[1], 180)
+                return None
+            self.assertEqual(kwargs["seconds"], 90)
+            self.clock += 40
+            return self.nsg if argv[1] == "nsg" else self.nic
+
+        self.client.cli.side_effect = response
+        with self.restore_gates():
+            run.restore_nsg(ROOT, {}, self.client, self.clock)
+        self.assertTrue(self.saved["nsg-restored.private.json"]["verified"])
+        self.assertEqual(self.clock, 80)
+        self.assert_single_restore_put()
+
+    def test_restore_reads_clip_shared_deadline_and_lease_without_verifying_updating(self):
+        for mode in ("shared", "lease"):
+            self.clock = 0 if mode == "shared" else 3300
+            self.client.reset_mock()
+            plan = {"restore_started": (self.instant - run.timedelta(seconds=600)).isoformat()} \
+                if mode == "shared" else {}
+            expected = 60 if mode == "shared" else 49
+
+            def response(argv, *args, **kwargs):
+                if argv[0] == "rest":
+                    self.clock += 240
+                    return None
+                self.assertEqual(kwargs["seconds"], expected)
+                self.clock += expected
+                return dict(self.nsg, provisioningState="Updating")
+
+            self.client.cli.side_effect = response
+            with self.subTest(mode=mode), self.restore_gates(), self.assertRaises(RuntimeError):
+                run.restore_nsg(ROOT, plan, self.client, self.clock)
+            self.assertFalse(self.saved["nsg-restored.private.json"]["verified"])
+            self.assert_single_restore_put()
+
+    def test_restore_nic_read_clips_shared_deadline_and_rejects_late_exact_success(self):
+        plan = {"restore_started": (self.instant - run.timedelta(seconds=660)).isoformat()}
+
+        def response(argv, *args, **kwargs):
+            if argv[0] == "rest":
+                self.clock += 180
+                return None
+            if argv[1] == "nsg":
+                self.assertEqual(kwargs["seconds"], 60)
+                self.clock += 40
+                return self.nsg
+            self.assertEqual(kwargs["seconds"], 20)
+            self.clock += 20
+            return self.nic
+
+        self.client.cli.side_effect = response
+        with self.restore_gates(), self.assertRaisesRegex(RuntimeError, "nsg_restore_timeout"):
+            run.restore_nsg(ROOT, plan, self.client, self.clock)
+        self.assertFalse(self.saved["nsg-restored.private.json"]["verified"])
+        self.assert_single_restore_put()
+
+    def test_ordinary_reads_clip_90_second_ceiling_and_expiry_before_dispatch(self):
+        client = run.Azure({"subscriptionId": "owned"}, wsl=True)
+        for operation, clock, expected in ((None, 0, 90), (None, 2650, 39),
+                                           ("read-restore:restore-nsg", 3540, 49),
+                                           (None, 3601, None)):
+            self.clock = clock
+            with self.subTest(operation=operation, clock=clock), self.gates(), \
+                    mock.patch.object(run, "lease_lock", return_value=contextlib.nullcontext()), \
+                    mock.patch.object(run, "bounded", return_value="{}") as bounded:
+                if expected is None:
+                    with self.assertRaises(RuntimeError):
+                        client.cli(["network", "nic", "show"], operation=operation)
+                    bounded.assert_not_called()
+                else:
+                    client.cli(["network", "nic", "show"], operation=operation, seconds=180)
+                    self.assertEqual(bounded.call_args.args[1], expected)
+        self.assertEqual(self.lease["actualMutations"], 0)
+
+    def test_deallocation_reads_and_authorization_clip_original_restore_clock(self):
+        plan = {"A": self.client.config, "T": self.client.config,
+                "restore_started": (self.instant - run.timedelta(seconds=850)).isoformat()}
+        self.client.config["vm"] = "vm"
+
+        def response(argv, *args, **kwargs):
+            if argv[1] == "deallocate":
+                self.assertEqual(args[1], 180)
+                self.clock += 20
+                return None
+            self.assertEqual(kwargs["seconds"], 30)
+            return {"statuses": [{"code": "PowerState/deallocated"}]}
+
+        self.client.cli.side_effect = response
+        with self.gates(), mock.patch.object(run, "read", side_effect=lambda path:
+                                             self.lease if path == run.LEASE else plan), \
+                mock.patch.object(run, "azure", return_value=self.client), \
+                mock.patch.object(Path, "is_file", return_value=True):
+            run.execute(mock.Mock(action="deallocate-t", run="offline"))
+        self.client.authorize.assert_called_once_with("deallocate-t", seconds=50)
+        self.assertTrue(self.saved["deallocate-t-verified.private.json"]["verified"])
+
+    def test_expired_restore_clock_prevents_deallocation_authorization(self):
+        plan = {"A": self.client.config, "T": self.client.config,
+                "restore_started": (self.instant - run.timedelta(seconds=901)).isoformat()}
+        with self.gates(), mock.patch.object(run, "read", side_effect=lambda path:
+                                             self.lease if path == run.LEASE else plan), \
+                mock.patch.object(run, "azure", return_value=self.client), \
+                mock.patch.object(Path, "is_file", return_value=True), \
+                self.assertRaisesRegex(RuntimeError, "restore_reserve_exhausted"):
+            run.execute(mock.Mock(action="deallocate-t", run="offline"))
+        self.client.authorize.assert_not_called()
+        self.client.cli.assert_not_called()
+
+    def test_guest_authorization_clips_setup_budget_and_cost_blocks_submission(self):
+        plan = {"A": {"subscriptionId": "owned", "expectedTenantId": "tenant",
+                      "resourceGroup": "owned", "vm": "vm"},
+                "T": {"subscriptionId": "owned", "expectedTenantId": "tenant",
+                      "resourceGroup": "owned", "vm": "vm"}}
+        for operation in ("server", "client"):
+            self.clock = 160
+            client = run.Azure(plan["T"], wsl=True)
+
+            def response(argv, seconds, progress=None):
+                self.assertEqual(seconds, 40)
+                self.assertIn("account", argv)
+                self.clock += 41
+                return json.dumps({"id": "owned", "tenantId": "tenant", "state": "Enabled"})
+
+            with self.subTest(operation=operation), self.gates(), \
+                    mock.patch.object(run, "read", side_effect=lambda path:
+                                      self.lease if path == run.LEASE else plan), \
+                    mock.patch.object(run, "azure", return_value=client), \
+                    mock.patch.object(run, "require_nsg_allow"), \
+                    mock.patch.object(run, "require_readiness"), \
+                    mock.patch.object(run, "guest_script"), \
+                    mock.patch.object(Path, "is_file", return_value=True), \
+                    mock.patch.object(run, "lease_lock", return_value=contextlib.nullcontext()), \
+                    mock.patch.object(run, "bounded", side_effect=response) as bounded:
+                with self.assertRaisesRegex(RuntimeError, "reserve_15_minutes"):
+                    run.execute(mock.Mock(action=operation, run="offline"))
+                self.assertEqual(bounded.call_count, 1)
+
     def test_nsg_normalization_preserves_every_relevant_allow_field(self):
         nested = {"name": self.rule["name"], "properties": {
             k: v for k, v in self.rule.items() if k not in ("name", "provisioningState")}}
@@ -1203,7 +1407,7 @@ class OrchestrationGateTests(unittest.TestCase):
                 mock.patch.object(run, "read", side_effect=lambda path:
                                   self.lease if path == run.LEASE else plan), \
                 mock.patch.object(run, "azure", return_value=client), \
-                mock.patch.object(client, "authorize", side_effect=lambda op:
+                mock.patch.object(client, "authorize", side_effect=lambda op, **kw:
                                   setattr(self, "clock", 201)), \
                 mock.patch.object(run, "require_nsg_allow"), \
                 mock.patch.object(run, "require_readiness"), \
@@ -1261,13 +1465,13 @@ class OrchestrationGateTests(unittest.TestCase):
 
     def test_nsg_gate_failures_restore_once_and_never_dispatch_guests(self):
         for reason in ("nsg_gate_provisioning_failed", "nsg_gate_readback_mismatch",
-                       "nsg_gate_setup_timeout"):
+                       "nsg_gate_setup_timeout", subprocess.TimeoutExpired(["read-nic"], 90)):
             calls = []
 
             def step(args):
                 calls.append(args.action)
                 if args.action == "allow":
-                    raise RuntimeError(reason)
+                    raise reason if isinstance(reason, BaseException) else RuntimeError(reason)
 
             plan = self.exercise_live(step)
             self.assertNotIn("server", calls)
@@ -1323,6 +1527,566 @@ class OrchestrationGateTests(unittest.TestCase):
         self.assertNotIn("restore-nsg", calls)
         self.assertTrue(any("guest_quiescence_unverified" in item for item in plan["failures"]))
         self.assertEqual(plan["status"], "blocked")
+
+
+class SubnetPolicyTests(unittest.TestCase):
+    def setUp(self):
+        self.directory = run.PRIVATE / "mock-subnet-v4"
+        self.plan = WrapperTests().control()
+        self.sources = run.source_identity()
+        self.plan.update(client_ip="192.0.2.4", server_ip="192.0.2.5",
+                         snapshot_at=run.now().isoformat(), snapshot_sources=self.sources)
+        self.cfg = self.plan["B"]
+        self.tags = {"lab": "true", "created_by": "copilot-lab", "run_id": self.cfg["runId"]}
+        root = self.cfg["nsg_id"].rsplit("/networkSecurityGroups/", 1)[0]
+        self.vnet = root + "/virtualNetworks/owned"
+        self.subnet = {"id": self.vnet + "/subnets/lab", "provisioningState": "Succeeded",
+                       "networkSecurityGroup": {"id": root + "/networkSecurityGroups/subnet"}}
+        self.nic = {"id": self.cfg["nic_id"], "networkSecurityGroup": {"id": self.cfg["nsg_id"]},
+                    "ipConfigurations": [{"subnet": {"id": self.subnet["id"]}}]}
+        defaults = []
+        for name, priority, direction, access, source, destination in (
+                ("AllowVnetInBound", 65000, "Inbound", "Allow", "VirtualNetwork", "VirtualNetwork"),
+                ("AllowAzureLoadBalancerInBound", 65001, "Inbound", "Allow", "AzureLoadBalancer", "*"),
+                ("DenyAllInBound", 65500, "Inbound", "Deny", "*", "*"),
+                ("AllowVnetOutBound", 65000, "Outbound", "Allow", "VirtualNetwork", "VirtualNetwork"),
+                ("AllowInternetOutBound", 65001, "Outbound", "Allow", "*", "Internet"),
+                ("DenyAllOutBound", 65500, "Outbound", "Deny", "*", "*")):
+            defaults.append({"name": name, "priority": priority, "direction": direction,
+                             "access": access, "sourceAddressPrefix": source,
+                             "destinationAddressPrefix": destination, "sourcePortRange": "*",
+                             "destinationPortRange": "*", "protocol": "*",
+                             "provisioningState": "Succeeded"})
+        common = {"location": "swedencentral", "tags": self.tags, "provisioningState": "Succeeded"}
+        self.parent = dict(common, id=self.vnet)
+        self.extra = dict(common, id=self.subnet["networkSecurityGroup"]["id"], securityRules=[],
+                          defaultSecurityRules=defaults)
+        self.original = dict(common, id=self.cfg["nsg_id"], defaultSecurityRules=defaults,
+                             securityRules=[{
+                                 "name": "deny", "priority": 100, "access": "Deny",
+                                 "direction": "Inbound", "protocol": "*", "sourcePortRange": "*",
+                                 "destinationPortRange": "*", "sourceAddressPrefix": "*",
+                                 "destinationAddressPrefix": "*", "provisioningState": "Succeeded"}])
+        self.inventory = {"runId": self.cfg["runId"], "resources": [
+            dict(value, type="Microsoft.Network/" + kind)
+            for value, kind in ((self.parent, "virtualNetworks"), (self.extra, "networkSecurityGroups"))]}
+        self.files = {
+            run.LAB / "private" / "inventory.private.json": self.inventory,
+            self.directory / "B-nic-before.private.json": self.nic,
+            self.directory / "B-nsg-before.private.json": self.original,
+            self.directory / "plan.private.json": self.plan}
+        self.current = {self.original["id"]: self.original, self.extra["id"]: self.extra}
+        self.client = mock.Mock(config=self.cfg, wsl=False)
+        self.client.cli.side_effect = self.query
+        self.puts = []
+        self.markers = set()
+
+    def query(self, argv, *args, **kwargs):
+        if argv[0] == "rest":
+            identity = argv[argv.index("--url") + 1].split("?")[0].removeprefix(
+                "https://management.azure.com")
+            identity = next(key for key in self.current if key.lower() == identity.lower())
+            body = self.files[Path(argv[argv.index("--body") + 1][1:])]
+            self.puts.append((identity, args[0], json.loads(json.dumps(body))))
+            current = dict(self.current[identity], **body)
+            current.pop("properties", None)
+            current["securityRules"] = [
+                dict(rule["properties"], name=rule["name"], provisioningState="Succeeded")
+                for rule in body["properties"]["securityRules"]]
+            self.current[identity] = current
+            return {"provisioningState": "Updating"}
+        if argv[:2] == ["vm", "get-instance-view"]:
+            return {"statuses": [{"code": "PowerState/deallocated"}]}
+        if argv[:2] == ["vm", "deallocate"]:
+            return {}
+        if argv[1] == "nic":
+            return self.nic
+        if argv[1:3] == ["vnet", "subnet"]:
+            return self.subnet
+        if argv[1] == "vnet":
+            return self.parent
+        identity = argv[argv.index("--ids") + 1] if "--ids" in argv else self.cfg["nsg_id"]
+        return next(value for key, value in self.current.items() if key.lower() == identity.lower())
+
+    @contextlib.contextmanager
+    def mocks(self):
+        lease = WrapperTests().lease()
+        lease.update(maxMutations=12, allowedMutations=list(run.operations(self.plan)),
+                     activeCommands=0)
+        def read(path):
+            return lease if path == run.LEASE else self.files[path]
+        def opened(path, mode):
+            import io
+            self.assertEqual(mode, "x")
+            if path in self.markers:
+                raise FileExistsError()
+            self.markers.add(path)
+            return io.StringIO()
+        with mock.patch.object(run, "read", side_effect=read), \
+                mock.patch.object(run, "save", side_effect=lambda p, v: self.files.update({p: v})), \
+                mock.patch.object(run, "guard", return_value=lease), \
+                mock.patch.object(run, "control_gates"), \
+                mock.patch.object(run, "source_identity", return_value=self.sources), \
+                mock.patch.object(run, "azure", return_value=self.client), \
+                mock.patch.object(Path, "is_file", return_value=True), \
+                mock.patch.object(Path, "exists", autospec=True,
+                                  side_effect=lambda path: path in self.markers), \
+                mock.patch.object(Path, "open", autospec=True, side_effect=opened):
+            yield
+
+    def discover(self):
+        binding = run.snapshot_subnet(self.directory, self.plan, "B", self.client)
+        self.plan["network_bindings"] = {"B": binding}
+        self.plan["receiver_subnet_nsg"] = (
+            binding["networkSecurityGroup"]
+            if binding["networkSecurityGroup"] != binding["nic_nsg"] else "")
+        run.policy_bodies(self.directory, self.plan, self.original)
+        if self.plan["receiver_subnet_nsg"]:
+            run.policy_bodies(self.directory, self.plan, self.extra, True)
+        return binding
+
+    def step(self, operation):
+        run.execute(mock.Mock(action=operation, run=self.directory.name))
+
+    def test_owned_subnet_discovery_binds_both_policies_and_parent(self):
+        with self.mocks():
+            binding = self.discover()
+        self.assertEqual(binding["subnet"], self.subnet["id"].lower())
+        self.assertEqual(binding["subnet_nsg_baseline"]["rules"], [])
+        self.assertEqual(binding["nic_nsg_baseline"]["rules"],
+                         run.normalized_rules(self.original["securityRules"]))
+        self.assertEqual(self.files[self.directory / "B-vnet-before.private.json"], self.parent)
+        self.assertEqual(len(run.operations(self.plan)), 10)
+        self.assertEqual(len(run.operations(self.plan, True)), 6)
+        self.assertFalse(self.puts)
+
+    def test_default_at_and_control_client_subnets_use_their_own_inventory(self):
+        for alias, inventory in (("A", "inventory.private.json"),
+                                 ("T", "msdn-inventory.private.json"),
+                                 ("C", "control-inventory.private.json")):
+            self.setUp()
+            self.files[run.LAB / "private" / inventory] = self.inventory
+            for key, value in (("nic", self.nic), ("nsg", self.original)):
+                self.files[self.directory / (alias + "-" + key + "-before.private.json")] = value
+            with self.subTest(alias=alias), self.mocks():
+                binding = run.snapshot_subnet(self.directory, self.plan, alias, self.client)
+                self.assertEqual(binding["subnet"], self.subnet["id"].lower())
+                self.assertIn(self.directory / (alias + "-subnet-nsg-before.private.json"), self.files)
+            self.assertFalse(self.puts)
+
+    def test_foreign_unowned_missing_inventory_wrong_run_or_parent_fail_without_mutation(self):
+        for mode in ("untagged", "foreign-run", "unlisted", "inventory-run", "parent", "foreign-id"):
+            self.setUp()
+            if mode == "untagged":
+                self.extra["tags"] = {}
+            elif mode == "foreign-run":
+                self.extra["tags"] = dict(self.tags, run_id="foreign")
+            elif mode == "unlisted":
+                self.inventory["resources"].pop()
+            elif mode == "inventory-run":
+                self.inventory["runId"] = "foreign"
+            elif mode == "parent":
+                self.parent["tags"] = {}
+            else:
+                self.extra["id"] = "/subscriptions/foreign/networkSecurityGroups/subnet"
+            with self.subTest(mode=mode), self.mocks(), self.assertRaises(RuntimeError):
+                self.discover()
+            self.assertFalse(self.puts)
+
+    def test_no_subnet_nsg_and_shared_nsg_deduplicate_writes(self):
+        for shared in (False, True):
+            self.setUp()
+            self.subnet["networkSecurityGroup"] = {"id": self.cfg["nsg_id"]} if shared else None
+            if shared:
+                self.inventory["resources"].append(self.original)
+            with self.subTest(shared=shared), self.mocks():
+                self.discover()
+                self.assertFalse(self.plan["receiver_subnet_nsg"])
+                self.step("allow")
+                self.step("deallocate-b")
+                self.step("deallocate-c")
+                self.step("restore-nsg")
+            self.assertEqual([op for _, op, _ in self.puts], ["allow", "restore-nsg"])
+            self.assertEqual(len(run.operations(self.plan)), 8)
+
+    def test_unknown_subnet_custom_default_policy_and_bad_association_fail_closed(self):
+        for mode in ("custom", "defaults", "state", "association", "missing-subnet", "nat", "udr"):
+            self.setUp()
+            if mode == "custom":
+                self.extra["securityRules"] = self.original["securityRules"]
+            elif mode == "defaults":
+                self.extra["defaultSecurityRules"] = []
+            elif mode == "state":
+                self.extra["provisioningState"] = "Updating"
+            elif mode == "association":
+                self.subnet["id"] += "-foreign"
+            elif mode == "missing-subnet":
+                self.nic["ipConfigurations"][0].pop("subnet")
+            else:
+                self.subnet["natGateway" if mode == "nat" else "routeTable"] = {"id": "unknown"}
+            with self.subTest(mode=mode), self.mocks(), self.assertRaises(RuntimeError):
+                self.discover()
+            self.assertFalse(self.puts)
+
+    def test_two_layers_exact_allow_success_readback_and_once_each_restore(self):
+        with self.mocks():
+            self.discover()
+            self.step("allow-subnet")
+            with self.assertRaises((KeyError, RuntimeError)):
+                run.require_nsg_allow(self.directory, self.plan)
+            self.step("allow")
+            run.require_nsg_allow(self.directory, self.plan)
+            for prefix in ("nsg", "subnet-nsg"):
+                self.assertTrue(self.files[self.directory / (prefix + "-gate.private.json")]["verified"])
+            self.assertEqual(self.current[self.original["id"]]["securityRules"][0]["priority"], 200)
+            with self.assertRaises(KeyError):
+                self.step("restore-subnet-nsg")
+            self.step("deallocate-b")
+            self.step("deallocate-c")
+            self.step("restore-nsg")
+            self.step("restore-subnet-nsg")
+            for prefix in ("nsg", "subnet-nsg"):
+                self.assertTrue(self.files[self.directory / (prefix + "-restored.private.json")]["verified"])
+            with self.assertRaisesRegex(RuntimeError, "already_attempted"):
+                self.step("restore-subnet-nsg")
+            self.assertTrue(self.files[self.directory / "subnet-nsg-restored.private.json"]["verified"])
+        self.assertEqual([op for _, op, _ in self.puts],
+                         ["allow-subnet", "allow", "restore-nsg", "restore-subnet-nsg"])
+        for _, op, body in self.puts[:2]:
+            rule = body["properties"]["securityRules"][-1]["properties"]
+            self.assertEqual(rule, {"priority": 100, "access": "Allow", "direction": "Inbound",
+                                   "protocol": "Tcp", "sourcePortRange": "*",
+                                   "destinationPortRange": "443", "sourceAddressPrefix": "192.0.2.4/32",
+                                   "destinationAddressPrefix": "*"})
+        self.assertEqual(run.normalized_rules(self.current[self.original["id"]]["securityRules"]),
+                         run.normalized_rules(self.original["securityRules"]))
+        self.assertEqual(self.current[self.extra["id"]]["securityRules"], [])
+
+    def test_association_or_policy_drift_blocks_before_any_put(self):
+        for mode in ("association", "rules", "tags", "source"):
+            self.setUp()
+            with self.mocks():
+                self.discover()
+                if mode == "association":
+                    self.subnet["networkSecurityGroup"] = {"id": "foreign"}
+                elif mode == "rules":
+                    self.current[self.extra["id"]] = dict(self.extra, securityRules=self.original["securityRules"])
+                elif mode == "tags":
+                    self.current[self.extra["id"]] = dict(self.extra, tags={})
+                else:
+                    self.plan["snapshot_sources"] = {}
+                with self.subTest(mode=mode), self.assertRaises(RuntimeError):
+                    self.step("allow-subnet")
+            self.assertFalse(self.puts)
+
+    def test_subnet_gate_requires_succeeded_and_exact_association(self):
+        for mode in ("failed", "missing", "association"):
+            self.setUp()
+            with self.mocks():
+                self.discover()
+                def bad_query(argv, *args, **kwargs):
+                    result = self.query(argv, *args, **kwargs)
+                    if argv[0] == "rest":
+                        if mode == "association":
+                            self.subnet["networkSecurityGroup"] = {"id": "foreign"}
+                        else:
+                            self.current[self.extra["id"]]["provisioningState"] = (
+                                "Failed" if mode == "failed" else None)
+                    return result
+                self.client.cli.side_effect = bad_query
+                with self.subTest(mode=mode), self.assertRaises(RuntimeError):
+                    self.step("allow-subnet")
+                self.assertFalse(self.files[self.directory / "subnet-nsg-gate.private.json"]["verified"])
+                self.assertEqual(len(self.puts), 1)
+
+    def test_tampered_allow_or_restore_body_cannot_broaden_bound_policy(self):
+        for restoring in (False, True):
+            self.setUp()
+            with self.mocks():
+                self.discover()
+                if restoring:
+                    self.step("deallocate-b")
+                    self.step("deallocate-c")
+                body = self.files[self.directory / (
+                    "subnet-nsg-restore.private.json" if restoring else "subnet-nsg-allow.private.json")]
+                if restoring:
+                    body["tags"] = {}
+                else:
+                    body["properties"]["securityRules"][-1]["properties"]["sourceAddressPrefix"] = "*"
+                with self.subTest(restoring=restoring), self.assertRaisesRegex(
+                        RuntimeError, "exact_nsg_write_policy"):
+                    self.step("restore-subnet-nsg" if restoring else "allow-subnet")
+            self.assertFalse(self.puts)
+
+    def test_foreign_owner_before_restore_and_stale_poweroff_receipt_fail_closed(self):
+        for foreign in (False, True):
+            self.setUp()
+            with self.mocks():
+                self.discover()
+                self.step("deallocate-b")
+                self.step("deallocate-c")
+                if foreign:
+                    self.current[self.extra["id"]] = dict(self.extra, tags={})
+                else:
+                    self.files[self.directory / "deallocate-b-verified.private.json"]["at"] = (
+                        run.now() - run.timedelta(days=1)).isoformat()
+                with self.subTest(foreign=foreign), self.assertRaisesRegex(
+                        RuntimeError, "ownership_changed|quiescence_unverified"):
+                    self.step("restore-subnet-nsg")
+            self.assertFalse(self.puts)
+
+    def exercise_fair_live_restoration(self, response=None, shared=False, lease_seconds=None):
+        instant = run.now()
+        self.clock = 0
+        self.calls = []
+        execute = run.execute
+
+        def step(args):
+            self.calls.append((args.action, vars(args).get("restore_phase")))
+            if args.action in ("allow", "allow-subnet") or args.action.startswith(
+                    ("deallocate-", "restore-")):
+                execute(args)
+
+        if shared:
+            self.subnet["networkSecurityGroup"] = {"id": self.cfg["nsg_id"]}
+            self.inventory["resources"].append(self.original)
+        with self.mocks(), \
+                mock.patch.object(run, "now", side_effect=lambda:
+                                  instant + run.timedelta(seconds=self.clock)), \
+                mock.patch.object(run.time, "monotonic", side_effect=lambda: self.clock), \
+                mock.patch.object(run.time, "sleep", side_effect=lambda seconds:
+                                  setattr(self, "clock", self.clock + seconds)), \
+                mock.patch.object(run, "execute", side_effect=step), \
+                mock.patch.object(run, "require_readiness"), \
+                mock.patch.object(run, "metrics"), \
+                mock.patch.object(run, "lease_lock", return_value=contextlib.nullcontext()):
+            self.discover()
+            run.guard.return_value["allowedMutations"] = list(run.operations(self.plan))
+            if lease_seconds is not None:
+                run.guard.return_value["expiresAtUtc"] = (
+                    instant + run.timedelta(seconds=lease_seconds)).isoformat()
+            self.plan["status"] = "prepared_not_live"
+            if response:
+                self.client.cli.side_effect = response
+            try:
+                run.live(run.argparse.Namespace(run=self.directory.name, accept_live_gates=True),
+                         self.directory, self.plan)
+            except RuntimeError as error:
+                self.assertIn("live_failed", str(error))
+                self.assertEqual(self.plan["status"], "blocked")
+        return self.plan
+
+    def test_fair_live_nic_updating_submits_both_before_any_completion_poll(self):
+        def response(argv, *args, **kwargs):
+            if kwargs.get("operation") == "read-restore:restore-nsg":
+                if argv[:2] == ["network", "nsg"] and any(
+                        op == "restore-nsg" for _, op, _ in self.puts):
+                    self.assertEqual([op for _, op, _ in self.puts][-2:],
+                                     ["restore-nsg", "restore-subnet-nsg"])
+                    return dict(self.current[self.original["id"]], provisioningState="Updating")
+            return self.query(argv, *args, **kwargs)
+
+        plan = self.exercise_fair_live_restoration(response)
+        self.assertEqual([op for _, op, _ in self.puts],
+                         ["allow-subnet", "allow", "restore-nsg", "restore-subnet-nsg"])
+        self.assertEqual([phase for op, phase in self.calls if op.startswith("restore-")],
+                         ["submit", "submit", "poll", "poll"])
+        self.assertTrue(any("nsg_restore_timeout" in item for item in plan["failures"]))
+        self.assertFalse(self.files[self.directory / "nsg-restored.private.json"]["verified"])
+        self.assertTrue(self.files[self.directory / "subnet-nsg-restored.private.json"]["verified"])
+        self.assertLessEqual(self.clock, 900)
+
+    def test_fair_live_first_put_failure_or_timeout_does_not_skip_second(self):
+        for timeout in (False, True):
+            self.setUp()
+            attempted = []
+
+            def response(argv, *args, **kwargs):
+                if argv[0] == "rest" and args[0].startswith("restore-"):
+                    attempted.append(args[0])
+                    if args[0] == "restore-nsg":
+                        if timeout:
+                            self.clock += args[1]
+                            raise subprocess.TimeoutExpired(["mock-put"], args[1])
+                        raise RuntimeError("mock_restore_put_failed")
+                return self.query(argv, *args, **kwargs)
+
+            with self.subTest(timeout=timeout):
+                plan = self.exercise_fair_live_restoration(response)
+                self.assertEqual(attempted, ["restore-nsg", "restore-subnet-nsg"])
+                self.assertEqual(plan["status"], "blocked")
+                self.assertTrue(any("restore-nsg:submit:" in row for row in plan["failures"]))
+                self.assertTrue(self.files[self.directory / "subnet-nsg-restored.private.json"]["verified"])
+                self.assertFalse(self.files[self.directory / "nsg-restored.private.json"]["verified"])
+                self.assertLessEqual(self.clock, 900)
+
+    def test_fair_live_shared_nsg_restores_once_and_both_deallocations_precede_put(self):
+        plan = self.exercise_fair_live_restoration(shared=True)
+        self.assertEqual(plan["status"], "completed")
+        self.assertEqual([op for _, op, _ in self.puts], ["allow", "restore-nsg"])
+        actions = [op for op, _ in self.calls]
+        first_restore = actions.index("restore-nsg")
+        for operation in ("deallocate-b", "deallocate-c"):
+            self.assertLess(actions.index(operation), first_restore)
+        self.assertEqual(len(run.operations(plan)), 8)
+
+    def test_fair_live_authorization_or_ownership_read_timeout_keeps_other_submission(self):
+        for mode in ("authorization", "ownership"):
+            self.setUp()
+
+            def authorize(operation, seconds=90):
+                if operation == "restore-nsg":
+                    self.clock += seconds
+                    raise subprocess.TimeoutExpired(["mock-authorization"], seconds)
+
+            def response(argv, *args, **kwargs):
+                if kwargs.get("operation") == "read-restore:restore-nsg":
+                    self.clock += kwargs["seconds"]
+                    raise subprocess.TimeoutExpired(["mock-ownership"], kwargs["seconds"])
+                return self.query(argv, *args, **kwargs)
+
+            if mode == "authorization":
+                self.client.authorize.side_effect = authorize
+            with self.subTest(mode=mode):
+                plan = self.exercise_fair_live_restoration(response if mode == "ownership" else None)
+                self.assertEqual(plan["status"], "blocked")
+                self.assertEqual([op for _, op, _ in self.puts][-1], "restore-subnet-nsg")
+                self.assertTrue(self.files[self.directory / "subnet-nsg-restored.private.json"]["verified"])
+                self.assertLess(self.clock, 900)
+
+    def test_fair_live_put_timeout_is_clipped_to_short_lease_and_other_put_is_attempted(self):
+        attempted = []
+
+        def response(argv, *args, **kwargs):
+            if argv[0] == "rest" and args[0].startswith("restore-"):
+                attempted.append(args[0])
+                if args[0] == "restore-nsg":
+                    self.assertLessEqual(args[1], (200 - 11) / 4)
+                    self.clock += args[1]
+                    raise subprocess.TimeoutExpired(["mock-put"], args[1])
+            return self.query(argv, *args, **kwargs)
+
+        plan = self.exercise_fair_live_restoration(response, lease_seconds=200)
+        self.assertEqual(attempted, ["restore-nsg", "restore-subnet-nsg"])
+        self.assertEqual(plan["status"], "blocked")
+        self.assertTrue(self.files[self.directory / "subnet-nsg-restored.private.json"]["verified"])
+        self.assertLess(self.clock, 189)
+
+    def test_fair_live_deadline_expiry_is_blocked_not_verified_or_retried(self):
+        def response(argv, *args, **kwargs):
+            result = self.query(argv, *args, **kwargs)
+            if argv[0] == "rest" and args[0] == "restore-nsg":
+                self.clock += 900
+            return result
+
+        plan = self.exercise_fair_live_restoration(response)
+        self.assertEqual(plan["status"], "blocked")
+        self.assertTrue(any("restore-subnet-nsg:submit:" in row for row in plan["failures"]))
+        self.assertFalse(self.files[self.directory / "nsg-restored.private.json"]["verified"])
+        self.assertFalse(self.files[self.directory / "subnet-nsg-restored.private.json"]["verified"])
+        self.assertEqual(sum(op == "restore-nsg" for _, op, _ in self.puts), 1)
+        self.assertEqual(sum(op == "restore-subnet-nsg" for _, op, _ in self.puts), 0)
+
+    def test_fair_live_deallocation_timeout_attempts_other_and_never_restores_unsafe(self):
+        deallocations = []
+
+        def response(argv, *args, **kwargs):
+            if argv[:2] == ["vm", "deallocate"]:
+                deallocations.append(args[0])
+                if len(deallocations) == 1:
+                    self.clock += args[1]
+                    raise subprocess.TimeoutExpired(["mock-deallocate"], args[1])
+            return self.query(argv, *args, **kwargs)
+
+        plan = self.exercise_fair_live_restoration(response)
+        self.assertEqual(deallocations, ["deallocate-b", "deallocate-c"])
+        self.assertEqual(plan["status"], "blocked")
+        self.assertFalse(any(op.startswith("restore-") for _, op, _ in self.puts))
+        self.assertLess(self.clock, 900)
+
+    def test_fair_live_partial_allow_put_failure_restores_both_without_guests(self):
+        def response(argv, *args, **kwargs):
+            result = self.query(argv, *args, **kwargs)
+            if argv[0] == "rest" and args[0] == "allow":
+                raise subprocess.TimeoutExpired(["mock-allow"], args[1])
+            return result
+
+        plan = self.exercise_fair_live_restoration(response)
+        self.assertEqual(plan["status"], "blocked")
+        self.assertEqual([op for _, op, _ in self.puts],
+                         ["allow-subnet", "allow", "restore-nsg", "restore-subnet-nsg"])
+        self.assertNotIn("server", [op for op, _ in self.calls])
+        self.assertNotIn("client", [op for op, _ in self.calls])
+        for prefix in ("nsg", "subnet-nsg"):
+            self.assertTrue(self.files[self.directory / (prefix + "-restored.private.json")]["verified"])
+
+    def test_subnet_restore_updating_readback_is_not_success(self):
+        with self.mocks(), mock.patch.object(run.time, "sleep") as sleep:
+            self.discover()
+            self.step("allow-subnet")
+            self.step("allow")
+            self.step("deallocate-b")
+            self.step("deallocate-c")
+            pending = False
+            def updating(argv, *args, **kwargs):
+                nonlocal pending
+                result = self.query(argv, *args, **kwargs)
+                if argv[0] == "rest":
+                    pending = True
+                elif pending and argv[1] == "nsg":
+                    pending = False
+                    return dict(result, provisioningState="Updating")
+                return result
+            self.client.cli.side_effect = updating
+            self.step("restore-subnet-nsg")
+            evidence = self.files[self.directory / "subnet-nsg-restored.private.json"]
+            self.assertTrue(evidence["verified"])
+            self.assertEqual([row["nsg"]["provisioningState"] for row in evidence["polls"]],
+                             ["Updating", "Succeeded"])
+            sleep.assert_called_once_with(30)
+            self.assertEqual(sum(op == "restore-subnet-nsg" for _, op, _ in self.puts), 1)
+
+
+class ControlPayloadTests(unittest.TestCase):
+    def test_control_bounded_proportional_caps_and_remaining(self):
+        for payload, cap in ((1, stream.GIB), (stream.GIB, 2 * stream.GIB),
+                             (5 * stream.GIB, 6 * stream.GIB)):
+            plan = WrapperTests().control()
+            plan.update(bytes=payload, wire_cap=cap, core_remaining_bytes=5 * stream.GIB
+                        if payload == stream.GIB else 23 * stream.GIB)
+            self.assertEqual(run.control_wire_cap(payload), cap)
+            with mock.patch.object(run, "read", return_value=plan["B"]):
+                run.control_gates(plan)
+            if payload == stream.GIB:
+                self.assertEqual(plan["core_remaining_bytes"] - cap, 3 * stream.GIB)
+        for value in (0, -1, True, 1.0, 5 * stream.GIB + 1):
+            with self.subTest(value=value), self.assertRaises(RuntimeError):
+                run.control_wire_cap(value)
+
+    def test_payload_option_cannot_expand_default_at_budget(self):
+        with mock.patch.object(Path, "mkdir"), mock.patch.object(Path, "exists", return_value=False), \
+                mock.patch.object(run, "read", return_value={}), \
+                self.assertRaisesRegex(RuntimeError, "control_payload_requires_control"):
+            run.prepare(mock.Mock(run="mock", control=False, control_payload_bytes=stream.GIB))
+
+    def test_verifier_uses_declared_count_hash_wirecap_not_fixed_five_gib(self):
+        payload = stream.GIB
+        plan = {"id": "a" * 32, "bytes": payload, "payload_sha256": "expected",
+                "wire_cap": 2 * stream.GIB, "legs": ["up"],
+                "aliases": {"client": "C", "server": "B"}}
+        report = {"success": True, "declared_legs": ["up"], "aliases": plan["aliases"],
+                  "nic": {"delta": {"wire_once": payload + 100}},
+                  "legs": {"up": {"id": plan["id"] + "-up", "producer": "C", "consumer": "B",
+                                  "bytes": payload, "sha256": "expected", "status": "ok", "retries": 0}}}
+        self.assertEqual(stream.verify(report, report, plan)["transport"], "PASS")
+        for key, value in (("bytes", 5 * stream.GIB), ("sha256", "wrong"), ("id", "other-up")):
+            changed = json.loads(json.dumps(report))
+            changed["legs"]["up"][key] = value
+            with self.subTest(key=key), self.assertRaisesRegex(ValueError, "declared_payload"):
+                stream.verify(changed, changed, plan)
+        report["nic"]["delta"]["wire_once"] = plan["wire_cap"]
+        with self.assertRaisesRegex(ValueError, "declared_payload"):
+            stream.verify(report, report, plan)
 
 
 if __name__ == "__main__":
