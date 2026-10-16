@@ -22,8 +22,36 @@ Known-owned cleanup closed PASS **16 October 00:00:11.806224Z**:
 VMs/disks/PIPs deleted. **Core RG and an extra NSG remain preserved** because
 creation ownership is unproven; do not adopt/delete. No standalone RG/NSG rent.
 
-**00:29Z live CSV schema validation:** one fresh ActualCost report for October
-15–16 receipts completed (POST 202, poll 200, download 200; **three HTTP requests,
+**00:43Z adjacent-date audit:** [sanitized evidence](../results/2026-10-16-date-coverage.json).
+The prior report requested October 15 to 16 but locally retained October 15
+only. Its persisted date-discard count was **zero**; reusing that operation
+and widening local retention to both dates confirms **27 owned rows, all
+October 15**, six of them Bandwidth. No owned October-16 row was actually lost
+to that filter in this report. One new daily ActualCost Query, restricted to
+owned A-core/C groups AND Bandwidth, from October 15 midnight **through the
+actual current UTC instant**, also returned six October-15 rows and none for
+October 16. C's tiny quantity/cost below is unchanged; the bulk control is
+still unproven. Three HTTP requests, no new report generation/retries/mutations.
+Report reuse is **not a fresh maturity snapshot**; T was not refreshed.
+
+Microsoft defines CSV `Date` as the
+[usage or purchase date](https://learn.microsoft.com/en-us/azure/cost-management-billing/automate/understand-usage-details-fields),
+not a receipt date. This report contains no `usageStart`/`usageEnd`.
+The [REST reference](https://learn.microsoft.com/en-us/rest/api/cost-management/generate-cost-details-report/create-operation?view=rest-cost-management-2025-03-01)
+does not explicitly settle end-date inclusivity; the echoed October-16 end
+does not prove full-day coverage or ingestion completeness. `DataIngestionEndMT`
+was not captured. Future checks must retain **both October 15 and 16** locally,
+keep days/snapshots separate, and bound Query to now rather than a future
+end-of-day. After this audit, the coordinator replaced the October-15-only
+schedule with a **six-hour read-only follow-up** retaining October 15–16
+(logical window October 15 00:00Z to October 17 00:00Z, end exclusive).
+Query ends at the actual current UTC instant, never a future timestamp.
+Each cycle permits at most **six billing HTTP requests and zero infrastructure
+mutations**. Absence on October 16 is not a zero-quantity record, and an
+adjacent date alone cannot attribute a control.
+
+**00:29Z live CSV schema validation:** one fresh ActualCost report requesting
+October 15 to 16 completed (POST 202, poll 200, download 200; **three HTTP requests,
 no retries or infrastructure mutations**). No previous operation URL/ID had been
 preserved for reuse. Its 65 mixed-case MCA-compatible columns include actual
 `ResourceId`, `resourceGroupName`, `date`, `quantity`, `unitOfMeasure`,
@@ -83,10 +111,14 @@ an intraregional 5 GiB quantity measurement.
   command. `cost_details_csv_stream` also bounds downloaded/decompressed bytes,
   supports one CSV ZIP member or gzip, captures safe headers before schema
   validation, and requires exact Bandwidth category/service matching.
+  It preserves the original reported date and optional usage interval fields,
+  and counts exact-owned rows by date before date/category filtering. Inclusive
+  `start`/`end` already support multiple local usage days; they do not determine
+  the report API's end-boundary semantics.
   The fresh 00:29Z report successfully exercised the actual mixed-case schema;
   the earlier discarded report was not reconstructed.
 
-Current validation: **21 contract tests passed on Windows** (the original 12
+Current validation: **23 contract tests passed on Windows** (the original 12
 also previously passed on native Ubuntu-24.04 Python), including date-error classification, filtering, Decimal/units, name resolution, reordered Query
 columns, exact continuation semantics, duplicate identities, truncation,
 timeouts/HTTP errors, context pinning, snapshot overwrite rejection, in-memory
@@ -384,7 +416,15 @@ public list-price estimates, not account effective rates. Month proration is an
 estimate. Stop if actual applicable tariffs, operations or lifetime exceed the
 envelope; do not silently substitute a larger SKU or add a paid gateway.
 
-## Dated follow-up commands for the completed run
+## Historical follow-up command examples
+
+**Superseded date window:** the October-15-only examples below document the
+earlier plan, not the active six-hour follow-up. Current collection must retain
+October 15–16 separately, use Query October 15 midnight through now, and
+preserve source dates and optional usage intervals. Do not run the date-only
+CLI examples with a future end-of-day boundary. Billing remains waiting for
+scale-confirmed control metering; both stable snapshots must be at/after
+**16 October 23:15:33Z**, at least six hours apart, within the existing hard stop.
 
 **Not executed by this offline publication.** Acquire a fresh approved bounded
 read-only API lease in the collector's existing runtime-control location first;
@@ -462,7 +502,8 @@ not adopted/deleted. Historical IDs are retained privately for **all**
 future collections. The control's 72h target, **18 October 23:15:33Z**,
 is after the original TTL deadline.
 See the [control and cleanup result](../results/2026-10-15-cross-region-control.md).
-No automatic collection or cleanup job is established. No extra-cost scope or
+The earlier plan established no automatic job; the current read-only collection
+schedule is described above. No automatic cleanup job is established. No extra-cost scope or
 additional MSDN payload is approved. The reconciled 5 GiB pre-v4 allowance
 minus its 2 GiB wire reservation leaves **3 GiB**, not actual payload use or
 permission for another transfer. The $8/$4 caps are not actual bills.
