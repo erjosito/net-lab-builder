@@ -165,6 +165,39 @@ class CollectorTests(unittest.TestCase):
                 f"ResourceId,Date,Quantity\n{RID},2026-10-14,1\n{RID},2026-10-14,1\n".encode(),
                 SUB, {"A": RG}, {RID.lower()}, "2026-10-14", "2026-10-14", max_rows=1)
 
+    def test_adjacent_usage_days_retained_without_combining_or_receipt_inference(self):
+        raw = ("ResourceId,Date,Quantity,MeterCategory,UsageStart,UsageEnd\n"
+               f"{RID},2026-10-14,9,Bandwidth,,\n"
+               f"{RID},10/15/2026,0,Bandwidth,,\n"
+               f"{RID},2026-10-16,1.000000000000000001,Bandwidth,"
+               "2026-10-15T23:00:00Z,2026-10-16T00:00:00Z\n"
+               f"{RID},2026-10-17,8,Bandwidth,,\n").encode()
+        result = api.cost_details_csv(raw, SUB, {"C": RG}, {RID.lower()},
+                                      "2026-10-15", "2026-10-16")
+        self.assertEqual([r["day"] for r in result["rows"]],
+                         ["2026-10-15", "2026-10-16"])
+        self.assertEqual([r["quantity"] for r in result["rows"]],
+                         ["0", "1.000000000000000001"])
+        self.assertEqual(result["discardCounts"]["date"], 2)
+        self.assertEqual(result["ownedRowsByDate"]["2026-10-16"], 1)
+        self.assertEqual(result["rows"][0]["dateOriginal"], "10/15/2026")
+        self.assertEqual(result["rows"][1]["usageEnd"], "2026-10-16T00:00:00Z")
+        self.assertEqual(result["rows"][1]["dateSemantics"],
+                         "usage_or_purchase_date_not_receipt_date")
+        strict = api.cost_details_csv(raw, SUB, {"C": RG}, {RID.lower()},
+                                      "2026-10-15", "2026-10-15")
+        self.assertEqual(strict["discardCounts"]["date"], 3)
+        self.assertEqual(len(strict["rows"]), 1)
+
+    def test_absent_adjacent_day_is_not_a_zero_quantity_record(self):
+        raw = (f"ResourceId,Date,Quantity,MeterCategory\n"
+               f"{RID},2026-10-15,0,Bandwidth\n").encode()
+        result = api.cost_details_csv(raw, SUB, {"C": RG}, {RID.lower()},
+                                      "2026-10-15", "2026-10-16")
+        self.assertEqual(len(result["rows"]), 1)
+        self.assertNotIn("2026-10-16", result["ownedRowsByDate"])
+        self.assertIsNone(result["rows"][0]["usageStart"])
+
     def test_actual_mca_header_fixture_with_only_synthetic_values(self):
         headers = (
             "invoiceId previousInvoiceId billingAccountId billingAccountName billingProfileId "

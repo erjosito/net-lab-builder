@@ -452,7 +452,8 @@ def cost_details_csv_stream(source, subscription, groups, inventory, start, end,
         raise Failure("csv_required_columns_missing")
     result = {"rows": [], "received": 0, "discarded": 0, "columns": names,
               "schemaMapping": mapping, "discardCounts": {
-                  "inventory": 0, "date": 0, "category": 0}, "datasetMaxUsageDate": None}
+                  "inventory": 0, "date": 0, "category": 0}, "datasetMaxUsageDate": None,
+              "ownedRowsByDate": {}}
     for source in reader:
         if check is not None:
             check()
@@ -486,6 +487,8 @@ def cost_details_csv_stream(source, subscription, groups, inventory, start, end,
                 raise Failure("csv_lab_date_invalid") from None
         result["datasetMaxUsageDate"] = max(result["datasetMaxUsageDate"] or "",
                                              date.isoformat())
+        result["ownedRowsByDate"][date.isoformat()] = (
+            result["ownedRowsByDate"].get(date.isoformat(), 0) + 1)
         if not day(start) <= date <= day(end):
             result["discarded"] += 1
             result["discardCounts"]["date"] += 1
@@ -501,6 +504,9 @@ def cost_details_csv_stream(source, subscription, groups, inventory, start, end,
         result["rows"].append({
             "alias": match[0], "resourceId": resource, "day": date.isoformat(),
             "resourceGroup": match[1], "dateSource": mapping["date"],
+            "dateOriginal": value,
+            "dateSemantics": "usage_or_purchase_date_not_receipt_date",
+            "usageStart": None, "usageEnd": None,
             "quantity": decimal(row.get(mapping["quantity"]) or None),
             "unit": row.get(mapping["unit"]) or None,
             "effectivePrice": decimal(row.get(mapping["effectivePrice"]) or None),
@@ -514,6 +520,14 @@ def cost_details_csv_stream(source, subscription, groups, inventory, start, end,
             "serviceName": row.get("servicename") or None,
             "meterName": row.get(mapping["meterName"]) or None,
             "sourceRecordHash": digest(source)})
+        for name in ("usageStart", "usageEnd"):
+            original = row.get(name.casefold())
+            if original:
+                try:
+                    dt.datetime.fromisoformat(original.replace("Z", "+00:00"))
+                except ValueError:
+                    raise Failure("csv_usage_interval_invalid") from None
+                result["rows"][-1][name] = original
     result["downloadBytes"] = wire.size
     return result
 
