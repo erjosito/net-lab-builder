@@ -7,10 +7,43 @@ Updated 2026-10-16 UTC. See the [sanitized result](results/2026-10-15-cross-tena
 The [21:36Z interpretation](results/2026-10-15-billing-verdict.md) separates the
 practical published-pricing answer (no tenant-boundary surcharge expected for
 ordinary same-region Azure endpoints) from incomplete empirical invoice proof.
-The three returned bandwidth rows are tiny positive USD costs, all attributed
-to A by a complete ResourceId+Meter Query; none reports intraregional 5 GiB
-quantity, unit or rate. “Intra Continent” is not “intra region.”
-Latest bounded billing refresh is **15 October 23:28Z**, after
+The historical Query's three returned bandwidth rows are tiny positive USD
+costs, all attributed to A by a complete ResourceId+Meter Query; those Query
+rows report no quantity, unit or rate. The latest CSV does report those fields,
+but not a scale-confirmed intraregional 5 GiB meter.
+“Intra Continent” is not “intra region.”
+Latest live CSV extraction closed **16 October 00:29:24Z**:
+one generation, one poll and one streaming download; three HTTP requests, no
+retries/mutations. Actual mixed-case header mapping is now live-validated:
+`ResourceId` / `resourceGroupName` / `date` / `quantity` / `unitOfMeasure` /
+`effectivePrice` / `costInBillingCurrency` / `billingCurrency`.
+The report covers October 15–16 receipt dates; only exact owned October-15
+Bandwidth rows survive. Six rows retained (C: one; A source: three; B in original
+A group: two), 365 discarded before retention. C's actual quantity is
+**0.000002291053533554 “1 GB”**, effective price **USD 0.02**, cost
+**USD 4.58210706710815400000E-8**—not a scale-confirmed 1-GiB control.
+A's source-VM quantities/rates are **0.000966296531260014 / 0.05**,
+**0.000003241002559662 / 0.02**, and **0.000295128673315048 / 0.083**;
+all units are reported “1 GB”, rates in USD. No division by expected traffic
+or default-zero fields was used. Latest owned usage date is October 15 only;
+date-only coverage cannot establish completeness. ActualCost reporting is not
+a final invoice. **Remaining blocker: billing maturity and transfer attribution**;
+T was not refreshed. Context/default-profile bytes unchanged, lease closed/idle,
+zero owned native children. Snapshots supersede comparisons; never add them.
+
+Historical quantity-source investigation closed **16 October 00:21Z**:
+C's isolated daily Query now returns one tiny positive row, **USD
+0.0000000458210706710815**, without quantity/unit/rate. Modern Cost Details
+generation/poll/download succeeded, but the runtime CSV schema check rejected
+the memory-only report before any rows were retained. The exact header was
+not retained; offline case/alias parser improvements are not live extraction
+proof. A/T were not refreshed and their prior snapshot is unchanged.
+See [reconciliation](results/2026-10-16-usage-reconciliation.json).
+That phase exhausted its 12 request reservations (11 reached HTTP, one invalid
+continuation failed before HTTP); the 00:29Z validation used its own new lease.
+Live lease is closed/idle with zero owned native children and zero mutations.
+
+The prior bounded billing refresh was **15 October 23:28Z**, after
 [C → B v4 transport/restoration PASS](results/2026-10-15-cross-region-control.md):
 **1 GiB, one upload, zero retries**. The earlier v1/v2/v3 history is unchanged.
 Read-only v3 inspection identified B's additional subnet NSG default deny
@@ -64,8 +97,12 @@ No billing request was made during the D0 infrastructure deployment lease.
 ## API contracts and implemented read-only collector
 
 `costs\cost_api.py` implements bounded Query and Consumption collection with
-offline contract tests. Cost Details asynchronous generation remains explicitly
-unimplemented, not a success-shaped fallback. Windows modern Consumption failed
+offline contract tests and a pure in-memory Cost Details CSV projection helper.
+The CLI's Cost Details asynchronous command remains explicitly unimplemented,
+not a success-shaped fallback; the 16 October private runtime separately
+verified live report generation/download/projection at 00:29Z. The discarded
+00:21Z report itself was not reparsed.
+Windows modern Consumption failed
 the tested RG predicates. Earlier WSL Consumption 400s were resolved by
 valid explicit past usageStart/usageEnd ranges: **2019-10-01 and 2024-08-01
 both returned HTTP 200 empty**. Missing/future-date errors do not establish
@@ -306,7 +343,9 @@ For the successful **1 GiB C→B** control, separate 24/48/72h targets are
 Its [23:28Z snapshot](results/2026-10-15-control-billing.json) used three billing
 HTTP attempts, no retry/mutation; A's exact total is
 **USD 0.0000728753264993429373**, not attributable to one request.
-C lacks ingested rows/quantity/rate and details timed out; T is empty.
+C lacked ingested rows/quantity/rate and details timed out in that historical
+snapshot; T was empty. The 16 October 00:29Z CSV above supersedes the C/A
+quantity gap, not the missing scale-confirmed control or T coverage.
 At $0.02/decimal GB planning only, 1 GiB would be ~$0.0214748 before overhead,
 not an observed rate/cost. Do not infer quantity from those retail estimates.
 
@@ -317,6 +356,13 @@ not ingestion day. Detailed Consumption date predicates can be receipt windows;
 avoid future ranges, inspect actual row dates and widen past receipt coverage
 only within an approved bound. Partial pages and 429 remain incomplete/errors,
 never zero usage.
+
+Require **two stable future cumulative snapshots**, both at/after **16 October
+23:15:33Z** (24h after the completed control), with comparable A/T source/day
+coverage and a scale-confirmed charged C control. Together these can support a
+scoped **no additional charge observed** conclusion, not a claim that a
+zero-rated meter was emitted or that ActualCost is a final invoice. Reporting
+can lag beyond 24h; stable tiny control quantities alone are insufficient.
 
 **No automatic follow-up or cleanup job is established.** The table is an
 action calendar, not evidence of scheduled automation. Use fresh bounded
