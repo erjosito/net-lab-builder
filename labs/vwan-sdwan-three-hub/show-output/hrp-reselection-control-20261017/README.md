@@ -51,6 +51,11 @@ requires a route refresh. The separate 16 October two-extra-prepend case
 had a one-ASN difference and remains outside that published condition.
 This new result does not rewrite its historical negative verdict.
 
+**Subsequent control:** the [one-ASN follow-up](../hrp-one-asn-control-20261017/README.md)
+also demonstrated history dependence with EU path length four versus remote
+three. This establishes an additional observation outside the documentation's
+published condition, not proof of an identical Azure-internal mechanism.
+
 Only the Japan prefix was controlled. Other foreign DC prefixes were not
 individually refreshed, and a successful Japan result is not an automatic
 all-prefix customer-first or forwarding guarantee. VPN HRP remains untested.

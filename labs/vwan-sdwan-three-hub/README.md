@@ -27,6 +27,14 @@ within the documented race-condition warning. That does not retroactively
 explain the separate 16 October two-prepend, one-ASN-difference control or
 identify Azure's internal mechanism.
 
+A [separate one-ASN-difference control](show-output/hrp-one-asn-control-20261017/README.md)
+then reproduced the same history dependency with EU's local path length
+four versus the remote length three. The local path remained selected after
+Japan's direct export returned, despite identical EU configuration and HRP
+before and after. Thus the observation is not limited to the documented
+two-longer condition. Its internal cause still requires Azure backend
+investigation; the older negative verdict remains preserved.
+
 The [scenario verdict](show-output/hrp-reselection-control-20261017/reselection-verdict.json),
 [independent exact reset](show-output/hrp-reselection-verify-20261017/verification-verdict.json)
 and [original power inventory restoration](show-output/hrp-reselection-power-20261017/power-verdict.json)
