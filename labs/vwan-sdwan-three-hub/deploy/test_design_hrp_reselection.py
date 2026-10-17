@@ -24,6 +24,17 @@ class ReselectionTests(unittest.TestCase):
         rows[0]["nextHopType"] = "Remote Hub"
         self.assertFalse(reselection.local_japan(result))
 
+    def test_one_asn_difference_control(self):
+        rows = [
+            dict(observer="eu", prefix="10.130.0.0/24", nextHopType="HubBgpConnection",
+                 asPath="65011-65011-65011-65013"),
+            dict(observer="us", prefix="10.130.0.0/24", nextHopType="HubBgpConnection",
+                 asPath="65012-65012-65012-65012-65013"),
+        ]
+        result = dict(firewalls=dict(rows=rows))
+        self.assertTrue(reselection.local_japan(result, eu_extra=2))
+        self.assertFalse(reselection.local_japan(result))
+
 
 if __name__ == "__main__":
     unittest.main()

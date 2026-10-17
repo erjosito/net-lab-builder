@@ -8,6 +8,7 @@ import aspath_sweep as sweep
 import control
 import design_backbone as backbone
 import design_comparison as comparison
+import design_customer as customer
 import design_snapshot as snapshot
 import effective_routes
 import guest
@@ -84,10 +85,11 @@ def japan_winners(result):
             for s in ("eu", "us")}
 
 
-def local_japan(result):
+def local_japan(result, eu_extra=3):
     winners = japan_winners(result)
     return all(r["nextHopType"] == "HubBgpConnection"
-               and r["asPath"] == "-".join([str(guest.ASNS[s])] * 4 + ["65013"])
+               and r["asPath"] == "-".join(
+                   [str(guest.ASNS[s])] * (eu_extra + 1 if s == "eu" else 4) + ["65013"])
                for s, r in winners.items())
 
 
@@ -95,6 +97,7 @@ def main():
     parser = argparse.ArgumentParser()
     for name in ("lease", "out", "baseline"):
         parser.add_argument("--" + name, required=True)
+    parser.add_argument("--eu-extra", type=int, choices=(2, 3), default=3)
     args = parser.parse_args()
     control.LEASE = control.RUNTIME / args.lease
     lease = control.guard(False)
@@ -116,28 +119,36 @@ def main():
             raise RuntimeError("Original three-prepend configuration required")
     backbone.BACKUP = "/var/lib/threehub/hrp-reselection-20261017-baseline.conf"
     desired = withdraw_japan(before["sources"]["jp"]["config"])
-    dirty, hubs_dirty, restored = False, False, False
+    dirty, eu_dirty, hubs_dirty, restored = False, False, False, False
+    desired_eu = customer.policy(before["sources"]["eu"]["config"], "eu", 2) if args.eu_extra == 2 else None
+    working = dict(before["sources"])
     states, errors, outcome = {}, [], None
     try:
         sweep.reserve_restore(control.guard(True))
+        if desired_eu is not None:
+            eu_dirty = True
+            backbone.configure("eu", before["sources"]["eu"], desired_eu)
+            working["eu"] = dict(before["sources"]["eu"],
+                                 sha256=hashlib.sha256(desired_eu.encode()).hexdigest())
         hubs_dirty = True
         hrp.set_preference("ExpressRoute", "reselection-expressroute")
-        states["er-original"] = capture("er-original", before["sources"])
+        states["er-original"] = capture("er-original", working)
         dirty = True
         backbone.configure("jp", before["sources"]["jp"], desired)
-        expected = dict(before["sources"])
+        expected = dict(working)
         expected["jp"] = dict(before["sources"]["jp"])
         expected["jp"]["sha256"] = hashlib.sha256(desired.encode()).hexdigest()
         states["jp-withdrawn"] = capture("jp-withdrawn", expected, complete=False)
-        if not local_japan(states["jp-withdrawn"]):
+        if not local_japan(states["jp-withdrawn"], args.eu_extra):
             raise RuntimeError("Local original NVA paths not established with Japan VPN export absent")
         backbone.configure("jp", before["sources"]["jp"], desired, restore=True)
         dirty = False
-        states["jp-returned"] = capture("jp-returned", before["sources"])
+        states["jp-returned"] = capture("jp-returned", working)
         outcome = ("documented-local-preference-reproduced"
-                   if local_japan(states["er-original"]) and local_japan(states["jp-returned"])
+                   if local_japan(states["er-original"], args.eu_extra)
+                   and local_japan(states["jp-returned"], args.eu_extra)
                    else "route-history-sensitive-local-preference"
-                   if local_japan(states["jp-returned"])
+                   if local_japan(states["jp-returned"], args.eu_extra)
                    else "local-candidate-confirmed-discrepancy-persists")
         print("DECISIVE " + outcome, flush=True)
     except Exception as exc:
@@ -151,6 +162,9 @@ def main():
             if dirty:
                 backbone.configure("jp", before["sources"]["jp"], desired, restore=True)
                 dirty = False
+            if eu_dirty:
+                backbone.configure("eu", before["sources"]["eu"], desired_eu, restore=True)
+                eu_dirty = False
             if hubs_dirty:
                 sweep.submit(infra.template(comparison.original_hubs(before["hubs"])),
                              {"parameters": {}}, "restore-original-hrps", mutation=True)
@@ -159,6 +173,8 @@ def main():
             hubs = snapshot.metadata("restore")
             firewalls = firewall_capture("restore", hubs)
             if firewalls["rows"] != before["firewalls"]["rows"]:
+                if control.guard(False)["mutationsUsed"] + 2 > lease["maxMutations"]:
+                    raise RuntimeError("Original winners differ; no mutation budget for restore refresh")
                 # Re-establish the saved ASPath winner if HRP switching retained an old best path.
                 extra = withdraw_japan(before["sources"]["eu"]["config"])
                 try:
@@ -175,14 +191,14 @@ def main():
             if firewalls["rows"] != before["firewalls"]["rows"]:
                 raise RuntimeError("Original firewall winners differ")
             states["restore"] = dict(sources=sources, hubs=hubs, firewalls=firewalls)
-            restored = not dirty and not hubs_dirty
+            restored = not dirty and not eu_dirty and not hubs_dirty
         except Exception as exc:
             errors.append("RESTORE: " + str(exc))
         verdict = "PASS" if outcome and not errors and restored else "INCONCLUSIVE" if restored else "BLOCKED"
         sweep.CURRENT = sweep.OUT
         sweep.save("reselection-verdict.json", dict(
             verdict=verdict, outcome=outcome, restored=restored, errors=errors,
-            states=states, timestampUtc=sweep.utc(), trafficNotRun=True))
+            states=states, extraEUPrepends=args.eu_extra, timestampUtc=sweep.utc(), trafficNotRun=True))
         lease = json.loads(control.LEASE.read_text())
         lease.update(state="completed" if verdict == "PASS" else "rolled-back" if restored else "blocked",
                      verdict=verdict, children=[])
