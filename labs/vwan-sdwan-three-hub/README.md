@@ -1,12 +1,37 @@
 # Three-hub Virtual WAN / SD-WAN lab
 
-> **2026-10-16: A/B backbone choices measured and original configuration restored.**
+> **2026-10-17: B1 local preference reproduced; route-history dependency isolated.**
 > **Three Standard Azure Firewalls and PrivateTraffic routing intent are deployed.**
 > **A:** ASPath plus NVA import policy selected Microsoft's backbone.
-> **B1:** ExpressRoute HRP alone did **not** reproduce customer-first hub selection in the matched control.
+> **B1:** ExpressRoute HRP retained the longer local Japan paths after a controlled VPN-prefix withdrawal/re-advertisement.
 > **B2:** ASPath with no extra nonlocal prepends selected local customer-mesh paths at the hub firewalls and NVAs.
 > B1/B2 are route-selection controls, not new forwarding tests. A is not an all-pairs forwarding success.
 > All ten VMs are back to their original **deallocated** states. Hubs, firewalls and VPN gateway remain deployed and billable.
+
+## Latest result: why the ExpressRoute-HRP controls differed
+
+The [17 October route-history control](show-output/hrp-reselection-control-20261017/README.md)
+used the original **three-extra-prepend** EU/US configuration without changing
+it. After switching from the saved mixed HRPs to all-hub ExpressRoute,
+EU/US initially retained Japan's remote path, length three. Withdrawing
+only Japan's direct Azure export of `10.130.0.0/24` made their local NVA
+paths, length five, win. After restoring that export, **the longer local
+paths remained selected at both hubs**, reproducing the intended B1 behavior.
+
+All four BIRD configuration files and metadata, and all three HRPs, were
+identical before and after the withdrawal/re-advertisement. This establishes
+**history-dependent selection**, not a general inability to prefer local
+peered-NVA routes. It also confirms that the local routes were eligible.
+The original three-prepend paths are two ASNs longer than the remote path,
+within the documented race-condition warning. That does not retroactively
+explain the separate 16 October two-prepend, one-ASN-difference control or
+identify Azure's internal mechanism.
+
+The [scenario verdict](show-output/hrp-reselection-control-20261017/reselection-verdict.json),
+[independent exact reset](show-output/hrp-reselection-verify-20261017/verification-verdict.json)
+and [original power inventory restoration](show-output/hrp-reselection-power-20261017/power-verdict.json)
+all passed. No IPsec, WireGuard, mesh-export, workload-subnet or traffic-test
+changes were made.
 
 ## A or B: which backbone should carry the traffic?
 
@@ -16,7 +41,7 @@ backbone preferred**, or **B, customer backbone preferred**. It links matched
 EU/Japan firewall tables and EU/Japan/China NVA configurations and routes for
 A, B1 and B2. US is collected as well.
 
-B1 used all-hub ExpressRoute HRP and two extra nonlocal prepends at EU/US.
+The earlier 16 October B1 control used all-hub ExpressRoute HRP and two extra nonlocal prepends at EU/US.
 Their local Japan path had four ASNs versus three on the remote VPN path;
 both firewalls still selected the remote path. This does not reproduce the
 intended B1 design, and the result must not be presented as successful

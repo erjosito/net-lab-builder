@@ -1,0 +1,137 @@
+{
+  "timestampUtc": "2026-10-17T10:47:13.455713+00:00",
+  "finishedUtc": "2026-10-17T10:48:13.273716+00:00",
+  "command": [
+    "vm",
+    "list",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-d",
+    "--query",
+    "[].{id:id,name:name,powerState:powerState,tags:tags}"
+  ],
+  "stdout": "[\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-us\",\n    \"name\": \"probe-dc-us\",\n    \"powerState\": \"VM deallocated\",\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    }\n  },\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-us\",\n    \"name\": \"probe-spoke-us\",\n    \"powerState\": \"VM deallocated\",\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    }\n  },\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-us\",\n    \"name\": \"router-us\",\n    \"powerState\": \"VM deallocated\",\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    }\n  },\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-eu\",\n    \"name\": \"probe-dc-eu\",\n    \"powerState\": \"VM deallocated\",\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    }\n  },\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-eu\",\n    \"name\": \"probe-spoke-eu\",\n    \"powerState\": \"VM deallocated\",\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    }\n  },\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu\",\n    \"name\": \"router-eu\",\n    \"powerState\": \"VM deallocated\",\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    }\n  },\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-jp\",\n    \"name\": \"probe-dc-jp\",\n    \"powerState\": \"VM deallocated\",\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    }\n  },\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-jp\",\n    \"name\": \"probe-spoke-jp\",\n    \"powerState\": \"VM deallocated\",\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    }\n  },\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-cn\",\n    \"name\": \"router-cn\",\n    \"powerState\": \"VM deallocated\",\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    }\n  },\n  {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp\",\n    \"name\": \"router-jp\",\n    \"powerState\": \"VM deallocated\",\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    }\n  }\n]\n",
+  "result": [
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-us",
+      "name": "probe-dc-us",
+      "powerState": "VM deallocated",
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-us",
+      "name": "probe-spoke-us",
+      "powerState": "VM deallocated",
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-us",
+      "name": "router-us",
+      "powerState": "VM deallocated",
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-eu",
+      "name": "probe-dc-eu",
+      "powerState": "VM deallocated",
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-eu",
+      "name": "probe-spoke-eu",
+      "powerState": "VM deallocated",
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu",
+      "name": "router-eu",
+      "powerState": "VM deallocated",
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-jp",
+      "name": "probe-dc-jp",
+      "powerState": "VM deallocated",
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-jp",
+      "name": "probe-spoke-jp",
+      "powerState": "VM deallocated",
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-cn",
+      "name": "router-cn",
+      "powerState": "VM deallocated",
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp",
+      "name": "router-jp",
+      "powerState": "VM deallocated",
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      }
+    }
+  ],
+  "sha256": "a960316243f5cb4d95789c00b5ecc7d51f9f81140473e136cd2a3fd75fe774dd"
+}
