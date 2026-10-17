@@ -1,0 +1,2332 @@
+{
+  "wan": {
+    "etag": "W/\"146489db-0bf5-4738-bb2c-62cd09917864\"",
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub",
+    "location": "japaneast",
+    "name": "vwan-threehub",
+    "properties": {
+      "allowBranchToBranchTraffic": true,
+      "disableVpnEncryption": false,
+      "office365LocalBreakoutCategory": "None",
+      "provisioningState": "Succeeded",
+      "type": "Standard",
+      "virtualHubs": [
+        {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp"
+        },
+        {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us"
+        },
+        {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu"
+        }
+      ],
+      "vpnSites": [
+        {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnSites/site-dc-jp"
+        }
+      ]
+    },
+    "tags": {
+      "created_by": "copilot-lab",
+      "ephemeral": "true",
+      "lab": "true",
+      "owner": "<LAB_OWNER>",
+      "run_id": "20261014-threehub"
+    },
+    "type": "Microsoft.Network/virtualWans"
+  },
+  "hubs": {
+    "eu": {
+      "hub": {
+        "etag": "W/\"ef0224f8-c09c-407f-9656-fb1adceb327c\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu",
+        "location": "westeurope",
+        "name": "hub-eu",
+        "properties": {
+          "addressPrefix": "10.250.0.0/23",
+          "allowBranchToBranchTraffic": true,
+          "azureFirewall": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-eu"
+          },
+          "hubRoutingPreference": "ASPath",
+          "networkVirtualAppliances": [],
+          "provisioningState": "Succeeded",
+          "routeTable": {
+            "routes": []
+          },
+          "routingState": "Provisioned",
+          "sku": "Standard",
+          "virtualHubRouteTableV2s": [],
+          "virtualRouterAsn": 65515,
+          "virtualRouterAutoScaleConfiguration": {
+            "minCapacity": 2
+          },
+          "virtualRouterIps": [
+            "10.250.0.69",
+            "10.250.0.70"
+          ],
+          "virtualWan": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub"
+          }
+        },
+        "tags": {
+          "created_by": "copilot-lab",
+          "ephemeral": "true",
+          "lab": "true",
+          "owner": "<LAB_OWNER>",
+          "run_id": "20261014-threehub"
+        },
+        "type": "Microsoft.Network/virtualHubs"
+      },
+      "intent": {
+        "value": [
+          {
+            "etag": "W/\"ef0224f8-c09c-407f-9656-fb1adceb327c\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/routingIntent/private-traffic",
+            "name": "private-traffic",
+            "properties": {
+              "provisioningState": "Succeeded",
+              "routingPolicies": [
+                {
+                  "destinations": [
+                    "PrivateTraffic"
+                  ],
+                  "name": "PrivateTraffic",
+                  "nextHop": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-eu"
+                }
+              ]
+            },
+            "type": "Microsoft.Network/virtualHubs/routingIntent"
+          }
+        ]
+      },
+      "firewallId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-eu",
+      "preference": "ASPath"
+    },
+    "us": {
+      "hub": {
+        "etag": "W/\"6c55cf0b-e2d4-4f5b-9864-8071f194250d\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us",
+        "location": "northcentralus",
+        "name": "hub-us",
+        "properties": {
+          "addressPrefix": "10.250.2.0/23",
+          "allowBranchToBranchTraffic": true,
+          "azureFirewall": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-us"
+          },
+          "hubRoutingPreference": "ASPath",
+          "networkVirtualAppliances": [],
+          "provisioningState": "Succeeded",
+          "routeTable": {
+            "routes": []
+          },
+          "routingState": "Provisioned",
+          "sku": "Standard",
+          "virtualHubRouteTableV2s": [],
+          "virtualRouterAsn": 65515,
+          "virtualRouterAutoScaleConfiguration": {
+            "minCapacity": 2
+          },
+          "virtualRouterIps": [
+            "10.250.2.70",
+            "10.250.2.69"
+          ],
+          "virtualWan": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub"
+          }
+        },
+        "tags": {
+          "created_by": "copilot-lab",
+          "ephemeral": "true",
+          "lab": "true",
+          "owner": "<LAB_OWNER>",
+          "run_id": "20261014-threehub"
+        },
+        "type": "Microsoft.Network/virtualHubs"
+      },
+      "intent": {
+        "value": [
+          {
+            "etag": "W/\"6c55cf0b-e2d4-4f5b-9864-8071f194250d\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/routingIntent/private-traffic",
+            "name": "private-traffic",
+            "properties": {
+              "provisioningState": "Succeeded",
+              "routingPolicies": [
+                {
+                  "destinations": [
+                    "PrivateTraffic"
+                  ],
+                  "name": "PrivateTraffic",
+                  "nextHop": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-us"
+                }
+              ]
+            },
+            "type": "Microsoft.Network/virtualHubs/routingIntent"
+          }
+        ]
+      },
+      "firewallId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-us",
+      "preference": "ASPath"
+    },
+    "jp": {
+      "hub": {
+        "etag": "W/\"4598e7c3-7dd5-4645-897a-30f5f152ccad\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp",
+        "location": "japaneast",
+        "name": "hub-jp",
+        "properties": {
+          "addressPrefix": "10.250.4.0/23",
+          "allowBranchToBranchTraffic": true,
+          "azureFirewall": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-jp"
+          },
+          "hubRoutingPreference": "ASPath",
+          "networkVirtualAppliances": [],
+          "provisioningState": "Succeeded",
+          "routeTable": {
+            "routes": []
+          },
+          "routingState": "Provisioned",
+          "sku": "Standard",
+          "virtualHubRouteTableV2s": [],
+          "virtualRouterAsn": 65515,
+          "virtualRouterAutoScaleConfiguration": {
+            "minCapacity": 2
+          },
+          "virtualRouterIps": [
+            "10.250.4.70",
+            "10.250.4.69"
+          ],
+          "virtualWan": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub"
+          },
+          "vpnGateway": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+          }
+        },
+        "tags": {
+          "created_by": "copilot-lab",
+          "ephemeral": "true",
+          "lab": "true",
+          "owner": "<LAB_OWNER>",
+          "run_id": "20261014-threehub"
+        },
+        "type": "Microsoft.Network/virtualHubs"
+      },
+      "intent": {
+        "value": [
+          {
+            "etag": "W/\"4598e7c3-7dd5-4645-897a-30f5f152ccad\"",
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/routingIntent/private-traffic",
+            "name": "private-traffic",
+            "properties": {
+              "provisioningState": "Succeeded",
+              "routingPolicies": [
+                {
+                  "destinations": [
+                    "PrivateTraffic"
+                  ],
+                  "name": "PrivateTraffic",
+                  "nextHop": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-jp"
+                }
+              ]
+            },
+            "type": "Microsoft.Network/virtualHubs/routingIntent"
+          }
+        ]
+      },
+      "firewallId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-jp",
+      "preference": "ASPath"
+    }
+  },
+  "sources": {
+    "eu": {
+      "site": "eu",
+      "timestampUtc": "2026-10-17T16:33:49.649554+00:00",
+      "sha256": "59f38feaebd5369defb5a0967e4c59630571ecba09878235ff98b7f27281bc2c",
+      "stat": {
+        "uid": 113,
+        "gid": 122,
+        "mode": 384,
+        "mtimeNs": 1792099133477812763
+      },
+      "protocols": {
+        "mesh_us": "Established",
+        "mesh_jp": "Established",
+        "mesh_cn": "Established",
+        "azure_0": "Established",
+        "azure_1": "Established"
+      },
+      "healthWaitObservations": [],
+      "config": "log syslog all;\nrouter id 10.210.0.4;\nipv4 table underlay4;\nipv4 table lab4;\nprotocol device devices { scan time 10; }\nprotocol direct connected {\n  ipv4 { table underlay4; };\n  interface \"eth0\", \"wg*\";\n}\nprotocol static control_pins {\n  ipv4 { table underlay4; };\n  route 10.220.0.4/32 via 10.210.0.1;\n  route 10.130.0.4/32 via 10.210.0.1;\n  route 10.140.0.4/32 via 10.210.0.1;\n  route 10.250.0.69/32 via 10.210.0.1;\n  route 10.250.0.70/32 via 10.210.0.1;\n}\nprotocol static own_dc {\n  ipv4 { table lab4; };\n  route 10.110.0.0/24 via 10.210.0.1;\n}\nfunction regional_preference(int ingress) {\n  if (net = 10.10.0.0/24 && ingress = 65011) ||\n     (net = 10.20.0.0/24 && ingress = 65012) ||\n     (net = 10.30.0.0/24 && ingress = 65013) then\n    bgp_local_pref = 300;\n  else bgp_local_pref = 100;\n}\nfilter azure_export {\n  if net ~ [10.110.0.0/24, 10.120.0.0/24, 10.130.0.0/24, 10.140.0.0/24] &&\n     (proto = \"own_dc\" || proto ~ \"mesh_*\") then {\n        if net != 10.110.0.0/24 then {\n            bgp_path.prepend(65011);\n            bgp_path.prepend(65011);\n            bgp_path.prepend(65011);\n        }\n        accept;\n  }\n  reject;\n}\nfilter mesh_export {\n  if net = 10.110.0.0/24 && proto = \"own_dc\" then accept;\n  if net ~ [10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] && proto ~ \"azure_*\" then {\n    bgp_community.add((65011, 1));\n    accept;\n  }\n  reject;\n}\nprotocol kernel kernel_lab {\n  kernel table 254;\n  metric 80;\n  ipv4 {\n    table lab4;\n    import none;\n    export filter {\n      if net = 10.110.0.0/24 && 0 = 1 then reject;\n      if net ~ [10.110.0.0/24, 10.120.0.0/24, 10.130.0.0/24, 10.140.0.0/24, 10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then accept;\n      reject;\n    };\n  };\n}\n\nprotocol bgp mesh_us {\n  local 172.31.0.1 as 65011;\n  neighbor 172.31.0.2 as 65012;\n  multihop 2;\n  hold time 180;\n  keepalive time 60;\n  ipv4 {\n    table lab4;\n    igp table underlay4;\n    gateway recursive;\n    next hop self;\n    import filter {\n      bgp_next_hop = 172.31.0.2;\n      if net = 10.120.0.0/24 then { bgp_community = -empty-; accept; }\n      if net ~ [10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then {\n        bgp_community = -empty-;\n        bgp_community.add((65012, 1));\n        regional_preference(65012);\n        accept;\n      }\n      reject;\n    };\n    export filter mesh_export;\n  };\n}\n\nprotocol bgp mesh_jp {\n  local 172.31.0.5 as 65011;\n  neighbor 172.31.0.6 as 65013;\n  multihop 2;\n  hold time 180;\n  keepalive time 60;\n  ipv4 {\n    table lab4;\n    igp table underlay4;\n    gateway recursive;\n    next hop self;\n    import filter {\n      bgp_next_hop = 172.31.0.6;\n      if net = 10.130.0.0/24 then { bgp_community = -empty-; accept; }\n      if net ~ [10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then {\n        bgp_community = -empty-;\n        bgp_community.add((65013, 1));\n        regional_preference(65013);\n        accept;\n      }\n      reject;\n    };\n    export filter mesh_export;\n  };\n}\n\nprotocol bgp mesh_cn {\n  local 172.31.0.9 as 65011;\n  neighbor 172.31.0.10 as 65014;\n  multihop 2;\n  hold time 180;\n  keepalive time 60;\n  ipv4 {\n    table lab4;\n    igp table underlay4;\n    gateway recursive;\n    next hop self;\n    import filter {\n      bgp_next_hop = 172.31.0.10;\n      if net = 10.140.0.0/24 then { bgp_community = -empty-; accept; }\n      \n      reject;\n    };\n    export filter mesh_export;\n  };\n}\n\nprotocol bgp azure_0 {\n  local 10.210.0.4 as 65011;\n  neighbor 10.250.0.69 as 65515;\n  multihop 10;\n  hold time 180;\n  keepalive time 60;\n  ipv4 {\n    table lab4;\n    igp table underlay4;\n    gateway recursive;\n    import filter {\n      if net ~ [10.120.0.0/24, 10.130.0.0/24, 10.140.0.0/24, 10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then {\n        bgp_next_hop = 10.210.0.1;\n        bgp_community = -empty-;\n        bgp_community.add((65011, 1));\n        bgp_local_pref = 400;\n        accept;\n      }\n      reject;\n    };\n    export filter azure_export;\n  };\n}\n\nprotocol bgp azure_1 {\n  local 10.210.0.4 as 65011;\n  neighbor 10.250.0.70 as 65515;\n  multihop 10;\n  hold time 180;\n  keepalive time 60;\n  ipv4 {\n    table lab4;\n    igp table underlay4;\n    gateway recursive;\n    import filter {\n      if net ~ [10.120.0.0/24, 10.130.0.0/24, 10.140.0.0/24, 10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then {\n        bgp_next_hop = 10.210.0.1;\n        bgp_community = -empty-;\n        bgp_community.add((65011, 1));\n        bgp_local_pref = 400;\n        accept;\n      }\n      reject;\n    };\n    export filter azure_export;\n  };\n}\n"
+    },
+    "us": {
+      "site": "us",
+      "timestampUtc": "2026-10-17T16:33:43.852541+00:00",
+      "sha256": "3977aa2043eccce5e35ee881866d5d9e4ad9ad495023f93aa089f90ea631d9fe",
+      "stat": {
+        "uid": 113,
+        "gid": 122,
+        "mode": 384,
+        "mtimeNs": 1792000609620725084
+      },
+      "protocols": {
+        "mesh_eu": "Established",
+        "mesh_jp": "Established",
+        "mesh_cn": "Established",
+        "azure_0": "Established",
+        "azure_1": "Established"
+      },
+      "healthWaitObservations": [],
+      "config": "log syslog all;\nrouter id 10.220.0.4;\nipv4 table underlay4;\nipv4 table lab4;\nprotocol device devices { scan time 10; }\nprotocol direct connected {\n  ipv4 { table underlay4; };\n  interface \"eth0\", \"wg*\";\n}\nprotocol static control_pins {\n  ipv4 { table underlay4; };\n  route 10.210.0.4/32 via 10.220.0.1;\n  route 10.130.0.4/32 via 10.220.0.1;\n  route 10.140.0.4/32 via 10.220.0.1;\n  route 10.250.2.70/32 via 10.220.0.1;\n  route 10.250.2.69/32 via 10.220.0.1;\n}\nprotocol static own_dc {\n  ipv4 { table lab4; };\n  route 10.120.0.0/24 via 10.220.0.1;\n}\nfunction regional_preference(int ingress) {\n  if (net = 10.10.0.0/24 && ingress = 65011) ||\n     (net = 10.20.0.0/24 && ingress = 65012) ||\n     (net = 10.30.0.0/24 && ingress = 65013) then\n    bgp_local_pref = 300;\n  else bgp_local_pref = 100;\n}\nfilter azure_export {\n  if net ~ [10.110.0.0/24, 10.120.0.0/24, 10.130.0.0/24, 10.140.0.0/24] &&\n     (proto = \"own_dc\" || proto ~ \"mesh_*\") then {\n    if net != 10.120.0.0/24 then {\n      bgp_path.prepend(65012);\n      bgp_path.prepend(65012);\n      bgp_path.prepend(65012);\n    }\n    accept;\n  }\n  reject;\n}\nfilter mesh_export {\n  if net = 10.120.0.0/24 && proto = \"own_dc\" then accept;\n  if net ~ [10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] && proto ~ \"azure_*\" then {\n    bgp_community.add((65012, 1));\n    accept;\n  }\n  reject;\n}\nprotocol kernel kernel_lab {\n  kernel table 254;\n  metric 80;\n  ipv4 {\n    table lab4;\n    import none;\n    export filter {\n      if net = 10.120.0.0/24 && 0 = 1 then reject;\n      if net ~ [10.110.0.0/24, 10.120.0.0/24, 10.130.0.0/24, 10.140.0.0/24, 10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then accept;\n      reject;\n    };\n  };\n}\n\nprotocol bgp mesh_eu {\n  local 172.31.0.2 as 65012;\n  neighbor 172.31.0.1 as 65011;\n  multihop 2;\n  hold time 180;\n  keepalive time 60;\n  ipv4 {\n    table lab4;\n    igp table underlay4;\n    gateway recursive;\n    next hop self;\n    import filter {\n      bgp_next_hop = 172.31.0.1;\n      if net = 10.110.0.0/24 then { bgp_community = -empty-; accept; }\n      if net ~ [10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then {\n        bgp_community = -empty-;\n        bgp_community.add((65011, 1));\n        regional_preference(65011);\n        accept;\n      }\n      reject;\n    };\n    export filter mesh_export;\n  };\n}\n\nprotocol bgp mesh_jp {\n  local 172.31.0.13 as 65012;\n  neighbor 172.31.0.14 as 65013;\n  multihop 2;\n  hold time 180;\n  keepalive time 60;\n  ipv4 {\n    table lab4;\n    igp table underlay4;\n    gateway recursive;\n    next hop self;\n    import filter {\n      bgp_next_hop = 172.31.0.14;\n      if net = 10.130.0.0/24 then { bgp_community = -empty-; accept; }\n      if net ~ [10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then {\n        bgp_community = -empty-;\n        bgp_community.add((65013, 1));\n        regional_preference(65013);\n        accept;\n      }\n      reject;\n    };\n    export filter mesh_export;\n  };\n}\n\nprotocol bgp mesh_cn {\n  local 172.31.0.17 as 65012;\n  neighbor 172.31.0.18 as 65014;\n  multihop 2;\n  hold time 180;\n  keepalive time 60;\n  ipv4 {\n    table lab4;\n    igp table underlay4;\n    gateway recursive;\n    next hop self;\n    import filter {\n      bgp_next_hop = 172.31.0.18;\n      if net = 10.140.0.0/24 then { bgp_community = -empty-; accept; }\n      \n      reject;\n    };\n    export filter mesh_export;\n  };\n}\n\nprotocol bgp azure_0 {\n  local 10.220.0.4 as 65012;\n  neighbor 10.250.2.70 as 65515;\n  multihop 10;\n  hold time 180;\n  keepalive time 60;\n  ipv4 {\n    table lab4;\n    igp table underlay4;\n    gateway recursive;\n    import filter {\n      if net ~ [10.110.0.0/24, 10.130.0.0/24, 10.140.0.0/24, 10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then {\n        bgp_next_hop = 10.220.0.1;\n        bgp_community = -empty-;\n        bgp_community.add((65012, 1));\n        bgp_local_pref = 400;\n        accept;\n      }\n      reject;\n    };\n    export filter azure_export;\n  };\n}\n\nprotocol bgp azure_1 {\n  local 10.220.0.4 as 65012;\n  neighbor 10.250.2.69 as 65515;\n  multihop 10;\n  hold time 180;\n  keepalive time 60;\n  ipv4 {\n    table lab4;\n    igp table underlay4;\n    gateway recursive;\n    import filter {\n      if net ~ [10.110.0.0/24, 10.130.0.0/24, 10.140.0.0/24, 10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then {\n        bgp_next_hop = 10.220.0.1;\n        bgp_community = -empty-;\n        bgp_community.add((65012, 1));\n        bgp_local_pref = 400;\n        accept;\n      }\n      reject;\n    };\n    export filter azure_export;\n  };\n}\n"
+    },
+    "jp": {
+      "site": "jp",
+      "timestampUtc": "2026-10-17T16:34:29.423707+00:00",
+      "sha256": "9308de0847686b6203680e82a77ff150b75b2ae2ffbba8ef56850b37262406e7",
+      "stat": {
+        "uid": 113,
+        "gid": 122,
+        "mode": 384,
+        "mtimeNs": 1792000606196722098
+      },
+      "protocols": {
+        "mesh_eu": "Established",
+        "mesh_us": "Established",
+        "mesh_cn": "Established",
+        "azure_0": "Established",
+        "azure_1": "Established"
+      },
+      "healthWaitObservations": [],
+      "ikeEstablished": 2,
+      "config": "log syslog all;\nrouter id 10.130.0.4;\nipv4 table underlay4;\nipv4 table lab4;\nprotocol device devices { scan time 10; }\nprotocol direct connected {\n  ipv4 { table underlay4; };\n  interface \"eth0\", \"wg*\";\n}\nprotocol static control_pins {\n  ipv4 { table underlay4; };\n  route 10.210.0.4/32 via 10.130.0.1;\n  route 10.220.0.4/32 via 10.130.0.1;\n  route 10.140.0.4/32 via 10.130.0.1;\n  route 169.254.21.2/32 via \"xfrm41\";\n  route 169.254.21.6/32 via \"xfrm42\";\n}\nprotocol static own_dc {\n  ipv4 { table lab4; };\n  route 10.130.0.0/24 via \"eth0\";\n}\nfunction regional_preference(int ingress) {\n  if (net = 10.10.0.0/24 && ingress = 65011) ||\n     (net = 10.20.0.0/24 && ingress = 65012) ||\n     (net = 10.30.0.0/24 && ingress = 65013) then\n    bgp_local_pref = 300;\n  else bgp_local_pref = 100;\n}\nfilter azure_export {\n  if net ~ [10.110.0.0/24, 10.120.0.0/24, 10.130.0.0/24, 10.140.0.0/24] &&\n     (proto = \"own_dc\" || proto ~ \"mesh_*\") then {\n    if net != 10.130.0.0/24 then {\n      bgp_path.prepend(65013);\n      bgp_path.prepend(65013);\n      bgp_path.prepend(65013);\n    }\n    accept;\n  }\n  reject;\n}\nfilter mesh_export {\n  if net = 10.130.0.0/24 && proto = \"own_dc\" then accept;\n  if net ~ [10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] && proto ~ \"azure_*\" then {\n    bgp_community.add((65013, 1));\n    accept;\n  }\n  reject;\n}\nprotocol kernel kernel_lab {\n  kernel table 254;\n  metric 80;\n  ipv4 {\n    table lab4;\n    import none;\n    export filter {\n      if net = 10.130.0.0/24 && 1 = 1 then reject;\n      if net ~ [10.110.0.0/24, 10.120.0.0/24, 10.130.0.0/24, 10.140.0.0/24, 10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then accept;\n      reject;\n    };\n  };\n}\n\nprotocol bgp mesh_eu {\n  local 172.31.0.6 as 65013;\n  neighbor 172.31.0.5 as 65011;\n  multihop 2;\n  hold time 180;\n  keepalive time 60;\n  ipv4 {\n    table lab4;\n    igp table underlay4;\n    gateway recursive;\n    next hop self;\n    import filter {\n      bgp_next_hop = 172.31.0.5;\n      if net = 10.110.0.0/24 then { bgp_community = -empty-; accept; }\n      if net ~ [10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then {\n        bgp_community = -empty-;\n        bgp_community.add((65011, 1));\n        regional_preference(65011);\n        accept;\n      }\n      reject;\n    };\n    export filter mesh_export;\n  };\n}\n\nprotocol bgp mesh_us {\n  local 172.31.0.14 as 65013;\n  neighbor 172.31.0.13 as 65012;\n  multihop 2;\n  hold time 180;\n  keepalive time 60;\n  ipv4 {\n    table lab4;\n    igp table underlay4;\n    gateway recursive;\n    next hop self;\n    import filter {\n      bgp_next_hop = 172.31.0.13;\n      if net = 10.120.0.0/24 then { bgp_community = -empty-; accept; }\n      if net ~ [10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then {\n        bgp_community = -empty-;\n        bgp_community.add((65012, 1));\n        regional_preference(65012);\n        accept;\n      }\n      reject;\n    };\n    export filter mesh_export;\n  };\n}\n\nprotocol bgp mesh_cn {\n  local 172.31.0.21 as 65013;\n  neighbor 172.31.0.22 as 65014;\n  multihop 2;\n  hold time 180;\n  keepalive time 60;\n  ipv4 {\n    table lab4;\n    igp table underlay4;\n    gateway recursive;\n    next hop self;\n    import filter {\n      bgp_next_hop = 172.31.0.22;\n      if net = 10.140.0.0/24 then { bgp_community = -empty-; accept; }\n      \n      reject;\n    };\n    export filter mesh_export;\n  };\n}\n\nprotocol bgp azure_0 {\n  local 169.254.21.1 as 65013;\n  neighbor 169.254.21.2 as 65515;\n  multihop 10;\n  hold time 180;\n  keepalive time 60;\n  ipv4 {\n    table lab4;\n    igp table underlay4;\n    gateway recursive;\n    import filter {\n      if net ~ [10.110.0.0/24, 10.120.0.0/24, 10.140.0.0/24, 10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then {\n        bgp_next_hop = 169.254.21.2;\n        bgp_community = -empty-;\n        bgp_community.add((65013, 1));\n        bgp_local_pref = 400;\n        accept;\n      }\n      reject;\n    };\n    export filter azure_export;\n  };\n}\n\nprotocol bgp azure_1 {\n  local 169.254.21.1 as 65013;\n  neighbor 169.254.21.6 as 65515;\n  multihop 10;\n  hold time 180;\n  keepalive time 60;\n  ipv4 {\n    table lab4;\n    igp table underlay4;\n    gateway recursive;\n    import filter {\n      if net ~ [10.110.0.0/24, 10.120.0.0/24, 10.140.0.0/24, 10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then {\n        bgp_next_hop = 169.254.21.6;\n        bgp_community = -empty-;\n        bgp_community.add((65013, 1));\n        bgp_local_pref = 400;\n        accept;\n      }\n      reject;\n    };\n    export filter azure_export;\n  };\n}\n"
+    },
+    "cn": {
+      "site": "cn",
+      "timestampUtc": "2026-10-17T16:33:45.700122+00:00",
+      "sha256": "10e5591a16159a4a6e17350cb23f437623372f2ffd635ef20736f133c4738346",
+      "stat": {
+        "uid": 113,
+        "gid": 122,
+        "mode": 384,
+        "mtimeNs": 1792000608839202133
+      },
+      "protocols": {
+        "mesh_eu": "Established",
+        "mesh_us": "Established",
+        "mesh_jp": "Established"
+      },
+      "healthWaitObservations": [],
+      "config": "log syslog all;\nrouter id 10.140.0.4;\nipv4 table underlay4;\nipv4 table lab4;\nprotocol device devices { scan time 10; }\nprotocol direct connected {\n  ipv4 { table underlay4; };\n  interface \"eth0\", \"wg*\";\n}\nprotocol static control_pins {\n  ipv4 { table underlay4; };\n  route 10.210.0.4/32 via 10.140.0.1;\n  route 10.220.0.4/32 via 10.140.0.1;\n  route 10.130.0.4/32 via 10.140.0.1;\n}\nprotocol static own_dc {\n  ipv4 { table lab4; };\n  route 10.140.0.0/24 via \"eth0\";\n}\nfunction regional_preference(int ingress) {\n  if (net = 10.10.0.0/24 && ingress = 65011) ||\n     (net = 10.20.0.0/24 && ingress = 65012) ||\n     (net = 10.30.0.0/24 && ingress = 65013) then\n    bgp_local_pref = 300;\n  else bgp_local_pref = 100;\n}\nfilter azure_export {\n  if net ~ [10.110.0.0/24, 10.120.0.0/24, 10.130.0.0/24, 10.140.0.0/24] &&\n     (proto = \"own_dc\" || proto ~ \"mesh_*\") then accept;\n  reject;\n}\nfilter mesh_export {\n  if net = 10.140.0.0/24 && proto = \"own_dc\" then accept;\n  if net ~ [10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] && proto ~ \"azure_*\" then {\n    bgp_community.add((65014, 1));\n    accept;\n  }\n  reject;\n}\nprotocol kernel kernel_lab {\n  kernel table 254;\n  metric 80;\n  ipv4 {\n    table lab4;\n    import none;\n    export filter {\n      if net = 10.140.0.0/24 && 1 = 1 then reject;\n      if net ~ [10.110.0.0/24, 10.120.0.0/24, 10.130.0.0/24, 10.140.0.0/24, 10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then accept;\n      reject;\n    };\n  };\n}\n\nprotocol bgp mesh_eu {\n  local 172.31.0.10 as 65014;\n  neighbor 172.31.0.9 as 65011;\n  multihop 2;\n  hold time 180;\n  keepalive time 60;\n  ipv4 {\n    table lab4;\n    igp table underlay4;\n    gateway recursive;\n    next hop self;\n    import filter {\n      bgp_next_hop = 172.31.0.9;\n      if net = 10.110.0.0/24 then { bgp_community = -empty-; accept; }\n      if net ~ [10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then {\n        bgp_community = -empty-;\n        bgp_community.add((65011, 1));\n        regional_preference(65011);\n        accept;\n      }\n      reject;\n    };\n    export filter mesh_export;\n  };\n}\n\nprotocol bgp mesh_us {\n  local 172.31.0.18 as 65014;\n  neighbor 172.31.0.17 as 65012;\n  multihop 2;\n  hold time 180;\n  keepalive time 60;\n  ipv4 {\n    table lab4;\n    igp table underlay4;\n    gateway recursive;\n    next hop self;\n    import filter {\n      bgp_next_hop = 172.31.0.17;\n      if net = 10.120.0.0/24 then { bgp_community = -empty-; accept; }\n      if net ~ [10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then {\n        bgp_community = -empty-;\n        bgp_community.add((65012, 1));\n        regional_preference(65012);\n        accept;\n      }\n      reject;\n    };\n    export filter mesh_export;\n  };\n}\n\nprotocol bgp mesh_jp {\n  local 172.31.0.22 as 65014;\n  neighbor 172.31.0.21 as 65013;\n  multihop 2;\n  hold time 180;\n  keepalive time 60;\n  ipv4 {\n    table lab4;\n    igp table underlay4;\n    gateway recursive;\n    next hop self;\n    import filter {\n      bgp_next_hop = 172.31.0.21;\n      if net = 10.130.0.0/24 then { bgp_community = -empty-; accept; }\n      if net ~ [10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24] then {\n        bgp_community = -empty-;\n        bgp_community.add((65013, 1));\n        regional_preference(65013);\n        accept;\n      }\n      reject;\n    };\n    export filter mesh_export;\n  };\n}\n"
+    }
+  },
+  "nvas": {
+    "eu": {
+      "site": "eu",
+      "timestampUtc": "2026-10-17T16:35:33.372705+00:00",
+      "sha256": "59f38feaebd5369defb5a0967e4c59630571ecba09878235ff98b7f27281bc2c",
+      "stat": {
+        "uid": 113,
+        "gid": 122,
+        "mode": 384,
+        "mtimeNs": 1792099133477812763
+      },
+      "protocols": {
+        "mesh_us": "Established",
+        "mesh_jp": "Established",
+        "mesh_cn": "Established",
+        "azure_0": "Established",
+        "azure_1": "Established"
+      },
+      "healthWaitObservations": [],
+      "birdProtocols": {
+        "command": [
+          "birdc",
+          "show",
+          "protocols"
+        ],
+        "exitCode": 0,
+        "stdout": "BIRD 2.0.8 ready.\nName       Proto      Table      State  Since         Info\ndevices    Device     ---        up     15:57:27.832  \nconnected  Direct     ---        up     15:57:27.832  \ncontrol_pins Static     underlay4  up     15:57:27.832  \nown_dc     Static     lab4       up     15:57:27.832  \nkernel_lab Kernel     lab4       up     15:57:27.832  \nmesh_us    BGP        ---        up     15:57:32.107  Established   \nmesh_jp    BGP        ---        up     15:57:32.453  Established   \nmesh_cn    BGP        ---        up     15:57:32.973  Established   \nazure_0    BGP        ---        up     15:57:29.734  Established   \nazure_1    BGP        ---        up     15:57:28.391  Established   \n",
+        "stderr": ""
+      },
+      "birdRoutes": {
+        "command": [
+          "birdc",
+          "show",
+          "route",
+          "table",
+          "lab4",
+          "all"
+        ],
+        "exitCode": 0,
+        "stdout": "BIRD 2.0.8 ready.\nTable lab4:\n10.110.0.0/24        unicast [own_dc 15:57:27.832] * (200)\n\tvia 10.210.0.1 on eth0\n\tType: static univ\n10.30.0.0/24         unicast [azure_0 16:27:53.475 from 10.250.0.69] * (100/?) [AS65520e]\n\tvia 10.210.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520\n\tBGP.next_hop: 10.210.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65011,1)\n                     unicast [azure_1 16:27:53.475 from 10.250.0.70] (100/?) [AS65520e]\n\tvia 10.210.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520\n\tBGP.next_hop: 10.210.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65011,1)\n                     unicast [mesh_jp 15:57:34.814 from 172.31.0.6] (100) [AS65515i]\n\tdev wgeujp\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65013 65515\n\tBGP.next_hop: 172.31.0.6\n\tBGP.local_pref: 300\n\tBGP.community: (65013,1)\n                     unicast [mesh_us 16:28:26.407 from 172.31.0.2] (100) [AS65520e]\n\tdev wgeuus\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65012 65515 65520 65520\n\tBGP.next_hop: 172.31.0.2\n\tBGP.local_pref: 100\n\tBGP.community: (65012,1)\n10.140.0.0/24        unicast [mesh_cn 15:57:33.242 from 172.31.0.10] * (100) [AS65014i]\n\tdev wgeucn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65014\n\tBGP.next_hop: 172.31.0.10\n\tBGP.local_pref: 100\n\tBGP.community: \n10.20.0.0/24         unicast [azure_0 16:27:53.474 from 10.250.0.69] * (100/?) [AS65520e]\n\tvia 10.210.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520\n\tBGP.next_hop: 10.210.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65011,1)\n                     unicast [mesh_us 15:57:32.373 from 172.31.0.2] (100) [AS65515i]\n\tdev wgeuus\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65012 65515\n\tBGP.next_hop: 172.31.0.2\n\tBGP.local_pref: 300\n\tBGP.community: (65012,1)\n                     unicast [azure_1 16:27:53.475 from 10.250.0.70] (100/?) [AS65520e]\n\tvia 10.210.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520\n\tBGP.next_hop: 10.210.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65011,1)\n                     unicast [mesh_jp 16:29:45.415 from 172.31.0.6] (100) [AS65520e]\n\tdev wgeujp\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65013 65515 65520 65520\n\tBGP.next_hop: 172.31.0.6\n\tBGP.local_pref: 100\n\tBGP.community: (65013,1)\n10.130.0.0/24        unicast [azure_0 16:27:53.475 from 10.250.0.69] * (100/?) [AS65013e]\n\tvia 10.210.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520 65013\n\tBGP.next_hop: 10.210.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65011,1)\n                     unicast [azure_1 16:27:53.475 from 10.250.0.70] (100/?) [AS65013e]\n\tvia 10.210.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520 65013\n\tBGP.next_hop: 10.210.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65011,1)\n                     unicast [mesh_jp 15:57:32.724 from 172.31.0.6] (100) [AS65013i]\n\tdev wgeujp\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65013\n\tBGP.next_hop: 172.31.0.6\n\tBGP.local_pref: 100\n\tBGP.community: \n10.10.0.0/24         unicast [azure_0 16:27:53.474 from 10.250.0.69] * (100/?) [AS65515i]\n\tvia 10.210.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65515\n\tBGP.next_hop: 10.210.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65011,1)\n                     unicast [azure_1 16:27:53.475 from 10.250.0.70] (100/?) [AS65515i]\n\tvia 10.210.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65515\n\tBGP.next_hop: 10.210.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65011,1)\n                     unicast [mesh_us 16:28:26.407 from 172.31.0.2] (100) [AS65520e]\n\tdev wgeuus\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65012 65515 65520 65520\n\tBGP.next_hop: 172.31.0.2\n\tBGP.local_pref: 100\n\tBGP.community: (65012,1)\n                     unicast [mesh_jp 16:29:45.415 from 172.31.0.6] (100) [AS65520e]\n\tdev wgeujp\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65013 65515 65520 65520\n\tBGP.next_hop: 172.31.0.6\n\tBGP.local_pref: 100\n\tBGP.community: (65013,1)\n10.120.0.0/24        unicast [azure_0 16:27:53.474 from 10.250.0.69] * (100/?) [AS65012e]\n\tvia 10.210.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520 65012\n\tBGP.next_hop: 10.210.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65011,1)\n                     unicast [mesh_us 15:57:32.373 from 172.31.0.2] (100) [AS65012i]\n\tdev wgeuus\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65012\n\tBGP.next_hop: 172.31.0.2\n\tBGP.local_pref: 100\n\tBGP.community: \n                     unicast [azure_1 16:27:53.475 from 10.250.0.70] (100/?) [AS65012e]\n\tvia 10.210.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520 65012\n\tBGP.next_hop: 10.210.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65011,1)\n",
+        "stderr": ""
+      },
+      "kernelRoutes": {
+        "command": [
+          "ip",
+          "-j",
+          "route",
+          "show",
+          "table",
+          "main"
+        ],
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"default\",\"gateway\":\"10.210.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"prefsrc\":\"10.210.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"10.10.0.0/24\",\"gateway\":\"10.210.0.1\",\"dev\":\"eth0\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.20.0.0/24\",\"gateway\":\"10.210.0.1\",\"dev\":\"eth0\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.30.0.0/24\",\"gateway\":\"10.210.0.1\",\"dev\":\"eth0\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.110.0.0/24\",\"gateway\":\"10.210.0.1\",\"dev\":\"eth0\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.120.0.0/24\",\"gateway\":\"10.210.0.1\",\"dev\":\"eth0\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.130.0.0/24\",\"gateway\":\"10.210.0.1\",\"dev\":\"eth0\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.140.0.0/24\",\"dev\":\"wgeucn\",\"protocol\":\"bird\",\"scope\":\"link\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.210.0.0/24\",\"dev\":\"eth0\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"10.210.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"10.210.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"scope\":\"link\",\"prefsrc\":\"10.210.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"10.250.0.69\",\"gateway\":\"10.210.0.1\",\"dev\":\"eth0\",\"flags\":[]},{\"dst\":\"10.250.0.70\",\"gateway\":\"10.210.0.1\",\"dev\":\"eth0\",\"flags\":[]},{\"dst\":\"168.63.129.16\",\"gateway\":\"10.210.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"prefsrc\":\"10.210.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"169.254.169.254\",\"gateway\":\"10.210.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"prefsrc\":\"10.210.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"172.31.0.0/30\",\"dev\":\"wgeuus\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"172.31.0.1\",\"flags\":[]},{\"dst\":\"172.31.0.4/30\",\"dev\":\"wgeujp\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"172.31.0.5\",\"flags\":[]},{\"dst\":\"172.31.0.8/30\",\"dev\":\"wgeucn\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"172.31.0.9\",\"flags\":[]}]\n",
+        "stderr": ""
+      },
+      "policyRules": {
+        "command": [
+          "ip",
+          "-j",
+          "rule",
+          "show"
+        ],
+        "exitCode": 0,
+        "stdout": "[{\"priority\":0,\"src\":\"all\",\"table\":\"local\"},{\"priority\":100,\"src\":\"all\",\"fwmark\":\"0x200\",\"table\":\"100\"},{\"priority\":220,\"src\":\"all\",\"table\":\"220\"},{\"priority\":32766,\"src\":\"all\",\"table\":\"main\"},{\"priority\":32767,\"src\":\"all\",\"table\":\"default\"}]\n",
+        "stderr": ""
+      },
+      "lookups": [
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.130.0.10"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.130.0.10\",\"gateway\":\"10.210.0.1\",\"dev\":\"eth0\",\"prefsrc\":\"10.210.0.4\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.130.0.4"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.130.0.4\",\"gateway\":\"10.210.0.1\",\"dev\":\"eth0\",\"prefsrc\":\"10.210.0.4\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.140.0.4"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.140.0.4\",\"dev\":\"wgeucn\",\"prefsrc\":\"172.31.0.9\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.10.0.10"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.10.0.10\",\"gateway\":\"10.210.0.1\",\"dev\":\"eth0\",\"prefsrc\":\"10.210.0.4\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.20.0.10"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.20.0.10\",\"gateway\":\"10.210.0.1\",\"dev\":\"eth0\",\"prefsrc\":\"10.210.0.4\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.30.0.10"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.30.0.10\",\"gateway\":\"10.210.0.1\",\"dev\":\"eth0\",\"prefsrc\":\"10.210.0.4\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        }
+      ],
+      "exports": {
+        "azure_0": {
+          "command": [
+            "birdc",
+            "show",
+            "route",
+            "export",
+            "azure_0",
+            "all"
+          ],
+          "exitCode": 0,
+          "stdout": "BIRD 2.0.8 ready.\nTable lab4:\n10.110.0.0/24        unicast [own_dc 15:57:27.832] * (200)\n\tvia 10.210.0.1 on eth0\n\tType: static univ\n10.140.0.0/24        unicast [mesh_cn 15:57:33.242 from 172.31.0.10] * (100) [AS65014i]\n\tdev wgeucn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65011 65011 65011 65014\n\tBGP.next_hop: 172.31.0.10\n\tBGP.local_pref: 100\n\tBGP.community: \n",
+          "stderr": ""
+        },
+        "azure_1": {
+          "command": [
+            "birdc",
+            "show",
+            "route",
+            "export",
+            "azure_1",
+            "all"
+          ],
+          "exitCode": 0,
+          "stdout": "BIRD 2.0.8 ready.\nTable lab4:\n10.110.0.0/24        unicast [own_dc 15:57:27.832] * (200)\n\tvia 10.210.0.1 on eth0\n\tType: static univ\n10.140.0.0/24        unicast [mesh_cn 15:57:33.242 from 172.31.0.10] * (100) [AS65014i]\n\tdev wgeucn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65011 65011 65011 65014\n\tBGP.next_hop: 172.31.0.10\n\tBGP.local_pref: 100\n\tBGP.community: \n",
+          "stderr": ""
+        }
+      }
+    },
+    "us": {
+      "site": "us",
+      "timestampUtc": "2026-10-17T16:35:30.742191+00:00",
+      "sha256": "3977aa2043eccce5e35ee881866d5d9e4ad9ad495023f93aa089f90ea631d9fe",
+      "stat": {
+        "uid": 113,
+        "gid": 122,
+        "mode": 384,
+        "mtimeNs": 1792000609620725084
+      },
+      "protocols": {
+        "mesh_eu": "Established",
+        "mesh_jp": "Established",
+        "mesh_cn": "Established",
+        "azure_0": "Established",
+        "azure_1": "Established"
+      },
+      "healthWaitObservations": [],
+      "birdProtocols": {
+        "command": [
+          "birdc",
+          "show",
+          "protocols"
+        ],
+        "exitCode": 0,
+        "stdout": "BIRD 2.0.8 ready.\nName       Proto      Table      State  Since         Info\ndevices    Device     ---        up     15:57:27.404  \nconnected  Direct     ---        up     15:57:27.404  \ncontrol_pins Static     underlay4  up     15:57:27.404  \nown_dc     Static     lab4       up     15:57:27.404  \nkernel_lab Kernel     lab4       up     15:57:27.404  \nmesh_eu    BGP        ---        up     15:57:32.154  Established   \nmesh_jp    BGP        ---        up     15:57:32.716  Established   \nmesh_cn    BGP        ---        up     15:57:31.590  Established   \nazure_0    BGP        ---        up     15:57:28.559  Established   \nazure_1    BGP        ---        up     15:57:27.856  Established   \n",
+        "stderr": ""
+      },
+      "birdRoutes": {
+        "command": [
+          "birdc",
+          "show",
+          "route",
+          "table",
+          "lab4",
+          "all"
+        ],
+        "exitCode": 0,
+        "stdout": "BIRD 2.0.8 ready.\nTable lab4:\n10.110.0.0/24        unicast [azure_1 16:28:26.251 from 10.250.2.69] * (100/?) [AS65011e]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520 65011\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n                     unicast [mesh_eu 15:57:32.292 from 172.31.0.1] (100) [AS65011i]\n\tdev wgeuus\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65011\n\tBGP.next_hop: 172.31.0.1\n\tBGP.local_pref: 100\n\tBGP.community: \n                     unicast [azure_0 16:28:26.251 from 10.250.2.70] (100/?) [AS65011e]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520 65011\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n10.30.0.0/24         unicast [azure_1 16:28:26.251 from 10.250.2.69] * (100/?) [AS65520e]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n                     unicast [mesh_jp 15:57:34.768 from 172.31.0.14] (100) [AS65515i]\n\tdev wgusjp\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65013 65515\n\tBGP.next_hop: 172.31.0.14\n\tBGP.local_pref: 300\n\tBGP.community: (65013,1)\n                     unicast [azure_0 16:28:26.251 from 10.250.2.70] (100/?) [AS65520e]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n                     unicast [mesh_eu 16:27:53.621 from 172.31.0.1] (100) [AS65520e]\n\tdev wgeuus\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65011 65515 65520 65520\n\tBGP.next_hop: 172.31.0.1\n\tBGP.local_pref: 100\n\tBGP.community: (65011,1)\n10.140.0.0/24        unicast [mesh_cn 15:57:32.010 from 172.31.0.18] * (100) [AS65014i]\n\tdev wguscn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65014\n\tBGP.next_hop: 172.31.0.18\n\tBGP.local_pref: 100\n\tBGP.community: \n10.20.0.0/24         unicast [azure_1 16:28:26.251 from 10.250.2.69] * (100/?) [AS65515i]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65515\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n                     unicast [azure_0 16:28:26.251 from 10.250.2.70] (100/?) [AS65515i]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65515\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n                     unicast [mesh_eu 16:27:53.621 from 172.31.0.1] (100) [AS65520e]\n\tdev wgeuus\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65011 65515 65520 65520\n\tBGP.next_hop: 172.31.0.1\n\tBGP.local_pref: 100\n\tBGP.community: (65011,1)\n                     unicast [mesh_jp 16:29:45.285 from 172.31.0.14] (100) [AS65520e]\n\tdev wgusjp\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65013 65515 65520 65520\n\tBGP.next_hop: 172.31.0.14\n\tBGP.local_pref: 100\n\tBGP.community: (65013,1)\n10.130.0.0/24        unicast [azure_1 16:28:26.251 from 10.250.2.69] * (100/?) [AS65013e]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520 65013\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n                     unicast [mesh_jp 15:57:33.043 from 172.31.0.14] (100) [AS65013i]\n\tdev wgusjp\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65013\n\tBGP.next_hop: 172.31.0.14\n\tBGP.local_pref: 100\n\tBGP.community: \n                     unicast [azure_0 16:28:26.251 from 10.250.2.70] (100/?) [AS65013e]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520 65013\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n10.10.0.0/24         unicast [azure_1 16:28:26.251 from 10.250.2.69] * (100/?) [AS65520e]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n                     unicast [mesh_eu 15:57:32.292 from 172.31.0.1] (100) [AS65515i]\n\tdev wgeuus\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65011 65515\n\tBGP.next_hop: 172.31.0.1\n\tBGP.local_pref: 300\n\tBGP.community: (65011,1)\n                     unicast [azure_0 16:28:26.251 from 10.250.2.70] (100/?) [AS65520e]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n                     unicast [mesh_jp 16:29:45.285 from 172.31.0.14] (100) [AS65520e]\n\tdev wgusjp\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65013 65515 65520 65520\n\tBGP.next_hop: 172.31.0.14\n\tBGP.local_pref: 100\n\tBGP.community: (65013,1)\n10.120.0.0/24        unicast [own_dc 15:57:27.404] * (200)\n\tvia 10.220.0.1 on eth0\n\tType: static univ\n",
+        "stderr": ""
+      },
+      "kernelRoutes": {
+        "command": [
+          "ip",
+          "-j",
+          "route",
+          "show",
+          "table",
+          "main"
+        ],
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"default\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"prefsrc\":\"10.220.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"10.10.0.0/24\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.20.0.0/24\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.30.0.0/24\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.110.0.0/24\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.120.0.0/24\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.130.0.0/24\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.140.0.0/24\",\"dev\":\"wguscn\",\"protocol\":\"bird\",\"scope\":\"link\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.220.0.0/24\",\"dev\":\"eth0\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"10.220.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"scope\":\"link\",\"prefsrc\":\"10.220.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"10.250.2.69\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"flags\":[]},{\"dst\":\"10.250.2.70\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"flags\":[]},{\"dst\":\"168.63.129.16\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"prefsrc\":\"10.220.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"169.254.169.254\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"prefsrc\":\"10.220.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"172.31.0.0/30\",\"dev\":\"wgeuus\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"172.31.0.2\",\"flags\":[]},{\"dst\":\"172.31.0.12/30\",\"dev\":\"wgusjp\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"172.31.0.13\",\"flags\":[]},{\"dst\":\"172.31.0.16/30\",\"dev\":\"wguscn\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"172.31.0.17\",\"flags\":[]}]\n",
+        "stderr": ""
+      },
+      "policyRules": {
+        "command": [
+          "ip",
+          "-j",
+          "rule",
+          "show"
+        ],
+        "exitCode": 0,
+        "stdout": "[{\"priority\":0,\"src\":\"all\",\"table\":\"local\"},{\"priority\":100,\"src\":\"all\",\"fwmark\":\"0x200\",\"table\":\"100\"},{\"priority\":220,\"src\":\"all\",\"table\":\"220\"},{\"priority\":32766,\"src\":\"all\",\"table\":\"main\"},{\"priority\":32767,\"src\":\"all\",\"table\":\"default\"}]\n",
+        "stderr": ""
+      },
+      "lookups": [
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.130.0.10"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.130.0.10\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"prefsrc\":\"10.220.0.4\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.130.0.4"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.130.0.4\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"prefsrc\":\"10.220.0.4\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.140.0.4"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.140.0.4\",\"dev\":\"wguscn\",\"prefsrc\":\"172.31.0.17\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.10.0.10"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.10.0.10\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"prefsrc\":\"10.220.0.4\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.20.0.10"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.20.0.10\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"prefsrc\":\"10.220.0.4\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.30.0.10"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.30.0.10\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"prefsrc\":\"10.220.0.4\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        }
+      ],
+      "exports": {
+        "azure_0": {
+          "command": [
+            "birdc",
+            "show",
+            "route",
+            "export",
+            "azure_0",
+            "all"
+          ],
+          "exitCode": 0,
+          "stdout": "BIRD 2.0.8 ready.\nTable lab4:\n10.140.0.0/24        unicast [mesh_cn 15:57:32.010 from 172.31.0.18] * (100) [AS65014i]\n\tdev wguscn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65012 65012 65012 65014\n\tBGP.next_hop: 172.31.0.18\n\tBGP.local_pref: 100\n\tBGP.community: \n10.120.0.0/24        unicast [own_dc 15:57:27.404] * (200)\n\tvia 10.220.0.1 on eth0\n\tType: static univ\n",
+          "stderr": ""
+        },
+        "azure_1": {
+          "command": [
+            "birdc",
+            "show",
+            "route",
+            "export",
+            "azure_1",
+            "all"
+          ],
+          "exitCode": 0,
+          "stdout": "BIRD 2.0.8 ready.\nTable lab4:\n10.140.0.0/24        unicast [mesh_cn 15:57:32.010 from 172.31.0.18] * (100) [AS65014i]\n\tdev wguscn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65012 65012 65012 65014\n\tBGP.next_hop: 172.31.0.18\n\tBGP.local_pref: 100\n\tBGP.community: \n10.120.0.0/24        unicast [own_dc 15:57:27.404] * (200)\n\tvia 10.220.0.1 on eth0\n\tType: static univ\n",
+          "stderr": ""
+        }
+      }
+    },
+    "jp": {
+      "site": "jp",
+      "timestampUtc": "2026-10-17T16:36:03.134729+00:00",
+      "sha256": "9308de0847686b6203680e82a77ff150b75b2ae2ffbba8ef56850b37262406e7",
+      "stat": {
+        "uid": 113,
+        "gid": 122,
+        "mode": 384,
+        "mtimeNs": 1792000606196722098
+      },
+      "protocols": {
+        "mesh_eu": "Established",
+        "mesh_us": "Established",
+        "mesh_cn": "Established",
+        "azure_0": "Established",
+        "azure_1": "Established"
+      },
+      "healthWaitObservations": [],
+      "ikeEstablished": 2,
+      "birdProtocols": {
+        "command": [
+          "birdc",
+          "show",
+          "protocols"
+        ],
+        "exitCode": 0,
+        "stdout": "BIRD 2.0.8 ready.\nName       Proto      Table      State  Since         Info\ndevices    Device     ---        up     15:57:30.793  \nconnected  Direct     ---        up     15:57:30.793  \ncontrol_pins Static     underlay4  up     15:57:30.793  \nown_dc     Static     lab4       up     15:57:30.793  \nkernel_lab Kernel     lab4       up     15:57:30.793  \nmesh_eu    BGP        ---        up     15:57:32.333  Established   \nmesh_us    BGP        ---        up     15:57:32.645  Established   \nmesh_cn    BGP        ---        up     15:57:33.124  Established   \nazure_0    BGP        ---        up     15:57:35.373  Established   \nazure_1    BGP        ---        up     15:57:34.685  Established   \n",
+        "stderr": ""
+      },
+      "birdRoutes": {
+        "command": [
+          "birdc",
+          "show",
+          "route",
+          "table",
+          "lab4",
+          "all"
+        ],
+        "exitCode": 0,
+        "stdout": "BIRD 2.0.8 ready.\nTable lab4:\n10.110.0.0/24        unicast [azure_1 16:29:53.283] ! (100/?) [AS65011e]\n\tvia 169.254.21.6 on xfrm42\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520 65011\n\tBGP.next_hop: 169.254.21.6\n\tBGP.local_pref: 400\n\tBGP.community: (65013,1)\n                     unicast [azure_0 16:29:52.248] (100/?) [AS65011e]\n\tvia 169.254.21.2 on xfrm41\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520 65011\n\tBGP.next_hop: 169.254.21.2\n\tBGP.local_pref: 400\n\tBGP.community: (65013,1)\n                     unicast [mesh_eu 15:57:32.627 from 172.31.0.5] (100) [AS65011i]\n\tdev wgeujp\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65011\n\tBGP.next_hop: 172.31.0.5\n\tBGP.local_pref: 100\n\tBGP.community: \n10.30.0.0/24         unicast [azure_1 16:29:45.068] ! (100/?) [AS65515i]\n\tvia 169.254.21.6 on xfrm42\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65515\n\tBGP.next_hop: 169.254.21.6\n\tBGP.local_pref: 400\n\tBGP.community: (65013,1)\n                     unicast [azure_0 16:29:45.068] (100/?) [AS65515i]\n\tvia 169.254.21.2 on xfrm41\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65515\n\tBGP.next_hop: 169.254.21.2\n\tBGP.local_pref: 400\n\tBGP.community: (65013,1)\n                     unicast [mesh_eu 16:27:53.817 from 172.31.0.5] (100) [AS65520e]\n\tdev wgeujp\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65011 65515 65520 65520\n\tBGP.next_hop: 172.31.0.5\n\tBGP.local_pref: 100\n\tBGP.community: (65011,1)\n                     unicast [mesh_us 16:28:26.469 from 172.31.0.13] (100) [AS65520e]\n\tdev wgusjp\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65012 65515 65520 65520\n\tBGP.next_hop: 172.31.0.13\n\tBGP.local_pref: 100\n\tBGP.community: (65012,1)\n10.140.0.0/24        unicast [mesh_cn 15:57:33.260 from 172.31.0.22] * (100) [AS65014i]\n\tdev wgjpcn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65014\n\tBGP.next_hop: 172.31.0.22\n\tBGP.local_pref: 100\n\tBGP.community: \n10.20.0.0/24         unicast [azure_1 16:29:45.068] ! (100/?) [AS65520e]\n\tvia 169.254.21.6 on xfrm42\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520\n\tBGP.next_hop: 169.254.21.6\n\tBGP.local_pref: 400\n\tBGP.community: (65013,1)\n                     unicast [mesh_us 15:57:33.259 from 172.31.0.13] (100) [AS65515i]\n\tdev wgusjp\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65012 65515\n\tBGP.next_hop: 172.31.0.13\n\tBGP.local_pref: 300\n\tBGP.community: (65012,1)\n                     unicast [azure_0 16:29:45.068] (100/?) [AS65520e]\n\tvia 169.254.21.2 on xfrm41\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520\n\tBGP.next_hop: 169.254.21.2\n\tBGP.local_pref: 400\n\tBGP.community: (65013,1)\n                     unicast [mesh_eu 16:27:53.817 from 172.31.0.5] (100) [AS65520e]\n\tdev wgeujp\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65011 65515 65520 65520\n\tBGP.next_hop: 172.31.0.5\n\tBGP.local_pref: 100\n\tBGP.community: (65011,1)\n10.130.0.0/24        unicast [own_dc 15:57:30.793] * (200)\n\tdev eth0\n\tType: static univ\n10.10.0.0/24         unicast [azure_1 16:29:45.068] ! (100/?) [AS65520e]\n\tvia 169.254.21.6 on xfrm42\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520\n\tBGP.next_hop: 169.254.21.6\n\tBGP.local_pref: 400\n\tBGP.community: (65013,1)\n                     unicast [mesh_eu 15:57:32.969 from 172.31.0.5] (100) [AS65515i]\n\tdev wgeujp\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65011 65515\n\tBGP.next_hop: 172.31.0.5\n\tBGP.local_pref: 300\n\tBGP.community: (65011,1)\n                     unicast [azure_0 16:29:45.068] (100/?) [AS65520e]\n\tvia 169.254.21.2 on xfrm41\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520\n\tBGP.next_hop: 169.254.21.2\n\tBGP.local_pref: 400\n\tBGP.community: (65013,1)\n                     unicast [mesh_us 16:28:26.469 from 172.31.0.13] (100) [AS65520e]\n\tdev wgusjp\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65012 65515 65520 65520\n\tBGP.next_hop: 172.31.0.13\n\tBGP.local_pref: 100\n\tBGP.community: (65012,1)\n10.120.0.0/24        unicast [azure_1 16:29:53.283] ! (100/?) [AS65012e]\n\tvia 169.254.21.6 on xfrm42\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520 65012\n\tBGP.next_hop: 169.254.21.6\n\tBGP.local_pref: 400\n\tBGP.community: (65013,1)\n                     unicast [azure_0 16:29:52.248] (100/?) [AS65012e]\n\tvia 169.254.21.2 on xfrm41\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520 65012\n\tBGP.next_hop: 169.254.21.2\n\tBGP.local_pref: 400\n\tBGP.community: (65013,1)\n                     unicast [mesh_us 15:57:33.259 from 172.31.0.13] (100) [AS65012i]\n\tdev wgusjp\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65012\n\tBGP.next_hop: 172.31.0.13\n\tBGP.local_pref: 100\n\tBGP.community: \n",
+        "stderr": ""
+      },
+      "kernelRoutes": {
+        "command": [
+          "ip",
+          "-j",
+          "route",
+          "show",
+          "table",
+          "main"
+        ],
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"default\",\"gateway\":\"10.130.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"prefsrc\":\"10.130.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"4.190.54.71\",\"gateway\":\"10.130.0.1\",\"dev\":\"eth0\",\"flags\":[]},{\"dst\":\"10.10.0.0/24\",\"gateway\":\"169.254.21.6\",\"dev\":\"xfrm42\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.20.0.0/24\",\"gateway\":\"169.254.21.6\",\"dev\":\"xfrm42\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.30.0.0/24\",\"gateway\":\"169.254.21.6\",\"dev\":\"xfrm42\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.110.0.0/24\",\"gateway\":\"169.254.21.6\",\"dev\":\"xfrm42\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.120.0.0/24\",\"gateway\":\"169.254.21.6\",\"dev\":\"xfrm42\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.130.0.0/24\",\"dev\":\"eth0\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"10.130.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"10.130.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"scope\":\"link\",\"prefsrc\":\"10.130.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"10.140.0.0/24\",\"dev\":\"wgjpcn\",\"protocol\":\"bird\",\"scope\":\"link\",\"metric\":80,\"flags\":[]},{\"dst\":\"20.27.135.137\",\"gateway\":\"10.130.0.1\",\"dev\":\"eth0\",\"flags\":[]},{\"dst\":\"168.63.129.16\",\"gateway\":\"10.130.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"prefsrc\":\"10.130.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"169.254.21.2\",\"dev\":\"xfrm41\",\"scope\":\"link\",\"prefsrc\":\"169.254.21.1\",\"flags\":[]},{\"dst\":\"169.254.21.6\",\"dev\":\"xfrm42\",\"scope\":\"link\",\"prefsrc\":\"169.254.21.1\",\"flags\":[]},{\"dst\":\"169.254.169.254\",\"gateway\":\"10.130.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"prefsrc\":\"10.130.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"172.31.0.4/30\",\"dev\":\"wgeujp\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"172.31.0.6\",\"flags\":[]},{\"dst\":\"172.31.0.12/30\",\"dev\":\"wgusjp\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"172.31.0.14\",\"flags\":[]},{\"dst\":\"172.31.0.20/30\",\"dev\":\"wgjpcn\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"172.31.0.21\",\"flags\":[]}]\n",
+        "stderr": ""
+      },
+      "policyRules": {
+        "command": [
+          "ip",
+          "-j",
+          "rule",
+          "show"
+        ],
+        "exitCode": 0,
+        "stdout": "[{\"priority\":0,\"src\":\"all\",\"table\":\"local\"},{\"priority\":100,\"src\":\"all\",\"fwmark\":\"0x200\",\"table\":\"100\"},{\"priority\":220,\"src\":\"all\",\"table\":\"220\"},{\"priority\":32766,\"src\":\"all\",\"table\":\"main\"},{\"priority\":32767,\"src\":\"all\",\"table\":\"default\"}]\n",
+        "stderr": ""
+      },
+      "lookups": [
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.130.0.10"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.130.0.10\",\"dev\":\"eth0\",\"prefsrc\":\"10.130.0.4\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.130.0.4"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"type\":\"local\",\"dst\":\"10.130.0.4\",\"dev\":\"lo\",\"table\":\"local\",\"prefsrc\":\"10.130.0.4\",\"flags\":[],\"uid\":0,\"cache\":[\"local\"]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.140.0.4"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.140.0.4\",\"dev\":\"wgjpcn\",\"prefsrc\":\"172.31.0.21\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.10.0.10"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.10.0.10\",\"gateway\":\"169.254.21.6\",\"dev\":\"xfrm42\",\"prefsrc\":\"169.254.21.1\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.20.0.10"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.20.0.10\",\"gateway\":\"169.254.21.6\",\"dev\":\"xfrm42\",\"prefsrc\":\"169.254.21.1\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.30.0.10"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.30.0.10\",\"gateway\":\"169.254.21.6\",\"dev\":\"xfrm42\",\"prefsrc\":\"169.254.21.1\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        }
+      ],
+      "exports": {
+        "azure_0": {
+          "command": [
+            "birdc",
+            "show",
+            "route",
+            "export",
+            "azure_0",
+            "all"
+          ],
+          "exitCode": 0,
+          "stdout": "BIRD 2.0.8 ready.\nTable lab4:\n10.140.0.0/24        unicast [mesh_cn 15:57:33.260 from 172.31.0.22] * (100) [AS65014i]\n\tdev wgjpcn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65013 65013 65013 65014\n\tBGP.next_hop: 172.31.0.22\n\tBGP.local_pref: 100\n\tBGP.community: \n10.130.0.0/24        unicast [own_dc 15:57:30.793] * (200)\n\tdev eth0\n\tType: static univ\n",
+          "stderr": ""
+        },
+        "azure_1": {
+          "command": [
+            "birdc",
+            "show",
+            "route",
+            "export",
+            "azure_1",
+            "all"
+          ],
+          "exitCode": 0,
+          "stdout": "BIRD 2.0.8 ready.\nTable lab4:\n10.140.0.0/24        unicast [mesh_cn 15:57:33.260 from 172.31.0.22] * (100) [AS65014i]\n\tdev wgjpcn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65013 65013 65013 65014\n\tBGP.next_hop: 172.31.0.22\n\tBGP.local_pref: 100\n\tBGP.community: \n10.130.0.0/24        unicast [own_dc 15:57:30.793] * (200)\n\tdev eth0\n\tType: static univ\n",
+          "stderr": ""
+        }
+      }
+    },
+    "cn": {
+      "site": "cn",
+      "timestampUtc": "2026-10-17T16:35:26.589611+00:00",
+      "sha256": "10e5591a16159a4a6e17350cb23f437623372f2ffd635ef20736f133c4738346",
+      "stat": {
+        "uid": 113,
+        "gid": 122,
+        "mode": 384,
+        "mtimeNs": 1792000608839202133
+      },
+      "protocols": {
+        "mesh_eu": "Established",
+        "mesh_us": "Established",
+        "mesh_jp": "Established"
+      },
+      "healthWaitObservations": [],
+      "birdProtocols": {
+        "command": [
+          "birdc",
+          "show",
+          "protocols"
+        ],
+        "exitCode": 0,
+        "stdout": "BIRD 2.0.8 ready.\nName       Proto      Table      State  Since         Info\ndevices    Device     ---        up     15:57:28.056  \nconnected  Direct     ---        up     15:57:28.056  \ncontrol_pins Static     underlay4  up     15:57:28.056  \nown_dc     Static     lab4       up     15:57:28.056  \nkernel_lab Kernel     lab4       up     15:57:28.056  \nmesh_eu    BGP        ---        up     15:57:32.861  Established   \nmesh_us    BGP        ---        up     15:57:31.520  Established   \nmesh_jp    BGP        ---        up     15:57:33.124  Established   \n",
+        "stderr": ""
+      },
+      "birdRoutes": {
+        "command": [
+          "birdc",
+          "show",
+          "route",
+          "table",
+          "lab4",
+          "all"
+        ],
+        "exitCode": 0,
+        "stdout": "BIRD 2.0.8 ready.\nTable lab4:\n10.110.0.0/24        unicast [mesh_eu 15:57:33.358 from 172.31.0.9] * (100) [AS65011i]\n\tdev wgeucn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65011\n\tBGP.next_hop: 172.31.0.9\n\tBGP.local_pref: 100\n\tBGP.community: \n10.30.0.0/24         unicast [mesh_jp 15:57:34.694 from 172.31.0.21] * (100) [AS65515i]\n\tdev wgjpcn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65013 65515\n\tBGP.next_hop: 172.31.0.21\n\tBGP.local_pref: 300\n\tBGP.community: (65013,1)\n                     unicast [mesh_eu 16:27:53.823 from 172.31.0.9] (100) [AS65520e]\n\tdev wgeucn\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65011 65515 65520 65520\n\tBGP.next_hop: 172.31.0.9\n\tBGP.local_pref: 100\n\tBGP.community: (65011,1)\n                     unicast [mesh_us 16:28:26.464 from 172.31.0.17] (100) [AS65520e]\n\tdev wguscn\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65012 65515 65520 65520\n\tBGP.next_hop: 172.31.0.17\n\tBGP.local_pref: 100\n\tBGP.community: (65012,1)\n10.140.0.0/24        unicast [own_dc 15:57:28.056] * (200)\n\tdev eth0\n\tType: static univ\n10.20.0.0/24         unicast [mesh_us 15:57:32.084 from 172.31.0.17] * (100) [AS65515i]\n\tdev wguscn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65012 65515\n\tBGP.next_hop: 172.31.0.17\n\tBGP.local_pref: 300\n\tBGP.community: (65012,1)\n                     unicast [mesh_eu 16:27:53.823 from 172.31.0.9] (100) [AS65520e]\n\tdev wgeucn\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65011 65515 65520 65520\n\tBGP.next_hop: 172.31.0.9\n\tBGP.local_pref: 100\n\tBGP.community: (65011,1)\n                     unicast [mesh_jp 16:29:45.068 from 172.31.0.21] (100) [AS65520e]\n\tdev wgjpcn\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65013 65515 65520 65520\n\tBGP.next_hop: 172.31.0.21\n\tBGP.local_pref: 100\n\tBGP.community: (65013,1)\n10.130.0.0/24        unicast [mesh_jp 15:57:33.260 from 172.31.0.21] * (100) [AS65013i]\n\tdev wgjpcn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65013\n\tBGP.next_hop: 172.31.0.21\n\tBGP.local_pref: 100\n\tBGP.community: \n10.10.0.0/24         unicast [mesh_eu 15:57:33.585 from 172.31.0.9] * (100) [AS65515i]\n\tdev wgeucn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65011 65515\n\tBGP.next_hop: 172.31.0.9\n\tBGP.local_pref: 300\n\tBGP.community: (65011,1)\n                     unicast [mesh_us 16:28:26.464 from 172.31.0.17] (100) [AS65520e]\n\tdev wguscn\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65012 65515 65520 65520\n\tBGP.next_hop: 172.31.0.17\n\tBGP.local_pref: 100\n\tBGP.community: (65012,1)\n                     unicast [mesh_jp 16:29:45.068 from 172.31.0.21] (100) [AS65520e]\n\tdev wgjpcn\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65013 65515 65520 65520\n\tBGP.next_hop: 172.31.0.21\n\tBGP.local_pref: 100\n\tBGP.community: (65013,1)\n10.120.0.0/24        unicast [mesh_us 15:57:32.084 from 172.31.0.17] * (100) [AS65012i]\n\tdev wguscn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65012\n\tBGP.next_hop: 172.31.0.17\n\tBGP.local_pref: 100\n\tBGP.community: \n",
+        "stderr": ""
+      },
+      "kernelRoutes": {
+        "command": [
+          "ip",
+          "-j",
+          "route",
+          "show",
+          "table",
+          "main"
+        ],
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"default\",\"gateway\":\"10.140.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"prefsrc\":\"10.140.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"10.10.0.0/24\",\"dev\":\"wgeucn\",\"protocol\":\"bird\",\"scope\":\"link\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.20.0.0/24\",\"dev\":\"wguscn\",\"protocol\":\"bird\",\"scope\":\"link\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.30.0.0/24\",\"dev\":\"wgjpcn\",\"protocol\":\"bird\",\"scope\":\"link\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.110.0.0/24\",\"dev\":\"wgeucn\",\"protocol\":\"bird\",\"scope\":\"link\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.120.0.0/24\",\"dev\":\"wguscn\",\"protocol\":\"bird\",\"scope\":\"link\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.130.0.0/24\",\"dev\":\"wgjpcn\",\"protocol\":\"bird\",\"scope\":\"link\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.140.0.0/24\",\"dev\":\"eth0\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"10.140.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"10.140.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"scope\":\"link\",\"prefsrc\":\"10.140.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"168.63.129.16\",\"gateway\":\"10.140.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"prefsrc\":\"10.140.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"169.254.169.254\",\"gateway\":\"10.140.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"prefsrc\":\"10.140.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"172.31.0.8/30\",\"dev\":\"wgeucn\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"172.31.0.10\",\"flags\":[]},{\"dst\":\"172.31.0.16/30\",\"dev\":\"wguscn\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"172.31.0.18\",\"flags\":[]},{\"dst\":\"172.31.0.20/30\",\"dev\":\"wgjpcn\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"172.31.0.22\",\"flags\":[]}]\n",
+        "stderr": ""
+      },
+      "policyRules": {
+        "command": [
+          "ip",
+          "-j",
+          "rule",
+          "show"
+        ],
+        "exitCode": 0,
+        "stdout": "[{\"priority\":0,\"src\":\"all\",\"table\":\"local\"},{\"priority\":100,\"src\":\"all\",\"fwmark\":\"0x200\",\"table\":\"100\"},{\"priority\":220,\"src\":\"all\",\"table\":\"220\"},{\"priority\":32766,\"src\":\"all\",\"table\":\"main\"},{\"priority\":32767,\"src\":\"all\",\"table\":\"default\"}]\n",
+        "stderr": ""
+      },
+      "lookups": [
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.130.0.10"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.130.0.10\",\"dev\":\"wgjpcn\",\"prefsrc\":\"172.31.0.22\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.130.0.4"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.130.0.4\",\"dev\":\"wgjpcn\",\"prefsrc\":\"172.31.0.22\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.140.0.4"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"type\":\"local\",\"dst\":\"10.140.0.4\",\"dev\":\"lo\",\"table\":\"local\",\"prefsrc\":\"10.140.0.4\",\"flags\":[],\"uid\":0,\"cache\":[\"local\"]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.10.0.10"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.10.0.10\",\"dev\":\"wgeucn\",\"prefsrc\":\"172.31.0.10\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.20.0.10"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.20.0.10\",\"dev\":\"wguscn\",\"prefsrc\":\"172.31.0.18\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "ip",
+            "-j",
+            "route",
+            "get",
+            "10.30.0.10"
+          ],
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.30.0.10\",\"dev\":\"wgjpcn\",\"prefsrc\":\"172.31.0.22\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+          "stderr": ""
+        }
+      ],
+      "exports": {}
+    }
+  },
+  "firewalls": {
+    "rows": [
+      {
+        "observer": "eu",
+        "prefix": "10.110.0.0/24",
+        "asPath": "65011",
+        "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu",
+        "nextHopType": "HubBgpConnection",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+        ]
+      },
+      {
+        "observer": "eu",
+        "prefix": "10.120.0.0/24",
+        "asPath": "65520-65520-65012",
+        "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us",
+        "nextHopType": "Remote Hub",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us"
+        ]
+      },
+      {
+        "observer": "eu",
+        "prefix": "10.130.0.0/24",
+        "asPath": "65520-65520-65013",
+        "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp",
+        "nextHopType": "Remote Hub",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp"
+        ]
+      },
+      {
+        "observer": "eu",
+        "prefix": "10.140.0.0/24",
+        "asPath": "65011-65011-65011-65011-65014",
+        "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu",
+        "nextHopType": "HubBgpConnection",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+        ]
+      },
+      {
+        "observer": "us",
+        "prefix": "10.110.0.0/24",
+        "asPath": "65520-65520-65011",
+        "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu",
+        "nextHopType": "Remote Hub",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu"
+        ]
+      },
+      {
+        "observer": "us",
+        "prefix": "10.120.0.0/24",
+        "asPath": "65012",
+        "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us",
+        "nextHopType": "HubBgpConnection",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+        ]
+      },
+      {
+        "observer": "us",
+        "prefix": "10.130.0.0/24",
+        "asPath": "65520-65520-65013",
+        "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp",
+        "nextHopType": "Remote Hub",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp"
+        ]
+      },
+      {
+        "observer": "us",
+        "prefix": "10.140.0.0/24",
+        "asPath": "65012-65012-65012-65012-65014",
+        "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us",
+        "nextHopType": "HubBgpConnection",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+        ]
+      },
+      {
+        "observer": "jp",
+        "prefix": "10.110.0.0/24",
+        "asPath": "65520-65520-65011",
+        "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu",
+        "nextHopType": "Remote Hub",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu"
+        ]
+      },
+      {
+        "observer": "jp",
+        "prefix": "10.120.0.0/24",
+        "asPath": "65520-65520-65012",
+        "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us",
+        "nextHopType": "Remote Hub",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us"
+        ]
+      },
+      {
+        "observer": "jp",
+        "prefix": "10.130.0.0/24",
+        "asPath": "65013",
+        "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+        "nextHopType": "VPN_S2S_Gateway",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+        ]
+      },
+      {
+        "observer": "jp",
+        "prefix": "10.140.0.0/24",
+        "asPath": "65013-65013-65013-65013-65014",
+        "origin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp",
+        "nextHopType": "VPN_S2S_Gateway",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+        ]
+      }
+    ],
+    "stable": true,
+    "complete": true,
+    "minimumSnapshotSpacingSeconds": 120
+  },
+  "selected": {
+    "eu": [
+      {
+        "prefix": "10.110.0.0/24",
+        "protocol": "own_dc",
+        "headline": "10.110.0.0/24        unicast [own_dc 15:57:27.832] * (200)",
+        "asPath": [],
+        "localPreference": null,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.120.0.0/24",
+        "protocol": "azure_0",
+        "headline": "10.120.0.0/24        unicast [azure_0 16:27:53.474 from 10.250.0.69] * (100/?) [AS65012e]",
+        "asPath": [
+          65515,
+          65520,
+          65520,
+          65012
+        ],
+        "localPreference": 400,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.130.0.0/24",
+        "protocol": "azure_0",
+        "headline": "10.130.0.0/24        unicast [azure_0 16:27:53.475 from 10.250.0.69] * (100/?) [AS65013e]",
+        "asPath": [
+          65515,
+          65520,
+          65520,
+          65013
+        ],
+        "localPreference": 400,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.140.0.0/24",
+        "protocol": "mesh_cn",
+        "headline": "10.140.0.0/24        unicast [mesh_cn 15:57:33.242 from 172.31.0.10] * (100) [AS65014i]",
+        "asPath": [
+          65014
+        ],
+        "localPreference": 100,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.10.0.0/24",
+        "protocol": "azure_0",
+        "headline": "10.10.0.0/24         unicast [azure_0 16:27:53.474 from 10.250.0.69] * (100/?) [AS65515i]",
+        "asPath": [
+          65515
+        ],
+        "localPreference": 400,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.20.0.0/24",
+        "protocol": "azure_0",
+        "headline": "10.20.0.0/24         unicast [azure_0 16:27:53.474 from 10.250.0.69] * (100/?) [AS65520e]",
+        "asPath": [
+          65515,
+          65520,
+          65520
+        ],
+        "localPreference": 400,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.30.0.0/24",
+        "protocol": "azure_0",
+        "headline": "10.30.0.0/24         unicast [azure_0 16:27:53.475 from 10.250.0.69] * (100/?) [AS65520e]",
+        "asPath": [
+          65515,
+          65520,
+          65520
+        ],
+        "localPreference": 400,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      }
+    ],
+    "us": [
+      {
+        "prefix": "10.110.0.0/24",
+        "protocol": "azure_1",
+        "headline": "10.110.0.0/24        unicast [azure_1 16:28:26.251 from 10.250.2.69] * (100/?) [AS65011e]",
+        "asPath": [
+          65515,
+          65520,
+          65520,
+          65011
+        ],
+        "localPreference": 400,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.120.0.0/24",
+        "protocol": "own_dc",
+        "headline": "10.120.0.0/24        unicast [own_dc 15:57:27.404] * (200)",
+        "asPath": [],
+        "localPreference": null,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.130.0.0/24",
+        "protocol": "azure_1",
+        "headline": "10.130.0.0/24        unicast [azure_1 16:28:26.251 from 10.250.2.69] * (100/?) [AS65013e]",
+        "asPath": [
+          65515,
+          65520,
+          65520,
+          65013
+        ],
+        "localPreference": 400,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.140.0.0/24",
+        "protocol": "mesh_cn",
+        "headline": "10.140.0.0/24        unicast [mesh_cn 15:57:32.010 from 172.31.0.18] * (100) [AS65014i]",
+        "asPath": [
+          65014
+        ],
+        "localPreference": 100,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.10.0.0/24",
+        "protocol": "azure_1",
+        "headline": "10.10.0.0/24         unicast [azure_1 16:28:26.251 from 10.250.2.69] * (100/?) [AS65520e]",
+        "asPath": [
+          65515,
+          65520,
+          65520
+        ],
+        "localPreference": 400,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.20.0.0/24",
+        "protocol": "azure_1",
+        "headline": "10.20.0.0/24         unicast [azure_1 16:28:26.251 from 10.250.2.69] * (100/?) [AS65515i]",
+        "asPath": [
+          65515
+        ],
+        "localPreference": 400,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.30.0.0/24",
+        "protocol": "azure_1",
+        "headline": "10.30.0.0/24         unicast [azure_1 16:28:26.251 from 10.250.2.69] * (100/?) [AS65520e]",
+        "asPath": [
+          65515,
+          65520,
+          65520
+        ],
+        "localPreference": 400,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      }
+    ],
+    "jp": [
+      {
+        "prefix": "10.110.0.0/24",
+        "protocol": "azure_1",
+        "headline": "10.110.0.0/24        unicast [azure_1 16:29:53.283] ! (100/?) [AS65011e]",
+        "asPath": [
+          65515,
+          65520,
+          65520,
+          65011
+        ],
+        "localPreference": 400,
+        "selectionMarker": "!",
+        "kernelExportFailed": true
+      },
+      {
+        "prefix": "10.120.0.0/24",
+        "protocol": "azure_1",
+        "headline": "10.120.0.0/24        unicast [azure_1 16:29:53.283] ! (100/?) [AS65012e]",
+        "asPath": [
+          65515,
+          65520,
+          65520,
+          65012
+        ],
+        "localPreference": 400,
+        "selectionMarker": "!",
+        "kernelExportFailed": true
+      },
+      {
+        "prefix": "10.130.0.0/24",
+        "protocol": "own_dc",
+        "headline": "10.130.0.0/24        unicast [own_dc 15:57:30.793] * (200)",
+        "asPath": [],
+        "localPreference": null,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.140.0.0/24",
+        "protocol": "mesh_cn",
+        "headline": "10.140.0.0/24        unicast [mesh_cn 15:57:33.260 from 172.31.0.22] * (100) [AS65014i]",
+        "asPath": [
+          65014
+        ],
+        "localPreference": 100,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.10.0.0/24",
+        "protocol": "azure_1",
+        "headline": "10.10.0.0/24         unicast [azure_1 16:29:45.068] ! (100/?) [AS65520e]",
+        "asPath": [
+          65515,
+          65520,
+          65520
+        ],
+        "localPreference": 400,
+        "selectionMarker": "!",
+        "kernelExportFailed": true
+      },
+      {
+        "prefix": "10.20.0.0/24",
+        "protocol": "azure_1",
+        "headline": "10.20.0.0/24         unicast [azure_1 16:29:45.068] ! (100/?) [AS65520e]",
+        "asPath": [
+          65515,
+          65520,
+          65520
+        ],
+        "localPreference": 400,
+        "selectionMarker": "!",
+        "kernelExportFailed": true
+      },
+      {
+        "prefix": "10.30.0.0/24",
+        "protocol": "azure_1",
+        "headline": "10.30.0.0/24         unicast [azure_1 16:29:45.068] ! (100/?) [AS65515i]",
+        "asPath": [
+          65515
+        ],
+        "localPreference": 400,
+        "selectionMarker": "!",
+        "kernelExportFailed": true
+      }
+    ],
+    "cn": [
+      {
+        "prefix": "10.110.0.0/24",
+        "protocol": "mesh_eu",
+        "headline": "10.110.0.0/24        unicast [mesh_eu 15:57:33.358 from 172.31.0.9] * (100) [AS65011i]",
+        "asPath": [
+          65011
+        ],
+        "localPreference": 100,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.120.0.0/24",
+        "protocol": "mesh_us",
+        "headline": "10.120.0.0/24        unicast [mesh_us 15:57:32.084 from 172.31.0.17] * (100) [AS65012i]",
+        "asPath": [
+          65012
+        ],
+        "localPreference": 100,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.130.0.0/24",
+        "protocol": "mesh_jp",
+        "headline": "10.130.0.0/24        unicast [mesh_jp 15:57:33.260 from 172.31.0.21] * (100) [AS65013i]",
+        "asPath": [
+          65013
+        ],
+        "localPreference": 100,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.140.0.0/24",
+        "protocol": "own_dc",
+        "headline": "10.140.0.0/24        unicast [own_dc 15:57:28.056] * (200)",
+        "asPath": [],
+        "localPreference": null,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.10.0.0/24",
+        "protocol": "mesh_eu",
+        "headline": "10.10.0.0/24         unicast [mesh_eu 15:57:33.585 from 172.31.0.9] * (100) [AS65515i]",
+        "asPath": [
+          65011,
+          65515
+        ],
+        "localPreference": 300,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.20.0.0/24",
+        "protocol": "mesh_us",
+        "headline": "10.20.0.0/24         unicast [mesh_us 15:57:32.084 from 172.31.0.17] * (100) [AS65515i]",
+        "asPath": [
+          65012,
+          65515
+        ],
+        "localPreference": 300,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      },
+      {
+        "prefix": "10.30.0.0/24",
+        "protocol": "mesh_jp",
+        "headline": "10.30.0.0/24         unicast [mesh_jp 15:57:34.694 from 172.31.0.21] * (100) [AS65515i]",
+        "asPath": [
+          65013,
+          65515
+        ],
+        "localPreference": 300,
+        "selectionMarker": "*",
+        "kernelExportFailed": false
+      }
+    ]
+  },
+  "traffic": {
+    "cells": [
+      {
+        "source": "10.110.0.10",
+        "destination": "10.120.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.120.0.10\",\"from\":\"10.110.0.10\",\"gateway\":\"10.110.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.110.0.10 10.120.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.120.0.10 (10.120.0.10) from 10.110.0.10 : 56(84) bytes of data.\n64 bytes from 10.120.0.10: icmp_seq=1 ttl=60 time=106 ms\n64 bytes from 10.120.0.10: icmp_seq=2 ttl=60 time=115 ms\n\n--- 10.120.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 105.718/110.525/115.333/4.807 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.110.0.10",
+        "destination": "10.130.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.130.0.10\",\"from\":\"10.110.0.10\",\"gateway\":\"10.110.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.110.0.10 10.130.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.130.0.10 (10.130.0.10) from 10.110.0.10 : 56(84) bytes of data.\n64 bytes from 10.130.0.10: icmp_seq=1 ttl=64 time=230 ms\n64 bytes from 10.130.0.10: icmp_seq=2 ttl=64 time=231 ms\n\n--- 10.130.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1000ms\nrtt min/avg/max/mdev = 229.506/230.257/231.008/0.751 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.110.0.10",
+        "destination": "10.140.0.4",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.140.0.4\",\"from\":\"10.110.0.10\",\"gateway\":\"10.110.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.110.0.10 10.140.0.4",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.140.0.4 (10.140.0.4) from 10.110.0.10 : 56(84) bytes of data.\n64 bytes from 10.140.0.4: icmp_seq=1 ttl=63 time=231 ms\n64 bytes from 10.140.0.4: icmp_seq=2 ttl=63 time=231 ms\n\n--- 10.140.0.4 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 231.123/231.161/231.200/0.038 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.110.0.10",
+        "destination": "10.10.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.10.0.10\",\"from\":\"10.110.0.10\",\"gateway\":\"10.110.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.110.0.10 10.10.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.10.0.10 (10.10.0.10) from 10.110.0.10 : 56(84) bytes of data.\n64 bytes from 10.10.0.10: icmp_seq=1 ttl=62 time=5.18 ms\n64 bytes from 10.10.0.10: icmp_seq=2 ttl=62 time=4.51 ms\n\n--- 10.10.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1000ms\nrtt min/avg/max/mdev = 4.512/4.845/5.179/0.333 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.110.0.10",
+        "destination": "10.20.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.20.0.10\",\"from\":\"10.110.0.10\",\"gateway\":\"10.110.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.110.0.10 10.20.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.20.0.10 (10.20.0.10) from 10.110.0.10 : 56(84) bytes of data.\n64 bytes from 10.20.0.10: icmp_seq=1 ttl=61 time=116 ms\n64 bytes from 10.20.0.10: icmp_seq=2 ttl=61 time=130 ms\n\n--- 10.20.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1000ms\nrtt min/avg/max/mdev = 116.018/122.917/129.817/6.899 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.110.0.10",
+        "destination": "10.30.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.30.0.10\",\"from\":\"10.110.0.10\",\"gateway\":\"10.110.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.110.0.10 10.30.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.30.0.10 (10.30.0.10) from 10.110.0.10 : 56(84) bytes of data.\n64 bytes from 10.30.0.10: icmp_seq=1 ttl=61 time=233 ms\n64 bytes from 10.30.0.10: icmp_seq=2 ttl=61 time=233 ms\n\n--- 10.30.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1000ms\nrtt min/avg/max/mdev = 233.147/233.314/233.481/0.167 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.120.0.10",
+        "destination": "10.110.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.110.0.10\",\"from\":\"10.120.0.10\",\"gateway\":\"10.120.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.120.0.10 10.110.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.110.0.10 (10.110.0.10) from 10.120.0.10 : 56(84) bytes of data.\n64 bytes from 10.110.0.10: icmp_seq=1 ttl=60 time=102 ms\n64 bytes from 10.110.0.10: icmp_seq=2 ttl=60 time=113 ms\n\n--- 10.110.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 102.396/107.703/113.010/5.307 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.120.0.10",
+        "destination": "10.130.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.130.0.10\",\"from\":\"10.120.0.10\",\"gateway\":\"10.120.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.120.0.10 10.130.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.130.0.10 (10.130.0.10) from 10.120.0.10 : 56(84) bytes of data.\n64 bytes from 10.130.0.10: icmp_seq=1 ttl=64 time=143 ms\n64 bytes from 10.130.0.10: icmp_seq=2 ttl=64 time=143 ms\n\n--- 10.130.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1000ms\nrtt min/avg/max/mdev = 142.844/142.896/142.948/0.052 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.120.0.10",
+        "destination": "10.140.0.4",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.140.0.4\",\"from\":\"10.120.0.10\",\"gateway\":\"10.120.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.120.0.10 10.140.0.4",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.140.0.4 (10.140.0.4) from 10.120.0.10 : 56(84) bytes of data.\n64 bytes from 10.140.0.4: icmp_seq=1 ttl=63 time=141 ms\n64 bytes from 10.140.0.4: icmp_seq=2 ttl=63 time=143 ms\n\n--- 10.140.0.4 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 140.779/141.652/142.526/0.873 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.120.0.10",
+        "destination": "10.10.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.10.0.10\",\"from\":\"10.120.0.10\",\"gateway\":\"10.120.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.120.0.10 10.10.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.10.0.10 (10.10.0.10) from 10.120.0.10 : 56(84) bytes of data.\n64 bytes from 10.10.0.10: icmp_seq=1 ttl=61 time=120 ms\n64 bytes from 10.10.0.10: icmp_seq=2 ttl=61 time=106 ms\n\n--- 10.10.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 105.757/113.109/120.461/7.352 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.120.0.10",
+        "destination": "10.20.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.20.0.10\",\"from\":\"10.120.0.10\",\"gateway\":\"10.120.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.120.0.10 10.20.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.20.0.10 (10.20.0.10) from 10.120.0.10 : 56(84) bytes of data.\n64 bytes from 10.20.0.10: icmp_seq=1 ttl=62 time=23.4 ms\n64 bytes from 10.20.0.10: icmp_seq=2 ttl=62 time=42.9 ms\n\n--- 10.20.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 23.382/33.161/42.940/9.779 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.120.0.10",
+        "destination": "10.30.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.30.0.10\",\"from\":\"10.120.0.10\",\"gateway\":\"10.120.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.120.0.10 10.30.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.30.0.10 (10.30.0.10) from 10.120.0.10 : 56(84) bytes of data.\n64 bytes from 10.30.0.10: icmp_seq=1 ttl=61 time=148 ms\n64 bytes from 10.30.0.10: icmp_seq=2 ttl=61 time=153 ms\n\n--- 10.30.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 147.947/150.631/153.316/2.684 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.130.0.10",
+        "destination": "10.110.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.110.0.10\",\"from\":\"10.130.0.10\",\"gateway\":\"10.130.0.4\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.130.0.10 10.110.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.110.0.10 (10.110.0.10) from 10.130.0.10 : 56(84) bytes of data.\n64 bytes from 10.110.0.10: icmp_seq=1 ttl=63 time=230 ms\n64 bytes from 10.110.0.10: icmp_seq=2 ttl=63 time=228 ms\n\n--- 10.110.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 228.422/229.404/230.387/0.982 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.130.0.10",
+        "destination": "10.120.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.120.0.10\",\"from\":\"10.130.0.10\",\"gateway\":\"10.130.0.4\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.130.0.10 10.120.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.120.0.10 (10.120.0.10) from 10.130.0.10 : 56(84) bytes of data.\n64 bytes from 10.120.0.10: icmp_seq=1 ttl=63 time=149 ms\n64 bytes from 10.120.0.10: icmp_seq=2 ttl=63 time=143 ms\n\n--- 10.120.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1002ms\nrtt min/avg/max/mdev = 142.599/145.703/148.807/3.104 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.130.0.10",
+        "destination": "10.140.0.4",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.140.0.4\",\"from\":\"10.130.0.10\",\"gateway\":\"10.130.0.4\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.130.0.10 10.140.0.4",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.140.0.4 (10.140.0.4) from 10.130.0.10 : 56(84) bytes of data.\n64 bytes from 10.140.0.4: icmp_seq=1 ttl=63 time=2.48 ms\n64 bytes from 10.140.0.4: icmp_seq=2 ttl=63 time=1.11 ms\n\n--- 10.140.0.4 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 1.106/1.794/2.482/0.688 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.130.0.10",
+        "destination": "10.10.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.10.0.10\",\"from\":\"10.130.0.10\",\"gateway\":\"10.130.0.4\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "FAIL",
+        "icmp": "FAIL",
+        "tcpDetail": {
+          "exitCode": 28,
+          "stdout": "000",
+          "stderr": "curl: (28) Connection timeout after 3001 ms"
+        },
+        "icmpDetail": {
+          "exitCode": 1,
+          "stdout": "PING 10.10.0.10 (10.10.0.10) from 10.130.0.10 : 56(84) bytes of data.\n\n--- 10.10.0.10 ping statistics ---\n2 packets transmitted, 0 received, 100% packet loss, time 1012ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.130.0.10",
+        "destination": "10.20.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.20.0.10\",\"from\":\"10.130.0.10\",\"gateway\":\"10.130.0.4\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "FAIL",
+        "icmp": "FAIL",
+        "tcpDetail": {
+          "exitCode": 28,
+          "stdout": "000",
+          "stderr": "curl: (28) Connection timeout after 3001 ms"
+        },
+        "icmpDetail": {
+          "exitCode": 1,
+          "stdout": "PING 10.20.0.10 (10.20.0.10) from 10.130.0.10 : 56(84) bytes of data.\n\n--- 10.20.0.10 ping statistics ---\n2 packets transmitted, 0 received, 100% packet loss, time 1041ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.130.0.10",
+        "destination": "10.30.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.30.0.10\",\"from\":\"10.130.0.10\",\"gateway\":\"10.130.0.4\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "FAIL",
+        "icmp": "FAIL",
+        "tcpDetail": {
+          "exitCode": 28,
+          "stdout": "000",
+          "stderr": "curl: (28) Connection timeout after 3001 ms"
+        },
+        "icmpDetail": {
+          "exitCode": 1,
+          "stdout": "PING 10.30.0.10 (10.30.0.10) from 10.130.0.10 : 56(84) bytes of data.\n\n--- 10.30.0.10 ping statistics ---\n2 packets transmitted, 0 received, 100% packet loss, time 1042ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.140.0.4",
+        "destination": "10.110.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.110.0.10\",\"from\":\"10.140.0.4\",\"dev\":\"wgeucn\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.140.0.4 10.110.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.110.0.10 (10.110.0.10) from 10.140.0.4 : 56(84) bytes of data.\n64 bytes from 10.110.0.10: icmp_seq=1 ttl=63 time=231 ms\n64 bytes from 10.110.0.10: icmp_seq=2 ttl=63 time=235 ms\n\n--- 10.110.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 231.191/232.863/234.535/1.672 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.140.0.4",
+        "destination": "10.120.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.120.0.10\",\"from\":\"10.140.0.4\",\"dev\":\"wguscn\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.140.0.4 10.120.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.120.0.10 (10.120.0.10) from 10.140.0.4 : 56(84) bytes of data.\n64 bytes from 10.120.0.10: icmp_seq=1 ttl=63 time=141 ms\n64 bytes from 10.120.0.10: icmp_seq=2 ttl=63 time=141 ms\n\n--- 10.120.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1002ms\nrtt min/avg/max/mdev = 140.773/140.815/140.858/0.042 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.140.0.4",
+        "destination": "10.130.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.130.0.10\",\"from\":\"10.140.0.4\",\"dev\":\"wgjpcn\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.140.0.4 10.130.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.130.0.10 (10.130.0.10) from 10.140.0.4 : 56(84) bytes of data.\n64 bytes from 10.130.0.10: icmp_seq=1 ttl=64 time=1.30 ms\n64 bytes from 10.130.0.10: icmp_seq=2 ttl=64 time=1.35 ms\n\n--- 10.130.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 1.298/1.323/1.349/0.025 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.140.0.4",
+        "destination": "10.10.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.10.0.10\",\"from\":\"10.140.0.4\",\"dev\":\"wgeucn\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.140.0.4 10.10.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.10.0.10 (10.10.0.10) from 10.140.0.4 : 56(84) bytes of data.\n64 bytes from 10.10.0.10: icmp_seq=1 ttl=62 time=232 ms\n64 bytes from 10.10.0.10: icmp_seq=2 ttl=62 time=234 ms\n\n--- 10.10.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 232.187/232.882/233.577/0.695 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.140.0.4",
+        "destination": "10.20.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.20.0.10\",\"from\":\"10.140.0.4\",\"dev\":\"wguscn\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.140.0.4 10.20.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.20.0.10 (10.20.0.10) from 10.140.0.4 : 56(84) bytes of data.\n64 bytes from 10.20.0.10: icmp_seq=1 ttl=62 time=143 ms\n64 bytes from 10.20.0.10: icmp_seq=2 ttl=62 time=143 ms\n\n--- 10.20.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 142.888/143.168/143.448/0.280 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.140.0.4",
+        "destination": "10.30.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.30.0.10\",\"from\":\"10.140.0.4\",\"dev\":\"wgjpcn\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.140.0.4 10.30.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.30.0.10 (10.30.0.10) from 10.140.0.4 : 56(84) bytes of data.\n64 bytes from 10.30.0.10: icmp_seq=1 ttl=62 time=3.95 ms\n64 bytes from 10.30.0.10: icmp_seq=2 ttl=62 time=3.33 ms\n\n--- 10.30.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 3.327/3.639/3.951/0.312 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.10.0.10",
+        "destination": "10.110.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.110.0.10\",\"from\":\"10.10.0.10\",\"gateway\":\"10.10.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.10.0.10 10.110.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.110.0.10 (10.110.0.10) from 10.10.0.10 : 56(84) bytes of data.\n64 bytes from 10.110.0.10: icmp_seq=1 ttl=62 time=6.80 ms\n64 bytes from 10.110.0.10: icmp_seq=2 ttl=62 time=11.2 ms\n\n--- 10.110.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1002ms\nrtt min/avg/max/mdev = 6.803/9.024/11.245/2.221 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.10.0.10",
+        "destination": "10.120.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.120.0.10\",\"from\":\"10.10.0.10\",\"gateway\":\"10.10.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.10.0.10 10.120.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.120.0.10 (10.120.0.10) from 10.10.0.10 : 56(84) bytes of data.\n64 bytes from 10.120.0.10: icmp_seq=1 ttl=61 time=103 ms\n64 bytes from 10.120.0.10: icmp_seq=2 ttl=61 time=138 ms\n\n--- 10.120.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1002ms\nrtt min/avg/max/mdev = 102.562/120.416/138.271/17.854 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.10.0.10",
+        "destination": "10.130.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.130.0.10\",\"from\":\"10.10.0.10\",\"gateway\":\"10.10.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "FAIL",
+        "icmp": "FAIL",
+        "tcpDetail": {
+          "exitCode": 28,
+          "stdout": "000",
+          "stderr": "curl: (28) Connection timeout after 3001 ms"
+        },
+        "icmpDetail": {
+          "exitCode": 1,
+          "stdout": "PING 10.130.0.10 (10.130.0.10) from 10.10.0.10 : 56(84) bytes of data.\n\n--- 10.130.0.10 ping statistics ---\n2 packets transmitted, 0 received, 100% packet loss, time 1039ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.10.0.10",
+        "destination": "10.140.0.4",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.140.0.4\",\"from\":\"10.10.0.10\",\"gateway\":\"10.10.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.10.0.10 10.140.0.4",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.140.0.4 (10.140.0.4) from 10.10.0.10 : 56(84) bytes of data.\n64 bytes from 10.140.0.4: icmp_seq=1 ttl=62 time=232 ms\n64 bytes from 10.140.0.4: icmp_seq=2 ttl=62 time=232 ms\n\n--- 10.140.0.4 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1000ms\nrtt min/avg/max/mdev = 232.037/232.186/232.336/0.149 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.10.0.10",
+        "destination": "10.20.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.20.0.10\",\"from\":\"10.10.0.10\",\"gateway\":\"10.10.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.10.0.10 10.20.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.20.0.10 (10.20.0.10) from 10.10.0.10 : 56(84) bytes of data.\n64 bytes from 10.20.0.10: icmp_seq=1 ttl=62 time=100 ms\n64 bytes from 10.20.0.10: icmp_seq=2 ttl=62 time=113 ms\n\n--- 10.20.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1000ms\nrtt min/avg/max/mdev = 100.186/106.442/112.699/6.256 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.10.0.10",
+        "destination": "10.30.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.30.0.10\",\"from\":\"10.10.0.10\",\"gateway\":\"10.10.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.10.0.10 10.30.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.30.0.10 (10.30.0.10) from 10.10.0.10 : 56(84) bytes of data.\n64 bytes from 10.30.0.10: icmp_seq=1 ttl=62 time=235 ms\n64 bytes from 10.30.0.10: icmp_seq=2 ttl=62 time=235 ms\n\n--- 10.30.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 234.650/234.652/234.654/0.002 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.20.0.10",
+        "destination": "10.110.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.110.0.10\",\"from\":\"10.20.0.10\",\"gateway\":\"10.20.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.20.0.10 10.110.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.110.0.10 (10.110.0.10) from 10.20.0.10 : 56(84) bytes of data.\n64 bytes from 10.110.0.10: icmp_seq=1 ttl=61 time=112 ms\n64 bytes from 10.110.0.10: icmp_seq=2 ttl=61 time=108 ms\n\n--- 10.110.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1002ms\nrtt min/avg/max/mdev = 108.231/109.868/111.505/1.637 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.20.0.10",
+        "destination": "10.120.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.120.0.10\",\"from\":\"10.20.0.10\",\"gateway\":\"10.20.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.20.0.10 10.120.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.120.0.10 (10.120.0.10) from 10.20.0.10 : 56(84) bytes of data.\n64 bytes from 10.120.0.10: icmp_seq=1 ttl=62 time=4.92 ms\n64 bytes from 10.120.0.10: icmp_seq=2 ttl=62 time=19.2 ms\n\n--- 10.120.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1002ms\nrtt min/avg/max/mdev = 4.919/12.065/19.211/7.146 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.20.0.10",
+        "destination": "10.130.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.130.0.10\",\"from\":\"10.20.0.10\",\"gateway\":\"10.20.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "FAIL",
+        "icmp": "FAIL",
+        "tcpDetail": {
+          "exitCode": 28,
+          "stdout": "000",
+          "stderr": "curl: (28) Connection timeout after 3000 ms"
+        },
+        "icmpDetail": {
+          "exitCode": 1,
+          "stdout": "PING 10.130.0.10 (10.130.0.10) from 10.20.0.10 : 56(84) bytes of data.\n\n--- 10.130.0.10 ping statistics ---\n2 packets transmitted, 0 received, 100% packet loss, time 1023ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.20.0.10",
+        "destination": "10.140.0.4",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.140.0.4\",\"from\":\"10.20.0.10\",\"gateway\":\"10.20.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.20.0.10 10.140.0.4",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.140.0.4 (10.140.0.4) from 10.20.0.10 : 56(84) bytes of data.\n64 bytes from 10.140.0.4: icmp_seq=1 ttl=62 time=164 ms\n64 bytes from 10.140.0.4: icmp_seq=2 ttl=62 time=143 ms\n\n--- 10.140.0.4 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 142.725/153.206/163.687/10.481 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.20.0.10",
+        "destination": "10.10.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.10.0.10\",\"from\":\"10.20.0.10\",\"gateway\":\"10.20.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.20.0.10 10.10.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.10.0.10 (10.10.0.10) from 10.20.0.10 : 56(84) bytes of data.\n64 bytes from 10.10.0.10: icmp_seq=1 ttl=62 time=120 ms\n64 bytes from 10.10.0.10: icmp_seq=2 ttl=62 time=132 ms\n\n--- 10.10.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 120.014/126.144/132.275/6.130 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.20.0.10",
+        "destination": "10.30.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.30.0.10\",\"from\":\"10.20.0.10\",\"gateway\":\"10.20.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.20.0.10 10.30.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.30.0.10 (10.30.0.10) from 10.20.0.10 : 56(84) bytes of data.\n64 bytes from 10.30.0.10: icmp_seq=1 ttl=62 time=164 ms\n64 bytes from 10.30.0.10: icmp_seq=2 ttl=62 time=182 ms\n\n--- 10.30.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1000ms\nrtt min/avg/max/mdev = 163.677/173.050/182.423/9.373 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.30.0.10",
+        "destination": "10.110.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.110.0.10\",\"from\":\"10.30.0.10\",\"gateway\":\"10.30.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.30.0.10 10.110.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.110.0.10 (10.110.0.10) from 10.30.0.10 : 56(84) bytes of data.\n64 bytes from 10.110.0.10: icmp_seq=1 ttl=61 time=237 ms\n64 bytes from 10.110.0.10: icmp_seq=2 ttl=61 time=233 ms\n\n--- 10.110.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1000ms\nrtt min/avg/max/mdev = 233.486/235.247/237.008/1.761 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.30.0.10",
+        "destination": "10.120.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.120.0.10\",\"from\":\"10.30.0.10\",\"gateway\":\"10.30.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.30.0.10 10.120.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.120.0.10 (10.120.0.10) from 10.30.0.10 : 56(84) bytes of data.\n64 bytes from 10.120.0.10: icmp_seq=1 ttl=61 time=199 ms\n64 bytes from 10.120.0.10: icmp_seq=2 ttl=61 time=155 ms\n\n--- 10.120.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1000ms\nrtt min/avg/max/mdev = 154.633/176.805/198.977/22.172 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.30.0.10",
+        "destination": "10.130.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.130.0.10\",\"from\":\"10.30.0.10\",\"gateway\":\"10.30.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "FAIL",
+        "icmp": "FAIL",
+        "tcpDetail": {
+          "exitCode": 28,
+          "stdout": "000",
+          "stderr": "curl: (28) Connection timeout after 3000 ms"
+        },
+        "icmpDetail": {
+          "exitCode": 1,
+          "stdout": "PING 10.130.0.10 (10.130.0.10) from 10.30.0.10 : 56(84) bytes of data.\n\n--- 10.130.0.10 ping statistics ---\n2 packets transmitted, 0 received, 100% packet loss, time 1025ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.30.0.10",
+        "destination": "10.140.0.4",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.140.0.4\",\"from\":\"10.30.0.10\",\"gateway\":\"10.30.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.30.0.10 10.140.0.4",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.140.0.4 (10.140.0.4) from 10.30.0.10 : 56(84) bytes of data.\n64 bytes from 10.140.0.4: icmp_seq=1 ttl=62 time=3.94 ms\n64 bytes from 10.140.0.4: icmp_seq=2 ttl=62 time=3.69 ms\n\n--- 10.140.0.4 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1002ms\nrtt min/avg/max/mdev = 3.691/3.816/3.941/0.125 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.30.0.10",
+        "destination": "10.10.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.10.0.10\",\"from\":\"10.30.0.10\",\"gateway\":\"10.30.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.30.0.10 10.10.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.10.0.10 (10.10.0.10) from 10.30.0.10 : 56(84) bytes of data.\n64 bytes from 10.10.0.10: icmp_seq=1 ttl=62 time=237 ms\n64 bytes from 10.10.0.10: icmp_seq=2 ttl=62 time=239 ms\n\n--- 10.10.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 236.647/237.726/238.805/1.079 ms",
+          "stderr": ""
+        }
+      },
+      {
+        "source": "10.30.0.10",
+        "destination": "10.20.0.10",
+        "route": {
+          "exitCode": 0,
+          "stdout": "[{\"dst\":\"10.20.0.10\",\"from\":\"10.30.0.10\",\"gateway\":\"10.30.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+          "stderr": ""
+        },
+        "tcp": "PASS",
+        "icmp": "PASS",
+        "tcpDetail": {
+          "exitCode": 0,
+          "stdout": "200 10.30.0.10 10.20.0.10",
+          "stderr": ""
+        },
+        "icmpDetail": {
+          "exitCode": 0,
+          "stdout": "PING 10.20.0.10 (10.20.0.10) from 10.30.0.10 : 56(84) bytes of data.\n64 bytes from 10.20.0.10: icmp_seq=1 ttl=62 time=151 ms\n64 bytes from 10.20.0.10: icmp_seq=2 ttl=62 time=186 ms\n\n--- 10.20.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 150.649/168.301/185.953/17.652 ms",
+          "stderr": ""
+        }
+      }
+    ],
+    "expectedDirections": 42,
+    "tcpPass": 36,
+    "icmpPass": 36,
+    "verdict": "FAIL"
+  }
+}

@@ -1,14 +1,57 @@
 # Three-hub Virtual WAN / SD-WAN lab
 
-> **2026-10-17: B1 local preference reproduced; route-history dependency isolated.**
+> **2026-10-17: all-hub B2B rerun now includes workload traffic and packet-interface observations.**
 > **Three Standard Azure Firewalls and PrivateTraffic routing intent are deployed.**
 > **A:** ASPath plus NVA import policy selected Microsoft's backbone.
 > **B1:** ExpressRoute HRP retained the longer local Japan paths after a controlled VPN-prefix withdrawal/re-advertisement.
 > **B2:** ASPath with no extra nonlocal prepends selected local customer-mesh paths at the hub firewalls and NVAs.
-> B1/B2 are route-selection controls, not new forwarding tests. A is not an all-pairs forwarding success.
+> A/B1/B2 now have matched **42-direction TCP/ICMP matrices**. None is an all-pairs forwarding success.
 > All ten VMs are back to their original **deallocated** states. Hubs, firewalls and VPN gateway remain deployed and billable.
 
-## Latest result: why the ExpressRoute-HRP controls differed
+## Latest result: all-hub B2B rerun with forwarding evidence
+
+The [complete rerun report](show-output/b2b-summary-20261017/README.md)
+contains fourteen measured states, full three-hub firewall tables, full
+four-router BIRD configurations/routes and packet-interface observations.
+Every state measures all 42 initiated directions between four DC and three
+Azure-spoke endpoints, using source-bound private TCP/HTTP and ICMP.
+
+| State | TCP passes / 42 | ICMP passes / 42 |
+| --- | --- | --- |
+| Original mixed hub B2B flags | 28 | 32 |
+| All hub B2B flags enabled, no other policy change | 28 | 32 |
+| A, NVA policy only | 36 | 36 |
+| A, plus Japan workload UDR | 38 | 40 |
+| B1, ExpressRoute, original three prepends, initial / withdrawn / returned | 28 | 32 |
+| B1, EU two-prepend control, initial / withdrawn / returned | 30 | 33 |
+| B1, VPN HRP | 32 | 34 |
+| B2, ASPath with zero extra EU/US prepends | 36 | 36 |
+
+Enabling Japan's per-hub flag changed **neither the twelve DC-prefix firewall
+winners nor any traffic outcome** in the matched baseline. The WAN flag
+was already enabled. The original flags were EU/US `true`, Japan `false`.
+
+**B1's history dependency persists with all hub flags enabled:** initial
+remote Japan length three, local length five after the JP-only direct
+export withdrawal, and local length five retained after return. The
+separate EU four-versus-three control repeats it. The inconsistent flags
+therefore do not explain away that result. VPN HRP is now measured too,
+but sequential route history prevents a universal ER/VPN comparison.
+
+**Reachability does not prove the intended backbone.** Packet observations
+did not establish Japan NVA/XFRM traversal for A's successful policy-only
+EU/JP DC traffic. The peered underlay and workload steering remain relevant.
+BIRD kernel-export `!` flags also remain. With A's UDR, EU/US DC -> Japan
+workload fails TCP/ICMP; the reverse fails TCP. B2's six failures are the
+Japan workload <-> three Azure spokes. All failures remain explicit.
+
+Exact BIRD bytes/metadata, original mixed HRPs/flags and paired firewall
+winners were independently restored and verified. The original traffic
+matrix also repeated. All ten VMs are again deallocated; the temporary
+A route table was deleted and the original subnet association verified.
+No IPsec or WireGuard configuration was changed.
+
+## Earlier result: why the ExpressRoute-HRP controls differed
 
 The [17 October route-history control](show-output/hrp-reselection-control-20261017/README.md)
 used the original **three-extra-prepend** EU/US configuration without changing

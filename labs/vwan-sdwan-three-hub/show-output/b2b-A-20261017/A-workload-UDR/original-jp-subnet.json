@@ -1,0 +1,39 @@
+{
+  "timestampUtc": "2026-10-17T16:44:21.476245+00:00",
+  "finishedUtc": "2026-10-17T16:44:25.974273+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-jp/subnets/workload?api-version=2024-05-01"
+  ],
+  "stdout": "{\n  \"etag\": \"W/\\\"521f1cb3-8125-42a7-892a-6ebe253fa6cf\\\"\",\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-jp/subnets/workload\",\n  \"name\": \"workload\",\n  \"properties\": {\n    \"addressPrefix\": \"10.130.0.0/24\",\n    \"defaultOutboundAccess\": false,\n    \"delegations\": [],\n    \"ipConfigurations\": [\n      {\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Network/networkInterfaces/NIC-PROBE-DC-JP/ipConfigurations/IPCONFIG1\"\n      },\n      {\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Network/networkInterfaces/NIC-ROUTER-JP/ipConfigurations/IPCONFIG1\"\n      }\n    ],\n    \"networkSecurityGroup\": {\n      \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/vnet-dc-jp-workload-nsg-japaneast\"\n    },\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\n    \"privateLinkServiceNetworkPolicies\": \"Enabled\",\n    \"provisioningState\": \"Succeeded\",\n    \"serviceEndpoints\": []\n  },\n  \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\n}\n",
+  "result": {
+    "etag": "W/\"521f1cb3-8125-42a7-892a-6ebe253fa6cf\"",
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-jp/subnets/workload",
+    "name": "workload",
+    "properties": {
+      "addressPrefix": "10.130.0.0/24",
+      "defaultOutboundAccess": false,
+      "delegations": [],
+      "ipConfigurations": [
+        {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Network/networkInterfaces/NIC-PROBE-DC-JP/ipConfigurations/IPCONFIG1"
+        },
+        {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Network/networkInterfaces/NIC-ROUTER-JP/ipConfigurations/IPCONFIG1"
+        }
+      ],
+      "networkSecurityGroup": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/vnet-dc-jp-workload-nsg-japaneast"
+      },
+      "privateEndpointNetworkPolicies": "Disabled",
+      "privateLinkServiceNetworkPolicies": "Enabled",
+      "provisioningState": "Succeeded",
+      "serviceEndpoints": []
+    },
+    "type": "Microsoft.Network/virtualNetworks/subnets"
+  },
+  "sha256": "7f24b4f4d5b8ca834cd16af520df1577a77687d8180fa2e40a6c297fb015c4de"
+}
