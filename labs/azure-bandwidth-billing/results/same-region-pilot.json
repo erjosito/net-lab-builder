@@ -1,0 +1,52 @@
+{
+  "status": "BLOCKED",
+  "session": "bwb-large-monitor-20261016-130600",
+  "chunk": "same-region-000",
+  "owner": "tank-same-region-pilot-20261016T133355Z",
+  "startedAtUtc": "2026-10-16T13:36:14.152245+00:00",
+  "endedAtUtc": "2026-10-16T13:39:59.038029+00:00",
+  "closureVerifiedAtUtc": "2026-10-16T13:40:42.0667458Z",
+  "snapshotCapturedAtUtc": "2026-10-16T13:30:30.724746+00:00",
+  "failure": "command_failed_see_private_error",
+  "failureStage": "receiver NIC NSG allow submission, before server/client payload execution",
+  "nativeCalls": 43,
+  "mutations": 8,
+  "maximumNativeCalls": 130,
+  "maximumMutations": 12,
+  "chunkLedgerAttempts": 1,
+  "chunkLedgerState": "failed_or_unknown",
+  "payloadCommandsSubmitted": 0,
+  "automaticRetries": 0,
+  "requestedApplicationBytesPerDirection": 1073741824,
+  "transferredApplicationBytes": {
+    "AtoT": 0,
+    "TtoA": 0
+  },
+  "applicationByteEvidence": "No server/client attempt or result artifacts; setup failed before either guest payload command.",
+  "expectedPayloadSha256": "e6cbc4b20371fff3ba9a14b0b90e29ba996a786c48b67151ca0e5fbbafa11a2d",
+  "actualPayloadSha256": null,
+  "payloadHashVerified": false,
+  "wireBytes": null,
+  "wireMeasurementNote": "No payload measurement; do not treat the ledger's zero wire_measured as proof of zero control traffic.",
+  "restore": {
+    "A": "DEALLOCATED_VERIFIED",
+    "T": "DEALLOCATED_VERIFIED",
+    "receiverNicNsgOriginalPolicyAndAssociation": "VERIFIED",
+    "receiverSubnetNsgOriginalPolicyAndAssociation": "VERIFIED",
+    "startedAtUtc": "2026-10-16T13:37:11.886968+00:00",
+    "lastNsgVerificationAtUtc": "2026-10-16T13:39:48.578474+00:00"
+  },
+  "runtime": {
+    "pid": 49448,
+    "exitCode": 1,
+    "runtimeAndDirectChildrenAbsent": true,
+    "activeCommands": 0,
+    "ownedProcessesIdle": true
+  },
+  "leaseState": "blocked",
+  "ledgerActivePhaseState": "blocked",
+  "pilotProjection": null,
+  "next": "Freeze this failed_or_unknown chunk; no replay or ledger repair. Independent baseline validation and any recovery/preparation require a separate owner and lease.",
+  "privateEvidenceDirectory": "labs\\azure-bandwidth-billing\\private\\repeat-session\\bwb-large-monitor-20261016-130600\\chunks\\same-region-000",
+  "privateHandoff": "labs\\azure-bandwidth-billing\\private\\pilot-tank-at-20261016T133355Z\\handoff.private.json"
+}

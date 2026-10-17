@@ -1,21 +1,25 @@
 """Small localhost-only contract tests; generated certificates remain lab-private."""
 import contextlib
+import atexit
 import http.client
 import json
 import socket
+import shutil
 import ssl
 import subprocess
 import sys
 import threading
 import time
 import unittest
+import uuid
 from pathlib import Path
 from unittest import mock
 
 import run
 import stream
 
-ROOT = run.PRIVATE / "local-tests"
+ROOT = run.PRIVATE / ("local-tests-" + uuid.uuid4().hex)
+atexit.register(shutil.rmtree, ROOT, ignore_errors=True)
 
 
 class StreamTests(unittest.TestCase):
@@ -489,6 +493,15 @@ class WrapperTests(unittest.TestCase):
                 "pip": dict(common, id=cfg["pip_id"], ipAddress=ip),
                 "nic": dict(common, id=cfg["nic_id"], networkSecurityGroup={"id": cfg["nsg_id"]},
                             ipConfigurations=[{"publicIPAddress": {"id": cfg["pip_id"]}}])}
+            disk_name = cfg["runId"] + "-approved-os"
+            disk_id = ("/subscriptions/" + cfg["subscriptionId"] + "/resourceGroups/"
+                       + cfg["resourceGroup"] + "/providers/Microsoft.Compute/disks/" + disk_name)
+            rows["vm"]["storageProfile"] = {
+                "osDisk": {"managedDisk": {"id": disk_id}}, "dataDisks": []}
+            inventory_name = "control-inventory.private.json" if alias == "C" else "inventory.private.json"
+            files[run.LAB / "private" / inventory_name] = {
+                "runId": cfg["runId"], "resources": [
+                    dict(common, id=disk_id, name=disk_name, type="Microsoft.Compute/disks")]}
             resources[alias] = rows
 
             def query(argv, rows=rows):
@@ -576,7 +589,8 @@ class WrapperTests(unittest.TestCase):
                 run.guard("client", 30)
 
     def test_child_command_timeout_terminates(self):
-        with self.assertRaises(subprocess.TimeoutExpired):
+        with mock.patch.object(run, "command_error", return_value="private-error"), \
+                self.assertRaises(subprocess.TimeoutExpired):
             run.bounded([sys.executable, "-c", "import time; time.sleep(5)"], .05)
 
     def test_wsl_cli_stays_native_and_subscription_explicit(self):
@@ -602,12 +616,11 @@ class WrapperTests(unittest.TestCase):
         process.communicate.return_value = (b"", error)
         argv = ["native-python", "-m", "azure.cli", "monitor", "metrics", "list"]
         with mock.patch.object(run.subprocess, "Popen", return_value=process), \
-                mock.patch.object(run, "save") as saved:
+                mock.patch.object(run, "command_error", return_value="private-error") as saved:
             with self.assertRaisesRegex(RuntimeError, "command_failed_see_private_error"):
                 run.bounded(argv, 60)
-        self.assertEqual(saved.call_args.args, (
-            run.PRIVATE / "last-error.private.json",
-            {"code": 1, "stderr": error.decode(), "argv": argv, "timeout_seconds": 60}))
+        self.assertEqual(saved.call_args.args[:2], (argv, 60))
+        self.assertEqual(saved.call_args.args[3:], (1, b"", error, "exit"))
 
     def test_metrics_minimum_window_and_unchanged_live_window(self):
         from datetime import timedelta
@@ -867,7 +880,8 @@ class WrapperTests(unittest.TestCase):
         plan = {"id": "a" * 32, "server_ip": "192.0.2.1", "snapshot_at": "old"}
         clients = []
         for alias in ("A", "T"):
-            cfg = {"resourceGroup": "test", "runId": alias, "vm": "vm", "nsg": "nsg",
+            cfg = {"subscriptionId": "test-sub", "resourceGroup": "test", "runId": alias,
+                   "vm": "vm", "nsg": "nsg",
                    "pip": "pip", "nic": "nic"}
             tags = {"lab": "true", "created_by": "copilot-lab", "run_id": alias}
             common = {"tags": tags, "location": "swedencentral"}
@@ -881,6 +895,14 @@ class WrapperTests(unittest.TestCase):
                 "pip": dict(common, id="pip", ipAddress="192.0.2.1"),
                 "nic": dict(common, id="nic", networkSecurityGroup={"id": "nsg"},
                             ipConfigurations=[{"publicIPAddress": {"id": "pip"}}])}
+            disk_id = ("/subscriptions/test-sub/resourceGroups/test/providers/"
+                       "Microsoft.Compute/disks/approved-os")
+            rows["vm"]["storageProfile"] = {
+                "osDisk": {"managedDisk": {"id": disk_id}}, "dataDisks": []}
+            inventory_name = "msdn-inventory.private.json" if alias == "T" else "inventory.private.json"
+            files[run.LAB / "private" / inventory_name] = {
+                "runId": alias, "resources": [
+                    dict(common, id=disk_id, name="approved-os", type="Microsoft.Compute/disks")]}
 
             def query(argv, rows=rows):
                 if argv[:2] == ["vm", "get-instance-view"]:
@@ -1530,6 +1552,30 @@ class OrchestrationGateTests(unittest.TestCase):
 
 
 class SubnetPolicyTests(unittest.TestCase):
+    def test_policy_clone_preserves_exact_deny_and_matches_tls_port_and_peer(self):
+        original = json.loads(json.dumps(self.original))
+        restore, allowed = run.policy_bodies(self.directory, self.plan, self.original, write=False)
+        self.assertEqual(self.original, original)
+        self.assertEqual(restore["properties"]["securityRules"][0]["properties"]["priority"], 100)
+        self.assertEqual(allowed["properties"]["securityRules"][0]["properties"]["priority"], 200)
+        rule = allowed["properties"]["securityRules"][-1]["properties"]
+        self.assertEqual(rule["destinationPortRange"], "443")
+        self.assertEqual(rule["sourceAddressPrefix"], self.plan["client_ip"] + "/32")
+        self.assertEqual(rule["protocol"], "Tcp")
+        self.assertEqual(len(allowed["properties"]["securityRules"]), 2)
+        allowed["properties"]["securityRules"][0]["properties"]["access"] = "Allow"
+        self.assertEqual(restore["properties"]["securityRules"][0]["properties"]["access"], "Deny")
+        import ast
+        import inspect
+        tree = ast.parse(inspect.getsource(run.guest_script))
+        cfg = next(node.value for node in ast.walk(tree) if isinstance(node, ast.Assign)
+                   and any(isinstance(target, ast.Name) and target.id == "cfg"
+                           for target in node.targets))
+        port = next(value.value for key, value in zip(cfg.keys, cfg.values)
+                    if isinstance(key, ast.Constant) and key.value == "port")
+        self.assertEqual(str(port), rule["destinationPortRange"])
+        self.assertIn("CERT_REQUIRED", (run.HERE / "stream.py").read_text())
+
     def setUp(self):
         self.directory = run.PRIVATE / "mock-subnet-v4"
         self.plan = WrapperTests().control()

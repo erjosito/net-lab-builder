@@ -1,5 +1,35 @@
 # Reproducible Cost Analysis API deliverable
 
+## Latest actual cost answer — 17 October 2026, 23:05Z
+
+**Yes: successful Cost Management Queries return actual money amounts, but
+not necessarily quantity/unit/rate.** In the latest collection the three
+fresh endpoint Queries instead returned **HTTP 429**, so they provide no
+fresh cost answer and must not be interpreted as zero.
+The separate asynchronous **ActualCost Cost Details API report download**
+did succeed for fresh C. Its filtered CSV is **API-generated, not exported
+from the portal**. The [sanitized snapshot](../results/2026-10-17-billing-refresh-230000.json)
+reports three October-17 `Intra Continent Data Transfer Out` rows totalling:
+
+**10.8746547754853965 × “1 GB” × USD 0.02 =
+USD 0.21749309550970793.**
+
+This is a nonzero cross-region charge on fresh C, not the old C → B control
+and not full reconciliation of the new 100 GB C → T leg. Preserve the API's
+reported unit; do not infer a binary/decimal conversion. CSV extraction
+`COMPLETE` is not final ingestion, a watermark, or a final invoice.
+Fresh A/T CSVs were not collected in this check. Missing same-region rows
+prove neither zero usage nor zero price.
+The [400 GB transport result](../results/2026-10-17-large-rerun-complete.json)
+and [cleanup](../results/2026-10-17-large-rerun-cleanup.json) are PASS;
+**overall billing remains INCONCLUSIVE**.
+The historical 1-GiB C → B observation of 0.6551259830594063 “1 GB” remains
+**STALE**, not refreshed or replaced by this fresh-C result.
+Existing six-hour read-only billing follow-up retains its original
+**22 October 23:15:33Z hard stop**; cleanup job 3 is **STOPPED**.
+
+The dated material below preserves earlier API findings, not latest status.
+
 Read-only Python 3 standard-library collector, tested 2026-10-15. This is a
 first-class lab outcome: discover which cost API works for each authenticated
 offer, test its filters, and collect attributable bandwidth meters without
@@ -8,7 +38,7 @@ verdict**. The later [completed A/T transport](../results/2026-10-15-cross-tenan
 has initial billing **INCONCLUSIVE**: Windows HTTP 200 COMPLETE empty versus
 WSL HTTP 429 rate_limited ERROR, not two successful empty snapshots.
 
-**Current status, 2026-10-16 UTC:** [C → B v4](../results/2026-10-15-cross-region-control.md)
+**Historical status, 2026-10-16 UTC:** [C → B v4](../results/2026-10-15-cross-region-control.md)
 transport/restoration PASS, **1 GiB / one upload / zero retries**; independent
 validation PASS (11 reads / 0 mutations). v3 read-only inspection identified
 the additional B subnet NSG default deny 65500, corrected on **both NSG layers**.
@@ -248,6 +278,12 @@ No private adapter is needed for `control-inventory.private.json`. Every ID must
 be within the pinned subscription/resource group; IDs are matched
 case-insensitively and duplicate IDs are rejected. Capture all owned historical
 IDs before deletion/replacement. Unknown report IDs are discarded in memory.
+**Fresh rerun gotcha:** A and C share a subscription but occupy separate RGs;
+T has its own RG/context. Project the retained owned inventory to **one exact
+RG per invocation** and invoke Query/Cost Details separately for each RG.
+Passing a combined three-RG cleanup inventory to a single-RG command violates
+the inventory contract; an inventory-validation failure is not an empty bill.
+Keep historical C → B inventory separate from fresh C inventory after deletion.
 Unknown same-RG ResourceId Query rows force INCOMPLETE, not silent success.
 Modern `instanceName` is accepted as an ID only if canonical; a bare name needs
 matching lab RG plus exactly one matching inventory name. Ambiguous names,

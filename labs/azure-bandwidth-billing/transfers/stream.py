@@ -18,6 +18,7 @@ from datetime import datetime, timezone
 GIB = 1024 ** 3
 MAX_BYTES = 5 * GIB
 RATE = 2_500_000
+MAX_RATE = 16 * 1024 ** 2
 CHUNK = 65536
 
 
@@ -144,7 +145,9 @@ def validate(config):
     aliases(config)
     if type(config["bytes"]) is not int or not 0 < config["bytes"] <= MAX_BYTES:
         raise ValueError("invalid_byte_cap")
-    if not 0 < config.get("rate", RATE) <= RATE:
+    ceiling = config.get("rate_ceiling", RATE)
+    if (type(ceiling) is not int or not 0 < ceiling <= MAX_RATE
+            or not 0 < config.get("rate", RATE) <= ceiling):
         raise ValueError("invalid_rate")
     if not 0 < config.get("deadline", 2700) <= 2700:
         raise ValueError("invalid_deadline")

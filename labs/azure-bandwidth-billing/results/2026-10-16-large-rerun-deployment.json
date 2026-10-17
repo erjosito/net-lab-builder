@@ -1,0 +1,71 @@
+{
+  "status": "BLOCKED",
+  "observedAtUtc": "2026-10-16T11:27:24.553508+00:00",
+  "startedAtUtc": "2026-10-16T11:24:24.000334+00:00",
+  "closedAtUtc": "2026-10-16T11:27:24.553508+00:00",
+  "reason": "Azure CLI reached the bounded 120-second timeout before any mutation; child tree terminated. No retry.",
+  "roles": [
+    {
+      "role": "A",
+      "region": "swedencentral",
+      "sku": "Standard_B2ts_v2",
+      "rootCountCreated": 0,
+      "expectedRootCount": 7,
+      "deploymentStatus": "NOT_SUBMITTED",
+      "liveCapacityStatus": "PENDING",
+      "deallocatedProof": "NOT_APPLICABLE_NO_VM_CREATED"
+    },
+    {
+      "role": "C",
+      "region": "northeurope",
+      "sku": "Standard_B2ts_v2",
+      "rootCountCreated": 0,
+      "expectedRootCount": 7,
+      "deploymentStatus": "NOT_SUBMITTED",
+      "liveCapacityStatus": "PENDING",
+      "deallocatedProof": "NOT_APPLICABLE_NO_VM_CREATED"
+    },
+    {
+      "role": "T",
+      "region": "swedencentral",
+      "sku": "Standard_B2ts_v2",
+      "rootCountCreated": 0,
+      "expectedRootCount": 7,
+      "deploymentStatus": "NOT_SUBMITTED",
+      "liveCapacityStatus": "PENDING",
+      "deallocatedProof": "NOT_APPLICABLE_NO_VM_CREATED"
+    }
+  ],
+  "restoreState": "NOT_REQUIRED_ZERO_MUTATIONS",
+  "ownedProcessesIdle": true,
+  "sourcePinsVerified": true,
+  "canonicalInputsPrepared": true,
+  "freshPricesVerified": true,
+  "costReserves": {
+    "combinedCapUSD": 45,
+    "coreCapUSD": 23,
+    "msdnCapUSDEquivalent": 22,
+    "msdnCapEUR": 19.62,
+    "usdPerEur": 1.1208,
+    "combinedPlanningBoundUSD": 43.28,
+    "corePlanningBoundUSD": 21.64,
+    "msdnPlanningBoundEUR": 19.307637,
+    "coreInfrastructureCalculatedUSD": 2.260457,
+    "msdnInfrastructureCalculatedEUR": 1.00309,
+    "wireGBPerContextMaximum": 220,
+    "payloadGBPerDirection": 100,
+    "trafficAuthorized": false,
+    "billingWarning": "Planning bounds, not Azure-enforced spend stops"
+  },
+  "leaseCounts": {
+    "actualToolCalls": 6,
+    "actualNativeCalls": 3,
+    "orchestrationToolCalls": 3,
+    "actualMutations": 0,
+    "maxToolCalls": 150,
+    "maxMutations": 12
+  },
+  "cleanupDeadlineUtc": "2026-10-18T07:33:00Z",
+  "readyForPilot": false,
+  "followup": "Separate fresh owner review/recovery required; no reuse of blocked lease."
+}

@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "correlation": "schedule4-billing-20261017T034729Z",
+  "verdict": "INCONCLUSIVE",
+  "checkComplete": false,
+  "wholeLabComplete": false,
+  "startedAtUtc": "2026-10-17T03:47:29.489337+00:00",
+  "finishedAtUtc": "2026-10-17T03:50:39.101309+00:00",
+  "billingHttpRequests": 6,
+  "maxBillingHttpRequests": 6,
+  "httpAccounting": [
+    {
+      "workflow": "historical-C-details",
+      "offerContextAlias": "windows-main",
+      "requests": 2,
+      "result": {
+        "state": "INCOMPLETE",
+        "received": 0,
+        "discarded": 0,
+        "extractionComplete": false,
+        "ingestionFinal": false,
+        "reason": "operation_location_changed",
+        "httpStatus": null
+      }
+    },
+    {
+      "workflow": "fresh-C-query",
+      "offerContextAlias": "windows-main",
+      "requests": 1,
+      "result": {
+        "state": "ERROR",
+        "code": "rate_limited",
+        "httpStatus": 429,
+        "azureCode": "429",
+        "errorCategory": null
+      }
+    },
+    {
+      "workflow": "fresh-T-query",
+      "offerContextAlias": "wsl-msdn",
+      "requests": 1,
+      "result": {
+        "state": "ERROR",
+        "code": "rate_limited",
+        "httpStatus": 429,
+        "azureCode": "429",
+        "errorCategory": null
+      }
+    },
+    {
+      "workflow": "historical-AB-query",
+      "offerContextAlias": "windows-main",
+      "requests": 1,
+      "result": {
+        "state": "COMPLETE",
+        "pages": 1,
+        "received": 6,
+        "discarded": 0,
+        "duplicates": 0,
+        "unattributedLabRows": 0,
+        "ingestionFinal": false
+      }
+    },
+    {
+      "workflow": "historical-C-query",
+      "offerContextAlias": "windows-main",
+      "requests": 1,
+      "result": {
+        "state": "ERROR",
+        "code": "rate_limited",
+        "httpStatus": 429,
+        "azureCode": "429",
+        "errorCategory": null
+      }
+    }
+  ],
+  "actualInfrastructureMutations": 0,
+  "sourceHarnessChanged": false,
+  "dailyUsageLabelsRetainedUtc": [
+    "2026-10-15",
+    "2026-10-16",
+    "2026-10-17"
+  ],
+  "completeQueryCoverage": {
+    "historicalAB": {
+      "from": "2026-10-15T00:00:00Z",
+      "to": "2026-10-17T03:48:41.909760+00:00"
+    },
+    "granularity": "Daily",
+    "rows": 6,
+    "ingestionFinal": false
+  },
+  "newHistoricalABRows": [
+    {
+      "endpoint": "historical-A",
+      "dayUtc": "2026-10-15",
+      "meter": "Inter Continent Data Transfer Out - NAM or EU To Any",
+      "cost": "0.0000483148265630007",
+      "currency": "USD",
+      "offerContextAlias": "windows-main",
+      "quantity": null,
+      "unit": null,
+      "rate": null,
+      "attribution": "exact_saved_owned_resource_id"
+    },
+    {
+      "endpoint": "historical-A",
+      "dayUtc": "2026-10-15",
+      "meter": "Intra Continent Data Transfer Out",
+      "cost": "6.48200511932373E-8",
+      "currency": "USD",
+      "offerContextAlias": "windows-main",
+      "quantity": null,
+      "unit": null,
+      "rate": null,
+      "attribution": "exact_saved_owned_resource_id"
+    },
+    {
+      "endpoint": "historical-A",
+      "dayUtc": "2026-10-15",
+      "meter": "Standard Data Transfer Out",
+      "cost": "0.000024495679885149",
+      "currency": "USD",
+      "offerContextAlias": "windows-main",
+      "quantity": null,
+      "unit": null,
+      "rate": null,
+      "attribution": "exact_saved_owned_resource_id"
+    },
+    {
+      "endpoint": "historical-B",
+      "dayUtc": "2026-10-15",
+      "meter": "Intra Continent Data Transfer Out",
+      "cost": "1.22934579849243E-8",
+      "currency": "USD",
+      "offerContextAlias": "windows-main",
+      "quantity": null,
+      "unit": null,
+      "rate": null,
+      "attribution": "exact_saved_owned_resource_id"
+    },
+    {
+      "endpoint": "historical-B",
+      "dayUtc": "2026-10-15",
+      "meter": "Standard Data Transfer Out",
+      "cost": "8.75651836395264E-7",
+      "currency": "USD",
+      "offerContextAlias": "windows-main",
+      "quantity": null,
+      "unit": null,
+      "rate": null,
+      "attribution": "exact_saved_owned_resource_id"
+    },
+    {
+      "endpoint": "historical-B",
+      "dayUtc": "2026-10-16",
+      "meter": "Intra Continent Data Transfer Out",
+      "cost": "0.0000701968744397164",
+      "currency": "USD",
+      "offerContextAlias": "windows-main",
+      "quantity": null,
+      "unit": null,
+      "rate": null,
+      "attribution": "exact_saved_owned_resource_id"
+    }
+  ],
+  "newHistoricalABDailyTotals": [
+    {
+      "endpoint": "historical-A",
+      "dayUtc": "2026-10-15",
+      "currency": "USD",
+      "offerContextAlias": "windows-main",
+      "cost": "0.0000728753264993429373"
+    },
+    {
+      "endpoint": "historical-B",
+      "dayUtc": "2026-10-15",
+      "currency": "USD",
+      "offerContextAlias": "windows-main",
+      "cost": "8.879452943801883E-7"
+    },
+    {
+      "endpoint": "historical-B",
+      "dayUtc": "2026-10-16",
+      "currency": "USD",
+      "offerContextAlias": "windows-main",
+      "cost": "0.0000701968744397164"
+    }
+  ],
+  "historicalControlLastSuccessfulObservationNotRefreshed": {
+    "lastObservedUtc": "2026-10-16T08:06:03.354732+00:00",
+    "usageDayUtc": "2026-10-16",
+    "quantity": "0.6551259830594063",
+    "unit": "1 GB",
+    "cost": "0.013102519661188125",
+    "currency": "USD",
+    "effectivePrice": "0.02",
+    "volumeGatePassed": false,
+    "freshObservation": false
+  },
+  "freshTransportNotBilling": {
+    "verifiedApplicationBytesPerDirection": {
+      "A->T": 33285996544,
+      "T->A": 33285996544,
+      "C->T": 22548578304,
+      "T->C": 22548578304,
+      "total": 111669149696
+    },
+    "verifiedGiBTotal": 104,
+    "handoffEndedAtUtc": "2026-10-17T03:43:29.137488+00:00",
+    "noRequestAttributionByAmount": true,
+    "runtimeCeilingSecondsUnchanged": 86400,
+    "freshMaturityIndependentOfHistorical": true
+  },
+  "ingestionWatermark": null,
+  "qualifiedMatureSnapshotsAdded": 0,
+  "remainingGaps": [
+    "Historical C current quantity/unit/effective price unavailable: async report stopped after two 202 responses with operation_location_changed; no signed Location or blob URL persisted.",
+    "Historical C cost Query returned 429; latest successful 0.6551259830594063 reported units of 1 GB at USD 0.02 and USD 0.013102519661188125 on usage day October 16 remains the October 16 08:06 observation, not a refreshed value.",
+    "Fresh exact-inventory C and native WSL/MSDN T Queries returned 429; no fresh cost, quantity, unit, rate or explicit zero established.",
+    "Historical T and fresh A were not requested within six-request budget; complete historical A/C/T comparison and complete fresh A/C/T coverage absent.",
+    "No new qualified mature historical snapshot: two complete comparisons at least six hours apart after October 16 23:15:33 UTC still required.",
+    "No ingestion watermark and unknown Cost Details end-boundary semantics; HTTP/report success is not proof of final billing ingestion.",
+    "Missing October 15/16/17 endpoint rows are absent, never zero; offers, currencies, units and rates must remain distinct.",
+    "Fresh transfer age is independent of historical maturity; latest 104 GiB handoff ended October 17 03:43:29 UTC and target transfers remain incomplete."
+  ],
+  "schedule4Stopped": false,
+  "schedule4Reason": "Neither qualified goal nor original hard stop reached",
+  "originalHardStopUtc": "2026-10-22T23:15:33Z",
+  "hardStopRemainingSecondsAtCheck": 501893,
+  "cleanupSchedule3Unchanged": true,
+  "externalBillingOwnerState": "idle",
+  "allOwnedChildrenIdle": true,
+  "queuedWork": 0,
+  "restore": "No infrastructure touched; pre-existing retained/deallocated state not independently re-read"
+}
