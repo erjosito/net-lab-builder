@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-17T22:26:28.134737+00:00",
+  "finishedUtc": "2026-10-17T22:27:55.469358+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "probe-dc-jp",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@<LOCAL_PROFILE>\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\b2-diagnosis-20261017-B2-reverted-traffic-probe-dc-jp.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\nB2B_TRAFFIC H4sIAEX202oC/+2STWsbMRCG/8ogKNh01+jDjp29lZSWQCk9tCfLB1UrO6K7WiON0wbj/97ZxTgy7SHY5NRexGje+dCMnj1D37qEpt1+Q8sqJrm8KQUvxfyrlJWcV2I+EWp2u7h9y3nFOSuYdU2TWLXcs9TtonWUJTgF8QmdfUBNBX0w6Ltw1E5S7HZICXvmfnm862qyecES1uSn2OVeszqhZpXO8jQrNFvHrj35VSZsDLqf5ulcmw5S7R4Ht8OHY5HGbBK5liu67Hyt+/aaWWMf3OA+rNjwHBcjPYcdCoZ2S9aHd/efSPG2zW4kvXdofHM+kFxkE/FhZaeKdhebCkZyMYa7LgRn+yVB/wcUDmaNLoLiXECb+uZ9v7+1EFmHL/efP8LzsmD0bI+h3xpkG4MKZjejxXQM35/QJejWUBs0Ex10KMsyr7P1YQNEBnr6TZuAZB0kbI394TABRhNS6xFdXQCH6Kzzj70tOH9zjIKmS6kYxiO3kjTU2XYPxcsZkhcyJP8z9HKGZMaQvIIh+WoMza5hSF3IkPpXGeIXMKQyhtQVDKnXYmgq/mBodfgNmsrDWQkHAAA=\\n\\n[stderr]\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\nB2B_TRAFFIC H4sIAEX202oC/+2STWsbMRCG/8ogKNh01+jDjp29lZSWQCk9tCfLB1UrO6K7WiON0wbj/97ZxTgy7SHY5NRexGje+dCMnj1D37qEpt1+Q8sqJrm8KQUvxfyrlJWcV2I+EWp2u7h9y3nFOSuYdU2TWLXcs9TtonWUJTgF8QmdfUBNBX0w6Ltw1E5S7HZICXvmfnm862qyecES1uSn2OVeszqhZpXO8jQrNFvHrj35VSZsDLqf5ulcmw5S7R4Ht8OHY5HGbBK5liu67Hyt+/aaWWMf3OA+rNjwHBcjPYcdCoZ2S9aHd/efSPG2zW4kvXdofHM+kFxkE/FhZaeKdhebCkZyMYa7LgRn+yVB/wcUDmaNLoLiXECb+uZ9v7+1EFmHL/efP8LzsmD0bI+h3xpkG4MKZjejxXQM35/QJejWUBs0Ex10KMsyr7P1YQNEBnr6TZuAZB0kbI394TABRhNS6xFdXQCH6Kzzj70tOH9zjIKmS6kYxiO3kjTU2XYPxcsZkhcyJP8z9HKGZMaQvIIh+WoMza5hSF3IkPpXGeIXMKQyhtQVDKnXYmgq/mBodfgNmsrDWQkHAAA=\n\n[stderr]\n"
+      }
+    ]
+  },
+  "sha256": "bbe746086928a3ae312941f33b90f668fb078d6b7bf3566420713506dad488d5"
+}

@@ -5,7 +5,7 @@
 > **A:** ASPath plus NVA import policy selected Microsoft's backbone.
 > **B1:** ExpressRoute HRP retained the longer local Japan paths after a controlled VPN-prefix withdrawal/re-advertisement.
 > **B2:** ASPath with no extra nonlocal prepends selected local customer-mesh paths at the hub firewalls and NVAs.
-> A/B1/B2 now have matched **42-direction TCP/ICMP matrices**. None is an all-pairs forwarding success.
+> Acceptance covers **24 DC/Azure directions**, not DC-to-DC traffic. A plus its Japan workload UDR passes all 24 for TCP and ICMP.
 > All ten VMs are back to their original **deallocated** states. Hubs, firewalls and VPN gateway remain deployed and billable.
 
 ## Latest result: all-hub B2B rerun with forwarding evidence
@@ -13,19 +13,24 @@
 The [complete rerun report](show-output/b2b-summary-20261017/README.md)
 contains fourteen measured states, full three-hub firewall tables, full
 four-router BIRD configurations/routes and packet-interface observations.
-Every state measures all 42 initiated directions between four DC and three
-Azure-spoke endpoints, using source-bound private TCP/HTTP and ICMP.
+The historical capture preserves all 42 initiated directions, using
+source-bound private TCP/HTTP and ICMP. Acceptance is now derived from
+only the **24 DC/Azure directions**: twelve DC-to-DC directions are excluded
+and six spoke-to-spoke directions are auxiliary. Original raw verdicts
+remain unchanged; [acceptance.csv](show-output/b2b-summary-20261017/acceptance.csv)
+contains the explicitly scoped measurements.
 
-| State | TCP passes / 42 | ICMP passes / 42 |
+| State | TCP passes / 24 | ICMP passes / 24 |
 | --- | --- | --- |
-| Original mixed hub B2B flags | 28 | 32 |
-| All hub B2B flags enabled, no other policy change | 28 | 32 |
-| A, NVA policy only | 36 | 36 |
-| A, plus Japan workload UDR | 38 | 40 |
-| B1, ExpressRoute, original three prepends, initial / withdrawn / returned | 28 | 32 |
-| B1, EU two-prepend control, initial / withdrawn / returned | 30 | 33 |
-| B1, VPN HRP | 32 | 34 |
-| B2, ASPath with zero extra EU/US prepends | 36 | 36 |
+| Original mixed hub B2B flags | 10 | 14 |
+| All hub B2B flags enabled, no other policy change | 10 | 14 |
+| A, NVA policy only | 18 | 18 |
+| A, plus Japan workload UDR | 24 | 24 |
+| B1, ExpressRoute, original three prepends, initial / withdrawn / returned | 10 | 14 |
+| B1, EU two-prepend control, initial / withdrawn / returned | 12 | 15 |
+| B1, VPN HRP | 14 | 16 |
+| B2, ASPath with zero extra EU/US prepends | 18 | 18 |
+| B2, same BGP policy plus three-spoke Japan workload UDR | 24 | 24 |
 
 Enabling Japan's per-hub flag changed **neither the twelve DC-prefix firewall
 winners nor any traffic outcome** in the matched baseline. The WAN flag
@@ -38,12 +43,28 @@ separate EU four-versus-three control repeats it. The inconsistent flags
 therefore do not explain away that result. VPN HRP is now measured too,
 but sequential route history prevents a universal ER/VPN comparison.
 
-**Reachability does not prove the intended backbone.** Packet observations
-did not establish Japan NVA/XFRM traversal for A's successful policy-only
-EU/JP DC traffic. The peered underlay and workload steering remain relevant.
-BIRD kernel-export `!` flags also remain. With A's UDR, EU/US DC -> Japan
-workload fails TCP/ICMP; the reverse fails TCP. B2's six failures are the
-Japan workload <-> three Azure spokes. All failures remain explicit.
+The [step-by-step explanation](show-output/b2b-summary-20261017/README.md#start-with-one-destination-and-two-ways-to-reach-it)
+defines local versus remote advertisements and walks through the competing
+paths, withdrawal and return. History dependence is observed; an Azure-internal
+race is not proved. The documented two-or-more-longer caveat fits five
+versus three, but alone does not explain four versus three.
+
+**Reachability does not prove the intended backbone.** A with its UDR passes
+the requested DC/Azure criterion; its historical DC-to-DC failures are not
+acceptance failures. B2 without a workload UDR fails the six Japan workload
+<-> Azure-spoke directions. BIRD kernel-export `!` warnings remain visible,
+but do not by themselves identify a packet-drop cause; Linux routes and
+packet observations must be checked separately.
+
+The [focused B2 diagnosis](show-output/b2b-summary-20261017/README.md#b2s-six-japan-workload-failures-a-workload-steering-fault-not-an-as-path-fault)
+captures the Japan workload's guest and Azure NIC routes, then changes only
+its subnet steering. Before the UDR, Linux reports `via 10.130.0.4`, but
+Azure's active fabric route is `10.0.0.0/8 -> None` for every spoke.
+Three /24 UDRs to the Japan NVA change B2 from 18/24 to **24/24 TCP and ICMP**;
+removing the association reproduces 18/24. Firewall winners and selected
+NVA routes remain unchanged. The temporary table is deleted afterward.
+B1 has not been repeated with this workload correction; comparing its
+old reachability count with corrected A/B2 is not an HRP-only comparison.
 
 Exact BIRD bytes/metadata, original mixed HRPs/flags and paired firewall
 winners were independently restored and verified. The original traffic
