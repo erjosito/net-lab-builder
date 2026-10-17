@@ -61,7 +61,21 @@ def python_script(body, marker):
             f"print('{marker} '+payload)\nPY\n")
 
 
-def traffic_script(source):
+def traffic_targets(source, dc_azure_only=False):
+    if source not in ENDPOINTS.values():
+        raise ValueError("Unknown traffic source")
+    dc = {ip for vm, ip in ENDPOINTS.items() if not vm.startswith("probe-spoke-")}
+    return tuple(ip for ip in ENDPOINTS.values() if ip != source
+                 and (not dc_azure_only or (ip in dc) != (source in dc)))
+
+
+def selection_state(selected):
+    return {site: [{key: re.sub(r"\b\d{2}:\d{2}:\d{2}(?:\.\d+)?\b", "<DISPLAY_TIME>", value)
+                   if key == "headline" else value for key, value in row.items()}
+                   for row in rows] for site, rows in selected.items()}
+
+
+def traffic_script(source, dc_azure_only=False):
     return python_script(f"""
 source={source!r}
 def run(args,timeout=15):
@@ -70,8 +84,7 @@ def run(args,timeout=15):
 listener=run(['systemctl','is-active','lab-http'])
 assert listener['exitCode']==0,listener
 cells=[]
-for destination in {tuple(ENDPOINTS.values())!r}:
- if destination==source:continue
+for destination in {traffic_targets(source, dc_azure_only)!r}:
  route=run(['ip','-j','route','get',destination,'from',source])
  icmp=run(['ping','-n','-I',source,'-c','2','-W','1',destination])
  tcp=run(['curl','--interface',source,'--noproxy','*','-sS','--connect-timeout','3',
@@ -138,24 +151,25 @@ p.rmdir()
     return python_script(body, "B2B_CAPTURE")
 
 
-def traffic(label):
+def traffic(label, dc_azure_only=False):
     started = guest_batch(label + "-capture-start",
                           {"router-" + s: capture_script(label) for s in snapshot.ALL_SITES},
                           "B2B_CAPTURE")
     sweep.save("capture-start.json", started)
     try:
         results = guest_batch(label + "-traffic",
-                              {vm: traffic_script(ip) for vm, ip in ENDPOINTS.items()},
+                              {vm: traffic_script(ip, dc_azure_only) for vm, ip in ENDPOINTS.items()},
                               "B2B_TRAFFIC")
         cells = [c for v in results.values() for c in v["cells"]]
-        expected = {(a, b) for a in ENDPOINTS.values() for b in ENDPOINTS.values() if a != b}
-        if len(cells) != 42 or {(c["source"], c["destination"]) for c in cells} != expected:
-            raise RuntimeError("Incomplete or duplicate 42-direction traffic matrix")
+        expected = {(a, b) for a in ENDPOINTS.values() for b in traffic_targets(a, dc_azure_only)}
+        if len(cells) != len(expected) or {(c["source"], c["destination"]) for c in cells} != expected:
+            raise RuntimeError("Incomplete or duplicate traffic matrix")
         sweep.save("traffic-details.json", results)
-        summary = dict(cells=cells, expectedDirections=42,
+        summary = dict(cells=cells, expectedDirections=len(expected),
+                       scope="DC-Azure" if dc_azure_only else "all-pairs diagnostic",
                        tcpPass=sum(c["tcp"] == "PASS" for c in cells),
                        icmpPass=sum(c["icmp"] == "PASS" for c in cells))
-        summary["verdict"] = "PASS" if summary["tcpPass"] == summary["icmpPass"] == 42 else "FAIL"
+        summary["verdict"] = "PASS" if summary["tcpPass"] == summary["icmpPass"] == len(expected) else "FAIL"
         sweep.save("traffic-summary.json", summary)
     finally:
         observed = guest_batch(label + "-capture-stop",
@@ -165,7 +179,7 @@ def traffic(label):
     return summary
 
 
-def capture(label, expected=None, all_enabled=False):
+def capture(label, expected=None, all_enabled=False, dc_azure_only=False):
     sweep.CURRENT = sweep.OUT / label
     wan = sweep.az(["rest", "--method", "get", "--url",
                     sweep.network_url("virtualWans", "vwan-threehub") + "?api-version=2024-05-01"],
@@ -187,10 +201,11 @@ def capture(label, expected=None, all_enabled=False):
                 for s in snapshot.ALL_SITES}
     sweep.save("selected-routes.json", selected)
     result = dict(wan=wan, hubs=hubs, sources=sources, nvas=nvas, firewalls=firewalls, selected=selected)
-    result["traffic"] = traffic(label)
+    result["traffic"] = traffic(label, dc_azure_only)
     sweep.save("scenario-result.json", result)
-    print(f"MEASURED {label}: TCP={result['traffic']['tcpPass']}/42 "
-          f"ICMP={result['traffic']['icmpPass']}/42", flush=True)
+    total = result["traffic"]["expectedDirections"]
+    print(f"MEASURED {label}: TCP={result['traffic']['tcpPass']}/{total} "
+          f"ICMP={result['traffic']['icmpPass']}/{total}", flush=True)
     return result
 
 

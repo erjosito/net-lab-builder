@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-17T22:56:01.084980+00:00",
+  "finishedUtc": "2026-10-17T22:57:21.688579+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-us",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@<LOCAL_PROFILE>\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\b2-diagnosis-20261017-independent-verification-capture-start-router-us.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\nB2B_CAPTURE H4sIACn902oC/23OQQrCMBAF0KuEWVlMy2SatphrqAcoScCAbUIygiLe3RZEELuYv3h8PvOEFBwYrVUrIfvRPcBwvnkJ1zAFPnobZ1fAkEYJ/p6yLyXEGQzsgp2SiFmwTSLFzKIjVJUYZyd2l1hYKGzUckvi2vsabVi7YXo1/UP/rY2xz1YFEjhMvvA4pTPb5WdC6muFtRpORKbrjVbNcKAehz2iQYTXG3/7FqgQAQAA\\n\\n[stderr]\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\nB2B_CAPTURE H4sIACn902oC/23OQQrCMBAF0KuEWVlMy2SatphrqAcoScCAbUIygiLe3RZEELuYv3h8PvOEFBwYrVUrIfvRPcBwvnkJ1zAFPnobZ1fAkEYJ/p6yLyXEGQzsgp2SiFmwTSLFzKIjVJUYZyd2l1hYKGzUckvi2vsabVi7YXo1/UP/rY2xz1YFEjhMvvA4pTPb5WdC6muFtRpORKbrjVbNcKAehz2iQYTXG3/7FqgQAQAA\n\n[stderr]\n"
+      }
+    ]
+  },
+  "sha256": "544e3300b1b51d9f3e4c770c2c1deb604f75d26227e7de29f767dc5129a7503e"
+}
