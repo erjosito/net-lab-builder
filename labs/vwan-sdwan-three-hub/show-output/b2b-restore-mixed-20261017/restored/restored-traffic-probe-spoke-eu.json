@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-17T19:37:39.583457+00:00",
+  "finishedUtc": "2026-10-17T19:39:03.887308+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "probe-spoke-eu",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@<LOCAL_PROFILE>\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\b2b-20261017-restored-traffic-probe-spoke-eu.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\nB2B_TRAFFIC H4sIAL3O02oC/92Wa2vbMBSG/4oQDFqWyNKR79APpWOjMLZCt091GZ6tpma+ZJbSdoT898mOlzhN3VzcrqUQYlvH5+jYft7DO8UqyYRUYTb+riLsY6BgDxkdMucb83zu+twhtgPArfeU+pTiAY5EmkrsX0yxLCZlJHQWo0T/qj8dj3W9JA9VUuRNaBkri4nSCVMs7hJ1UsT6nA6wVLFe1zdfTAMcSxVgP2gnBngQ4KuyyBaB1vooVOI2/LMaqiOxuKlXhbpuSqThSOqli0t9MUnioNo9wFEYXYt6eXaJ625EWepu8GyAVTTWZ2fH5+c6kkRZ60qHPggVJmn38wClaNkuWn0XK/tUpTdVOzv98qldAx20Lg5R9YLau/nIsg9c8xD9/KOERMUVikMVkiC3zWZpkdGk+Khq44cUv48YUio9sgFVfBx5xGIok9ulwkqqSahZpwb5cDhcaX+c5COk2VOJBiaSSMeDHNA4jH4JJZEqw1xmiVIiHiBApYhEclOd03fNPSgtpBzU++jClFXblEqhLMmN8GZkZOGdkWkK0BGq2uCGTRzHMvTTUNcA4nDQna1+idlge6xhX6zhlWD98fj087ZYg9t6ILrONaxzHU3K1EcH4B6ir2NR1q+u/lgx0mVQeKVEiayqVpakaSJFVOSxRLeJuka04ezfV99ZI9DWCDyBRqBLI2wOOmNOh0SgSyKLTOueQuAFFMKYSRyXG7ob4rmePjqEeZbBCFC7l074vjrhr1InzdWWOukQxEmR5yJaKGKpB17rQT7GO3uId97mne/M+5I9vgd7tMWexuxh+oD3gcisYubuDM3z3tSoXbyKnScte45JO29nDt78vNecnZfotCLAvY4xu5YI9xKde1O2afx/DlndBOHcM4C7xGSWPnrE9JgestTpNWT39SLw5hw29DfYbe/wBNYBNrhrRvnDSMMGb83AXkX6uXwDfcw3UCCeaRqVf7Ac7R/A1n1UPoLY4PVhel/fwN8c07w/021/wPszzTcw3Tmm+Qam9WRcZZq/gBeuxjOnznxMa7aro+WCUdkjZx3py9lfqIUQ2kgRAAA=\\n\\n[stderr]\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\nB2B_TRAFFIC H4sIAL3O02oC/92Wa2vbMBSG/4oQDFqWyNKR79APpWOjMLZCt091GZ6tpma+ZJbSdoT898mOlzhN3VzcrqUQYlvH5+jYft7DO8UqyYRUYTb+riLsY6BgDxkdMucb83zu+twhtgPArfeU+pTiAY5EmkrsX0yxLCZlJHQWo0T/qj8dj3W9JA9VUuRNaBkri4nSCVMs7hJ1UsT6nA6wVLFe1zdfTAMcSxVgP2gnBngQ4KuyyBaB1vooVOI2/LMaqiOxuKlXhbpuSqThSOqli0t9MUnioNo9wFEYXYt6eXaJ625EWepu8GyAVTTWZ2fH5+c6kkRZ60qHPggVJmn38wClaNkuWn0XK/tUpTdVOzv98qldAx20Lg5R9YLau/nIsg9c8xD9/KOERMUVikMVkiC3zWZpkdGk+Khq44cUv48YUio9sgFVfBx5xGIok9ulwkqqSahZpwb5cDhcaX+c5COk2VOJBiaSSMeDHNA4jH4JJZEqw1xmiVIiHiBApYhEclOd03fNPSgtpBzU++jClFXblEqhLMmN8GZkZOGdkWkK0BGq2uCGTRzHMvTTUNcA4nDQna1+idlge6xhX6zhlWD98fj087ZYg9t6ILrONaxzHU3K1EcH4B6ir2NR1q+u/lgx0mVQeKVEiayqVpakaSJFVOSxRLeJuka04ezfV99ZI9DWCDyBRqBLI2wOOmNOh0SgSyKLTOueQuAFFMKYSRyXG7ob4rmePjqEeZbBCFC7l074vjrhr1InzdWWOukQxEmR5yJaKGKpB17rQT7GO3uId97mne/M+5I9vgd7tMWexuxh+oD3gcisYubuDM3z3tSoXbyKnScte45JO29nDt78vNecnZfotCLAvY4xu5YI9xKde1O2afx/DlndBOHcM4C7xGSWPnrE9JgestTpNWT39SLw5hw29DfYbe/wBNYBNrhrRvnDSMMGb83AXkX6uXwDfcw3UCCeaRqVf7Ac7R/A1n1UPoLY4PVhel/fwN8c07w/021/wPszzTcw3Tmm+Qam9WRcZZq/gBeuxjOnznxMa7aro+WCUdkjZx3py9lfqIUQ2kgRAAA=\n\n[stderr]\n"
+      }
+    ]
+  },
+  "sha256": "dd533c8c74bf457d4e056ba3f0e7372a939fcac03b8e52f5d0f0f7a43bb34195"
+}

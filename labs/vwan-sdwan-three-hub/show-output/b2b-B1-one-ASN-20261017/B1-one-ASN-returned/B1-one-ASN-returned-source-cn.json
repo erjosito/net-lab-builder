@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-17T18:22:24.633497+00:00",
+  "finishedUtc": "2026-10-17T18:23:47.791365+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-cn",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@<LOCAL_PROFILE>\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\design-B1-one-ASN-returned-source-cn.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\nDESIGN_SNAPSHOT H4sIAAm902oC/91VS4+bSBD+Ky0O0TjrcfphwA/NMdfsZVd7iCOrDYXNBDcIGk+8jvPbU02DbTDOeLXalRJfgOp6fPXV1+WDU8QanJkTKGfo6HgLhZbb7E8doI1T7j0y+sj8P9hkxsWMuqPJdOpO3N8onVGKEcVGctdDX0bBdadMMo+5UzmWHjBfuDRYcRGNhe9xIXwe8SgKPeFCxKkvvIgJEYx9MRFjz+TSUjuzg1PGoTNjTAyddfXG+dDZpiGiFJMxvhqUHwo88KecUurRyUTgG8dsx6GT5alOgzQpTCpsZ7OEEvG9x+yrJC42EGKpyl4W/fbnrGPHrBuQid78JWP9+6qAfCd1nCqM//hp6ASpiuI1xiTpmhT7wjxkkswXKk9LDTmJQ8LoiI3piI7GaI6z3ZiY9EBKFUKeyH3HnMiVsTS9kBB2cQD1oyAHUgRSEUMEZp6T46VrnEOgCYJS+ISQHBaKkCr34aooOc6rU4UwI4kVFg7oDV04Q3x7Wb9dOHh+md3MKA5Mdp2nyTKLVXFPgYoIQwJnFQnvBCe7WJ5pYR03fpcbE7fdelCnL2oZBj14K7q7UG0q+o6Pq+QNMzZ1VKrASIDksMaHRCpyiCAHFcAD0omUrnMoikFdLSIPCjR5qhKf8r550/jhiedSxgbk61cTgL9zAL8dwHsDxO0AMSB6A8qGrNbZMkmDGj16CEorEiAp4PqUVaem+zgxupZ/lzks4UuW5vrUpwHxjXw0fZ4aHVZt8/anaH+e2P6EoJuOqgli5YVjZ7dwsF1ird/QWt1XVKltisgggEzbMcIzyr8F1y6Da7RPnWkjZz11uwXarbZ6aTcqLhu7wG7Ze9ukPpxHEqTbbalivR/JMHx4MGMzqQaDufW5QHHs9nrS/GfIFTSPJSrcVqjNVvfcHVdZtqBzvB8TO3x7NWyp1joyhnhb8adSBbWlZrQmuY77EbnMGG3TJ+StmH8lnyG5fx7dmZpfC5JdCUdL7QW5OKVaTqXtuLonhPl8JJhZQJTIorpvljcF8XqzSvOzx7RxsCttWyY63qQZ4dXnJk3Cer3XQ/kMkMkk3oE1e/eMCkFe/8uYk7XU8CL32GtQ5gUmre0KvmhiUBSQRO2Bd8drdGrcl8b96aKvea8AzjvPir2tc3R6hG2m94/zZhxW2dei+AeDPWElN6vd8DjfO3Z576w8rve93dwXTh1JHX+gre79uVhSr2mvLPq1N3lNe8xvPPivJT7m96uP/6Tq4/eqj///6nvOetXH+Wvq46zxEL+W+jjrV5/4SdUn7lWf+G/V5xy/A4ip9PmmDgAA\\n\\n[stderr]\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\nDESIGN_SNAPSHOT H4sIAAm902oC/91VS4+bSBD+Ky0O0TjrcfphwA/NMdfsZVd7iCOrDYXNBDcIGk+8jvPbU02DbTDOeLXalRJfgOp6fPXV1+WDU8QanJkTKGfo6HgLhZbb7E8doI1T7j0y+sj8P9hkxsWMuqPJdOpO3N8onVGKEcVGctdDX0bBdadMMo+5UzmWHjBfuDRYcRGNhe9xIXwe8SgKPeFCxKkvvIgJEYx9MRFjz+TSUjuzg1PGoTNjTAyddfXG+dDZpiGiFJMxvhqUHwo88KecUurRyUTgG8dsx6GT5alOgzQpTCpsZ7OEEvG9x+yrJC42EGKpyl4W/fbnrGPHrBuQid78JWP9+6qAfCd1nCqM//hp6ASpiuI1xiTpmhT7wjxkkswXKk9LDTmJQ8LoiI3piI7GaI6z3ZiY9EBKFUKeyH3HnMiVsTS9kBB2cQD1oyAHUgRSEUMEZp6T46VrnEOgCYJS+ISQHBaKkCr34aooOc6rU4UwI4kVFg7oDV04Q3x7Wb9dOHh+md3MKA5Mdp2nyTKLVXFPgYoIQwJnFQnvBCe7WJ5pYR03fpcbE7fdelCnL2oZBj14K7q7UG0q+o6Pq+QNMzZ1VKrASIDksMaHRCpyiCAHFcAD0omUrnMoikFdLSIPCjR5qhKf8r550/jhiedSxgbk61cTgL9zAL8dwHsDxO0AMSB6A8qGrNbZMkmDGj16CEorEiAp4PqUVaem+zgxupZ/lzks4UuW5vrUpwHxjXw0fZ4aHVZt8/anaH+e2P6EoJuOqgli5YVjZ7dwsF1ird/QWt1XVKltisgggEzbMcIzyr8F1y6Da7RPnWkjZz11uwXarbZ6aTcqLhu7wG7Ze9ukPpxHEqTbbalivR/JMHx4MGMzqQaDufW5QHHs9nrS/GfIFTSPJSrcVqjNVvfcHVdZtqBzvB8TO3x7NWyp1joyhnhb8adSBbWlZrQmuY77EbnMGG3TJ+StmH8lnyG5fx7dmZpfC5JdCUdL7QW5OKVaTqXtuLonhPl8JJhZQJTIorpvljcF8XqzSvOzx7RxsCttWyY63qQZ4dXnJk3Cer3XQ/kMkMkk3oE1e/eMCkFe/8uYk7XU8CL32GtQ5gUmre0KvmhiUBSQRO2Bd8drdGrcl8b96aKvea8AzjvPir2tc3R6hG2m94/zZhxW2dei+AeDPWElN6vd8DjfO3Z576w8rve93dwXTh1JHX+gre79uVhSr2mvLPq1N3lNe8xvPPivJT7m96uP/6Tq4/eqj///6nvOetXH+Wvq46zxEL+W+jjrV5/4SdUn7lWf+G/V5xy/A4ip9PmmDgAA\n\n[stderr]\n"
+      }
+    ]
+  },
+  "sha256": "fbedac262410daa9eb7cc1af7dc2d58ef67eaebcb49c6d15cc3f74b95269ea2e"
+}

@@ -1,0 +1,94 @@
+BIRD 2.0.8 ready.
+Table lab4:
+10.110.0.0/24        unicast [mesh_eu 15:57:32.627 from 172.31.0.5] * (100) [AS65011i]
+	dev wgeujp
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65011
+	BGP.next_hop: 172.31.0.5
+	BGP.local_pref: 100
+	BGP.community: 
+10.30.0.0/24         unicast [azure_1 15:57:34.694] ! (100/?) [AS65515i]
+	via 169.254.21.6 on xfrm42
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 169.254.21.6
+	BGP.local_pref: 300
+	BGP.community: (65013,1)
+                     unicast [azure_0 15:57:35.380] (100/?) [AS65515i]
+	via 169.254.21.2 on xfrm41
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65515
+	BGP.next_hop: 169.254.21.2
+	BGP.local_pref: 300
+	BGP.community: (65013,1)
+10.140.0.0/24        unicast [mesh_cn 15:57:33.260 from 172.31.0.22] * (100) [AS65014i]
+	dev wgjpcn
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65014
+	BGP.next_hop: 172.31.0.22
+	BGP.local_pref: 100
+	BGP.community: 
+10.20.0.0/24         unicast [mesh_us 15:57:33.259 from 172.31.0.13] * (100) [AS65515i]
+	dev wgusjp
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65012 65515
+	BGP.next_hop: 172.31.0.13
+	BGP.local_pref: 300
+	BGP.community: (65012,1)
+                     unicast [azure_1 15:57:34.694] (100/?) [AS65520e]
+	via 169.254.21.6 on xfrm42
+	Type: BGP univ
+	BGP.origin: EGP
+	BGP.as_path: 65515 65520 65520
+	BGP.next_hop: 169.254.21.6
+	BGP.local_pref: 100
+	BGP.community: (65013,1)
+                     unicast [azure_0 15:57:35.380] (100/?) [AS65520e]
+	via 169.254.21.2 on xfrm41
+	Type: BGP univ
+	BGP.origin: EGP
+	BGP.as_path: 65515 65520 65520
+	BGP.next_hop: 169.254.21.2
+	BGP.local_pref: 100
+	BGP.community: (65013,1)
+10.130.0.0/24        unicast [own_dc 15:57:30.793] * (200)
+	dev eth0
+	Type: static univ
+10.10.0.0/24         unicast [mesh_eu 15:57:32.969 from 172.31.0.5] * (100) [AS65515i]
+	dev wgeujp
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65011 65515
+	BGP.next_hop: 172.31.0.5
+	BGP.local_pref: 300
+	BGP.community: (65011,1)
+                     unicast [azure_1 15:57:34.694] (100/?) [AS65520e]
+	via 169.254.21.6 on xfrm42
+	Type: BGP univ
+	BGP.origin: EGP
+	BGP.as_path: 65515 65520 65520
+	BGP.next_hop: 169.254.21.6
+	BGP.local_pref: 100
+	BGP.community: (65013,1)
+                     unicast [azure_0 15:57:35.380] (100/?) [AS65520e]
+	via 169.254.21.2 on xfrm41
+	Type: BGP univ
+	BGP.origin: EGP
+	BGP.as_path: 65515 65520 65520
+	BGP.next_hop: 169.254.21.2
+	BGP.local_pref: 100
+	BGP.community: (65013,1)
+10.120.0.0/24        unicast [mesh_us 15:57:33.259 from 172.31.0.13] * (100) [AS65012i]
+	dev wgusjp
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65012
+	BGP.next_hop: 172.31.0.13
+	BGP.local_pref: 100
+	BGP.community: 
+
