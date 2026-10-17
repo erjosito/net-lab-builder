@@ -1,0 +1,293 @@
+{
+  "generatedAtUtc": "2026-10-16T09:25:56.552323+00:00",
+  "phase": "READONLY_PREFLIGHT_ONLY",
+  "status": "PASS",
+  "catalogGate": "PASS",
+  "quotaGate": "PASS",
+  "identityGate": "PASS",
+  "priceEnvelopeGate": "PASS",
+  "liveCapacityGate": "PENDING",
+  "deploymentAuthorizedByThisArtifact": false,
+  "chargedTestVerdict": "NOT_RUN; not evidence of zero charges",
+  "resourceChanges": 0,
+  "armReads": 8,
+  "retailRequests": 8,
+  "retailPaginationComplete": true,
+  "retailMaximumPageBytes": 262144,
+  "allChildCommandsExited": true,
+  "slots": [
+    {
+      "slot": "A",
+      "context": "core",
+      "region": "swedencentral",
+      "sku": "Standard_B2ts_v2",
+      "nonzonal": true,
+      "catalogStatus": "PASS",
+      "restrictions": [],
+      "quotaStatus": "PASS",
+      "quota": {
+        "cores": {
+          "current": 10,
+          "limit": 100,
+          "additionalRequired": 2,
+          "status": "PASS"
+        },
+        "virtualMachines": {
+          "current": 5,
+          "limit": 25000,
+          "additionalRequired": 1,
+          "status": "PASS"
+        },
+        "standardBsv2Family": {
+          "current": 0,
+          "limit": 100,
+          "additionalRequired": 2,
+          "status": "PASS"
+        }
+      },
+      "prices": {
+        "USD": {
+          "computePerHour": 0.0108,
+          "diskPerMonth": 2.4,
+          "diskOperationsPer10000": 0.002,
+          "pipPerHour": 0.005,
+          "fixed48hLifetime12hAllocated": 0.541029,
+          "diskOperation48hConservativeBound": 0.5856,
+          "infrastructureBound": 1.126629
+        },
+        "EUR": {
+          "computePerHour": 0.0095,
+          "diskPerMonth": 2.1119,
+          "diskOperationsPer10000": 0.0018,
+          "pipPerHour": 0.0044,
+          "fixed48hLifetime12hAllocated": 0.47605,
+          "diskOperation48hConservativeBound": 0.52704,
+          "infrastructureBound": 1.00309
+        }
+      },
+      "liveCapacityStatus": "PENDING"
+    },
+    {
+      "slot": "C",
+      "context": "core",
+      "region": "northeurope",
+      "sku": "Standard_B2ts_v2",
+      "nonzonal": true,
+      "catalogStatus": "PASS",
+      "restrictions": [
+        {
+          "reasonCode": "NotAvailableForSubscription",
+          "restrictionInfo": {
+            "locations": [
+              "northeurope"
+            ],
+            "zones": [
+              "2",
+              "1"
+            ]
+          },
+          "type": "Zone",
+          "values": [
+            "northeurope"
+          ]
+        }
+      ],
+      "quotaStatus": "PASS",
+      "quota": {
+        "cores": {
+          "current": 14,
+          "limit": 100,
+          "additionalRequired": 2,
+          "status": "PASS"
+        },
+        "virtualMachines": {
+          "current": 4,
+          "limit": 25000,
+          "additionalRequired": 1,
+          "status": "PASS"
+        },
+        "standardBsv2Family": {
+          "current": 10,
+          "limit": 100,
+          "additionalRequired": 2,
+          "status": "PASS"
+        }
+      },
+      "prices": {
+        "USD": {
+          "computePerHour": 0.0114,
+          "diskPerMonth": 2.4,
+          "diskOperationsPer10000": 0.002,
+          "pipPerHour": 0.005,
+          "fixed48hLifetime12hAllocated": 0.548229,
+          "diskOperation48hConservativeBound": 0.5856,
+          "infrastructureBound": 1.133829
+        },
+        "EUR": {
+          "computePerHour": 0.01,
+          "diskPerMonth": 2.1119,
+          "diskOperationsPer10000": 0.0018,
+          "pipPerHour": 0.0044,
+          "fixed48hLifetime12hAllocated": 0.48205,
+          "diskOperation48hConservativeBound": 0.52704,
+          "infrastructureBound": 1.00909
+        }
+      },
+      "liveCapacityStatus": "PENDING"
+    },
+    {
+      "slot": "T",
+      "context": "msdn",
+      "region": "swedencentral",
+      "sku": "Standard_B2ts_v2",
+      "nonzonal": true,
+      "catalogStatus": "PASS",
+      "restrictions": [],
+      "quotaStatus": "PASS",
+      "quota": {
+        "cores": {
+          "current": 0,
+          "limit": 20,
+          "additionalRequired": 2,
+          "status": "PASS"
+        },
+        "virtualMachines": {
+          "current": 0,
+          "limit": 25000,
+          "additionalRequired": 1,
+          "status": "PASS"
+        },
+        "standardBsv2Family": {
+          "current": 0,
+          "limit": 20,
+          "additionalRequired": 2,
+          "status": "PASS"
+        }
+      },
+      "prices": {
+        "USD": {
+          "computePerHour": 0.0108,
+          "diskPerMonth": 2.4,
+          "diskOperationsPer10000": 0.002,
+          "pipPerHour": 0.005,
+          "fixed48hLifetime12hAllocated": 0.541029,
+          "diskOperation48hConservativeBound": 0.5856,
+          "infrastructureBound": 1.126629
+        },
+        "EUR": {
+          "computePerHour": 0.0095,
+          "diskPerMonth": 2.1119,
+          "diskOperationsPer10000": 0.0018,
+          "pipPerHour": 0.0044,
+          "fixed48hLifetime12hAllocated": 0.47605,
+          "diskOperation48hConservativeBound": 0.52704,
+          "infrastructureBound": 1.00309
+        }
+      },
+      "liveCapacityStatus": "PENDING"
+    }
+  ],
+  "resourceShape": {
+    "image": "Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:latest",
+    "osDiskGiB": 30,
+    "diskTierGiB": 32,
+    "diskSku": "StandardSSD_LRS",
+    "pip": "Standard regional static IPv4, Microsoft network routing",
+    "perSlot": [
+      "new owned RG",
+      "one VM",
+      "OS disk",
+      "PIP",
+      "NIC",
+      "NSG",
+      "unpeered VNet/subnet"
+    ],
+    "spot": false,
+    "zone": null
+  },
+  "bandwidthPrices": {
+    "USD": {
+      "intraContinentPerGB": 0.02,
+      "internetWorstPerGB": 0.087
+    },
+    "EUR": {
+      "intraContinentPerGB": 0.0176,
+      "internetWorstPerGB": 0.0766
+    }
+  },
+  "fx": {
+    "source": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml",
+    "quoteDate": "2026-10-15",
+    "usdPerEur": 1.1208,
+    "msdnEURCapRoundedDown": 19.62,
+    "referenceOnly": true,
+    "refreshBeforeDeploymentAndNewTrafficDay": true
+  },
+  "envelope": {
+    "payloadDecimalGBPerLeg": 100,
+    "legs": [
+      "A>T",
+      "T>A",
+      "C>T",
+      "T>C"
+    ],
+    "payloadDecimalGBTotal": 400,
+    "wireDecimalGBTotalMaximum": 440,
+    "wireDecimalGBPerContextMaximum": 220,
+    "freeTierAssumed": false,
+    "worstTrafficUSD": 38.28,
+    "infrastructureReserveUSD": 5,
+    "combinedUSD": 43.28,
+    "combinedCapUSD": 45,
+    "core": {
+      "billingCurrency": "USD",
+      "cap": 23,
+      "trafficBound": 19.14,
+      "infraReserve": 2.5,
+      "infraCalculatedBound": 2.260458,
+      "combinedBound": 21.64
+    },
+    "msdn": {
+      "billingCurrency": "EUR",
+      "cap": 19.62,
+      "approvedCapUSDEquivalent": 22,
+      "trafficBound": 17.077088,
+      "infraReserve": 2.23055,
+      "infraCalculatedUSDEquivalentBound": 1.126629,
+      "combinedEURBound": 19.307638
+    }
+  },
+  "time": {
+    "provisioningEstimateMinutes": [
+      5,
+      15
+    ],
+    "resourceTTLHoursMaximum": 48,
+    "allocatedHoursMaximumPerSlot": 12,
+    "deploymentStartNoLaterThanUtc": "2026-10-16T09:55:56.552323+00:00",
+    "absoluteCleanupNoLaterThanUtc": "2026-10-18T09:25:56.552323+00:00",
+    "deadlineRule": "Earlier of each resource creation +48h and absolute deadline. Deallocation does not stop disk/PIP billing."
+  },
+  "assumptions": [
+    "Monthly disk converted using conservative 672-hour divisor.",
+    "E4 higher documented 61,000 paid operations/hour bound charged for all 48h.",
+    "No shared mounts, snapshots, extra services, paid diagnostics or retries.",
+    "Compute charged for 12 allocated hours per slot; disk and PIP for 48h.",
+    "Published PAYG retail is a planning upper envelope, not proof of enterprise actual rates; higher reported prices block.",
+    "Taxes, if applicable to actual credit draw, must fit the same caps; not an Azure-enforced hard stop."
+  ],
+  "requiredNextGates": [
+    "Separate deployment owner creates only the three new owned RGs, then validates live capacity before locking/committing VM manifest.",
+    "No silent SKU/region fallback; failed capacity stops deployment.",
+    "Fresh ownership inventory binds all resources; old core RG/unknown NSG untouched.",
+    "Higher-rate harness and measured pilot must prove 12h/slot and 48h deadlines; old 2,500,000 B/s default cannot fit T.",
+    "Refresh FX and envelope on deployment/day boundary; reserve full wire, infra and overshoot before traffic.",
+    "Actual allocation proves live capacity; template validation alone does not guarantee allocation."
+  ],
+  "sources": [
+    "https://prices.azure.com/api/retail/prices",
+    "https://azure.microsoft.com/en-us/pricing/details/bandwidth/",
+    "https://azure.microsoft.com/en-us/pricing/details/managed-disks/",
+    "https://learn.microsoft.com/en-us/azure/virtual-machines/disks-types"
+  ]
+}

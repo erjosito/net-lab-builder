@@ -1,5 +1,160 @@
 # Azure public-endpoint bandwidth billing
 
+## Executive summary — 17 October 2026, 23:05Z
+
+**Transport PASS; cleanup PASS; full billing reconciliation INCONCLUSIVE.**
+The larger public-IP rerun completed **400,000,000,000 application bytes**:
+exactly **100,000,000,000 bytes (100 decimal GB) in each direction** below.
+
+| Leg | Regions | Tenant relationship | Target / verified bytes |
+|---|---|---|---:|
+| A → T | Sweden Central → Sweden Central | Different tenants | 100,000,000,000 / 100,000,000,000 |
+| T → A | Sweden Central → Sweden Central | Different tenants | 100,000,000,000 / 100,000,000,000 |
+| C → T | North Europe → Sweden Central | Different tenants | 100,000,000,000 / 100,000,000,000 |
+| T → C | Sweden Central → North Europe | Different tenants | 100,000,000,000 / 100,000,000,000 |
+
+All **80 completed directed chunk transfers** have matching producer/consumer
+byte counts and SHA256, with **zero payload retries**. Two zero-credited failed
+reservations remain in the ledger; this was **not a failure-free execution**.
+See the [complete result](results/2026-10-17-large-rerun-complete.json),
+[sanitized digest proofs](results/2026-10-17-large-rerun-digest-proofs.json)
+and [short report](results/2026-10-17-large-rerun-complete.md).
+
+**Actual billing answer:** the latest
+[API-generated Cost Details CSV projection](results/2026-10-17-billing-refresh-230000.json)
+contains fresh C's **17 October** `Intra Continent Data Transfer Out`:
+**10.8746547754853965 × reported “1 GB” × USD 0.02 =
+USD 0.21749309550970793** across three rows. This demonstrates a nonzero
+cross-region bandwidth charge, **not reconciliation of the 100 GB C → T leg
+or the 400 GB experiment**. “Intra Continent” is not “same region.”
+CSV extraction completed at **23:01:56Z**; ingestion is not final and no
+`DataIngestionEndMT` watermark was obtained. Three separate ResourceId+Meter
+Queries (C, A, T) returned **HTTP 429**, not zero charges.
+There is no fresh A/T CSV in this check, so same-region billing remains
+inconclusive. The older C → B 1-GiB control's **0.6551259830594063 “1 GB”**
+observation is **STALE**, not this new C result. CSVs are downloaded through
+the report API, **not portal exports**.
+
+All **21 owned resource roots in three endpoint RGs** were independently
+verified absent at **22:49:03Z on 17 October**, before midnight.
+The proof is parent-RG absence plus supporting root checks, **not 21 fresh
+direct root GETs**. [Cleanup receipt](results/2026-10-17-large-rerun-cleanup.json).
+Original disk SKUs were restored before deletion; no retained rerun compute,
+disks or public IPs remain. Unknown historical resources were not adopted.
+Cleanup job 3 is **STOPPED**. Existing six-hour read-only billing follow-up
+is retained with its original **22 October 23:15:33Z hard stop**;
+billing is **not complete** and no replacement job was created here.
+
+Measured client-NIC RX+TX, counted once per completed pair, is
+**403,432,913,305 bytes**; conservative reserved wire is
+**461,173,529,602 bytes**, including failed reservations and bootstrap.
+Neither is application volume or billed quantity. The final **470 GB wire /
+86,400 seconds per VM (24 hours)** limits were coordinator-selected bounds
+under autonomous-completion authority, **not user-selected numeric caps**.
+The 25% forecast margin was retained. Money remained monitor-only with
+**no fixed monetary cap**; the superseded USD 45 cap does not apply.
+
+This report was prepared offline: no new Azure/billing/authentication calls,
+resource changes, git publication or schedule changes.
+The dated partial results and stop decisions below are historical, not latest status.
+
+## Historical offline guard-performance recovery, 16 October 23:1xZ
+
+The newly certified successor credits a second independently verified
+5 GiB-per-direction A ↔ T pair, despite the historical ledger's terminal
+forecast failure. Verified cumulative totals are now **11,811,160,064 bytes
+(11 GiB) each A → T/T → A**, and **1,073,741,824 bytes (1 GiB) each
+C → T/T → C**: **25,769,803,776 bytes (24 GiB)** total, with
+**374,230,196,224 bytes remaining** toward the exact 400 GB target.
+Historical ledgers/receipts/pins are untouched; the earlier failed attempt
+without guest payload evidence still receives zero credit.
+
+The root performance correction scopes full content-hash ancestry validation
+to phase admission, Azure mutations and terminal credit, not runtime polls.
+Every poll still checks current lease authority, STOP, expiry, counters and
+session state. Future forecast failures preserve verified completion and block
+only next work. See the [execution protocol](transfers/README.md#phase-scoped-integrity-and-durable-verified-credit).
+
+The coordinator explicitly selected **24 hours/86,400 seconds per VM for the
+new successor**, under autonomous-completion authority; this is not a
+user-selected numeric cap. Defaults remain 12 hours, historical 16-hour
+configs are immutable, the 25% margin remains, and the original **18 October
+07:33Z absolute cleanup deadline always wins**. The conservative refreshed T
+forecast is **3,600 + 39,822 + 19,330 = 62,752 seconds**: it retains
+both failed attempts' full 5,400-second reservations rather than refunding
+the salvaged pair to its shorter measured duration. Whole-schedule reserved
+wire remains **449,628,707,842 bytes**, below the approved 460 GB ceiling;
+one shared 8 GB bootstrap reserve is retained. Monetary mode remains
+monitor-only with no monetary cap.
+
+**Offline preparation only:** no next chunk or live lease was created, no
+Azure/authentication operations were performed. Independent review of the
+exact new source hashes is required before fresh live readiness/snapshot/batch
+authority. Retained assets are not deleted or newly observed by this work.
+Billing remains **INCONCLUSIVE**. The section below is historical.
+
+## Historical larger rerun: verified partial result, stopped on 16 October
+
+**16 October 2026, 20:49Z documentation refresh (offline): transport/restoration
+PASS for completed chunks; billing INCONCLUSIVE; continuation STOPPED.**
+The fresh three-endpoint rerun completed both 1 GiB-per-direction pilots and
+one 5 GiB-per-direction A ↔ T batch. These are actual verified payloads,
+not the earlier zero-payload blocked attempts:
+
+| Directed leg | Verified application bytes | Completed payload |
+|---|---:|---:|
+| A → T | 6,442,450,944 | 6 GiB |
+| T → A | 6,442,450,944 | 6 GiB |
+| C → T | 1,073,741,824 | 1 GiB |
+| T → C | 1,073,741,824 | 1 GiB |
+| **Total** | **15,032,385,536** | **14 GiB** |
+
+A/T are Sweden Central, in different tenants; C is North Europe in A's tenant.
+All six completed directed transfers have agreeing producer/consumer byte
+counts and SHA256, with **zero payload retries**. The target remains
+**100,000,000,000 bytes per leg, 400,000,000,000 bytes total (decimal GB)**;
+it is **not complete**. See the [sanitized partial result](results/2026-10-16-large-rerun-partial.json)
+and [execution contract](transfers/README.md).
+
+The first bulk batch's measured lifecycle overhead revises the full-session T
+projection to **3,600 + 21,127 + 19,465 = 44,192 seconds (12h16m32s)**,
+including the required **25% margin** on both phase forecasts. That exceeds
+the unchanged **43,200-second/12-hour allocation cap by 992 seconds**.
+Independent offline review found no arithmetic double count: the carry is
+included once, concurrent directions are not summed, and full-phase forecasts
+already include completed chunks. Actual conservative ledger allocation for T
+is **5,521 seconds**, including prior carry; do not add that again to the
+full-session forecast. The refreshed forecast is external stop evidence, not
+a rewritten public ledger admission result.
+
+**No next chunk or probe is authorized or queued.** A 13-hour cap would require
+explicit user approval; none was obtained while the user was unavailable.
+The user explicitly removed the former **USD 45 monetary ceiling**:
+this session is **monitor-only, with no replacement monetary cap**. That
+financial change does not relax the separate 12-hour runtime cap or margin.
+
+Completed receipts verify participating VMs deallocated, original receiver
+**NIC and subnet NSGs plus network associations restored**, and owned children
+idle. Latest batch closure evidence is dated **20:43:18Z** and was subsequently
+reviewed offline; this documentation refresh made no Azure calls. **All three fresh
+endpoint resource sets remain retained**, not deleted: disks and public IPs
+continue accruing charges pending guarded cleanup **before 18 October 07:33Z**.
+No cleanup job or future continuation is established by this update.
+
+Billing still requires attributable quantity/unit/rate evidence. Report dates
+are **not ingestion watermarks**. The older C → B 1-GiB control and its
+0.6551259830594063 “1 GB” row concern distinct historical IDs/scenarios;
+they neither reconcile that control nor establish billing for this rerun.
+Root lessons: valid asynchronous power-state responses without a published
+power state are **UNPUBLISHED/pending**, never proof of running/deallocation;
+keep public leases and receipts immutable after return, and record independent
+stop decisions separately.
+
+## Original experiment and historical billing checks
+
+The remaining original-run results and caps below refer to the earlier resource
+identities, not the retained fresh rerun assets or its monitor-only money mode.
+
 **Status, 2026-10-16 UTC: same-region cross-tenant public-IP transport PASS;
 restoration PASS; bandwidth billing INCONCLUSIVE.** A ↔ T exchanged exactly
 5 GiB each direction at 10:04:25–10:40:28 UTC, with matching hashes and no bulk
@@ -19,7 +174,7 @@ VMs/disks/PIPs deleted. **Core RG and one unproven-ownership NSG were preserved*
 not adopted/deleted. No active children or further transfer is queued.
 Owner: Morpheus / Jose Moreno. Research retrieved **2026-10-15**.
 
-**Current billing check, 16 October 06:50:38Z:** C now has an adjacent-day
+**Historical billing check, 16 October 06:50:38Z:** C has an adjacent-day
 **16 October** CSV row of **0.6551259830594063 “1 GB”**, effective price
 **USD 0.02**, cost **USD 0.013102519661188125**, on
 **Intra Continent Data Transfer Out**. Its separate **15 October** row is
@@ -34,7 +189,8 @@ A/T charge or zero-rated meter is established. **Billing remains INCONCLUSIVE.**
 Both Queries and fresh CSV extraction completed: five of six allowed HTTP
 requests, zero retries/mutations, lease closed and native children idle.
 See the [current sanitized check](results/2026-10-16-billing-check-0650.json).
-Six-hour read-only follow-up remains active, next expected around **12:50Z**;
+That snapshot recorded a six-hour read-only follow-up expected around **12:50Z**,
+not evidence here that a later collection ran or a future job is active;
 control maturity starts no earlier than **16 October 23:15:33Z**, followed by
 two stable comparable snapshots at least six hours apart.
 
@@ -169,7 +325,7 @@ a fresh exact-inventory lease. T was retained then; its group is now deleted.
 Jose approved the **$8 three-day core subject to prerequisites** on 2026-10-15.
 This does not approve optional phases, SKU/cost increases, or unrelated cleanup.
 
-## Current evidence, budget and next gates
+## Original-run evidence, budget and next gates (historical scope)
 
 The headline A ↔ T public-IP test took priority on **15 October**, instead of
 the original D0 private-control traffic. A is in the Windows native context;

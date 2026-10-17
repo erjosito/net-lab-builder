@@ -1,0 +1,84 @@
+{
+  "schema": "sanitized-large-rerun-cleanup-v1",
+  "verdict": "PASS",
+  "checkedAtUtc": "2026-10-17T22:49:03.559282+00:00",
+  "resourceGroupsAbsent": 3,
+  "ownedResourceRootsClosed": 21,
+  "groups": [
+    {
+      "endpoint": "A",
+      "exists": false,
+      "closedRoots": 7,
+      "absenceCodes": [
+        "ResourceGroupNotFound"
+      ],
+      "resourceTypes": [
+        "virtualNetwork",
+        "publicIPAddress",
+        "networkInterface",
+        "nicNetworkSecurityGroup",
+        "subnetNetworkSecurityGroup",
+        "virtualMachine",
+        "osDisk"
+      ]
+    },
+    {
+      "endpoint": "C",
+      "exists": false,
+      "closedRoots": 7,
+      "absenceCodes": [
+        "ResourceGroupNotFound"
+      ],
+      "resourceTypes": [
+        "virtualNetwork",
+        "publicIPAddress",
+        "networkInterface",
+        "nicNetworkSecurityGroup",
+        "subnetNetworkSecurityGroup",
+        "virtualMachine",
+        "osDisk"
+      ]
+    },
+    {
+      "endpoint": "T",
+      "exists": false,
+      "closedRoots": 7,
+      "absenceCodes": [
+        "ResourceGroupNotFound"
+      ],
+      "resourceTypes": [
+        "virtualNetwork",
+        "publicIPAddress",
+        "networkInterface",
+        "nicNetworkSecurityGroup",
+        "subnetNetworkSecurityGroup",
+        "virtualMachine",
+        "osDisk"
+      ]
+    }
+  ],
+  "proofMode": "Independent exists=false plus REST ResourceGroupNotFound for each exact owned parent RG establishes descendant absence; supporting direct root checks and prior deletion polls are consistent.",
+  "freshDirectRootGetsAbsent": 1,
+  "not21FreshDirectRootGets": true,
+  "originalDiskSkusRestoredBeforeDeletion": true,
+  "unknownHistoricalResourcesUntouched": true,
+  "deletedBeforeUtc": "2026-10-18T00:00:00Z",
+  "retainedRerunComputeDisksPublicIps": 0,
+  "privateBillingInventoryRetained": true,
+  "cleanupJob3": "STOPPED",
+  "billingFollowup": {
+    "state": "RETAIN_EXISTING_6H_NOT_COMPLETE",
+    "hardStopUtc": "2026-10-22T23:15:33Z",
+    "noDuplicateCreated": true
+  },
+  "offlinePublicationWork": {
+    "azureCalls": 0,
+    "billingCalls": 0,
+    "infrastructureMutations": 0,
+    "scheduleChanges": 0
+  },
+  "evidence": [
+    "2026-10-17-large-rerun-complete.json",
+    "2026-10-17-billing-refresh-230000.json"
+  ]
+}

@@ -1,0 +1,226 @@
+{
+  "schema": "sanitized-large-rerun-completion-v1",
+  "snapshotAtUtc": "2026-10-17T23:05:00Z",
+  "transport": "PASS",
+  "cleanup": "PASS",
+  "billing": "INCONCLUSIVE",
+  "transportVerifiedAtUtc": "2026-10-17T22:15:17.236880+00:00",
+  "applicationTargetComplete": true,
+  "billingReconciliationComplete": false,
+  "targetApplicationBytes": 400000000000,
+  "actualApplicationBytes": 400000000000,
+  "remainingApplicationBytes": 0,
+  "applicationUnit": "bytes; 100 GB means exactly 100000000000 decimal bytes per direction",
+  "legs": [
+    {
+      "leg": "A->T",
+      "source": "A",
+      "destination": "T",
+      "sourceRegion": "swedencentral",
+      "destinationRegion": "swedencentral",
+      "differentTenants": true,
+      "targetApplicationBytes": 100000000000,
+      "actualApplicationBytes": 100000000000,
+      "completedChunks": 20,
+      "producerConsumerCountsAndSha256Match": true,
+      "payloadRetries": 0,
+      "digestEvidence": "2026-10-17-large-rerun-digest-proofs.json",
+      "digestProofGroups": [
+        {
+          "chunkBytes": 1073741824,
+          "payloadSha256": "e6cbc4b20371fff3ba9a14b0b90e29ba996a786c48b67151ca0e5fbbafa11a2d",
+          "matchingChunkCount": 1
+        },
+        {
+          "chunkBytes": 5368709120,
+          "payloadSha256": "75b8584d16aee90a4bf4ae52b11e3362a6193ba0e5b7a0a595f6b569a381eb3f",
+          "matchingChunkCount": 18
+        },
+        {
+          "chunkBytes": 2289494016,
+          "payloadSha256": "c57a4ed439527357cf29d296cef883993bfa9e9de9f52f0a7e0ac81470cde688",
+          "matchingChunkCount": 1
+        }
+      ]
+    },
+    {
+      "leg": "T->A",
+      "source": "T",
+      "destination": "A",
+      "sourceRegion": "swedencentral",
+      "destinationRegion": "swedencentral",
+      "differentTenants": true,
+      "targetApplicationBytes": 100000000000,
+      "actualApplicationBytes": 100000000000,
+      "completedChunks": 20,
+      "producerConsumerCountsAndSha256Match": true,
+      "payloadRetries": 0,
+      "digestEvidence": "2026-10-17-large-rerun-digest-proofs.json",
+      "digestProofGroups": [
+        {
+          "chunkBytes": 1073741824,
+          "payloadSha256": "e6cbc4b20371fff3ba9a14b0b90e29ba996a786c48b67151ca0e5fbbafa11a2d",
+          "matchingChunkCount": 1
+        },
+        {
+          "chunkBytes": 5368709120,
+          "payloadSha256": "75b8584d16aee90a4bf4ae52b11e3362a6193ba0e5b7a0a595f6b569a381eb3f",
+          "matchingChunkCount": 18
+        },
+        {
+          "chunkBytes": 2289494016,
+          "payloadSha256": "c57a4ed439527357cf29d296cef883993bfa9e9de9f52f0a7e0ac81470cde688",
+          "matchingChunkCount": 1
+        }
+      ]
+    },
+    {
+      "leg": "C->T",
+      "source": "C",
+      "destination": "T",
+      "sourceRegion": "northeurope",
+      "destinationRegion": "swedencentral",
+      "differentTenants": true,
+      "targetApplicationBytes": 100000000000,
+      "actualApplicationBytes": 100000000000,
+      "completedChunks": 20,
+      "producerConsumerCountsAndSha256Match": true,
+      "payloadRetries": 0,
+      "digestEvidence": "2026-10-17-large-rerun-digest-proofs.json",
+      "digestProofGroups": [
+        {
+          "chunkBytes": 1073741824,
+          "payloadSha256": "e6cbc4b20371fff3ba9a14b0b90e29ba996a786c48b67151ca0e5fbbafa11a2d",
+          "matchingChunkCount": 1
+        },
+        {
+          "chunkBytes": 5368709120,
+          "payloadSha256": "75b8584d16aee90a4bf4ae52b11e3362a6193ba0e5b7a0a595f6b569a381eb3f",
+          "matchingChunkCount": 18
+        },
+        {
+          "chunkBytes": 2289494016,
+          "payloadSha256": "c57a4ed439527357cf29d296cef883993bfa9e9de9f52f0a7e0ac81470cde688",
+          "matchingChunkCount": 1
+        }
+      ]
+    },
+    {
+      "leg": "T->C",
+      "source": "T",
+      "destination": "C",
+      "sourceRegion": "swedencentral",
+      "destinationRegion": "northeurope",
+      "differentTenants": true,
+      "targetApplicationBytes": 100000000000,
+      "actualApplicationBytes": 100000000000,
+      "completedChunks": 20,
+      "producerConsumerCountsAndSha256Match": true,
+      "payloadRetries": 0,
+      "digestEvidence": "2026-10-17-large-rerun-digest-proofs.json",
+      "digestProofGroups": [
+        {
+          "chunkBytes": 1073741824,
+          "payloadSha256": "e6cbc4b20371fff3ba9a14b0b90e29ba996a786c48b67151ca0e5fbbafa11a2d",
+          "matchingChunkCount": 1
+        },
+        {
+          "chunkBytes": 5368709120,
+          "payloadSha256": "75b8584d16aee90a4bf4ae52b11e3362a6193ba0e5b7a0a595f6b569a381eb3f",
+          "matchingChunkCount": 18
+        },
+        {
+          "chunkBytes": 2289494016,
+          "payloadSha256": "c57a4ed439527357cf29d296cef883993bfa9e9de9f52f0a7e0ac81470cde688",
+          "matchingChunkCount": 1
+        }
+      ]
+    }
+  ],
+  "completedChunkPairs": 40,
+  "completedDirectedTransfers": 80,
+  "allCompletedPayloadHashesMatch": true,
+  "payloadRetries": 0,
+  "executionFailureFree": false,
+  "retainedFailedReservations": [
+    {
+      "chunk": "same-region-002",
+      "state": "failed_or_unknown",
+      "creditedApplicationBytes": 0,
+      "reservedWireBytes": 11544821760,
+      "note": "Failed/unknown execution reservation retained; not a payload retry or a successful transfer."
+    },
+    {
+      "chunk": "cross-region-015",
+      "state": "failed_or_unknown",
+      "creditedApplicationBytes": 0,
+      "reservedWireBytes": 11544821760,
+      "note": "Failed/unknown execution reservation retained; not a payload retry or a successful transfer."
+    }
+  ],
+  "failureCaveat": "Two failed/unknown zero-credited readiness/execution reservations remain immutable. Recovery completion is separately proven; zero payload retries does not mean no execution failures.",
+  "wire": {
+    "measuredClientNicRxPlusTxOnceBytes": 403432913305,
+    "conservativeReservedBytes": 461173529602,
+    "measurementMethod": "Sum completed client NIC RX+TX once per pair; do not add both endpoint observations. Includes observed protocol/control overhead, not an exact full-lifecycle packet capture.",
+    "reservationMethod": "Conservative whole-schedule reservation, retaining failed reservations and one shared 8000000000-byte bootstrap reserve; not billed consumption.",
+    "coordinatorCeilingBytes": 470000000000,
+    "reservedHeadroomBytes": 8826470398
+  },
+  "operatingBounds": {
+    "coordinatorAllocatedSecondsPerVm": 86400,
+    "conservativeLedgerAllocatedSeconds": {
+      "A": 32660,
+      "C": 26216,
+      "T": 57976
+    },
+    "authority": "Coordinator-selected 470 GB/24-hour bounds under autonomous-completion authority, not user-selected numeric caps.",
+    "forecastMargin": "25 percent retained",
+    "moneyMode": "monitor-only; no fixed financial cap; former USD45 cap removed",
+    "originalAbsoluteCleanupDeadlineUtc": "2026-10-18T07:33:00Z"
+  },
+  "latestBilling": {
+    "evidence": "2026-10-17-billing-refresh-230000.json",
+    "startedAtUtc": "2026-10-17T23:01:03.909850+00:00",
+    "endedAtUtc": "2026-10-17T23:02:22.602927+00:00",
+    "source": "API-generated ActualCost Cost Details CSV, not portal export",
+    "endpoint": "fresh-C",
+    "usageDate": "2026-10-17",
+    "meterName": "Intra Continent Data Transfer Out",
+    "rows": 3,
+    "quantity": "10.8746547754853965",
+    "unit": "1 GB",
+    "effectivePrice": "0.02",
+    "currency": "USD",
+    "cost": "0.21749309550970793",
+    "nonzeroCrossRegionChargeDemonstrated": true,
+    "fullCToT100GBQuantityReconciled": false,
+    "full400GBChargesReconciled": false,
+    "freshQueries": "C/A/T each HTTP429; unavailable, not zero",
+    "freshATCsvRefreshed": false,
+    "sameRegionBillingConclusive": false,
+    "csvExtractionComplete": true,
+    "ingestionFinal": false,
+    "DataIngestionEndMT": null,
+    "historical1GiBCToBControl": "STALE_NOT_REFRESHED; prior 0.6551259830594063 reported 1 GB is separate from fresh C",
+    "caveat": "Current-day partial volume; daily rows cannot assign individual chunks. Preserve reported unit without assuming binary/decimal conversion. COMPLETE extraction and date-only report endpoints are not ingestion watermarks or full-day coverage."
+  },
+  "cleanupEvidence": "2026-10-17-large-rerun-cleanup.json",
+  "billingFollowup": {
+    "state": "RETAIN_EXISTING_6H_NOT_COMPLETE",
+    "hardStopUtc": "2026-10-22T23:15:33Z",
+    "cleanupJob3": "STOPPED"
+  },
+  "evidence": [
+    "2026-10-17-large-rerun-digest-proofs.json",
+    "2026-10-17-large-rerun-cleanup.json",
+    "2026-10-17-billing-refresh-230000.json",
+    "2026-10-17-large-rerun-complete.md"
+  ],
+  "offlinePreparation": {
+    "azureCalls": 0,
+    "billingCalls": 0,
+    "sourceCodeChanges": 0,
+    "gitPublication": false
+  }
+}

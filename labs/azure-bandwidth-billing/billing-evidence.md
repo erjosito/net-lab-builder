@@ -1,7 +1,57 @@
 # Billing extraction and reconciliation plan
 
+## Latest snapshot — 17 October 2026, 23:05Z
+
+**Transport PASS: 400,000,000,000 application bytes; cleanup PASS;
+full billing reconciliation INCONCLUSIVE.** Each A → T, T → A, C → T and
+T → C leg completed exactly 100,000,000,000 bytes with matching hashes.
+A/T are both Sweden Central; C is North Europe; both pairs cross tenants.
+See the [complete rerun](results/2026-10-17-large-rerun-complete.json) and
+[independent cleanup receipt](results/2026-10-17-large-rerun-cleanup.json).
+
+The [latest actual collection](results/2026-10-17-billing-refresh-230000.json)
+ran **23:01:03–23:02:22Z**: six billing HTTP requests, no automatic retries
+or infrastructure mutations. One generation, one poll and one download
+completed the **API-generated ActualCost CSV** for fresh C; this is not a
+portal export. Exact canonical inventory attribution retained five bandwidth
+rows, all dated **17 October**:
+
+| Fresh C meter | Rows | Reported quantity | Unit | Effective price (USD) | Cost (USD) |
+|---|---:|---:|---|---:|---:|
+| Intra Continent Data Transfer Out | 3 | 10.8746547754853965 | 1 GB | 0.02 | 0.21749309550970793 |
+| Standard Data Transfer Out | 2 | 0.000016549602150917 | 1 GB | 0.083 | 0.0000013736169785261154000000 |
+
+These are like-meter/unit/currency/day/rate totals within one snapshot,
+not totals added across refreshes. The first row demonstrates a nonzero
+cross-region charge, **not the full 100 GB C → T quantity**. Daily records
+cannot identify an individual chunk. Preserve the reported “1 GB” unit;
+no decimal/binary conversion or artificial reconciliation is asserted.
+The tiny Standard meter is separate, not bulk-transfer proof.
+
+The three independent C/A/T ResourceId+Meter Bandwidth Queries each returned
+**HTTP 429** after one request: unavailable charges, **not zero/empty success**.
+Fresh A/T CSVs were not refreshed. No same-region zero-rate or no-charge
+conclusion follows from missing rows. Historical C → B's 1-GiB control was
+**not queried**: its prior 0.6551259830594063 “1 GB” / USD 0.013102519661188125
+remains **STALE** and separate from fresh C.
+
+The date-only request was **16–17 October**, using actual UTC October 17,
+not future October 18. Returned period endpoints were October 16/17 midnight,
+yet retained records include October 17. End-date inclusivity and ingestion
+coverage are unconfirmed. `COMPLETE` means CSV extraction complete, **not**
+ingestion mature/final. There is no `DataIngestionEndMT` watermark, no new
+qualified mature historical comparison and no complete 400 GB billing verdict.
+
+All rerun resources were independently verified deleted before midnight
+17 October. Cleanup job 3 is **STOPPED**; existing six-hour billing follow-up
+continues only to its original **22 October 23:15:33Z hard stop**.
+Do not recreate assets or add traffic to obtain late usage records.
+This document refresh made **zero Azure/billing calls** or schedule changes.
+
+## Historical evidence and reconciliation design
+
 Reconciliation design plus [executable collectors and tested API matrix](costs/README.md).
-Current experimental billing verdict: **INCONCLUSIVE** after completed
+Historical experimental billing verdict: **INCONCLUSIVE** after completed
 same-region cross-tenant transport; no unrelated billing values retained.
 Updated 2026-10-16 UTC. See the [sanitized result](results/2026-10-15-cross-tenant-public-ip.md).
 The [21:36Z interpretation](results/2026-10-15-billing-verdict.md) separates the
@@ -12,7 +62,7 @@ costs, all attributed to A by a complete ResourceId+Meter Query; those Query
 rows report no quantity, unit or rate. The latest CSV does report those fields,
 but not a scale-confirmed intraregional 5 GiB meter.
 “Intra Continent” is not “intra region.”
-**Current check, 16 October 06:50:38Z:** the
+**Historical check, 16 October 06:50:38Z:** the
 [sanitized Query/CSV snapshot](results/2026-10-16-billing-check-0650.json)
 reports C's **16 October** quantity **0.6551259830594063 “1 GB”** at
 **USD 0.02**, cost **USD 0.013102519661188125**, on **Intra Continent Data

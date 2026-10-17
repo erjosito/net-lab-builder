@@ -1,0 +1,73 @@
+{
+  "schema": "bounded-billing-workflow-check-v1",
+  "verdict": "BLOCKED",
+  "billingConclusion": "INCONCLUSIVE",
+  "startedAtUtc": "2026-10-17T22:55:13.944836+00:00",
+  "endedAtUtc": "2026-10-17T22:55:19.895828+00:00",
+  "runtimeSeconds": 5.951,
+  "actualBillingHttpRequests": 0,
+  "maxBillingHttpRequests": 6,
+  "actualInfrastructureMutations": 0,
+  "actualAuthenticationCalls": 0,
+  "publicWorkflowExitCode": 2,
+  "workflowValidation": {
+    "state": "ERROR",
+    "code": "inventory_scope_mismatch",
+    "httpStatus": null,
+    "azureCode": null,
+    "errorCategory": null
+  },
+  "runtimeDirectoryUnchanged": true,
+  "transport": "PASS_ALL_400000000000_BYTES",
+  "cleanup": "PASS_DELETED",
+  "freshVerifiedApplicationBytes": {
+    "A->T": 100000000000,
+    "T->A": 100000000000,
+    "C->T": 100000000000,
+    "T->C": 100000000000,
+    "total": 400000000000
+  },
+  "freshControlRows": [],
+  "freshSameRegionA": "NOT_OBSERVED_NO_QUERY_NOT_ZERO",
+  "historicalControlCarriedForward": {
+    "quantity": "0.6551259830594063",
+    "unit": "1 GB",
+    "effectivePrice": "0.02",
+    "cost": "0.013102519661188125",
+    "currency": "USD",
+    "usageDate": "2026-10-16",
+    "observedAtUtc": "2026-10-16T08:06:03.354732+00:00",
+    "refreshed": false
+  },
+  "retainedUsageDaysUtc": [
+    "2026-10-15",
+    "2026-10-16",
+    "2026-10-17"
+  ],
+  "newQualifiedMatureHistoricalSnapshots": 0,
+  "ingestionFinal": false,
+  "DataIngestionEndMT": null,
+  "completeConclusiveCharges": false,
+  "remainingGaps": [
+    "Actual latest public Cost Details command rejected the exact mixed historical/fresh core inventory with inventory_scope_mismatch before authentication, lease creation, generation, polling or download; exit 2.",
+    "Root: costs/cost_api.py load_inventory requires every ID under one scalar resource-group prefix. Public parser has no multi-RG/subscription exact-inventory mode; collect_report also passes one RG to CSV projection. Subscription-wide report generation does not remove that local single-RG restriction.",
+    "Public Query likewise adds a mandatory single ResourceGroup filter; required subscription ResourceId+Meter/Bandwidth queries with all exact historical/fresh IDs cannot run through this unchanged public workflow.",
+    "No payload retry, ad hoc API, per-RG budget-expanding fallback, source change, further billing HTTP, or runtime-directory writes attempted after validation failure.",
+    "No current fresh C or T quantity/cost/unit/rate; no current fresh A rows. Missing evidence is unavailable, not an observed zero, explicit zero-rate, or free-transfer proof.",
+    "Historical C 0.6551259830594063 units of '1 GB' at USD 0.02, USD 0.013102519661188125 on usage date 2026-10-16 is carried forward from 2026-10-16T08:06:03.354732+00:00, NOT refreshed and NOT fresh rerun attribution.",
+    "Historical October 15 1-GiB control remains separate from 400000000000-byte fresh October 16/17 cross-tenant traffic. No new complete mature historical A/C/T comparison; two stable complete comparisons at least six hours apart remain absent.",
+    "Fresh final handoff was 2026-10-17T22:15:17.236880+00:00: only tens of minutes before this check. Daily partial/cumulative rows and network overhead cannot establish final fresh charges. HTTP 200 or extraction completeness would not prove maturity; DataIngestionEndMT remains unknown.",
+    "No schedule duplication or stop attempted. Existing billing job 4 must remain on its original 2026-10-22T23:15:33Z hard stop; schedule service returned Session not found in child context."
+  ],
+  "schedule4Stopped": false,
+  "hardStopUtc": "2026-10-22T23:15:33Z",
+  "schedule3Status": "STOPPED_PER_CURRENT_COORDINATOR_INSTRUCTION_NOT_REQUERIED",
+  "runtime": {
+    "state": "idle",
+    "activeCommands": 0,
+    "allOwnedChildrenIdle": true,
+    "queuedFollowups": 0,
+    "detachedWorkers": 0
+  },
+  "decisiveEvidence": "private\\billing-check-20261017T225058Z\\handoff.private.json"
+}

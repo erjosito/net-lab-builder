@@ -1,4 +1,738 @@
-# A ↔ T bounded public-IPv4 transfer
+# Fresh three-endpoint repeat: verified partial execution
+
+## Offline runtime continuation (16 October, after the historical stop below)
+
+### Certified preflight renewal (offline; no live authority)
+
+An expired context preflight or owned-inventory capture can be renewed **only
+in a newly claimed successor**, using public read-only certification:
+
+```powershell
+python .\labs\azure-bandwidth-billing\transfers\repeat.py certify-continuation --session PREDECESSOR --renewal-attestation 'PRIVATE-ATTESTATION-PATH'
+```
+
+Without `--renewal-attestation`, the existing runtime/wire-only continuation
+contract is unchanged. The option is rejected for every other action.
+Certification emits hashes and paths, never raw attestation/evidence contents,
+and writes no session, lease, claim, approval or Azure state.
+
+An independent read-only validator supplies a private JSON attestation with
+**exactly** these fields (not a skeleton approval or relabelled old validation):
+
+| Field | Required value |
+|---|---|
+| `schema`, `status`, `validationKind` | `repeat-preflight-renewal-v1`, `PASS`, `independent-read-only` |
+| `validatedBy` | Independent validator's identifier (letters/digits/`_.@-`, 1–128 characters) |
+| `validatedAtUtc`, `validUntilUtc` | Attestation time and exclusive expiry, no later than original cleanup |
+| `predecessorConfigHash` | Canonical `identity()` SHA256 of the exact predecessor config |
+| `contexts`, `endpoints` | Full refreshed context and endpoint objects, not patches |
+| `evidenceHashes` | 1–100 absolute lab-private evidence-file paths mapped to byte SHA256 |
+
+Only each context preflight's `evidenceReference`, `validatedAtUtc` and
+`validUntilUtc`, and each inventory's `capturedAtUtc`, may differ. Context
+validation and inventory capture must be **strictly newer** than the predecessor
+and less than one hour before attestation. Each new context evidence reference
+must name a hashed evidence file. Attestation and every referenced file are
+rehash-checked; paths must remain inside this lab's private directory.
+Attestation expiry is rechecked for active continuation. Historical recursive
+certification checks immutable bytes without pretending expired authority is
+fresh. The attestation does not gain a sliding lifetime on load.
+
+All other context/endpoint data, including IDs, ownership tags, addresses,
+regions, any SKU fields, currencies, prices and financial caps/mode, must match
+exactly. Unknown extra fields fail closed. The validator must independently
+verify actual owned resource/SKU/association and native-context state in its raw
+read-only evidence: this offline tool does **not** contact Azure, authenticate
+the validator's identity, or turn an unsigned assertion into independent proof.
+Reviewer acceptance and explicit approval remain external trust gates.
+
+After evidence and source review, copy the full refreshed `contexts` and
+`endpoints` into a **new private config**. Set `continuation` to the public
+certificate and `approval.continuationHash` to its canonical `identity()` hash.
+Set `approval.preflightRenewalHash` to the certificate's
+`preflight_renewal.sha256` (the attestation's **byte** hash, not its JSON identity).
+Record the explicit renewal decision in `approval.evidenceReference`; advance
+`approval.issuedAtUtc` to at least the attestation time and set its exclusive
+expiry no later than attestation expiry. No other approval change is allowed
+beyond the already supported explicit runtime/wire amendment. The certificate's
+`successor_sources` binds the reviewed current sources; source drift before
+preparation is rejected. Historical sources/receipts/configs are never rebound.
+
+Use existing public `plan` then `prepare` only after independent evidence and
+implementation review; do not create an active successor from test fixtures.
+The same 86,400-second runtime, 460,000,000,000-byte certified-recovery ceiling,
+100,000,000,000 bytes per leg, single 8,000,000,000-byte bootstrap reserve and
+original cleanup deadline remain supported, not automatically raised.
+All no-fork claims, byte/money/allocation reservations, historical chunk records
+and fresh readiness/snapshot/separate traffic lease gates remain unchanged.
+No renewal fixture or successful offline test authorizes live work.
+
+The autonomous-completion directive justifies the coordinator's **24-hour
+(86,400-second) successor-only per-VM ceiling decision**; it is not a claim that the user chose
+that number. Default configurations remain at 12 hours. Explicit
+`allocatedSecondsPerVm` must match the approved value in `approval`, whose
+`evidenceReference` identifies the decision; the hard maximum is 24 hours.
+Historical 16-hour configurations remain immutable. The original absolute
+18 October 07:33Z cleanup deadline always wins; the 25% forecast margin remains.
+No live execution is authorized by this implementation.
+
+Public read-only `certify-continuation --session PREDECESSOR` emits a certificate
+containing the predecessor directory, source pins and every artifact's SHA256.
+It verifies completed transport reports, readiness/deallocation/NSG proofs,
+closed traffic leases and hashed readiness/snapshot receipts. Only verified
+completed chunks receive payload credit. A failed attempt is recoverable only
+with closed, idle bounded authority, exact deallocation and NSG restoration
+proofs and no unresolved active phase; its full wire and 5,400-second-per-VM
+allocation reservations remain charged, even when measured wire is unknown.
+
+Create a **new private config**, retaining all predecessor fields except the
+explicit runtime amendment and approval evidence reference. Add the certificate
+as `continuation` and its canonical `identity()` SHA256 as
+`approval.continuationHash`; set both runtime fields to 86400. Public `plan`,
+`prepare`, `status` and `prepare-chunk` then support a new successor namespace
+under the same session root. Preparation exclusively claims that predecessor:
+one successor only, no replay/refund if preparation fails after claiming.
+Lineage is recursively hash-checked (maximum 32 ancestors, 10,000 files per
+ancestor), cycle-checked and deduplicated by exact inherited records and unique
+attempt IDs. Historical source pins, evidence and claims are never rewritten.
+A `closed-recovery-v1` certificate permits a fresh nonce for the first
+uncompleted schedule index, named `same-region-NNN-recovery-N`; the failed
+record remains immutable and is never automatically replayed.
+
+The new source-bound ledger retains the original completed chunk records,
+indices, actual measured wire, full reserved wire, money estimates, original
+`priorAllocatedSeconds` and all completed-chunk allocation charges. It does
+**not** add another bootstrap allowance or count prior allocations twice.
+Status includes certified completed bytes, while the next request skips completed
+indices. Outside an exclusively bound runner, every load rechecks predecessor
+artifact hashes and inherited records.
+Recovery projections add all spent/reserved allocations to the maximum observed
+forecast for the exact remaining bytes and request count, retaining 25% margin
+on that forecast, and refresh after successor batches.
+
+The default 440 GB wire ceiling is unchanged. A certified recovery may
+explicitly raise `wireCeilingBytes` to at most 460,000,000,000 bytes, matching
+`approval.wireCeilingBytes` and the approved certificate hash/evidence reference.
+This is the coordinator's autonomous conservative-charge decision, not a
+user-selected numeric cap. Preparation checks the full remaining schedule plus
+all inherited reservations before claiming authority. Original configs retain
+their original ceilings. The exact 400 GB target, one shared 8 GB bootstrap reserve,
+5 GiB requests, 16 MiB/s rate ceiling, monitor-only/no financial cap and original
+18 October 07:33 UTC cleanup deadline are unchanged. All historical evidence
+below remains historical. Independent implementation review, then fresh
+readiness, independent snapshot and separate batch authority are still required;
+no live leases are prepared by this offline work.
+
+Public `lease_lock` serializes local threads with a bounded reentrant gate before
+starting the five-second cross-process sentinel acquisition window. Local waits
+respect lease/restore runway; authorization is rechecked after acquisition.
+Foreign/stale sentinels fail closed and are never removed as recovery.
+
+### Phase-scoped integrity and durable verified credit
+
+An exclusive, bounded reentrant runner context performs full source/config,
+predecessor-content and inherited-record verification at admission and at
+terminal credit (including readiness/snapshot completion). Admission retains
+an immutable, in-memory byte snapshot of the validated ancestry and bound
+external attestations, plus serialized inherited records and exact source/config
+identities. Mutations, including server/client dispatch, use **that sealed
+phase proof**, not the mutable historical directory. Historical file changes
+cannot modify this proof; terminal verification reopens the original files and
+rejects any difference before granting credit.
+
+Every mutation and poll still re-reads current source bytes, config, ledger,
+lease authority, STOP, UTC/deadlines, counters, no-fork claim and inherited
+records. The proof expires at context exit and cannot authorize another lease.
+There is no stat-only or persistent ancestry cache. Full verification uses
+invocation-local byte snapshots to avoid duplicate directory reads during
+recursive certification; separate invocations always reread the evidence.
+Context acquisition is bounded by five seconds and the lease deadline.
+Mutation admission checks runway before and after validation, outside the
+global lease-counter lock; current authority is checked again inside it.
+Both parallel peers are admitted before either is submitted, and each child
+rechecks immediately before contact. Private `.lease-diagnostics` records retain
+UTC/monotonic timing, local wait/hold, holder identity, deadline failures and
+parallel peer outcomes after the lock directory is removed. No lock timeout,
+restore reserve, retry rule or lease expiry was raised.
+Completed-command bookkeeping retains a bounded sentinel acquisition window
+after the local gate, even if a peer exhausted the lease while it waited.
+This drains `activeCommands`; it never authorizes another Azure operation.
+
+### Closed failed readiness (17 October offline correction)
+
+```powershell
+python .\labs\azure-bandwidth-billing\transfers\repeat.py certify-continuation --session PREDECESSOR --readiness-closure 'PRIVATE-ATTESTATION-PATH'
+```
+
+This certificate-only option handles a **blocked, closed readiness** phase with
+zero payload attempts, no completed readiness/snapshot receipts and an unchanged
+`prepared_not_live` plan. It does not reinterpret it as a failed traffic phase.
+The failed phase's original authority, receipt/source bindings and endpoint
+deallocation proofs must match. Prepared scripts/NSG bodies are not evidence of
+submission; payload/NSG submission results are forbidden in this branch.
+
+The private `repeat-readiness-closure-v1` attestation supplies
+`validationKind=independent-read-only`, `validatedBy`, `sessionDirectory`,
+`configHash`, `ledgerHash`, `chunk`, `leaseHash`, `readinessHash`,
+`closure={path,sha256}` and `evidenceHashes` (1–100 absolute lab-private JSON
+evidence paths with byte SHA256). The referenced independent closure must
+prove all 21 original owned roots, all three deallocated VMs, original VM/disk
+bindings and NIC/subnet NSG associations/rules; its own completed idle bounded
+lease must permit zero mutations. Hashes and schema checks do not authenticate
+an unsigned validator: independent reviewer acceptance remains required.
+No new Azure observations are made by certification.
+
+The resulting `closed-recovery-v1` certificate binds this closure and current
+successor source pins. It preserves zero application credit, **unknown actual
+wire**, and the complete failed wire and 5,400-second-per-endpoint reservations.
+All counters, money estimates and the single bootstrap charge carry forward.
+Only a new, exclusively claimed successor may reserve a fresh nonce at the
+failed schedule index; no old ledger, lease or receipt is edited.
+
+For this branch only, an explicit matching approved amendment may select
+**470,000,000,000 wire bytes**, **86,400 seconds per VM** and monitor-only money
+with no financial cap. Existing 440/460 GB defaults/configurations are unchanged.
+The exact 400,000,000,000 application-byte target, maximum 5 GiB requests,
+16 MiB/s rate, shared 8,000,000,000-byte bootstrap and original
+**18 October 07:33Z cleanup deadline** remain unchanged. Existing preflight
+renewal fields are preserved, not reissued against the wrong predecessor.
+Certification creates no successor, claim, lease, resource or live authority.
+Independent review must precede any preparation or renewed readiness.
+
+Verified transport/restoration completion is committed before a future-work
+forecast can block the session. Forecast failure blocks **next work**, never
+reclassifies completed payload or closes its completed lease as failed.
+Read-only certification also recognizes a historical failed-ledger attempt
+whose public plan/reports prove complete nonce-bound byte/hash/no-retry
+transport, current deallocation and NSG restoration, closed bounded blocked
+traffic authority, and an independently recomputed over-ceiling projection.
+Only a new exclusively claimed successor receives this certified salvage;
+historical ledgers, receipts, source pins and claims are never edited.
+The full failed wire and 5,400-second-per-VM reservations remain charged.
+Failed attempts without complete guest evidence receive **zero** payload credit.
+Unique global attempt nonces and phase indices prevent duplicate credit.
+Independent review of the exact new sources is required before live work;
+offline certification/preparation creates no chunk, live lease or traffic.
+
+**Current result, 16 October 2026 20:49Z (offline documentation refresh):**
+both 1 GiB-per-direction pilots and one 5 GiB-per-direction same-region batch
+completed with matching producer/consumer bytes and SHA256, no payload retries,
+verified deallocation, both-layer receiver NSG/association restoration and idle
+owned children. A → T and T → A each total **6,442,450,944 bytes (6 GiB)**;
+C → T and T → C each total **1,073,741,824 bytes (1 GiB)**.
+**15,032,385,536 bytes (14 GiB) verified is not the 400,000,000,000-byte target.**
+See the [sanitized partial result](../results/2026-10-16-large-rerun-partial.json).
+
+**Historical stop at 20:49Z:** refreshed whole-T projection with the required 25%
+margin is **3,600 + 21,127 + 19,465 = 44,192 seconds**, **992 seconds over**
+the unchanged 12-hour allocation cap. Conservative actual T allocation is
+**5,521 seconds including carry**; it is not added again to the full-phase
+forecast. Independent offline review found no arithmetic double count.
+The public ledger retains its pilot-only projections; the refreshed stop
+decision is separate evidence, not an edited public receipt or a claim that
+the runner automatically rejected the next chunk. No next chunk/probe is queued.
+A proposed 13-hour cap has **no explicit user approval** and is not in effect.
+
+Billing remains **INCONCLUSIVE**; report dates are not ingestion watermarks.
+The session is explicitly **monitor-only with no monetary cap**, not subject
+to the withdrawn USD 45 ceiling or any invented replacement. Runtime/byte/TTL
+gates remain unchanged. All three fresh endpoint resource sets are retained,
+with disks/PIPs still charged; cleanup remains due **before 18 October 07:33Z**,
+not completed or scheduled by this documentation. The older C → B control and
+its unresolved quantity reconciliation use different resource identities.
+
+## Adapter and historical offline implementation scope
+
+`repeat.py` now connects its public `readiness`, `snapshot`, `pilot` and `batch`
+commands to the existing `run.py` readiness, snapshot and live orchestration.
+It redirects only the private run namespace and explicit lease; native context
+authorization, snapshot ownership/association gates, mTLS guest source exchange,
+payload verification, deallocation and both-layer NSG restoration remain in the
+existing runner. No private Python imports or ad-hoc execution wrapper are needed.
+
+**The implementation-only validation below was not a live PASS or deployment
+approval.** Its then-pending deployment/execution gates were subsequently met
+for the completed chunks above, not the full target. No resources,
+authentication state, activation files or payload traffic were created by
+that offline implementation work. Existing historical runs are not reusable:
+new sessions bind all three source hashes, fresh config, inventories and run IDs.
+
+**2026-10-16 monetary-scope update (implemented offline; now used live):** the user removed
+the self-imposed USD 45 planning ceiling. A **new**, explicitly approved
+`monitor-only` configuration can now report monetary estimates without using
+USD 45/core 23/MSDN 22 (or EUR 19.62) as execution gates. No replacement monetary
+cap is invented. Existing configurations remain capped by default. This change
+does not authorize traffic, different resources, extra bytes or a longer lease.
+
+The policy's **25 calls or 15 minutes is a checkpoint**, not a total call cap.
+Traffic explicitly permits 75–150 calls, never more than 150; default 150.
+Readiness and snapshot separately permit 30–75 calls, default 75.
+Normal work stops at 80%; only already-declared bounded restoration may continue.
+STOP and expiry are **not** exceptions permitting arbitrary cleanup: the local
+child process trees terminate, normal restoration is refused and closure becomes
+**BLOCKED** if guests/deallocation/NSGs cannot be verified. Freeze mutations and
+assign an independent fresh recovery owner; never claim same-owner STOP success.
+
+## Exact larger-flow contract
+
+### Repeat-only runtime and power-transition correction (offline)
+
+Fresh repeat plans bind an exact `runtime_profile` to their immutable sources,
+chunk bytes and selected rate. One helper derives
+`commandSeconds = min(2500, max(900, ceil(bytes/rate) * 4 + 300))`.
+The lease's global and both named server/client command budgets must match
+exactly; profile, lease or named-budget tampering fails before contact.
+
+| At the explicitly opted-in 16 MiB/s ceiling | 1 GiB pilot | 5 GiB chunk |
+|---|---:|---:|
+| Native/WSL RunCommand bound | 900 s | 1580 s |
+| Guest foreground bound | 850 s | 1530 s |
+| Stream deadline | 800 s | 1480 s |
+| Command plus unchanged restoration reserve | 1800 s | 2480 s |
+| Maximum setup runway from a fresh 60-minute lease | 1800 s | 1120 s |
+
+Authorization, NSG setup guards, phase claims and guest rendering use this same
+profile. Setup must finish **before** its boundary; authorization time and
+polling consume it, never add to it. The 80% normal-work circuit, native call
+counters and absolute cleanup approval still apply and can stop work sooner.
+Rate is a **ceiling**, not a minimum throughput promise. A slow pilot fails
+bounded and freezes the chunk; it does not justify bulk or a larger deadline.
+Non-repeat defaults remain 2500/2450/2400 seconds and 3400 seconds of runway.
+Readiness retains its 180-second global command ceiling.
+
+Only repeat starts/deallocations use one `--no-wait` submission, bounded to at
+most 90 seconds. Empty successful CLI output proves submission only. Running
+requires current-phase instance-view observations of **both** endpoints before
+any readiness or payload RunCommand. Startup has a shared five-minute deadline,
+also clipped by the remaining setup/lease window. Poll GETs take at most
+30 seconds and pending observations are at least 30 seconds apart per VM.
+Every poll rechecks sources, phase lease, STOP, expiry and native counters.
+The runner accepts the existing CLI top-level or `instanceView.statuses` shapes;
+it does not guess ARM `properties` layouts or bypass public ownership checks.
+Only this repeat asynchronous observer records a valid statuses list with no
+`PowerState/` entry as **UNPUBLISHED** (pending), retaining the raw response.
+It retries only read-only GETs within the same deadlines and budgets; malformed
+statuses or duplicate power states fail closed. UNPUBLISHED is never running or
+deallocated proof, and synchronous/non-repeat power-state parsing stays strict.
+Proofs bind plan ID, endpoint, task, lease path/start, sources and current
+readiness/live cutoff; an old `start-a.private.json` is never running evidence.
+
+An ambiguous submission is never resent. Bounded read-only observation retains
+the original error even if the requested power state is subsequently observed;
+the phase still blocks and enters existing closure. Deallocation must be
+observed before a current-phase quiescence receipt can permit either original
+NSG restoration. Observation consumes the original shared 15-minute restoration
+reserve and lease, not a new allowance. STOP/expiry/budget exhaustion can make
+closure truthfully **BLOCKED**; they do not authorize extra mutations.
+
+Minimum future execution contract: independent Morpheus implementation review,
+new source-bound session/approval/leases and **public readiness first**, validating
+both owned OS disks and unchanged contexts before starts. No historical source
+pins, failed ledgers, leases or private diagnostic wrappers may be reused.
+This correction performed no live validation. DNS, TLS and transport causes
+remain unproven: the observed original failure was a bounded synchronous native
+Windows start, before guest payload dispatch.
+
+| Role | Context | Region | Isolation |
+|---|---|---|---|
+| A | core | Sweden Central | new dedicated owned RG/inventory |
+| C | core | North Europe | second new dedicated owned RG/inventory |
+| T | MSDN, different subscription **and tenant** | Sweden Central | third new dedicated owned RG/inventory |
+
+The four legs are **A→T, T→A, C→T, T→C**. The old **C→B** result below is a
+**same-tenant cross-region control**, never a cross-tenant measurement.
+No old RG, unknown NSG, runtime context, approval, wire allowance or VM slot is
+adopted. The configuration binds the exact three fresh inventories to the exact
+approved root-resource IDs: one VM, disk, NIC, PIP, VNet and NIC NSG per role;
+at most one additional explicitly owned subnet NSG per role. Unknown/extra
+resource types, duplicate roots, missing ownership and region/tenant mismatch
+fail closed. This code does not create resources or rewrite deployment manifests.
+
+Before either readiness VM starts, the runner snapshots **both** endpoints and
+validates their VM/storage, NIC/PIP/NSG and subnet associations. Each VM must
+attach exactly the one OS managed-disk root in its authoritative inventory:
+the disk's exact ID, resource type, subscription, RG, region and run ownership
+must match. ARM ID casing is insignificant; disk names are not inferred from
+VM suffixes. Missing/malformed IDs, ambiguous disk inventories, replacement or
+foreign disks, and any attached data disks fail closed before any Azure mutation.
+The current fresh manifest approves one OS disk and **no data disks**. Historical
+inventories must also explicitly identify their approved managed disk; there is
+no legacy bypass. Snapshot repeats these checks without starting either VM.
+
+Each leg is exactly **100,000,000,000 application bytes (100 decimal GB)**:
+**1 GiB pilot, included**, then **18 × 5 GiB**, then **2,289,494,016 bytes**.
+That is **20 requests per leg**, 40 concurrent-direction chunk pairs across two
+scenarios, **400,000,000,000 application bytes total**. Configurable 1–5 GiB
+chunks retain the included pilot and exact remainder. No request exceeds 5 GiB.
+Neither 100 GB nor 100 GiB means 120 GB.
+
+The old stream default remains **2,500,000 B/s**. Higher rates require explicit
+`rate_ceiling` opt-in in a stream configuration, with an absolute maximum of
+**16,777,216 B/s (16 MiB/s)**. A repeat configuration selects
+`rateBytesPerSecond` explicitly. Its old default is rejected for repeat because
+even ideal transport would exceed T's 12-hour allocated slot. At 16 MiB/s a
+5 GiB leg takes approximately **320 seconds**, before hashing/setup/control.
+TLS, SHAKE256 64 KiB streaming, incremental SHA256, 5 GiB request caps, guest
+deadlines and no bulk retry remain unchanged; no 100 GB disk/RAM allocation.
+The adapter passes the opt-in rate bound to each guest without changing the
+historical stream default or maximum request size.
+
+Both 1 GiB pilots must measure throughput and lifecycle overhead, then project
+**both full phases together inside T's 12 allocated hours**, with a 25% margin,
+or stop without fallback upgrades. A/C each retain a 12-hour slot. All phases
+and leases remain inside the earlier of creation plus **48 hours** and the
+**original absolute cleanup approval, 2026-10-18 07:33:00 UTC**. A new
+100 GB-per-leg / 400 GB-total approval, regardless of monetary mode, does **not** renew
+that date. At the exact cleanup boundary all active operations are expired.
+Preparation, reservation, phase claims and active command guards reject expired
+or extended input before producer/contact dispatch; lease expiry must also stay
+inside the bound. Config/source immutability prevents editing a prepared
+deadline, even to shorten it. Expired read-only `status` remains available for
+inspection, never as execution authority. Prefer separate
+UTC usage days, but never keep a VM allocated overnight. Preserve historical
+resource IDs for later billing; keeping a VM alive is not needed for that query.
+
+## Public offline commands and private input schema
+
+From repository root, print the complete fake-ID skeleton without writing files:
+
+```powershell
+python labs\azure-bandwidth-billing\transfers\repeat.py skeleton --session fresh-example
+```
+
+This is a complete JSON shape with documentation-range IPv4 addresses, fake
+subscription/tenant/resource IDs, `approval.status="pending"` and
+`preflight.validated=false`; it cannot authorize preparation or traffic.
+Its example expiry is `min(now + 47 hours, original absolute cleanup approval)`;
+after the original cutoff the helper fails explicitly rather than inventing a
+new approval date. This dated bound belongs to this lab, not a global policy.
+Have the deployment owner supply a **new private input**, for example
+`labs\azure-bandwidth-billing\private\fresh-repeat-input.private.json`, replacing
+these examples only with actual freshly approved inputs:
+
+* `schema`, `createdAtUtc`, `cleanupDeadlineUtc`, optional `chunkBytes`, explicit
+  `rateBytesPerSecond`;
+* `contexts.core` and `.msdn`: `subscriptionId`, `expectedTenantId`, native
+  `platform`, and `preflight` containing `validated`, `evidenceReference`,
+  `validatedAtUtc`, `validUntilUtc`, `currency`, **validated `currencyCap`**,
+  `usdEquivalentCap`, conservative `txPerDecimalGB`, `vmPerHour`, and
+  `fixedInfraReserve` for the full TTL's non-VM rent and other fixed costs;
+* `endpoints.A`, `.C`, `.T`: `region`, `publicIPv4`, and inline `inventory`
+  containing `runId`, `groupId`, `capturedAtUtc`, and owned `resources` with
+  `id`, `name`, `type`, `location`, exact lab/creator/run tags. Root names follow
+  `<runId>-vm-a`, `-nic-a`, `-pip-a`, `-nsg-a` (likewise C/T), with RG `rg-<runId>`;
+* `approval`: actual `status`, issue/expiry timestamps, exact `resourceIds`,
+  `applicationBytesPerLeg=100000000000`, `wireCeilingBytes=440000000000`,
+  `totalUsdEquivalentCap=45`.
+
+Core's cap is **USD 23**, MSDN's **USD-equivalent 22**: total **45**, not 65.
+These are the **legacy/default `enforced` mode** limits, not a user-imposed
+ceiling for a newly approved monitor-only session.
+The MSDN preflight may supply another billing currency and its already validated
+currency cap/rates. The code does **not** guess FX or treat a USD cap as another
+currency. Positive, finite conservative rates and fresh evidence are mandatory.
+The preflight owner remains separate; this implementation performs no catalog,
+quota, price, FX, context or capacity queries. Capacity/deployment and exact
+fresh live binding remain the deployment owner's later gates.
+
+### Explicit monitor-only money mode for a new session
+
+Use the existing public `--config` JSON input path; do not edit an existing
+prepared configuration or ledger. The skeleton deliberately retains its legacy
+capped, pending default. For a newly approved monitor-only input:
+
+* Set top-level `"moneyBudgetMode": "monitor-only"`.
+* Set `approval.moneyBudgetMode` to exactly `"monitor-only"` and
+  `approval.status` to `"approved"`, supported by the actual approval. A pending
+  approval cannot disable cap checks, even for the read-only `plan` command.
+* Omit `approval.totalUsdEquivalentCap`, or set it to `null`.
+* In **both** context preflights, omit `currencyCap` and `usdEquivalentCap`, or
+  set them to `null`. Zero, infinity, NaN, old caps or replacement dollar amounts
+  are **not** the monitor-only contract.
+* Keep validated currency, finite positive `txPerDecimalGB` and `vmPerHour`,
+  finite nonnegative `fixedInfraReserve`, fresh evidence/timestamps, exact
+  resources and the unchanged byte/time/lease approval fields.
+
+For example, the new fields/omissions within the otherwise complete input are:
+
+```json
+{
+  "moneyBudgetMode": "monitor-only",
+  "approval": {
+    "moneyBudgetMode": "monitor-only",
+    "status": "approved",
+    "totalUsdEquivalentCap": null
+  },
+  "contexts": {
+    "core": {"preflight": {"currencyCap": null, "usdEquivalentCap": null}},
+    "msdn": {"preflight": {"currencyCap": null, "usdEquivalentCap": null}}
+  }
+}
+```
+
+This fragment is not a complete approval or configuration. All other required
+fields above still apply. Absent `moneyBudgetMode` means `enforced`; explicit
+`"enforced"` also preserves the old cap checks. Mismatched/unknown modes fail
+closed. The immutable configuration hash and existing source pins bind the
+choice; there is no per-command bypass or migration of an existing session.
+
+`plan` reports `money_budget_mode` and `money_estimate_whole_session`, in each
+context's own currency. `status` reports the same mode and
+`money_estimate_to_date`, including the TX rate, hourly VM rate and fixed reserve.
+These are **conservative planning reserves**, not
+invoices: the existing full pair RX+TX wire reservation is charged to **each**
+context's TX rate, plus its full bootstrap, fixed-infrastructure reserve and
+90-minute VM-money reservation per pair. This deliberately overestimates
+producer-only transfer costs. In monitor-only mode only monetary cap comparisons
+are disabled; arithmetic/integrity checks and reservation accounting remain.
+No success settlement, financial refund, counter-based billing estimate or
+FX conversion is added. NIC counters and sampled Azure metrics remain transport
+evidence; actual meter quantities/Cost Details are a separate billing gate.
+Neither monetary mode is an Azure-enforced spending cap.
+
+### Approved prior allocated time (new namespace only)
+
+A new configuration may reuse the exact independently approved owned inventory
+only with explicit time carry; this does not adopt an old ledger or replay a
+failed attempt. Optional top-level `priorAllocatedSeconds` must contain exactly
+`A`, `C`, `T`, each an integer from 0 through 43200 (booleans are invalid).
+It must exactly match `approval.priorAllocatedSeconds`, with nonempty approval
+`evidenceReference` and `predecessorIdentifier` strings. These fields, like the
+resource set, are bound by the immutable config hash. Without either carry
+field, a genuinely fresh configuration retains the zero default.
+
+For the approved pre-payload predecessor, the conservative new-session input is
+`{"A":6300,"C":900,"T":6300}`: the old A/T 5400-second failed reservation is not
+refunded, plus 900 seconds deployment time for each endpoint. Supply the actual
+approval and private predecessor evidence; this example is not execution authority.
+`prepare` initializes aggregate `allocated_seconds` from this carry and reports
+`prior_allocated_seconds` separately in plan/status for audit. Reservations remain
+cumulative; both pilot projections plus prior T time must fit the shared 12-hour
+slot, and each full A/C projection plus its own carry must fit its slot before
+bulk can proceed. Exclusive preparation cannot reset an existing namespace.
+
+The new namespace keeps **one shared 8 GB bootstrap** covering predecessor and
+future control traffic, with unchanged 400 GB application payload / 438,083,886,082
+planned wire / 440 GB ceiling. This assumes independently evidenced zero
+predecessor payload submission and control fitting that shared bootstrap; the
+software does not infer it from zero measured payload counters. Do not release
+old reservations, edit old source pins, reuse attempts/nonces, migrate ledgers,
+or automatically prepare a replacement. Independent review and a separate
+read-only baseline owner must precede any newly authorized readiness/pilot.
+
+### Private originating command diagnostics
+
+Failed native commands now retain individual immutable records under the active
+private namespace's `command-errors\<hashed-lease-binding>\<unique>.private.json`.
+Records include private argv, decoded stdout/stderr, exit code, elapsed time,
+operation/context, UTC time and lease/task binding. A per-lease
+`first-error.private.json` retains the originating record, while the legacy
+`last-error.private.json` remains a convenience view of the latest failure.
+Restoration failures never replace the originating record; final private plans
+reference it when available. Safe failure strings expose only a diagnostic code
+and hashed relative private artifact path, not raw CLI arguments or identifiers.
+Individual records use exclusive creation; the first-error binding is created
+atomically without replacement, including across concurrent command failures.
+Timeouts retain partial output after the existing child-tree shutdown. Successful
+command outputs are not added to these logs, and access-token output is omitted.
+
+Offline validation: **153 transfer tests PASS** with
+`python -B -m unittest discover -s labs\azure-bandwidth-billing\transfers -p 'test_*.py'`.
+This includes originating-error retention through multiple restoration failures,
+timeout partial output, token-output exclusion, exact peer TCP443/mTLS policy
+binding, approved carry validation/seeding, cumulative slot caps and both pilot
+projections. These offline results authorize no resource changes or replay.
+
+The historical pilot failed during allow setup before either payload command.
+Its original native error was overwritten by a later restoration read failure:
+the underlying native/transport cause remains **UNKNOWN**, not a proven NSG
+priority conflict. Existing deny-100 → cloned deny-200 plus exact peer `/32`
+allow-100 on TCP **443**, mTLS, and exact restoration remain unchanged.
+
+After actual read-only preflight inputs exist, planning permits a still-pending
+approval and has no side effects. Preparation additionally requires approval:
+
+```powershell
+python labs\azure-bandwidth-billing\transfers\repeat.py plan --session fresh-repeat --config labs\azure-bandwidth-billing\private\fresh-repeat-input.private.json
+python labs\azure-bandwidth-billing\transfers\repeat.py prepare --session fresh-repeat --config labs\azure-bandwidth-billing\private\fresh-repeat-input.private.json
+python labs\azure-bandwidth-billing\transfers\repeat.py prepare-chunk --session fresh-repeat --phase same-region
+python labs\azure-bandwidth-billing\transfers\repeat.py status --session fresh-repeat
+```
+
+`prepare` exclusively creates
+`private\repeat-session\fresh-repeat\{config.private.json,ledger.private.json,chunks,control}`.
+`prepare-chunk` durably reserves before hashing/certificate generation or any
+possible contact. It needs the existing OpenSSL setup used by the old runner;
+it does not install dependencies. Preparation reserves 8 decimal GB bootstrap
+wire; each pair reserves 107.5% of its two application legs plus 2 MiB. The
+whole planned 5 GiB-chunk session reserves **438,083,886,082 wire bytes**, inside
+the **440 decimal GB** ceiling including bootstrap/TLS/ACK headroom.
+Conservative pair wire is charged to **both contexts' TX tiers** (intentionally
+over-reserving), plus 90 minutes of VM rent per participating endpoint for
+separate readiness/traffic leases; fixed-infrastructure reserves are upfront.
+Successful known allocation may replace its time reservation with measured
+time, but **money and wire reservations never automatically refund**.
+
+The ledger and generated plans bind source/config hashes. Directory creation
+and lock directories are exclusive; updates use file flush/fsync and atomic
+replace. A reserved/attempted/failed/unknown chunk blocks selecting another
+chunk; a crash never silently resends an ID or clears a flight reservation.
+An orphan lock/lease requires independent recovery, not deleting state or
+resetting budgets. Preparation uses **no 35/23 GiB legacy reserve**.
+The claimed phase also freezes lease identity, owner, objective, expiry, budgets
+and allowed operations. Replacement/extension fails closed; only counters,
+idle/state and checkpoint fields can change. The adapter never overwrites a
+foreign replacement lease to manufacture closure. Atomic lease writes and a
+shared in-process I/O lock protect concurrent native CLI accounting on Windows.
+
+On Windows, replacement of already-fsynced local JSON metadata retries only
+WinError 5, 32 or 33, at 25 ms intervals for at most one second (40 sleeps).
+Lease readers and writers retain their shared in-process I/O lock. This handles
+short external sharing/access holds without replaying any Azure operation.
+Exhaustion raises the original replacement error, preserves the old destination,
+and removes this writer's pending file; other errors fail immediately.
+
+## Live commands: one explicit fresh lease and owner per phase
+
+Only after actual deployment, exact inventory binding, approval and independent
+preflight, obtain a fresh readiness owner/lease, then a different snapshot owner/
+read-only lease, then a different traffic owner/lease. Each public command returns;
+none implicitly chains phases, activates a lease or shares an owner across them.
+The coordinator may print pending templates with the public helper:
+
+```powershell
+python labs\azure-bandwidth-billing\transfers\repeat.py lease-template --session fresh-repeat --chunk same-region-000 --lease-kind readiness
+python labs\azure-bandwidth-billing\transfers\repeat.py lease-template --session fresh-repeat --chunk same-region-000 --lease-kind snapshot
+```
+
+Print the pilot template **after** snapshot so its operations include any owned
+receiver subnet NSG:
+
+```powershell
+python labs\azure-bandwidth-billing\transfers\repeat.py lease-template --session fresh-repeat --chunk same-region-000 --lease-kind pilot
+```
+
+Templates print JSON only, with `state=pending`, placeholder task/owner and
+`acceptLiveGates=false`; they do not write files or authorize anything.
+The coordinator creates the separately approved private lease files below.
+Required fields are `taskId` (unique), `ownerId` (fresh phase owner, never reused),
+`ownerRole` (Tank readiness/traffic, Niobe snapshot),
+`objective` (exact `repeat:fresh-repeat:same-region-000:<phase>`),
+`startedAtUtc`, `expiresAtUtc`, `state=active`, `maxToolCalls`, `maxMutations`,
+`commandTimeoutSeconds`, `namedCommandTimeoutSeconds`, `restoreTimeoutMinutes=15`,
+`allowedMutations`, `rollback`, `lastCheckpointUtc`, `actualToolCalls=0`,
+`actualMutations=0`, `activeCommands=0`, `ownedProcessesIdle=true`.
+For traffic only, the actual independent live-gate attestation must explicitly
+set `acceptLiveGates=true`. Do not turn a pending example into authority merely
+because a preflight passed. The helper fills exact operations/objective/rollback;
+do not broaden or substitute them.
+
+| Phase | Elapsed maximum | Calls | Mutation ceiling / allowed operations | Command bound |
+|---|---:|---:|---|---|
+| readiness | 30 min | 75 | 6: `start-a`, `start-t`, `ready-a`, `ready-t`, `deallocate-t`, `deallocate-a` | 180 s |
+| snapshot | 30 min | 75 | 0 / empty list | 180 s (reads clip to 90 s) |
+| pilot/batch | 60 min | 150 | 12 reserved: exact `operations` from fresh snapshot | 2500 s; named `server=2500`, `client=2500` |
+
+For C/T, helper substitutes `start-c`, `ready-c`, `deallocate-c`; never B.
+Traffic's exact operation list is start-client, start-T, optional `allow-subnet`,
+`allow`, `server`, `client`, `restore-nsg`, optional `restore-subnet-nsg`,
+deallocate-T, deallocate-client. The rollback string is exactly
+`verified-deallocation-then-original-nsgs-or-blocked-independent-recovery`.
+Its 15-minute reserve is inside, not after, the original lease.
+The original 2500-second RunCommand, 2450-second foreground guest process,
+2400-second stream deadline and 3400-second submission/restore requirement remain;
+submit promptly after lease start. At the opted-in 16 MiB/s, 5 GiB normally needs
+320 seconds of bulk, not the legacy 35.8 minutes. No unbounded waits or retries.
+
+With the three independently approved files present (not produced by this work):
+
+```powershell
+python labs\azure-bandwidth-billing\transfers\repeat.py readiness --session fresh-repeat --chunk same-region-000 --lease labs\azure-bandwidth-billing\private\repeat-session\fresh-repeat\control\readiness-001.json
+python labs\azure-bandwidth-billing\transfers\repeat.py snapshot --session fresh-repeat --chunk same-region-000 --lease labs\azure-bandwidth-billing\private\repeat-session\fresh-repeat\control\snapshot-001.json
+python labs\azure-bandwidth-billing\transfers\repeat.py pilot --session fresh-repeat --chunk same-region-000 --lease labs\azure-bandwidth-billing\private\repeat-session\fresh-repeat\control\pilot-001.json
+```
+
+Readiness snapshots the pair, starts/probes both guests and verifies deallocation.
+Snapshot repeats the source-bound immutable readiness/network binding read-only
+and captures baseline metrics. Pilot claims its one durable traffic attempt only
+after both closed idle phase leases, immutable receipts and fresh (<10 min)
+snapshot pass. Actual live execution then starts guests, opens exact policies,
+exchanges the original TLS/source bundle, verifies both directions, deallocates
+both endpoints, restores and verifies original policies, and collects metrics.
+Only a completed idle lease, all deallocation/restore proofs, both hashes,
+two requests at each endpoint, metrics and timeline permit ledger completion.
+Failure retains reservations and freezes the whole session; no resend/refund.
+
+Mocked real-runner call accounting (no Azure calls during tests):
+
+| Stable case | Readiness | Snapshot | Normal traffic | Closure including metrics | Total traffic |
+|---|---:|---:|---:|---:|---:|
+| no subnet NSG | 30 | 18 | 16 | 17 | 33 |
+| distinct owned NSG on both subnets | 32 | 20 | 22 | 26 | 48 |
+
+Closure includes two account/deallocate/instance-view triples; each NSG needs
+five submission calls then four completion/association calls; final metrics add
+two. Provisioning polls add calls and spend the same hard lease/restore bounds.
+At 150 calls, the 80% normal-work boundary leaves 30 closure calls; no guarantee
+of restoration is fabricated if slow polling exhausts those calls or time.
+75-call traffic is supported for an explicitly bounded fast path; default 150
+retains more reserve. Checkpoints occur every 25 calls/15 minutes and at 80%.
+The process circuit checks STOP, active lease, expiry, immutable sources and TTL
+between steps and at ≤1-second local child wait boundaries. Local termination
+is not guest quiescence: unverified guest power-off remains BLOCKED even if local
+children are idle; guest hard deadlines remain in force pending recovery.
+
+Later commands, each still needing its own readiness, snapshot and traffic
+leases (also repeat the two pilots for cross-region):
+
+```powershell
+python labs\azure-bandwidth-billing\transfers\repeat.py resume --session fresh-repeat --phase same-region
+python labs\azure-bandwidth-billing\transfers\repeat.py batch --session fresh-repeat --chunk same-region-001 --lease labs\azure-bandwidth-billing\private\repeat-session\fresh-repeat\control\batch-001.json
+```
+
+`resume` selects only the next unattempted ID after every prior chunk is
+resolved; it does not reset money/wire/TTL or retry a failed ID.
+Both scenario pilots must project successfully before any full chunk.
+Repeat the public readiness and snapshot commands for each newly selected chunk
+before `batch`; use `--lease-kind batch` for its new pending traffic template.
+
+`status` emits only aliases, exact cumulative bytes per leg, attempt counts,
+timestamps/UTC usage day, one client RX+TX pair total (not A+T or C+T),
+separate producer TX counts, SHA256/hash proofs, hashed network bindings and
+allowlisted numeric network metrics. It never emits raw IPs, hostnames,
+subscription/tenant IDs or control responses. Only those sanitized rows may be
+published; all raw controls and approval material remain private. These schema guarantees were supported by mocked completion tests, **not
+actual traffic evidence**; the dated partial result above separately records
+the later completed live chunks.
+
+Offline validation (Windows standard library, no Azure calls/installations):
+
+```powershell
+python -m unittest discover -s labs\azure-bandwidth-billing\transfers -p "test*.py" -q
+```
+
+Revision validation on 2026-10-16: **137 tests passed** using Windows Python's
+standard-library unittest discovery. Absolute-cutoff canaries assert no
+reservation/producer/Azure contact; real-runner mocked readiness tests reject
+invalid storage on either endpoint with **zero Azure mutations across both**.
+The 33/48 traffic-call budget tests still pass. This is **READY-FOR-REVIEW**,
+not live capacity, deployment, transport or billing approval.
+
+Subsequent monitor-only revision on 2026-10-16: **144 tests passed** (the
+137-test baseline plus seven monetary-mode tests), using
+`python -B -m unittest discover -s labs\azure-bandwidth-billing\transfers -p 'test_*.py'`.
+Coverage includes explicit approval/mode matching, omitted/null caps, rejection
+of magic or stale caps, unchanged enforced-mode dispatch blocking, immutable
+configuration and money arithmetic, failed/unknown freeze, unchanged byte/rate/
+TTL/resource/slot safeguards, and all 40 successful mocked pairs at the original
+USD/EUR rates with planning reserves above the withdrawn ceilings. Draft
+counter/settlement changes were removed; guest, runner and fresh deployment
+source pins are unchanged. **READY OFFLINE FOR INDEPENDENT REVIEW; LIVE PENDING.**
+No private live input, Azure resource, phase lease or pilot was created.
+
+---
+
+# A ↔ T bounded public-IPv4 transfer (historical workflow)
 
 **Current status: live transport PASS, restored baseline PASS, billing
 INCONCLUSIVE (updated 2026-10-16 UTC).** See the
