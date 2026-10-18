@@ -29,12 +29,15 @@ QUERY_VERSION = "2023-11-01"
 DETAIL_VERSION = "2024-08-01"
 REPORT_VERSION = "2025-03-01"
 REPORT_ENDPOINT = "/providers/Microsoft.CostManagement/generateCostDetailsReport"
+QUERY_ENDPOINT = "/providers/Microsoft.CostManagement/query"
+QUERY_CLIENT_TYPE = "GitHubCopilotForAzure"
 LAB = Path(__file__).resolve().parents[1]
 
 
 class Failure(Exception):
-    def __init__(self, code, status=None, azure_code=None, category=None):
+    def __init__(self, code, status=None, azure_code=None, category=None, response_metadata=None):
         self.code, self.status, self.azure_code, self.category = code, status, azure_code, category
+        self.response_metadata = response_metadata
         super().__init__(code)
 
 
@@ -130,6 +133,7 @@ class Transport:
         self.max_retries = 1
         self.retry_delay_limit = 2
         self.http_requests = 0
+        self.http_request_counts = {}
         self.on_http = lambda: None
 
     def remaining(self):
@@ -240,13 +244,21 @@ class Transport:
                 raise Failure("http_request_limit")
             self.http_requests += 1
             self.on_http()
+            request_headers = {} if blob else {"Authorization": "Bearer " + token,
+                                               "Content-Type": "application/json"}
+            if not blob and endpoint == QUERY_ENDPOINT:
+                request_headers["ClientType"] = QUERY_CLIENT_TYPE
             request = urllib.request.Request(
                 url, data=payload, method=method,
-                headers={} if blob else {"Authorization": "Bearer " + token,
-                                          "Content-Type": "application/json"})
+                headers=request_headers)
+            operation = ("download" if blob else "query" if endpoint == QUERY_ENDPOINT else
+                         "generation" if endpoint == REPORT_ENDPOINT else
+                         "poll" if endpoint == "report-poll" else "consumption")
+            self.http_request_counts[operation] = self.http_request_counts.get(operation, 0) + 1
             try:
                 with self.opener.open(request, timeout=min(20, self.remaining())) as response:
-                    self.http.append({"status": response.status})
+                    self.http.append({"status": response.status, "responseMetadata":
+                                      response_metadata(response.headers)})
                     if consume is not None:
                         if response.status != 200:
                             raise Failure("unexpected_blob_status", response.status)
@@ -273,11 +285,13 @@ class Transport:
                         raise Failure("http_invalid_json")
                     return (response.status, headers, page) if envelope else page
             except urllib.error.HTTPError as error:
-                self.http.append({"status": error.code})
-                delay = retry_seconds(error.headers)
+                metadata = response_metadata(error.headers)
+                self.http.append({"status": error.code, "responseMetadata": metadata})
+                delay = metadata["retryAfterSeconds"]
                 if error.code == 429 and attempt < retry_count and delay is not None:
                     if delay <= self.retry_delay_limit and delay + 1 < self.remaining():
                         self.guard()
+                        error.close()
                         time.sleep(delay)
                         continue
                 azure_code = None
@@ -303,10 +317,12 @@ class Transport:
                             if text in message:
                                 category = label
                                 break
-                except (ValueError, TypeError, AttributeError):
+                except (ValueError, TypeError, AttributeError, OSError, http.client.HTTPException):
                     pass
+                finally:
+                    error.close()
                 raise Failure("rate_limited" if error.code == 429 else "http_error",
-                              error.code, azure_code, category) from None
+                              error.code, azure_code, category, metadata) from None
             except (TimeoutError, socket.timeout):
                 raise Failure("http_timeout") from None
             except urllib.error.URLError as error:
@@ -341,28 +357,90 @@ def validate_blob(url):
     return url
 
 
-def retry_seconds(headers):
-    delays = []
-    for key, value in headers.items():
+def retry_hints(headers, received):
+    hints = []
+    if received.tzinfo is None or received.utcoffset() is None:
+        return hints
+    received = received.astimezone(dt.timezone.utc)
+    for key, value in (headers or {}).items():
         key = key.lower()
-        if key != "retry-after" and not (
-                key.startswith("x-ms-") and "retry-after" in key):
+        if key != "retry-after" and not re.fullmatch(
+                r"x-ms-ratelimit-microsoft\.costmanagement-[a-z0-9-]{1,80}-retry-after", key):
             continue
         try:
-            delay = float(value)
+            text = str(value).strip()
+            if key == "retry-after" and not re.fullmatch(r"[0-9]+", text):
+                day = r"(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)"
+                month = r"(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
+                clock = r"[0-9]{2}:[0-9]{2}:[0-9]{2}"
+                date_match = re.fullmatch(
+                        rf"(?:{day}, [0-9]{{2}} {month} [0-9]{{4}} {clock} GMT|"
+                        rf"(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday), "
+                        rf"[0-9]{{2}}-{month}-(?P<obsolete_year>[0-9]{{2}}) {clock} GMT|"
+                        rf"{day} {month} (?: [1-9]|[0-9]{{2}}) {clock} [0-9]{{4}})", text)
+                if not date_match:
+                    continue
+                parsed = email.utils.parsedate_to_datetime(text)
+                if date_match["obsolete_year"] is not None:
+                    # RFC 9110 uses a receipt-relative 50-year window, not email's fixed pivot.
+                    year = (received.year + 50) // 100 * 100 + int(date_match["obsolete_year"])
+                    if (year, parsed.month, parsed.day, parsed.time()) > (
+                            received.year + 50, received.month, received.day, received.time()):
+                        year -= 100
+                    parsed = parsed.replace(year=year)
+                # The validated obsolete asctime form has implicit GMT.
+                if parsed.tzinfo is None:
+                    parsed = parsed.replace(tzinfo=dt.timezone.utc)
+                delay = (parsed - received).total_seconds()
+                normalized = email.utils.format_datetime(parsed.astimezone(dt.timezone.utc),
+                                                        usegmt=True)
+            else:
+                delay = float(text)
+                normalized = format(delay, ".17g")
             if not 0 <= delay < float("inf"):
                 continue
-            if key.endswith("-ms"):
-                delay /= 1000
-            delays.append(delay)
-        except (ValueError, TypeError):
-            if key == "retry-after":
-                try:
-                    delays.append(max(0, (email.utils.parsedate_to_datetime(value) -
-                                          dt.datetime.now(dt.timezone.utc)).total_seconds()))
-                except (ValueError, TypeError, OverflowError):
-                    pass
-    return max(delays) if delays else None
+            hints.append((key, normalized, delay))
+        except (ValueError, TypeError, OverflowError, AttributeError):
+            continue
+    return hints
+
+
+def retry_seconds(headers):
+    hints = retry_hints(headers, dt.datetime.now(dt.timezone.utc))
+    return max(hint[2] for hint in hints) if hints else None
+
+
+def response_metadata(headers):
+    received = dt.datetime.now(dt.timezone.utc)
+    hints = retry_hints(headers, received)
+    safe = {}
+    for key, value, delay in sorted(hints, key=lambda hint: hint[2]):
+        safe[key] = value
+    for key, value in (headers or {}).items():
+        key = key.lower()
+        if key in ("x-ms-request-id", "x-ms-correlation-request-id", "request-id"):
+            if isinstance(value, str) and re.fullmatch(
+                    r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}", value):
+                safe[key] = value
+        elif key == "date":
+            try:
+                parsed = email.utils.parsedate_to_datetime(value)
+                if parsed.tzinfo is not None:
+                    safe[key] = email.utils.format_datetime(parsed.astimezone(dt.timezone.utc),
+                                                           usegmt=True)
+            except (ValueError, TypeError, OverflowError, AttributeError):
+                pass
+    delay = max(hint[2] for hint in hints) if hints else None
+    retry_at = None
+    if delay is not None:
+        try:
+            retry_at = (received + dt.timedelta(seconds=delay)).isoformat()
+        except OverflowError:
+            pass
+    return {"receivedAtUtc": received.isoformat(), "safeHeaders": safe,
+            "retryAfterSeconds": delay,
+            "suggestedRetryAtUtc": retry_at,
+            "retrySource": "known" if hints else "unknown"}
 
 
 def day(value):
@@ -714,7 +792,14 @@ def collect(transport, args, inventory):
             result["reason"] = "continuation_cycle"
             return result
         seen_links.add(url)
-        page = transport.request("GET" if detail else "POST", url, body, endpoint)
+        try:
+            page = transport.request("GET" if detail else "POST", url, body, endpoint)
+        except Failure as error:
+            result.update(reason=error.code, httpStatus=error.status, azureCode=error.azure_code,
+                          errorCategory=error.category)
+            if error.response_metadata is not None:
+                result["responseMetadata"] = error.response_metadata
+            return result
         result["pages"] += 1
         if detail:
             rows = page.get("value", [])
@@ -847,6 +932,8 @@ def probe(transport, args):
         except Failure as error:
             entry.update(outcome=error.code, httpStatus=error.status, azureCode=error.azure_code,
                          errorCategory=error.category)
+            if error.response_metadata is not None:
+                entry["responseMetadata"] = error.response_metadata
         result["results"].append(entry)
     result["expectedTenantMatched"] = transport.context_verified
     return result
@@ -1176,9 +1263,13 @@ def collect_report(transport, args, inventory):
                       completedUtc=dt.datetime.now(dt.timezone.utc).isoformat())
     except Failure as error:
         result.update(reason=error.code, httpStatus=error.status, azureCode=error.azure_code)
+        if error.response_metadata is not None:
+            result["responseMetadata"] = error.response_metadata
     except (csv.Error, UnicodeError, OSError, EOFError, ValueError, TypeError, KeyError,
             zipfile.BadZipFile, zlib.error):
         result.update(reason="report_invalid_data")
+    result.update(httpRequests=transport.http_requests,
+                  httpRequestCounts=dict(transport.http_request_counts))
     return result
 
 
@@ -1308,23 +1399,42 @@ def main(argv=None):
         data = (probe(transport, args) if args.command == "probe" else
                 collect_report(transport, args, inventory) if args.command == "cost-details" else
                 collect(transport, args, inventory))
+        data.update(httpRequests=transport.http_requests,
+                    httpRequestCounts=dict(transport.http_request_counts))
         if output:
             write_outputs(data, output, csv_output if data.get("state") == "COMPLETE" else None)
         if args.command == "probe":
             print(json.dumps(data, default=str))
             return 0 if all(item["outcome"] == "ACCESS_OK_NOT_BILLING_PROOF"
                             for item in data["results"]) else 2
+        if args.command in ("query", "details") and "httpStatus" in data:
+            summary = {"state": "ERROR", "code": data["reason"],
+                       "httpStatus": data["httpStatus"], "azureCode": data["azureCode"],
+                       "errorCategory": data["errorCategory"],
+                       "httpRequests": data["httpRequests"],
+                       "httpRequestCounts": data["httpRequestCounts"]}
+            if "responseMetadata" in data:
+                summary["responseMetadata"] = data["responseMetadata"]
+            print(json.dumps(summary))
+            return 2
         print(json.dumps({key: data[key] for key in (
             "state", "pages", "received", "discarded", "duplicates", "unattributedLabRows",
-            "extractionComplete", "ingestionFinal", "retained", "reason", "httpStatus")
+            "extractionComplete", "ingestionFinal", "retained", "reason", "httpStatus",
+            "responseMetadata", "httpRequests", "httpRequestCounts")
                           if key in data}))
         return 0 if data["state"] == "COMPLETE" else 3
     except subprocess.TimeoutExpired:
         print(json.dumps({"state": "ERROR", "code": "wsl_timeout"}))
         return 2
     except Failure as error:
-        print(json.dumps({"state": "ERROR", "code": error.code, "httpStatus": error.status,
-                          "azureCode": error.azure_code, "errorCategory": error.category}))
+        summary = {"state": "ERROR", "code": error.code, "httpStatus": error.status,
+                   "azureCode": error.azure_code, "errorCategory": error.category}
+        if error.response_metadata is not None:
+            summary["responseMetadata"] = error.response_metadata
+        if transport is not None:
+            summary.update(httpRequests=transport.http_requests,
+                           httpRequestCounts=dict(transport.http_request_counts))
+        print(json.dumps(summary))
         return 2
     except (OSError, KeyError, TypeError, ValueError):
         print(json.dumps({"state": "ERROR", "code": "invalid_input_or_io"}))

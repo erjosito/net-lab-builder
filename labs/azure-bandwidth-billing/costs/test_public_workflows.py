@@ -353,6 +353,321 @@ class PublicWorkflowTests(unittest.TestCase):
         self.assertEqual((code, summary["reason"], opener.open.call_count),
                          (3, "http_request_limit", 1))
 
+    def test_query_429_persists_safe_metadata_preserves_error_exit_and_clienttype(self):
+        headers = {"Retry-After": "60", "x-ms-request-id": SUB,
+                   "Date": "Sun, 18 Oct 2026 00:00:00 GMT",
+                   "x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after": "120",
+                   "Location": POLL + "&t=OPAQUE&c=SECRET&s=TOKEN&h=SECRET",
+                   "Authorization": "Bearer SECRET", "Set-Cookie": "TOKEN"}
+        code, summary, opener, _, sleep = self.run_cli([
+            urllib.error.HTTPError(POLL, 429, "SECRET", headers,
+                                   io.BytesIO(b'{"error":{"code":"TooManyRequests",'
+                                              b'"message":"SECRET"}}'))],
+            self.command("query"))
+        self.assertEqual((code, summary["state"], summary["code"], summary["httpStatus"]),
+                         (2, "ERROR", "rate_limited", 429))
+        self.assertEqual(summary["azureCode"], "TooManyRequests")
+        self.assertIsNone(summary["errorCategory"])
+        metadata = summary["responseMetadata"]
+        self.assertEqual((metadata["retrySource"], metadata["retryAfterSeconds"]), ("known", 120))
+        self.assertEqual(dt.datetime.fromisoformat(metadata["suggestedRetryAtUtc"]) -
+                         dt.datetime.fromisoformat(metadata["receivedAtUtc"]), dt.timedelta(seconds=120))
+        data = json.loads(self.output.read_text())
+        self.assertEqual((data["state"], data["reason"], data["pages"], data["rows"]),
+                         ("INCOMPLETE", "rate_limited", 0, []))
+        self.assertEqual(data["responseMetadata"], metadata)
+        self.assertEqual(data["http"], [{"status": 429, "responseMetadata": metadata}])
+        self.assertEqual((data["httpRequests"], data["httpRequestCounts"]), (1, {"query": 1}))
+        self.assertEqual(opener.open.call_args.args[0].get_header("Clienttype"),
+                         api.QUERY_CLIENT_TYPE)
+        sleep.assert_not_called()
+        for secret in ("SECRET", "TOKEN", "OPAQUE", "Location", "sig=", "ARM_SECRET"):
+            self.assertNotIn(secret, self.output.read_text() + json.dumps(summary))
+
+    def test_query_unknown_retry_exposes_no_invented_cooldown_or_retry(self):
+        for headers in (None, {}, {"Retry-After": "invalid"},
+                        {"x-ms-ratelimit-microsoft.costmanagement-qpu-consumed": "60"}):
+            with self.subTest(headers=headers):
+                code, summary, opener, _, sleep = self.run_cli([
+                    urllib.error.HTTPError(POLL, 429, "SECRET", headers, None)],
+                    self.command("query"))
+                self.assertEqual((code, summary["code"], opener.open.call_count),
+                                 (2, "rate_limited", 1))
+                metadata = summary["responseMetadata"]
+                self.assertEqual(metadata["retrySource"], "unknown")
+                self.assertIsNone(metadata["retryAfterSeconds"])
+                self.assertIsNone(metadata["suggestedRetryAtUtc"])
+                self.assertEqual(json.loads(self.output.read_text())["responseMetadata"], metadata)
+                sleep.assert_not_called()
+                self.output.unlink()
+
+    def test_query_bad_or_past_http_date_cannot_retry_into_complete(self):
+        now = dt.datetime(2026, 10, 18, 0, 20, tzinfo=dt.timezone.utc)
+
+        class FixedDatetime(dt.datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return now
+
+        url = api.ARM + f"/subscriptions/{SUB}" + api.QUERY_ENDPOINT + (
+            "?api-version=" + api.QUERY_VERSION)
+        for value in ("Sun, 18 Oct 2026 00:21:00 GMTjunk",
+                      "Sun, 18 Oct 2026 00:21:00 GMT junk",
+                      "Sun, 18 Oct 2026 00:00:00 GMT Sun, 18 Oct 2026 01:00:00 GMT",
+                      "Sun, 18 Oct 2026 00:00:00 GMT"):
+            for mixed in (False, True):
+                with self.subTest(value=value, mixed=mixed):
+                    headers = {"Retry-After": value}
+                    if mixed:
+                        headers.update({
+                            "x-ms-ratelimit-microsoft.costmanagement-entity-retry-after": "120",
+                            "x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after": "90",
+                            "x-ms-ratelimit-microsoft.costmanagement-qpu-retry-after": "NaN"})
+                    with patch("cost_api.dt.datetime", FixedDatetime):
+                        code, summary, opener, _, sleep = self.run_cli([
+                            urllib.error.HTTPError(url, 429, "SECRET", headers, None),
+                            Response({"properties": {"columns": [], "rows": []}})],
+                            self.command("query"))
+                    self.assertEqual((code, summary["state"], summary["code"],
+                                      summary["httpStatus"], opener.open.call_count),
+                                     (2, "ERROR", "rate_limited", 429, 1))
+                    metadata = summary["responseMetadata"]
+                    self.assertEqual(metadata["retrySource"], "known" if mixed else "unknown")
+                    self.assertEqual(metadata["retryAfterSeconds"], 120 if mixed else None)
+                    self.assertEqual(metadata["suggestedRetryAtUtc"],
+                                     "2026-10-18T00:22:00+00:00" if mixed else None)
+                    self.assertNotIn("retry-after", metadata["safeHeaders"])
+                    data = json.loads(self.output.read_text())
+                    self.assertEqual((data["state"], data["reason"], data["rows"]),
+                                     ("INCOMPLETE", "rate_limited", []))
+                    self.assertEqual((data["httpRequests"], data["httpRequestCounts"]),
+                                     (1, {"query": 1}))
+                    self.assertEqual(data["http"], [{"status": 429, "responseMetadata": metadata}])
+                    request = opener.open.call_args.args[0]
+                    self.assertEqual(request.full_url, url)
+                    self.assertEqual(request.get_header("Clienttype"), api.QUERY_CLIENT_TYPE)
+                    sleep.assert_not_called()
+                    self.assertFalse(self.csv.exists())
+                    self.output.unlink()
+
+    def test_rfc850_long_cooldown_cannot_retry_into_complete(self):
+        now = dt.datetime(2026, 10, 18, 0, 20, tzinfo=dt.timezone.utc)
+        target = dt.datetime(2069, 10, 18, 0, 20, tzinfo=dt.timezone.utc)
+
+        class FixedDatetime(dt.datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return now
+
+        url = api.ARM + f"/subscriptions/{SUB}" + api.QUERY_ENDPOINT + (
+            "?api-version=" + api.QUERY_VERSION)
+        for mixed in (False, True):
+            headers = {"Retry-After": "Friday, 18-Oct-69 00:20:00 GMT",
+                       "Location": BLOB, "x-debug": "SECRET"}
+            if mixed:
+                headers["x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after"] = "0"
+            with self.subTest(mixed=mixed), patch("cost_api.dt.datetime", FixedDatetime):
+                code, summary, opener, _, sleep = self.run_cli([
+                    urllib.error.HTTPError(url, 429, "SECRET", headers, None),
+                    Response({"properties": {"columns": [], "rows": []}})],
+                    self.command("query", ["--max-seconds", "1"]))
+                self.assertEqual((code, summary["state"], summary["code"],
+                                  summary["httpStatus"], opener.open.call_count),
+                                 (2, "ERROR", "rate_limited", 429, 1))
+                metadata = summary["responseMetadata"]
+                self.assertEqual(metadata["retrySource"], "known")
+                self.assertEqual(metadata["retryAfterSeconds"], (target - now).total_seconds())
+                self.assertEqual(metadata["suggestedRetryAtUtc"], target.isoformat())
+                data = json.loads(self.output.read_text())
+                self.assertEqual((data["state"], data["reason"], data["rows"]),
+                                 ("INCOMPLETE", "rate_limited", []))
+                self.assertEqual((data["httpRequests"], data["httpRequestCounts"]),
+                                 (1, {"query": 1}))
+                self.assertEqual(data["http"], [{"status": 429, "responseMetadata": metadata}])
+                self.assertEqual(opener.open.call_args.args[0].get_header("Clienttype"),
+                                 api.QUERY_CLIENT_TYPE)
+                sleep.assert_not_called()
+                for secret in ("SECRET", "sig=", "Location", "ARM_SECRET"):
+                    self.assertNotIn(secret, self.output.read_text() + json.dumps(summary))
+                self.output.unlink()
+
+    def test_rfc850_long_cooldown_exceeds_remaining_time_without_budget_extension(self):
+        now = dt.datetime(2026, 10, 18, 0, 20, tzinfo=dt.timezone.utc)
+
+        class FixedDatetime(dt.datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return now
+
+        transport = api.Transport(SUB, TENANT, seconds=75)
+        deadline = transport.deadline
+        transport.authorize = Mock(return_value="ARM_SECRET")
+        transport.remaining = Mock(return_value=75)
+        transport.retry_delay_limit = float("inf")
+        url = api.ARM + transport.scope + api.QUERY_ENDPOINT + "?api-version=" + api.QUERY_VERSION
+        transport.opener.open = Mock(side_effect=[
+            urllib.error.HTTPError(url, 429, "SECRET", {
+                "Retry-After": "Friday, 18-Oct-69 00:20:00 GMT",
+                "x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after": "0"}, None),
+            Response({})])
+        with patch("cost_api.dt.datetime", FixedDatetime), patch("cost_api.time.sleep") as sleep:
+            with self.assertRaisesRegex(api.Failure, "rate_limited") as caught:
+                transport.request("POST", url, {}, api.QUERY_ENDPOINT)
+        self.assertGreater(caught.exception.response_metadata["retryAfterSeconds"], 75)
+        self.assertEqual(transport.deadline, deadline)
+        self.assertEqual((transport.http_requests, transport.opener.open.call_count), (1, 1))
+        self.assertEqual(transport.http_request_counts, {"query": 1})
+        self.assertGreaterEqual(transport.remaining.call_count, 3)
+        sleep.assert_not_called()
+
+    def test_429_body_read_failure_cannot_drop_already_received_headers(self):
+        body = Mock()
+        body.read.side_effect = TimeoutError("SECRET")
+        code, summary, opener, _, sleep = self.run_cli([
+            urllib.error.HTTPError(POLL, 429, "SECRET", {"Retry-After": "60"}, body)],
+            self.command("query"))
+        self.assertEqual((code, summary["code"], opener.open.call_count), (2, "rate_limited", 1))
+        self.assertEqual(summary["responseMetadata"]["retryAfterSeconds"], 60)
+        self.assertIsNone(summary["azureCode"])
+        self.assertEqual(json.loads(self.output.read_text())["http"][-1]["status"], 429)
+        self.assertNotIn("SECRET", self.output.read_text() + json.dumps(summary))
+        sleep.assert_not_called()
+
+    def test_query_retried_429_and_exhausted_budget_keep_history_and_true_counts(self):
+        for max_requests, responses, reason, count in (
+                (1, [urllib.error.HTTPError(POLL, 429, "SECRET", {"Retry-After": "0"}, None)],
+                 "http_request_limit", 1),
+                (2, [urllib.error.HTTPError(POLL, 429, "SECRET", {"Retry-After": "0"}, None),
+                     urllib.error.HTTPError(POLL, 429, "SECRET", {"Retry-After": "60"}, None)],
+                 "rate_limited", 2),
+                (2, [urllib.error.HTTPError(POLL, 429, "SECRET", {"Retry-After": "0"}, None),
+                     TimeoutError("SECRET")], "http_timeout", 2)):
+            with self.subTest(reason=reason):
+                code, summary, opener, _, sleep = self.run_cli(responses, self.command(
+                    "query", ["--max-http-requests", str(max_requests)]))
+                self.assertEqual((code, summary["code"], opener.open.call_count), (2, reason, count))
+                data = json.loads(self.output.read_text())
+                self.assertEqual((data["httpRequests"], data["httpRequestCounts"]),
+                                 (count, {"query": count}))
+                self.assertEqual(data["http"][0]["responseMetadata"]["retryAfterSeconds"], 0)
+                self.assertEqual(data["http"][0]["responseMetadata"]["retrySource"], "known")
+                self.assertTrue(all(call.args[0].get_header("Clienttype") == api.QUERY_CLIENT_TYPE
+                                    for call in opener.open.call_args_list))
+                sleep.assert_called_once_with(0)
+                self.output.unlink()
+
+    def test_query_success_after_retry_retains_prior429_not_a_usage_counter(self):
+        code, summary, opener, _, _ = self.run_cli([
+            urllib.error.HTTPError(POLL, 429, "SECRET", {"Retry-After": "0"}, None),
+            Response({"properties": {"columns": [], "rows": []}})], self.command("query"))
+        self.assertEqual((code, summary["state"], summary["httpRequests"]), (0, "COMPLETE", 2))
+        data = json.loads(self.output.read_text())
+        self.assertEqual([entry["status"] for entry in data["http"]], [429, 200])
+        self.assertEqual(data["httpRequestCounts"], {"query": 2})
+        self.assertEqual(data["received"], 0)
+        self.assertEqual(opener.open.call_count, 2)
+
+    def test_429_metadata_consistent_generation_poll_download_no_clienttype(self):
+        for operation, prefix in (
+                ("generation", []),
+                ("poll", [Response(status=202, headers={"Location": POLL})]),
+                ("download", [Response(completed())])):
+            with self.subTest(operation=operation):
+                headers = {"Retry-After": "60", "x-ms-request-id": SUB, "Location": BLOB,
+                           "x-ms-ratelimit-microsoft.costmanagement-clienttype-retry-after": "90"}
+                code, summary, opener, _, _ = self.run_cli(prefix + [
+                    urllib.error.HTTPError(POLL, 429, "SECRET", headers, None)])
+                self.assertEqual((code, summary["state"], summary["httpStatus"]), (3, "INCOMPLETE", 429))
+                self.assertEqual(summary["responseMetadata"]["retryAfterSeconds"], 90)
+                data = json.loads(self.output.read_text())
+                self.assertEqual(data["http"][-1]["responseMetadata"], summary["responseMetadata"])
+                self.assertEqual(data["httpRequestCounts"][operation], 1)
+                self.assertEqual(data["httpRequests"], opener.open.call_count)
+                requests = [call.args[0] for call in opener.open.call_args_list]
+                self.assertTrue(all(not request.has_header("Clienttype") for request in requests))
+                if operation == "download":
+                    self.assertEqual(requests[-1].headers, {})
+                self.assertFalse(self.csv.exists())
+                for secret in ("SECRET", "sig=", BLOB, POLL):
+                    self.assertNotIn(secret, self.output.read_text() + json.dumps(summary))
+                self.output.unlink()
+
+    def test_report_poll_retries_and_download_requests_count_actual_attempts(self):
+        code, summary, opener, _, sleep = self.run_cli([
+            Response(status=202, headers={"Location": POLL}),
+            urllib.error.HTTPError(POLL, 429, "SECRET", {"Retry-After": "0"}, None),
+            Response(completed()), Response(RAW)], self.command(extra=["--max-retries", "1"]))
+        self.assertEqual((code, summary["httpRequests"], opener.open.call_count), (0, 4, 4))
+        self.assertEqual(summary["httpRequestCounts"], {"generation": 1, "poll": 2, "download": 1})
+        data = json.loads(self.output.read_text())
+        self.assertEqual((data["polls"], data["blobsDownloaded"]), (1, 1))
+        self.assertEqual([call.args[0] for call in sleep.call_args_list], [30, 0])
+
+    def test_generation_never_retries_even_with_explicit_retry_budget(self):
+        code, summary, opener, _, sleep = self.run_cli([
+            urllib.error.HTTPError(POLL, 429, "SECRET", {"Retry-After": "0"}, None)],
+            self.command(extra=["--max-retries", "3"]))
+        self.assertEqual((code, summary["httpRequests"], opener.open.call_count), (3, 1, 1))
+        sleep.assert_not_called()
+
+    def test_consumption_requests_do_not_receive_query_clienttype(self):
+        code, summary, opener, _, _ = self.run_cli([Response({"value": []})], self.command("details"))
+        self.assertEqual((code, summary["httpRequestCounts"]), (0, {"consumption": 1}))
+        self.assertFalse(opener.open.call_args.args[0].has_header("Clienttype"))
+
+    def test_query_continuations_and_probe_only_tag_query_calls(self):
+        continuation = (api.ARM + f"/subscriptions/{SUB}" + api.QUERY_ENDPOINT +
+                        "?api-version=" + api.QUERY_VERSION + "&$skiptoken=SECRET")
+        code, summary, opener, _, _ = self.run_cli([
+            Response({"properties": {"columns": [], "rows": [], "nextLink": continuation}}),
+            Response({"properties": {"columns": [], "rows": []}})], self.command("query"))
+        self.assertEqual((code, summary["pages"], summary["httpRequests"]), (0, 2, 2))
+        self.assertTrue(all(call.args[0].get_header("Clienttype") == api.QUERY_CLIENT_TYPE
+                            for call in opener.open.call_args_list))
+        self.assertNotIn("SECRET", self.output.read_text() + json.dumps(summary))
+        self.output.unlink()
+        command = ["probe", "--context", str(self.context), "--start", "2026-10-15",
+                   "--end", "2026-10-16", "--resource-group", "rg-bandwidth-billing-preflight"]
+        code, summary, opener, _, _ = self.run_cli([
+            Response({"properties": {"columns": [], "rows": []}}), Response({"value": []})], command)
+        self.assertEqual((code, summary["httpRequestCounts"]), (0, {"query": 1, "consumption": 1}))
+        requests = [call.args[0] for call in opener.open.call_args_list]
+        self.assertEqual(requests[0].get_header("Clienttype"), api.QUERY_CLIENT_TYPE)
+        self.assertFalse(requests[1].has_header("Clienttype"))
+
+    def test_query_http_date_response_exposes_utc_retry_instant_without_sleeping(self):
+        retry_at = dt.datetime.now(dt.timezone.utc).replace(microsecond=0) + dt.timedelta(minutes=5)
+        header = api.email.utils.format_datetime(retry_at, usegmt=True)
+        code, summary, opener, _, sleep = self.run_cli([
+            urllib.error.HTTPError(POLL, 429, "SECRET", {"Retry-After": header}, None)],
+            self.command("query"))
+        self.assertEqual((code, opener.open.call_count), (2, 1))
+        metadata = summary["responseMetadata"]
+        self.assertEqual(dt.datetime.fromisoformat(metadata["suggestedRetryAtUtc"]), retry_at)
+        self.assertEqual(metadata["retrySource"], "known")
+        sleep.assert_not_called()
+
+    @unittest.skipUnless(os.name == "nt", "Windows dispatch contract")
+    def test_wsl_query_uses_same_source_native_adapter_and_safe_metadata_summary(self):
+        code, summary, _, _, _ = self.run_cli([
+            urllib.error.HTTPError(POLL, 429, "SECRET", {"Retry-After": "120"}, None)],
+            self.command("query", ["--max-retries", "0"]))
+        result = subprocess.CompletedProcess([], code, json.dumps(summary).encode(), b"ARM_SECRET")
+        command = self.command("query", ["--transport", "wsl", "--max-retries", "0",
+                                         "--max-http-requests", "1"])
+        with patch("cost_api.run_bounded", return_value=result) as runner, patch(
+                "cost_api.cli_json") as cli, patch("sys.stdout", new_callable=io.StringIO) as out:
+            self.assertEqual(api.main(command), code)
+        self.assertEqual(json.loads(out.getvalue()), summary)
+        self.assertNotIn("ARM_SECRET", out.getvalue())
+        forwarded = runner.call_args.args[0]
+        self.assertEqual(forwarded[forwarded.index("python3") + 1],
+                         api.linux_path(str(api.Path(api.__file__).resolve())))
+        self.assertEqual(forwarded[forwarded.index("--transport") + 1], "native")
+        self.assertEqual(forwarded[forwarded.index("--max-retries") + 1], "0")
+        self.assertEqual(forwarded[forwarded.index("--max-http-requests") + 1], "1")
+        cli.assert_not_called()
+
     def test_preflight_retains_explicit_coordinator_lease(self):
         runtime = self.root / "deploy" / ".runtime-control"
         runtime.mkdir(parents=True)

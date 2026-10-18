@@ -246,6 +246,98 @@ egress rate”; Azure-origin traffic is charged at its source-region Internet
 egress rate. Same-region SaaS is therefore not blanket-free: determine destination
 IP ownership, regional placement and service architecture first.
 
+## Policy handoff, 2026-10-18: same-region, cross-tenant public-IP egress
+
+Bounded re-verification only; no Azure/billing/infra/auth calls made for this
+section. Pure addition — no existing dated text above is altered.
+
+**DOCUMENTED POLICY ANSWER.** Two official sources, re-checked this session:
+
+1. [Azure Bandwidth pricing FAQ](https://azure.microsoft.com/en-us/pricing/details/bandwidth/)
+   — “Is data transfer between Azure services located within the same region
+   charged?” / “No. For example, an Azure SQL database in the same region will
+   not have any additional data transfer costs.” Original raw-HTML verification
+   timestamp **2026-10-15 ~21:34Z** (recorded above/in
+   [results/2026-10-15-billing-verdict.md](results/2026-10-15-billing-verdict.md)).
+   This session (**2026-10-18, ~00:xxZ**) a direct re-fetch of the FAQ accordion
+   was attempted via both markdown extraction and paginated raw HTML; both only
+   returned the static Zone 1/2/3 table, not the FAQ markup (it is client-rendered).
+   A search-engine query independently surfaced the same FAQ sentence as still
+   indexed/live on this URL — treated as reconfirmation of currency, **not** a
+   fresh verbatim capture.
+2. [Custom IP prefix (BYOIP) pricing](https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/custom-ip-address-prefix#pricing)
+   — re-fetched in full this session via Microsoft Learn MCP (**2026-10-18**,
+   exact minute not logged by the fetch tool): “There's no charge to provision
+   or use custom IP prefixes… All traffic destined to a custom IP prefix range
+   is charged the internet egress rate… Customers [sic] traffic to a custom IP
+   prefix address from within Azure are charged internet egress for the source
+   region of their traffic. The system charges egress traffic from a custom IP
+   address prefix range at the same rate as an Azure public IP from the same
+   region.” Matches, and slightly extends, the citation already on file above.
+
+Neither source mentions subscriptions, Microsoft Entra tenants, or billing
+accounts. **Do not infer that “same-region is free” by itself clears every
+other charge.** It is scoped only to the Azure bandwidth/data-transfer meter.
+It does not address, and does not zero out:
+- VNet Peering, Private Link/Private Endpoint, NAT Gateway, or Azure Firewall
+  public-IP processing fees — each is a **separate billed product**, same-region
+  or not.
+- Whether traffic stays on Microsoft's backbone inside the region or traverses
+  a path a different meter counts as off-region — the FAQ states an outcome,
+  not the routing mechanism producing it.
+- A **custom (BYOIP) public IP**, explicitly carved out above as Internet egress
+  regardless of same-region placement.
+- Any destination whose **actual Azure billing region differs from the origin
+  VM's region** — a SaaS product's name, DNS hostname, or tenant location does
+  not establish its backend region. An unverified-region SaaS is out of scope
+  for a same-region claim until its region is independently confirmed.
+
+**Tenant/subscription boundary, explicitly:** neither source states a
+tenant-boundary rule. Applying the same-region rule across an Entra tenant or
+subscription boundary is this lab's **interpretation of an unqualified
+published rule**, not a quote of an explicit cross-tenant statement.
+
+**EXPERIMENTAL VERDICT: INCONCLUSIVE.** Unchanged from the dated results above:
+the 400 GB / 4-leg rerun passed transport on all legs, and the C-endpoint
+cross-region (`Intra Continent Data Transfer Out`) meter shows a real, nonzero
+charge (10.8746547754853965 × “1 GB” × USD 0.02 = USD 0.21749309550970793,
+17 October) — proving the billing pipeline *can* register a charge for a
+cross-region leg. The matching **same-region A/T CSV rows are still missing**
+(three Query attempts returned HTTP 429). **Absence of a same-region A/T row
+is not zero-rated proof** — it is missing data, not a measured zero.
+
+What would still be needed to move past INCONCLUSIVE: a mature, HTTP-200,
+multi-snapshot (≥6h apart) A/T Cost Details CSV covering the actual
+same-region transfer date with quantity/unit/rate present (the shape already
+obtained for C's cross-region leg), and a scale-confirmed same-region positive
+control whose reported quantity plausibly matches the transferred bytes.
+
+**Can a daily Cost Details CSV, by itself, prove which tenant hosts the SaaS
+endpoint? No.** The CSV reports only the caller's own billed meters/quantities;
+it carries no field identifying the counterparty's tenant, subscription, or
+hosting region. Third-party SaaS tenant/region attribution would require
+evidence outside this billing export, which is out of scope here.
+
+**Could a same-region public-IP pair be using an internal/Microsoft-backbone
+routing path instead of the public Internet, independent of billing? Unproved,
+not assumed.** No IMDS, NIC flow log, or packet capture was collected in this
+lab to confirm the actual forwarding path for the A/T legs; the billing outcome
+so far (no separate meter yet observed) does not by itself demonstrate the
+routing mechanism. This is a capture-path gap, not a “no” finding to rely on.
+
+**Scope note:** this section covers only the ordinary-public-IP, same-region,
+cross-tenant case already under test. PaaS-specific billing and any new
+deployment are deferred, per the bounded scope of this handoff.
+
+**Offline publication status — 18 October 2026, ~01:00Z:**
+**BILLING NOT COMPLETE**; no new billing or resource queries were made.
+Per the coordinator's handoff, the sole active read-only billing follow-up
+is **job 5**; old billing job 4 and cleanup job 3 are **STOPPED**.
+The next eligible cadence check is **18 October 2026 05:02:22.602927Z**,
+not permission to replenish an exhausted request budget. The original
+**22 October 2026 23:15:33Z hard stop** is unchanged. Scheduler state was
+not independently queried or changed by the publisher.
+
 ## Original core approval card (schedule subsequently reprioritized)
 
 Recommend the three-concurrent-VM staged core: two Sweden Central VMs and one
