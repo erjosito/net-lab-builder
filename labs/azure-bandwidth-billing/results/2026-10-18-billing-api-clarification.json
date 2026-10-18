@@ -1,0 +1,193 @@
+{
+  "schema": "sanitized-offline-billing-api-clarification-v1",
+  "classification": "OFFLINE_RESEARCH_NOT_NEW_BILLING_OBSERVATION",
+  "asOfUtc": "2026-10-18T08:45:00Z",
+  "asOfPrecision": "APPROXIMATE_DOCUMENTATION_REFRESH_NOT_REQUEST_TIME",
+  "researchVerifiedAtUtc": "2026-10-18T08:35:06.3758691Z",
+  "verdict": "INCONCLUSIVE",
+  "newCustomerHttpRequests": 0,
+  "newResearchHttpRequests": 0,
+  "billingIdentityReconciliationComplete": false,
+  "ingestionFinal": false,
+  "supportTicketOpened": false,
+  "externallyShared": false,
+  "conclusions": {
+    "query": {
+      "observedWorkflow": "Implemented and observed Query projection returns aggregate costs, not quantities, units or rates.",
+      "schema": "Aggregation name is a generic column-name string; Usage is equivalent to ActualCost.",
+      "maximumGroupings": 2,
+      "usageQuantityAggregationAcceptedForThisScope": "NOT_ESTABLISHED_BY_INSPECTED_DOCUMENTATION",
+      "unitOfMeasureGroupingAcceptedForThisScope": "NOT_ESTABLISHED_BY_INSPECTED_DOCUMENTATION",
+      "universalQuantityImpossibilityProven": false,
+      "sources": ["Q26"]
+    },
+    "legacyIdentity": {
+      "observation": "Two owned Bandwidth rows in the observed current response share service id/name and differ in payload.",
+      "topLevelIdUniqueFinancialLineGuarantee": "NOT_EXPLICIT_IN_INSPECTED_REFERENCE",
+      "azureContractViolationProven": false,
+      "separateChargesVersusAnomaly": "UNKNOWN",
+      "fileRecordUniquenessGuidance": "Cost Details, Exports and downloaded cost-details files; not automatically legacy Consumption JSON.",
+      "collectorConflictGuard": "PRESERVE_FAIL_CLOSED_conflicting_record_identity",
+      "automaticDeduplication": false,
+      "localHashesAreMicrosoftIssuedIdentity": false,
+      "sources": ["U24", "F"]
+    },
+    "offerSpecificPricing": {
+      "ea": "Subscription-path Consumption price sheet requires applicable EA agreement and access.",
+      "mcaMpa": "Cost Management price sheets require billing-profile scope and applicable billing access.",
+      "agreementAndAccessForT": "NOT_ESTABLISHED",
+      "aliasOrSuccessfulQueryEstablishesEligibility": false,
+      "meterGuidAloneEstablishesOfferPriceJoin": false,
+      "retail": "Undiscounted reference metadata; non-USD prices are budget references, not actual offer-price authority.",
+      "authoritativeTUnitAndPriceForDate": "UNKNOWN",
+      "unitConversionApplied": false,
+      "sources": ["E", "V", "RP"]
+    },
+    "T422Cause": "UNKNOWN",
+    "newProbeJustifiedByResearch": false
+  },
+  "redactedSupportClarificationPackage": {
+    "purpose": "Prepared locally for human review; no support escalation or external sharing performed.",
+    "publicEvidence": [
+      "2026-10-18-t-unit-provenance-021800.json",
+      "2026-10-18-detail-baseline-020010.json",
+      "2026-10-18-query-alternative-011707.json"
+    ],
+    "provenanceCheckCompletedAtUtc": "2026-10-18T02:21:56.745132+00:00",
+    "endpointTemplate": "GET https://management.azure.com/{redacted-scope}/providers/Microsoft.Consumption/usageDetails",
+    "apiVersion": "2024-08-01",
+    "filterVariant": "legacy-date",
+    "requestWindow": {
+      "fromUtc": "2026-10-15T00:00:00Z",
+      "toUtc": "2026-10-18T02:21:52.083429Z"
+    },
+    "metricParameter": "UNKNOWN_NOT_ESTABLISHED_BY_PUBLIC_RECORDS",
+    "expandParameter": "UNKNOWN_NOT_ESTABLISHED_BY_PUBLIC_RECORDS",
+    "pageIndex": "UNKNOWN_NOT_ESTABLISHED_BY_PUBLIC_RECORDS",
+    "arrayOrdinals": "UNKNOWN_NOT_ESTABLISHED_BY_PUBLIC_RECORDS",
+    "responseBodyDigest": "UNKNOWN_NOT_ESTABLISHED_BY_PUBLIC_RECORDS",
+    "sameResponseMembership": "Public provenance sidecar establishes both rows in the current page; exact page index/array ordinals are not published.",
+    "originalPrivateProvenance": "Available locally; not linked or reproduced here.",
+    "recordHashMeaning": "Existing published canonical source-record digests, not Microsoft-issued financial-line keys.",
+    "numericEncoding": "Exact strings preserved from existing public records; original JSON numeric token types are not asserted.",
+    "meterId": "0ab798ac-6d96-4ccc-89d1-0cc91dcd5e21",
+    "meterName": "Intra Continent Data Transfer Out",
+    "sourceKind": "legacy",
+    "rows": [
+      {
+        "serviceId": "<T_LEGACY_SERVICE_RECORD_1>",
+        "serviceName": "<T_LEGACY_SERVICE_NAME_1>",
+        "sourceRecordHash": "7cffe6e436a1a72c07051537a744b001029e819e796cdcee9d26d0d1c0aea6f0",
+        "date": "2026-10-17T00:00:00.0000000Z",
+        "quantity": "5.5879354E-8",
+        "unit": "1 TB",
+        "effectivePrice": "0.017329",
+        "unitPrice": "0",
+        "cost": "9.68333E-10",
+        "currency": "EUR",
+        "unitProvenance": {
+          "properties.unitOfMeasure": {"present": false, "value": null},
+          "properties.meterDetails.unitOfMeasure": {"present": true, "value": "1 TB"},
+          "properties.meterDetails.unit": {"present": false, "value": null},
+          "selectedField": "properties.meterDetails.unitOfMeasure"
+        },
+        "costSource": "properties.cost",
+        "currencySource": "properties.billingCurrency"
+      },
+      {
+        "serviceId": "<T_LEGACY_SERVICE_RECORD_1>",
+        "serviceName": "<T_LEGACY_SERVICE_NAME_1>",
+        "sourceRecordHash": "49a60b244b3cc2d2450cfb7ace0976bab665ae47a8d4b66657ed386f7cceb91b",
+        "date": "2026-10-17T00:00:00.0000000Z",
+        "quantity": "9.53027955070138",
+        "unit": "1 TB",
+        "effectivePrice": "0.017329",
+        "unitPrice": "0",
+        "cost": "0.165150214334104",
+        "currency": "EUR",
+        "unitProvenance": {
+          "properties.unitOfMeasure": {"present": false, "value": null},
+          "properties.meterDetails.unitOfMeasure": {"present": true, "value": "1 TB"},
+          "properties.meterDetails.unit": {"present": false, "value": null},
+          "selectedField": "properties.meterDetails.unitOfMeasure"
+        },
+        "costSource": "properties.cost",
+        "currencySource": "properties.billingCurrency"
+      }
+    ],
+    "independentQueryCorroboration": {
+      "source": "2026-10-18-query-alternative-011707.json",
+      "completedAtUtc": "2026-10-18T01:21:11.187291+00:00",
+      "endpointAlias": "T",
+      "day": "2026-10-17",
+      "meter": "Intra Continent Data Transfer Out",
+      "detailCostSum": "0.165150215302437",
+      "queryCost": "0.165150215302437",
+      "currency": "EUR",
+      "exactDecimalEquality": true,
+      "queryQuantity": null,
+      "queryUnit": null,
+      "queryRate": null,
+      "meaning": "Financial aggregation corroboration only; not identity, separate-charge, unit, credit-treatment or ingestion-finality proof."
+    },
+    "retailComparison": {
+      "provenance": "Existing public T provenance artifact and billing-evidence documentation, not a new retail request.",
+      "unit": "1 GB",
+      "eurReferencePrice": "0.0176",
+      "usdRetailPrice": "0.02",
+      "causeOfDifferenceFromNestedLegacyUnit": "UNKNOWN",
+      "actualOfferPriceOrUnitEstablished": false
+    },
+    "questionsForMicrosoft": [
+      "For legacy Consumption Usage Details at this API version, what is the expected granularity and uniqueness of top-level id/name within one response, and what authoritative financial-line key should be used?",
+      "Do the two same-ID/different-payload records represent separate charges or a service/data anomaly, and how should a collector reconcile them without losing or double-counting charges?",
+      "For this meter, actual offer and 2026-10-17 usage date, what authoritative quantity unit and applicable effective/unit-price source explain nested 1 TB, retail 1 GB, effectivePrice 0.017329 EUR and unitPrice 0?"
+    ]
+  },
+  "unchangedExperimentState": {
+    "applicationBytesTransferred": "400000000000",
+    "deletedResourceRoots": 21,
+    "transportAndCleanup": "PASS_PREVIOUSLY_VERIFIED_NOT_REFRESHED",
+    "C": {
+      "extractedAtUtc": "2026-10-18T08:15:52.451031Z",
+      "interRegionQuantity": "14.2374728210270405",
+      "unit": "1 GB",
+      "cost": "0.28474945642054081",
+      "currency": "USD",
+      "full100GBReconciliation": false
+    },
+    "A": "Four charged microquantity rows unchanged over six hours; not explicit zero-rated 100 GB or finality.",
+    "T": "Unit meaning and financial-line identity unresolved.",
+    "publishedComparisonNumber": 22,
+    "scheduleId": 5,
+    "scheduleChanged": false,
+    "hardStopUtc": "2026-10-22T23:15:33Z",
+    "billingFinal": false
+  },
+  "sources": {
+    "Q26": {
+      "url": "https://learn.microsoft.com/en-us/rest/api/cost-management/query/usage?view=rest-cost-management-2026-06-01",
+      "verifiedScope": "Generic aggregation column name; up to two groupings; Usage equivalent to ActualCost. Not an accepted quantity-column or unit-dimension proof."
+    },
+    "U24": {
+      "url": "https://learn.microsoft.com/en-us/rest/api/consumption/usage-details/list?view=rest-consumption-2024-08-01",
+      "verifiedScope": "Legacy top-level id/name are resource ID/name; nested meter unit and quantity fields documented. No explicit unique-financial-line guarantee."
+    },
+    "F": {
+      "url": "https://learn.microsoft.com/en-us/azure/cost-management-billing/automate/understand-usage-details-fields",
+      "verifiedScope": "Cost-details file fields and per-file-record uniqueness guidance; not a legacy JSON same-ID contract."
+    },
+    "E": {
+      "url": "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/migrate-cost-management-api",
+      "verifiedScope": "Agreement-specific price-sheet routes and offer-aware joins; subscription EA route is not universal agreement eligibility."
+    },
+    "V": {
+      "url": "https://learn.microsoft.com/en-us/azure/cost-management-billing/manage/ea-pricing",
+      "verifiedScope": "EA policy-dependent pricing access; MCA billing-profile roles and MPA partner roles required."
+    },
+    "RP": {
+      "url": "https://learn.microsoft.com/en-us/rest/api/cost-management/retail-prices/azure-retail-prices",
+      "verifiedScope": "Undiscounted retail prices; non-USD prices are budget references, not actual offer-price authority."
+    }
+  }
+}
