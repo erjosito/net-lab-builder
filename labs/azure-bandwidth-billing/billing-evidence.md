@@ -1,6 +1,91 @@
 # Billing extraction and reconciliation plan
 
-## Latest snapshot — 17 October 2026, 23:05Z
+## Latest snapshot — 18 October 2026, 01:25Z (offline refresh)
+
+**Transport PASS (four verified 100 GB legs / 400 GB); cleanup PASS (21
+owned roots); billing INCONCLUSIVE and still open.** Transport/cleanup
+evidence from #18 is unchanged, not newly observed. This section uses only
+the [01:20:25–01:21:11Z Query artifact](results/2026-10-18-query-alternative-011707.json)
+and [01:11:43–01:12:29Z manual CSV artifact](results/2026-10-18-manual-billing-011054.json).
+
+Four one-page ActualCost Queries succeeded with **four HTTP 200 responses /
+four requests**. All nine retained rows have exact canonical VM attribution;
+no duplicates, discarded or unattributed rows were reported. Request windows
+start **15 October 00:00Z** and end at individual **18 October 01:20Z**
+cutoffs, not end-of-day. These are actual returned daily rows, not inferred
+quantities:
+
+| Safe alias | Usage day (2026) | Actual returned meter | Query cost | Currency |
+|---|---|---|---:|---|
+| A | 10-16 | Intra Continent Data Transfer Out | 0.00000000111758708953857 | USD |
+| A | 10-16 | Standard Data Transfer Out | 0.000000870472751557827 | USD |
+| A | 10-17 | Intra Continent Data Transfer Out | 0.0000000044703483581543 | USD |
+| A | 10-17 | Standard Data Transfer Out | 0.000000503762625157833 | USD |
+| T | 10-17 | Intra Continent Data Transfer Out | 0.165150215302437 | EUR |
+| C | 10-17 | Intra Continent Data Transfer Out | 0.217493095509708 | USD |
+| C | 10-17 | Standard Data Transfer Out | 0.00000137361697852612 | USD |
+| historical-C | 10-15 | Intra Continent Data Transfer Out | 0.0000000480562448501587 | USD |
+| historical-C | 10-16 | Intra Continent Data Transfer Out | 0.0131025196611881 | USD |
+
+Exact decimal sums within this Query snapshot:
+**A USD 0.00000137982331216335287**,
+**T EUR 0.165150215302437**,
+**C USD 0.21749446912668652612**,
+**historical-C USD 0.0131025677174329501587**.
+Do not add currencies, aliases or repeated snapshots to reconcile traffic.
+Historical-C is the separate older C → B inventory, not fresh C. Its
+two-day total includes the 15 October microcost; it is not the single
+0.6551259830594063 “1 GB” CSV row's cost, nor a newly measured quantity/rate.
+
+**Meter distinction matters:** T's only observed row is Intra Continent Data
+Transfer Out. Although T produced both T → A same-region and T → C
+cross-region traffic, there is no separate same-region meter in these rows;
+the T total cannot be assigned to T → A. “Intra Continent” does not mean
+“same region.” A's observed microcosts likewise do not identify billing for
+the same-region 100 GB payload. All Query quantity/unit/rate fields are null;
+none is derived from costs or expected bytes. No-row days mean no rows
+observed, **not zero charges or proven absence of A usage**.
+
+The preceding manual check made **two CSV generation requests**:
+**A timed out (no response); T returned HTTP 422**. Neither produced a
+manifest, poll, download or financial row. The four subsequent Queries are
+part of that same bounded manual check: **2 + 4 = 6 of 6 requests, zero
+unused budget, zero retries**. The prior 23:02 collection's separate six
+requests remain unchanged. Public safe-header handling was fixed in #19;
+the later success does **not** prove `ClientType` caused the recovery, because
+wall-clock time also changed. Four HTTP-200 responses returned no valid
+retry hints; earlier unknown cooldowns / T's 422 remain unknown, not zero.
+
+The fresh-C **23:01:56Z on 17 October CSV** below remains the last actual
+quantity/rate snapshot: Intra Continent **10.8746547754853965 “1 GB” ×
+USD 0.02 = USD 0.21749309550970793**, plus a distinct tiny Standard
+meter. It is partial relative to the fresh 100 GB C → T leg, not a new CSV
+or a same-time Query/CSV comparison. Query rounding differs at the last
+digits; do not silently replace either source's precision. No fresh A/T CSV,
+ingestion watermark or full 400 GB reconciliation exists.
+
+**Remaining evidence / next target:** final verification ended
+**17 October 22:15:17.236880Z**, about three hours before the Query snapshot.
+Obtain mature comparable per-day/per-meter A/T/C quantity, unit, effective
+rate and currency evidence, preserving historical-C separately. Compare at
+least two stable snapshots **six hours apart**; for the **01:21:11.187291Z**
+Query baseline, earliest qualifying repeat is **18 October 07:21:11.187291Z**.
+Job 5's saved **~05:02:22Z** suggestion is not independently verified due
+time and is less than six hours after this baseline: useful as another
+baseline, **not** a qualifying six-hour-stable Query comparison. No job is
+created, stopped or rescheduled here; hard stop remains
+**22 October 23:15:33Z**. Do not recreate resources or add traffic.
+
+Documented policy says transfers between Azure services in the same region
+are free, with the BYOIP/custom-IP-prefix Internet-egress exception.
+Cross-tenant applicability is an interpretation of that unqualified policy,
+not explicit cross-tenant wording; separate service fees are outside it.
+See [policy sources/scope](README.md#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress).
+This offline evidence refresh made no Azure/billing/authentication,
+infrastructure, source-code or schedule operations; Git publication is separate. **Collection success is not billing
+completion or ingestion finality.**
+
+## Superseded snapshot — 17 October 2026, 23:05Z
 
 **Transport PASS: 400,000,000,000 application bytes; cleanup PASS;
 full billing reconciliation INCONCLUSIVE.** Each A → T, T → A, C → T and
@@ -49,6 +134,10 @@ Do not recreate assets or add traffic to obtain late usage records.
 This document refresh made **zero Azure/billing calls** or schedule changes.
 
 ## Policy handoff cross-reference, 2026-10-18
+
+Historical cross-reference: the experimental missing-data description below
+predates the successful 01:20Z Queries and is superseded by the latest snapshot.
+The policy interpretation remains separate from the experimental verdict.
 
 Documented-policy-vs-experimental-verdict split re-verified this session (no
 Azure/billing/infra/auth calls); full text in

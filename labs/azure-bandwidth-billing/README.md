@@ -1,6 +1,67 @@
 # Azure public-endpoint bandwidth billing
 
-## Executive summary — 17 October 2026, 23:05Z
+## Executive summary — 18 October 2026, 01:25Z (offline refresh)
+
+**Transport PASS (400 GB); cleanup PASS; billing INCONCLUSIVE.**
+The [new actual Query collection](results/2026-10-18-query-alternative-011707.json)
+completed **01:20:25–01:21:11Z on 18 October**: four Queries, **four HTTP 200
+responses / four requests**, nine exact-canonical-VM daily meter rows:
+
+| Safe endpoint alias | Returned usage days | Rows | Query cost total | Currency |
+|---|---|---:|---:|---|
+| A (fresh, Sweden Central) | 16–17 October | 4 | 0.00000137982331216335287 | USD |
+| T (fresh, Sweden Central) | 17 October | 1 | 0.165150215302437 | EUR |
+| C (fresh, North Europe) | 17 October | 2 | 0.21749446912668652612 | USD |
+| historical-C (older C → B control) | 15–16 October | 2 | 0.0131025677174329501587 | USD |
+
+These totals combine only returned rows within each alias/currency, not
+currencies, experiments or refreshes. See the
+[exact day/meter split](billing-evidence.md#latest-snapshot--18-october-2026-0125z-offline-refresh).
+T's only returned meter is **Intra Continent Data Transfer Out**, not a
+same-region meter; T sent both cross-region and same-region traffic, so its
+endpoint total cannot prove a charge for T → A. A's tiny positive costs do
+not establish the same-region 100 GB leg's billing treatment. Queries report
+**cost only: no quantity, unit or rate**; missing rows are not measured zeros.
+Historical-C's two-day aggregate is **not** the old single-day
+0.6551259830594063 “1 GB” row or its single-row cost: it includes the
+15 October microcost as well.
+
+The [earlier manual CSV attempts](results/2026-10-18-manual-billing-011054.json)
+ended with **A timeout / T HTTP 422**, no CSV downloads. Accounting remains
+**six manual requests total: two CSV generation attempts + four Queries**,
+zero retries, no unused budget; this did not reset the budget. The older
+23:02 check's separate six-request counter is unchanged. The public collector
+safe-header fix was published in #19; changed `ClientType` is **not proven causal**
+for the later Query success because wall-clock time also changed. No valid
+retry hint was supplied; unknown cooldowns are not zero.
+
+The last fresh-C CSV is still the **17 October 23:01:56Z** extraction:
+**10.8746547754853965 reported “1 GB” × USD 0.02 =
+USD 0.21749309550970793** on Intra Continent Data Transfer Out. It is a
+partial cross-region observation, **not a new CSV or a full 100 GB match**.
+No fresh A/T quantity/rate evidence or ingestion watermark was obtained.
+Final payload verification ended **17 October 22:15:17Z**, only about three
+hours before these Queries. The four 100 GB legs / 400 GB verification and
+21-root cleanup PASS from #18 stand; **billing work remains open**.
+
+**Next evidence target:** mature, comparable, meter/day/currency-separated
+snapshots with quantities, units and rates, at least **six hours apart**,
+reconciling fresh A/T/C and the distinct historical control. Using the
+01:21:11.187291Z Query completion as baseline, the earliest six-hour repeat is
+**18 October 07:21:11.187291Z**. Job 5's saved **~05:02Z** cadence suggestion
+(actual due unverified) can collect another baseline, but cannot establish
+six-hour stability against 01:21Z. No scheduling change is made here; the
+existing **22 October 23:15:33Z hard stop** remains.
+
+**Policy is separate from invoice proof:** the documented rule says transfers
+between Azure services in the same Azure region are free; explicit cross-tenant
+wording is absent, so applying it across tenants remains an interpretation.
+BYOIP/custom-prefix traffic has an explicit Internet-egress exception; other
+service processing fees are separate. See the [policy sources and scope](#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress).
+The evidence refresh used local artifacts only: no Azure/authentication,
+resource, source-code or schedule operations. Git publication is separate.
+
+## Superseded executive summary — 17 October 2026, 23:05Z
 
 **Transport PASS; cleanup PASS; full billing reconciliation INCONCLUSIVE.**
 The larger public-IP rerun completed **400,000,000,000 application bytes**:
@@ -247,6 +308,11 @@ egress rate. Same-region SaaS is therefore not blanket-free: determine destinati
 IP ownership, regional placement and service architecture first.
 
 ## Policy handoff, 2026-10-18: same-region, cross-tenant public-IP egress
+
+**Historical policy handoff:** its experimental snapshot and next-step wording
+below are superseded by the 01:25Z executive summary and current
+[billing evidence](billing-evidence.md). Its dated source-verification record
+is preserved; no source was re-fetched during the offline 01:25Z refresh.
 
 Bounded re-verification only; no Azure/billing/infra/auth calls made for this
 section. Pure addition — no existing dated text above is altered.
