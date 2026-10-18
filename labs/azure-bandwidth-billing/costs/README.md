@@ -55,6 +55,27 @@ The [same-region policy interpretation](../README.md#policy-handoff-2026-10-18-s
 still lacks explicit cross-tenant wording and excludes the BYOIP
 Internet-egress exception and separate product/service charges.
 
+### Offline API clarification — 18 October 2026, ~08:45Z
+
+The [clarification and redacted two-row support package](../results/2026-10-18-billing-api-clarification.json)
+is **OFFLINE_RESEARCH_NOT_NEW_BILLING_OBSERVATION**, not another collection.
+The [Query schema](https://learn.microsoft.com/en-us/rest/api/cost-management/query/usage?view=rest-cost-management-2026-06-01)
+allows generic aggregation names and at most **two groupings**; `Usage` is
+equivalent to `ActualCost`, not proof of quantities. The inspected references
+do not establish accepted `UsageQuantity` aggregation or `UnitOfMeasure`
+grouping for this scope. Our implemented and observed projection returns
+costs, not quantities; this is not a universal API impossibility claim.
+
+The [legacy Usage Details contract](https://learn.microsoft.com/en-us/rest/api/consumption/usage-details/list?view=rest-consumption-2024-08-01)
+does not explicitly guarantee top-level `id/name` uniqueness per financial
+line. The observed same-ID/different-payload pair remains unresolved, not a
+proven contract violation. Keep the conflict guard; neither automatic deduplication
+nor local hashes as Microsoft-issued identity is justified. Agreement-specific
+price sheets require established agreement/access, not an MSDN alias or Query
+success. See [scope, pricing restrictions and official sources](../billing-evidence.md#offline-billing-api-clarification--18-october-2026-0845z).
+No further probes or support submission were made. Billing remains open;
+published comparison **#22**, schedule **5**, and its original hard stop are unchanged.
+
 ## Superseded actual cost answer — 18 October 2026, 02:25Z (offline refresh)
 
 **Transport/cleanup PASS; billing INCONCLUSIVE, still open.** The
@@ -379,7 +400,8 @@ Both commands below are complete, directly callable workflows for the existing
 historical C control. Run them from the repository root. Deleted resources are
 fine: the context's saved resource group and deployment inventory identify the
 historical records. Each run uses new filenames; do not reuse a snapshot name.
-Query returns money, not quantity/unit/rate; use the CSV for the latter.
+This workflow's Query projection returns money, not quantity/unit/rate;
+use the detailed CSV for those fields when available.
 
 ```powershell
 $ctxPath = 'labs\azure-bandwidth-billing\private\control-context.private.json'
@@ -503,7 +525,8 @@ contexts; it is deliberately not evidence that actual test traffic is free.
 
 Columns are mapped by **name**, not fixed position; RG, UsageDate, currency and
 cost must be verifiable before any aggregate rows are saved. No UsageQuantity
-sum is requested: it could mix GB, hours and operations. Details retain decimal
+sum is requested; support for that aggregation is not established by the
+inspected documentation, and mixed units must never be summed. Details retain decimal
 quantity, raw unit, effective/unit price (null if missing), meter, currency,
 cost, actual usage day and private resource identity. Never infer price=0 from
 missing fields or cost=0 from credits/free tier. 5 GiB is 5.36870912 decimal GB.
@@ -515,8 +538,10 @@ diagnosis does not reconcile service identities or make extraction COMPLETE.
 For the exact inter-region meter checked, the unauthenticated
 [Retail Prices API](https://learn.microsoft.com/en-us/rest/api/cost-management/retail-prices/azure-retail-prices)
 reported `1 GB`, while retained normalized legacy details reported `1 TB`.
-Original raw unit fields were not retained, so their source/precedence cannot
-be independently revalidated. This discrepancy is not proof of a billing bug
+The later [public provenance check](../results/2026-10-18-t-unit-provenance-021800.json)
+directly establishes nested `properties.meterDetails.unitOfMeasure = "1 TB"`,
+with outer `properties.unitOfMeasure` and nested `meterDetails.unit` absent.
+No projection-precedence bug is proven. This discrepancy is not proof of a billing bug
 or a conversion factor. Preserve reported quantity, unit, effectivePrice and
 unitPrice; public retail prices do not replace customer billing rates.
 An exact daily cost sum matching Query corroborates financial aggregation,

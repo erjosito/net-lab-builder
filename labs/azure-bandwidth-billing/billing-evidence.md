@@ -479,6 +479,57 @@ it intentionally does not retain full raw rows containing opaque metadata.
 Use placeholders resolved in the private run map; no subscription IDs in tracked
 artifacts. ARM host is `https://management.azure.com`.
 
+### Offline billing API clarification — 18 October 2026, ~08:45Z
+
+The [offline clarification artifact](results/2026-10-18-billing-api-clarification.json)
+includes the minimal redacted T pair and precise questions for Microsoft;
+it is **OFFLINE_RESEARCH_NOT_NEW_BILLING_OBSERVATION**, not a support ticket
+or a fresh collection. Existing public row hashes, raw-field provenance and
+the exact independent Query cost comparison are retained without new identity
+or unit conclusions.
+
+**Query:** the [official schema](https://learn.microsoft.com/en-us/rest/api/cost-management/query/usage?view=rest-cost-management-2026-06-01)
+permits generic aggregation column names and at most **two groupings**.
+`type: Usage` is equivalent to `ActualCost`, not a quantity switch.
+Neither generic strings nor aliases establish accepted `UsageQuantity`
+aggregation or `UnitOfMeasure` grouping. Those capabilities are **not
+documented in the inspected references for this scope**, not proven impossible
+throughout the API. Our implemented/observed projection supplies aggregate
+costs, not quantities or units; no speculative quantity probe is justified.
+
+**Identity:** the [legacy JSON reference](https://learn.microsoft.com/en-us/rest/api/consumption/usage-details/list?view=rest-consumption-2024-08-01)
+describes top-level `id/name` as resource ID/name, without an explicit
+unique-financial-line guarantee. The same-ID/different-payload pair is
+observed and unresolved, not a proven Azure contract violation.
+[Every-file-record-is-unique guidance](https://learn.microsoft.com/en-us/azure/cost-management-billing/automate/understand-usage-details-fields)
+applies to Cost Details/Exports/downloaded files, not automatically to this
+legacy JSON collision. Keep `conflicting_record_identity` fail-closed:
+do not deduplicate automatically, admit the pair as verified totals, or call
+local payload hashes Microsoft-issued billing identity. Exact cost agreement
+corroborates money only, not separate-charge identity or unit meaning.
+
+**Pricing/access:** [agreement-specific price-sheet guidance](https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/migrate-cost-management-api)
+associates subscription Consumption price sheets with EA and billing-profile
+price sheets with MCA/MPA. [Pricing access guidance](https://learn.microsoft.com/en-us/azure/cost-management-billing/manage/ea-pricing)
+requires the applicable billing roles/policies; MCA needs billing-profile
+owner, contributor, reader or invoice manager, and MPA needs partner Admin
+Agent or billing admin. An MSDN alias, subscription resource role or successful
+Query does not establish agreement or price-sheet eligibility/access.
+Meter GUID alone is not an offer/date/currency price join.
+[Retail metadata](https://learn.microsoft.com/en-us/rest/api/cost-management/retail-prices/azure-retail-prices)
+is undiscounted; non-USD prices are reference estimates, not T's actual offer
+price/unit authority. Preserve raw `1 TB` and retail `1 GB` separately;
+no conversion or offer/credit inference follows.
+
+T's asynchronous **422 cause remains UNKNOWN**. No undocumented backdoor
+probe, alternate report request or price-sheet scan is authorized by this
+research. No support ticket was opened or artifact shared externally.
+The **400 GB / 21-root deletion PASS**, C's **08:15Z 14.2374728210270405
+`1 GB` / USD 0.28474945642054081** partial subtotal, A's four unchanged
+microquantity rows over six hours (not explicit zero), unresolved T, and
+published comparison **#22** remain unchanged. Billing stays INCONCLUSIVE;
+schedule **5** and **22 October 23:15:33Z** hard stop continue unchanged.
+
 ### A. Cost Management Query: aggregate fallback
 
 `POST /subscriptions/{sub}/providers/Microsoft.CostManagement/query?api-version=2023-11-01`
@@ -511,10 +562,13 @@ HTTP 400**. The illustrative ResourceId grouping above is not the implemented
 collector request or a newly validated dimension. At collection, discover
 supported grouping/aggregation dimensions using the API contract/dimensions
 endpoint; if `Meter` is unavailable use supported meter category/subcategory.
-Honor Query's group-count limits; run separately filtered queries to refine.
-Do not assume Query exposes MeterId, quantity, unit or effective price. If
-`UsageQuantity` aggregation is supported, request only a single compatible
-meter/unit; never sum mixed units. Parse `properties.columns` by **name**, not
+Honor Query's **at-most-two-groupings** limit; separately filtered requests
+still need independent authorization. Do not assume Query exposes MeterId,
+quantity, unit or effective price. Accepted `UsageQuantity` aggregation and
+`UnitOfMeasure` grouping are not established by the inspected documentation;
+generic schema strings are not evidence of support. If separately established
+for an authorized workflow, quantity aggregation must use compatible meter/units,
+never mixed units. Parse `properties.columns` by **name**, not
 positional assumptions. Persist column definitions and currency with rows.
 Follow `properties.nextLink` until null, preserving POST/body semantics required
 by the Query API. Empty rows do not prove no metering.
@@ -571,8 +625,10 @@ inventory and RG, and reject ambiguous attribution. Set explicit page, elapsed
 and row-processing bounds. If a nextLink remains at any limit, mark the snapshot
 incomplete and billing INCONCLUSIVE; never silently treat bounded truncation as
 complete collection.
-If meter expansion lacks name/rate, resolve MeterId against authorized price
-sheet/rate card and keep provenance. Public Retail API is a comparison, not
+If meter expansion lacks name/rate, use an authorized price sheet/rate card
+only after agreement, offer/date/currency matching and access are established;
+an alias or Query success does not establish them. Keep provenance.
+Public Retail API is a comparison, not
 proof of an account's effective price. Never guess missing price as zero.
 
 ## Required normalized fields
