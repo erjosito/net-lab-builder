@@ -181,6 +181,11 @@ Windows uses the installed CLI's Python entry point with argv, not `az.cmd`
 shell quoting. WSL dispatch runs the same source using Linux `python3` and Linux
 `az`, with a bounded GNU `timeout` process group. Tokens never cross profiles.
 No login, account switching, configuration, extension or provider changes.
+Only Cost Management **Query** requests (including continuations/probes) send
+`ClientType: GitHubCopilotForAzure` through the existing authenticated HTTP
+adapter. Consumption, report generation/polling and SAS downloads do not send
+that header. Native and WSL execute the same implementation. This identifier
+does **not** establish quota recovery or authorize retrying an existing 429.
 
 HTTP socket timeout <=20s with guard/deadline checks between bounded reads;
 CLI <=15s. Query defaults to 75s; Cost Details defaults to 300s. The explicit
@@ -193,6 +198,52 @@ for any command. Explicit report retries honor the longest known delay only
 when it fits the remaining deadline. Report generation is always attempted
 once, even when retries are enabled. 429/403 and other failures are never empty
 success or a trigger to log in, switch accounts or fall back to another API.
+
+Response diagnostics retain optional `responseMetadata` in each `http` record
+and on terminal HTTP failures in the JSON/summary. It contains local UTC
+`receivedAtUtc`, allowlisted `safeHeaders`, `retryAfterSeconds`,
+`suggestedRetryAtUtc`, and `retrySource` (`known` or `unknown`). The longest
+valid, finite, nonnegative hint wins across integer `Retry-After`, HTTP-date
+`Retry-After`, and all
+`x-ms-ratelimit-microsoft.costmanagement-*-retry-after` headers. Dates are
+normalized only after complete HTTP-date syntax validation (IMF-fixdate or
+obsolete RFC 850/asctime forms); trailing or combined values are rejected.
+RFC 850 two-digit years use the receipt's aware UTC instant and HTTP's rolling
+50-year window, not the email parser's fixed century pivot. Dates more than
+50 years ahead resolve to the most recent past year with those two digits.
+Past HTTP dates are unknown, not permission for an immediate retry; explicit
+integer `0` remains valid. Invalid/missing/nonfinite hints are ignored; when
+no valid hint remains, they produce null delay/time and `unknown`, **not an invented 30-second Query
+cooldown**. A finite delay beyond the UTC datetime range remains `known` with
+its full delay and a null suggested instant; it never lets a shorter hint win.
+Quota/usage/remaining-request counters are not retry delays.
+The 30-second minimum applies only to successful pending-report polling.
+
+Only validated retry hints, normalized response `Date`, and UUID-shaped
+`request-id`, `x-ms-request-id`, `x-ms-correlation-request-id` values survive
+the header allowlist. Location, signed operation `t/c/s/h`, SAS, credentials,
+cookies and arbitrary headers are never persisted or printed. Raw HTTP errors
+and `az --debug` output are not used. Query/Consumption request failures now
+also save an INCOMPLETE private JSON with any earlier filtered rows and HTTP
+history; stdout keeps its existing `ERROR` fields and exit 2. Report failures
+keep their existing INCOMPLETE/exit-3 contract.
+
+`httpRequests` and per-operation `httpRequestCounts` count HTTP attempts,
+including retries and failures, not usage records. Counts distinguish `query`,
+`consumption`, `generation`, `poll`, and `download`; `http` records only
+responses actually received. Existing `pages`/`polls` count calls that returned
+successfully, and `blobsDownloaded` counts fully processed blobs, so consult
+the attempt counts for budgets. A retried poll can consume multiple HTTP
+attempts without adding usage or downloaded blobs.
+
+The suggested retry instant is advisory, not a persistent cross-command rate
+limiter, evidence of which shared quota bucket was exhausted, or permission to
+ignore an existing collection cadence/lease/request budget. Operators must
+honor both the server hint and their later existing cadence gate across
+invocations. A missing hint gives no proven server cooldown. An RG dataset
+filter does not create a separate subscription-level Query quota; changing
+ClientType or successfully calling Cost Details does not prove Query recovery.
+
 Redirects are rejected. Continuations must contain no raw whitespace/control
 characters and must match HTTPS ARM, exact subscription
 and API operation path/version; Query repeats POST with the original body,
@@ -374,7 +425,8 @@ files. A COMPLETE empty extraction writes an explicit header-only CSV and zero
 retained records, **not billing-zero proof**. An INCOMPLETE report exits 3 and
 writes only its normalized diagnostic JSON, not a misleading completed CSV.
 Input/auth/transport setup errors exit 2. Stdout contains sanitized summary
-counts/status only, never resource IDs, tokens, Location or SAS URLs.
+counts/status and optional allowlisted response metadata, never resource IDs,
+tokens, Location or SAS URLs.
 
 Dates 15 and 16 are retained inclusively locally. The report API's end-date
 inclusivity remains **unknown**: the script does not shift its end into a future

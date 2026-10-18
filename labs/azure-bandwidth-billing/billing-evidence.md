@@ -48,6 +48,19 @@ continues only to its original **22 October 23:15:33Z hard stop**.
 Do not recreate assets or add traffic to obtain late usage records.
 This document refresh made **zero Azure/billing calls** or schedule changes.
 
+## Policy handoff cross-reference, 2026-10-18
+
+Documented-policy-vs-experimental-verdict split re-verified this session (no
+Azure/billing/infra/auth calls); full text in
+[README.md](README.md#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress).
+Summary only: the Bandwidth pricing FAQ and BYOIP/custom-IP-prefix pricing page
+were re-checked and still read as before; neither mentions tenant/subscription
+boundaries, so cross-tenant applicability remains this lab's interpretation of
+an unqualified rule, not an explicit statement. The experimental verdict is
+still **INCONCLUSIVE**: same-region A/T CSV rows remain missing, and a missing
+row is not zero-rated proof. This is a pointer only — no evidence values below
+are changed.
+
 ## Historical evidence and reconciliation design
 
 Reconciliation design plus [executable collectors and tested API matrix](costs/README.md).

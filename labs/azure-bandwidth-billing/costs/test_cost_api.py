@@ -1,7 +1,9 @@
 import argparse
 import copy
 import csv
+import datetime as dt
 from decimal import Decimal
+from email.message import Message
 import io
 import json
 import unittest
@@ -37,6 +39,225 @@ def args(command="details", pages=3):
     return argparse.Namespace(command=command, resource_group=RG, start="2026-10-14",
                               end="2026-10-14", grouping="MeterId", max_pages=pages,
                               filter_variant="legacy-date", literal_keys=False)
+
+
+class RetryMetadataTests(unittest.TestCase):
+    def setUp(self):
+        self.now = dt.datetime(2026, 10, 18, tzinfo=dt.timezone.utc)
+        now = self.now
+
+        class FixedDatetime(dt.datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return now
+
+        self.clock = patch("cost_api.dt.datetime", FixedDatetime)
+        self.clock.start()
+        self.addCleanup(self.clock.stop)
+
+    def test_all_cost_management_scopes_choose_longest_not_usage_counters(self):
+        headers = {"Retry-After": "12",
+                   "x-ms-ratelimit-microsoft.costmanagement-qpu-retry-after": "60",
+                   "X-MS-RATELIMIT-MICROSOFT.COSTMANAGEMENT-ENTITY-RETRY-AFTER": "30",
+                   "x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after": "90",
+                   "x-ms-ratelimit-microsoft.costmanagement-clienttype-retry-after": "120",
+                   "x-ms-ratelimit-microsoft.costmanagement-qpu-consumed": "999999",
+                   "x-ms-ratelimit-remaining-tenant-reads": "999999"}
+        metadata = api.response_metadata(headers)
+        self.assertEqual(api.retry_seconds(headers), 120)
+        self.assertEqual(metadata["retryAfterSeconds"], 120)
+        self.assertEqual(metadata["retrySource"], "known")
+        self.assertEqual(metadata["suggestedRetryAtUtc"], "2026-10-18T00:02:00+00:00")
+        self.assertEqual(len(metadata["safeHeaders"]), 5)
+
+    def test_http_date_and_delta_compare_at_one_receipt_instant(self):
+        headers = {"Retry-After": "Sun, 18 Oct 2026 00:03:00 GMT",
+                   "x-ms-ratelimit-microsoft.costmanagement-entity-retry-after": "120"}
+        metadata = api.response_metadata(headers)
+        self.assertEqual(metadata["retryAfterSeconds"], 180)
+        self.assertEqual(metadata["receivedAtUtc"], self.now.isoformat())
+        self.assertEqual(metadata["suggestedRetryAtUtc"], "2026-10-18T00:03:00+00:00")
+        headers["Retry-After"] = "Sat, 17 Oct 2026 23:59:00 GMT"
+        self.assertEqual(api.retry_seconds(headers), 120)
+        self.assertIsNone(api.retry_seconds({"Retry-After": headers["Retry-After"]}))
+
+    def test_complete_http_date_formats_and_invalid_suffixes(self):
+        for value in ("Sun, 18 Oct 2026 00:03:00 GMT",
+                      "Sunday, 18-Oct-26 00:03:00 GMT", "Sun Oct 18 00:03:00 2026"):
+            with self.subTest(value=value):
+                self.assertEqual(api.retry_seconds({"Retry-After": value}), 180)
+                for suffix in ("junk", " junk", " Sun, 18 Oct 2026 01:00:00 GMT", ", 600"):
+                    metadata = api.response_metadata({"Retry-After": value + suffix})
+                    self.assertEqual(metadata["retrySource"], "unknown")
+                    self.assertIsNone(metadata["retryAfterSeconds"])
+                    self.assertIsNone(metadata["suggestedRetryAtUtc"])
+                    self.assertEqual(metadata["safeHeaders"], {})
+
+    def test_past_date_is_unknown_but_mixed_valid_scopes_choose_longest(self):
+        for value in ("Sat, 17 Oct 2026 23:59:00 GMT",
+                      "Sun, 18 Oct 2026 00:03:00 GMT junk",
+                      "Sun, 18 Oct 2026 00:00:00 GMT Sun, 18 Oct 2026 01:00:00 GMT"):
+            with self.subTest(value=value):
+                headers = {"Retry-After": value}
+                metadata = api.response_metadata(headers)
+                self.assertEqual(metadata["retrySource"], "unknown")
+                self.assertIsNone(metadata["retryAfterSeconds"])
+                self.assertIsNone(metadata["suggestedRetryAtUtc"])
+                self.assertEqual(metadata["safeHeaders"], {})
+                headers.update({
+                    "x-ms-ratelimit-microsoft.costmanagement-entity-retry-after": "120",
+                    "x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after": "90",
+                    "x-ms-ratelimit-microsoft.costmanagement-qpu-retry-after": "-1"})
+                metadata = api.response_metadata(headers)
+                self.assertEqual(api.retry_seconds(headers), 120)
+                self.assertEqual(metadata["retryAfterSeconds"], 120)
+                self.assertEqual(metadata["retrySource"], "known")
+                self.assertEqual(metadata["suggestedRetryAtUtc"], "2026-10-18T00:02:00+00:00")
+                self.assertEqual(set(metadata["safeHeaders"]), {
+                    "x-ms-ratelimit-microsoft.costmanagement-entity-retry-after",
+                    "x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after"})
+
+    def test_rfc850_years_68_and_69_use_http_rolling_window(self):
+        for year in (2068, 2069):
+            target = dt.datetime(year, 10, 18, 0, 3, tzinfo=dt.timezone.utc)
+            for value in (target.strftime("%A, %d-%b-%y %H:%M:%S GMT"),
+                          target.strftime("%a, %d %b %Y %H:%M:%S GMT"),
+                          target.strftime("%a %b %d %H:%M:%S %Y")):
+                with self.subTest(value=value):
+                    metadata = api.response_metadata({
+                        "Retry-After": value,
+                        "x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after": "0"})
+                    self.assertEqual(metadata["retrySource"], "known")
+                    self.assertEqual(metadata["retryAfterSeconds"],
+                                     (target - self.now).total_seconds())
+                    self.assertEqual(metadata["suggestedRetryAtUtc"], target.isoformat())
+
+    def test_rfc850_fifty_year_boundary_uses_complete_utc_instant(self):
+        received = dt.datetime(2026, 10, 18, 13, 14, 15, tzinfo=dt.timezone.utc)
+        boundary = received.replace(year=2076)
+        for microsecond in (0, 500000):
+            instant = received.replace(microsecond=microsecond)
+            for seconds in (-1, 0, 1):
+                target = boundary + dt.timedelta(seconds=seconds)
+                value = target.strftime("%A, %d-%b-%y %H:%M:%S GMT")
+                for offset in (0, 330, -420):
+                    local = instant.astimezone(dt.timezone(dt.timedelta(minutes=offset)))
+                    with self.subTest(seconds=seconds, offset=offset, microsecond=microsecond):
+                        hints = api.retry_hints({"Retry-After": value}, local)
+                        if seconds > 0:
+                            self.assertEqual(hints, [])
+                        else:
+                            self.assertEqual(hints[0][2], (target - instant).total_seconds())
+
+    def test_rfc850_century_rollover_and_utc_year_boundary(self):
+        for instant, target in (
+                ((1999, 12, 31, 23, 59, 59), (2000, 2, 29, 12, 0, 0)),
+                ((2049, 12, 31, 23, 59, 59), (2099, 12, 31, 23, 59, 59)),
+                ((2050, 1, 1, 0, 0, 0), (2100, 1, 1, 0, 0, 0)),
+                ((2090, 10, 18, 12, 0, 0), (2110, 10, 18, 12, 0, 0)),
+                ((2099, 12, 31, 23, 59, 59), (2100, 1, 1, 0, 0, 0))):
+            received = dt.datetime(*instant, tzinfo=dt.timezone.utc)
+            future = dt.datetime(*target, tzinfo=dt.timezone.utc)
+            value = future.strftime("%A, %d-%b-%y %H:%M:%S GMT")
+            for offset in (0, 330, -420):
+                local = received.astimezone(dt.timezone(dt.timedelta(minutes=offset)))
+                with self.subTest(instant=instant, target=target, offset=offset):
+                    hints = api.retry_hints({"Retry-After": value}, local)
+                    self.assertEqual(hints[0][2], (future - received).total_seconds())
+        received = dt.datetime(2049, 12, 31, 23, 59, 59, tzinfo=dt.timezone.utc)
+        self.assertEqual(api.retry_hints(
+            {"Retry-After": "Friday, 01-Jan-00 00:00:00 GMT"}, received), [])
+
+    def test_rfc850_leap_day_boundary_and_invalid_resolved_century(self):
+        received = dt.datetime(2024, 2, 29, 12, tzinfo=dt.timezone.utc)
+        target = dt.datetime(2074, 2, 28, 12, tzinfo=dt.timezone.utc)
+        hints = api.retry_hints(
+            {"Retry-After": target.strftime("%A, %d-%b-%y %H:%M:%S GMT")}, received)
+        self.assertEqual(hints[0][2], (target - received).total_seconds())
+        for value, instant in (
+                ("Thursday, 01-Mar-74 12:00:00 GMT", received),
+                ("Monday, 29-Feb-00 12:00:00 GMT",
+                 dt.datetime(2050, 3, 1, 12, tzinfo=dt.timezone.utc))):
+            with self.subTest(value=value):
+                self.assertEqual(api.retry_hints({"Retry-After": value}, instant), [])
+
+    def test_http_date_naive_receipt_never_uses_machine_local_timezone(self):
+        for value in ("Sun, 18 Oct 2026 00:03:00 GMT",
+                      "Sunday, 18-Oct-26 00:03:00 GMT", "Sun Oct 18 00:03:00 2026"):
+            self.assertEqual(api.retry_hints(
+                {"Retry-After": value}, self.now.replace(tzinfo=None)), [])
+
+    def test_invalid_missing_nonfinite_or_negative_unknown(self):
+        values = (None, "", "SECRET", "-1", "nan", "inf", "1e309", "1e20",
+                  "Sun, 18 Oct 2026 00:03:00", "0.5")
+        for value in values:
+            with self.subTest(value=value):
+                metadata = api.response_metadata({"Retry-After": value})
+                self.assertIsNone(api.retry_seconds({"Retry-After": value}))
+                self.assertEqual(metadata["retrySource"], "unknown")
+                self.assertIsNone(metadata["suggestedRetryAtUtc"])
+                self.assertEqual(metadata["safeHeaders"], {})
+        for headers in (None, {}, {"x-ms-retry-after-ms": "1000"},
+                        {"x-ms-ratelimit-microsoft.costmanagement-qpu-consumed": "45"}):
+            with self.subTest(headers=headers):
+                metadata = api.response_metadata(headers)
+                self.assertIsNone(metadata["retryAfterSeconds"])
+                self.assertEqual(metadata["retrySource"], "unknown")
+
+    def test_valid_zero_and_finite_shared_fraction_are_known(self):
+        for headers, delay in (({"Retry-After": "0"}, 0), ({"Retry-After": " 60 "}, 60),
+                               ({"x-ms-ratelimit-microsoft.costmanagement-qpu-retry-after":
+                                 "0.25"}, .25)):
+            with self.subTest(headers=headers):
+                metadata = api.response_metadata(headers)
+                self.assertEqual(metadata["retryAfterSeconds"], delay)
+                self.assertEqual(metadata["retrySource"], "known")
+                self.assertEqual(dt.datetime.fromisoformat(metadata["suggestedRetryAtUtc"]),
+                                 self.now + dt.timedelta(seconds=delay))
+
+    def test_invalid_shared_hints_do_not_hide_other_valid_headers(self):
+        for value in ("-1", "NaN", "Infinity", "SECRET", None):
+            with self.subTest(value=value):
+                headers = {"Retry-After": "5",
+                           "x-ms-ratelimit-microsoft.costmanagement-qpu-retry-after": value}
+                self.assertEqual(api.retry_seconds(headers), 5)
+                self.assertEqual(api.response_metadata(headers)["safeHeaders"], {"retry-after": "5"})
+
+    def test_finite_unrepresentable_delay_cannot_shorten_known_cooldown(self):
+        headers = {"Retry-After": "60",
+                   "x-ms-ratelimit-microsoft.costmanagement-qpu-retry-after": "1e20"}
+        metadata = api.response_metadata(headers)
+        self.assertEqual(api.retry_seconds(headers), 1e20)
+        self.assertEqual(metadata["retryAfterSeconds"], 1e20)
+        self.assertEqual(metadata["retrySource"], "known")
+        self.assertIsNone(metadata["suggestedRetryAtUtc"])
+        headers = {"Retry-After": "100000000000000000000"}
+        self.assertEqual(api.retry_seconds(headers), 1e20)
+
+    def test_allowlist_excludes_opaque_urls_tokens_and_arbitrary_headers(self):
+        headers = {"Retry-After": "60", "Date": "Sun, 18 Oct 2026 00:00:00 GMT",
+                   "X-MS-Request-ID": SUB, "x-ms-correlation-request-id": TENANT,
+                   "request-id": SUB, "x-ms-client-request-id": "SECRET",
+                   "Location": REPORT_LOCATION, "Authorization": "Bearer TOKEN",
+                   "Set-Cookie": "SECRET", "x-ms-token": "SECRET",
+                   "t": "638962560000000000", "c": "OPAQUE", "s": "OPAQUE", "h": "OPAQUE",
+                   "SAS": "sig=SECRET", "x-ms-unknown-retry-after": "600",
+                   "x-ms-ratelimit-microsoft.costmanagement-qpu-retry-after": "sig=SECRET"}
+        safe = api.response_metadata(headers)["safeHeaders"]
+        self.assertEqual(set(safe), {"retry-after", "date", "x-ms-request-id",
+                                     "x-ms-correlation-request-id", "request-id"})
+        for secret in ("SECRET", "TOKEN", "OPAQUE", "638962560000000000", "sig=", "Location"):
+            self.assertNotIn(secret, json.dumps(api.response_metadata(headers)))
+        self.assertEqual(api.response_metadata({"x-ms-request-id": "TOKEN",
+                                                "Date": "SECRET"})["safeHeaders"], {})
+
+    def test_duplicate_retry_headers_keep_longest(self):
+        headers = Message()
+        headers["Retry-After"] = "60"
+        headers["Retry-After"] = "10"
+        metadata = api.response_metadata(headers)
+        self.assertEqual(metadata["retryAfterSeconds"], 60)
+        self.assertEqual(metadata["safeHeaders"], {"retry-after": "60"})
 
 
 class CollectorTests(unittest.TestCase):
