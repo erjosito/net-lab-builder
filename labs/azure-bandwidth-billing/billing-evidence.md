@@ -1,6 +1,102 @@
 # Billing extraction and reconciliation plan
 
-## Latest snapshot — 18 October 2026, 02:25Z (offline refresh)
+## Latest snapshot — 18 October 2026, 08:20Z (offline refresh)
+
+**Transport PASS (400 GB); cleanup PASS (21 owned roots deleted); billing
+INCONCLUSIVE and open.** The [separated comparison](results/2026-10-18-separated-detail-comparison-081000.json)
+contains fresh **COMPLETE C and A CSV extractions**, not final ingestion.
+The collection used exactly **6/6 HTTP requests: two generations, two polls,
+two downloads**. Source remained unchanged; the closed live owner's native
+inspection found no matching billing children at **08:19:14.3125252Z**.
+Those are collection receipts, not new observations made by this offline
+documentation refresh.
+
+### C: changed cross-region quantities, not a reconciled 100 GB
+
+The new extraction completed **18 October 08:15:52.451031Z**, versus
+**17 October 23:01:56.407133Z**: **33,236.043898 seconds
+(9h13m56.043898s)** apart. Compare actual **17 October** usage within each
+meter/unit/rate/currency, not cumulative snapshots added together:
+
+| C meter (all USD, reported `1 GB`) | Prior rows → new rows | Prior quantity → new quantity | Quantity delta | Prior cost → new cost | Cost delta |
+|---|---:|---|---:|---|---:|
+| Intra Continent Data Transfer Out; effective/unit price 0.02 | 3 → 4 | 10.8746547754853965 → 14.2374728210270405 | +3.3628180455416440 | 0.21749309550970793 → 0.28474945642054081 | +0.06725636091083288 |
+| Standard Data Transfer Out; effective/unit price 0.083 | 2 → 3 | 0.000016549602150917 → 0.000022615306079388 | +0.000006065703928471 | 0.0000013736169785261154 → 0.0000018770704045891761 | +0.0000005034534260630607 |
+
+Exactly **one bulk row and one Standard microquantity row** were added,
+not a full 100 GB bill. The seven-row C Bandwidth total is **USD
+0.2847513334909453991761**, versus **USD 0.2174944691266864561154**,
+a delta of **USD 0.0672568643642589430607**. This total includes Standard;
+only **USD 0.28474945642054081** is the distinct cross-region meter subtotal.
+“Intra Continent” is not “same region.” Preserve the reported unit and
+source precision; no binary/decimal conversion or byte attribution follows.
+
+All seven nonzero C Bandwidth rows are dated **17 October**. The old
+request covered 16–17 October and the new request 15–18 October; the
+comparison is by actual usage day, not a claim that absent days in either
+window are zeros. Echoed midnight report endpoints do not prove full-day
+coverage. The C report processed **1,536 rows**: **1,516 non-inventory +
+13 non-Bandwidth discarded in memory + 7 retained** (zero date discards).
+Exact inventory, pinned group, date and Bandwidth filtering preceded
+persistence; **zero raw off-scope rows were persisted**. The sanitized
+public result retains the seven scoped rows and filter counts, not the
+discarded rows, raw signed download URLs or credentials.
+
+### A: unchanged positive microcharges across a separated observation
+
+The **08:17:20.487233Z** extraction contains the same **four original
+16–17 October charged microquantity records** with an unchanged exact-Decimal
+row multiset. Its subtotal remains **USD 0.0000013798233121633528712**;
+quantity/cost deltas for each day/meter are zero. Positive microcharges are
+not “no charges at all,” and there is still no bulk-sized same-region
+100 GB line or explicit zero-rated 100 GB record.
+
+The source baseline CSV extraction completed **02:02:39.886655Z**;
+the operational baseline receipt completed **02:07:34.723864Z**.
+Elapsed to the new extraction is **22,480.600578 seconds
+(6h14m40.600578s)** from extraction, or **22,185.763369 seconds
+(6h09m45.763369s)** from receipt. Both exceed six hours. The older 02:25Z
+snapshot below retains its historical receipt-based timing, rather than
+being rewritten as though its operational receipt were an extraction.
+A processed **1,536 rows**: **1,518 non-inventory + 14 non-Bandwidth
+discarded in memory + 4 retained**, zero date discards and zero raw
+off-scope rows persisted.
+
+### Interpretation and remaining evidence
+
+**Billing-publication lag is empirically observed:** new 17 October usage
+appeared in the later C report more than nine hours after the prior report.
+That establishes a change between observations, not an exact arrival time,
+completion time, formal delivery SLA, or stable reconciliation. A's unchanged
+microquantity rows alone do not prove complete ingestion or same-region
+zero-rating, while C is explicitly still changing.
+
+Final verified transport ended **17 October 22:15:17.236880Z**, still
+under 24 hours before this collection. The **18 October 22:15:17.236880Z**
+24-hour aging checkpoint is not a formal ingestion watermark. Complete
+CSV extraction, six-hour separation and missing rows are each insufficient
+to close full 400 GB billing reconciliation.
+
+**No new Query or T collection occurred.** The 01:21Z Query baseline,
+including its costs, is not refreshed by these CSVs. T's genuine same-ID/
+different-payload records, raw legacy **`1 TB`** versus exact-meter retail
+**`1 GB`**, and correct fail-closed identity handling remain unresolved;
+asynchronous **HTTP 422 cause remains UNKNOWN**. Prior T cost corroboration
+is not new quantity, conversion, uniqueness or zero-price evidence.
+Historical-C remains a separate experiment.
+
+Only existing **schedule 5** remains active, with the unchanged original
+**22 October 23:15:33Z hard stop**. The handoff's **~14:19Z** suggestion is
+not an actual scheduler due time or new authority. No immediate retry,
+new traffic or recreated resources is warranted by this documentation.
+Published same-region policy still does not explicitly mention tenant
+boundaries; cross-tenant application remains an interpretation, subject to
+the [BYOIP Internet-egress exception and separate product/service charges](README.md#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress).
+Transport and deletion results are unchanged, not independently rechecked here.
+
+<a id="latest-snapshot--18-october-2026-0225z-offline-refresh"></a>
+
+## Superseded snapshot — 18 October 2026, 02:25Z (offline refresh)
 
 **Transport/cleanup PASS; billing INCONCLUSIVE and open.** The local
 [02:07:34.723864Z baseline](results/2026-10-18-detail-baseline-020010.json)
@@ -93,7 +189,6 @@ same-region zero-rating is established. Existing jobs and
 are needed. See the [public T reproduction](costs/README.md#t-date-bounded-consumption-reproduction)
 and [qualified policy interpretation](README.md#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress).
 
-
 ## Superseded snapshot — 18 October 2026, 01:25Z
 
 **Transport PASS (four verified 100 GB legs / 400 GB); cleanup PASS (21
@@ -162,8 +257,8 @@ ingestion watermark or full 400 GB reconciliation exists.
 **17 October 22:15:17.236880Z**, about three hours before the Query snapshot.
 Obtain mature comparable per-day/per-meter A/T/C quantity, unit, effective
 rate and currency evidence, preserving historical-C separately. Compare at
-least two stable snapshots **six hours apart**; for the **01:21:11.187291Z**
-Query baseline, earliest qualifying repeat is **18 October 07:21:11.187291Z**.
+least two stable snapshots **six hours apart**; for the **01:21:11Z**
+Query baseline, earliest qualifying repeat is **18 October 07:21:11Z**.
 Job 5's saved **~05:02:22Z** suggestion is not independently verified due
 time and is less than six hours after this baseline: useful as another
 baseline, **not** a qualifying six-hour-stable Query comparison. No job is
@@ -175,8 +270,8 @@ are free, with the BYOIP/custom-IP-prefix Internet-egress exception.
 Cross-tenant applicability is an interpretation of that unqualified policy,
 not explicit cross-tenant wording; separate service fees are outside it.
 See [policy sources/scope](README.md#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress).
-This offline evidence refresh made no Azure/billing/authentication,
-infrastructure, source-code or schedule operations; Git publication is separate. **Collection success is not billing
+This offline refresh made no Azure/billing/authentication, infrastructure,
+source-code, git or schedule operations. **Collection success is not billing
 completion or ingestion finality.**
 
 ## Superseded snapshot — 17 October 2026, 23:05Z

@@ -1,6 +1,61 @@
 # Reproducible Cost Analysis API deliverable
 
-## Latest actual cost answer — 18 October 2026, 02:25Z (offline refresh)
+## Latest actual cost answer — 18 October 2026, 08:20Z (offline refresh)
+
+**Collection PASS; billing INCONCLUSIVE and open.** The new
+[separated C/A Cost Details comparison](../results/2026-10-18-separated-detail-comparison-081000.json)
+uses **6/6 HTTP requests: two generations, two polls, two downloads**.
+Both CSV extractions are COMPLETE, not ingestion-final. Source is unchanged;
+the live owner closed with no matching native billing children observed
+at **08:19:14.3125252Z**. This documentation refresh used only local artifacts.
+
+**C changed over 9h13m56.043898s:** its **08:15:52.451031Z** extraction
+contains four 17 October Intra Continent rows totalling
+**14.2374728210270405 reported `1 GB`** at effective/unit price
+**USD 0.02**, cost **USD 0.28474945642054081**. The prior 23:01:56Z
+extraction had **10.8746547754853965 / USD 0.21749309550970793**:
+**+3.3628180455416440 units / +USD 0.06725636091083288**. One bulk row
+and one Standard microquantity row were added, not a full 100 GB bill.
+Three Standard rows subtotal **USD 0.0000018770704045891761**;
+all seven Bandwidth rows total **USD 0.2847513334909453991761**.
+Keep the distinct cross-region meter subtotal separate; no unit conversion
+or same-region charge attribution is justified.
+
+**A is unchanged, not zero-rated proof:** its **08:17:20.487233Z**
+extraction has the same four charged 16–17 October microquantity records,
+exact-Decimal multiset unchanged, subtotal **USD 0.0000013798233121633528712**.
+It is **6h14m40.600578s** after the actual **02:02:39.886655Z CSV
+extraction**, and **6h09m45.763369s** after the **02:07:34.723864Z
+operational receipt**. Both separations exceed six hours; neither establishes
+a bulk-sized same-region line, explicit zero-rated 100 GB record or finality.
+
+The C report processed **1,536 raw rows**, discarded 1,516 non-inventory
+and 13 non-Bandwidth rows in memory, and persisted only seven scoped rows;
+**zero raw off-scope rows persisted**. All nonzero C rows are dated
+17 October; absent days and echoed report endpoints do not establish
+explicit zeros or full-day coverage.
+See [exact deltas, A filter counts and limits](../billing-evidence.md#latest-snapshot--18-october-2026-0820z-offline-refresh).
+
+**Empirical billing-publication lag:** additional 17 October usage appeared
+more than nine hours after the prior C report. Its completion time cannot
+be inferred; no formal delivery SLA or stable reconciliation is established.
+Final transport verification at **17 October 22:15:17.236880Z** is still
+under 24 hours old; **18 October 22:15:17.236880Z** is an aging checkpoint,
+not a formal watermark. The **400 GB transport / 21-root deletion PASS**
+is unchanged.
+
+No Query or T request was made: **01:21Z Query costs are not refreshed**.
+T still has a genuine duplicate service ID, raw **`1 TB`** versus retail
+**`1 GB`**, and asynchronous **422 cause UNKNOWN**. Historical provenance
+and the bounded public reproduction below remain unchanged, not new evidence.
+Existing **schedule 5 only**, original **22 October 23:15:33Z hard stop**,
+and no-new-traffic requirement remain unchanged. Suggested **~14:19Z** is
+not a verified scheduler due time or collection authority.
+The [same-region policy interpretation](../README.md#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress)
+still lacks explicit cross-tenant wording and excludes the BYOIP
+Internet-egress exception and separate product/service charges.
+
+## Superseded actual cost answer — 18 October 2026, 02:25Z (offline refresh)
 
 **Transport/cleanup PASS; billing INCONCLUSIVE, still open.** The
 [02:07Z A CSV / T diagnostic baseline](../results/2026-10-18-detail-baseline-020010.json)
@@ -46,12 +101,12 @@ output name, use the existing flags below only when separately authorized:
 $ctxPath = '<ABSOLUTE_PRIVATE_T_CONTEXT_JSON>'
 $inventory = '<ABSOLUTE_PRIVATE_T_INVENTORY_JSON>'
 $ctx = Get-Content -LiteralPath $ctxPath -Raw | ConvertFrom-Json
-$outputPath = '<NEW_ABSOLUTE_PRIVATE_OUTPUT_JSON>'
+$stamp = [DateTimeOffset]::UtcNow.ToString('yyyyMMddTHHmmssfffffffZ')
 python labs\azure-bandwidth-billing\costs\cost_api.py details `
   --transport native --context $ctxPath --inventory $inventory --resource-group $ctx.resourceGroup `
   --start 2026-10-15 --end 2026-10-18 --filter-variant legacy-date `
   --max-pages 1 --max-http-requests 1 --max-retries 0 --max-seconds 75 `
-  --output $outputPath
+  --output "labs\azure-bandwidth-billing\private\reports\t-provenance-repro-$stamp.json"
 ```
 
 Run natively where T's already-pinned CLI credentials exist (the observed
@@ -65,7 +120,6 @@ No public diagnostic/bypass flag exists or is required for the ordinary
 reported path. Keep the failed report frozen; independent diagnostics do
 not repair identities or authorize another call. The current check's budget
 is exhausted; **this example was not executed**.
-
 
 ## Superseded actual cost answer — 17 October 2026, 23:05Z
 
@@ -455,6 +509,19 @@ cost, actual usage day and private resource identity. Never infer price=0 from
 missing fields or cost=0 from credits/free tier. 5 GiB is 5.36870912 decimal GB.
 Reconcile only like meter/unit/currency/day/rate groups.
 
+**Legacy Usage Details caveat (2026-10-18):** the default collector fails closed
+on `conflicting_record_identity`; retaining distinct original-record hashes for
+diagnosis does not reconcile service identities or make extraction COMPLETE.
+For the exact inter-region meter checked, the unauthenticated
+[Retail Prices API](https://learn.microsoft.com/en-us/rest/api/cost-management/retail-prices/azure-retail-prices)
+reported `1 GB`, while retained normalized legacy details reported `1 TB`.
+Original raw unit fields were not retained, so their source/precedence cannot
+be independently revalidated. This discrepancy is not proof of a billing bug
+or a conversion factor. Preserve reported quantity, unit, effectivePrice and
+unitPrice; public retail prices do not replace customer billing rates.
+An exact daily cost sum matching Query corroborates financial aggregation,
+not unit correctness, unique billing identities or final ingestion.
+
 ### Public Cost Details workflow and output contract
 
 `cost-details` makes one ActualCost generation POST using API `2025-03-01`,
@@ -673,9 +740,20 @@ The prior valid-past-date HTTP 200 responses demonstrate that explicit
 UsageStart/UsageEnd resolved those Consumption date errors, **not** blanket
 offer rejection or guaranteed detail availability.
 
-For the next authorized scheduled collection only, use T's canonical context
-and inventory with `details --filter-variant legacy-date`, a bounded past-date
-window, and explicit request/page/time limits. No collection is run here.
+For the next authorized scheduled collection only, this bounded legacy command
+uses T's canonical context and inventory (PowerShell, repository root):
+
+```powershell
+$ctxPath = 'labs\azure-bandwidth-billing\private\large-rerun-deploy-20261016T112400Z\aligned\t-context.private.json'
+$inventory = 'labs\azure-bandwidth-billing\private\large-rerun-deploy-20261016T112400Z\aligned\t-inventory.private.json'
+$ctx = Get-Content -LiteralPath $ctxPath -Raw | ConvertFrom-Json
+$stamp = [DateTimeOffset]::UtcNow.ToString('yyyyMMddTHHmmssfffffffZ')
+python labs\azure-bandwidth-billing\costs\cost_api.py details `
+  --transport native --context $ctxPath --inventory $inventory --resource-group $ctx.resourceGroup `
+  --start 2026-10-15 --end 2026-10-18 --filter-variant legacy-date `
+  --max-pages 1 --max-http-requests 1 --max-retries 0 --max-seconds 75 `
+  --output "labs\azure-bandwidth-billing\private\reports\t-legacy-details-$stamp.json"
+```
 
 Receipt-window predicates do not replace mandatory local exact inventory/RG
 and **actual usage-date** filtering before persistence; inspect normalized
