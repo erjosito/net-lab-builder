@@ -1,0 +1,383 @@
+{
+  "schemaVersion": 1,
+  "checkId": "separated-detail-20261018T081000Z",
+  "verdict": "INCONCLUSIVE",
+  "collectionOutcome": "PASS_COMPLETE_C_AND_A_EXTRACTION",
+  "createdAtUtc": "2026-10-18T08:19:14.630721+00:00",
+  "requestedPeriodUtc": {
+    "start": "2026-10-15",
+    "end": "2026-10-18"
+  },
+  "actualBillingHttpRequests": 6,
+  "maxBillingHttpRequests": 6,
+  "httpRequestCounts": {
+    "generation": 2,
+    "poll": 2,
+    "download": 2
+  },
+  "actualInfrastructureMutations": 0,
+  "sourceSha256": "2ab6c0ce494ac2851afbbe0abeb5d2ba912948ef1488c0201dc6ecf221e584fb",
+  "sourceUnchanged": true,
+  "snapshots": {
+    "C": {
+      "state": "COMPLETE",
+      "extractionComplete": true,
+      "ingestionFinal": false,
+      "generationRequestedUtc": "2026-10-18T08:14:56.058485+00:00",
+      "completedUtc": "2026-10-18T08:15:52.451031+00:00",
+      "baselineExtractionCompletedUtc": "2026-10-17T23:01:56.407133+00:00",
+      "extractionSeparationSeconds": "33236.043898",
+      "atLeastSixHoursSeparated": true,
+      "baselineReference": "private\\billing-refresh-20261017T230000Z\\c-cost-details.private.json",
+      "retainedRows": 7,
+      "rows": [
+        {
+          "resourceAlias": "C-vm",
+          "day": "2026-10-17",
+          "meterName": "Intra Continent Data Transfer Out",
+          "quantity": "3.445981875061989",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "unitPrice": "0.02",
+          "cost": "0.06891963750123978",
+          "currency": "USD"
+        },
+        {
+          "resourceAlias": "C-vm",
+          "day": "2026-10-17",
+          "meterName": "Standard Data Transfer Out",
+          "quantity": "0.000010422430932522",
+          "unit": "1 GB",
+          "effectivePrice": "0.083",
+          "unitPrice": "0.083",
+          "cost": "8.650617673993110000000E-7",
+          "currency": "USD"
+        },
+        {
+          "resourceAlias": "C-vm",
+          "day": "2026-10-17",
+          "meterName": "Intra Continent Data Transfer Out",
+          "quantity": "3.342501014471054",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "unitPrice": "0.02",
+          "cost": "0.06685002028942108",
+          "currency": "USD"
+        },
+        {
+          "resourceAlias": "C-vm",
+          "day": "2026-10-17",
+          "meterName": "Intra Continent Data Transfer Out",
+          "quantity": "3.362818045541644",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "unitPrice": "0.02",
+          "cost": "0.06725636091083288",
+          "currency": "USD"
+        },
+        {
+          "resourceAlias": "C-vm",
+          "day": "2026-10-17",
+          "meterName": "Standard Data Transfer Out",
+          "quantity": "0.000006065703928471",
+          "unit": "1 GB",
+          "effectivePrice": "0.083",
+          "unitPrice": "0.083",
+          "cost": "5.034534260630607000000E-7",
+          "currency": "USD"
+        },
+        {
+          "resourceAlias": "C-vm",
+          "day": "2026-10-17",
+          "meterName": "Standard Data Transfer Out",
+          "quantity": "0.000006127171218395",
+          "unit": "1 GB",
+          "effectivePrice": "0.083",
+          "unitPrice": "0.083",
+          "cost": "5.085552111268044000000E-7",
+          "currency": "USD"
+        },
+        {
+          "resourceAlias": "C-vm",
+          "day": "2026-10-17",
+          "meterName": "Intra Continent Data Transfer Out",
+          "quantity": "4.0861718859523535",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "unitPrice": "0.02",
+          "cost": "0.08172343771904707",
+          "currency": "USD"
+        }
+      ],
+      "dayMeterTotalsAndDeltas": [
+        {
+          "day": "2026-10-17",
+          "meterName": "Intra Continent Data Transfer Out",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "unitPrice": "0.02",
+          "currency": "USD",
+          "quantity": "14.2374728210270405",
+          "cost": "0.28474945642054081",
+          "rows": 4,
+          "baselineQuantity": "10.8746547754853965",
+          "baselineCost": "0.21749309550970793",
+          "deltaQuantity": "3.3628180455416440",
+          "deltaCost": "0.06725636091083288"
+        },
+        {
+          "day": "2026-10-17",
+          "meterName": "Standard Data Transfer Out",
+          "unit": "1 GB",
+          "effectivePrice": "0.083",
+          "unitPrice": "0.083",
+          "currency": "USD",
+          "quantity": "0.000022615306079388",
+          "cost": "0.0000018770704045891761000000",
+          "rows": 3,
+          "baselineQuantity": "0.000016549602150917",
+          "baselineCost": "0.0000013736169785261154000000",
+          "deltaQuantity": "0.000006065703928471",
+          "deltaCost": "5.034534260630607000000E-7"
+        }
+      ],
+      "costTotal": "0.2847513334909453991761000000",
+      "baselineCostTotal": "0.2174944691266864561154000000",
+      "deltaCostTotal": "0.0672568643642589430607000000",
+      "currency": "USD",
+      "exactDecimalRowMultisetUnchanged": false,
+      "addedRows": [
+        1,
+        1
+      ],
+      "returnedPeriod": {
+        "start": "2026-10-15T00:00:00",
+        "end": "2026-10-18T00:00:00"
+      },
+      "coverage": {
+        "retainedUsageDays": [
+          "2026-10-17"
+        ],
+        "ownedRowsByDateBeforeCategoryFilter": {
+          "2026-10-17": 15,
+          "2026-10-16": 5
+        },
+        "reportEndSemantics": "UNKNOWN_NOT_PROOF_OF_FULL_DAY_COVERAGE",
+        "requestedDayWithNoRetainedRowsMeaning": "NOT_EXPLICIT_ZERO"
+      },
+      "filterProof": {
+        "exactSingleInventory": true,
+        "pinnedGroup": true,
+        "dateAndBandwidthBeforePersistence": true,
+        "discardCounts": {
+          "inventory": 1516,
+          "date": 0,
+          "category": 13
+        },
+        "receivedRows": 1536
+      },
+      "httpRequests": 3,
+      "httpRequestCounts": {
+        "generation": 1,
+        "poll": 1,
+        "download": 1
+      },
+      "blobsDownloaded": 1
+    },
+    "A": {
+      "state": "COMPLETE",
+      "extractionComplete": true,
+      "ingestionFinal": false,
+      "generationRequestedUtc": "2026-10-18T08:16:33.834589+00:00",
+      "completedUtc": "2026-10-18T08:17:20.487233+00:00",
+      "baselineExtractionCompletedUtc": "2026-10-18T02:02:39.886655+00:00",
+      "extractionSeparationSeconds": "22480.600578",
+      "atLeastSixHoursSeparated": true,
+      "baselineReference": "private\\detail-baseline-20261018T020010Z\\a-details.private.json",
+      "retainedRows": 4,
+      "rows": [
+        {
+          "resourceAlias": "A-vm",
+          "day": "2026-10-16",
+          "meterName": "Intra Continent Data Transfer Out",
+          "quantity": "5.58793544770000000000E-8",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "unitPrice": "0.02",
+          "cost": "1.1175870895385742000E-9",
+          "currency": "USD"
+        },
+        {
+          "resourceAlias": "A-vm",
+          "day": "2026-10-16",
+          "meterName": "Standard Data Transfer Out",
+          "quantity": "0.000010487623512745",
+          "unit": "1 GB",
+          "effectivePrice": "0.083",
+          "unitPrice": "0.083",
+          "cost": "8.704727515578270000000E-7",
+          "currency": "USD"
+        },
+        {
+          "resourceAlias": "A-vm",
+          "day": "2026-10-17",
+          "meterName": "Intra Continent Data Transfer Out",
+          "quantity": "2.235174179080000000000E-7",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "unitPrice": "0.02",
+          "cost": "4.4703483581542970000E-9",
+          "currency": "USD"
+        },
+        {
+          "resourceAlias": "A-vm",
+          "day": "2026-10-17",
+          "meterName": "Standard Data Transfer Out",
+          "quantity": "0.000006069429218769",
+          "unit": "1 GB",
+          "effectivePrice": "0.083",
+          "unitPrice": "0.083",
+          "cost": "5.037626251578330000000E-7",
+          "currency": "USD"
+        }
+      ],
+      "dayMeterTotalsAndDeltas": [
+        {
+          "day": "2026-10-16",
+          "meterName": "Intra Continent Data Transfer Out",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "unitPrice": "0.02",
+          "currency": "USD",
+          "quantity": "5.58793544770000000000E-8",
+          "cost": "1.1175870895385742000E-9",
+          "rows": 1,
+          "baselineQuantity": "5.58793544770000000000E-8",
+          "baselineCost": "1.1175870895385742000E-9",
+          "deltaQuantity": "0E-28",
+          "deltaCost": "0E-28"
+        },
+        {
+          "day": "2026-10-16",
+          "meterName": "Standard Data Transfer Out",
+          "unit": "1 GB",
+          "effectivePrice": "0.083",
+          "unitPrice": "0.083",
+          "currency": "USD",
+          "quantity": "0.000010487623512745",
+          "cost": "8.704727515578270000000E-7",
+          "rows": 1,
+          "baselineQuantity": "0.000010487623512745",
+          "baselineCost": "8.704727515578270000000E-7",
+          "deltaQuantity": "0E-18",
+          "deltaCost": "0E-28"
+        },
+        {
+          "day": "2026-10-17",
+          "meterName": "Intra Continent Data Transfer Out",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "unitPrice": "0.02",
+          "currency": "USD",
+          "quantity": "2.235174179080000000000E-7",
+          "cost": "4.4703483581542970000E-9",
+          "rows": 1,
+          "baselineQuantity": "2.235174179080000000000E-7",
+          "baselineCost": "4.4703483581542970000E-9",
+          "deltaQuantity": "0E-28",
+          "deltaCost": "0E-28"
+        },
+        {
+          "day": "2026-10-17",
+          "meterName": "Standard Data Transfer Out",
+          "unit": "1 GB",
+          "effectivePrice": "0.083",
+          "unitPrice": "0.083",
+          "currency": "USD",
+          "quantity": "0.000006069429218769",
+          "cost": "5.037626251578330000000E-7",
+          "rows": 1,
+          "baselineQuantity": "0.000006069429218769",
+          "baselineCost": "5.037626251578330000000E-7",
+          "deltaQuantity": "0E-18",
+          "deltaCost": "0E-28"
+        }
+      ],
+      "costTotal": "0.0000013798233121633528712000",
+      "baselineCostTotal": "0.0000013798233121633528712000",
+      "deltaCostTotal": "0E-28",
+      "currency": "USD",
+      "exactDecimalRowMultisetUnchanged": true,
+      "addedRows": [],
+      "returnedPeriod": {
+        "start": "2026-10-15T00:00:00",
+        "end": "2026-10-18T00:00:00"
+      },
+      "coverage": {
+        "retainedUsageDays": [
+          "2026-10-16",
+          "2026-10-17"
+        ],
+        "ownedRowsByDateBeforeCategoryFilter": {
+          "2026-10-17": 11,
+          "2026-10-16": 7
+        },
+        "reportEndSemantics": "UNKNOWN_NOT_PROOF_OF_FULL_DAY_COVERAGE",
+        "requestedDayWithNoRetainedRowsMeaning": "NOT_EXPLICIT_ZERO"
+      },
+      "filterProof": {
+        "exactSingleInventory": true,
+        "pinnedGroup": true,
+        "dateAndBandwidthBeforePersistence": true,
+        "discardCounts": {
+          "inventory": 1518,
+          "date": 0,
+          "category": 14
+        },
+        "receivedRows": 1536
+      },
+      "httpRequests": 3,
+      "httpRequestCounts": {
+        "generation": 1,
+        "poll": 1,
+        "download": 1
+      },
+      "blobsDownloaded": 1,
+      "baselineOperationalReceiptCompletedUtc": "2026-10-18T02:07:34.723864Z",
+      "separationFromLaterOperationalReceiptSeconds": "22185.763369",
+      "baselineTimestampClarification": "Source CSV extraction completed at 02:02:39.886655Z; operational baseline handoff completed at 02:07:34.723864Z. Both exceed six hours at this collection."
+    }
+  },
+  "limitations": [
+    "Complete extraction is not final ingestion; no formal ingestion watermark.",
+    "Actual report end echo is midnight 2026-10-18, not proof of full October 18 coverage; missing rows are not explicit zero.",
+    "Final verified transport 2026-10-17T22:15:17.236880Z is under 24 hours old; first aging gate is 2026-10-18T22:15:17.236880Z.",
+    "C is still changing; A unchanged microquantity rows alone do not reconcile its verified 100 GB.",
+    "C baseline requested October16-17; new window October15-18. Exact comparison is by actual usage day; baseline absence outside its window is not zero.",
+    "No Query used or quantities inferred from Query costs.",
+    "T legacy 1 TB versus retail 1 GB and duplicate service ID remain unresolved; T not queried."
+  ],
+  "idleProof": {
+    "ownedCollectorPids": [
+      25432,
+      30440
+    ],
+    "STOPAbsent": true,
+    "matchingChildren": [],
+    "method": "Native Win32_Process inspection; owned PIDs and billing command match; current inspection process excluded",
+    "observedAtUtc": "2026-10-18T08:19:14.3125252Z"
+  },
+  "scheduleId": 5,
+  "hardStopUtc": "2026-10-22T23:15:33Z",
+  "elapsedSeconds": "314.045036",
+  "actualToolCalls": 28,
+  "toolCountPolicy": "Conservatively counts dispatch wrappers and all tool invocations from admission; includes final verification.",
+  "maxToolCalls": 75,
+  "nextPlan": {
+    "consumedPlannedCollectionUtc": "2026-10-18T08:10:00Z",
+    "consumedBy": "separated-detail-20261018T081000Z",
+    "nextSuggestedCollectionUtc": "2026-10-18T14:19:14.630721+00:00",
+    "notACollectionOrScheduleAuthorization": true,
+    "plan": "Existing schedule 5 only; next bounded details comparison after ordinary cadence, C first. No immediate retry. Preserve separate aging gate 22:15:17.236880Z and hard stop."
+  }
+}

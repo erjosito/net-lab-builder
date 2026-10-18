@@ -1,6 +1,61 @@
 # Azure public-endpoint bandwidth billing
 
-## Executive summary — 18 October 2026, 02:25Z (offline refresh)
+## Executive summary — 18 October 2026, 08:20Z (offline refresh)
+
+**Transport PASS (400 GB); cleanup PASS (21 owned roots deleted); billing
+INCONCLUSIVE and open.** The new [separated Cost Details comparison](results/2026-10-18-separated-detail-comparison-081000.json)
+completed C/A CSV extraction at **08:15:52Z / 08:17:20Z**. Collection
+**PASS, 6/6 requests** means two generations, two polls and two downloads,
+not final billing reconciliation. Source is unchanged; the live owner closed
+with no matching native billing children at **08:19:14.3125252Z**.
+This documentation refresh made no live calls or operational changes.
+
+**C is still changing.** Four 17 October **Intra Continent Data Transfer
+Out** rows now total **14.2374728210270405 reported `1 GB`**, effective/unit
+price **USD 0.02**, cost **USD 0.28474945642054081**. Against the
+17 October 23:01:56Z CSV's **10.8746547754853965 / USD 0.21749309550970793**,
+this is **+3.3628180455416440 reported units / +USD 0.06725636091083288**
+over **9h13m56.043898s**. Exactly one bulk row and one Standard microquantity
+row were added. Three separate Standard rows total **USD
+0.0000018770704045891761**; all seven C Bandwidth rows total **USD
+0.2847513334909453991761**. The cross-region meter subtotal is not that
+all-Bandwidth total, a same-region charge, or a full 100 GB match. No unit
+conversion is applied.
+
+**A is unchanged, not proven zero-rated.** Its four original charged
+microquantity records on 16–17 October have an unchanged exact-Decimal
+multiset and **USD 0.0000013798233121633528712** subtotal. The actual
+baseline CSV extraction was **02:02:39.886655Z**; the later operational
+receipt was **02:07:34.723864Z**. The new extraction is over six hours after
+both (**6h14m40.600578s / 6h09m45.763369s**, respectively). There is still
+no bulk-sized same-region line or explicit zero-rated 100 GB record.
+
+**Billing-publication lag is observed empirically:** new 17 October usage
+appeared more than nine hours after the prior report. This does not identify
+when publication will finish, establish a delivery SLA, or prove stable
+reconciliation. Complete extraction is not final ingestion; all nonzero C
+rows are dated 17 October, and other days are not explicit zeros. Final
+transport verification at **17 October 22:15:17.236880Z** is still under
+24 hours old; **18 October 22:15:17.236880Z** is an aging checkpoint, not a
+formal ingestion watermark.
+
+No Query was refreshed: the **01:21Z Query baseline remains historical**.
+T was not queried; its genuine duplicate service ID, raw **`1 TB`** versus
+retail **`1 GB`**, and asynchronous **422 cause UNKNOWN** remain unresolved.
+Existing **schedule 5 only** and its original **22 October 23:15:33Z hard
+stop** are unchanged. A suggested **~14:19Z** next comparison is not a verified
+scheduled due time or new collection authority. No resources or traffic
+should be recreated. See [quantities, deltas and coverage](billing-evidence.md#latest-snapshot--18-october-2026-0820z-offline-refresh)
+and the [collector status](costs/README.md#latest-actual-cost-answer--18-october-2026-0820z-offline-refresh).
+
+**Policy remains separate:** the published same-region Azure-service rule
+does not explicitly qualify tenant boundaries; cross-tenant applicability
+remains an interpretation. The [BYOIP Internet-egress exception and separate
+product/service charges](#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress)
+remain excluded from a blanket no-charge conclusion. The dated snapshots
+below retain their original as-of evidence and provenance.
+
+## Superseded executive summary — 18 October 2026, 02:25Z (offline refresh)
 
 **Transport PASS (400 GB); cleanup PASS; billing INCONCLUSIVE and open.**
 The [A CSV / T diagnostic baseline](results/2026-10-18-detail-baseline-020010.json)
@@ -49,11 +104,7 @@ Existing follow-up/hard stop **22 October 23:15:33Z** is unchanged.
 are free, but tenant boundaries are unqualified, not explicitly cross-tenant;
 the [BYOIP Internet-egress exception and separate service fees](#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress)
 still apply. Missing rows are not zeros. This refresh is local-only:
-no Azure/authentication, infrastructure, source or automated-job changes.
-Git publication is separate; scheduler state was not independently refreshed.
-Per the existing handoff, job 5 remains the sole billing job; the bounded
-parent-local wake-only timer has no Azure activity or owner lease and is unchanged.
-
+no Azure/authentication, infrastructure, source, git or automated-job changes.
 
 ## Superseded executive summary — 18 October 2026, 01:25Z
 
@@ -86,7 +137,7 @@ ended with **A timeout / T HTTP 422**, no CSV downloads. Accounting remains
 **six manual requests total: two CSV generation attempts + four Queries**,
 zero retries, no unused budget; this did not reset the budget. The older
 23:02 check's separate six-request counter is unchanged. The public collector
-safe-header fix was published in #19; changed `ClientType` is **not proven causal**
+safe-header fix is tracked in #19; changed `ClientType` is **not proven causal**
 for the later Query success because wall-clock time also changed. No valid
 retry hint was supplied; unknown cooldowns are not zero.
 
@@ -102,8 +153,8 @@ hours before these Queries. The four 100 GB legs / 400 GB verification and
 **Next evidence target:** mature, comparable, meter/day/currency-separated
 snapshots with quantities, units and rates, at least **six hours apart**,
 reconciling fresh A/T/C and the distinct historical control. Using the
-01:21:11.187291Z Query completion as baseline, the earliest six-hour repeat is
-**18 October 07:21:11.187291Z**. Job 5's saved **~05:02Z** cadence suggestion
+01:21:11Z Query completion as baseline, the earliest six-hour repeat is
+**18 October 07:21:11Z**. Job 5's saved **~05:02Z** cadence suggestion
 (actual due unverified) can collect another baseline, but cannot establish
 six-hour stability against 01:21Z. No scheduling change is made here; the
 existing **22 October 23:15:33Z hard stop** remains.
@@ -113,8 +164,8 @@ between Azure services in the same Azure region are free; explicit cross-tenant
 wording is absent, so applying it across tenants remains an interpretation.
 BYOIP/custom-prefix traffic has an explicit Internet-egress exception; other
 service processing fees are separate. See the [policy sources and scope](#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress).
-The evidence refresh used local artifacts only: no Azure/authentication,
-resource, source-code or schedule operations. Git publication is separate.
+This refresh used local artifacts only: no Azure/authentication, resource,
+source-code, git or schedule operations.
 
 ## Superseded executive summary — 17 October 2026, 23:05Z
 
@@ -448,16 +499,9 @@ routing mechanism. This is a capture-path gap, not a “no” finding to rely on
 
 **Scope note:** this section covers only the ordinary-public-IP, same-region,
 cross-tenant case already under test. PaaS-specific billing and any new
-deployment are deferred, per the bounded scope of this handoff.
-
-**Offline publication status — 18 October 2026, ~01:00Z:**
-**BILLING NOT COMPLETE**; no new billing or resource queries were made.
-Per the coordinator's handoff, the sole active read-only billing follow-up
-is **job 5**; old billing job 4 and cleanup job 3 are **STOPPED**.
-The next eligible cadence check is **18 October 2026 05:02:22.602927Z**,
-not permission to replenish an exhausted request budget. The original
-**22 October 2026 23:15:33Z hard stop** is unchanged. Scheduler state was
-not independently queried or changed by the publisher.
+deployment are deferred, per the bounded scope of this handoff. Private
+summary: [private/policy-handoff-20261018.private.md](private/policy-handoff-20261018.private.md)
+(internal only, not published).
 
 ## Original core approval card (schedule subsequently reprioritized)
 
