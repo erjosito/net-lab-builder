@@ -1,0 +1,496 @@
+{
+  "taskId": "control-financial-comparison-20261018T114700Z",
+  "scheduleId": 5,
+  "verdict": "INCONCLUSIVE",
+  "startedAtUtc": "2026-10-18T11:48:17.160000+00:00",
+  "completedAtUtc": "2026-10-18T11:52:07.866754+00:00",
+  "elapsedSeconds": 469.745585,
+  "actualBillingHttpRequests": 4,
+  "maxBillingHttpRequests": 6,
+  "actualToolCalls": 28,
+  "maxToolCalls": 75,
+  "actualInfrastructureMutations": 0,
+  "hardStopUtc": "2026-10-22T23:15:33Z",
+  "reports": {
+    "T": {
+      "state": "COMPLETE",
+      "reason": null,
+      "httpStatus": null,
+      "http": [
+        {
+          "status": 200,
+          "responseMetadata": {
+            "receivedAtUtc": "2026-10-18T11:51:22.526691+00:00",
+            "safeHeaders": {
+              "x-ms-request-id": "329bdc9b-6b75-4dc7-bbc5-92e32cb0609b",
+              "x-ms-correlation-request-id": "a1ae1bf4-6fce-4f2e-a49c-2822a028dbdb",
+              "date": "Sun, 18 Oct 2026 11:51:22 GMT"
+            },
+            "retryAfterSeconds": null,
+            "suggestedRetryAtUtc": null,
+            "retrySource": "unknown"
+          }
+        }
+      ],
+      "httpRequests": 1,
+      "httpRequestCounts": {
+        "query": 1
+      },
+      "extractionComplete": null,
+      "window": {
+        "from": "2026-10-15T00:00:00Z",
+        "to": "2026-10-18T11:51:18.690142+00:00"
+      },
+      "returnedPeriod": null,
+      "responseMetadata": null,
+      "rows": [
+        {
+          "day": "2026-10-17",
+          "meter": "Intra Continent Data Transfer Out",
+          "cost": "0.244085448265384",
+          "currency": "EUR",
+          "quantity": null,
+          "unit": null,
+          "rate": null
+        }
+      ],
+      "costTotalsByCurrency": {
+        "EUR": "0.244085448265384"
+      },
+      "dailyMeterCostComparison": [
+        {
+          "day": "2026-10-17",
+          "meter": "Intra Continent Data Transfer Out",
+          "currency": "EUR",
+          "priorCost": "0.165150215302437",
+          "currentCost": "0.244085448265384",
+          "delta": "0.078935232962947",
+          "missingIsNotZero": true
+        }
+      ],
+      "baselineCompletedUtc": "2026-10-18T01:21:11.187291+00:00",
+      "ingestionFinal": false,
+      "dailyCoverage": {
+        "2026-10-15": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-16": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-17": "ROWS_OBSERVED_NOT_FINAL",
+        "2026-10-18": "NO_ROWS_OBSERVED_NOT_ZERO"
+      },
+      "queryDoesNotEstablishQuantityUnitIdentity": true,
+      "startedAtUtc": "2026-10-18T11:51:17.093970+00:00",
+      "completedAtUtc": "2026-10-18T11:51:23.334709+00:00",
+      "requestContract": {
+        "metric": "ActualCost",
+        "costAggregation": "PreTaxCost",
+        "granularity": "Daily",
+        "groupBy": [
+          "ResourceId",
+          "Meter"
+        ],
+        "meterCategoryFilter": "Bandwidth",
+        "exactInventoryBound": true,
+        "singlePinnedResourceGroup": true
+      },
+      "costTotalsBaselineComparison": [
+        {
+          "currency": "EUR",
+          "priorCost": "0.165150215302437",
+          "currentCost": "0.244085448265384",
+          "delta": "0.078935232962947"
+        }
+      ],
+      "comparisonSeparationSeconds": "37805.906679",
+      "financialRowsEqualBaseline": false,
+      "queryPageExtractionComplete": true,
+      "retryMetadataStatus": "HTTP_200_NO_RETRY_HINT_UNKNOWN_NOT_ZERO"
+    },
+    "historical-C": {
+      "state": "INCOMPLETE",
+      "reason": "http_timeout",
+      "httpStatus": null,
+      "http": [],
+      "httpRequests": 1,
+      "httpRequestCounts": {
+        "generation": 1
+      },
+      "extractionComplete": false,
+      "window": null,
+      "request": {
+        "metric": "ActualCost",
+        "timePeriod": {
+          "start": "2026-10-15",
+          "end": "2026-10-18"
+        }
+      },
+      "returnedPeriod": null,
+      "responseMetadata": null,
+      "rows": [],
+      "costTotalsByCurrency": {},
+      "dailyMeterCostComparison": [],
+      "baselineCompletedUtc": "2026-10-18T01:21:11.187291+00:00",
+      "ingestionFinal": false,
+      "dailyCoverage": {
+        "2026-10-15": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-16": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-17": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-18": "NO_ROWS_OBSERVED_NOT_ZERO"
+      },
+      "queryDoesNotEstablishQuantityUnitIdentity": false,
+      "historicalControl": {
+        "observation": "STALE",
+        "priorOctober16Quantity": "0.6551259830594063",
+        "priorUnit": "1 GB",
+        "newOctober16Quantity": null,
+        "quantityDelta": null,
+        "reportedUnits": [],
+        "reportedEffectivePrices": [],
+        "fullVerified1GiBControlEstablished": false,
+        "priorOctober16CostUsd": "0.013102519661188125",
+        "priorEffectivePriceUsd": "0.02",
+        "quantityDeltaStatus": "UNKNOWN_NOT_ZERO_NO_NEW_CSV"
+      },
+      "startedAtUtc": "2026-10-18T11:51:23.383986+00:00",
+      "completedAtUtc": "2026-10-18T11:51:49.668231+00:00",
+      "carriedForwardDetailedObservation": {
+        "status": "STALE_NOT_REFRESHED",
+        "source": "private\\cost-snapshots\\billing-reconciliation-20261016T0645\\correlation.private.json",
+        "snapshotEndedUtc": "2026-10-16T06:49:20.828844+00:00",
+        "rows": [
+          {
+            "day": "2026-10-15",
+            "meterName": "Intra Continent Data Transfer Out",
+            "quantity": "0.000002402812242508",
+            "unit": "1 GB",
+            "effectivePrice": "0.02",
+            "unitPrice": "0.02",
+            "cost": "4.80562448501586884000E-8",
+            "currency": "USD"
+          },
+          {
+            "day": "2026-10-16",
+            "meterName": "Intra Continent Data Transfer Out",
+            "quantity": "0.6551259830594063",
+            "unit": "1 GB",
+            "effectivePrice": "0.02",
+            "unitPrice": "0.02",
+            "cost": "0.013102519661188125",
+            "currency": "USD"
+          }
+        ]
+      },
+      "scopeStoppedAfterFailure": true,
+      "deferredPollsAndDownloads": true,
+      "httpAttemptOutcome": "ONE_GENERATION_ATTEMPT_NO_HTTP_RESPONSE_CAPTURED"
+    },
+    "A": {
+      "state": "COMPLETE",
+      "reason": null,
+      "httpStatus": null,
+      "http": [
+        {
+          "status": 200,
+          "responseMetadata": {
+            "receivedAtUtc": "2026-10-18T11:51:58.688116+00:00",
+            "safeHeaders": {
+              "x-ms-request-id": "371e8dff-f41b-47a2-9f42-65fa78676731",
+              "x-ms-correlation-request-id": "2b65af5b-be6b-45be-83d3-fc9dd97ed82d",
+              "date": "Sun, 18 Oct 2026 11:51:58 GMT"
+            },
+            "retryAfterSeconds": null,
+            "suggestedRetryAtUtc": null,
+            "retrySource": "unknown"
+          }
+        }
+      ],
+      "httpRequests": 1,
+      "httpRequestCounts": {
+        "query": 1
+      },
+      "extractionComplete": null,
+      "window": {
+        "from": "2026-10-15T00:00:00Z",
+        "to": "2026-10-18T11:51:50.135087+00:00"
+      },
+      "returnedPeriod": null,
+      "responseMetadata": null,
+      "rows": [
+        {
+          "day": "2026-10-16",
+          "meter": "Intra Continent Data Transfer Out",
+          "cost": "1.11758708953857E-9",
+          "currency": "USD",
+          "quantity": null,
+          "unit": null,
+          "rate": null
+        },
+        {
+          "day": "2026-10-16",
+          "meter": "Standard Data Transfer Out",
+          "cost": "8.70472751557827E-7",
+          "currency": "USD",
+          "quantity": null,
+          "unit": null,
+          "rate": null
+        },
+        {
+          "day": "2026-10-17",
+          "meter": "Intra Continent Data Transfer Out",
+          "cost": "4.4703483581543E-9",
+          "currency": "USD",
+          "quantity": null,
+          "unit": null,
+          "rate": null
+        },
+        {
+          "day": "2026-10-17",
+          "meter": "Standard Data Transfer Out",
+          "cost": "5.03762625157833E-7",
+          "currency": "USD",
+          "quantity": null,
+          "unit": null,
+          "rate": null
+        }
+      ],
+      "costTotalsByCurrency": {
+        "USD": "0.00000137982331216335287"
+      },
+      "dailyMeterCostComparison": [
+        {
+          "day": "2026-10-16",
+          "meter": "Intra Continent Data Transfer Out",
+          "currency": "USD",
+          "priorCost": "1.11758708953857E-9",
+          "currentCost": "1.11758708953857E-9",
+          "delta": "0E-23",
+          "missingIsNotZero": true
+        },
+        {
+          "day": "2026-10-16",
+          "meter": "Standard Data Transfer Out",
+          "currency": "USD",
+          "priorCost": "8.70472751557827E-7",
+          "currentCost": "8.70472751557827E-7",
+          "delta": "0E-21",
+          "missingIsNotZero": true
+        },
+        {
+          "day": "2026-10-17",
+          "meter": "Intra Continent Data Transfer Out",
+          "currency": "USD",
+          "priorCost": "4.4703483581543E-9",
+          "currentCost": "4.4703483581543E-9",
+          "delta": "0E-22",
+          "missingIsNotZero": true
+        },
+        {
+          "day": "2026-10-17",
+          "meter": "Standard Data Transfer Out",
+          "currency": "USD",
+          "priorCost": "5.03762625157833E-7",
+          "currentCost": "5.03762625157833E-7",
+          "delta": "0E-21",
+          "missingIsNotZero": true
+        }
+      ],
+      "baselineCompletedUtc": "2026-10-18T01:21:11.187291+00:00",
+      "ingestionFinal": false,
+      "dailyCoverage": {
+        "2026-10-15": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-16": "ROWS_OBSERVED_NOT_FINAL",
+        "2026-10-17": "ROWS_OBSERVED_NOT_FINAL",
+        "2026-10-18": "NO_ROWS_OBSERVED_NOT_ZERO"
+      },
+      "queryDoesNotEstablishQuantityUnitIdentity": true,
+      "startedAtUtc": "2026-10-18T11:51:49.745819+00:00",
+      "completedAtUtc": "2026-10-18T11:51:58.868834+00:00",
+      "requestContract": {
+        "metric": "ActualCost",
+        "costAggregation": "PreTaxCost",
+        "granularity": "Daily",
+        "groupBy": [
+          "ResourceId",
+          "Meter"
+        ],
+        "meterCategoryFilter": "Bandwidth",
+        "exactInventoryBound": true,
+        "singlePinnedResourceGroup": true
+      },
+      "costTotalsBaselineComparison": [
+        {
+          "currency": "USD",
+          "priorCost": "0.00000137982331216335287",
+          "currentCost": "0.00000137982331216335287",
+          "delta": "0E-23"
+        }
+      ],
+      "comparisonSeparationSeconds": "37838.558528",
+      "financialRowsEqualBaseline": true,
+      "queryPageExtractionComplete": true,
+      "retryMetadataStatus": "HTTP_200_NO_RETRY_HINT_UNKNOWN_NOT_ZERO"
+    },
+    "C": {
+      "state": "COMPLETE",
+      "reason": null,
+      "httpStatus": null,
+      "http": [
+        {
+          "status": 200,
+          "responseMetadata": {
+            "receivedAtUtc": "2026-10-18T11:52:06.538029+00:00",
+            "safeHeaders": {
+              "x-ms-request-id": "616fa7f8-b12a-45ec-a0cb-bbecff298708",
+              "x-ms-correlation-request-id": "82ba4b59-8813-4fd9-8105-46cc60ff1512",
+              "date": "Sun, 18 Oct 2026 11:52:06 GMT"
+            },
+            "retryAfterSeconds": null,
+            "suggestedRetryAtUtc": null,
+            "retrySource": "unknown"
+          }
+        }
+      ],
+      "httpRequests": 1,
+      "httpRequestCounts": {
+        "query": 1
+      },
+      "extractionComplete": null,
+      "window": {
+        "from": "2026-10-15T00:00:00Z",
+        "to": "2026-10-18T11:51:59.311306+00:00"
+      },
+      "returnedPeriod": null,
+      "responseMetadata": null,
+      "rows": [
+        {
+          "day": "2026-10-17",
+          "meter": "Intra Continent Data Transfer Out",
+          "cost": "0.284749456420541",
+          "currency": "USD",
+          "quantity": null,
+          "unit": null,
+          "rate": null
+        },
+        {
+          "day": "2026-10-17",
+          "meter": "Standard Data Transfer Out",
+          "cost": "0.00000187707040458918",
+          "currency": "USD",
+          "quantity": null,
+          "unit": null,
+          "rate": null
+        }
+      ],
+      "costTotalsByCurrency": {
+        "USD": "0.28475133349094558918"
+      },
+      "dailyMeterCostComparison": [
+        {
+          "day": "2026-10-17",
+          "meter": "Intra Continent Data Transfer Out",
+          "currency": "USD",
+          "priorCost": "0.217493095509708",
+          "currentCost": "0.284749456420541",
+          "delta": "0.067256360910833",
+          "missingIsNotZero": true
+        },
+        {
+          "day": "2026-10-17",
+          "meter": "Standard Data Transfer Out",
+          "currency": "USD",
+          "priorCost": "0.00000137361697852612",
+          "currentCost": "0.00000187707040458918",
+          "delta": "5.0345342606306E-7",
+          "missingIsNotZero": true
+        }
+      ],
+      "baselineCompletedUtc": "2026-10-18T01:21:11.187291+00:00",
+      "ingestionFinal": false,
+      "dailyCoverage": {
+        "2026-10-15": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-16": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-17": "ROWS_OBSERVED_NOT_FINAL",
+        "2026-10-18": "NO_ROWS_OBSERVED_NOT_ZERO"
+      },
+      "queryDoesNotEstablishQuantityUnitIdentity": true,
+      "startedAtUtc": "2026-10-18T11:51:58.942344+00:00",
+      "completedAtUtc": "2026-10-18T11:52:06.677411+00:00",
+      "requestContract": {
+        "metric": "ActualCost",
+        "costAggregation": "PreTaxCost",
+        "granularity": "Daily",
+        "groupBy": [
+          "ResourceId",
+          "Meter"
+        ],
+        "meterCategoryFilter": "Bandwidth",
+        "exactInventoryBound": true,
+        "singlePinnedResourceGroup": true
+      },
+      "costTotalsBaselineComparison": [
+        {
+          "currency": "USD",
+          "priorCost": "0.21749446912668652612",
+          "currentCost": "0.28475133349094558918",
+          "delta": "0.06725686436425906306"
+        }
+      ],
+      "comparisonSeparationSeconds": "37847.755053",
+      "financialRowsEqualBaseline": false,
+      "queryPageExtractionComplete": true,
+      "retryMetadataStatus": "HTTP_200_NO_RETRY_HINT_UNKNOWN_NOT_ZERO"
+    }
+  },
+  "failure": null,
+  "ownedProcessesIdle": true,
+  "historicalControlRefreshed": false,
+  "freshQueryCompleted": [
+    "T",
+    "A",
+    "C"
+  ],
+  "freshAgingNotBeforeUtc": "2026-10-18T22:15:17.236880Z",
+  "ingestionFinal": false,
+  "newQualifiedMatureSnapshots": 0,
+  "billingGoalStillOpen": true,
+  "limitations": [
+    "Financial Query rows do not establish quantity, unit, service identity or full ingestion.",
+    "Missing rows are not zero; Query and Cost Details can have different publication lag.",
+    "T unit/legacy identity and Cost Details 422 cause remain UNKNOWN; no T CSV or legacy probe.",
+    "Fresh A/C CSV not requested before 2026-10-18T14:19:14.630721Z.",
+    "All 400000000000 application bytes and 21 root deletions remain previously verified PASS."
+  ],
+  "sourceSha256": "2ab6c0ce494ac2851afbbe0abeb5d2ba912948ef1488c0201dc6ecf221e584fb",
+  "requestTimeoutNote": "Unchanged public CLI enforces stricter 20s request timeout; no adapter or source change.",
+  "privateHandoff": "private\\control-financial-comparison-20261018T114700Z\\handoff.private.json",
+  "completionCoverage": {
+    "freshFinancialQueries": "3/3 complete HTTP 200",
+    "historicalControlDetails": "0/1 refreshed; 1 generation timeout; 0 poll; 0 download",
+    "allBillingScopes": "3/4 extracted; not final ingestion",
+    "historicalQuantityDelta": "UNKNOWN; stale quantity explicitly retained",
+    "freshQuantityDeltas": "NOT_REQUESTED_QUERY_COST_ONLY"
+  },
+  "unusedBillingHttpRequests": 2,
+  "unusedRequestsNotReallocatedToRetries": true,
+  "collectorElapsedSeconds": 230.706754,
+  "toolCountMeaning": "Individual tool invocations including skill, reads, edits, execution and final local verification; parallel wrapper envelopes excluded; internal child commands are not extra tool calls.",
+  "requestCounts": {
+    "query": 3,
+    "generation": 1,
+    "poll": 0,
+    "download": 0,
+    "retries": 0,
+    "timeoutAttemptsIncluded": 1
+  },
+  "finalizedAtUtc": "2026-10-18T11:56:06.905585+00:00",
+  "finalProcessProof": {
+    "observedAtUtc": "2026-10-18T11:56:06.905585+00:00",
+    "matchingChildren": [],
+    "ownedCollectorPids": [
+      22896,
+      54344,
+      46216,
+      42024
+    ],
+    "STOPAbsent": true,
+    "method": "Native Win32_Process exact owned PID and billing child command inspection; all idle"
+  }
+}

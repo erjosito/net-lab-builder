@@ -1,6 +1,90 @@
 # Billing extraction and reconciliation plan
 
-## Latest snapshot — 18 October 2026, 08:20Z (offline refresh)
+## Latest snapshot — 18 October 2026, 12:15Z (offline refresh)
+
+**Transport PASS (400 GB); cleanup PASS (21 owned roots deleted); billing
+INCONCLUSIVE and open.** This offline refresh links the new
+[11:51–11:52Z fresh financial comparison](results/2026-10-18-control-financial-comparison-114700.json)
+and [12:03Z historical-control alternative](results/2026-10-18-historical-control-alternative.json).
+No new quantity/rate extraction or live request was made for this publication.
+
+### Dated Query comparison: costs only
+
+All four Queries returned HTTP 200. Fresh T/A/C observations are each more
+than ten hours after **18 October 01:21:11.187291Z**. Compare returned
+day/meter rows within each alias and currency, not currencies or experiments:
+
+| Alias | Returned usage days | 01:21Z Query total | New Query total | Delta | Currency |
+|---|---|---:|---:|---:|---|
+| A | 16–17 October | 0.00000137982331216335287 | 0.00000137982331216335287 | 0 | USD |
+| C (fresh) | 17 October | 0.21749446912668652612 | 0.28475133349094558918 | +0.06725686436425906306 | USD |
+| T | 17 October | 0.165150215302437 | 0.244085448265384 | +0.078935232962947 | EUR |
+| historical-C (separate C → B control) | 15–16 October | 0.0131025677174329501587 | 0.0131025677174329501587 | 0 | USD |
+
+Query costs do **not** establish new quantities, units, rates, record-identity
+semantics, transfer attribution or final ingestion. Missing days/rows are
+not zeros. C's all-Bandwidth Query **USD 0.28475133349094558918** is
+nearly, not exactly, its **08:15Z CSV USD 0.2847513334909453991761**:
+the retained decimal difference is **USD 0.0000000000000001900039**.
+Do not force exact equality or derive a new quantity from either aggregate.
+The latest measured cross-region bulk subtotal remains the separate CSV
+**14.2374728210270405 reported `1 GB` / USD 0.28474945642054081**
+at effective/unit price **USD 0.02**; it excludes Standard microcharges.
+
+A's latest **08:17Z CSV** still has the same four positive microquantity
+records more than six hours after its baseline, not an explicit zero-rated
+100 GB record. T's higher cost is not proof of a same-region charge:
+its returned meter is Intra Continent Data Transfer Out and it sent both
+same-region and cross-region traffic. The raw legacy **`1 TB` versus retail
+`1 GB`**, same-ID/different-payload semantics, and asynchronous **422 cause
+UNKNOWN** remain unresolved under **#23**, not a proved service bug.
+
+### Historical control: financially stable, quantity still stale
+
+Historical-C's first CSV-generation attempt timed out; the separately leased
+legacy Consumption GET also timed out. Both used the then-fixed **20-second
+socket timeout**, not their orchestration ceilings. Neither produced a new
+quantity/rate report. The final historical Query's unchanged two-day total
+is **financial stability with a partial mismatch**, not a newly stable quantity
+or full reconciliation of the verified 1 GiB control. The old **16 October
+0.6551259830594063 reported `1 GB`, effective price USD 0.02**, and its
+single-row **USD 0.013102519661188125** cost remain **STALE**; that row is
+not the two-day Query total. Do not assume the entire verified-volume
+shortfall is necessarily ingestion lag or silently convert reported units.
+
+### Closed accounting and subsequent offline timeout change
+
+The original new result is immutable **4/6 as of its snapshot**:
+three fresh Queries plus one failed historical generation. The linked
+alternative adds **one legacy GET + one historical Query = global 6/6**,
+zero retries, polls or downloads. Across the two phases there were **four
+Queries**, not six. All owned children were recorded idle at closure;
+the earlier unused two-call allowance is exhausted, not restarted.
+Both phases used source SHA256
+`2ab6c0ce494ac2851afbbe0abeb5d2ba912948ef1488c0201dc6ecf221e584fb`.
+
+After those requests closed, the offline source change to SHA256
+`cbd099e61013ba9fa2e308d42a6f2e3656302e489689449396684ed5981171f3`
+added `--request-timeout-seconds`, default **20**, accepting a positive
+integer such as **120** for future bounded calls. ARM and blob requests
+use `min(configured, remaining at request start)`; existing bounded-read
+guards remain. This socket timeout is **not a hard real-time total request
+deadline**; CLI account/token subprocesses remain separately bounded to
+**<=15 seconds** and remaining time. It guarantees neither HTTP completion
+nor ingestion and has **not been rerun live** after the patch.
+
+Source review was approved directly by the coordinator, who independently
+reran **82 offline cost tests PASS**; the implementation owner also recorded
+**5 targeted native / 82 full native / 4 native-WSL PASS**. These are offline
+validation receipts, not repaired timeout evidence or new billing results.
+See [public flag semantics and future-call example](costs/README.md).
+Only existing **six-hourly schedule 5**, original **22 October 23:15:33Z
+hard stop**, and the no-new-traffic requirement remain. This refresh creates
+no timer, budget or collection authority; overall billing remains open.
+
+<a id="latest-snapshot--18-october-2026-0820z-offline-refresh"></a>
+
+## Superseded snapshot — 18 October 2026, 08:20Z (offline refresh)
 
 **Transport PASS (400 GB); cleanup PASS (21 owned roots deleted); billing
 INCONCLUSIVE and open.** The [separated comparison](results/2026-10-18-separated-detail-comparison-081000.json)

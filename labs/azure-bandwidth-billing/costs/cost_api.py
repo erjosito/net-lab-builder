@@ -116,11 +116,12 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 
 class Transport:
-    def __init__(self, subscription, tenant, seconds=75):
+    def __init__(self, subscription, tenant, seconds=75, request_timeout_seconds=20):
         self.subscription = valid_id(subscription)
         self.tenant = valid_id(tenant)
         self.scope = f"/subscriptions/{self.subscription}"
         self.deadline = time.monotonic() + seconds
+        self.request_timeout_seconds = request_timeout_seconds
         self.opener = urllib.request.build_opener(NoRedirect())
         self.http = []
         self.context_verified = False
@@ -256,7 +257,8 @@ class Transport:
                          "poll" if endpoint == "report-poll" else "consumption")
             self.http_request_counts[operation] = self.http_request_counts.get(operation, 0) + 1
             try:
-                with self.opener.open(request, timeout=min(20, self.remaining())) as response:
+                with self.opener.open(
+                        request, timeout=min(self.request_timeout_seconds, self.remaining())) as response:
                     self.http.append({"status": response.status, "responseMetadata":
                                       response_metadata(response.headers)})
                     if consume is not None:
@@ -1304,6 +1306,8 @@ def main(argv=None):
     parser.add_argument("--max-pages", type=int, default=3)
     parser.add_argument("--page-size", type=int, default=1000)
     parser.add_argument("--max-seconds", type=int, help="Default query 75, report 300; maximum 1800")
+    parser.add_argument("--request-timeout-seconds", type=int, default=20,
+                        help="Positive per-request HTTP socket timeout; default 20, bounded by remaining time")
     parser.add_argument("--max-http-requests", type=int, default=6)
     parser.add_argument("--max-polls", type=int, default=3)
     parser.add_argument("--max-rows", type=int, default=100000)
@@ -1315,7 +1319,8 @@ def main(argv=None):
             300 if args.command == "cost-details" else 75)
         args.max_retries = args.max_retries if args.max_retries is not None else (
             0 if args.command == "cost-details" else 1)
-        if (not 1 <= args.max_seconds <= 1800 or not 1 <= args.max_http_requests <= 100 or
+        if (args.request_timeout_seconds <= 0 or
+                not 1 <= args.max_seconds <= 1800 or not 1 <= args.max_http_requests <= 100 or
                 not 1 <= args.max_polls <= 20 or not 1 <= args.max_rows <= 100000 or
                 not 0 <= args.max_retries <= 3):
             raise Failure("invalid_bounds")
@@ -1368,7 +1373,8 @@ def main(argv=None):
                        args.meter_category, args.group_by)
             if "ResourceId" not in args.group_by and "ResourceGroup" not in args.group_by:
                 raise Failure("collection_requires_scope_grouping")
-        transport = Transport(args.subscription, args.expected_tenant, args.max_seconds)
+        transport = Transport(args.subscription, args.expected_tenant, args.max_seconds,
+                              request_timeout_seconds=args.request_timeout_seconds)
         transport.max_http_requests = args.max_http_requests
         transport.max_retries = args.max_retries
         transport.retry_delay_limit = float("inf") if args.command == "cost-details" else 2
