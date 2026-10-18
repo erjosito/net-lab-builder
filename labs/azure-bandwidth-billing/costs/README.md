@@ -573,6 +573,52 @@ boundaries. Preserve the official
 [BYOIP destination Internet-egress exception](https://learn.microsoft.com/azure/virtual-network/ip-services/custom-ip-address-prefix#pricing);
 empty cost output cannot establish a broader exemption.
 
+### 18 October 422 on T Cost Details generation — cause unknown
+
+[The manual result](../results/2026-10-18-manual-billing-011054.json) records
+**T** failing `cost-details` with `reason: "http_error"`, `httpStatus: 422`,
+`azureCode: "422"` and no retained `errorCategory` or service message.
+**The HTTP 422 is observed; its exact cause is UNKNOWN.** The numeric
+`azureCode` does not explain the rejection. A safe classifier category could
+help triage, but would not itself be the raw service explanation.
+`offerContextAlias: "native-wsl-msdn"` is an alias, not verified agreement or
+offer classification. The [documented EA/MCA-only Cost Details restriction](https://learn.microsoft.com/en-us/azure/cost-management-billing/automate/get-small-usage-datasets-on-demand)
+makes legacy MOSP/Visual Studio compatibility a **plausible restriction if T's
+actual offer type is verified**, not an established or sole cause of this 422.
+
+[The independent Query result](../results/2026-10-18-query-alternative-011707.json)
+records T's HTTP 200 and EUR 0.165150215302437 for 17 October. It establishes
+working authorization for that Query operation, **not** Cost Details permission,
+offer eligibility or acceptance of the report date range. The local
+`future_report_date` guard rejects future **calendar dates** only: ending on
+18 October, then the current UTC date, passes that guard but does not rule out
+backend reporting-period constraints. Neither Query success nor this guard
+establishes the cause of the report failure.
+
+**A** independently timed out (`http_timeout`, null HTTP status/code); no
+response was recorded. A bounded asynchronous report retry is reasonable
+because the historical C report succeeded on the same verified subscription
+and tenant as canonical A, not because A's alias proves an agreement type.
+That precedent does not guarantee A's next request or date window will succeed.
+For T, prefer the previously successful date-bounded Consumption route
+(`details --filter-variant legacy-date`) over unbounded identical 422 retries.
+The prior valid-past-date HTTP 200 responses demonstrate that explicit
+UsageStart/UsageEnd resolved those Consumption date errors, **not** blanket
+offer rejection or guaranteed detail availability.
+
+For the next authorized scheduled collection only, use T's canonical context
+and inventory with `details --filter-variant legacy-date`, a bounded past-date
+window, and explicit request/page/time limits. No collection is run here.
+
+Receipt-window predicates do not replace mandatory local exact inventory/RG
+and **actual usage-date** filtering before persistence; inspect normalized
+actual dates. A remaining continuation means INCOMPLETE, not zero usage.
+The shared manual budget is exhausted (**6/6**); this revision makes no calls.
+Keep the existing schedule and honor Retry-After and authorized budgets.
+A fresh Query comparison with the 01:21:11Z baseline cannot be six hours apart
+before **18 October 07:21:11.187291Z**, even if the scheduled job runs around
+05:02Z; elapsed time alone still does not establish completeness or maturity.
+
 ## WSL deployment readiness and approved incremental cost
 
 This section records deployment approval/budget provenance, not current traffic

@@ -1,0 +1,204 @@
+{
+  "taskId": "manual-at-20261018T011054Z",
+  "checkType": "NEW_SEPARATELY_AUTHORIZED_MANUAL_CHECK",
+  "verdict": "INCONCLUSIVE",
+  "startedAtUtc": "2026-10-18T01:11:43.860703+00:00",
+  "completedAtUtc": "2026-10-18T01:12:29.514161+00:00",
+  "actualBillingHttpRequests": 2,
+  "maxBillingHttpRequests": 6,
+  "maxMinutes": 30,
+  "actualMutations": 0,
+  "queryRequests": 0,
+  "reports": {
+    "A": {
+      "schemaVersion": 2,
+      "metric": "ActualCost",
+      "apiVersion": "2025-03-01",
+      "state": "INCOMPLETE",
+      "extractionComplete": false,
+      "ingestionFinal": false,
+      "request": {
+        "metric": "ActualCost",
+        "timePeriod": {
+          "start": "2026-10-15",
+          "end": "2026-10-18"
+        }
+      },
+      "localRetention": {
+        "start": "2026-10-15",
+        "end": "2026-10-18",
+        "inclusive": true
+      },
+      "reportEndSemantics": "UNKNOWN_NOT_PROOF_OF_FULL_DAY_COVERAGE",
+      "generationRequestedUtc": "2026-10-18T01:11:47.608965+00:00",
+      "received": 0,
+      "discarded": 0,
+      "http": [],
+      "downloadBytes": 0,
+      "polls": 0,
+      "blobsDownloaded": 0,
+      "discardCounts": {
+        "inventory": 0,
+        "date": 0,
+        "category": 0
+      },
+      "ownedRowsByDate": {},
+      "datasetMaxUsageDate": null,
+      "reason": "http_timeout",
+      "httpStatus": null,
+      "azureCode": null,
+      "httpRequests": 1,
+      "httpRequestCounts": {
+        "generation": 1
+      },
+      "offerContextAlias": "native-core",
+      "offerId": null,
+      "offerIdStatus": "PUBLIC_COLLECTOR_DOES_NOT_PROJECT_OFFER_ID",
+      "rows": [],
+      "bandwidthRows": 0,
+      "csvPersisted": false,
+      "attribution": "A: same-region bulk only; Internet management microcost possible",
+      "manifest": null,
+      "csvManifestCoverage": "NO_MANIFEST_RETURNED_NO_CSV_DOWNLOADED",
+      "billingCoverageEstablished": false,
+      "rowFinancialFieldsAvailable": false,
+      "observedDailyBillingRows": [],
+      "reportedCost": null,
+      "reportedQuantity": null,
+      "reportedUnit": null,
+      "reportedRates": null,
+      "reportedCurrency": null,
+      "retryMetadataStatus": "NO_RESPONSE_TIMEOUT_UNKNOWN",
+      "interpretation": "No billing observation; not a zero-cost or zero-quantity measurement."
+    },
+    "T": {
+      "schemaVersion": 2,
+      "metric": "ActualCost",
+      "apiVersion": "2025-03-01",
+      "state": "INCOMPLETE",
+      "extractionComplete": false,
+      "ingestionFinal": false,
+      "request": {
+        "metric": "ActualCost",
+        "timePeriod": {
+          "start": "2026-10-15",
+          "end": "2026-10-18"
+        }
+      },
+      "localRetention": {
+        "start": "2026-10-15",
+        "end": "2026-10-18",
+        "inclusive": true
+      },
+      "reportEndSemantics": "UNKNOWN_NOT_PROOF_OF_FULL_DAY_COVERAGE",
+      "generationRequestedUtc": "2026-10-18T01:12:21.926763+00:00",
+      "received": 0,
+      "discarded": 0,
+      "http": [
+        {
+          "status": 422,
+          "responseMetadata": {
+            "receivedAtUtc": "2026-10-18T01:12:28.824906+00:00",
+            "safeHeaders": {
+              "x-ms-request-id": "1bb456e1-2af6-4102-8c94-2059f1426a58",
+              "x-ms-correlation-request-id": "9e6ed22a-93ff-4001-8979-02b14612c72f",
+              "date": "Sun, 18 Oct 2026 01:12:29 GMT"
+            },
+            "retryAfterSeconds": null,
+            "suggestedRetryAtUtc": null,
+            "retrySource": "unknown"
+          }
+        }
+      ],
+      "downloadBytes": 0,
+      "polls": 0,
+      "blobsDownloaded": 0,
+      "discardCounts": {
+        "inventory": 0,
+        "date": 0,
+        "category": 0
+      },
+      "ownedRowsByDate": {},
+      "datasetMaxUsageDate": null,
+      "reason": "http_error",
+      "httpStatus": 422,
+      "azureCode": "422",
+      "responseMetadata": {
+        "receivedAtUtc": "2026-10-18T01:12:28.824906+00:00",
+        "safeHeaders": {
+          "x-ms-request-id": "1bb456e1-2af6-4102-8c94-2059f1426a58",
+          "x-ms-correlation-request-id": "9e6ed22a-93ff-4001-8979-02b14612c72f",
+          "date": "Sun, 18 Oct 2026 01:12:29 GMT"
+        },
+        "retryAfterSeconds": null,
+        "suggestedRetryAtUtc": null,
+        "retrySource": "unknown"
+      },
+      "httpRequests": 1,
+      "httpRequestCounts": {
+        "generation": 1
+      },
+      "offerContextAlias": "native-wsl-msdn",
+      "offerId": null,
+      "offerIdStatus": "PUBLIC_COLLECTOR_DOES_NOT_PROJECT_OFFER_ID",
+      "rows": [],
+      "bandwidthRows": 0,
+      "csvPersisted": false,
+      "attribution": "T: same- and cross-region outbound combined by date; use actual meter distinction",
+      "manifest": null,
+      "csvManifestCoverage": "NO_MANIFEST_RETURNED_NO_CSV_DOWNLOADED",
+      "billingCoverageEstablished": false,
+      "rowFinancialFieldsAvailable": false,
+      "observedDailyBillingRows": [],
+      "reportedCost": null,
+      "reportedQuantity": null,
+      "reportedUnit": null,
+      "reportedRates": null,
+      "reportedCurrency": null,
+      "retryMetadataStatus": "RESPONSE_RETAINED_NO_VALID_RETRY_HINT_UNKNOWN",
+      "interpretation": "No billing observation; not a zero-cost or zero-quantity measurement."
+    }
+  },
+  "remainingBillingGaps": [
+    "No missing row is conclusive zero; report completion is not an ingestion watermark.",
+    "Final 400 GB verification ended 2026-10-17T22:15:17.236880Z, only about three hours before this check.",
+    "About two hours since previous collection is not a six-hour stable comparison.",
+    "C was not refreshed; historical 0.655 quantity is stale, not a current C observation.",
+    "Actual offer IDs are not projected by the public collector; context aliases are not offer identification.",
+    "Need mature per-day A/T meter-distinguished quantities, rates, currencies and later C reconciliation."
+  ],
+  "knownRetryDeadlines": [],
+  "previousQueryCooldown": "UNKNOWN_HEADERS_LOST_NOT_ZERO; 05:02 was self-imposed cadence, not observed Retry-After",
+  "schedule": {
+    "id": 5,
+    "changed": false,
+    "cadenceHours": 6,
+    "nextScheduledSuggestedUtc": "2026-10-18T05:02:22.602927+00:00",
+    "actualSchedulerDueVerified": false,
+    "hardStopUtc": "2026-10-22T23:15:33Z",
+    "noDuplicateCreated": true
+  },
+  "infrastructure": {
+    "verifiedApplicationBytes": 400000000000,
+    "deletedOwnedRoots": 21,
+    "newInfrastructureCalls": 0,
+    "cleanupEvidenceReusedNotRefreshed": true
+  },
+  "runtime": {
+    "activeCommands": 0,
+    "ownedChildrenIdle": true,
+    "queuedWork": 0
+  },
+  "requestAccounting": {
+    "generation": 2,
+    "poll": 0,
+    "download": 0,
+    "query": 0,
+    "retries": 0,
+    "unusedBudget": 4,
+    "stopReason": "Both canonical workflows ended without generation success; no blind regeneration or unrelated Query requests."
+  },
+  "collectionComplete": false,
+  "priorCheckRequestsRemain": 6,
+  "nextScheduledDueStatus": "05:02:22Z is saved cadence suggestion only; scheduler actual due not independently available; no reschedule performed."
+}
