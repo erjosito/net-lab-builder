@@ -1,0 +1,258 @@
+{
+  "schema": "sanitized-first-quantity-baseline-v1",
+  "checkId": "detail-baseline-20261018T020010Z",
+  "completedAtUtc": "2026-10-18T02:07:34.723864+00:00",
+  "authorization": "New Jose Moreno manual check 2026-10-18T01:57:35Z; earlier 6/6 manual check stays exhausted.",
+  "verdict": "INCONCLUSIVE",
+  "transport": "PASS_400000000000_APPLICATION_BYTES",
+  "resources": "DELETED_PRIOR_INDEPENDENT_VERIFICATION_NO_NEW_INFRA_API",
+  "billingHttpRequests": 5,
+  "maximumBillingHttpRequests": 6,
+  "unusedHttpRequests": 1,
+  "automaticRetries": 0,
+  "requestCounts": {
+    "A": {
+      "generation": 1,
+      "poll": 1,
+      "download": 1
+    },
+    "T_first_parser_failure": {
+      "consumption": 1
+    },
+    "T_identity_diagnostic": {
+      "consumption": 1
+    }
+  },
+  "httpStatuses": {
+    "A": [
+      202,
+      200,
+      200
+    ],
+    "T_first": [
+      200
+    ],
+    "T_diagnostic": [
+      200
+    ]
+  },
+  "requestTimeoutSeconds": 120,
+  "commandTimeoutSeconds": 300,
+  "maxMinutes": 30,
+  "maxToolCalls": 75,
+  "infrastructureMutations": 0,
+  "publishedCollectorSha256": "2ab6c0ce494ac2851afbbe0abeb5d2ba912948ef1488c0201dc6ecf221e584fb",
+  "executionAdapter": "New private in-memory adapter, published source unchanged: 120-second sockets, shared lease in private directory, actual-now UsageEnd clamp, exact-owned Bandwidth-only persistence; T diagnostic uses original record hashes and explicitly marks unresolved service identities.",
+  "requestedStartUtc": "2026-10-15T00:00:00Z",
+  "requestedReportEndDate": "2026-10-18",
+  "T_actualRequestWindow": {
+    "fromUtc": "2026-10-15T00:00:00Z",
+    "toUtc": "2026-10-18T02:04:06.572389Z",
+    "filterVariant": "legacy-date",
+    "futureBoundaryClamped": true
+  },
+  "retainedRows": {
+    "A": 4,
+    "T": 2
+  },
+  "receivedRows": {
+    "A": 1228,
+    "T_diagnostic": 10
+  },
+  "discardedRowsBeforePersistence": {
+    "A_noninventory": 1210,
+    "A_nonBandwidth": 14,
+    "T_nonBandwidth": 8
+  },
+  "offerAliasIsNotVerifiedAgreement": true,
+  "A": {
+    "extractionComplete": true,
+    "ingestionFinal": false
+  },
+  "T": {
+    "paginationComplete": true,
+    "billingIdentityReconciliationComplete": false,
+    "extractionComplete": false,
+    "ingestionFinal": false,
+    "reason": "service_record_identity_conflicts_unresolved"
+  },
+  "rows": [
+    {
+      "day": "2026-10-16",
+      "meterName": "Standard Data Transfer Out",
+      "quantity": "0.000010487623512745",
+      "unit": "1 GB",
+      "effectivePrice": "0.083",
+      "unitPrice": "0.083",
+      "cost": "8.704727515578270000000E-7",
+      "currency": "USD",
+      "usageStart": null,
+      "usageEnd": null,
+      "endpoint": "A",
+      "offerAlias": "windows-main"
+    },
+    {
+      "day": "2026-10-17",
+      "meterName": "Standard Data Transfer Out",
+      "quantity": "0.000006069429218769",
+      "unit": "1 GB",
+      "effectivePrice": "0.083",
+      "unitPrice": "0.083",
+      "cost": "5.037626251578330000000E-7",
+      "currency": "USD",
+      "usageStart": null,
+      "usageEnd": null,
+      "endpoint": "A",
+      "offerAlias": "windows-main"
+    },
+    {
+      "day": "2026-10-17",
+      "meterName": "Intra Continent Data Transfer Out",
+      "quantity": "2.235174179080000000000E-7",
+      "unit": "1 GB",
+      "effectivePrice": "0.02",
+      "unitPrice": "0.02",
+      "cost": "4.4703483581542970000E-9",
+      "currency": "USD",
+      "usageStart": null,
+      "usageEnd": null,
+      "endpoint": "A",
+      "offerAlias": "windows-main"
+    },
+    {
+      "day": "2026-10-16",
+      "meterName": "Intra Continent Data Transfer Out",
+      "quantity": "5.58793544770000000000E-8",
+      "unit": "1 GB",
+      "effectivePrice": "0.02",
+      "unitPrice": "0.02",
+      "cost": "1.1175870895385742000E-9",
+      "currency": "USD",
+      "usageStart": null,
+      "usageEnd": null,
+      "endpoint": "A",
+      "offerAlias": "windows-main"
+    },
+    {
+      "day": "2026-10-17",
+      "meterName": "Intra Continent Data Transfer Out",
+      "quantity": "5.5879354E-8",
+      "unit": "1 TB",
+      "effectivePrice": "0.017329",
+      "unitPrice": "0",
+      "cost": "9.68333E-10",
+      "currency": "EUR",
+      "usageStart": null,
+      "usageEnd": null,
+      "endpoint": "T",
+      "offerAlias": "wsl-msdn"
+    },
+    {
+      "day": "2026-10-17",
+      "meterName": "Intra Continent Data Transfer Out",
+      "quantity": "9.53027955070138",
+      "unit": "1 TB",
+      "effectivePrice": "0.017329",
+      "unitPrice": "0",
+      "cost": "0.165150214334104",
+      "currency": "EUR",
+      "usageStart": null,
+      "usageEnd": null,
+      "endpoint": "T",
+      "offerAlias": "wsl-msdn"
+    }
+  ],
+  "dailyTotals": [
+    {
+      "endpoint": "A",
+      "day": "2026-10-16",
+      "meterName": "Standard Data Transfer Out",
+      "unit": "1 GB",
+      "effectivePrice": "0.083",
+      "unitPrice": "0.083",
+      "currency": "USD",
+      "quantity": "0.000010487623512745",
+      "cost": "8.704727515578270000000E-7",
+      "rows": 1
+    },
+    {
+      "endpoint": "A",
+      "day": "2026-10-17",
+      "meterName": "Standard Data Transfer Out",
+      "unit": "1 GB",
+      "effectivePrice": "0.083",
+      "unitPrice": "0.083",
+      "currency": "USD",
+      "quantity": "0.000006069429218769",
+      "cost": "5.037626251578330000000E-7",
+      "rows": 1
+    },
+    {
+      "endpoint": "A",
+      "day": "2026-10-17",
+      "meterName": "Intra Continent Data Transfer Out",
+      "unit": "1 GB",
+      "effectivePrice": "0.02",
+      "unitPrice": "0.02",
+      "currency": "USD",
+      "quantity": "2.235174179080000000000E-7",
+      "cost": "4.4703483581542970000E-9",
+      "rows": 1
+    },
+    {
+      "endpoint": "A",
+      "day": "2026-10-16",
+      "meterName": "Intra Continent Data Transfer Out",
+      "unit": "1 GB",
+      "effectivePrice": "0.02",
+      "unitPrice": "0.02",
+      "currency": "USD",
+      "quantity": "5.58793544770000000000E-8",
+      "cost": "1.1175870895385742000E-9",
+      "rows": 1
+    },
+    {
+      "endpoint": "T",
+      "day": "2026-10-17",
+      "meterName": "Intra Continent Data Transfer Out",
+      "unit": "1 TB",
+      "effectivePrice": "0.017329",
+      "unitPrice": "0",
+      "currency": "EUR",
+      "quantity": "9.530279606580734",
+      "cost": "0.165150215302437",
+      "rows": 2
+    }
+  ],
+  "T_previousQueryComparison": {
+    "baselineCompletedAtUtc": "2026-10-18T01:21:11.187291+00:00",
+    "priorQueryCost": "0.165150215302437",
+    "newDetailCost": "0.165150215302437",
+    "currency": "EUR",
+    "equalAmounts": true,
+    "newQueryRequests": 0,
+    "sixHourStable": false,
+    "earliestRepeatQueryUtc": "2026-10-18T07:21:11.187291+00:00",
+    "comparisonCaveat": "Diagnostic distinct rows, unresolved identity semantics; equal sums do not establish ingestion completeness or final billing."
+  },
+  "unitConversionAssumed": false,
+  "T422Cause": "UNKNOWN",
+  "gaps": [
+    "A has four microquantity Bandwidth rows, not a same-region 100 GB line item or an explicit zero-rated record.",
+    "T first published-parser request failed conflicting_record_identity. A separate diagnostic page retained two distinct original-record hashes sharing service identity; pagination finished but identity reconciliation remains INCOMPLETE.",
+    "T reports unit '1 TB', positive effectivePrice 0.017329, unitPrice 0 and positive EUR cost. Preserve all values without unit conversion or inferring credit/offer treatment.",
+    "Reported usage dates are October 16/17 for A and October 17 for T. Missing October 15/18 or intraregional rows are not zero-quantity records.",
+    "A extraction COMPLETE and T pagination complete do not prove ingestion finality. Report end semantics and DataIngestionEndMT remain unknown.",
+    "No new C/historical snapshots; prior observations are not refreshed in this check. No six-hour stable complete A/C/T comparison.",
+    "T asynchronous 422 cause remains UNKNOWN. This was a distinct date-bounded Consumption route, not a repeat of the failed POST."
+  ],
+  "activeCommands": 0,
+  "ownedChildrenIdle": true,
+  "unrelatedExistingWSLSessionsUntouched": true,
+  "schedule": {
+    "id": 5,
+    "changed": false,
+    "skipWhileExternalOwnerActive": true,
+    "hardStopUtc": "2026-10-22T23:15:33Z"
+  }
+}
