@@ -1,6 +1,61 @@
 # Azure public-endpoint bandwidth billing
 
-## Executive summary — 18 October 2026, 01:25Z (offline refresh)
+## Executive summary — 18 October 2026, 02:25Z (offline refresh)
+
+**Transport PASS (400 GB); cleanup PASS; billing INCONCLUSIVE and open.**
+The [A CSV / T diagnostic baseline](results/2026-10-18-detail-baseline-020010.json)
+completed **02:07:34Z**; [T source provenance](results/2026-10-18-t-unit-provenance-021800.json)
+completed **02:21:56Z**. A's complete CSV extraction contains **four charged
+microquantity rows on 16–17 October**, not a bulk-sized same-region 100 GB
+line, an explicit zero-rated record, or mature ingestion. T retains two
+owned Bandwidth rows diagnostically, **INCOMPLETE**, despite finished pagination.
+
+T's raw API field **`properties.meterDetails.unitOfMeasure` is `1 TB`**:
+the public normalizer faithfully projects it. Both owned rows share the same
+service record ID but have different contents; both original hashes are
+unchanged. The public parser correctly fails closed with
+`conflicting_record_identity`; diagnostic retention is not a complete report.
+Their exact **EUR 0.165150215302437** sum equals the independent earlier
+Query: strong financial corroboration, **not proof of unique records, unit
+meaning, byte attribution, credit treatment or a zero price**.
+
+Independent official Retail Prices metadata for the exact meter reports
+**`1 GB`, EUR 0.0176 / USD 0.02**. This contradicts T's raw legacy `1 TB`,
+but does not justify dividing by 1,000 or changing the reported quantity.
+T's legacy effective price **EUR 0.017329** differs from retail; currency,
+date and offer comparability are not established, nor is a negotiated rate.
+See [exact rows, provenance and limits](billing-evidence.md#latest-snapshot--18-october-2026-0225z-offline-refresh)
+and the [public T reproduction command](costs/README.md#t-date-bounded-consumption-reproduction).
+
+Fresh C's last CSV remains **17 October 23:01:56Z**, not refreshed:
+**10.8746547754853965 reported `1 GB` at USD 0.02 =
+USD 0.21749309550970793**, a positive partial cross-region charge, not the
+full 100 GB leg. “Intra Continent” is not “same region.”
+
+The new manual check now totals **6/6 customer HTTP requests**:
+**A 3 + T first parser failure 1 + diagnostic 1 + provenance GET 1**.
+The 02:07 artifact remains its immutable **5/6 as-of snapshot**; the new
+provenance sidecar records exhaustion. Earlier manual checks are separate.
+T's asynchronous-report **422 cause remains UNKNOWN**.
+
+Earliest six-hour comparisons: **Query 07:21:11Z**, **A details 08:07:34Z**;
+the T provenance phase began **02:18Z**, so its source comparison is **08:18Z
+or later** (completion-based conservative repeat **08:21:56Z**). These are
+earliest clocks, not mature/final ingestion guarantees; T's current report
+is incomplete. No new collection skips the wait or proves a watermark.
+Existing follow-up/hard stop **22 October 23:15:33Z** is unchanged.
+
+**Policy versus measurement:** published same-region Azure-service transfers
+are free, but tenant boundaries are unqualified, not explicitly cross-tenant;
+the [BYOIP Internet-egress exception and separate service fees](#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress)
+still apply. Missing rows are not zeros. This refresh is local-only:
+no Azure/authentication, infrastructure, source or automated-job changes.
+Git publication is separate; scheduler state was not independently refreshed.
+Per the existing handoff, job 5 remains the sole billing job; the bounded
+parent-local wake-only timer has no Azure activity or owner lease and is unchanged.
+
+
+## Superseded executive summary — 18 October 2026, 01:25Z
 
 **Transport PASS (400 GB); cleanup PASS; billing INCONCLUSIVE.**
 The [new actual Query collection](results/2026-10-18-query-alternative-011707.json)
@@ -16,7 +71,7 @@ responses / four requests**, nine exact-canonical-VM daily meter rows:
 
 These totals combine only returned rows within each alias/currency, not
 currencies, experiments or refreshes. See the
-[exact day/meter split](billing-evidence.md#latest-snapshot--18-october-2026-0125z-offline-refresh).
+[exact day/meter split](billing-evidence.md#superseded-snapshot--18-october-2026-0125z).
 T's only returned meter is **Intra Continent Data Transfer Out**, not a
 same-region meter; T sent both cross-region and same-region traffic, so its
 endpoint total cannot prove a charge for T → A. A's tiny positive costs do

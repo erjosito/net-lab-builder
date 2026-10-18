@@ -1,6 +1,100 @@
 # Billing extraction and reconciliation plan
 
-## Latest snapshot — 18 October 2026, 01:25Z (offline refresh)
+## Latest snapshot — 18 October 2026, 02:25Z (offline refresh)
+
+**Transport/cleanup PASS; billing INCONCLUSIVE and open.** The local
+[02:07:34.723864Z baseline](results/2026-10-18-detail-baseline-020010.json)
+adds A's first CSV quantity baseline and T diagnostic rows; the
+[02:21:56.745132Z provenance sidecar](results/2026-10-18-t-unit-provenance-021800.json)
+independently establishes T's raw field and current-page identity collision.
+No live calls were made for this publication.
+
+### Reported quantities, not deduced GB
+
+All rows below preserve source units, dates and decimal precision. A's CSV
+extraction is **COMPLETE**, not ingestion-final. T's diagnostic retention is
+**INCOMPLETE**: pagination finished, identity reconciliation did not.
+
+| Alias | Usage day | Meter | Reported quantity | Raw unit | Effective price | Unit price | Cost | Currency |
+|---|---|---|---:|---|---:|---:|---:|---|
+| A | 2026-10-16 | Standard Data Transfer Out | 0.000010487623512745 | 1 GB | 0.083 | 0.083 | 8.704727515578270000000E-7 | USD |
+| A | 2026-10-17 | Standard Data Transfer Out | 0.000006069429218769 | 1 GB | 0.083 | 0.083 | 5.037626251578330000000E-7 | USD |
+| A | 2026-10-17 | Intra Continent Data Transfer Out | 2.235174179080000000000E-7 | 1 GB | 0.02 | 0.02 | 4.4703483581542970000E-9 | USD |
+| A | 2026-10-16 | Intra Continent Data Transfer Out | 5.58793544770000000000E-8 | 1 GB | 0.02 | 0.02 | 1.1175870895385742000E-9 | USD |
+| T (diagnostic) | 2026-10-17 | Intra Continent Data Transfer Out | 5.5879354E-8 | 1 TB | 0.017329 | 0 | 9.68333E-10 | EUR |
+| T (diagnostic) | 2026-10-17 | Intra Continent Data Transfer Out | 9.53027955070138 | 1 TB | 0.017329 | 0 | 0.165150214334104 | EUR |
+
+A has only **four charged microquantities**, not a bulk-sized same-region
+100 GB line or explicit zero-rating. For T, `properties.date` is
+`2026-10-17T00:00:00.0000000Z`; `usageStart`/`usageEnd` are absent
+(projected null). This is a usage date, not an observed transfer hour,
+request, tenant or counterparty attribution. All baseline usage intervals
+are null. Missing dates/rows are not measured zero usage.
+
+### Independent source provenance and financial comparison
+
+T's **raw nested `properties.meterDetails.unitOfMeasure = "1 TB"`** is
+directly proven by the final Consumption GET, not invented by normalization.
+The outer `properties.unitOfMeasure` and nested `meterDetails.unit` are
+absent; no competing raw unit field or projection-precedence bug is proven.
+The two owned Bandwidth rows share the original service ID/name but differ
+in payload. Both original canonical hashes remain unchanged across the
+baseline and provenance check. Their uniqueness semantics remain unresolved;
+the public parser's **`conflicting_record_identity` is correct fail-closed
+behavior**, not permission to deduplicate, overwrite the frozen report or
+label diagnostic retention COMPLETE.
+
+Exact diagnostic cost sum **0.000000000968333 + 0.165150214334104 =
+EUR 0.165150215302437** equals the independent
+[01:21:11.187291Z Query](results/2026-10-18-query-alternative-011707.json)
+exactly. This is strong financial corroboration, **not proof of record
+uniqueness, billing-unit interpretation, conversion or zero-`unitPrice`
+credit treatment**. Positive cost and effective price coexist with reported
+`unitPrice = 0`; no credit/allowance/offer conclusion follows.
+
+The retained official, unauthenticated
+[Retail Prices API](https://prices.azure.com/api/retail/prices?%24filter=meterId%20eq%20%270ab798ac-6d96-4ccc-89d1-0cc91dcd5e21%27)
+metadata comprises **two HTTP 200 responses received 02:11:24Z**, exact meter
+`0ab798ac-6d96-4ccc-89d1-0cc91dcd5e21`, product **Bandwidth Inter-Region**,
+meter **Intra Continent Data Transfer Out**, effective start **2020-07-01**:
+**`1 GB`, EUR 0.0176 / USD 0.02**. This is independent public catalogue
+evidence, not customer billing. The retained capture is a structured
+transcription of response output, **not saved raw response bytes**.
+[Official API semantics](https://learn.microsoft.com/en-us/rest/api/cost-management/retail-prices/azure-retail-prices)
+describe undiscounted retail; non-USD rates are reference estimates.
+The legacy source's `1 TB` versus exact-meter retail `1 GB` discrepancy
+has **UNKNOWN cause**. Preserve both; do not divide quantities by 1,000 or
+silently relabel them GB. Legacy **EUR 0.017329** differs from retail
+**EUR 0.0176**; currency/date/offer comparability is unestablished and a
+negotiated rate is not proven.
+
+### What remains open
+
+Fresh C's last CSV is still **17 October 23:01:56Z**:
+**10.8746547754853965 reported `1 GB` × USD 0.02 =
+USD 0.21749309550970793**. This remains a positive partial cross-region
+control, not a fresh C extraction or full 100 GB reconciliation.
+Historical-C remains separate. T's asynchronous HTTP 422 cause is
+**UNKNOWN**; the successful date-bounded Consumption GET is a different route.
+
+The 02:07 artifact preserves **5/6 customer requests as of that snapshot**.
+The final sidecar consumes exactly one remaining call: **A generation/poll/
+download 3 + T first parser failure 1 + diagnostic 1 + provenance 1 = 6/6**,
+zero remaining, no new budget. The two prior public-metadata requests are
+separate unauthenticated catalogue calls, not extra customer calls.
+
+Earliest six-hour repeats on 18 October: Query
+**07:21:11.187291Z**, A detail **08:07:34.723864Z**; T's **02:18Z** provenance
+phase permits **08:18Z or later**, conservatively
+**08:21:56.745132Z** from completion. A stable incomplete dataset does not
+prove complete ingestion; no watermark, mature comparable A/C/T evidence or
+same-region zero-rating is established. Existing jobs and
+**22 October 23:15:33Z** hard stop are unchanged; no resources or traffic
+are needed. See the [public T reproduction](costs/README.md#t-date-bounded-consumption-reproduction)
+and [qualified policy interpretation](README.md#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress).
+
+
+## Superseded snapshot — 18 October 2026, 01:25Z
 
 **Transport PASS (four verified 100 GB legs / 400 GB); cleanup PASS (21
 owned roots); billing INCONCLUSIVE and still open.** Transport/cleanup
@@ -526,7 +620,7 @@ quantity gap, not the missing scale-confirmed control or T coverage.
 At $0.02/decimal GB planning only, 1 GiB would be ~$0.0214748 before overhead,
 not an observed rate/cost. Do not infer quantity from those retail estimates.
 
-Use the [exact bounded collector templates](costs/README.md#dated-follow-up-commands-for-the-completed-run)
+Use the [historical bounded collector templates](costs/README.md#historical-follow-up-command-examples)
 under a new approved read-only API lease. Each is a new cumulative snapshot:
 compare revisions, **never sum repeated snapshots**. Query actual usage UTC,
 not ingestion day. Detailed Consumption date predicates can be receipt windows;

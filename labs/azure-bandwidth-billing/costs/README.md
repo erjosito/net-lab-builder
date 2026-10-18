@@ -1,6 +1,73 @@
 # Reproducible Cost Analysis API deliverable
 
-## Latest actual cost answer — 17 October 2026, 23:05Z
+## Latest actual cost answer — 18 October 2026, 02:25Z (offline refresh)
+
+**Transport/cleanup PASS; billing INCONCLUSIVE, still open.** The
+[02:07Z A CSV / T diagnostic baseline](../results/2026-10-18-detail-baseline-020010.json)
+contains four A charged microquantity rows (16–17 October), with complete
+CSV extraction but no bulk-sized same-region 100 GB line or explicit zero.
+The [02:21Z T provenance sidecar](../results/2026-10-18-t-unit-provenance-021800.json)
+proves raw **`properties.meterDetails.unitOfMeasure = "1 TB"`**, correctly
+projected by the public normalizer. Two owned Bandwidth rows have the same
+service ID but different contents and unchanged original hashes. Public
+`conflicting_record_identity` correctly fails closed; separate diagnostic
+retention remains **INCOMPLETE**, not a complete public report.
+
+Their exact **EUR 0.165150215302437** cost sum equals the earlier independent
+Query: financial corroboration, not uniqueness, units, conversion or credit
+proof. Reported effective price **EUR 0.017329** and `unitPrice = 0`
+must both be preserved. Independent official exact-meter retail metadata
+reports **`1 GB`, EUR 0.0176 / USD 0.02**, contradicting the legacy raw
+unit without proving the cause or a /1,000 conversion. Date/offer/currency
+comparability and negotiated pricing are not established.
+See [exact rows and source provenance](../billing-evidence.md#latest-snapshot--18-october-2026-0225z-offline-refresh).
+
+Fresh C remains the **17 October 23:01:56Z** CSV, not refreshed:
+**10.8746547754853965 reported `1 GB` × USD 0.02 =
+USD 0.21749309550970793**, positive partial cross-region evidence only.
+T's asynchronous 422 cause remains **UNKNOWN**.
+The new manual check is now **6/6 customer calls** (A 3 + T 1 first failure
++ 1 diagnostic + 1 provenance); the frozen 02:07 artifact still records
+5/6 as of then. No request budget was reset.
+
+Earliest six-hour clocks: Query **07:21:11Z**, A details **08:07:34Z**,
+T provenance **08:18Z+** (conservative completion-based **08:21:56Z**).
+These do not make incomplete data mature or prove an ingestion watermark.
+No Azure calls, source or automated-job changes in this refresh; the existing
+**22 October 23:15:33Z** hard stop remains.
+
+### T date-bounded Consumption reproduction
+
+The ordinary public `details` command needs **no private adapter**. From the
+repository root, with existing private T context/inventory paths and a new
+output name, use the existing flags below only when separately authorized:
+
+```powershell
+$ctxPath = '<ABSOLUTE_PRIVATE_T_CONTEXT_JSON>'
+$inventory = '<ABSOLUTE_PRIVATE_T_INVENTORY_JSON>'
+$ctx = Get-Content -LiteralPath $ctxPath -Raw | ConvertFrom-Json
+$outputPath = '<NEW_ABSOLUTE_PRIVATE_OUTPUT_JSON>'
+python labs\azure-bandwidth-billing\costs\cost_api.py details `
+  --transport native --context $ctxPath --inventory $inventory --resource-group $ctx.resourceGroup `
+  --start 2026-10-15 --end 2026-10-18 --filter-variant legacy-date `
+  --max-pages 1 --max-http-requests 1 --max-retries 0 --max-seconds 75 `
+  --output $outputPath
+```
+
+Run natively where T's already-pinned CLI credentials exist (the observed
+path was native WSL); do not switch/login/copy credentials. These date
+bounds reproduce the ordinary reported route, not the private diagnostic
+adapter's actual-now end clamp. Do not use them before the end boundary is
+past. They do not guarantee ingestion coverage or exact historical bytes.
+For the observed same-ID/different-payload pair, expect **fail-closed
+`conflicting_record_identity`**, not a successful two-row COMPLETE result.
+No public diagnostic/bypass flag exists or is required for the ordinary
+reported path. Keep the failed report frozen; independent diagnostics do
+not repair identities or authorize another call. The current check's budget
+is exhausted; **this example was not executed**.
+
+
+## Superseded actual cost answer — 17 October 2026, 23:05Z
 
 **Yes: successful Cost Management Queries return actual money amounts, but
 not necessarily quantity/unit/rate.** In the latest collection the three
