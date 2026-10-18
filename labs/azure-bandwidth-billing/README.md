@@ -1,6 +1,51 @@
 # Azure public-endpoint bandwidth billing
 
-## Executive summary — 18 October 2026, 08:20Z (offline refresh)
+## Executive summary — 18 October 2026, 12:15Z (offline refresh)
+
+**Transport PASS (400 GB); cleanup PASS (21 owned roots deleted); billing
+INCONCLUSIVE and open.** The new [fresh financial comparison](results/2026-10-18-control-financial-comparison-114700.json)
+returned **T/A/C Query HTTP 200** at **11:51–11:52Z**, each more than ten
+hours after the 01:21Z baseline. A remains **USD
+0.00000137982331216335287**; C's all-Bandwidth aggregate increased to **USD
+0.28475133349094558918** (**+0.06725686436425906306**); T increased to
+**EUR 0.244085448265384** (**+0.078935232962947**). These are aggregate
+costs, not new quantities or rates. C's Query is nearly, not exactly, equal
+to its 08:15Z CSV all-Bandwidth total; preserve both source precisions.
+
+The [historical-control alternative](results/2026-10-18-historical-control-alternative.json)
+adds a timed-out legacy GET and successful historical-C Query: **USD
+0.0131025677174329501587**, unchanged from 01:21Z. Historical financial
+stability is a **partial mismatch**, not full reconciliation of the verified
+1 GiB control. Its quantity/rate remain **STALE: 0.6551259830594063 reported
+`1 GB` at USD 0.02**; neither historical detail attempt refreshed them.
+Do not assume the entire verified-volume shortfall is ingestion lag.
+
+The latest fresh-C bulk CSV remains **08:15Z: 14.2374728210270405 reported
+`1 GB`, USD 0.28474945642054081**, distinct from all-Bandwidth costs.
+A's unchanged **08:17Z four positive microquantity rows**, separated by over
+six hours, still contain no explicit zero-rated 100 GB record. T's raw
+**`1 TB` versus retail `1 GB`**, repeated-ID semantics and asynchronous
+**422 cause UNKNOWN** remain unresolved (support issue **#23**); no
+same-region charge or service bug is proved.
+
+The original dated result remains **4/6 as of its snapshot**; the linked
+alternative records **global 6/6**, four Queries plus generation and legacy
+GET, with all owned children idle. Both historical detail timeouts used
+the then-fixed **20-second socket timeout / source `2ab6c0ce…`**.
+The subsequent offline CLI change adds `--request-timeout-seconds`
+(default **20**, explicit **120** available for future bounded calls);
+it has **not been rerun live** and does not retroactively fix those failures.
+It is not a hard real-time total request deadline or an ingestion guarantee.
+
+See the [dated financial comparison and provenance](billing-evidence.md#latest-snapshot--18-october-2026-1215z-offline-refresh)
+and [collector timeout semantics](costs/README.md#latest-actual-cost-answer--18-october-2026-1215z-offline-refresh).
+Only existing **six-hourly schedule 5** and its original
+**22 October 23:15:33Z hard stop** remain; no budget restart, new timer,
+traffic, resources or live calls were made by this offline refresh.
+The [same-region policy qualification, BYOIP exception and separate service fees](#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress)
+are unchanged. Dated evidence below retains its original as-of claims.
+
+## Superseded executive summary — 18 October 2026, 08:20Z (offline refresh)
 
 **Transport PASS (400 GB); cleanup PASS (21 owned roots deleted); billing
 INCONCLUSIVE and open.** The new [separated Cost Details comparison](results/2026-10-18-separated-detail-comparison-081000.json)

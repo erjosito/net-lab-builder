@@ -115,6 +115,112 @@ class PublicWorkflowTests(unittest.TestCase):
         self.assertEqual((code, summary["retained"], opener.open.call_count), (0, 2, 3))
         sleep.assert_not_called()
 
+    def test_request_timeout_default_and_explicit_reach_arm_and_blob(self):
+        for command in ("query", "details", "cost-details"):
+            for timeout in (20, 120):
+                with self.subTest(command=command, timeout=timeout):
+                    extra = [] if timeout == 20 else [
+                        "--request-timeout-seconds", "120", "--max-seconds", "300"]
+                    responses = ([Response(completed()), Response(RAW)] if command == "cost-details"
+                                 else [Response({"value": []})] if command == "details"
+                                 else [Response({"properties": {"columns": [], "rows": []}})])
+                    code, _, opener, cli, sleep = self.run_cli(
+                        responses, self.command(command, extra))
+                    self.assertEqual(code, 0)
+                    self.assertEqual([call.kwargs["timeout"] for call in opener.open.call_args_list],
+                                     [timeout] * len(responses))
+                    self.assertEqual([call.args[1] for call in cli.call_args_list], [15, 15])
+                    sleep.assert_not_called()
+                    if command == "cost-details":
+                        self.assertEqual(opener.open.call_args.args[0].full_url, BLOB)
+                        self.assertEqual(opener.open.call_args.args[0].headers, {})
+                        self.csv.unlink()
+                    self.output.unlink()
+
+    def test_invalid_request_timeouts_fail_before_auth_http_or_wsl_dispatch(self):
+        for command in ("query", "details", "cost-details"):
+            for transport in ("native", "wsl"):
+                for value in ("0", "-1", "1.5", "abc", "nan", "inf"):
+                    with self.subTest(command=command, transport=transport, value=value), patch(
+                            "cost_api.cli_json") as cli, patch(
+                            "cost_api.urllib.request.build_opener") as opener, patch(
+                            "cost_api.run_bounded") as runner, patch(
+                            "sys.stdout", new_callable=io.StringIO) as out, patch(
+                            "sys.stderr", new_callable=io.StringIO):
+                        command_args = self.command(command, [
+                            "--transport", transport, "--request-timeout-seconds", value])
+                        if value in ("0", "-1"):
+                            self.assertEqual(api.main(command_args), 2)
+                            self.assertEqual(json.loads(out.getvalue())["code"], "invalid_bounds")
+                        else:
+                            with self.assertRaises(SystemExit) as error:
+                                api.main(command_args)
+                            self.assertEqual(error.exception.code, 2)
+                        cli.assert_not_called()
+                        opener.assert_not_called()
+                        runner.assert_not_called()
+                        self.assertFalse((self.root / "deploy").exists())
+
+    def test_request_timeout_poll_and_blob_use_remaining_deadline(self):
+        clock = [100.0]
+        responses = [Response(status=202, headers={"Location": POLL}),
+                     Response(completed()), Response(RAW)]
+        def open_request(*unused, **kwargs):
+            index = 3 - len(responses)
+            clock[0] += (20, 60, 0)[index]
+            return responses.pop(0)
+        def sleep(seconds):
+            clock[0] += seconds
+        with patch("cost_api.time.monotonic", side_effect=lambda: clock[0]), patch(
+                "cost_api.time.sleep", side_effect=sleep), patch(
+                "cost_api.cli_json", side_effect=[
+                    {"id": SUB, "tenantId": TENANT, "state": "Enabled"},
+                    {"subscription": SUB, "tenant": TENANT, "accessToken": "ARM_SECRET",
+                     "expires_on": (dt.datetime.now(dt.timezone.utc) +
+                                    dt.timedelta(hours=1)).timestamp()}]), patch(
+                "cost_api.urllib.request.build_opener") as build_opener, patch(
+                "sys.stdout", new_callable=io.StringIO):
+            opener = build_opener.return_value
+            opener.open.side_effect = open_request
+            self.assertEqual(api.main(self.command(extra=[
+                "--request-timeout-seconds", "120", "--max-seconds", "150"])), 0)
+        self.assertEqual([call.kwargs["timeout"] for call in opener.open.call_args_list],
+                         [120, 100, 40])
+        self.assertEqual(clock[0], 210)
+        self.output.unlink()
+        self.csv.unlink()
+        code, summary, opener, _, sleep = self.run_cli(
+            [Response(status=202, headers={"Location": POLL})], self.command(extra=[
+                "--request-timeout-seconds", "120", "--max-seconds", "30"]))
+        self.assertEqual((code, summary["reason"], opener.open.call_count),
+                         (3, "pending_deadline", 1))
+        self.assertLessEqual(opener.open.call_args.kwargs["timeout"], 30)
+        sleep.assert_not_called()
+
+    @unittest.skipUnless(os.name == "nt", "Windows dispatch contract")
+    def test_wsl_request_timeout_serialized_for_all_collection_commands(self):
+        for command in ("query", "details", "cost-details"):
+            for extra in ([], ["--request-timeout-seconds", "120"],
+                          ["--request-timeout-seconds=120"]):
+                with self.subTest(command=command, extra=extra), patch(
+                        "cost_api.run_bounded", return_value=subprocess.CompletedProcess(
+                            [], 0, b'{"state":"COMPLETE"}', b"")) as runner, patch(
+                        "cost_api.cli_json") as cli, patch(
+                        "cost_api.urllib.request.build_opener") as opener, patch(
+                        "sys.stdout", new_callable=io.StringIO):
+                    self.assertEqual(api.main(self.command(command, [
+                        "--transport", "wsl", "--max-seconds", "300"] + extra)), 0)
+                    forwarded, timeout = runner.call_args.args
+                    self.assertEqual(forwarded[forwarded.index("--transport") + 1], "native")
+                    self.assertEqual(timeout, 340)
+                    if extra:
+                        self.assertEqual(forwarded[
+                            forwarded.index("--request-timeout-seconds") + 1], "120")
+                    else:
+                        self.assertNotIn("--request-timeout-seconds", forwarded)
+                    cli.assert_not_called()
+                    opener.assert_not_called()
+
     def test_unrelated_values_discarded_before_persistence(self):
         foreign = RAW.splitlines()[0] + b"\n" + (
             RID + "unowned," + RG + ",10/15/2026,PRIVATE,PRIVATE,PRIVATE,PRIVATE,"
@@ -306,7 +412,8 @@ class PublicWorkflowTests(unittest.TestCase):
             "expiresAtUtc": (dt.datetime.now(dt.timezone.utc) +
                              dt.timedelta(hours=1)).isoformat()}))
         code, summary, opener, _, _ = self.run_cli(
-            [Response(completed())], self.command(extra=["--lease", str(path)]))
+            [Response(completed())], self.command(extra=[
+                "--lease", str(path), "--request-timeout-seconds", "120"]))
         self.assertEqual((code, summary["reason"], opener.open.call_count),
                          (3, "http_request_limit", 1))
         self.assertLessEqual(opener.open.call_args.kwargs["timeout"], 10)

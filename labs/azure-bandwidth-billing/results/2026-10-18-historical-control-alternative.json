@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "taskId": "historical-control-alternative-20261018T120000Z",
+  "globalParentCheckId": "control-financial-comparison-20261018T114700Z",
+  "verdict": "INCONCLUSIVE",
+  "completedAtUtc": "2026-10-18T12:03:50.141182+00:00",
+  "reports": {
+    "details": {
+      "state": "INCOMPLETE",
+      "reason": "http_timeout",
+      "httpStatus": null,
+      "pages": 0,
+      "received": 0,
+      "discarded": 0,
+      "duplicates": 0,
+      "unattributedLabRows": 0,
+      "httpRequests": 1,
+      "httpRequestCounts": {
+        "consumption": 1
+      },
+      "source": "Microsoft.Consumption/usageDetails",
+      "rows": [],
+      "ingestionFinal": false,
+      "requestedDates": {
+        "from": "2026-10-15",
+        "through": "2026-10-18T12:03:39.767411+00:00"
+      },
+      "emptyIsNotZero": true,
+      "extractionComplete": false,
+      "quantityEstablished": false,
+      "costTotalsByCurrency": {}
+    },
+    "query": {
+      "state": "COMPLETE",
+      "reason": null,
+      "httpStatus": null,
+      "pages": 1,
+      "received": 2,
+      "discarded": 0,
+      "duplicates": 0,
+      "unattributedLabRows": 0,
+      "httpRequests": 1,
+      "httpRequestCounts": {
+        "query": 1
+      },
+      "source": "Microsoft.CostManagement/query",
+      "rows": [
+        {
+          "day": "2026-10-15",
+          "meterName": "Intra Continent Data Transfer Out",
+          "meterCategory": "Bandwidth",
+          "quantity": null,
+          "unit": null,
+          "effectivePrice": null,
+          "unitPrice": null,
+          "cost": "4.80562448501587E-8",
+          "currency": "USD"
+        },
+        {
+          "day": "2026-10-16",
+          "meterName": "Intra Continent Data Transfer Out",
+          "meterCategory": "Bandwidth",
+          "quantity": null,
+          "unit": null,
+          "effectivePrice": null,
+          "unitPrice": null,
+          "cost": "0.0131025196611881",
+          "currency": "USD"
+        }
+      ],
+      "ingestionFinal": false,
+      "requestedDates": {
+        "from": "2026-10-15",
+        "through": "2026-10-18T12:03:48.935819+00:00"
+      },
+      "emptyIsNotZero": true,
+      "extractionComplete": true,
+      "quantityEstablished": false,
+      "actualQueryWindow": {
+        "from": "2026-10-15T00:00:00Z",
+        "to": "2026-10-18T12:03:41.441992+00:00"
+      },
+      "costTotalsByCurrency": {
+        "USD": "0.0131025677174329501587"
+      }
+    }
+  },
+  "historicalComparison": [
+    {
+      "priorCSV": {
+        "day": "2026-10-16",
+        "meterName": "Intra Continent Data Transfer Out",
+        "quantity": "0.6551259830594063",
+        "unit": "1 GB",
+        "effectivePrice": "0.02",
+        "cost": "0.013102519661188125",
+        "currency": "USD"
+      },
+      "currentDetails": [],
+      "exactUnitMatches": false,
+      "exactCostMatches": false
+    },
+    {
+      "priorCSV": {
+        "day": "2026-10-15",
+        "meterName": "Intra Continent Data Transfer Out",
+        "quantity": "0.000002402812242508",
+        "unit": "1 GB",
+        "effectivePrice": "0.02",
+        "cost": "0.0000000480562448501586884",
+        "currency": "USD"
+      },
+      "currentDetails": [],
+      "exactUnitMatches": false,
+      "exactCostMatches": false
+    }
+  ],
+  "queryComparison": {
+    "priorUSD": "0.0131025677174329501587",
+    "currentUSD": "0.0131025677174329501587",
+    "deltaUSD": "0E-22",
+    "quantityInferred": false
+  },
+  "quantityState": "INCOMPLETE",
+  "fullVerified1GiBControlEstablished": false,
+  "financialObservation": "STABLE_FINANCIAL_PARTIAL_MISMATCH",
+  "unitOrCostMismatch": false,
+  "unitConversionApplied": false,
+  "deduplicationAppliedByContinuation": false,
+  "interpretation": "Preserve reported units and quantities. No catalog correction, inferred Query quantity, or assumption that the entire verified-traffic gap is ingestion lag. Empty or partial pages are not zero.",
+  "httpAccounting": {
+    "priorAttempts": 4,
+    "newAttempts": 2,
+    "globalAttempts": 6,
+    "globalLimit": 6,
+    "retries": 0,
+    "paginationRequests": 0,
+    "downloads": 0
+  },
+  "pinnedSourceAndBindingsUnchanged": true,
+  "originalParentArtifactsUnchanged": true,
+  "restoreState": "NO_MUTATIONS_ALL_OWNED_CHILDREN_IDLE",
+  "failure": null
+}

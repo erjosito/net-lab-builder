@@ -1,6 +1,38 @@
 # Reproducible Cost Analysis API deliverable
 
-## Latest actual cost answer — 18 October 2026, 08:20Z (offline refresh)
+## Latest actual cost answer — 18 October 2026, 12:15Z (offline refresh)
+
+**Transport/cleanup PASS; billing INCONCLUSIVE and open.** New
+[fresh T/A/C Queries](../results/2026-10-18-control-financial-comparison-114700.json)
+returned HTTP 200 more than ten hours after 01:21Z: **A USD
+0.00000137982331216335287 unchanged; C all-Bandwidth USD
+0.28475133349094558918 (+0.06725686436425906306); T EUR
+0.244085448265384 (+0.078935232962947)**. These are costs, not new
+quantities/rates. C nearly, not exactly, matches the 08:15Z CSV aggregate.
+The [historical alternative](../results/2026-10-18-historical-control-alternative.json)
+adds a timed-out legacy GET and HTTP 200 Query **USD
+0.0131025677174329501587**, unchanged: financial stability with a partial
+mismatch, not new quantity stability or full 1 GiB reconciliation.
+Historical **0.6551259830594063 reported `1 GB` at USD 0.02** remains STALE.
+See [exact comparisons and limitations](../billing-evidence.md#latest-snapshot--18-october-2026-1215z-offline-refresh).
+
+The original snapshot stays **4/6**; the alternative closes **global 6/6**,
+all owned children idle. Historical generation and GET failures used the
+then-fixed **20-second socket timeout / source `2ab6c0ce…`**.
+The subsequently reviewed offline patch (**`cbd099e6…`**, coordinator's
+independent **82 tests PASS**) makes `--request-timeout-seconds 120`
+available for future separately authorized calls, preserving default **20**.
+No post-patch live rerun occurred. The flag is a socket timeout, not a hard
+real-time total request deadline or ingestion guarantee; token auth remains
+separately bounded to **<=15 seconds**. Full semantics and example below
+apply to future calls only, not retroactive repair of failed reports.
+T's raw-unit/identity issue **#23** and 422 cause remain unresolved.
+Only existing **six-hourly schedule 5 / 22 October 23:15:33Z hard stop**
+remain; this offline publication creates no request budget or timer.
+
+<a id="latest-actual-cost-answer--18-october-2026-0820z-offline-refresh"></a>
+
+## Superseded actual cost answer — 18 October 2026, 08:20Z (offline refresh)
 
 **Collection PASS; billing INCONCLUSIVE and open.** The new
 [separated C/A Cost Details comparison](../results/2026-10-18-separated-detail-comparison-081000.json)
@@ -329,9 +361,17 @@ adapter. Consumption, report generation/polling and SAS downloads do not send
 that header. Native and WSL execute the same implementation. This identifier
 does **not** establish quota recovery or authorize retrying an existing 429.
 
-HTTP socket timeout <=20s with guard/deadline checks between bounded reads;
-CLI <=15s. Query defaults to 75s; Cost Details defaults to 300s. The explicit
-maximum is 1800s. All commands default to six HTTP attempts, configurable with
+HTTP socket timeout defaults to 20s. `--request-timeout-seconds` accepts a
+positive integer for Query, Consumption `details`, and `cost-details`, including
+ARM requests and CSV blob downloads in native and WSL execution. Each HTTP
+attempt uses the smaller of this value and the remaining workflow/lease time;
+guard/deadline checks still run between bounded reads. This is a per-request
+socket timeout, **not** an overall deadline or a retry budget, and does not
+reset or extend `--max-seconds` or a supplied lease's bounds. Azure CLI account
+and token subprocesses remain separately bounded to <=15s and remaining time;
+this flag does not govern token acquisition. The overall `--max-seconds`
+defaults to 75s for Query/Consumption and 300s for Cost Details, with a maximum
+of 1800s. All commands default to six HTTP attempts, configurable with
 `--max-http-requests` (maximum 100). Query/Consumption default to three pages
 (maximum 20), <=8 MiB/page. Query defaults to one 429 retry only if the longest
 known Retry-After/Cost Management retry delay is <=2s and fits the deadline.
@@ -423,12 +463,17 @@ $ctx = Get-Content -LiteralPath $ctxPath -Raw | ConvertFrom-Json
 $stamp = [DateTimeOffset]::UtcNow.ToString('yyyyMMddTHHmmssfffffffZ')
 python labs\azure-bandwidth-billing\costs\cost_api.py cost-details `
   --context $ctxPath --inventory $inventory --resource-group $ctx.resourceGroup `
-  --start 2026-10-15 --end 2026-10-16 --max-seconds 300 `
+  --start 2026-10-15 --end 2026-10-16 --max-seconds 300 --request-timeout-seconds 120 `
   --max-polls 3 --max-http-requests 6 --max-retries 0 `
   --csv-output "labs\azure-bandwidth-billing\private\reports\control-details-$stamp.csv" `
   --output "labs\azure-bandwidth-billing\private\reports\control-details-$stamp.json"
 if ($LASTEXITCODE -ne 0) { throw 'Report extraction did not complete; inspect its sanitized summary.' }
 ```
+
+A longer request timeout does not ensure billing ingestion or report completion.
+The example selects 120s for future requests only; earlier public CLI failures
+used the then-fixed 20s timeout, even where an orchestration ceiling was 90s or
+120s. Those historical attempts are not 120s request-timeout tests.
 
 Normal public CLI use creates its own unique, read-only invocation lease under
 ignored `deploy\.runtime-control`, bounded by the invocation deadline and HTTP
