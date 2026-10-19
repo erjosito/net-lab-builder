@@ -1,0 +1,86 @@
+{
+  "jp": {
+    "timestampUtc": "2026-10-19T15:49:10.212034+00:00",
+    "action": "enable",
+    "before": {
+      "rows": {
+        "mesh_eu": {
+          "state": "up",
+          "since": "15:07:39.921",
+          "info": "Established"
+        },
+        "mesh_us": {
+          "state": "up",
+          "since": "15:07:43.835",
+          "info": "Established"
+        },
+        "mesh_cn": {
+          "state": "up",
+          "since": "15:07:34.419",
+          "info": "Established"
+        },
+        "azure_0": {
+          "state": "down",
+          "since": "15:47:06.261",
+          "info": ""
+        },
+        "azure_1": {
+          "state": "down",
+          "since": "15:47:06.262",
+          "info": ""
+        }
+      },
+      "raw": "BIRD 2.0.8 ready.\nName       Proto      Table      State  Since         Info\ndevices    Device     ---        up     15:07:30.284  \nconnected  Direct     ---        up     15:07:30.284  \ncontrol_pins Static     underlay4  up     15:07:30.284  \nown_dc     Static     lab4       up     15:07:30.284  \nkernel_lab Kernel     lab4       up     15:07:30.284  \nmesh_eu    BGP        ---        up     15:07:39.921  Established   \nmesh_us    BGP        ---        up     15:07:43.835  Established   \nmesh_cn    BGP        ---        up     15:07:34.419  Established   \nazure_0    BGP        ---        down   15:47:06.261  \nazure_1    BGP        ---        down   15:47:06.262  \n"
+    },
+    "after": {
+      "rows": {
+        "mesh_eu": {
+          "state": "up",
+          "since": "15:07:39.921",
+          "info": "Established"
+        },
+        "mesh_us": {
+          "state": "up",
+          "since": "15:07:43.835",
+          "info": "Established"
+        },
+        "mesh_cn": {
+          "state": "up",
+          "since": "15:07:34.419",
+          "info": "Established"
+        },
+        "azure_0": {
+          "state": "up",
+          "since": "15:49:08.107",
+          "info": "Established"
+        },
+        "azure_1": {
+          "state": "up",
+          "since": "15:49:08.359",
+          "info": "Established"
+        }
+      },
+      "raw": "BIRD 2.0.8 ready.\nName       Proto      Table      State  Since         Info\ndevices    Device     ---        up     15:07:30.284  \nconnected  Direct     ---        up     15:07:30.284  \ncontrol_pins Static     underlay4  up     15:07:30.284  \nown_dc     Static     lab4       up     15:07:30.284  \nkernel_lab Kernel     lab4       up     15:07:30.284  \nmesh_eu    BGP        ---        up     15:07:39.921  Established   \nmesh_us    BGP        ---        up     15:07:43.835  Established   \nmesh_cn    BGP        ---        up     15:07:34.419  Established   \nazure_0    BGP        ---        up     15:49:08.107  Established   \nazure_1    BGP        ---        up     15:49:08.359  Established   \n"
+    },
+    "actions": [
+      {
+        "peer": "azure_0",
+        "output": "BIRD 2.0.8 ready.\nazure_0: enabled\n"
+      },
+      {
+        "peer": "azure_1",
+        "output": "BIRD 2.0.8 ready.\nazure_1: enabled\n"
+      }
+    ],
+    "birdPid": 991,
+    "sha256": "89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006",
+    "stat": {
+      "uid": 113,
+      "gid": 122,
+      "mode": 384,
+      "mtimeNs": 1792000606196722098
+    },
+    "ipsecStatus": "vng1: #2, ESTABLISHED, IKEv2, e9e3fc7e77ae2207_i* 0bacab6d0a0337dc_r\n  local  '104.46.220.128' @ 10.130.0.4[4500]\n  remote '4.190.54.71' @ 4.190.54.71[4500]\n  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_2048\n  established 2500s ago, rekeying in 10638s\n  s2s1: #2, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128\n    installed 2500s ago, rekeying in 1100s, expires in 1100s\n    in  c067a5db (-|0x0000002a),      0 bytes,     0 packets,    28s ago\n    out b820f8fa (-|0x0000002a),      0 bytes,     0 packets,     1s ago\n    local  0.0.0.0/0\n    remote 0.0.0.0/0\n  s2s1: #4, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128/MODP_2048\n    installed 2500s ago, rekeying in 1100s, expires in 1100s\n    in  c2e3fa04 (-|0x0000002a),  13323 bytes,   205 packets,     2s ago\n    out c1626518 (-|0x0000002a),  10761 bytes,   154 packets,     2s ago\n    local  0.0.0.0/0\n    remote 0.0.0.0/0\nvng0: #1, ESTABLISHED, IKEv2, 1dae0e869acddbec_i* 3975212c9bb3607d_r\n  local  '104.46.220.128' @ 10.130.0.4[4500]\n  remote '20.27.135.137' @ 20.27.135.137[4500]\n  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_2048\n  established 2500s ago, rekeying in 11818s\n  s2s0: #1, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128\n    installed 2500s ago, rekeying in 1100s, expires in 1100s\n    in  cec03537 (-|0x00000029),      0 bytes,     0 packets,    25s ago\n    out 0ccff620 (-|0x00000029),      0 bytes,     0 packets,     1s ago\n    local  0.0.0.0/0\n    remote 0.0.0.0/0\n  s2s0: #3, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128/MODP_2048\n    installed 2500s ago, rekeying in 1100s, expires in 1100s\n    in  c9a72cf2 (-|0x00000029),  11524 bytes,   186 packets,     2s ago\n    out 776d8ef2 (-|0x00000029),   7287 bytes,   112 packets,     2s ago\n    local  0.0.0.0/0\n    remote 0.0.0.0/0\n",
+    "ipsecConfigurationSha256": "<REDACTED_IPSEC_CONFIG_HASH>"
+  }
+}

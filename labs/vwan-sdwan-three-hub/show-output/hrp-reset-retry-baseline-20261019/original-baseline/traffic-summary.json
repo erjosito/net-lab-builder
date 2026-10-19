@@ -1,0 +1,513 @@
+{
+  "cells": [
+    {
+      "source": "10.110.0.10",
+      "destination": "10.10.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.10.0.10\",\"from\":\"10.110.0.10\",\"gateway\":\"10.110.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "tcpDetail": {
+        "exitCode": 0,
+        "stdout": "200 10.110.0.10 10.10.0.10",
+        "stderr": ""
+      },
+      "icmpDetail": {
+        "exitCode": 0,
+        "stdout": "PING 10.10.0.10 (10.10.0.10) from 10.110.0.10 : 56(84) bytes of data.\n64 bytes from 10.10.0.10: icmp_seq=1 ttl=62 time=6.01 ms\n64 bytes from 10.10.0.10: icmp_seq=2 ttl=62 time=7.79 ms\n\n--- 10.10.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1000ms\nrtt min/avg/max/mdev = 6.011/6.900/7.790/0.889 ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.110.0.10",
+      "destination": "10.20.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.20.0.10\",\"from\":\"10.110.0.10\",\"gateway\":\"10.110.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "tcpDetail": {
+        "exitCode": 28,
+        "stdout": "000",
+        "stderr": "curl: (28) Connection timeout after 3001 ms"
+      },
+      "icmpDetail": {
+        "exitCode": 1,
+        "stdout": "PING 10.20.0.10 (10.20.0.10) from 10.110.0.10 : 56(84) bytes of data.\n\n--- 10.20.0.10 ping statistics ---\n2 packets transmitted, 0 received, 100% packet loss, time 1003ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.110.0.10",
+      "destination": "10.30.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.30.0.10\",\"from\":\"10.110.0.10\",\"gateway\":\"10.110.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "tcpDetail": {
+        "exitCode": 0,
+        "stdout": "200 10.110.0.10 10.30.0.10",
+        "stderr": ""
+      },
+      "icmpDetail": {
+        "exitCode": 0,
+        "stdout": "PING 10.30.0.10 (10.30.0.10) from 10.110.0.10 : 56(84) bytes of data.\n64 bytes from 10.30.0.10: icmp_seq=1 ttl=61 time=240 ms\n64 bytes from 10.30.0.10: icmp_seq=2 ttl=61 time=239 ms\n\n--- 10.30.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1000ms\nrtt min/avg/max/mdev = 239.067/239.537/240.008/0.470 ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.120.0.10",
+      "destination": "10.10.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.10.0.10\",\"from\":\"10.120.0.10\",\"gateway\":\"10.120.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "tcpDetail": {
+        "exitCode": 28,
+        "stdout": "000",
+        "stderr": "curl: (28) Connection timeout after 3000 ms"
+      },
+      "icmpDetail": {
+        "exitCode": 1,
+        "stdout": "PING 10.10.0.10 (10.10.0.10) from 10.120.0.10 : 56(84) bytes of data.\n\n--- 10.10.0.10 ping statistics ---\n2 packets transmitted, 0 received, 100% packet loss, time 1005ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.120.0.10",
+      "destination": "10.20.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.20.0.10\",\"from\":\"10.120.0.10\",\"gateway\":\"10.120.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "tcpDetail": {
+        "exitCode": 0,
+        "stdout": "200 10.120.0.10 10.20.0.10",
+        "stderr": ""
+      },
+      "icmpDetail": {
+        "exitCode": 0,
+        "stdout": "PING 10.20.0.10 (10.20.0.10) from 10.120.0.10 : 56(84) bytes of data.\n64 bytes from 10.20.0.10: icmp_seq=1 ttl=62 time=2.85 ms\n64 bytes from 10.20.0.10: icmp_seq=2 ttl=62 time=41.1 ms\n\n--- 10.20.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 2.850/21.985/41.120/19.135 ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.120.0.10",
+      "destination": "10.30.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.30.0.10\",\"from\":\"10.120.0.10\",\"gateway\":\"10.120.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "tcpDetail": {
+        "exitCode": 0,
+        "stdout": "200 10.120.0.10 10.30.0.10",
+        "stderr": ""
+      },
+      "icmpDetail": {
+        "exitCode": 0,
+        "stdout": "PING 10.30.0.10 (10.30.0.10) from 10.120.0.10 : 56(84) bytes of data.\n64 bytes from 10.30.0.10: icmp_seq=1 ttl=61 time=146 ms\n64 bytes from 10.30.0.10: icmp_seq=2 ttl=61 time=147 ms\n\n--- 10.30.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 146.349/146.627/146.906/0.278 ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.130.0.10",
+      "destination": "10.10.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.10.0.10\",\"from\":\"10.130.0.10\",\"gateway\":\"10.130.0.4\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "tcpDetail": {
+        "exitCode": 28,
+        "stdout": "000",
+        "stderr": "curl: (28) Connection timeout after 3000 ms"
+      },
+      "icmpDetail": {
+        "exitCode": 1,
+        "stdout": "PING 10.10.0.10 (10.10.0.10) from 10.130.0.10 : 56(84) bytes of data.\n\n--- 10.10.0.10 ping statistics ---\n2 packets transmitted, 0 received, 100% packet loss, time 1014ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.130.0.10",
+      "destination": "10.20.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.20.0.10\",\"from\":\"10.130.0.10\",\"gateway\":\"10.130.0.4\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "tcpDetail": {
+        "exitCode": 28,
+        "stdout": "000",
+        "stderr": "curl: (28) Connection timeout after 3000 ms"
+      },
+      "icmpDetail": {
+        "exitCode": 1,
+        "stdout": "PING 10.20.0.10 (10.20.0.10) from 10.130.0.10 : 56(84) bytes of data.\n\n--- 10.20.0.10 ping statistics ---\n2 packets transmitted, 0 received, 100% packet loss, time 1054ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.130.0.10",
+      "destination": "10.30.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.30.0.10\",\"from\":\"10.130.0.10\",\"gateway\":\"10.130.0.4\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "tcpDetail": {
+        "exitCode": 28,
+        "stdout": "000",
+        "stderr": "curl: (28) Connection timeout after 3001 ms"
+      },
+      "icmpDetail": {
+        "exitCode": 1,
+        "stdout": "PING 10.30.0.10 (10.30.0.10) from 10.130.0.10 : 56(84) bytes of data.\n\n--- 10.30.0.10 ping statistics ---\n2 packets transmitted, 0 received, 100% packet loss, time 1042ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.140.0.4",
+      "destination": "10.10.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.10.0.10\",\"from\":\"10.140.0.4\",\"dev\":\"wgeucn\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "tcpDetail": {
+        "exitCode": 28,
+        "stdout": "000",
+        "stderr": "curl: (28) Connection timeout after 3001 ms"
+      },
+      "icmpDetail": {
+        "exitCode": 1,
+        "stdout": "PING 10.10.0.10 (10.10.0.10) from 10.140.0.4 : 56(84) bytes of data.\n\n--- 10.10.0.10 ping statistics ---\n2 packets transmitted, 0 received, 100% packet loss, time 1027ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.140.0.4",
+      "destination": "10.20.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.20.0.10\",\"from\":\"10.140.0.4\",\"dev\":\"wguscn\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "tcpDetail": {
+        "exitCode": 28,
+        "stdout": "000",
+        "stderr": "curl: (28) Connection timeout after 3001 ms"
+      },
+      "icmpDetail": {
+        "exitCode": 1,
+        "stdout": "PING 10.20.0.10 (10.20.0.10) from 10.140.0.4 : 56(84) bytes of data.\n\n--- 10.20.0.10 ping statistics ---\n2 packets transmitted, 0 received, 100% packet loss, time 1051ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.140.0.4",
+      "destination": "10.30.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.30.0.10\",\"from\":\"10.140.0.4\",\"dev\":\"wgjpcn\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "tcpDetail": {
+        "exitCode": 0,
+        "stdout": "200 10.140.0.4 10.30.0.10",
+        "stderr": ""
+      },
+      "icmpDetail": {
+        "exitCode": 0,
+        "stdout": "PING 10.30.0.10 (10.30.0.10) from 10.140.0.4 : 56(84) bytes of data.\n64 bytes from 10.30.0.10: icmp_seq=1 ttl=62 time=3.84 ms\n64 bytes from 10.30.0.10: icmp_seq=2 ttl=62 time=3.92 ms\n\n--- 10.30.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1002ms\nrtt min/avg/max/mdev = 3.840/3.880/3.921/0.040 ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.10.0.10",
+      "destination": "10.110.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.110.0.10\",\"from\":\"10.10.0.10\",\"gateway\":\"10.10.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "tcpDetail": {
+        "exitCode": 0,
+        "stdout": "200 10.10.0.10 10.110.0.10",
+        "stderr": ""
+      },
+      "icmpDetail": {
+        "exitCode": 0,
+        "stdout": "PING 10.110.0.10 (10.110.0.10) from 10.10.0.10 : 56(84) bytes of data.\n64 bytes from 10.110.0.10: icmp_seq=1 ttl=62 time=7.79 ms\n64 bytes from 10.110.0.10: icmp_seq=2 ttl=62 time=14.5 ms\n\n--- 10.110.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1002ms\nrtt min/avg/max/mdev = 7.789/11.141/14.494/3.352 ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.10.0.10",
+      "destination": "10.120.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.120.0.10\",\"from\":\"10.10.0.10\",\"gateway\":\"10.10.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "FAIL",
+      "icmp": "PASS",
+      "tcpDetail": {
+        "exitCode": 28,
+        "stdout": "000 10.10.0.10 10.120.0.10",
+        "stderr": "curl: (28) Operation timed out after 5000 milliseconds with 0 bytes received"
+      },
+      "icmpDetail": {
+        "exitCode": 0,
+        "stdout": "PING 10.120.0.10 (10.120.0.10) from 10.10.0.10 : 56(84) bytes of data.\n64 bytes from 10.120.0.10: icmp_seq=1 ttl=61 time=103 ms\n64 bytes from 10.120.0.10: icmp_seq=2 ttl=61 time=102 ms\n\n--- 10.120.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1002ms\nrtt min/avg/max/mdev = 102.398/102.657/102.917/0.259 ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.10.0.10",
+      "destination": "10.130.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.130.0.10\",\"from\":\"10.10.0.10\",\"gateway\":\"10.10.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "tcpDetail": {
+        "exitCode": 28,
+        "stdout": "000",
+        "stderr": "curl: (28) Connection timeout after 3001 ms"
+      },
+      "icmpDetail": {
+        "exitCode": 1,
+        "stdout": "PING 10.130.0.10 (10.130.0.10) from 10.10.0.10 : 56(84) bytes of data.\n\n--- 10.130.0.10 ping statistics ---\n2 packets transmitted, 0 received, 100% packet loss, time 1010ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.10.0.10",
+      "destination": "10.140.0.4",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.140.0.4\",\"from\":\"10.10.0.10\",\"gateway\":\"10.10.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "FAIL",
+      "icmp": "PASS",
+      "tcpDetail": {
+        "exitCode": 28,
+        "stdout": "000 10.10.0.10 10.140.0.4",
+        "stderr": "curl: (28) Operation timed out after 5000 milliseconds with 0 bytes received"
+      },
+      "icmpDetail": {
+        "exitCode": 0,
+        "stdout": "PING 10.140.0.4 (10.140.0.4) from 10.10.0.10 : 56(84) bytes of data.\n64 bytes from 10.140.0.4: icmp_seq=1 ttl=62 time=238 ms\n64 bytes from 10.140.0.4: icmp_seq=2 ttl=62 time=237 ms\n\n--- 10.140.0.4 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1002ms\nrtt min/avg/max/mdev = 237.314/237.541/237.769/0.227 ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.20.0.10",
+      "destination": "10.110.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.110.0.10\",\"from\":\"10.20.0.10\",\"gateway\":\"10.20.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "FAIL",
+      "icmp": "PASS",
+      "tcpDetail": {
+        "exitCode": 28,
+        "stdout": "000 10.20.0.10 10.110.0.10",
+        "stderr": "curl: (28) Operation timed out after 5001 milliseconds with 0 bytes received"
+      },
+      "icmpDetail": {
+        "exitCode": 0,
+        "stdout": "PING 10.110.0.10 (10.110.0.10) from 10.20.0.10 : 56(84) bytes of data.\n64 bytes from 10.110.0.10: icmp_seq=1 ttl=61 time=112 ms\n64 bytes from 10.110.0.10: icmp_seq=2 ttl=61 time=138 ms\n\n--- 10.110.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1002ms\nrtt min/avg/max/mdev = 111.687/124.780/137.874/13.093 ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.20.0.10",
+      "destination": "10.120.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.120.0.10\",\"from\":\"10.20.0.10\",\"gateway\":\"10.20.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "tcpDetail": {
+        "exitCode": 0,
+        "stdout": "200 10.20.0.10 10.120.0.10",
+        "stderr": ""
+      },
+      "icmpDetail": {
+        "exitCode": 0,
+        "stdout": "PING 10.120.0.10 (10.120.0.10) from 10.20.0.10 : 56(84) bytes of data.\n64 bytes from 10.120.0.10: icmp_seq=1 ttl=62 time=2.84 ms\n64 bytes from 10.120.0.10: icmp_seq=2 ttl=62 time=3.50 ms\n\n--- 10.120.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 2.839/3.168/3.497/0.329 ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.20.0.10",
+      "destination": "10.130.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.130.0.10\",\"from\":\"10.20.0.10\",\"gateway\":\"10.20.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "tcpDetail": {
+        "exitCode": 28,
+        "stdout": "000",
+        "stderr": "curl: (28) Connection timeout after 3001 ms"
+      },
+      "icmpDetail": {
+        "exitCode": 1,
+        "stdout": "PING 10.130.0.10 (10.130.0.10) from 10.20.0.10 : 56(84) bytes of data.\n\n--- 10.130.0.10 ping statistics ---\n2 packets transmitted, 0 received, 100% packet loss, time 1054ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.20.0.10",
+      "destination": "10.140.0.4",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.140.0.4\",\"from\":\"10.20.0.10\",\"gateway\":\"10.20.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "FAIL",
+      "icmp": "PASS",
+      "tcpDetail": {
+        "exitCode": 28,
+        "stdout": "000 10.20.0.10 10.140.0.4",
+        "stderr": "curl: (28) Operation timed out after 5001 milliseconds with 0 bytes received"
+      },
+      "icmpDetail": {
+        "exitCode": 0,
+        "stdout": "PING 10.140.0.4 (10.140.0.4) from 10.20.0.10 : 56(84) bytes of data.\n64 bytes from 10.140.0.4: icmp_seq=1 ttl=62 time=149 ms\n64 bytes from 10.140.0.4: icmp_seq=2 ttl=62 time=154 ms\n\n--- 10.140.0.4 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 148.608/151.413/154.218/2.805 ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.30.0.10",
+      "destination": "10.110.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.110.0.10\",\"from\":\"10.30.0.10\",\"gateway\":\"10.30.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "tcpDetail": {
+        "exitCode": 0,
+        "stdout": "200 10.30.0.10 10.110.0.10",
+        "stderr": ""
+      },
+      "icmpDetail": {
+        "exitCode": 0,
+        "stdout": "PING 10.110.0.10 (10.110.0.10) from 10.30.0.10 : 56(84) bytes of data.\n64 bytes from 10.110.0.10: icmp_seq=1 ttl=61 time=255 ms\n64 bytes from 10.110.0.10: icmp_seq=2 ttl=61 time=243 ms\n\n--- 10.110.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1000ms\nrtt min/avg/max/mdev = 242.598/248.662/254.727/6.064 ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.30.0.10",
+      "destination": "10.120.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.120.0.10\",\"from\":\"10.30.0.10\",\"gateway\":\"10.30.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "tcpDetail": {
+        "exitCode": 0,
+        "stdout": "200 10.30.0.10 10.120.0.10",
+        "stderr": ""
+      },
+      "icmpDetail": {
+        "exitCode": 0,
+        "stdout": "PING 10.120.0.10 (10.120.0.10) from 10.30.0.10 : 56(84) bytes of data.\n64 bytes from 10.120.0.10: icmp_seq=1 ttl=61 time=147 ms\n64 bytes from 10.120.0.10: icmp_seq=2 ttl=61 time=146 ms\n\n--- 10.120.0.10 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1002ms\nrtt min/avg/max/mdev = 146.490/146.686/146.883/0.196 ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.30.0.10",
+      "destination": "10.130.0.10",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.130.0.10\",\"from\":\"10.30.0.10\",\"gateway\":\"10.30.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "FAIL",
+      "icmp": "FAIL",
+      "tcpDetail": {
+        "exitCode": 28,
+        "stdout": "000",
+        "stderr": "curl: (28) Connection timeout after 3000 ms"
+      },
+      "icmpDetail": {
+        "exitCode": 1,
+        "stdout": "PING 10.130.0.10 (10.130.0.10) from 10.30.0.10 : 56(84) bytes of data.\n\n--- 10.130.0.10 ping statistics ---\n2 packets transmitted, 0 received, 100% packet loss, time 1034ms",
+        "stderr": ""
+      }
+    },
+    {
+      "source": "10.30.0.10",
+      "destination": "10.140.0.4",
+      "route": {
+        "exitCode": 0,
+        "stdout": "[{\"dst\":\"10.140.0.4\",\"from\":\"10.30.0.10\",\"gateway\":\"10.30.0.1\",\"dev\":\"eth0\",\"flags\":[],\"uid\":0,\"cache\":[]}]",
+        "stderr": ""
+      },
+      "tcp": "PASS",
+      "icmp": "PASS",
+      "tcpDetail": {
+        "exitCode": 0,
+        "stdout": "200 10.30.0.10 10.140.0.4",
+        "stderr": ""
+      },
+      "icmpDetail": {
+        "exitCode": 0,
+        "stdout": "PING 10.140.0.4 (10.140.0.4) from 10.30.0.10 : 56(84) bytes of data.\n64 bytes from 10.140.0.4: icmp_seq=1 ttl=62 time=7.57 ms\n64 bytes from 10.140.0.4: icmp_seq=2 ttl=62 time=3.63 ms\n\n--- 10.140.0.4 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min/avg/max/mdev = 3.631/5.599/7.568/1.968 ms",
+        "stderr": ""
+      }
+    }
+  ],
+  "expectedDirections": 24,
+  "scope": "DC-Azure",
+  "tcpPass": 10,
+  "icmpPass": 14,
+  "verdict": "FAIL"
+}

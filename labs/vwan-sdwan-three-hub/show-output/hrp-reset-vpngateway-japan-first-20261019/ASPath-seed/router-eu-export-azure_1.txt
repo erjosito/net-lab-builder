@@ -1,0 +1,30 @@
+BIRD 2.0.8 ready.
+Table lab4:
+10.110.0.0/24        unicast [own_dc 10:42:29.502] * (200)
+	via 10.210.0.1 on eth0
+	Type: static univ
+10.140.0.0/24        unicast [mesh_cn 10:42:30.711 from 172.31.0.10] * (100) [AS65014i]
+	dev wgeucn
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65011 65011 65011 65014
+	BGP.next_hop: 172.31.0.10
+	BGP.local_pref: 100
+	BGP.community: 
+10.130.0.0/24        unicast [mesh_jp 10:42:30.798 from 172.31.0.6] * (100) [AS65013i]
+	dev wgeujp
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65011 65011 65011 65013
+	BGP.next_hop: 172.31.0.6
+	BGP.local_pref: 100
+	BGP.community: 
+10.120.0.0/24        unicast [mesh_us 10:42:33.932 from 172.31.0.2] * (100) [AS65012i]
+	dev wgeuus
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65011 65011 65011 65012
+	BGP.next_hop: 172.31.0.2
+	BGP.local_pref: 100
+	BGP.community: 
+

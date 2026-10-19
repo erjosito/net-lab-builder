@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-19T11:16:30.764780+00:00",
+  "finishedUtc": "2026-10-19T11:18:18.357481+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-jp",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@<LOCAL_PROFILE>\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\design-HRP-only-routes-jp.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\nDESIGN_SNAPSHOT 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\\n\\n[stderr]\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\nDESIGN_SNAPSHOT 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\n\n[stderr]\n"
+      }
+    ]
+  },
+  "sha256": "0c09cffa6d4473c8daffe4f061cb028020e42b693e06335d0e2e5d6edbaa2f86"
+}

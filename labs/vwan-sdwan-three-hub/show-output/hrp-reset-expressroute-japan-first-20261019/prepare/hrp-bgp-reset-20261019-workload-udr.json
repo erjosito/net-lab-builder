@@ -1,0 +1,119 @@
+{
+  "timestampUtc": "2026-10-19T11:00:22.849721+00:00",
+  "finishedUtc": "2026-10-19T11:01:08.609024+00:00",
+  "command": [
+    "deployment",
+    "group",
+    "create",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "--name",
+    "aspath-hrp-bgp-reset-20261019-workload-udr",
+    "--template-file",
+    "<LOCAL_PROFILE>\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\aspath-hrp-bgp-reset-20261019-workload-udr-template.json",
+    "--parameters",
+    "@<LOCAL_PROFILE>\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\aspath-hrp-bgp-reset-20261019-workload-udr-parameters.json"
+  ],
+  "stdout": "{\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Resources/deployments/aspath-hrp-bgp-reset-20261019-workload-udr\",\n  \"location\": null,\n  \"name\": \"aspath-hrp-bgp-reset-20261019-workload-udr\",\n  \"properties\": {\n    \"correlationId\": \"11da2cbb-c5e3-44ef-bb59-9857b4628538\",\n    \"debugSetting\": null,\n    \"dependencies\": [\n      {\n        \"dependsOn\": [\n          {\n            \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/hrp-bgp-reset-20261019-expressroute-japan-first\",\n            \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n            \"resourceName\": \"hrp-bgp-reset-20261019-expressroute-japan-first\",\n            \"resourceType\": \"Microsoft.Network/routeTables\"\n          }\n        ],\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-jp/subnets/workload\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"resourceName\": \"vnet-dc-jp/workload\",\n        \"resourceType\": \"Microsoft.Network/virtualNetworks/subnets\"\n      }\n    ],\n    \"diagnostics\": null,\n    \"duration\": \"PT6.0902337S\",\n    \"error\": null,\n    \"extensions\": [],\n    \"mode\": \"Incremental\",\n    \"onErrorDeployment\": null,\n    \"outputResources\": [\n      {\n        \"apiVersion\": null,\n        \"extension\": null,\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/hrp-bgp-reset-20261019-expressroute-japan-first\",\n        \"identifiers\": null,\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"resourceType\": \"Microsoft.Network/routeTables\"\n      },\n      {\n        \"apiVersion\": null,\n        \"extension\": null,\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-jp/subnets/workload\",\n        \"identifiers\": null,\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"resourceType\": \"Microsoft.Network/virtualNetworks/subnets\"\n      }\n    ],\n    \"outputs\": null,\n    \"parameters\": {},\n    \"parametersLink\": null,\n    \"providers\": [\n      {\n        \"id\": null,\n        \"namespace\": \"Microsoft.Network\",\n        \"providerAuthorizationConsentState\": null,\n        \"registrationPolicy\": null,\n        \"registrationState\": null,\n        \"resourceTypes\": [\n          {\n            \"aliases\": null,\n            \"apiProfiles\": null,\n            \"apiVersions\": null,\n            \"capabilities\": null,\n            \"defaultApiVersion\": null,\n            \"locationMappings\": null,\n            \"locations\": [\n              \"japaneast\"\n            ],\n            \"properties\": null,\n            \"resourceType\": \"routeTables\",\n            \"zoneMappings\": null\n          },\n          {\n            \"aliases\": null,\n            \"apiProfiles\": null,\n            \"apiVersions\": null,\n            \"capabilities\": null,\n            \"defaultApiVersion\": null,\n            \"locationMappings\": null,\n            \"locations\": [\n              null\n            ],\n            \"properties\": null,\n            \"resourceType\": \"virtualNetworks/subnets\",\n            \"zoneMappings\": null\n          }\n        ]\n      }\n    ],\n    \"provisioningState\": \"Succeeded\",\n    \"templateHash\": \"440333715196285113\",\n    \"templateLink\": null,\n    \"timestamp\": \"2026-10-19T11:00:39.282621+00:00\",\n    \"validatedResources\": null,\n    \"validationLevel\": null\n  },\n  \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n  \"tags\": null,\n  \"type\": \"Microsoft.Resources/deployments\"\n}\n",
+  "result": {
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Resources/deployments/aspath-hrp-bgp-reset-20261019-workload-udr",
+    "location": null,
+    "name": "aspath-hrp-bgp-reset-20261019-workload-udr",
+    "properties": {
+      "correlationId": "11da2cbb-c5e3-44ef-bb59-9857b4628538",
+      "debugSetting": null,
+      "dependencies": [
+        {
+          "dependsOn": [
+            {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/hrp-bgp-reset-20261019-expressroute-japan-first",
+              "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+              "resourceName": "hrp-bgp-reset-20261019-expressroute-japan-first",
+              "resourceType": "Microsoft.Network/routeTables"
+            }
+          ],
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-jp/subnets/workload",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "resourceName": "vnet-dc-jp/workload",
+          "resourceType": "Microsoft.Network/virtualNetworks/subnets"
+        }
+      ],
+      "diagnostics": null,
+      "duration": "PT6.0902337S",
+      "error": null,
+      "extensions": [],
+      "mode": "Incremental",
+      "onErrorDeployment": null,
+      "outputResources": [
+        {
+          "apiVersion": null,
+          "extension": null,
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/hrp-bgp-reset-20261019-expressroute-japan-first",
+          "identifiers": null,
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "resourceType": "Microsoft.Network/routeTables"
+        },
+        {
+          "apiVersion": null,
+          "extension": null,
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-jp/subnets/workload",
+          "identifiers": null,
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "resourceType": "Microsoft.Network/virtualNetworks/subnets"
+        }
+      ],
+      "outputs": null,
+      "parameters": {},
+      "parametersLink": null,
+      "providers": [
+        {
+          "id": null,
+          "namespace": "Microsoft.Network",
+          "providerAuthorizationConsentState": null,
+          "registrationPolicy": null,
+          "registrationState": null,
+          "resourceTypes": [
+            {
+              "aliases": null,
+              "apiProfiles": null,
+              "apiVersions": null,
+              "capabilities": null,
+              "defaultApiVersion": null,
+              "locationMappings": null,
+              "locations": [
+                "japaneast"
+              ],
+              "properties": null,
+              "resourceType": "routeTables",
+              "zoneMappings": null
+            },
+            {
+              "aliases": null,
+              "apiProfiles": null,
+              "apiVersions": null,
+              "capabilities": null,
+              "defaultApiVersion": null,
+              "locationMappings": null,
+              "locations": [
+                null
+              ],
+              "properties": null,
+              "resourceType": "virtualNetworks/subnets",
+              "zoneMappings": null
+            }
+          ]
+        }
+      ],
+      "provisioningState": "Succeeded",
+      "templateHash": "440333715196285113",
+      "templateLink": null,
+      "timestamp": "2026-10-19T11:00:39.282621+00:00",
+      "validatedResources": null,
+      "validationLevel": null
+    },
+    "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+    "tags": null,
+    "type": "Microsoft.Resources/deployments"
+  },
+  "sha256": "1742dc0baf58e3b2c778b8b55b348f8d3070a5a98c8252b7fea639fd3b56fc4a"
+}

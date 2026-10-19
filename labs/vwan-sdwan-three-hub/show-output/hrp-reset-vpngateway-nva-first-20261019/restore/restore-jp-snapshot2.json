@@ -1,0 +1,128 @@
+{
+  "timestampUtc": "2026-10-19T17:07:22.705991+00:00",
+  "finishedUtc": "2026-10-19T17:08:07.948193+00:00",
+  "command": [
+    "network",
+    "vhub",
+    "get-effective-routes",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "hub-jp",
+    "--resource-id",
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-jp",
+    "--resource-type",
+    "AzureFirewalls"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"addressPrefixes\": [\n        \"10.130.0.0/24\"\n      ],\n      \"asPath\": \"65013\",\n      \"nextHopType\": \"VPN_S2S_Gateway\",\n      \"nextHops\": [\n        \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp\"\n      ],\n      \"routeOrigin\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp\"\n    },\n    {\n      \"addressPrefixes\": [\n        \"10.10.0.0/24\"\n      ],\n      \"asPath\": \"65520-65520\",\n      \"nextHopType\": \"Remote Hub\",\n      \"nextHops\": [\n        \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu\"\n      ],\n      \"routeOrigin\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu\"\n    },\n    {\n      \"addressPrefixes\": [\n        \"10.220.0.0/24\"\n      ],\n      \"asPath\": \"65520-65520\",\n      \"nextHopType\": \"Remote Hub\",\n      \"nextHops\": [\n        \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us\"\n      ],\n      \"routeOrigin\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us\"\n    },\n    {\n      \"addressPrefixes\": [\n        \"10.120.0.0/24\"\n      ],\n      \"asPath\": \"65013-65012\",\n      \"nextHopType\": \"VPN_S2S_Gateway\",\n      \"nextHops\": [\n        \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp\"\n      ],\n      \"routeOrigin\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp\"\n    },\n    {\n      \"addressPrefixes\": [\n        \"10.140.0.0/24\"\n      ],\n      \"asPath\": \"65013-65014\",\n      \"nextHopType\": \"VPN_S2S_Gateway\",\n      \"nextHops\": [\n        \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp\"\n      ],\n      \"routeOrigin\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp\"\n    },\n    {\n      \"addressPrefixes\": [\n        \"10.20.0.0/24\"\n      ],\n      \"asPath\": \"65520-65520\",\n      \"nextHopType\": \"Remote Hub\",\n      \"nextHops\": [\n        \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us\"\n      ],\n      \"routeOrigin\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us\"\n    },\n    {\n      \"addressPrefixes\": [\n        \"10.210.0.0/24\"\n      ],\n      \"asPath\": \"65520-65520\",\n      \"nextHopType\": \"Remote Hub\",\n      \"nextHops\": [\n        \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu\"\n      ],\n      \"routeOrigin\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu\"\n    },\n    {\n      \"addressPrefixes\": [\n        \"10.110.0.0/24\"\n      ],\n      \"asPath\": \"65013-65011\",\n      \"nextHopType\": \"VPN_S2S_Gateway\",\n      \"nextHops\": [\n        \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp\"\n      ],\n      \"routeOrigin\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp\"\n    },\n    {\n      \"addressPrefixes\": [\n        \"10.30.0.0/24\"\n      ],\n      \"nextHopType\": \"Virtual Network Connection\",\n      \"nextHops\": [\n        \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubVirtualNetworkConnections/conn-spoke-jp\"\n      ],\n      \"routeOrigin\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubVirtualNetworkConnections/conn-spoke-jp\"\n    },\n    {\n      \"addressPrefixes\": [\n        \"0.0.0.0/0\"\n      ],\n      \"nextHopType\": \"Internet\",\n      \"nextHops\": []\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "addressPrefixes": [
+          "10.130.0.0/24"
+        ],
+        "asPath": "65013",
+        "nextHopType": "VPN_S2S_Gateway",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+      },
+      {
+        "addressPrefixes": [
+          "10.10.0.0/24"
+        ],
+        "asPath": "65520-65520",
+        "nextHopType": "Remote Hub",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu"
+      },
+      {
+        "addressPrefixes": [
+          "10.220.0.0/24"
+        ],
+        "asPath": "65520-65520",
+        "nextHopType": "Remote Hub",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us"
+      },
+      {
+        "addressPrefixes": [
+          "10.120.0.0/24"
+        ],
+        "asPath": "65013-65012",
+        "nextHopType": "VPN_S2S_Gateway",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+      },
+      {
+        "addressPrefixes": [
+          "10.140.0.0/24"
+        ],
+        "asPath": "65013-65014",
+        "nextHopType": "VPN_S2S_Gateway",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+      },
+      {
+        "addressPrefixes": [
+          "10.20.0.0/24"
+        ],
+        "asPath": "65520-65520",
+        "nextHopType": "Remote Hub",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us"
+      },
+      {
+        "addressPrefixes": [
+          "10.210.0.0/24"
+        ],
+        "asPath": "65520-65520",
+        "nextHopType": "Remote Hub",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu"
+      },
+      {
+        "addressPrefixes": [
+          "10.110.0.0/24"
+        ],
+        "asPath": "65013-65011",
+        "nextHopType": "VPN_S2S_Gateway",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+      },
+      {
+        "addressPrefixes": [
+          "10.30.0.0/24"
+        ],
+        "nextHopType": "Virtual Network Connection",
+        "nextHops": [
+          "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubVirtualNetworkConnections/conn-spoke-jp"
+        ],
+        "routeOrigin": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubVirtualNetworkConnections/conn-spoke-jp"
+      },
+      {
+        "addressPrefixes": [
+          "0.0.0.0/0"
+        ],
+        "nextHopType": "Internet",
+        "nextHops": []
+      }
+    ]
+  },
+  "sha256": "e71c53248595604db09a3b1765c25bfee7edfd77b9c72d06587dffdba5a7593c"
+}
