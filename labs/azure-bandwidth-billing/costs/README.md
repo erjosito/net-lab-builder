@@ -688,9 +688,13 @@ WSL/MSDN**: COMPLETE, one page, zero rows for the nonexistent lab RG on
 contexts; it is deliberately not evidence that actual test traffic is free.
 
 Columns are mapped by **name**, not fixed position; RG, UsageDate, currency and
-cost must be verifiable before any aggregate rows are saved. No UsageQuantity
-sum is requested; support for that aggregation is not established by the
-inspected documentation, and mixed units must never be summed. Details retain decimal
+cost must be verifiable before any aggregate rows are saved. The default Query
+is cost-only and requests no UsageQuantity sum. Explicit `query
+--include-usage-quantity` adds a separate `UsageQuantitySum` per Meter/MeterId;
+quantity aggregation has been empirically tested with the public CLI in both
+native Windows and WSL profiles for the tested scopes and requests. Query does
+not return unit metadata: do not infer units or sum quantities across meters.
+Details retain decimal
 quantity, raw unit, effective/unit price (null if missing), meter, currency,
 cost, actual usage day and private resource identity. Never infer price=0 from
 missing fields or cost=0 from credits/free tier. 5 GiB is 5.36870912 decimal GB.

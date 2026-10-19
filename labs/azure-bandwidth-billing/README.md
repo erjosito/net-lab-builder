@@ -155,7 +155,7 @@ The latest fresh-C bulk CSV remains **08:15Z: 14.2374728210270405 reported
 A's unchanged **08:17Z four positive microquantity rows**, separated by over
 six hours, still contain no explicit zero-rated 100 GB record. T's raw
 **`1 TB` versus retail `1 GB`**, repeated-ID semantics and asynchronous
-**422 cause UNKNOWN** remain unresolved (support issue **#23**); no
+**422 cause UNKNOWN** remain unresolved (offline clarification **#23**; no Microsoft support case has been opened); no
 same-region charge or service bug is proved.
 
 The original dated result remains **4/6 as of its snapshot**; the linked
