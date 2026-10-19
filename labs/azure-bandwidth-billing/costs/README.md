@@ -16,6 +16,14 @@ Query units remain **NOT_RETURNED**; CSV units/rates do not silently become
 Query metadata. Different meter quantities must not be summed.
 **Billing reconciliation remains OPEN**, independent of workflow success.
 
+A [separate MSDN unit-selector check](../results/2026-10-19-query-unit-capability.json)
+received **HTTP 400 / BadRequest** for `ResourceId` + `UnitOfMeasure`
+grouping on Query `2023-11-01`. This is an observed rejection of that
+request, not a universal unsupported-field claim. No public unit flag was
+added; `--include-usage-quantity` continues to expose quantities with
+`usageQuantityUnit: "NOT_RETURNED"`. Keep actual CSV/offer unit evidence
+separate rather than inferring units or retrying guessed selector names.
+
 ## Initial Query quantity option — 19 October 2026, 11:43Z capability evidence
 
 **Can the cost API give quantity? Yes, when requested and accepted.**

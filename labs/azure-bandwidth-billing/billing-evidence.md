@@ -31,6 +31,23 @@ idle. A/T comparisons are deferred until **18:30:11Z**; C was not queried
 and its existing **17:08:21Z** minimum remains. Existing schedule 5 and
 the original hard stop are unchanged. **Transport/cleanup PASS; billing OPEN.**
 
+### Unit selector check — 19 October 2026, 12:51Z
+
+A separate [one-request MSDN capability check](results/2026-10-19-query-unit-capability.json)
+requested `ResourceId` + `UnitOfMeasure` grouping, with the same two cost
+and quantity aggregations and an exact Intra Continent meter filter.
+Azure returned **HTTP 400 / BadRequest**, identifying `UnitOfMeasure`
+as an invalid grouping selector. No unit-bearing rows were returned.
+This establishes rejection of that exact version/scope/request, not a
+universal claim about all ways to retrieve units.
+
+The existing public quantity flag is unchanged and still works on both
+tested profiles. Unit/rate evidence must remain separately sourced; the
+legacy T `1 TB` label is not converted or resolved by this failure.
+There were no selector guesses, fallback calls or new traffic. The one
+request is separately accounted; normal A/T and C refresh deferrals,
+existing schedule and original hard stop remain unchanged.
+
 ## Initial Query capability — 19 October 2026, 11:43Z
 
 **The cost API can return quantity when asked and accepted.**
