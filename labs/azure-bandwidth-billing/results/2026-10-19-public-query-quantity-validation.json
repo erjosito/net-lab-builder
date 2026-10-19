@@ -1,0 +1,326 @@
+{
+  "schemaVersion": 1,
+  "taskId": "public-query-quantity-20261019T1228Z",
+  "createdAtUtc": "2026-10-19T12:32:03.948212+00:00",
+  "verdict": "PASS_PUBLIC_CLI_BOTH_PROFILES_BILLING_RECONCILIATION_INCONCLUSIVE",
+  "source": {
+    "commit": "506c85e405a992b31d30fb2754709995d5b79ecd",
+    "sha256": "eebdb5908f237a5aeb6abe500ff2ae77253226203ed65ba5d2aa0c37b0b498e4",
+    "sourceUnchanged": true,
+    "publicCliUsed": true,
+    "includeUsageQuantityActuallyPassed": true,
+    "privateAdapterUsed": false
+  },
+  "requestedPeriodUtc": {
+    "start": "2026-10-12T00:00:00Z",
+    "end": "2026-10-18T23:59:59Z"
+  },
+  "actualCommandsSanitized": [
+    "python costs\\cost_api.py query --transport native --context <A-context> --inventory <A-seven-ID-inventory> --start 2026-10-12 --end 2026-10-18 --output <new-A-private-output> --lease <bounded-owner-lease> --offer-alias windows-main --max-http-requests 1 --max-retries 0 --max-seconds 150 --request-timeout-seconds 120 --include-usage-quantity --group-by ResourceId Meter --meter-category Bandwidth --max-pages 1",
+    "python costs\\cost_api.py query --transport wsl --context <T-context> --inventory <T-seven-ID-inventory> --start 2026-10-12 --end 2026-10-18 --output <new-T-private-output> --lease <bounded-owner-lease> --offer-alias wsl-msdn --max-http-requests 1 --max-retries 0 --max-seconds 150 --request-timeout-seconds 120 --include-usage-quantity --group-by ResourceId Meter --meter-category Bandwidth --max-pages 1",
+    "python costs\\cost_api.py cost-details --transport native --context <A-context> --inventory <A-seven-ID-inventory> --start 2026-10-12 --end 2026-10-18 --output <new-A-details-private-output> --lease <bounded-owner-lease> --offer-alias windows-main --max-http-requests 4 --max-retries 0 --max-seconds 300 --request-timeout-seconds 120 --max-polls 2 --csv-output <new-A-filtered-private-csv>"
+  ],
+  "queryProfiles": {
+    "A": {
+      "state": "COMPLETE",
+      "cliExitCode": 0,
+      "httpStatus": 200,
+      "quantitySupport": "SUPPORTED_FOR_THIS_PROFILE_SCOPE_AND_REQUEST",
+      "nativeWSL": false,
+      "transport": "native",
+      "usageQuantityRequested": true,
+      "usageQuantityColumnType": "Number",
+      "unitUnavailable": true,
+      "unit": "NOT_RETURNED",
+      "pages": 1,
+      "httpRequests": 1,
+      "startedAtUtc": "2026-10-19T12:28:48.449743+00:00",
+      "completedAtUtc": "2026-10-19T12:29:07.878326+00:00",
+      "rows": [
+        {
+          "day": "2026-10-16",
+          "meter": "Intra Continent Data Transfer Out",
+          "currency": "USD",
+          "quantity": "5.5879354477E-8",
+          "cost": "1.11758708953857E-9",
+          "rows": 1,
+          "unitUnavailable": true,
+          "unit": "NOT_RETURNED"
+        },
+        {
+          "day": "2026-10-16",
+          "meter": "Standard Data Transfer Out",
+          "currency": "USD",
+          "quantity": "0.000010487623512745",
+          "cost": "8.70472751557827E-7",
+          "rows": 1,
+          "unitUnavailable": true,
+          "unit": "NOT_RETURNED"
+        },
+        {
+          "day": "2026-10-17",
+          "meter": "Intra Continent Data Transfer Out",
+          "currency": "USD",
+          "quantity": "2.23517417908E-7",
+          "cost": "4.4703483581543E-9",
+          "rows": 1,
+          "unitUnavailable": true,
+          "unit": "NOT_RETURNED"
+        },
+        {
+          "day": "2026-10-17",
+          "meter": "Standard Data Transfer Out",
+          "currency": "USD",
+          "quantity": "0.000006069429218769",
+          "cost": "5.03762625157833E-7",
+          "rows": 1,
+          "unitUnavailable": true,
+          "unit": "NOT_RETURNED"
+        }
+      ],
+      "costTotal": "0.00000137982331216335287",
+      "quantityAggregation": "PER_METER_ONLY_NO_HETEROGENEOUS_QUANTITY_TOTAL"
+    },
+    "T": {
+      "state": "COMPLETE",
+      "cliExitCode": 0,
+      "httpStatus": 200,
+      "quantitySupport": "SUPPORTED_FOR_THIS_PROFILE_SCOPE_AND_REQUEST",
+      "nativeWSL": true,
+      "transport": "wsl",
+      "usageQuantityRequested": true,
+      "usageQuantityColumnType": "Number",
+      "unitUnavailable": true,
+      "unit": "NOT_RETURNED",
+      "pages": 1,
+      "httpRequests": 1,
+      "startedAtUtc": "2026-10-19T12:29:13.572631+00:00",
+      "completedAtUtc": "2026-10-19T12:29:21.210292+00:00",
+      "rows": [
+        {
+          "day": "2026-10-17",
+          "meter": "Intra Continent Data Transfer Out",
+          "currency": "EUR",
+          "quantity": "14.0853741280734",
+          "cost": "0.244085448265384",
+          "rows": 1,
+          "unitUnavailable": true,
+          "unit": "NOT_RETURNED"
+        }
+      ],
+      "costTotal": "0.244085448265384",
+      "quantityTotal": "14.0853741280734"
+    }
+  },
+  "C": {
+    "queried": false,
+    "httpRequests": 0,
+    "nextNotBeforeUtc": "2026-10-19T17:08:21.428472Z"
+  },
+  "aCostDetails": {
+    "state": "COMPLETE",
+    "cliExitCode": 0,
+    "extractionComplete": true,
+    "ingestionFinal": false,
+    "startedAtUtc": "2026-10-19T12:29:29.449066+00:00",
+    "completedAtUtc": "2026-10-19T12:30:11.710553+00:00",
+    "extractionCompletedAtUtc": "2026-10-19T12:30:11.581879+00:00",
+    "httpRequests": 3,
+    "httpRequestCounts": {
+      "generation": 1,
+      "poll": 1,
+      "download": 1
+    },
+    "httpStatuses": [
+      202,
+      200,
+      200
+    ],
+    "returnedPeriod": {
+      "start": "2026-10-12T00:00:00",
+      "end": "2026-10-18T00:00:00"
+    },
+    "reportEndSemantics": "UNKNOWN_NOT_PROOF_OF_FULL_DAY_COVERAGE",
+    "retainedRows": 4,
+    "exactSevenIdInventory": true,
+    "onlyOwnedDateBandwidthRowsPersisted": true,
+    "rows": [
+      {
+        "day": "2026-10-16",
+        "meter": "Intra Continent Data Transfer Out",
+        "currency": "USD",
+        "quantity": "5.58793544770000000000E-8",
+        "cost": "1.1175870895385742000E-9",
+        "rows": 1,
+        "unit": "1 GB",
+        "effectivePrice": "0.02",
+        "unitPrice": "0.02"
+      },
+      {
+        "day": "2026-10-16",
+        "meter": "Standard Data Transfer Out",
+        "currency": "USD",
+        "quantity": "0.000010487623512745",
+        "cost": "8.704727515578270000000E-7",
+        "rows": 1,
+        "unit": "1 GB",
+        "effectivePrice": "0.083",
+        "unitPrice": "0.083"
+      },
+      {
+        "day": "2026-10-17",
+        "meter": "Intra Continent Data Transfer Out",
+        "currency": "USD",
+        "quantity": "2.235174179080000000000E-7",
+        "cost": "4.4703483581542970000E-9",
+        "rows": 1,
+        "unit": "1 GB",
+        "effectivePrice": "0.02",
+        "unitPrice": "0.02"
+      },
+      {
+        "day": "2026-10-17",
+        "meter": "Standard Data Transfer Out",
+        "currency": "USD",
+        "quantity": "0.000006069429218769",
+        "cost": "5.037626251578330000000E-7",
+        "rows": 1,
+        "unit": "1 GB",
+        "effectivePrice": "0.083",
+        "unitPrice": "0.083"
+      }
+    ],
+    "costTotal": "0.0000013798233121633528712000",
+    "comparison": [
+      {
+        "day": "2026-10-16",
+        "meter": "Intra Continent Data Transfer Out",
+        "currency": "USD",
+        "queryQuantity": "5.5879354477E-8",
+        "queryUnit": "NOT_RETURNED",
+        "csvQuantity": "5.58793544770000000000E-8",
+        "csvUnit": "1 GB",
+        "numericQuantityDifferenceQueryMinusCsv": "0E-28",
+        "numericQuantityEqual": true,
+        "unitsEquivalenceEstablished": false,
+        "queryCost": "1.11758708953857E-9",
+        "csvCost": "1.1175870895385742000E-9",
+        "costDifferenceQueryMinusCsv": "-4.2000E-24",
+        "baselineCsvQuantity": "5.58793544770000000000E-8",
+        "quantityDifferenceNewCsvMinusBaseline": "0E-28",
+        "costDifferenceNewCsvMinusBaseline": "0E-28"
+      },
+      {
+        "day": "2026-10-16",
+        "meter": "Standard Data Transfer Out",
+        "currency": "USD",
+        "queryQuantity": "0.000010487623512745",
+        "queryUnit": "NOT_RETURNED",
+        "csvQuantity": "0.000010487623512745",
+        "csvUnit": "1 GB",
+        "numericQuantityDifferenceQueryMinusCsv": "0E-18",
+        "numericQuantityEqual": true,
+        "unitsEquivalenceEstablished": false,
+        "queryCost": "8.70472751557827E-7",
+        "csvCost": "8.704727515578270000000E-7",
+        "costDifferenceQueryMinusCsv": "0E-28",
+        "baselineCsvQuantity": "0.000010487623512745",
+        "quantityDifferenceNewCsvMinusBaseline": "0E-18",
+        "costDifferenceNewCsvMinusBaseline": "0E-28"
+      },
+      {
+        "day": "2026-10-17",
+        "meter": "Intra Continent Data Transfer Out",
+        "currency": "USD",
+        "queryQuantity": "2.23517417908E-7",
+        "queryUnit": "NOT_RETURNED",
+        "csvQuantity": "2.235174179080000000000E-7",
+        "csvUnit": "1 GB",
+        "numericQuantityDifferenceQueryMinusCsv": "0E-28",
+        "numericQuantityEqual": true,
+        "unitsEquivalenceEstablished": false,
+        "queryCost": "4.4703483581543E-9",
+        "csvCost": "4.4703483581542970000E-9",
+        "costDifferenceQueryMinusCsv": "3.0000E-24",
+        "baselineCsvQuantity": "2.235174179080000000000E-7",
+        "quantityDifferenceNewCsvMinusBaseline": "0E-28",
+        "costDifferenceNewCsvMinusBaseline": "0E-28"
+      },
+      {
+        "day": "2026-10-17",
+        "meter": "Standard Data Transfer Out",
+        "currency": "USD",
+        "queryQuantity": "0.000006069429218769",
+        "queryUnit": "NOT_RETURNED",
+        "csvQuantity": "0.000006069429218769",
+        "csvUnit": "1 GB",
+        "numericQuantityDifferenceQueryMinusCsv": "0E-18",
+        "numericQuantityEqual": true,
+        "unitsEquivalenceEstablished": false,
+        "queryCost": "5.03762625157833E-7",
+        "csvCost": "5.037626251578330000000E-7",
+        "costDifferenceQueryMinusCsv": "0E-28",
+        "baselineCsvQuantity": "0.000006069429218769",
+        "quantityDifferenceNewCsvMinusBaseline": "0E-18",
+        "costDifferenceNewCsvMinusBaseline": "0E-28"
+      }
+    ],
+    "baselineExtractionCompletedUtc": "2026-10-18T08:17:20.487233+00:00",
+    "hoursSinceBaselineExtraction": "28.2142287",
+    "actualRetainedDecimalRowMultisetUnchanged": true,
+    "rowMultisetMeaning": "Exact resource/day/meter/currency/unit/quantity/cost/rate retained projections, not full raw provider CSV bytes or ingestion coverage.",
+    "costDifferenceTotalQueryMinusCsv": "-1.2000E-24"
+  },
+  "verifiedAProducerUtcPayloadDecimalGB": {
+    "2026-10-16": "11.811160064",
+    "2026-10-17": "88.188839936"
+  },
+  "actualBillingHttpRequests": 5,
+  "maxBillingHttpRequests": 6,
+  "httpRequestCounts": {
+    "query": 2,
+    "generation": 1,
+    "poll": 1,
+    "download": 1
+  },
+  "previousClosedCumulativeBillingHttpRequests": 12,
+  "cumulativeBillingHttpRequests": 17,
+  "newSourceLiveRequests": 5,
+  "liveRequestsSinceImplementation": 17,
+  "unusedAllowanceDiscarded": 1,
+  "actualInfrastructureMutations": 0,
+  "newTraffic": false,
+  "actualToolCalls": 49,
+  "maxToolCalls": 75,
+  "idleProof": {
+    "ownedNativeChildren": 0,
+    "ownedWslBillingChildren": 0,
+    "verifiedAtUtc": "2026-10-19T12:32:44.917027+00:00",
+    "STOPAbsent": true
+  },
+  "schedule": {
+    "id": 5,
+    "changed": false,
+    "mustSkipWhileOwnerActive": true,
+    "scheduleListingUnavailableInSubagent": true
+  },
+  "nextAComparisonNotBeforeUtc": "2026-10-19T18:30:11.710553+00:00",
+  "nextFreshTRefreshNotBeforeUtc": "2026-10-19T18:30:11.710553+00:00",
+  "nextScheduledPriority": "Previously uncovered historical T weekly Query (sixth of six groups), or genuinely new data; no immediate redundant fresh A/T refresh.",
+  "hardStopUtc": "2026-10-22T23:15:33Z",
+  "limitations": [
+    "Query supports numeric UsageQuantity for these exact profiles/scopes/requests; unit metadata is NOT_RETURNED. CSV units are not assigned to Query.",
+    "A's different meter quantities are reported separately, not summed into a unitless consumption total.",
+    "A's Query numeric quantities equal fresh CSV values, and four retained CSV projections are unchanged from 18 October; only positive microquantities are observed, not the verified 100 GB outbound volume.",
+    "A is more than 36 hours past verified transfer completion; age is not an ingestion watermark or proof of finality.",
+    "T has mixed same-region and cross-region sending. Its aggregate 14.0853741280734 quantity and EUR 0.244085448265384 cannot be assigned entirely to one flow.",
+    "No fresh T CSV was authorized or collected; no T CSV unit/rate equivalence or row-level comparison is established.",
+    "Legacy historical T unknown unit and duplicate service identity are not resolved by fresh T's aggregated quantity.",
+    "Requested complete-week Query serialization is not proof of complete provider ingestion; Cost Details end echo is midnight October 18, not proof of full-day coverage.",
+    "Missing rows are not explicit zero-rated records. No invoice-finality, free allowance, or entire verified-volume reconciliation is established.",
+    "No C API call, rejected-Location follow-up, retries, diagnostic job, auth-profile change, subscription switch, infrastructure change, or new schedule."
+  ],
+  "toolCountPolicy": "Conservative upper bound includes preparation, wrappers, all calls and final verification; actual tool calls do not exceed 49.",
+  "priorUnusedCapabilityAllowanceDiscarded": true,
+  "unusedThisPhaseAllowanceDiscarded": 1
+}
