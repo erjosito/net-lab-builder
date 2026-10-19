@@ -1,14 +1,50 @@
 # Three-hub Virtual WAN / SD-WAN lab
 
-> **2026-10-17: all-hub B2B rerun now includes workload traffic and packet-interface observations.**
+> **2026-10-19: B1 passes four controlled HRP-update / BGP-only-reset runs.**
 > **Three Standard Azure Firewalls and PrivateTraffic routing intent are deployed.**
 > **A:** ASPath plus NVA import policy selected Microsoft's backbone.
-> **B1:** ExpressRoute HRP retained the longer local Japan paths after a controlled VPN-prefix withdrawal/re-advertisement.
+> **B1:** ExpressRoute and VPN HRP select the longer local Japan paths after a complete Azure-facing BGP reset, with both tested establishment orders.
 > **B2:** ASPath with no extra nonlocal prepends selected local customer-mesh paths at the hub firewalls and NVAs.
 > Acceptance covers **24 DC/Azure directions**, not DC-to-DC traffic. A plus its Japan workload UDR passes all 24 for TCP and ICMP.
 > All ten VMs are back to their original **deallocated** states. Hubs, firewalls and VPN gateway remain deployed and billable.
 
-## Latest result: all-hub B2B rerun with forwarding evidence
+## Latest result: HRP updates followed by BGP-only resets
+
+The [four-control reset report](show-output/hrp-reset-summary-20261019/README.md)
+tests ExpressRoute and VPN HRP, each with Japan-first and EU/US-first BGP
+establishment. All six Azure-facing adjacencies are disabled together,
+all DC-prefix withdrawals are confirmed at the firewalls, and then the
+sessions are re-enabled in the prescribed order. BIRD processes, mesh
+BGP sessions and IPsec configuration are preserved during each reset.
+
+| HRP | Japan-first TCP / ICMP | EU/US-first TCP / ICMP | All 12 DC-prefix firewall winners identical across orders |
+| --- | --- | --- | --- |
+| ExpressRoute | 24/24 / 24/24 | 24/24 / 24/24 | Yes |
+| VPN | 24/24 / 24/24 | 24/24 / 24/24 | Yes |
+
+Both hubs select their local length-five Japan route after every reset,
+rather than Japan's remote length-three route. In the first run of each
+HRP mode, the HRP change alone retained the remote winner; the reset changed
+it to local. In the second run, local preference was already present before
+resetting. Thus a reset is a **tested operational recovery caveat**, not
+proof that every HRP change requires one or a guarantee for all future
+reconvergence sequences. B1 need not remain a scenario blocker under these
+tested conditions.
+
+All traffic captures consistently include the Japan workload's three-spoke
+UDR through `10.130.0.4`, and all hub branch flags are enabled. The report
+contains complete matched firewall/NVA tables, BIRD configurations, packet
+observations, transport invariants and the unsuccessful timeout attempt.
+The older forwarding failures are preserved; this follow-up does not isolate
+the reset as the cause of every improvement over those captures.
+
+Original BIRD bytes/metadata, mixed hub preferences/flags, subnet association
+and firewall winners were restored. The independent check initially differed
+by one ICMP direction; a single bounded retry reproduced the original
+10/24 TCP and 14/24 ICMP matrix. Both captures remain available. Temporary
+route tables are removed and all ten VMs are again deallocated.
+
+## Earlier result: all-hub B2B rerun with forwarding evidence
 
 The [complete rerun report](show-output/b2b-summary-20261017/README.md)
 contains fourteen measured states, full three-hub firewall tables, full
@@ -63,8 +99,10 @@ Azure's active fabric route is `10.0.0.0/8 -> None` for every spoke.
 Three /24 UDRs to the Japan NVA change B2 from 18/24 to **24/24 TCP and ICMP**;
 removing the association reproduces 18/24. Firewall winners and selected
 NVA routes remain unchanged. The temporary table is deleted afterward.
-B1 has not been repeated with this workload correction; comparing its
-old reachability count with corrected A/B2 is not an HRP-only comparison.
+Those historical B1 captures predate the workload correction. The 19 October
+reset controls above now repeat both HRP modes with consistent workload
+steering; the old counts remain historical, not an HRP-only comparison
+with corrected A/B2.
 
 Exact BIRD bytes/metadata, original mixed HRPs/flags and paired firewall
 winners were independently restored and verified. The original traffic
