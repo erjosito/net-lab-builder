@@ -1,0 +1,760 @@
+{
+  "schemaVersion": 1,
+  "taskId": "weekly-meters-20261019",
+  "verdict": "PASS_FINANCIAL_OBSERVATION_NOT_FINAL_BILLING",
+  "completedAtUtc": "2026-10-19T10:47:27.212773+00:00",
+  "startedAtUtc": "2026-10-19T10:44:34.438702+00:00",
+  "elapsedSeconds": 172.774071,
+  "requestedWeekUtc": {
+    "start": "2026-10-12",
+    "endInclusive": "2026-10-18"
+  },
+  "actualSerializedTimePeriod": {
+    "from": "2026-10-12T00:00:00Z",
+    "to": "2026-10-18T23:59:59+00:00"
+  },
+  "boundaryLimitation": "Existing public builder ends at 23:59:59 UTC, not 23:59:59.999999 or next midnight. Daily Query groups usage days; exact serialized range retained without claiming finer coverage.",
+  "coveredResourceGroupCount": 5,
+  "plannedResourceGroupCount": 6,
+  "bothAuthenticatedSubscriptionsCovered": true,
+  "actualBillingHttpRequests": 5,
+  "maxBillingHttpRequests": 6,
+  "retries": 0,
+  "mutations": 0,
+  "actualToolCalls": 28,
+  "maxToolCalls": 75,
+  "maxElapsedMinutes": 30,
+  "tokenCliTimeoutSeconds": 15,
+  "httpRequestTimeoutSeconds": 120,
+  "queryMaxSeconds": 150,
+  "externalCommandTimeoutSeconds": 180,
+  "reports": [
+    {
+      "family": "fresh",
+      "endpointAlias": "A",
+      "region": "swedencentral",
+      "authTransport": "native",
+      "state": "COMPLETE",
+      "httpRequests": 1,
+      "http": [
+        {
+          "status": 200,
+          "responseMetadata": {
+            "receivedAtUtc": "2026-10-19T10:44:55.636761+00:00",
+            "safeHeaders": {
+              "x-ms-request-id": "ceab23ed-f1fc-464c-831e-e7bb6421055d",
+              "x-ms-correlation-request-id": "e0ef27ee-659b-4767-b2e7-bc8379ade2ed",
+              "date": "Mon, 19 Oct 2026 10:44:52 GMT"
+            },
+            "retryAfterSeconds": null,
+            "suggestedRetryAtUtc": null,
+            "retrySource": "unknown"
+          }
+        }
+      ],
+      "collectionTimeUtc": "2026-10-19T10:44:40.373035+00:00",
+      "serializedTimePeriod": {
+        "from": "2026-10-12T00:00:00Z",
+        "to": "2026-10-18T23:59:59+00:00"
+      },
+      "inventoryBound": true,
+      "received": 4,
+      "retained": 4,
+      "discarded": 0,
+      "ingestionFinal": false,
+      "extractionComplete": true,
+      "dailyCoverage": {
+        "2026-10-12": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-13": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-14": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-15": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-16": "ROWS_OBSERVED_NOT_FINAL",
+        "2026-10-17": "ROWS_OBSERVED_NOT_FINAL",
+        "2026-10-18": "NO_ROWS_OBSERVED_NOT_ZERO"
+      }
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "C",
+      "region": "northeurope",
+      "authTransport": "native",
+      "state": "COMPLETE",
+      "httpRequests": 1,
+      "http": [
+        {
+          "status": 200,
+          "responseMetadata": {
+            "receivedAtUtc": "2026-10-19T10:45:17.668258+00:00",
+            "safeHeaders": {
+              "x-ms-request-id": "efe2a93e-7b78-4d41-8465-f5e57a8d4b80",
+              "x-ms-correlation-request-id": "ff2a66f6-65b3-45c1-8713-fc1f1f47fbf0",
+              "date": "Mon, 19 Oct 2026 10:45:14 GMT"
+            },
+            "retryAfterSeconds": null,
+            "suggestedRetryAtUtc": null,
+            "retrySource": "unknown"
+          }
+        }
+      ],
+      "collectionTimeUtc": "2026-10-19T10:45:03.096324+00:00",
+      "serializedTimePeriod": {
+        "from": "2026-10-12T00:00:00Z",
+        "to": "2026-10-18T23:59:59+00:00"
+      },
+      "inventoryBound": true,
+      "received": 2,
+      "retained": 2,
+      "discarded": 0,
+      "ingestionFinal": false,
+      "extractionComplete": true,
+      "dailyCoverage": {
+        "2026-10-12": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-13": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-14": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-15": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-16": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-17": "ROWS_OBSERVED_NOT_FINAL",
+        "2026-10-18": "NO_ROWS_OBSERVED_NOT_ZERO"
+      }
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "T",
+      "region": "swedencentral",
+      "authTransport": "wsl",
+      "state": "COMPLETE",
+      "httpRequests": 1,
+      "http": [
+        {
+          "status": 200,
+          "responseMetadata": {
+            "receivedAtUtc": "2026-10-19T10:45:32.896748+00:00",
+            "safeHeaders": {
+              "x-ms-request-id": "e91eed05-009e-4b7d-b9ee-4ec0502b4bd5",
+              "x-ms-correlation-request-id": "c8685110-b61b-4ed5-83e2-8f85bd36d2a3",
+              "date": "Mon, 19 Oct 2026 10:45:29 GMT"
+            },
+            "retryAfterSeconds": null,
+            "suggestedRetryAtUtc": null,
+            "retrySource": "unknown"
+          }
+        }
+      ],
+      "collectionTimeUtc": "2026-10-19T10:45:24.202331+00:00",
+      "serializedTimePeriod": {
+        "from": "2026-10-12T00:00:00Z",
+        "to": "2026-10-18T23:59:59+00:00"
+      },
+      "inventoryBound": true,
+      "received": 1,
+      "retained": 1,
+      "discarded": 0,
+      "ingestionFinal": false,
+      "extractionComplete": true,
+      "dailyCoverage": {
+        "2026-10-12": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-13": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-14": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-15": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-16": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-17": "ROWS_OBSERVED_NOT_FINAL",
+        "2026-10-18": "NO_ROWS_OBSERVED_NOT_ZERO"
+      }
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "C",
+      "region": "northeurope",
+      "authTransport": "native",
+      "state": "COMPLETE",
+      "httpRequests": 1,
+      "http": [
+        {
+          "status": 200,
+          "responseMetadata": {
+            "receivedAtUtc": "2026-10-19T10:45:51.981918+00:00",
+            "safeHeaders": {
+              "x-ms-request-id": "16307694-12f7-4ae6-8b60-e76525a65ff5",
+              "x-ms-correlation-request-id": "38408513-fee2-4275-81df-0b9bb51cf173",
+              "date": "Mon, 19 Oct 2026 10:45:49 GMT"
+            },
+            "retryAfterSeconds": null,
+            "suggestedRetryAtUtc": null,
+            "retrySource": "unknown"
+          }
+        }
+      ],
+      "collectionTimeUtc": "2026-10-19T10:45:41.465761+00:00",
+      "serializedTimePeriod": {
+        "from": "2026-10-12T00:00:00Z",
+        "to": "2026-10-18T23:59:59+00:00"
+      },
+      "inventoryBound": true,
+      "received": 2,
+      "retained": 2,
+      "discarded": 0,
+      "ingestionFinal": false,
+      "extractionComplete": true,
+      "dailyCoverage": {
+        "2026-10-12": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-13": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-14": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-15": "ROWS_OBSERVED_NOT_FINAL",
+        "2026-10-16": "ROWS_OBSERVED_NOT_FINAL",
+        "2026-10-17": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-18": "NO_ROWS_OBSERVED_NOT_ZERO"
+      }
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "A/B",
+      "region": "swedencentral",
+      "authTransport": "native",
+      "state": "COMPLETE",
+      "httpRequests": 1,
+      "http": [
+        {
+          "status": 200,
+          "responseMetadata": {
+            "receivedAtUtc": "2026-10-19T10:46:03.457147+00:00",
+            "safeHeaders": {
+              "x-ms-request-id": "51487bf7-32e8-4656-b8a5-3f535a958390",
+              "x-ms-correlation-request-id": "5ea826ba-6321-4e48-affd-5e295f5e638b",
+              "date": "Mon, 19 Oct 2026 10:46:00 GMT"
+            },
+            "retryAfterSeconds": null,
+            "suggestedRetryAtUtc": null,
+            "retrySource": "unknown"
+          }
+        }
+      ],
+      "collectionTimeUtc": "2026-10-19T10:45:55.342052+00:00",
+      "serializedTimePeriod": {
+        "from": "2026-10-12T00:00:00Z",
+        "to": "2026-10-18T23:59:59+00:00"
+      },
+      "inventoryBound": true,
+      "received": 6,
+      "retained": 6,
+      "discarded": 0,
+      "ingestionFinal": false,
+      "extractionComplete": true,
+      "dailyCoverage": {
+        "2026-10-12": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-13": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-14": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-15": "ROWS_OBSERVED_NOT_FINAL",
+        "2026-10-16": "ROWS_OBSERVED_NOT_FINAL",
+        "2026-10-17": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-18": "NO_ROWS_OBSERVED_NOT_ZERO"
+      }
+    }
+  ],
+  "rows": [
+    {
+      "family": "fresh",
+      "endpointAlias": "A",
+      "region": "swedencentral",
+      "authTransport": "native",
+      "usageDayUtc": "2026-10-16",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "cost": "1.11758708953857E-9",
+      "quantity": "NOT_RETURNED_BY_QUERY",
+      "unit": "NOT_RETURNED_BY_QUERY",
+      "effectivePrice": "NOT_RETURNED_BY_QUERY"
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "A",
+      "region": "swedencentral",
+      "authTransport": "native",
+      "usageDayUtc": "2026-10-16",
+      "meterName": "Standard Data Transfer Out",
+      "currency": "USD",
+      "cost": "8.70472751557827E-7",
+      "quantity": "NOT_RETURNED_BY_QUERY",
+      "unit": "NOT_RETURNED_BY_QUERY",
+      "effectivePrice": "NOT_RETURNED_BY_QUERY"
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "A",
+      "region": "swedencentral",
+      "authTransport": "native",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "cost": "4.4703483581543E-9",
+      "quantity": "NOT_RETURNED_BY_QUERY",
+      "unit": "NOT_RETURNED_BY_QUERY",
+      "effectivePrice": "NOT_RETURNED_BY_QUERY"
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "A",
+      "region": "swedencentral",
+      "authTransport": "native",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "Standard Data Transfer Out",
+      "currency": "USD",
+      "cost": "5.03762625157833E-7",
+      "quantity": "NOT_RETURNED_BY_QUERY",
+      "unit": "NOT_RETURNED_BY_QUERY",
+      "effectivePrice": "NOT_RETURNED_BY_QUERY"
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "C",
+      "region": "northeurope",
+      "authTransport": "native",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "cost": "0.284749456420541",
+      "quantity": "NOT_RETURNED_BY_QUERY",
+      "unit": "NOT_RETURNED_BY_QUERY",
+      "effectivePrice": "NOT_RETURNED_BY_QUERY"
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "C",
+      "region": "northeurope",
+      "authTransport": "native",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "Standard Data Transfer Out",
+      "currency": "USD",
+      "cost": "0.00000187707040458918",
+      "quantity": "NOT_RETURNED_BY_QUERY",
+      "unit": "NOT_RETURNED_BY_QUERY",
+      "effectivePrice": "NOT_RETURNED_BY_QUERY"
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "T",
+      "region": "swedencentral",
+      "authTransport": "wsl",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "EUR",
+      "cost": "0.244085448265384",
+      "quantity": "NOT_RETURNED_BY_QUERY",
+      "unit": "NOT_RETURNED_BY_QUERY",
+      "effectivePrice": "NOT_RETURNED_BY_QUERY"
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "C",
+      "region": "northeurope",
+      "authTransport": "native",
+      "usageDayUtc": "2026-10-15",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "cost": "4.80562448501587E-8",
+      "quantity": "NOT_RETURNED_BY_QUERY",
+      "unit": "NOT_RETURNED_BY_QUERY",
+      "effectivePrice": "NOT_RETURNED_BY_QUERY"
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "C",
+      "region": "northeurope",
+      "authTransport": "native",
+      "usageDayUtc": "2026-10-16",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "cost": "0.0131025196611881",
+      "quantity": "NOT_RETURNED_BY_QUERY",
+      "unit": "NOT_RETURNED_BY_QUERY",
+      "effectivePrice": "NOT_RETURNED_BY_QUERY"
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "A",
+      "region": "swedencentral",
+      "authTransport": "native",
+      "usageDayUtc": "2026-10-15",
+      "meterName": "Inter Continent Data Transfer Out - NAM or EU To Any",
+      "currency": "USD",
+      "cost": "0.0000483148265630007",
+      "quantity": "NOT_RETURNED_BY_QUERY",
+      "unit": "NOT_RETURNED_BY_QUERY",
+      "effectivePrice": "NOT_RETURNED_BY_QUERY"
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "A",
+      "region": "swedencentral",
+      "authTransport": "native",
+      "usageDayUtc": "2026-10-15",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "cost": "6.48200511932373E-8",
+      "quantity": "NOT_RETURNED_BY_QUERY",
+      "unit": "NOT_RETURNED_BY_QUERY",
+      "effectivePrice": "NOT_RETURNED_BY_QUERY"
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "A",
+      "region": "swedencentral",
+      "authTransport": "native",
+      "usageDayUtc": "2026-10-15",
+      "meterName": "Standard Data Transfer Out",
+      "currency": "USD",
+      "cost": "0.000024495679885149",
+      "quantity": "NOT_RETURNED_BY_QUERY",
+      "unit": "NOT_RETURNED_BY_QUERY",
+      "effectivePrice": "NOT_RETURNED_BY_QUERY"
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "B",
+      "region": "swedencentral",
+      "authTransport": "native",
+      "usageDayUtc": "2026-10-15",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "cost": "1.22934579849243E-8",
+      "quantity": "NOT_RETURNED_BY_QUERY",
+      "unit": "NOT_RETURNED_BY_QUERY",
+      "effectivePrice": "NOT_RETURNED_BY_QUERY"
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "B",
+      "region": "swedencentral",
+      "authTransport": "native",
+      "usageDayUtc": "2026-10-15",
+      "meterName": "Standard Data Transfer Out",
+      "currency": "USD",
+      "cost": "8.75651836395264E-7",
+      "quantity": "NOT_RETURNED_BY_QUERY",
+      "unit": "NOT_RETURNED_BY_QUERY",
+      "effectivePrice": "NOT_RETURNED_BY_QUERY"
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "B",
+      "region": "swedencentral",
+      "authTransport": "native",
+      "usageDayUtc": "2026-10-16",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "cost": "0.0000701968744397164",
+      "quantity": "NOT_RETURNED_BY_QUERY",
+      "unit": "NOT_RETURNED_BY_QUERY",
+      "effectivePrice": "NOT_RETURNED_BY_QUERY"
+    }
+  ],
+  "overlapComparisons": [
+    {
+      "family": "fresh",
+      "endpointAlias": "A",
+      "usageDayUtc": "2026-10-16",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "previousCost": "1.11758708953857E-9",
+      "currentCost": "1.11758708953857E-9",
+      "delta": "0E-23",
+      "baselineReference": "results\\2026-10-18-control-financial-comparison-114700.json",
+      "matchedDayCurrencyMeterOnly": true
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "A",
+      "usageDayUtc": "2026-10-16",
+      "meterName": "Standard Data Transfer Out",
+      "currency": "USD",
+      "previousCost": "8.70472751557827E-7",
+      "currentCost": "8.70472751557827E-7",
+      "delta": "0E-21",
+      "baselineReference": "results\\2026-10-18-control-financial-comparison-114700.json",
+      "matchedDayCurrencyMeterOnly": true
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "A",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "previousCost": "4.4703483581543E-9",
+      "currentCost": "4.4703483581543E-9",
+      "delta": "0E-22",
+      "baselineReference": "results\\2026-10-18-control-financial-comparison-114700.json",
+      "matchedDayCurrencyMeterOnly": true
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "A",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "Standard Data Transfer Out",
+      "currency": "USD",
+      "previousCost": "5.03762625157833E-7",
+      "currentCost": "5.03762625157833E-7",
+      "delta": "0E-21",
+      "baselineReference": "results\\2026-10-18-control-financial-comparison-114700.json",
+      "matchedDayCurrencyMeterOnly": true
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "C",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "previousCost": "0.284749456420541",
+      "currentCost": "0.284749456420541",
+      "delta": "0E-15",
+      "baselineReference": "results\\2026-10-18-control-financial-comparison-114700.json",
+      "matchedDayCurrencyMeterOnly": true
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "C",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "Standard Data Transfer Out",
+      "currency": "USD",
+      "previousCost": "0.00000187707040458918",
+      "currentCost": "0.00000187707040458918",
+      "delta": "0E-20",
+      "baselineReference": "results\\2026-10-18-control-financial-comparison-114700.json",
+      "matchedDayCurrencyMeterOnly": true
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "T",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "EUR",
+      "previousCost": "0.244085448265384",
+      "currentCost": "0.244085448265384",
+      "delta": "0E-15",
+      "baselineReference": "results\\2026-10-18-control-financial-comparison-114700.json",
+      "matchedDayCurrencyMeterOnly": true
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "C",
+      "usageDayUtc": "2026-10-15",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "previousCost": "4.80562448501587E-8",
+      "currentCost": "4.80562448501587E-8",
+      "delta": "0E-22",
+      "baselineReference": "results\\2026-10-18-historical-control-alternative.json",
+      "matchedDayCurrencyMeterOnly": true
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "C",
+      "usageDayUtc": "2026-10-16",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "previousCost": "0.0131025196611881",
+      "currentCost": "0.0131025196611881",
+      "delta": "0E-16",
+      "baselineReference": "results\\2026-10-18-historical-control-alternative.json",
+      "matchedDayCurrencyMeterOnly": true
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "A",
+      "usageDayUtc": "2026-10-15",
+      "meterName": "Inter Continent Data Transfer Out - NAM or EU To Any",
+      "currency": "USD",
+      "previousCost": "0.0000483148265630007",
+      "currentCost": "0.0000483148265630007",
+      "delta": "0E-19",
+      "baselineReference": "private\\cost-snapshots\\billing-reconciliation-20261016T0645\\correlation.private.json",
+      "matchedDayCurrencyMeterOnly": true
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "A",
+      "usageDayUtc": "2026-10-15",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "previousCost": "6.48200511932373E-8",
+      "currentCost": "6.48200511932373E-8",
+      "delta": "0E-22",
+      "baselineReference": "private\\cost-snapshots\\billing-reconciliation-20261016T0645\\correlation.private.json",
+      "matchedDayCurrencyMeterOnly": true
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "A",
+      "usageDayUtc": "2026-10-15",
+      "meterName": "Standard Data Transfer Out",
+      "currency": "USD",
+      "previousCost": "0.000024495679885149",
+      "currentCost": "0.000024495679885149",
+      "delta": "0E-18",
+      "baselineReference": "private\\cost-snapshots\\billing-reconciliation-20261016T0645\\correlation.private.json",
+      "matchedDayCurrencyMeterOnly": true
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "B",
+      "usageDayUtc": "2026-10-15",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "previousCost": "1.22934579849243E-8",
+      "currentCost": "1.22934579849243E-8",
+      "delta": "0E-22",
+      "baselineReference": "private\\cost-snapshots\\billing-reconciliation-20261016T0645\\correlation.private.json",
+      "matchedDayCurrencyMeterOnly": true
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "B",
+      "usageDayUtc": "2026-10-15",
+      "meterName": "Standard Data Transfer Out",
+      "currency": "USD",
+      "previousCost": "8.75651836395264E-7",
+      "currentCost": "8.75651836395264E-7",
+      "delta": "0E-21",
+      "baselineReference": "private\\cost-snapshots\\billing-reconciliation-20261016T0645\\correlation.private.json",
+      "matchedDayCurrencyMeterOnly": true
+    }
+  ],
+  "costTotalsPerEndpointMeterCurrency": [
+    {
+      "family": "fresh",
+      "endpointAlias": "A",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "cost": "5.58793544769287E-9"
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "A",
+      "meterName": "Standard Data Transfer Out",
+      "currency": "USD",
+      "cost": "0.000001374235376715660"
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "C",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "cost": "0.284749456420541"
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "C",
+      "meterName": "Standard Data Transfer Out",
+      "currency": "USD",
+      "cost": "0.00000187707040458918"
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "T",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "EUR",
+      "cost": "0.244085448265384"
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "C",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "cost": "0.0131025677174329501587"
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "A",
+      "meterName": "Inter Continent Data Transfer Out - NAM or EU To Any",
+      "currency": "USD",
+      "cost": "0.0000483148265630007"
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "A",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "cost": "6.48200511932373E-8"
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "A",
+      "meterName": "Standard Data Transfer Out",
+      "currency": "USD",
+      "cost": "0.000024495679885149"
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "B",
+      "meterName": "Intra Continent Data Transfer Out",
+      "currency": "USD",
+      "cost": "0.0000702091678977013243"
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "B",
+      "meterName": "Standard Data Transfer Out",
+      "currency": "USD",
+      "cost": "8.75651836395264E-7"
+    }
+  ],
+  "costTotalsPerEndpointCurrency": [
+    {
+      "family": "fresh",
+      "endpointAlias": "A",
+      "currency": "USD",
+      "cost": "0.00000137982331216335287"
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "C",
+      "currency": "USD",
+      "cost": "0.28475133349094558918"
+    },
+    {
+      "family": "fresh",
+      "endpointAlias": "T",
+      "currency": "EUR",
+      "cost": "0.244085448265384"
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "C",
+      "currency": "USD",
+      "cost": "0.0131025677174329501587"
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "A",
+      "currency": "USD",
+      "cost": "0.0000728753264993429373"
+    },
+    {
+      "family": "historical",
+      "endpointAlias": "B",
+      "currency": "USD",
+      "cost": "0.0000710848197340965883"
+    }
+  ],
+  "uncoveredScopes": [
+    {
+      "family": "historical",
+      "endpointAlias": "T",
+      "reason": "Not queried: five of six HTTP allowance consumed; 80-percent no-new-work boundary reached. Exact original binding available and offline validated."
+    }
+  ],
+  "conclusion": [
+    "Positive cross-region outbound meter costs are observed at fresh C (North Europe) and T (Sweden Central); T daily aggregate cannot be assigned to individual directions.",
+    "Fresh A (Sweden Central), source of the verified 100 GB same-region cross-tenant A-to-T leg, shows only four microcharges totaling USD 0.00000137982331216335287; no bulk-sized same-region outbound charge is observed.",
+    "All fresh day/meter/currency costs are unchanged from the 18 October 11:51 UTC Query baseline; historical C is also unchanged. Overlapping archived A/B day/meter/currency values are unchanged; historical B 16 October is not compared against absent baseline rows.",
+    "These financial observations support no extra Azure-to-Azure intra-region bandwidth charge; policy is not quoted as explicitly tenant-specific. They do not prove invoice finality, explicit zero-rated 100 GB, or quantity reconciliation.",
+    "Query returns costs, not quantity, unit or effective price. Older CSV quantities were not refreshed. Missing days are no rows observed, not explicit zero.",
+    "Report-job Location string changes are not VNet, public-IP or traffic-path changes; changed URL components and original rejection cause remain unknown. This workflow uses no asynchronous report or polling URLs."
+  ],
+  "ingestionFinal": false,
+  "ingestionWatermarkReturned": false,
+  "billingExperimentStillOpen": true,
+  "hardStopUtc": "2026-10-22T23:15:33Z",
+  "scheduleId": 5,
+  "scheduleUnchanged": true,
+  "ownedChildrenIdle": true,
+  "privateHandoff": "private\\last-week-20261019T104258Z\\handoff.private.json"
+}
