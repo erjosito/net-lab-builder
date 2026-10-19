@@ -1,6 +1,37 @@
 # Billing extraction and reconciliation plan
 
-## Current Query capability — 19 October 2026, 11:43Z
+## Latest snapshot — 19 October 2026, 12:30Z (public quantity workflow)
+
+[End-to-end evidence](results/2026-10-19-public-query-quantity-validation.json)
+uses the published **#29** source and actual `--include-usage-quantity`
+flag, not a private ARM adapter. Native Windows A and native WSL T both
+returned HTTP 200 and CLI exit 0; the option is now empirically supported
+for both tested profiles/scopes/requests, not all Azure offers.
+
+A has **four** numeric day/meter quantities, equal to the new CSV's values.
+The **four retained CSV row projections are unchanged** over
+**28.2142287 hours** since 18 October 08:17:20Z; units are reported `1 GB`,
+with effective rates **USD 0.02 / 0.083** by meter. Query cost totals
+**USD 0.00000137982331216335287**; CSV totals
+**USD 0.0000013798233121633528712**, preserving their different precision.
+There is still no bulk-sized record for the verified same-region 100 GB.
+Query has no unit metadata; rowwise numeric equality does not assign CSV
+units to Query, and different meter quantities are not combined.
+
+T's one Intra Continent row reports numeric quantity **14.0853741280734**
+and cost **EUR 0.244085448265384**. Its Query unit is unavailable.
+No fresh T CSV was collected, and mixed T -> A / T -> C traffic is not
+individually attributed. The legacy unit/identity issue remains open.
+
+The phase used **5/6 HTTP requests**: two Queries, generation, poll and
+download. The report again echoed an end at **18 October midnight**;
+both A transfer days, **16/17 October**, lie inside the interval, without
+proving full-day 18 October or final ingestion. All owned children closed
+idle. A/T comparisons are deferred until **18:30:11Z**; C was not queried
+and its existing **17:08:21Z** minimum remains. Existing schedule 5 and
+the original hard stop are unchanged. **Transport/cleanup PASS; billing OPEN.**
+
+## Initial Query capability — 19 October 2026, 11:43Z
 
 **The cost API can return quantity when asked and accepted.**
 The [single fresh-C empirical request](results/2026-10-19-query-quantity-capability.json)

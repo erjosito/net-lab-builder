@@ -1,6 +1,23 @@
 # Azure public-endpoint bandwidth billing
 
-## Current API capability — 19 October 2026, 11:43Z
+## Latest result — 19 October 2026, 12:30Z
+
+**The published quantity workflow now works end-to-end on both tenant
+contexts:** [Windows A and native WSL T](results/2026-10-19-public-query-quantity-validation.json)
+both returned numeric `UsageQuantity` through `--include-usage-quantity`.
+Query units remain **NOT_RETURNED**. T reports **14.0853741280734** on
+Intra Continent / **EUR 0.244085448265384**, not an allocation to either
+of its two sending flows.
+
+Fresh A's new CSV contains the same four positive microquantity rows as
+**28.21 hours earlier**, with no bulk-sized charge for its verified same-region
+100 GB transfer. Query's four quantities match those CSV values numerically;
+CSV reports `1 GB` units and USD 0.02 / 0.083 rates, not Query unit metadata.
+This strengthens the qualified no-observed-bulk-charge finding, not an
+explicit zero-rated record or invoice finality. **Billing reconciliation
+remains OPEN.** Five requests completed; no new traffic or C query.
+
+## Initial API capability — 19 October 2026, 11:43Z
 
 **Can the cost API give quantity? Yes, when explicitly requested and accepted.**
 The [fresh-C capability observation](results/2026-10-19-query-quantity-capability.json)

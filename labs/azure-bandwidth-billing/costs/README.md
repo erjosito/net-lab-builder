@@ -1,6 +1,22 @@
 # Reproducible Cost Analysis API deliverable
 
-## Current Query quantity option — 19 October 2026, 11:43Z capability evidence
+## Latest public workflow result — 19 October 2026, 12:30Z
+
+The published [quantity option was run end-to-end](../results/2026-10-19-public-query-quantity-validation.json)
+on **native Windows A and native WSL T** with their separate existing
+authentication contexts. Both returned HTTP 200 / CLI exit 0 and numeric
+`UsageQuantity`; this is no longer only an offline implementation.
+Support is still scoped to the tested profiles/requests, not all offers.
+
+A's four quantities match the new CSV numerically; the four retained CSV
+projections are unchanged over **28.21 hours**, with only microquantities
+and no bulk-sized same-region 100 GB charge. T returns **14.0853741280734**
+on Intra Continent / **EUR 0.244085448265384**, with no per-flow allocation.
+Query units remain **NOT_RETURNED**; CSV units/rates do not silently become
+Query metadata. Different meter quantities must not be summed.
+**Billing reconciliation remains OPEN**, independent of workflow success.
+
+## Initial Query quantity option — 19 October 2026, 11:43Z capability evidence
 
 **Can the cost API give quantity? Yes, when requested and accepted.**
 The [fresh-C empirical result](../results/2026-10-19-query-quantity-capability.json)
