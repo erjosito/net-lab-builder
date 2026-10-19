@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "reviewedAtUtc": "2026-10-19T12:17:21Z",
+  "verdict": "PASS_REVIEWED_IMPLEMENTATION_BILLING_RECONCILIATION_OPEN",
+  "source": "costs/cost_api.py",
+  "baselineSourceSha256": "1cd76089b9b690c991d4a6bf05ad6fd55195049633b30e75666b981c3e8d1c18",
+  "approvedSourceSha256": "eebdb5908f237a5aeb6abe500ff2ae77253226203ed65ba5d2aa0c37b0b498e4",
+  "option": "--include-usage-quantity",
+  "default": false,
+  "command": "query",
+  "behavior": [
+    "Adds UsageQuantity Sum alongside PreTaxCost Sum only when explicitly enabled.",
+    "Requires meter-level and scope grouping; existing two-group limit remains.",
+    "Every page, including empty pages, must return the requested meter dimension and UsageQuantity Number column.",
+    "Retained quantities must be finite numeric values, not booleans, nulls or strings; meter identities must be nonempty strings.",
+    "Existing exact resource-group, inventory and date checks precede row persistence.",
+    "Quantities preserve the existing Decimal representation; no unit conversion or cross-meter sum.",
+    "Opt-in snapshots and summaries mark usageQuantityUnit NOT_RETURNED.",
+    "Unsupported requests are explicit errors, never a silent cost-only fallback.",
+    "Existing default requests and rows, CSV workflow, identity guards, timeouts and request accounting remain unchanged."
+  ],
+  "empiricalCapabilityEvidence": "2026-10-19-query-quantity-capability.json",
+  "empiricalCapabilitySourceSha256": "1cd76089b9b690c991d4a6bf05ad6fd55195049633b30e75666b981c3e8d1c18",
+  "newBillingHttpRequestsForImplementation": 0,
+  "infrastructureMutations": 0,
+  "finalSourceValidation": {
+    "nativeFullCostSuite": {
+      "testsRun": 96,
+      "skipped": 0,
+      "failures": 0,
+      "elapsedSeconds": 65.677
+    },
+    "wslQuantitySelection": {
+      "testsRun": 11,
+      "skipped": 1,
+      "failures": 0,
+      "elapsedSeconds": 126.136,
+      "selection": "test*.py -k quantity",
+      "skipReason": "Windows dispatcher contract",
+      "fullWslSuitePassClaimed": false
+    }
+  },
+  "earlierWslFullRunCaveat": {
+    "sourceSha256": "d64eb086155f0ae2ef8ba7ca71e3dbf13504c22f657e5c2186df46954f8b4ee7",
+    "testsRun": 95,
+    "skipped": 4,
+    "failingSubtests": 2,
+    "test": "test_rfc850_long_cooldown_cannot_retry_into_complete",
+    "observed": "The unchanged real one-second deadline expired before a mocked HTTP request.",
+    "sameFailuresReproducedOnPreservedBaseline": true,
+    "controlledClockDiagnosticPassed": true,
+    "unrelatedProductionOrFixtureChangeMade": false
+  },
+  "limitations": [
+    "The live selector capability was observed for one tested offer, resource-group scope and request; it is not universal support.",
+    "The capability observation predates this final source and is not relabeled as an end-to-end live execution of the new flag.",
+    "The full WSL suite was not rerun on the final source; the final quantity-focused selection passed.",
+    "Usage units and rates were not returned by the tested Query grouping.",
+    "The reported cross-region quantity remains partial; this implementation does not resolve provider-side billing attribution or publication."
+  ]
+}

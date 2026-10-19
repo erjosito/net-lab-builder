@@ -1,4 +1,5 @@
 """Public CLI integration fixtures. No Azure requests or authentication changes."""
+import csv
 import datetime as dt
 import io
 import json
@@ -81,6 +82,211 @@ class PublicWorkflowTests(unittest.TestCase):
                 "cost_api.time.sleep") as sleep, patch("sys.stdout", new_callable=io.StringIO) as out:
             code = api.main(command or self.command())
         return code, json.loads(out.getvalue()), opener, cli, sleep
+
+    def quantity_page(self, quantity=0, *, names=None, rows=None, column_type="Number",
+                      next_link=None):
+        names = names if names is not None else [
+            "Currency", "UsageQuantity", "Meter", "ResourceId", "UsageDate", "PreTaxCost"]
+        values = dict(Currency="USD", UsageQuantity=quantity, Meter="Transfer",
+                      ResourceId=RID, UsageDate=20261015, PreTaxCost=0.01)
+        properties = {
+            "columns": [{"name": name, "type": column_type if name == "UsageQuantity"
+                         else "Number" if name in ("UsageDate", "PreTaxCost") else "String"}
+                        for name in names],
+            "rows": rows if rows is not None else [[values[name] for name in names]]}
+        if next_link:
+            properties["nextLink"] = next_link
+        return {"properties": properties}
+
+    def test_quantity_public_reordered_pagination_exact_decimal_and_zero(self):
+        endpoint = "/providers/Microsoft.CostManagement/query"
+        url = api.ARM + f"/subscriptions/{SUB}" + endpoint + "?api-version=" + api.QUERY_VERSION
+        first = json.dumps(self.quantity_page(next_link=url + "&$skiptoken=one"))
+        # A raw JSON number exercises the transport's Decimal parser, not a quoted fixture value.
+        first = first.replace('["USD", 0,', '["USD", 14.237472821027,')
+        second = self.quantity_page(names=[
+            "UsageQuantity", "PreTaxCost", "UsageDate", "ResourceId", "Meter", "Currency"])
+        code, summary, opener, _, sleep = self.run_cli(
+            [Response(first.encode()), Response(second)], self.command("query", [
+                "--include-usage-quantity", "--group-by", "ResourceId", "Meter"]))
+        self.assertEqual((code, summary["pages"], summary["received"]), (0, 2, 2))
+        self.assertEqual(summary["httpRequests"], 2)
+        data = json.loads(self.output.read_text())
+        self.assertEqual([row["UsageQuantity"] for row in data["rows"]], ["14.237472821027", 0])
+        self.assertEqual(data["usageQuantityUnit"], "NOT_RETURNED")
+        self.assertTrue(data["usageQuantityRequested"])
+        self.assertEqual(summary["usageQuantityUnit"], "NOT_RETURNED")
+        bodies = [json.loads(call.args[0].data) for call in opener.open.call_args_list]
+        self.assertEqual(bodies[0], bodies[1])
+        self.assertEqual(len(bodies[0]["dataset"]["aggregation"]), 2)
+        self.assertEqual(len(bodies[0]["dataset"]["grouping"]), 2)
+        self.assertFalse(self.csv.exists())
+        sleep.assert_not_called()
+
+    def test_quantity_public_invalid_values_and_every_page_schema_fail_closed(self):
+        cases = [(self.quantity_page(value), "query_usage_quantity_invalid")
+                 for value in (None, True, False, "1.2", float("nan"),
+                               float("inf"), float("-inf"))]
+        names = ["Currency", "Meter", "ResourceId", "UsageDate", "PreTaxCost"]
+        cases += [(self.quantity_page(names=names, rows=rows),
+                   "query_usage_quantity_column_missing") for rows in (None, [])]
+        cases += [(self.quantity_page(column_type=kind, rows=rows),
+                   "query_usage_quantity_column_type")
+                  for kind in ("String", "number", None) for rows in (None, [])]
+        endpoint = "/providers/Microsoft.CostManagement/query"
+        url = api.ARM + f"/subscriptions/{SUB}" + endpoint + "?api-version=" + api.QUERY_VERSION
+        for page, expected in cases:
+            for following in (False, True):
+                with self.subTest(page=page, following=following):
+                    responses = ([Response(self.quantity_page(
+                        next_link=url + "&$skiptoken=one"))] if following else []) + [Response(page)]
+                    code, summary, opener, _, _ = self.run_cli(responses, self.command("query", [
+                        "--include-usage-quantity", "--group-by", "ResourceId", "Meter"]))
+                    self.assertEqual((code, summary["code"]), (2, expected))
+                    self.assertEqual(opener.open.call_count, len(responses))
+                    self.assertFalse(self.output.exists())
+                    self.assertFalse(self.csv.exists())
+
+    def test_quantity_requested_meter_required_on_every_page(self):
+        cases = []
+        for rows in (None, []):
+            names = ["Currency", "UsageQuantity", "ResourceId", "UsageDate", "PreTaxCost"]
+            cases.append((self.quantity_page(names=names, rows=rows),
+                          "query_usage_quantity_meter_missing"))
+        wrong_dimension = self.quantity_page()
+        for column in wrong_dimension["properties"]["columns"]:
+            if column["name"] == "Meter":
+                column["name"] = "MeterId"
+        cases.append((wrong_dimension, "query_usage_quantity_meter_missing"))
+        for value in (None, "", " ", 123):
+            page = self.quantity_page()
+            page["properties"]["rows"][0][2] = value
+            cases.append((page, "query_usage_quantity_meter_invalid"))
+        endpoint = "/providers/Microsoft.CostManagement/query"
+        url = api.ARM + f"/subscriptions/{SUB}" + endpoint + "?api-version=" + api.QUERY_VERSION
+        for page, expected in cases:
+            for following in (False, True):
+                with self.subTest(page=page, following=following):
+                    responses = ([Response(self.quantity_page(
+                        next_link=url + "&$skiptoken=one"))] if following else []) + [Response(page)]
+                    code, summary, opener, _, _ = self.run_cli(responses, self.command("query", [
+                        "--include-usage-quantity", "--group-by", "ResourceId", "Meter"]))
+                    self.assertEqual((code, summary["code"]), (2, expected))
+                    self.assertEqual(opener.open.call_count, len(responses))
+                    self.assertFalse(self.output.exists())
+                    self.assertFalse(self.csv.exists())
+
+    def test_quantity_wrong_command_grouping_rejected_before_auth_lease_dispatch(self):
+        cases = [(command, [], "usage_quantity_requires_query")
+                 for command in ("probe", "details", "cost-details")]
+        cases += [("query", ["--grouping", name], "usage_quantity_requires_meter_grouping")
+                  for name in ("none", "ResourceGroup", "MeterCategory")]
+        cases += [
+            ("query", ["--group-by", "ResourceId", "MeterCategory"],
+             "usage_quantity_requires_meter_grouping"),
+            ("query", ["--group-by", "Meter"], "collection_requires_scope_grouping"),
+            ("query", ["--group-by", "ResourceId", "Meter", "MeterId"], "invalid_query_grouping"),
+            ("query", ["--group-by", "Meter", "Meter"], "invalid_query_grouping")]
+        for command, extra, expected in cases:
+            for transport in ("native", "wsl"):
+                with self.subTest(command=command, extra=extra, transport=transport), patch(
+                        "cost_api.cli_json") as cli, patch(
+                        "cost_api.urllib.request.build_opener") as opener, patch(
+                        "cost_api.run_bounded") as runner, patch(
+                        "cost_api.InvocationLease") as lease, patch(
+                        "sys.stdout", new_callable=io.StringIO) as out:
+                    code = api.main(self.command(command, [
+                        "--include-usage-quantity", "--transport", transport] + extra))
+                    self.assertEqual((code, json.loads(out.getvalue())["code"]), (2, expected))
+                    for mock in (cli, opener, runner, lease):
+                        mock.assert_not_called()
+        self.assertFalse((self.root / "deploy").exists())
+
+    def test_quantity_unsupported_selector_http_error_no_cost_only_fallback(self):
+        error = urllib.error.HTTPError(api.ARM, 400, "Bad Request", {},
+                                       io.BytesIO(b'{"error":{"code":"InvalidQuery"}}'))
+        code, summary, opener, _, sleep = self.run_cli(
+            [error], self.command("query", ["--include-usage-quantity"]))
+        self.assertEqual((code, summary["httpStatus"], summary["azureCode"]), (2, 400, "InvalidQuery"))
+        self.assertEqual((opener.open.call_count, summary["httpRequests"]), (1, 1))
+        body = json.loads(opener.open.call_args.args[0].data)
+        self.assertIn("totalQuantity", body["dataset"]["aggregation"])
+        self.assertEqual(json.loads(self.output.read_text())["rows"], [])
+        sleep.assert_not_called()
+
+    def test_quantity_scope_inventory_date_guards_before_persistence(self):
+        for field, value, expected in (
+                ("ResourceId", RID + "-unknown", "unattributed_lab_rows"),
+                ("ResourceId", RID.replace(RG, "foreign-rg"), None),
+                ("UsageDate", 20261014, "query_date_mismatch"),
+                ("ResourceGroup", "foreign-rg", "query_scope_unverified")):
+            with self.subTest(field=field):
+                names = ["Currency", "UsageQuantity", "Meter", "ResourceId", "UsageDate",
+                         "PreTaxCost", "ResourceGroup"]
+                values = dict(Currency="USD", UsageQuantity="PRIVATE_QUANTITY", Meter="PRIVATE_METER",
+                              ResourceId=RID, UsageDate=20261015, PreTaxCost=0.01, ResourceGroup=RG)
+                values[field] = value
+                page = self.quantity_page(names=names, rows=[[values[name] for name in names]])
+                code, summary, _, _, _ = self.run_cli(
+                    [Response(page)], self.command("query", [
+                        "--include-usage-quantity", "--group-by", "ResourceId", "Meter"]))
+                if field in ("UsageDate", "ResourceGroup"):
+                    self.assertEqual((code, summary["code"]), (2, expected))
+                    self.assertFalse(self.output.exists())
+                else:
+                    self.assertEqual(code, 3 if expected else 0)
+                    text = self.output.read_text()
+                    self.assertNotIn("PRIVATE", text)
+                    self.assertEqual(json.loads(text)["rows"], [])
+                    self.output.unlink()
+
+    def test_default_query_ignores_unexpected_quantity_no_metadata_csv_unchanged(self):
+        code, summary, opener, _, _ = self.run_cli(
+            [Response(self.quantity_page("not-numeric"))], self.command("query", [
+                "--group-by", "ResourceId", "Meter"]))
+        self.assertEqual(code, 0)
+        data = json.loads(self.output.read_text())
+        self.assertNotIn("UsageQuantity", data["rows"][0])
+        for key in ("usageQuantityRequested", "usageQuantityUnit"):
+            self.assertNotIn(key, data)
+            self.assertNotIn(key, summary)
+        self.assertEqual(json.loads(opener.open.call_args.args[0].data)["dataset"]["aggregation"],
+                         {"totalCost": {"name": "PreTaxCost", "function": "Sum"}})
+        self.output.unlink()
+        code, summary, _, _, _ = self.run_cli([Response(completed()), Response(RAW)])
+        self.assertEqual(code, 0)
+        self.assertEqual(next(csv.DictReader(io.StringIO(self.csv.read_text())))["quantity"],
+                         "0.6551259830594063")
+        self.output.unlink()
+        self.csv.unlink()
+        code, summary, opener, cli, _ = self.run_cli(
+            [], self.command("query", ["--include-usage-quantity", "--csv-output", str(self.csv)]))
+        self.assertEqual((code, summary["code"]), (2, "csv_output_requires_cost_details"))
+        opener.open.assert_not_called()
+        cli.assert_not_called()
+
+    @unittest.skipUnless(os.name == "nt", "Windows dispatch contract")
+    def test_quantity_wsl_flag_and_private_native_paths_forwarded_safely(self):
+        for dimensions in ([], ["--group-by", "ResourceId", "Meter"]):
+            with self.subTest(dimensions=dimensions), patch(
+                    "cost_api.run_bounded", return_value=subprocess.CompletedProcess(
+                        [], 0, b'{"state":"COMPLETE","usageQuantityRequested":true,'
+                        b'"usageQuantityUnit":"NOT_RETURNED"}', b"SECRET")) as runner, patch(
+                    "cost_api.cli_json") as cli, patch(
+                    "sys.stdout", new_callable=io.StringIO) as out:
+                self.assertEqual(api.main(self.command("query", [
+                    "--transport", "wsl", "--include-usage-quantity",
+                    "--request-timeout-seconds", "120", "--max-seconds", "300"] + dimensions)), 0)
+                forwarded, _ = runner.call_args.args
+                self.assertEqual(forwarded.count("--include-usage-quantity"), 1)
+                self.assertEqual(forwarded[forwarded.index("--transport") + 1], "native")
+                for flag, path in (("--context", self.context), ("--inventory", self.inventory),
+                                   ("--output", self.output)):
+                    self.assertEqual(forwarded[forwarded.index(flag) + 1],
+                                     api.linux_path(str(path.resolve())))
+                self.assertEqual(forwarded[forwarded.index("--request-timeout-seconds") + 1], "120")
+                self.assertNotIn("SECRET", out.getvalue())
+                cli.assert_not_called()
 
     def test_public_202_location_retry_poll_manifest_blob_and_auto_lease(self):
         code, summary, opener, cli, sleep = self.run_cli([

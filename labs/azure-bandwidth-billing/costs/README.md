@@ -1,5 +1,39 @@
 # Reproducible Cost Analysis API deliverable
 
+## Current Query quantity option — 19 October 2026, 11:43Z capability evidence
+
+**Can the cost API give quantity? Yes, when requested and accepted.**
+The [fresh-C empirical result](../results/2026-10-19-query-quantity-capability.json)
+establishes this for **one offer/scope/request only**: Query `2023-11-01`,
+ActualCost, Daily, 12–18 October, `PreTaxCost` + `UsageQuantity` Sum, and
+`ResourceId` + `Meter` grouping returned HTTP 200 with **15 numeric quantities**.
+Earlier cost-only statements describe the default implemented workflow or
+dated observations, not an API-wide prohibition.
+
+The offline CLI adds query-only `--include-usage-quantity` (default false).
+It retains cost aggregation and the two-group limit, requires `Meter` or
+`MeterId` plus scope grouping, and validates the `UsageQuantity: Number`
+column on **every page**, even empty pages. Retained values must be finite
+numeric JSON values, not null, booleans or numeric strings. Decimal precision
+is preserved. Opt-in snapshots/summaries explicitly report
+`usageQuantityRequested: true` and `usageQuantityUnit: "NOT_RETURNED"`.
+Unsupported API selectors are explicit errors; there is no quiet cost-only
+fallback. Default request/row/summary shapes and detailed CSV/Consumption
+guards are unchanged; Query has no CSV output.
+
+Units/rates were not returned: no GB stamp, conversion or arithmetic across
+meters is valid. Bulk Query **14.237472821027** narrowly differs in precision
+from CSV **14.2374728210270405** and still does not reconcile **100 GB**.
+The capability audit had no category filter; its other-label cost
+**USD 0.5496058782444444** includes **USD 0.168** on unclassified Standard
+Node / Standard P2 Node, not attributed bandwidth. **Billing remains OPEN.**
+The [reviewed implementation](../results/2026-10-19-query-quantity-implementation.json)
+also validates the requested meter column and nonempty retained meter
+identities. No billing HTTP request was made for implementation. The dated
+sections and original 86-test/source receipts remain historical and immutable;
+the implementation evidence records final native/focused WSL checks and the
+earlier full-WSL timing failure separately.
+
 ## Latest actual cost answer — 19 October 2026, 11:08Z (quantity refresh)
 
 **Both detailed workflows succeeded; full-volume reconciliation is OPEN.**
@@ -494,8 +528,14 @@ Both commands below are complete, directly callable workflows for the existing
 historical C control. Run them from the repository root. Deleted resources are
 fine: the context's saved resource group and deployment inventory identify the
 historical records. Each run uses new filenames; do not reuse a snapshot name.
-This workflow's Query projection returns money, not quantity/unit/rate;
-use the detailed CSV for those fields when available.
+Query defaults to money only. The example explicitly opts into quantity;
+omit `--include-usage-quantity` for the unchanged cost-only projection. Use an
+exact saved inventory for the selected context/resource group, not a
+subscription-wide list. The option requires `Meter` or `MeterId` in the
+effective grouping (the default `ResourceGroup` + `Meter` is also valid).
+Selector support is offer/scope dependent: errors are explicit, with no
+fallback. Units/rates are not returned and quantities must not be combined
+across meters; use detailed CSV for unit/rate fields when available.
 
 ```powershell
 $ctxPath = 'labs\azure-bandwidth-billing\private\control-context.private.json'
@@ -505,7 +545,8 @@ $stamp = [DateTimeOffset]::UtcNow.ToString('yyyyMMddTHHmmssfffffffZ')
 python labs\azure-bandwidth-billing\costs\cost_api.py query `
   --context $ctxPath --inventory $inventory --resource-group $ctx.resourceGroup `
   --start 2026-10-15 --end 2026-10-16 --group-by ResourceId Meter `
-  --meter-category Bandwidth --max-seconds 75 --max-http-requests 3 --max-retries 0 `
+  --include-usage-quantity --meter-category Bandwidth `
+  --max-seconds 300 --request-timeout-seconds 120 --max-http-requests 3 --max-retries 0 `
   --output "labs\azure-bandwidth-billing\private\reports\control-query-$stamp.json"
 if ($LASTEXITCODE -ne 0) { throw 'Query did not complete; inspect its sanitized summary.' }
 ```

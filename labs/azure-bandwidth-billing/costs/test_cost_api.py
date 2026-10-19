@@ -679,6 +679,55 @@ class CollectorTests(unittest.TestCase):
             {"dimensions": {"name": "MeterCategory", "operator": "In",
                             "values": ["Bandwidth"]}}]})
 
+    def test_query_quantity_body_opt_in_preserves_cost_and_two_group_limit(self):
+        for grouping, dimensions in (("Meter", None), ("MeterId", None),
+                                     ("Meter", ["ResourceId", "Meter"]),
+                                     ("Meter", ["ResourceGroup", "MeterId"])):
+            with self.subTest(grouping=grouping, dimensions=dimensions):
+                default = api.query_body(RG, "2026-10-14", "2026-10-14", grouping,
+                                         "Bandwidth", dimensions)
+                explicit_false = api.query_body(RG, "2026-10-14", "2026-10-14", grouping,
+                                                "Bandwidth", dimensions, False)
+                self.assertEqual(default, explicit_false)
+                quantity = api.query_body(RG, "2026-10-14", "2026-10-14", grouping,
+                                          "Bandwidth", dimensions, True)
+                self.assertEqual(quantity["dataset"]["aggregation"], {
+                    "totalCost": {"name": "PreTaxCost", "function": "Sum"},
+                    "totalQuantity": {"name": "UsageQuantity", "function": "Sum"}})
+                self.assertLessEqual(len(quantity["dataset"]["grouping"]), 2)
+                del quantity["dataset"]["aggregation"]["totalQuantity"]
+                self.assertEqual(quantity, default)
+        for dimensions in (["ResourceId", "Meter", "MeterId"], ["ResourceId", "Meter", "Meter"]):
+            with self.subTest(dimensions=dimensions), self.assertRaisesRegex(
+                    api.Failure, "invalid_query_grouping"):
+                api.query_body(RG, "2026-10-14", "2026-10-14", "Meter",
+                               group_by=dimensions, include_usage_quantity=True)
+        for grouping in ("none", "ResourceGroup", "MeterCategory"):
+            with self.subTest(grouping=grouping), self.assertRaisesRegex(
+                    api.Failure, "usage_quantity_requires_meter_grouping"):
+                api.query_body(RG, "2026-10-14", "2026-10-14", grouping,
+                               include_usage_quantity=True)
+
+    def test_query_quantity_numeric_types_preserved_without_conversion(self):
+        query_args = args("query")
+        query_args.include_usage_quantity = True
+        names = ["UsageQuantity", "ResourceGroup", "UsageDate", "Currency", "PreTaxCost", "MeterId"]
+        for value in (0, 2, 1.25, Decimal("14.237472821027"), Decimal("0E-30")):
+            with self.subTest(value=value):
+                page = {"properties": {
+                    "columns": [{"name": name, "type": "Number" if name == "UsageQuantity"
+                                 else "String"} for name in names],
+                    "rows": [[value, RG, 20261014, "USD", Decimal("0.01"), "meter"]]}}
+                result = api.collect(self.transport([page]), query_args, set())
+                actual = result["rows"][0]["UsageQuantity"]
+                self.assertEqual(actual, value)
+                self.assertIs(type(actual), type(value))
+        for value in (Decimal("NaN"), Decimal("Infinity"), Decimal("-Infinity")):
+            with self.subTest(value=value), self.assertRaisesRegex(
+                    api.Failure, "query_usage_quantity_invalid"):
+                page["properties"]["rows"][0][0] = value
+                api.collect(self.transport([page]), query_args, set())
+
     def test_http_failure_timeout_no_credentials_output(self):
         for error, expected in [
                 (urllib.error.HTTPError(URL + "&secret=SAS", 403, "TOKEN", {}, None), "http_error"),
