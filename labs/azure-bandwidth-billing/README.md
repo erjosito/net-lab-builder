@@ -1,6 +1,16 @@
 # Azure public-endpoint bandwidth billing
 
-## Latest result — 19 October 2026, 12:30Z
+## Latest coverage — 19 October 2026, 13:59Z
+
+**Weekly retrieval now covers all six resource-group scopes across both
+subscriptions.** The [previously uncovered historical T group](results/2026-10-19-historical-t-weekly-query.json)
+returned one 15 October Intra Continent row: **EUR 0.000000074561667**
+and quantity **0.000004302710295**, with Query unit **NOT_RETURNED**.
+This is historical coverage, not a new observation of the fresh 100 GB tests.
+The six scopes were collected at different times, not as one atomic snapshot.
+**Full-volume billing reconciliation remains OPEN.**
+
+## Public quantity workflow — 19 October 2026, 12:30Z
 
 **The published quantity workflow now works end-to-end on both tenant
 contexts:** [Windows A and native WSL T](results/2026-10-19-public-query-quantity-validation.json)
