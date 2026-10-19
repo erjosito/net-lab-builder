@@ -1,0 +1,309 @@
+{
+  "schemaVersion": 1,
+  "taskId": "last-week-quantity-20261019T1105Z",
+  "verdict": "PASS_NEW_CSV_OBSERVATION_NOT_FINAL",
+  "startedAtUtc": "2026-10-19T11:05:23.129244+00:00",
+  "completedAtUtc": "2026-10-19T11:08:21.428472+00:00",
+  "elapsedSeconds": 178.299228,
+  "actualToolCalls": 22,
+  "toolCallDefinition": "Completed leaf tool invocations; parallel wrappers excluded",
+  "maxToolCalls": 75,
+  "maxElapsedMinutes": 30,
+  "actualBillingHttpRequests": 6,
+  "maxBillingHttpRequests": 6,
+  "retries": 0,
+  "mutations": 0,
+  "requestTimeoutSeconds": 120,
+  "reportMaxSeconds": 300,
+  "externalCommandTimeoutSeconds": 600,
+  "requestedWeekUtc": {
+    "start": "2026-10-12",
+    "endInclusive": "2026-10-18"
+  },
+  "queryBoundaryComparison": "Prior weekly Query ended 2026-10-18T23:59:59+00:00; report date-only end and returned midnight do not prove full-day October 18 coverage.",
+  "reports": [
+    {
+      "state": "COMPLETE",
+      "httpRequests": 3,
+      "httpRequestCounts": {
+        "generation": 1,
+        "poll": 1,
+        "download": 1
+      },
+      "polls": 1,
+      "extractionComplete": true,
+      "ingestionFinal": false,
+      "request": {
+        "metric": "ActualCost",
+        "timePeriod": {
+          "start": "2026-10-12",
+          "end": "2026-10-18"
+        }
+      },
+      "returnedPeriod": {
+        "start": "2026-10-12T00:00:00",
+        "end": "2026-10-18T00:00:00"
+      },
+      "reportEndSemantics": "UNKNOWN_NOT_PROOF_OF_FULL_DAY_COVERAGE",
+      "localRetention": {
+        "start": "2026-10-12",
+        "end": "2026-10-18",
+        "inclusive": true
+      },
+      "family": "fresh",
+      "endpointAlias": "C",
+      "rows": [
+        {
+          "day": "2026-10-17",
+          "meterCategory": "Bandwidth",
+          "meterName": "Intra Continent Data Transfer Out",
+          "quantity": "3.362818045541644",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "unitPrice": "0.02",
+          "cost": "0.06725636091083288",
+          "currency": "USD"
+        },
+        {
+          "day": "2026-10-17",
+          "meterCategory": "Bandwidth",
+          "meterName": "Standard Data Transfer Out",
+          "quantity": "0.000010422430932522",
+          "unit": "1 GB",
+          "effectivePrice": "0.083",
+          "unitPrice": "0.083",
+          "cost": "8.650617673993110000000E-7",
+          "currency": "USD"
+        },
+        {
+          "day": "2026-10-17",
+          "meterCategory": "Bandwidth",
+          "meterName": "Standard Data Transfer Out",
+          "quantity": "0.000006065703928471",
+          "unit": "1 GB",
+          "effectivePrice": "0.083",
+          "unitPrice": "0.083",
+          "cost": "5.034534260630607000000E-7",
+          "currency": "USD"
+        },
+        {
+          "day": "2026-10-17",
+          "meterCategory": "Bandwidth",
+          "meterName": "Intra Continent Data Transfer Out",
+          "quantity": "3.342501014471054",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "unitPrice": "0.02",
+          "cost": "0.06685002028942108",
+          "currency": "USD"
+        },
+        {
+          "day": "2026-10-17",
+          "meterCategory": "Bandwidth",
+          "meterName": "Intra Continent Data Transfer Out",
+          "quantity": "3.445981875061989",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "unitPrice": "0.02",
+          "cost": "0.06891963750123978",
+          "currency": "USD"
+        },
+        {
+          "day": "2026-10-17",
+          "meterCategory": "Bandwidth",
+          "meterName": "Intra Continent Data Transfer Out",
+          "quantity": "4.0861718859523535",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "unitPrice": "0.02",
+          "cost": "0.08172343771904707",
+          "currency": "USD"
+        },
+        {
+          "day": "2026-10-17",
+          "meterCategory": "Bandwidth",
+          "meterName": "Standard Data Transfer Out",
+          "quantity": "0.000006127171218395",
+          "unit": "1 GB",
+          "effectivePrice": "0.083",
+          "unitPrice": "0.083",
+          "cost": "5.085552111268044000000E-7",
+          "currency": "USD"
+        }
+      ],
+      "quantityStatus": "ACTUAL_NEW_CSV",
+      "inventoryCount": 7,
+      "exactInventoryAndRgFilter": true,
+      "dailyMeterTotals": [
+        {
+          "day": "2026-10-17",
+          "meterName": "Intra Continent Data Transfer Out",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "currency": "USD",
+          "quantity": "14.2374728210270405",
+          "cost": "0.28474945642054081",
+          "rowCount": 4
+        },
+        {
+          "day": "2026-10-17",
+          "meterName": "Standard Data Transfer Out",
+          "unit": "1 GB",
+          "effectivePrice": "0.083",
+          "currency": "USD",
+          "quantity": "0.000022615306079388",
+          "cost": "0.0000018770704045891761000000",
+          "rowCount": 3
+        }
+      ],
+      "dailyCoverage": {
+        "2026-10-12": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-13": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-14": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-15": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-16": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-17": "ROWS_OBSERVED_NOT_FINAL",
+        "2026-10-18": "NO_ROWS_OBSERVED_NOT_ZERO"
+      },
+      "originalFailureDiagnostic": "NOT_APPLICABLE_NO_ORIGINAL_FAILURE",
+      "comparisonToPriorCsv": {
+        "priorObservedUtc": "2026-10-18T08:15:00Z",
+        "comparisonMeaning": "Exact decimal aggregate comparison to supplied successful CSV baseline; not Query-derived quantities",
+        "bulkUsageDayUtc": "2026-10-17",
+        "bulkQuantity": "14.2374728210270405",
+        "bulkQuantityDelta": "0E-16",
+        "bulkCostUsd": "0.28474945642054081",
+        "bulkCostDeltaUsd": "0E-17",
+        "allBandwidthCostUsd": "0.2847513334909453991761000000",
+        "allBandwidthCostDeltaUsd": "0E-28"
+      }
+    },
+    {
+      "state": "COMPLETE",
+      "httpRequests": 3,
+      "httpRequestCounts": {
+        "generation": 1,
+        "poll": 1,
+        "download": 1
+      },
+      "polls": 1,
+      "extractionComplete": true,
+      "ingestionFinal": false,
+      "request": {
+        "metric": "ActualCost",
+        "timePeriod": {
+          "start": "2026-10-12",
+          "end": "2026-10-18"
+        }
+      },
+      "returnedPeriod": {
+        "start": "2026-10-12T00:00:00",
+        "end": "2026-10-18T00:00:00"
+      },
+      "reportEndSemantics": "UNKNOWN_NOT_PROOF_OF_FULL_DAY_COVERAGE",
+      "localRetention": {
+        "start": "2026-10-12",
+        "end": "2026-10-18",
+        "inclusive": true
+      },
+      "family": "historical",
+      "endpointAlias": "C",
+      "rows": [
+        {
+          "day": "2026-10-15",
+          "meterCategory": "Bandwidth",
+          "meterName": "Intra Continent Data Transfer Out",
+          "quantity": "0.000002402812242508",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "unitPrice": "0.02",
+          "cost": "4.80562448501586884000E-8",
+          "currency": "USD"
+        },
+        {
+          "day": "2026-10-16",
+          "meterCategory": "Bandwidth",
+          "meterName": "Intra Continent Data Transfer Out",
+          "quantity": "0.6551259830594063",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "unitPrice": "0.02",
+          "cost": "0.013102519661188125",
+          "currency": "USD"
+        }
+      ],
+      "quantityStatus": "ACTUAL_NEW_CSV",
+      "inventoryCount": 6,
+      "exactInventoryAndRgFilter": true,
+      "dailyMeterTotals": [
+        {
+          "day": "2026-10-15",
+          "meterName": "Intra Continent Data Transfer Out",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "currency": "USD",
+          "quantity": "0.000002402812242508",
+          "cost": "4.80562448501586884000E-8",
+          "rowCount": 1
+        },
+        {
+          "day": "2026-10-16",
+          "meterName": "Intra Continent Data Transfer Out",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "currency": "USD",
+          "quantity": "0.6551259830594063",
+          "cost": "0.013102519661188125",
+          "rowCount": 1
+        }
+      ],
+      "dailyCoverage": {
+        "2026-10-12": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-13": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-14": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-15": "ROWS_OBSERVED_NOT_FINAL",
+        "2026-10-16": "ROWS_OBSERVED_NOT_FINAL",
+        "2026-10-17": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-18": "NO_ROWS_OBSERVED_NOT_ZERO"
+      },
+      "originalFailureDiagnostic": "NOT_APPLICABLE_NO_ORIGINAL_FAILURE",
+      "comparisonToPriorCsv": {
+        "priorObservedUtc": null,
+        "comparisonMeaning": "Exact decimal aggregate comparison to supplied successful CSV baseline; not Query-derived quantities",
+        "bulkUsageDayUtc": "2026-10-16",
+        "bulkQuantity": "0.6551259830594063",
+        "bulkQuantityDelta": "0E-16",
+        "bulkCostUsd": "0.013102519661188125",
+        "bulkCostDeltaUsd": "0E-18",
+        "allBandwidthCostUsd": "0.0131025677174329751586884000",
+        "allBandwidthCostDeltaUsd": "0E-28"
+      }
+    }
+  ],
+  "quantitiesDerivedFromQuery": false,
+  "ingestionFinal": false,
+  "priorSuccessfulCsv": {
+    "observedUtc": "2026-10-18T08:15:00Z",
+    "freshCBulkQuantity": "14.2374728210270405",
+    "unit": "1 GB",
+    "effectivePriceUsd": "0.02",
+    "freshCBulkCostUsd": "0.28474945642054081",
+    "freshCTotalCostUsd": "0.2847513334909453991761",
+    "historicalCBulkQuantity": "0.6551259830594063",
+    "historicalCBulkCostUsd": "0.013102519661188125",
+    "historicalOctober15MicroCostUsd": "4.80562448501586884E-8",
+    "status": "STALE_BASELINE_NOT_REFRESHED_UNLESS_NEW_CSV_COMPLETE"
+  },
+  "financialFinding": "Prior weekly financial PASS: no A 100GB bulk charge observed. Full verified 400GB remains unreconciled; >36h age is not ingestion finality. T external unit identity remains unchecked.",
+  "sourceSha256": "1cd76089b9b690c991d4a6bf05ad6fd55195049633b30e75666b981c3e8d1c18",
+  "strictLocationRejectionUnchanged": true,
+  "cryptographicVerificationClaimed": false,
+  "restore": {
+    "infrastructureMutations": 0,
+    "ownedNativeChildren": [],
+    "activeCommands": 0,
+    "costCliOwnerAbsent": true,
+    "stopAbsent": true
+  },
+  "nextPracticalAction": "Preserve unchanged partial CSV quantities; let existing schedule 5 perform its next bounded observation before the unchanged hard stop. No new manual probes; full-volume reconciliation remains open."
+}
