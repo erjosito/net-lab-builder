@@ -1,5 +1,35 @@
 # Azure public-endpoint bandwidth billing
 
+## Current API capability — 19 October 2026, 11:43Z
+
+**Can the cost API give quantity? Yes, when explicitly requested and accepted.**
+The [fresh-C capability observation](results/2026-10-19-query-quantity-capability.json)
+returned HTTP 200 and **15 numeric `UsageQuantity` rows** for one tested
+offer/scope: ActualCost Query `2023-11-01`, Daily, 12–18 October, with
+`PreTaxCost` and `UsageQuantity` Sum aggregations and `ResourceId` + `Meter`
+groupings. This is not universal selector support. Earlier cost-only statements
+describe the implemented/default projection and its historical observations,
+not an API-wide restriction.
+
+The offline CLI now offers query-only `--include-usage-quantity`; see the
+[callable PowerShell example](costs/README.md#commands-powershell-from-repository-root).
+Defaults remain cost-only. Unsupported selectors produce explicit errors,
+never a cost-only fallback. Units and rates were **not returned** at these
+groupings; do not stamp quantities as GB, convert them, or sum across meters.
+The bulk Query quantity **14.237472821027** narrowly differs in precision from
+CSV **14.2374728210270405**; neither reconciles the verified **100 GB**.
+
+The live audit had no Bandwidth category filter: **USD 0.5496058782444444**
+was on other meter labels, including **USD 0.168** on unclassified
+Standard Node / Standard P2 Node labels, with no bandwidth attribution.
+**Billing reconciliation remains OPEN.** The
+[reviewed implementation](results/2026-10-19-query-quantity-implementation.json)
+preserves historical source pins and default behavior. No new live call
+accompanied implementation; bounded follow-up remains unchanged.
+
+The dated sections below are historical snapshots, not claims about the new
+opt-in projection.
+
 ## Executive summary — 19 October 2026, 11:08Z (quantity refresh)
 
 **Detailed retrieval PASS; billing reconciliation remains OPEN.** Both

@@ -1,5 +1,40 @@
 # Billing extraction and reconciliation plan
 
+## Current Query capability — 19 October 2026, 11:43Z
+
+**The cost API can return quantity when asked and accepted.**
+The [single fresh-C empirical request](results/2026-10-19-query-quantity-capability.json)
+used ActualCost Query `2023-11-01`, Daily, **12–18 October**, two Sum
+aggregations (`PreTaxCost`, `UsageQuantity`), and two groupings
+(`ResourceId`, `Meter`). HTTP 200 returned `UsageQuantity` of type `Number`
+on all **15 rows**. This establishes support only for that tested offer,
+scope and request, not every subscription or selector.
+
+Bulk quantity **14.237472821027** is a narrow precision difference from the
+CSV's **14.2374728210270405**, not a new full-volume reconciliation. Neither
+units nor rates were returned at these groupings. No GB inference, unit math
+or aggregation across heterogeneous meters is justified. The unfiltered
+all-meter audit also found **USD 0.5496058782444444** on other labels,
+including **USD 0.168** on unclassified Standard Node / Standard P2 Node:
+those labels are not attributed bandwidth.
+
+The offline `query --include-usage-quantity` implementation is opt-in, requires
+meter-level and scope grouping, validates numeric quantities and each page's
+column definition, and reports `usageQuantityUnit: "NOT_RETURNED"`.
+See the [PowerShell command](costs/README.md#commands-powershell-from-repository-root).
+Default requests/rows/summaries remain cost-only; unsupported requests fail
+explicitly without fallback. Query remains JSON-only; detailed CSV and
+Consumption guards are unchanged. The
+[reviewed implementation](results/2026-10-19-query-quantity-implementation.json)
+also requires the requested meter identity on every page, preserves historical
+source pins, and made no billing HTTP requests. Its evidence distinguishes
+final native and focused WSL checks from the earlier full-WSL timing failure.
+
+**Billing remains OPEN**, including the missing full 100 GB, T semantics and
+the historical-control shortfall. Existing schedule and hard stop are
+unchanged. The dated snapshots below, including earlier cost-only projections
+and source/test receipts, are historical rather than universal API limits.
+
 ## Latest snapshot — 19 October 2026, 11:08Z (quantity refresh)
 
 The [new detailed-report evidence](results/2026-10-19-last-week-quantity-recovery.json)

@@ -509,7 +509,8 @@ def decimal(value):
         raise Failure("invalid_decimal") from None
 
 
-def query_body(rg, start, end, grouping, meter_category=None, group_by=None):
+def query_body(rg, start, end, grouping, meter_category=None, group_by=None,
+               include_usage_quantity=False):
     until = min(dt.datetime.combine(day(end), dt.time(23, 59, 59), dt.timezone.utc),
                 dt.datetime.now(dt.timezone.utc)).isoformat()
     body = {"type": "ActualCost", "timeframe": "Custom",
@@ -533,6 +534,12 @@ def query_body(rg, start, end, grouping, meter_category=None, group_by=None):
         body["dataset"]["grouping"] = [{"type": "Dimension", "name": "ResourceGroup"}]
         if grouping != "ResourceGroup":
             body["dataset"]["grouping"].append({"type": "Dimension", "name": grouping})
+    if include_usage_quantity:
+        if not any(item["name"] in ("Meter", "MeterId")
+                   for item in body["dataset"].get("grouping", [])):
+            raise Failure("usage_quantity_requires_meter_grouping")
+        body["dataset"]["aggregation"]["totalQuantity"] = {
+            "name": "UsageQuantity", "function": "Sum"}
     return body
 
 
@@ -807,12 +814,15 @@ def cost_details_csv_stream(source, subscription, groups, inventory, start, end,
 
 
 def collect(transport, args, inventory):
+    include_quantity = getattr(args, "include_usage_quantity", False)
+    if include_quantity and args.command != "query":
+        raise Failure("usage_quantity_requires_query")
     detail = args.command == "details"
     endpoint = "/providers/" + ("Microsoft.Consumption/usageDetails" if detail
                                else "Microsoft.CostManagement/query")
     body = None if detail else query_body(args.resource_group, args.start, args.end, args.grouping,
                                           getattr(args, "meter_category", None),
-                                          getattr(args, "group_by", None))
+                                          getattr(args, "group_by", None), include_quantity)
     url = (details_url(transport.scope, args.resource_group, args.start, args.end,
                        args.filter_variant, args.literal_keys,
                        top=getattr(args, "page_size", 1000),
@@ -832,6 +842,10 @@ def collect(transport, args, inventory):
               "state": "INCOMPLETE", "pages": 0, "received": 0, "discarded": 0,
               "duplicates": 0, "unattributedLabRows": 0, "rows": [], "http": transport.http}
     result["ingestionFinal"] = False
+    if include_quantity:
+        result.update(usageQuantityRequested=True, usageQuantityUnit="NOT_RETURNED")
+        quantity_meter = next(item["name"] for item in body["dataset"]["grouping"]
+                              if item["name"] in ("Meter", "MeterId"))
     seen_links, seen_records = set(), {}
     for _ in range(args.max_pages):
         transport.remaining()
@@ -879,6 +893,15 @@ def collect(transport, args, inventory):
         else:
             properties = page.get("properties", {})
             columns, rows = query_columns(properties)
+            if include_quantity:
+                quantity_column = next((column for column in properties.get("columns", [])
+                                        if column["name"] == "UsageQuantity"), None)
+                if quantity_column is None:
+                    raise Failure("query_usage_quantity_column_missing")
+                if quantity_column.get("type") != "Number":
+                    raise Failure("query_usage_quantity_column_type")
+                if quantity_meter not in columns:
+                    raise Failure("query_usage_quantity_meter_missing")
             if "columns" in result and set(result["columns"]) != set(columns):
                 raise Failure("query_columns_changed")
             result["columns"] = columns
@@ -916,9 +939,19 @@ def collect(transport, args, inventory):
                     raise Failure("query_date_invalid") from None
                 if not day(args.start) <= date <= day(args.end):
                     raise Failure("query_date_mismatch")
+                if include_quantity:
+                    meter = row[quantity_meter]
+                    if not isinstance(meter, str) or not meter.strip():
+                        raise Failure("query_usage_quantity_meter_invalid")
+                    quantity = row["UsageQuantity"]
+                    if (isinstance(quantity, bool) or
+                            not isinstance(quantity, (int, float, Decimal)) or
+                            not Decimal(str(quantity)).is_finite()):
+                        raise Failure("query_usage_quantity_invalid")
                 result["rows"].append({key: value for key, value in row.items() if key in (
                     "ResourceGroup", "ResourceId", "Meter", "MeterId", "MeterCategory",
-                    "UsageDate", "Currency", "PreTaxCost", "Cost")})
+                    "UsageDate", "Currency", "PreTaxCost", "Cost") or
+                    (include_quantity and key == "UsageQuantity")})
                 if len(result["rows"]) > getattr(args, "max_rows", 100000):
                     raise Failure("report_row_limit")
             url = properties.get("nextLink")
@@ -1342,6 +1375,8 @@ def main(argv=None):
     parser.add_argument("--grouping", choices=["MeterId", "Meter", "MeterCategory", "ResourceGroup", "none"],
                         default="Meter")
     parser.add_argument("--meter-category", help="Explicit Query meter-category filter, e.g. Bandwidth")
+    parser.add_argument("--include-usage-quantity", action="store_true",
+                        help="Query only: request numeric UsageQuantity per meter; units not returned")
     parser.add_argument("--group-by", nargs="+",
                         choices=["ResourceId", "ResourceGroup", "Meter", "MeterId", "MeterCategory"],
                         help="One or two unique Query dimensions; overrides legacy --grouping")
@@ -1371,6 +1406,17 @@ def main(argv=None):
                 not 1 <= args.max_polls <= 20 or not 1 <= args.max_rows <= 100000 or
                 not 0 <= args.max_retries <= 3):
             raise Failure("invalid_bounds")
+        if args.include_usage_quantity:
+            if args.command != "query":
+                raise Failure("usage_quantity_requires_query")
+            dimensions = args.group_by or (
+                ["ResourceGroup", args.grouping] if args.grouping != "none" else [])
+            if args.group_by and (len(dimensions) > 2 or len(set(dimensions)) != len(dimensions)):
+                raise Failure("invalid_query_grouping")
+            if not any(name in ("Meter", "MeterId") for name in dimensions):
+                raise Failure("usage_quantity_requires_meter_grouping")
+            if not any(name in ("ResourceId", "ResourceGroup") for name in dimensions):
+                raise Failure("collection_requires_scope_grouping")
         if args.transport == "wsl":
             if os.name != "nt":
                 raise Failure("wsl_dispatch_requires_windows")
@@ -1417,7 +1463,7 @@ def main(argv=None):
             raise Failure("collection_requires_scope_grouping")
         if args.group_by:
             query_body(args.resource_group, args.start, args.end, args.grouping,
-                       args.meter_category, args.group_by)
+                       args.meter_category, args.group_by, args.include_usage_quantity)
             if "ResourceId" not in args.group_by and "ResourceGroup" not in args.group_by:
                 raise Failure("collection_requires_scope_grouping")
         transport = Transport(args.subscription, args.expected_tenant, args.max_seconds,
@@ -1473,7 +1519,8 @@ def main(argv=None):
         print(json.dumps({key: data[key] for key in (
             "state", "pages", "received", "discarded", "duplicates", "unattributedLabRows",
             "extractionComplete", "ingestionFinal", "retained", "reason", "httpStatus",
-            "responseMetadata", "operationLocationComparison", "httpRequests", "httpRequestCounts")
+            "responseMetadata", "operationLocationComparison", "httpRequests", "httpRequestCounts",
+            "usageQuantityRequested", "usageQuantityUnit")
                           if key in data}))
         return 0 if data["state"] == "COMPLETE" else 3
     except subprocess.TimeoutExpired:
