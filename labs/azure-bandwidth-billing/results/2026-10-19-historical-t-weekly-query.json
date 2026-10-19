@@ -1,0 +1,97 @@
+{
+  "taskId": "historical-t-weekly-20261019T1305Z",
+  "verdict": "PASS",
+  "billingReconciliation": "OPEN",
+  "startedAtUtc": "2026-10-19T13:59:38.879900+00:00",
+  "endedAtUtc": "2026-10-19T13:59:46.392416+00:00",
+  "sourceSha256": "eebdb5908f237a5aeb6abe500ff2ae77253226203ed65ba5d2aa0c37b0b498e4",
+  "actualBillingHttpRequests": 1,
+  "cliExitCode": 0,
+  "httpStatuses": [
+    200
+  ],
+  "outcome": {
+    "state": "COMPLETE",
+    "pages": 1,
+    "received": 1,
+    "discarded": 0,
+    "duplicates": 0,
+    "unattributedLabRows": 0,
+    "ingestionFinal": false,
+    "httpRequests": 1,
+    "httpRequestCounts": {
+      "query": 1
+    },
+    "usageQuantityRequested": true,
+    "usageQuantityUnit": "NOT_RETURNED"
+  },
+  "requestContract": {
+    "workflow": "Public costs/cost_api.py query, native WSL Ubuntu-24.04 /usr/bin/az",
+    "offerAlias": "wsl-msdn",
+    "scope": "Historical T; one canonical resource-group inventory",
+    "metric": "ActualCost",
+    "apiVersion": "2023-11-01",
+    "granularity": "Daily",
+    "fromUtc": "2026-10-12T00:00:00Z",
+    "toUtc": "2026-10-18T23:59:59Z",
+    "groupBy": [
+      "ResourceId",
+      "Meter"
+    ],
+    "meterCategory": "Bandwidth",
+    "aggregations": [
+      "PreTaxCost Sum",
+      "UsageQuantity Sum"
+    ],
+    "maxHttpRequests": 1,
+    "maxRetries": 0,
+    "maxPages": 1,
+    "requestTimeoutSeconds": 120,
+    "maxWorkflowSeconds": 150,
+    "accountTokenTimeoutSeconds": 15,
+    "actualSerializedTimePeriod": {
+      "from": "2026-10-12T00:00:00Z",
+      "to": "2026-10-18T23:59:59+00:00"
+    }
+  },
+  "rowCount": 1,
+  "rows": [
+    {
+      "usageDate": 20261015,
+      "meter": "Intra Continent Data Transfer Out",
+      "currency": "EUR",
+      "cost": "7.4561667E-8",
+      "usageQuantity": "0.000004302710295",
+      "unit": "NOT_RETURNED"
+    }
+  ],
+  "costByCurrency": {
+    "EUR": "7.4561667E-8"
+  },
+  "perMeter": [
+    {
+      "meter": "Intra Continent Data Transfer Out",
+      "currency": "EUR",
+      "rowCount": 1,
+      "cost": "7.4561667E-8",
+      "usageQuantity": "0.000004302710295",
+      "unit": "NOT_RETURNED"
+    }
+  ],
+  "usageQuantityUnit": "NOT_RETURNED",
+  "heterogeneousQuantitySum": "NOT_PERFORMED",
+  "weeklyCoverageGroup": 6,
+  "weeklyCoverageGroupsComplete": 6,
+  "limitations": [
+    "No financial-zero, final-invoice maturity, per-flow allocation or volume-completion inference.",
+    "No six-hour stability comparison; no qualified baseline used.",
+    "Query does not return units; no CSV or retail unit substitution.",
+    "Historical inventory is the exact T VM identity retained by canonical correlation.",
+    "Serialized week ends at 23:59:59Z, not its final fractional second."
+  ],
+  "allOwnedChildrenIdle": true,
+  "idleVerifiedAtUtc": "2026-10-19T13:59:49.004723+00:00",
+  "cumulativeBillingHttpRequests": 19,
+  "currentSourceLiveRequests": 7,
+  "actualToolCallsAtClosure": 4
+}

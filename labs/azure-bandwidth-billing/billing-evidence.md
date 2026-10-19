@@ -1,5 +1,26 @@
 # Billing extraction and reconciliation plan
 
+## Weekly coverage completed — 19 October 2026, 13:59Z
+
+The [historical T weekly Query](results/2026-10-19-historical-t-weekly-query.json)
+completed through the public quantity workflow in native WSL with one HTTP
+200 response. It returned one **15 October** Intra Continent Data Transfer
+Out row: **EUR 0.000000074561667**, quantity **0.000004302710295**,
+unit **NOT_RETURNED**. It is separate from fresh T's 16/17 October traffic.
+No unit conversion, cross-flow attribution or zero-charge inference is made.
+
+This closes the previously missing sixth resource-group scope for
+**12–18 October** across both subscriptions. These six observations were
+collected at different times; coverage does not establish simultaneous
+consistency, ingestion finality or full-volume reconciliation. The fresh C
+shortfall and T unit/identity questions remain unresolved.
+
+The scheduled admission check at approximately **14:01Z** made **no Azure
+requests**: the new historical coverage was already collected, and ordinary
+fresh C and A/T comparisons remain deferred until **17:08:21Z** and
+**18:30:11Z**, respectively. No duplicate timer or collector was started.
+The existing six-hourly schedule and **22 October 23:15:33Z** hard stop remain.
+
 ## Latest snapshot — 19 October 2026, 12:30Z (public quantity workflow)
 
 [End-to-end evidence](results/2026-10-19-public-query-quantity-validation.json)
