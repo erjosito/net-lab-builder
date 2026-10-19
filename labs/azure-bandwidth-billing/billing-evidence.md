@@ -1,6 +1,41 @@
 # Billing extraction and reconciliation plan
 
-## Latest snapshot — 19 October 2026, 10:50Z (offline refresh)
+## Latest snapshot — 19 October 2026, 11:08Z (quantity refresh)
+
+The [new detailed-report evidence](results/2026-10-19-last-week-quantity-recovery.json)
+contains two successful Cost Details extractions, not another cost-only
+Query. Both requested **12–18 October** and returned period endpoints
+**12 October 00:00 through 18 October 00:00**. This does not prove full-day
+18 October coverage; the observed bulk usage dates, **16 and 17 October**,
+are inside the returned interval.
+
+| Source / bulk usage day | Actual CSV quantity | Reported unit | USD/unit | Bulk cost, USD | Quantity change |
+|---|---:|---|---:|---:|---:|
+| Fresh C / 17 October | 14.2374728210270405 | 1 GB | 0.02 | 0.28474945642054081 | 0 |
+| Historical C / 16 October | 0.6551259830594063 | 1 GB | 0.02 | 0.013102519661188125 | 0 |
+
+Both bulk quantities and costs are unchanged against their earlier CSV
+baselines. Fresh C returns seven Bandwidth rows; the historical control
+returns two. The table excludes Standard rows and historical C's
+15 October microquantity; see the result for all rows. These quantities still do
+not reconcile the verified **100 decimal GB** fresh transfer or **1 GiB**
+historical control. Do not attribute the entire shortfall to ingestion lag,
+free allowance, rounding or another unverified cause.
+
+Collection used **6/6 HTTP requests: two generations, two polls and two
+downloads**, with `--request-timeout-seconds 120`, zero retries and no
+infrastructure mutations. Both polls completed without a changed-Location
+failure, so the earlier URL difference remains unknown. Owners and owned
+children closed idle. This is a separate detailed-quantity observation,
+not an extension or reset of the earlier five-request weekly Query snapshot.
+
+**Retrieval PASS; full billing reconciliation OPEN.** The weekly financial
+findings below, T's unresolved unit/identity semantics, existing six-hourly
+schedule 5 and **22 October 23:15:33Z hard stop** are unchanged.
+
+<a id="latest-snapshot--19-october-2026-1050z-offline-refresh"></a>
+
+## Superseded snapshot — 19 October 2026, 10:50Z (offline refresh)
 
 ### Qualified conclusion and confidence
 

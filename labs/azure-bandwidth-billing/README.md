@@ -1,6 +1,23 @@
 # Azure public-endpoint bandwidth billing
 
-## Executive summary — 19 October 2026, 10:50Z (offline refresh)
+## Executive summary — 19 October 2026, 11:08Z (quantity refresh)
+
+**Detailed retrieval PASS; billing reconciliation remains OPEN.** Both
+[last-week Cost Details CSVs](results/2026-10-19-last-week-quantity-recovery.json)
+completed: fresh C still reports **14.2374728210270405 `1 GB`** at
+**USD 0.02**, bulk cost **USD 0.28474945642054081**; historical C still
+reports **0.6551259830594063 `1 GB`**, bulk cost **USD 0.013102519661188125**.
+These are fresh CSV observations, not quantities inferred from Query.
+Neither reconciles its verified **100 GB / 1 GiB** transfer.
+
+The [weekly financial conclusion below](#superseded-executive-summary--19-october-2026-1050z-offline-refresh)
+is unchanged: cross-region charges are observed; no bulk-sized charge for
+A's same-region, cross-tenant transfer is observed. Polling succeeded this
+time without a changed-Location failure; the earlier difference remains
+unknown, not fixed or reproduced. See [quantity comparisons and boundaries](billing-evidence.md#latest-snapshot--19-october-2026-1108z-quantity-refresh).
+Existing bounded follow-up and the **22 October 23:15:33Z hard stop** remain.
+
+## Superseded executive summary — 19 October 2026, 10:50Z (offline refresh)
 
 **Financial observation PASS; final billing reconciliation OPEN.**
 The [last-week meter retrieval](results/2026-10-19-last-week-bandwidth-meters.json)

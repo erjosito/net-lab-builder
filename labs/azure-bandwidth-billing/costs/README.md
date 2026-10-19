@@ -1,6 +1,24 @@
 # Reproducible Cost Analysis API deliverable
 
-## Latest actual cost answer — 19 October 2026, 10:50Z (offline refresh)
+## Latest actual cost answer — 19 October 2026, 11:08Z (quantity refresh)
+
+**Both detailed workflows succeeded; full-volume reconciliation is OPEN.**
+The [new Cost Details CSV observations](../results/2026-10-19-last-week-quantity-recovery.json)
+report unchanged fresh-C bulk quantity **14.2374728210270405 `1 GB`** and
+historical-C bulk quantity **0.6551259830594063 `1 GB`**, each at **USD 0.02**.
+They are actual CSV quantities, not Query-derived estimates, and still do
+not reconcile the verified **100 GB / 1 GiB** controls.
+
+Two generations, two successful polls and two downloads used **6/6 HTTP
+requests**, explicit request timeout **120 seconds**, and zero retries.
+No changed-Location failure occurred; this does not explain the earlier
+failures or change the strict guard. See [exact costs, dates and report
+boundary limits](../billing-evidence.md#latest-snapshot--19-october-2026-1108z-quantity-refresh).
+The earlier weekly financial findings and existing bounded schedule remain.
+
+<a id="latest-actual-cost-answer--19-october-2026-1050z-offline-refresh"></a>
+
+## Superseded actual cost answer — 19 October 2026, 10:50Z (offline refresh)
 
 **Financial observation PASS; full billing reconciliation OPEN.**
 The [last-week evidence](../results/2026-10-19-last-week-bandwidth-meters.json)
