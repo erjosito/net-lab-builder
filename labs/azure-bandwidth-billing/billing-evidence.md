@@ -1,6 +1,112 @@
 # Billing extraction and reconciliation plan
 
-## Latest snapshot — 18 October 2026, 12:15Z (offline refresh)
+## Latest snapshot — 19 October 2026, 10:50Z (offline refresh)
+
+### Qualified conclusion and confidence
+
+**Financial observation PASS; final invoice and full-volume reconciliation
+OPEN.** The immutable [last-week Query evidence](results/2026-10-19-last-week-bandwidth-meters.json)
+supports a useful financial conclusion: **cross-region outbound charges are
+observed; no bulk-sized same-region 100 GB charge is observed at fresh A
+after the closed-week Query. Tenant separation alone has not produced an
+observable bulk bandwidth charge in this setup.** This is consistent with
+the published Azure-to-Azure intra-region rule, not proof of final ingestion,
+an explicit zero-rate record or an explicit tenant-boundary policy quote.
+
+**Observed with high confidence:** five successful cost Queries across both
+subscriptions; positive cross-region meter charges; A has only four positive
+microcharge rows; all seven fresh daily meter costs are unchanged over more
+than 22 hours. **Qualified interpretation:** the same-region bulk leg has
+no observable bulk charge. **Unresolved:** quantity/unit/rate reconciliation,
+T's raw unit and identity semantics, allocation of mixed-source T costs,
+historical-control volume shortfall, and invoice finality. Missing rows
+are not measured zeros.
+
+The tested scope is verified actual Azure regions and Azure-owned public IP
+endpoints. It does not generalize to every SaaS destination or other product's
+fees. The existing [policy qualification and BYOIP exception](README.md#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress)
+still apply; no new policy research was performed.
+
+### Last-week scope and exact returned costs
+
+Requested usage week: **12–18 October 2026 UTC**. Actual serialized range:
+**2026-10-12T00:00:00Z through 2026-10-18T23:59:59+00:00**.
+No coverage of the final fractional second is claimed. Responses were
+received **19 October 10:44:55–10:46:03Z**. Fresh A/C/T, historical C and
+the shared historical A/B resource group comprise **five of six planned
+groups**, across both subscriptions. Older historical T was not queried;
+its omission does not block the fresh A/C/T finding.
+
+These are returned row sums within each experiment/alias/currency, not costs
+assigned to individual flows, quantities inferred from prices, or totals
+to add to previous snapshots:
+
+| Family / source | Returned usage days | Weekly total | Currency |
+|---|---|---:|---|
+| Fresh A | 16–17 October | 0.00000137982331216335287 | USD |
+| Fresh C | 17 October | 0.28475133349094558918 | USD |
+| Fresh T | 17 October | 0.244085448265384 | EUR |
+| Historical C | 15–16 October | 0.0131025677174329501587 | USD |
+| Historical A | 15 October | 0.0000728753264993429373 | USD |
+| Historical B | 15–16 October | 0.0000710848197340965883 | USD |
+
+Fresh A's same-region-only **100 GB bulk test** has **USD
+0.000001374235376715660 Standard Data Transfer Out** and **USD
+0.00000000558793544769287 Intra Continent Data Transfer Out**.
+Do not equate these microcharges with all 100 GB or say A costs zero.
+Fresh C comprises **USD 0.284749456420541 Intra Continent** and **USD
+0.00000187707040458918 Standard**. Fresh T is entirely **EUR
+0.244085448265384 Intra Continent**, but T sent both **same-region T → A**
+and **cross-region T → C** traffic. This is the cost of its returned
+Bandwidth rows, not its whole resource cost or either individual transfer.
+“Intra Continent” is not “same region.” USD and EUR remain separate.
+
+### Stability is financial, not quantity or invoice finality
+
+Exact-Decimal comparison finds **14 overlapping day/meter/currency rows
+unchanged**, including **all seven fresh rows** against the
+[18 October 11:51–11:52Z baseline](results/2026-10-18-control-financial-comparison-114700.json),
+more than **22 hours** before the fresh 19 October 10:44–10:45Z responses.
+Historical C's two rows are unchanged against the
+[18 October alternative](results/2026-10-18-historical-control-alternative.json).
+Historical A/B's overlapping rows also match their archived baseline, but
+**B's 16 October Intra Continent row, USD 0.0000701968744397164, has no
+row in that old baseline**. Do not claim all historical totals unchanged.
+
+**No new quantities, units or rates were returned by Query.** Fresh C's last
+bulk detail remains the **18 October 08:15Z CSV: 14.2374728210270405
+reported `1 GB` / USD 0.28474945642054081 at USD 0.02**, excluding Standard.
+It is not a 19 October quantity observation or a reconciled 100 GB.
+Historical C's **0.6551259830594063 reported `1 GB`** remains old,
+unreconciled control detail, not its weekly Query total. T's legacy raw
+`1 TB` / retail `1 GB` conflict and record identity remain unresolved;
+no unit conversion, currency conversion or per-flow attribution is made.
+
+### Collection closure and polling distinction
+
+The result is immutable **5/6 HTTP requests, five HTTP 200 Queries, zero
+retries**, not a revised old counter. At **83%** of the HTTP allowance the
+**80% no-new-work gate correctly stopped** the last planned historical-T
+Query; neither the tool limit (**28/75**) nor elapsed time (**173 seconds
+of 30 minutes**) was exhausted. The collection handoff records owned
+children idle and source unchanged at SHA256
+`1cd76089b9b690c991d4a6bf05ad6fd55195049633b30e75666b981c3e8d1c18`.
+This offline documentation task made no live or authentication requests.
+
+Cost Details' asynchronous POST returns a `Location` job-status URL; a later
+202 with a different `Location` string was rejected by **our strict guard**.
+This is not evidence of a network endpoint or meter-definition change;
+which URL components changed remains unknown. These synchronous weekly
+Queries avoided that polling path; **#25 diagnostics/source are unchanged**.
+
+**Transport PASS (400 GB); cleanup PASS (21 owned roots deleted); overall
+billing OPEN.** Only existing six-hourly **schedule 5** and its original
+**22 October 23:15:33Z hard stop** remain. No new traffic, resources,
+collection authority or timer is created by this evidence refresh.
+
+<a id="latest-snapshot--18-october-2026-1215z-offline-refresh"></a>
+
+## Superseded snapshot — 18 October 2026, 12:15Z (offline refresh)
 
 **Transport PASS (400 GB); cleanup PASS (21 owned roots deleted); billing
 INCONCLUSIVE and open.** This offline refresh links the new

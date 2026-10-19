@@ -1,6 +1,54 @@
 # Azure public-endpoint bandwidth billing
 
-## Executive summary — 18 October 2026, 12:15Z (offline refresh)
+## Executive summary — 19 October 2026, 10:50Z (offline refresh)
+
+**Financial observation PASS; final billing reconciliation OPEN.**
+The [last-week meter retrieval](results/2026-10-19-last-week-bandwidth-meters.json)
+returned five HTTP 200 Queries covering fresh A/C/T, historical C and the
+shared historical A/B resource group, across both subscriptions. The requested
+week is **12–18 October UTC**; the actual serialized interval ends at
+**18 October 23:59:59Z**, not the final fractional second. Older historical T
+was not refreshed; this does not prevent the fresh two-subscription finding.
+
+**Conclusion: cross-region charges are observed, but no bulk-sized charge
+for A's verified same-region 100 GB transfer is observed after this
+closed-week Query. Tenant separation alone has not produced an observable
+bulk bandwidth charge in this setup.** This is consistent with the published
+Azure-to-Azure intra-region rule, not an explicit tenant-boundary FAQ quote,
+final invoice, explicit zero-rated record or full-volume reconciliation.
+
+| Fresh source / test role | Returned weekly Bandwidth cost | Interpretation |
+|---|---:|---|
+| A — same-region-only 100 GB bulk test | USD 0.00000137982331216335287 | Four positive microcharge rows, not a bulk-sized 100 GB charge |
+| C — cross-region source | USD 0.28475133349094558918 | USD 0.284749456420541 Intra Continent plus USD 0.00000187707040458918 Standard |
+| T — mixed same-region T → A and cross-region T → C roles | EUR 0.244085448265384 | All Intra Continent; cannot allocate to an individual flow |
+
+A's total includes **USD 0.000001374235376715660 Standard** and
+**USD 0.00000000558793544769287 Intra Continent**: positive microcharges
+are neither zero cost nor automatically attributable to the 100 GB flow.
+All **seven fresh day/meter/currency rows** are unchanged from the
+18 October 11:51–11:52Z Queries, over **22 hours** later. Fourteen overlapping
+rows overall are unchanged; an additional historical-B 16 October row has
+no old comparison, so not all historical totals can be called unchanged.
+
+**Still unknown:** Queries return no quantity, unit or rate and no ingestion
+watermark. C's **14.2374728210270405 reported `1 GB`** remains the old
+18 October 08:15Z CSV, not a fresh quantity. Historical-C's old **0.6551259830594063
+reported `1 GB`** control remains unreconciled; T's unit/identity semantics
+remain unresolved. No automatic unit/currency conversion is justified.
+The conclusion is scoped to verified actual Azure regions and Azure-owned
+public IPs, not all SaaS destinations; [BYOIP exceptions and other product
+charges remain separate](#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress).
+
+Collection stopped correctly at the **80% new-work gate (5/6 HTTP allowance)**,
+leaving historical T unqueried, not because tools or time ran out. The
+immutable result keeps its five-request count. This offline refresh made
+no live requests or operational changes. **Transport PASS (400 GB), cleanup
+PASS (21 owned roots deleted)** and the existing **six-hourly schedule 5 /
+22 October 23:15:33Z hard stop** remain unchanged; billing stays open.
+See [coverage, exact costs and confidence limits](billing-evidence.md#latest-snapshot--19-october-2026-1050z-offline-refresh).
+
+## Superseded executive summary — 18 October 2026, 12:15Z (offline refresh)
 
 **Transport PASS (400 GB); cleanup PASS (21 owned roots deleted); billing
 INCONCLUSIVE and open.** The new [fresh financial comparison](results/2026-10-18-control-financial-comparison-114700.json)

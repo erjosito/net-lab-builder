@@ -1,6 +1,42 @@
 # Reproducible Cost Analysis API deliverable
 
-## Latest actual cost answer — 18 October 2026, 12:15Z (offline refresh)
+## Latest actual cost answer — 19 October 2026, 10:50Z (offline refresh)
+
+**Financial observation PASS; full billing reconciliation OPEN.**
+The [last-week evidence](../results/2026-10-19-last-week-bandwidth-meters.json)
+contains five HTTP 200 cost Queries across both subscriptions: fresh A/C/T,
+historical C and shared historical A/B. Requested week **12–18 October UTC**;
+actual serialized end **18 October 23:59:59Z**, not the final fractional
+second. Older historical T was not refreshed.
+
+**Cross-region charges are observed; no bulk-sized charge for fresh A's
+same-region-only 100 GB test is observed. Tenant separation alone has not
+produced an observable bulk bandwidth charge in this setup**, consistent
+with the published intra-region Azure rule, not final-invoice or explicit
+zero-rate proof. A returns **USD 0.00000137982331216335287** in positive
+microcharges; C **USD 0.28475133349094558918**; mixed-role T **EUR
+0.244085448265384**, not attributable to either individual flow.
+All seven fresh daily meter costs are unchanged over more than 22 hours.
+Fourteen overlapping rows overall match; an extra historical-B 16 October
+row has no old comparison. Missing rows are not explicit zeros.
+
+Query returned **no quantity, unit or rate**. C's **14.2374728210270405
+reported `1 GB`** remains the old 18 October CSV; the historical-C
+**0.6551259830594063 reported `1 GB`** control and T's unit/identity
+semantics remain unresolved. No automatic unit/currency conversion follows.
+See [exact totals, coverage and confidence limits](../billing-evidence.md#latest-snapshot--19-october-2026-1050z-offline-refresh).
+
+The immutable collection remains **5/6 HTTP requests**: its **80% new-work
+gate** stopped historical T at 83%, not tool/time exhaustion. All owners
+closed idle. Synchronous Query avoided the asynchronous Cost Details
+`Location` guard path; **#25 diagnostics and collector source are unchanged**.
+This offline refresh makes no live requests or operational changes.
+**400 GB transport / 21-root cleanup PASS**; existing **six-hourly schedule 5 /
+22 October 23:15:33Z hard stop** remain unchanged.
+
+<a id="latest-actual-cost-answer--18-october-2026-1215z-offline-refresh"></a>
+
+## Superseded actual cost answer — 18 October 2026, 12:15Z (offline refresh)
 
 **Transport/cleanup PASS; billing INCONCLUSIVE and open.** New
 [fresh T/A/C Queries](../results/2026-10-18-control-financial-comparison-114700.json)
