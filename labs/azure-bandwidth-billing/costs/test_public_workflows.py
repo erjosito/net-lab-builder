@@ -8,11 +8,12 @@ import subprocess
 import unittest
 from unittest.mock import Mock, patch
 import urllib.error
+import urllib.parse
 import uuid
 
 import cost_api as api
 import preflight_compare
-from test_cost_api import SUB, TENANT, RG, RID, args
+from test_cost_api import SUB, TENANT, RG, RID, REPORT_LOCATION, REPORT_POLL, REPORT_POLL_PARAMS, args
 
 POLL = (api.ARM + f"/subscriptions/{SUB}/providers/Microsoft.CostManagement/"
         "costDetailsOperationStatus/11111111-1111-1111-1111-111111111111"
@@ -97,6 +98,8 @@ class PublicWorkflowTests(unittest.TestCase):
         self.assertEqual(requests[1].full_url, POLL)
         self.assertEqual(requests[-1].headers, {})
         data = json.loads(self.output.read_text())
+        self.assertNotIn("operationLocationComparison", summary)
+        self.assertNotIn("operationLocationComparison", data)
         self.assertEqual(data["rows"][0]["quantity"], "0.6551259830594063")
         self.assertIn("0.013102519661188125", self.csv.read_text())
         for secret in ("ARM_SECRET", "sig=", "SECRET", "operationStatus/"):
@@ -236,6 +239,8 @@ class PublicWorkflowTests(unittest.TestCase):
             Response(status=202)], self.command(extra=["--max-polls", "1"]))
         self.assertEqual((code, summary["state"], summary["reason"]), (3, "INCOMPLETE", "poll_limit"))
         self.assertEqual(opener.open.call_count, 2)
+        self.assertNotIn("operationLocationComparison", summary)
+        self.assertNotIn("operationLocationComparison", json.loads(self.output.read_text()))
         self.assertFalse(self.csv.exists())
 
     def test_pending_deadline_no_poll_and_429_403_stop_no_empty_success(self):
@@ -277,6 +282,106 @@ class PublicWorkflowTests(unittest.TestCase):
             Response(status=202, headers={"Location": POLL.replace("Status", "Results")})])
         self.assertEqual((code, summary["reason"], opener.open.call_count),
                          (3, "operation_location_changed", 2))
+        self.assertFalse(summary["operationLocationComparison"]["sameOperationKind"])
+
+    def assert_location_comparison(self, replacement, original=REPORT_LOCATION):
+        code, summary, opener, cli, sleep = self.run_cli([
+            Response(status=202, headers={"Location": original}),
+            Response(status=202, headers={"Location": replacement})])
+        data = json.loads(self.output.read_text())
+        self.assertEqual((code, summary["state"], summary["reason"]),
+                         (3, "INCOMPLETE", "operation_location_changed"))
+        self.assertEqual((data["polls"], data["blobsDownloaded"], data["httpRequests"]), (1, 0, 2))
+        self.assertEqual(summary["httpRequests"], 2)
+        self.assertEqual(summary["httpRequestCounts"], {"generation": 1, "poll": 1})
+        self.assertEqual(data["httpRequestCounts"], summary["httpRequestCounts"])
+        self.assertEqual(opener.open.call_count, 2)
+        self.assertEqual(cli.call_count, 2)
+        self.assertEqual([call.args[0].method for call in opener.open.call_args_list], ["POST", "GET"])
+        self.assertEqual(opener.open.call_args_list[1].args[0].full_url, original)
+        sleep.assert_called_once_with(30)
+        self.assertFalse(self.csv.exists())
+        comparison = summary["operationLocationComparison"]
+        self.assertEqual(comparison, data["operationLocationComparison"])
+        serialized = self.output.read_text() + json.dumps(summary)
+        for secret in (original, str(replacement), api.ARM, "evil.example", "/subscriptions/",
+                       SUB, TENANT, "33333333-3333-3333-3333-333333333333", "ARM_SECRET",
+                       "SYNTHETIC_SECRET", "arbitrarySecretKey", "638962560000000001", "H" * 43, *(
+                           REPORT_POLL_PARAMS[key] for key in ("t", "c", "s", "h"))):
+            self.assertNotIn(secret, serialized)
+        self.output.unlink()
+        return comparison
+
+    def test_changed_signed_components_diagnosed_without_following_or_leaking(self):
+        changes = {"t": "638962560000000001", "c": "SYNTHETIC_SECRET_C",
+                   "s": "SYNTHETIC_SECRET_S", "h": "H" * 43}
+        for keys in (("t", "c", "s", "h"), ("t",), ("c",), ("s",), ("h",)):
+            with self.subTest(keys=keys):
+                params = dict(REPORT_POLL_PARAMS, **{key: changes[key] for key in keys})
+                comparison = self.assert_location_comparison(
+                    REPORT_POLL + "?" + urllib.parse.urlencode(params))
+                self.assertEqual(comparison, {
+                    "available": True, "sameHttpsScheme": True, "sameTrustedArmOrigin": True,
+                    "samePath": True, "sameScope": True, "sameOperationKind": True,
+                    "sameOperationId": True, "sameApiVersion": True, "sameQueryFieldSet": True,
+                    "sameQueryValues": False,
+                    "signedComponentsChanged": {key: key in keys for key in ("t", "c", "s", "h")}})
+
+    def test_reordered_identical_query_still_rejected(self):
+        comparison = self.assert_location_comparison(
+            REPORT_POLL + "?" + urllib.parse.urlencode(list(REPORT_POLL_PARAMS.items())[::-1]))
+        self.assertTrue(all(value for value in comparison.values() if type(value) is bool))
+        self.assertEqual(comparison["signedComponentsChanged"], dict.fromkeys(("t", "c", "s", "h"), False))
+
+    def test_changed_operation_identity_origin_version_and_fields_diagnosed(self):
+        cases = [
+            (REPORT_LOCATION.replace("costDetailsOperationResults", "operationResults"),
+             {"samePath", "sameOperationKind"}),
+            (REPORT_LOCATION.replace("33333333-3333-3333-3333-333333333333", TENANT),
+             {"samePath", "sameOperationId"}),
+            (REPORT_LOCATION.replace(SUB, TENANT), {"samePath", "sameScope"}),
+            (REPORT_LOCATION.replace("management.azure.com", "evil.example"), {"sameTrustedArmOrigin"}),
+            (REPORT_LOCATION.replace(api.REPORT_VERSION, "2024-01-01"),
+             {"sameApiVersion", "sameQueryValues"}),
+            (REPORT_POLL + "?api-version=" + api.REPORT_VERSION,
+             {"sameQueryFieldSet", "sameQueryValues"}),
+            (REPORT_LOCATION.replace("&c=", "&arbitrarySecretKey="), {"sameQueryFieldSet", "sameQueryValues"}),
+        ]
+        for replacement, differences in cases:
+            with self.subTest(differences=differences):
+                comparison = self.assert_location_comparison(replacement)
+                self.assertTrue(comparison["available"])
+                self.assertEqual({key for key, value in comparison.items()
+                                  if value is False}, differences)
+
+    def test_malformed_replacement_comparison_unavailable_original_failure_preserved(self):
+        invalid = [
+            "https://[SYNTHETIC_SECRET", "SYNTHETIC_SECRET", 123, ["SYNTHETIC_SECRET"],
+            REPORT_LOCATION.replace("https:", "http:"),
+            REPORT_LOCATION.replace("management.azure.com", "management.azure.com:bad"),
+            REPORT_LOCATION + "#", REPORT_LOCATION + "#SYNTHETIC_SECRET",
+            REPORT_LOCATION + "&extra=SYNTHETIC_SECRET",
+            REPORT_POLL + "?api-version=" + api.REPORT_VERSION + "&c=one&c=two",
+            REPORT_POLL + "?api-version=" + api.REPORT_VERSION + "&c=",
+            REPORT_POLL + "?api-version=" + api.REPORT_VERSION + "&malformed",
+            REPORT_POLL + "?api-version=" + api.REPORT_VERSION + "&c=%ZZ",
+            REPORT_POLL + "?api-version=" + api.REPORT_VERSION + "&c=%FF",
+            REPORT_POLL + "?api-version=" + api.REPORT_VERSION + "&%63=one&c=two",
+            REPORT_LOCATION.replace("/providers/", "/providers/%2e%2e/"),
+            REPORT_LOCATION.replace("management.azure.com", "user:SECRET@management.azure.com"),
+            REPORT_LOCATION.replace("management.azure.com", "management.azure.com:443"),
+            REPORT_LOCATION + "\nSYNTHETIC_SECRET",
+            REPORT_POLL + "?=SYNTHETIC_SECRET",
+        ]
+        for replacement in invalid:
+            with self.subTest(replacement_type=type(replacement).__name__):
+                self.assertEqual(self.assert_location_comparison(replacement),
+                                 {"available": False, "reason": "invalid_url_or_query"})
+        for replacement in (
+                REPORT_LOCATION.replace("costDetailsOperationResults", "query"),
+                REPORT_LOCATION.replace("33333333-3333-3333-3333-333333333333", "SYNTHETIC_SECRET")):
+            self.assertEqual(self.assert_location_comparison(replacement),
+                             {"available": False, "reason": "unrecognized_operation_path"})
 
     def test_manifest_empty_duplicate_format_and_failed_status(self):
         cases = []

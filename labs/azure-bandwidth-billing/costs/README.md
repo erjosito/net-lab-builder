@@ -612,6 +612,21 @@ gzip, or a ZIP containing exactly one CSV. Multi-member ZIPs are rejected,
 never silently reduced to their first member. Total wire and decoded bytes are
 each capped at 50 MiB; `--max-rows` defaults/maxes to 100,000 across all blobs.
 
+Only an `operation_location_changed` failure adds optional
+`operationLocationComparison` to the original persisted report and sanitized
+CLI summary. It contains fixed booleans comparing HTTPS/trusted ARM origin,
+exact path, parsed logical subscription scope/operation kind/ID, API version,
+query field set and values (independent of field order), and changes to the
+fixed `t/c/s/h` components. Parsing uses at most five query fields; malformed
+URLs/queries, duplicate or empty query values, or unrecognized operation paths
+instead produce `available=false` with a fixed reason. No URL, ID, arbitrary query key
+name, value, length or digest is retained by this comparison.
+These are diagnostic comparisons, **not validation, root-cause or equivalence
+proof**: every differing whole URL is still rejected, including reordered
+queries with identical parsed values. The replacement is never followed;
+request counts, retry/poll behavior, deadlines and timeouts are unchanged.
+Successes, missing replacement Locations and other errors omit this field.
+
 The subscription-wide report is streamed without ever writing raw CSV.
 Exact inventory + RG + inclusive local usage dates + Bandwidth category/service
 are applied before retaining a row. CSV output contains only the readable

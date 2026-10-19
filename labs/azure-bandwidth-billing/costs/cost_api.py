@@ -350,6 +350,51 @@ def safe_url(url, code):
         raise Failure(code) from None
 
 
+def compare_operation_locations(original, replacement):
+    """Compare in memory only; these diagnostics never authorize a replacement."""
+    unavailable = {"available": False, "reason": "invalid_url_or_query"}
+    try:
+        urls = [safe_url(value, "unsafe_report_url") for value in (original, replacement)]
+        if any("#" in value for value in (original, replacement)):
+            return unavailable
+        params = []
+        for url in urls:
+            if re.search(r"%(?![0-9a-fA-F]{2})", url.query):
+                return unavailable
+            query = urllib.parse.parse_qs(url.query, keep_blank_values=True,
+                                          strict_parsing=True, max_num_fields=5, errors="strict")
+            if ("api-version" not in query or
+                    any(not key or len(values) != 1 or not values[0]
+                        for key, values in query.items())):
+                return unavailable
+            params.append(query)
+    except (Failure, ValueError, UnicodeError):
+        return unavailable
+    operation_id = r"[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}"
+    pattern = (r"(/subscriptions/" + operation_id + r")/providers/Microsoft\.CostManagement/"
+               r"(costDetailsOperationStatus|costDetailsOperationResults|operationResults)/("
+               + operation_id + ")")
+    operations = [re.fullmatch(pattern, url.path, re.IGNORECASE | re.ASCII) for url in urls]
+    if not all(operations):
+        return {"available": False, "reason": "unrecognized_operation_path"}
+    before, after = urls
+    first, second = (match.groups() for match in operations)
+    return {
+        "available": True,
+        "sameHttpsScheme": before.scheme == after.scheme == "https",
+        "sameTrustedArmOrigin": before.netloc == after.netloc == "management.azure.com",
+        "samePath": before.path == after.path,
+        "sameScope": first[0].lower() == second[0].lower(),
+        "sameOperationKind": first[1].lower() == second[1].lower(),
+        "sameOperationId": first[2].lower() == second[2].lower(),
+        "sameApiVersion": params[0].get("api-version") == params[1].get("api-version"),
+        "sameQueryFieldSet": params[0].keys() == params[1].keys(),
+        "sameQueryValues": params[0] == params[1],
+        "signedComponentsChanged": {
+            key: params[0].get(key) != params[1].get(key) for key in ("t", "c", "s", "h")},
+    }
+
+
 def validate_blob(url):
     parsed = safe_url(url, "unsafe_blob_link")
     params = urllib.parse.parse_qs(parsed.query)
@@ -1179,6 +1224,8 @@ def collect_report(transport, args, inventory):
             result["polls"] += 1
             next_location = next((v for k, v in headers.items() if k.lower() == "location"), None)
             if next_location and next_location != location:
+                result["operationLocationComparison"] = compare_operation_locations(
+                    location, next_location)
                 raise Failure("operation_location_changed")
         if status != 200 or page.get("status") != "Completed":
             error = page.get("error", {})
@@ -1426,7 +1473,7 @@ def main(argv=None):
         print(json.dumps({key: data[key] for key in (
             "state", "pages", "received", "discarded", "duplicates", "unattributedLabRows",
             "extractionComplete", "ingestionFinal", "retained", "reason", "httpStatus",
-            "responseMetadata", "httpRequests", "httpRequestCounts")
+            "responseMetadata", "operationLocationComparison", "httpRequests", "httpRequestCounts")
                           if key in data}))
         return 0 if data["state"] == "COMPLETE" else 3
     except subprocess.TimeoutExpired:
