@@ -1,0 +1,137 @@
+{
+  "taskId": "query-unit-capability-20261019T1251Z",
+  "startedAtUtc": "2026-10-19T12:51:13.617938+00:00",
+  "endpointAlias": "T",
+  "verdict": "FAIL",
+  "capability": "REJECTED_FOR_THIS_GROUPING_REQUEST",
+  "httpStatus": 400,
+  "azureCode": "BadRequest",
+  "unit": "NOT_RETURNED",
+  "rows": [],
+  "sourceSha256": "eebdb5908f237a5aeb6abe500ff2ae77253226203ed65ba5d2aa0c37b0b498e4",
+  "privateAdapterUsed": true,
+  "publicCliUsed": false,
+  "publicUnitFlagTested": false,
+  "apiVersion": "2023-11-01",
+  "method": "POST",
+  "endpoint": "/providers/Microsoft.CostManagement/query",
+  "scope": "<pinned-fresh-T-resource-group>",
+  "requestBodySanitized": {
+    "type": "ActualCost",
+    "timeframe": "Custom",
+    "timePeriod": {
+      "from": "2026-10-12T00:00:00Z",
+      "to": "2026-10-18T23:59:59Z"
+    },
+    "dataset": {
+      "granularity": "Daily",
+      "aggregation": {
+        "totalCost": {
+          "name": "PreTaxCost",
+          "function": "Sum"
+        },
+        "totalQuantity": {
+          "name": "UsageQuantity",
+          "function": "Sum"
+        }
+      },
+      "grouping": [
+        {
+          "type": "Dimension",
+          "name": "ResourceId"
+        },
+        {
+          "type": "Dimension",
+          "name": "UnitOfMeasure"
+        }
+      ],
+      "filter": {
+        "and": [
+          {
+            "dimensions": {
+              "name": "ResourceId",
+              "operator": "In",
+              "values": [
+                "<exact-seven-T-inventory-IDs>"
+              ]
+            }
+          },
+          {
+            "dimensions": {
+              "name": "MeterCategory",
+              "operator": "In",
+              "values": [
+                "Bandwidth"
+              ]
+            }
+          },
+          {
+            "dimensions": {
+              "name": "Meter",
+              "operator": "In",
+              "values": [
+                "Intra Continent Data Transfer Out"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "actualArgumentsSanitized": {
+    "transport": "native WSL Ubuntu-24.04 /usr/bin/az existing auth",
+    "maxHttpRequests": 1,
+    "maxRetries": 0,
+    "requestTimeoutSeconds": 120,
+    "maxWorkflowSeconds": 150,
+    "commandTimeoutSeconds": 180
+  },
+  "manualCapabilityException": "New UnitOfMeasure selector, explicit 12:45:25Z authority; not an ordinary A/T refresh",
+  "normalRefreshDeferralsUnchanged": true,
+  "CQueried": false,
+  "newTraffic": false,
+  "actualInfrastructureMutations": 0,
+  "limitations": [
+    "No follow-up HTTP, selector variants, dimensions, price sheet, CSV fallback, or retry.",
+    "No six-hour stability, maturity, ingestion finality, provider bug, or complete volume reconciliation claim.",
+    "Legacy nested 1 TB observation and duplicate identity remain unchanged; no conversion applied.",
+    "This private capability adapter does not expose or test a new public CLI flag.",
+    "A microquantity CSV findings and normal A/T 18:30Z and C 17:08Z deferrals remain unchanged."
+  ],
+  "failure": "http_error",
+  "actualFieldMentioned": "UnitOfMeasure",
+  "groupingSelectorRejected": true,
+  "crossSectionalComparison": {
+    "performed": false,
+    "reason": "No validated unit-bearing response",
+    "timeStabilityClaim": false
+  },
+  "completedAtUtc": "2026-10-19T12:51:17.913875+00:00",
+  "actualBillingHttpRequests": 1,
+  "previousClosedCumulativeBillingHttpRequests": 17,
+  "cumulativeBillingHttpRequests": 18,
+  "previousNewSourceLiveRequests": 5,
+  "newSourceLiveRequests": 6,
+  "counterProvenance": "All HTTP using approved source Transport, including this private adapter; not a public flag claim",
+  "idleProof": {
+    "verifiedAtUtc": "2026-10-19T12:53:13.861940+00:00",
+    "STOPAbsent": true,
+    "sourceSha256": "eebdb5908f237a5aeb6abe500ff2ae77253226203ed65ba5d2aa0c37b0b498e4",
+    "ownedNativeChildren": 0,
+    "ownedWslBillingChildren": 0,
+    "activeCommands": 0,
+    "queuedWork": 0,
+    "priorInteractiveWslTerminalsUntouched": true
+  },
+  "actualToolCalls": 49,
+  "maxToolCalls": 50,
+  "toolCountPolicy": "Conservative upper bound includes preparation, wrappers, closure and final verification",
+  "selectorRejectionScope": "This exact API version, fresh T scope, fixed filters and ResourceId+UnitOfMeasure grouping only; not universal unsupported",
+  "privateProof": "private\\query-unit-capability-20261019T1251Z\\closure.private.json",
+  "schedule": {
+    "id": 5,
+    "changed": false,
+    "mustSkipWhileOwnerActive": true
+  },
+  "hardStopUtc": "2026-10-22T23:15:33Z"
+}
