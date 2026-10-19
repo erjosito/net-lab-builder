@@ -17,6 +17,14 @@ time without a changed-Location failure; the earlier difference remains
 unknown, not fixed or reproduced. See [quantity comparisons and boundaries](billing-evidence.md#latest-snapshot--19-october-2026-1108z-quantity-refresh).
 Existing bounded follow-up and the **22 October 23:15:33Z hard stop** remain.
 
+An [offline accounting audit](results/2026-10-19-offline-volume-audit.json)
+rechecks all 80 directed proof records and finds **100,838,387,131 C guest
+NIC TX bytes** across its 20 completed pairs. The retained report matches
+the transfer VM, drops no owned rows by date, and has exact bulk
+quantity/price/cost arithmetic. Both transfer days are inside its interval.
+No checked local-accounting explanation was found; discarded
+inventory/category rows cannot be reaudited from retained evidence.
+
 ## Superseded executive summary — 19 October 2026, 10:50Z (offline refresh)
 
 **Financial observation PASS; final billing reconciliation OPEN.**

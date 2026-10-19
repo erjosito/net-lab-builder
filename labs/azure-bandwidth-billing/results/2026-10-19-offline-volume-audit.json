@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "auditStartedAtUtc": "2026-10-19T11:26:14.051364+00:00",
+  "mode": "OFFLINE_EXISTING_EVIDENCE_ONLY",
+  "newBillingHttpRequests": 0,
+  "infrastructureMutations": 0,
+  "verdict": "NO_EXPLANATION_FOUND_IN_CHECKED_LOCAL_ACCOUNTING_FULL_RECONCILIATION_OPEN",
+  "publicEvidence": [
+    "2026-10-17-large-rerun-complete.json",
+    "2026-10-17-large-rerun-digest-proofs.json",
+    "2026-10-19-last-week-quantity-recovery.json"
+  ],
+  "transportProofReaggregation": {
+    "canonicalRecordsSha256Verified": "086bf3857c1a90e7fa69d430f52ee5dd54ee2477dab2e13772216fd9577b0b34",
+    "directedRecordsChecked": 80,
+    "producerConsumerCountsAndDigestsMatch": true,
+    "payloadRetries": 0,
+    "applicationBytesPerLeg": {
+      "A->T": 100000000000,
+      "T->A": 100000000000,
+      "C->T": 100000000000,
+      "T->C": 100000000000
+    },
+    "wholeChunkApplicationBytesByProducerUtcDay": {
+      "A->T": {
+        "2026-10-16": 11811160064,
+        "2026-10-17": 88188839936
+      },
+      "T->A": {
+        "2026-10-16": 11811160064,
+        "2026-10-17": 88188839936
+      },
+      "C->T": {
+        "2026-10-16": 1073741824,
+        "2026-10-17": 98926258176
+      },
+      "T->C": {
+        "2026-10-16": 1073741824,
+        "2026-10-17": 98926258176
+      }
+    },
+    "crossMidnightChunks": 0,
+    "dayAllocationMeaning": "Producer UTC timestamps, not an asserted correspondence to provider billing dates.",
+    "cGuestNicTx": {
+      "completedCrossRegionPairs": 20,
+      "pairsMissingCounter": 0,
+      "sumRecordedBytes": 100838387131,
+      "meaning": "Sum C TX once per completed pair from the accepted guest ledger; includes protocol/control traffic, not an invoice measurement or full-lifecycle packet capture."
+    }
+  },
+  "freshCReportChecks": {
+    "allRetainedRowsMatchTransferVm": true,
+    "transferVmInCanonicalBillingInventory": true,
+    "allRetainedRowsPassExistingResourceIdentityCheck": true,
+    "reportedIntervalStart": "2026-10-12T00:00:00",
+    "reportedIntervalEnd": "2026-10-18T00:00:00",
+    "allProducerUtcTransferDaysInsideInterval": true,
+    "fullDayOctober18CoverageEstablished": false,
+    "receivedRows": 2302,
+    "retainedBandwidthRows": 7,
+    "discardCounts": {
+      "inventory": 2282,
+      "date": 0,
+      "category": 13
+    },
+    "ownedRowsByDateBeforeCategoryFilter": {
+      "2026-10-16": 5,
+      "2026-10-17": 15
+    },
+    "bulkRowCount": 4,
+    "bulkUsageDays": [
+      "2026-10-17"
+    ],
+    "bulkQuantityExactSum": "14.2374728210270405",
+    "reportedUnit": "1 GB",
+    "effectivePriceUsd": "0.02",
+    "bulkCostUsdExactSum": "0.28474945642054081",
+    "eachBulkQuantityTimesPriceEqualsCostExactly": true
+  },
+  "unitScaleCheck": {
+    "verifiedPayloadBytes": 100000000000,
+    "decimalGigabytes": "100",
+    "binaryGibibytes": "93.1322574615478515625",
+    "interpretation": "Neither conventional byte divisor alone explains 14.2374728210270405. This arithmetic does not establish Azure offer-specific meter semantics or convert the reported unit."
+  },
+  "sourceReview": {
+    "costApiSha256": "1cd76089b9b690c991d4a6bf05ad6fd55195049633b30e75666b981c3e8d1c18",
+    "streamSourceSha256FromAcceptedLedger": "7f01a8cc358460e54b6ec698be78e9fcc39157b6f14f4a050bf44d40d49adbdb",
+    "transferEncoding": "HTTPS; downloads require Content-Encoding identity and exact Content-Length; encoded uploads are rejected; both endpoints check counts and SHA256.",
+    "focusedExistingRegressionsPassed": 4,
+    "sourceChanges": 0
+  },
+  "limitations": [
+    "Reaggregates accepted evidence; no fresh transport or infrastructure observation.",
+    "Discarded inventory/category rows were not persisted and cannot be reaudited offline; this does not prove every potentially relevant provider record was retained.",
+    "The source review and focused checks are not proof that the collector has no other defects.",
+    "Provider usage publication, alternative attribution, unit interpretation and the true cause of the shortfall remain unresolved.",
+    "No assumption of free allowance, rounding, ingestion lag or an Azure metering defect.",
+    "Same-region missing bulk rows remain absence of an observed charge, not an explicit zero-rated record."
+  ],
+  "nextAction": "Existing bounded scheduled reconciliation only; preserve the original 2026-10-22T23:15:33Z hard stop and do not restart traffic."
+}

@@ -33,6 +33,43 @@ not an extension or reset of the earlier five-request weekly Query snapshot.
 findings below, T's unresolved unit/identity semantics, existing six-hourly
 schedule 5 and **22 October 23:15:33Z hard stop** are unchanged.
 
+### Offline accounting audit — 19 October 2026
+
+The [reaggregation and scope audit](results/2026-10-19-offline-volume-audit.json)
+made no live requests. All **80** published directed records retain their
+canonical SHA256, matching producer/consumer counts and digests, and total
+exactly **100,000,000,000 application bytes per leg**. C's separate accepted
+guest ledger records **100,838,387,131 TX bytes** over its **20** completed
+cross-region pairs, counted once at C. This includes protocol/control
+traffic, not an exact invoice or full-lifecycle wire measurement.
+
+C sent **1,073,741,824 application bytes on 16 October** and
+**98,926,258,176 on 17 October**, by producer UTC timestamps; no chunk
+crosses midnight. Both days lie inside the returned report interval.
+These timestamp allocations do not establish which usage date Azure
+should assign to each financial row. The observed **17 October-only**
+bulk rows therefore must not be described as a reconciliation of all
+100 GB on that day.
+
+Every retained C row matches the transfer configuration's VM and its
+canonical billing inventory. The actual parser discarded **zero owned rows
+by date**, **13 by category**, and **2,282 by inventory**, retaining seven
+Bandwidth rows. The four bulk rows sum exactly to **14.2374728210270405
+reported `1 GB` / USD 0.28474945642054081**; every quantity times
+**USD 0.02** equals its row cost exactly. Dividing the application count
+by conventional decimal/binary GB divisors gives **100 / 93.1322574615478515625**,
+not 14.23747; this does not establish Azure's offer-specific unit semantics.
+The reviewed HTTPS harness forbids compressed payload encoding and checks
+counts/digests at both ends. Four focused existing date/filter/NIC tests pass.
+
+**No explanation was found in the checked local accounting.** This is not
+proof of a provider bug or a defect-free collector: discarded
+inventory/category rows were not retained and cannot be reaudited offline.
+Publication lag, alternative attribution and unit semantics remain open;
+no free-allowance, rounding or ingestion-lag explanation is assumed.
+No source, authentication, infrastructure, request budget or schedule
+was changed by this audit.
+
 <a id="latest-snapshot--19-october-2026-1050z-offline-refresh"></a>
 
 ## Superseded snapshot — 19 October 2026, 10:50Z (offline refresh)
