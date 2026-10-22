@@ -1,0 +1,19 @@
+#cloud-config
+package_update: true
+packages:
+  - strongswan
+  - strongswan-swanctl
+  - frr
+  - tcpdump
+  - mtr-tiny
+  - netcat-openbsd
+
+sysctl:
+  net.ipv4.ip_forward: 1
+  net.ipv4.conf.all.accept_redirects: 0
+  net.ipv4.conf.all.send_redirects: 0
+
+runcmd:
+  - sysctl -w net.ipv4.ip_forward=1
+  - sed -i 's/bgpd=no/bgpd=yes/' /etc/frr/daemons || true
+  - systemctl restart frr || true
