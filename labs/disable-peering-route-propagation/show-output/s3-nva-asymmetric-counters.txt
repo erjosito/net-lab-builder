@@ -1,0 +1,11 @@
+Enable succeeded: 
+[stdout]
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+    0     0 ACCEPT     all  --  *      *       172.17.0.0/16        10.1.0.0/16         
+    8   747 ACCEPT     all  --  *      *       10.1.0.0/16          172.17.0.0/16       
+    0     0 ACCEPT     all  --  *      *       172.16.0.0/16        10.1.0.0/16         
+    8   747 ACCEPT     all  --  *      *       10.1.0.0/16          172.16.0.0/16       
+
+[stderr]
+

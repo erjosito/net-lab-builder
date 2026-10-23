@@ -1,0 +1,85 @@
+{
+  "mcr": {
+    "productName": "jomore-copilot-mcr-disable-peering",
+    "provisioningStatus": "LIVE",
+    "location": "Equinix Frankfurt FR5",
+    "metro": "Frankfurt",
+    "mcrAsn": null,
+    "speedMbps": 1000
+  },
+  "primaryVxc": {
+    "productName": "jomore-copilot-vxc-disable-peering-pri",
+    "provisioningStatus": "LIVE",
+    "rateLimitMbps": 50,
+    "aEndVlan": 2063,
+    "aEndInnerVlan": 3424,
+    "bEndLocation": "Digital Realty FRA13",
+    "bgpPeers": [
+      "169.254.80.218"
+    ],
+    "bgpStatus": {
+      "169.254.80.218": 1
+    },
+    "interfaces": [
+      {
+        "bgpConnections": [
+          {
+            "localAsn": 65030,
+            "localIpAddress": "169.254.80.217",
+            "peerAsn": 12076,
+            "peerIpAddress": "169.254.80.218",
+            "peerType": "PRIV_CLOUD",
+            "shutdown": false,
+            "exportWhitelist": 9312
+          }
+        ],
+        "ipAddresses": [
+          "169.254.80.217/30",
+          "172.18.1.1/30"
+        ],
+        "vlan": 100,
+        "ipMtu": 1500,
+        "ipRoutes": [
+          {
+            "description": "On-prem ER summary",
+            "nextHop": "172.18.1.2",
+            "prefix": "172.18.0.0/16"
+          }
+        ]
+      }
+    ]
+  },
+  "secondaryVxc": {
+    "productName": "jomore-copilot-vxc-disable-peering-sec",
+    "provisioningStatus": "LIVE",
+    "rateLimitMbps": 50,
+    "aEndVlan": 2063,
+    "aEndInnerVlan": 3639,
+    "bEndLocation": "Digital Realty FRA13",
+    "bgpPeers": [
+      "169.254.80.222"
+    ],
+    "bgpStatus": {
+      "169.254.80.222": 1
+    },
+    "interfaces": [
+      {
+        "bgpConnections": [
+          {
+            "localAsn": 65030,
+            "localIpAddress": "169.254.80.221",
+            "peerAsn": 12076,
+            "peerIpAddress": "169.254.80.222",
+            "peerType": "PRIV_CLOUD",
+            "shutdown": false
+          }
+        ],
+        "ipAddresses": [
+          "169.254.80.221/30"
+        ],
+        "vlan": 100,
+        "ipMtu": 1500
+      }
+    ]
+  }
+}
