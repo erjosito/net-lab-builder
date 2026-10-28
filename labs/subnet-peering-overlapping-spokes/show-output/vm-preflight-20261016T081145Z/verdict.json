@@ -1,0 +1,18 @@
+{
+  "taskId": "vm-preflight-20261016T081145Z",
+  "ownerRole": "Morpheus",
+  "objective": "Read-only VM capacity/design preflight",
+  "createdAtUtc": "2026-10-16T08:11:45.455521+00:00",
+  "expiresAtUtc": "2026-10-16T08:21:45.455521+00:00",
+  "maxToolCalls": 35,
+  "maxMutations": 0,
+  "commandTimeoutSeconds": 90,
+  "validationTimeoutSeconds": 180,
+  "restoreTimeoutMinutes": 0,
+  "state": "blocked",
+  "runningChildren": [],
+  "retentionPolicy": "keep_until_explicit_user_cleanup",
+  "verdict": "BLOCKED",
+  "reason": "Command '['C:\\\\Program Files\\\\Microsoft SDKs\\\\Azure\\\\CLI2\\\\wbin\\\\az.CMD', 'vm', 'list-skus', '-l', 'swedencentral', '--resource-type', 'virtualMachines', '--all', '--only-show-errors', '-o', 'json']' timed out after 15 seconds",
+  "completedAtUtc": "2026-10-16T08:13:47.801115+00:00"
+}

@@ -1,0 +1,57 @@
+[
+  {
+    "label": "account",
+    "startedAtUtc": "2026-10-16T08:17:44.021758+00:00",
+    "completedAtUtc": "2026-10-16T08:17:45.741181+00:00",
+    "command": [
+      "az",
+      "account",
+      "show"
+    ],
+    "exitCode": 0,
+    "stderr": ""
+  },
+  {
+    "label": "inventory-before",
+    "startedAtUtc": "2026-10-16T08:17:45.745925+00:00",
+    "completedAtUtc": "2026-10-16T08:17:52.391603+00:00",
+    "command": [
+      "az",
+      "resource",
+      "list",
+      "-g",
+      "rg-subnet-overlap-20261016-fde5ecf8"
+    ],
+    "exitCode": 0,
+    "stderr": ""
+  },
+  {
+    "label": "network-baseline",
+    "startedAtUtc": "2026-10-16T08:17:52.395510+00:00",
+    "completedAtUtc": "2026-10-16T08:18:00.152793+00:00",
+    "command": [
+      "az",
+      "network",
+      "vnet",
+      "list",
+      "-g",
+      "rg-subnet-overlap-20261016-fde5ecf8"
+    ],
+    "exitCode": 0,
+    "stderr": ""
+  },
+  {
+    "label": "quota",
+    "startedAtUtc": "2026-10-16T08:18:00.158395+00:00",
+    "completedAtUtc": "2026-10-16T08:18:04.090156+00:00",
+    "command": [
+      "az",
+      "vm",
+      "list-usage",
+      "-l",
+      "swedencentral"
+    ],
+    "exitCode": 0,
+    "stderr": ""
+  }
+]

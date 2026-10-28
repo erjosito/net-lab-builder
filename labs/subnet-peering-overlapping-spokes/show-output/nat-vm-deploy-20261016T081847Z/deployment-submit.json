@@ -1,0 +1,27 @@
+{
+  "command": [
+    "az",
+    "deployment",
+    "group",
+    "create",
+    "-g",
+    "rg-subnet-overlap-20261016-fde5ecf8",
+    "-n",
+    "nat-vm-deploy-20261016T081847Z",
+    "--template-file",
+    "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\subnet-peering-overlapping-spokes\\deploy\\.runtime-control\\nat-validation-template.json",
+    "--parameters",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\subnet-peering-overlapping-spokes\\deploy\\.runtime-control\\nat-validation-parameters.json",
+    "--mode",
+    "Incremental",
+    "--no-wait",
+    "--query",
+    "{name:name,state:properties.provisioningState}"
+  ],
+  "startedAtUtc": "2026-10-16T08:23:06.224618+00:00",
+  "completedAtUtc": "2026-10-16T08:23:21.013923+00:00",
+  "exitCode": 0,
+  "stdout": "",
+  "stderr": "",
+  "action": "deployment"
+}

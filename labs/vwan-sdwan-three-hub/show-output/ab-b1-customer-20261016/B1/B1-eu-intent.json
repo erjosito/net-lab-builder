@@ -1,0 +1,35 @@
+{
+  "timestampUtc": "2026-10-16T13:07:03.338959+00:00",
+  "finishedUtc": "2026-10-16T13:07:15.747935+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/routingIntent?api-version=2024-05-01"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"etag\": \"W/\\\"77f81644-c0b6-49d8-8320-4768aa30e2ce\\\"\",\n      \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/routingIntent/private-traffic\",\n      \"name\": \"private-traffic\",\n      \"properties\": {\n        \"provisioningState\": \"Succeeded\",\n        \"routingPolicies\": [\n          {\n            \"destinations\": [\n              \"PrivateTraffic\"\n            ],\n            \"name\": \"PrivateTraffic\",\n            \"nextHop\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-eu\"\n          }\n        ]\n      },\n      \"type\": \"Microsoft.Network/virtualHubs/routingIntent\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "etag": "W/\"77f81644-c0b6-49d8-8320-4768aa30e2ce\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/routingIntent/private-traffic",
+        "name": "private-traffic",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "routingPolicies": [
+            {
+              "destinations": [
+                "PrivateTraffic"
+              ],
+              "name": "PrivateTraffic",
+              "nextHop": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-eu"
+            }
+          ]
+        },
+        "type": "Microsoft.Network/virtualHubs/routingIntent"
+      }
+    ]
+  },
+  "sha256": "f1528dee4bb6d356a1de765aa3cf27261d5135b9a05c819e68e26f1d09c167cf"
+}

@@ -1,0 +1,158 @@
+{
+  "verdict": "PASS",
+  "rawCollectorVerdict": "INCONCLUSIVE",
+  "originalErrors": [
+    "B2 selected NVA routes changed during steering control"
+  ],
+  "restored": true,
+  "semanticSelectionsStable": true,
+  "nextHopsAndResolutionStable": true,
+  "headlineTimestampChanges": [
+    {
+      "state": "B2-with-UDR",
+      "site": "jp",
+      "prefix": "10.110.0.0/24",
+      "before": "10.110.0.0/24        unicast [mesh_eu 21:30:16.722 from 172.31.0.5] * (100) [AS65011i]",
+      "after": "10.110.0.0/24        unicast [mesh_eu 21:30:16.723 from 172.31.0.5] * (100) [AS65011i]",
+      "deltaMilliseconds": 1
+    },
+    {
+      "state": "B2-with-UDR",
+      "site": "jp",
+      "prefix": "10.130.0.0/24",
+      "before": "10.130.0.0/24        unicast [own_dc 21:30:10.164] * (200)",
+      "after": "10.130.0.0/24        unicast [own_dc 21:30:10.165] * (200)",
+      "deltaMilliseconds": 1
+    },
+    {
+      "state": "B2-with-UDR",
+      "site": "jp",
+      "prefix": "10.140.0.0/24",
+      "before": "10.140.0.0/24        unicast [mesh_cn 21:30:13.949 from 172.31.0.22] * (100) [AS65014i]",
+      "after": "10.140.0.0/24        unicast [mesh_cn 21:30:13.950 from 172.31.0.22] * (100) [AS65014i]",
+      "deltaMilliseconds": 1
+    },
+    {
+      "state": "B2-with-UDR",
+      "site": "jp",
+      "prefix": "10.10.0.0/24",
+      "before": "10.10.0.0/24         unicast [mesh_eu 21:30:16.722 from 172.31.0.5] * (100) [AS65515i]",
+      "after": "10.10.0.0/24         unicast [mesh_eu 21:30:16.723 from 172.31.0.5] * (100) [AS65515i]",
+      "deltaMilliseconds": 1
+    },
+    {
+      "state": "B2-with-UDR",
+      "site": "jp",
+      "prefix": "10.30.0.0/24",
+      "before": "10.30.0.0/24         unicast [azure_1 21:30:14.189] ! (100/?) [AS65515i]",
+      "after": "10.30.0.0/24         unicast [azure_1 21:30:14.190] ! (100/?) [AS65515i]",
+      "deltaMilliseconds": 1
+    },
+    {
+      "state": "B2-with-UDR",
+      "site": "cn",
+      "prefix": "10.110.0.0/24",
+      "before": "10.110.0.0/24        unicast [mesh_eu 21:30:14.059 from 172.31.0.9] * (100) [AS65011i]",
+      "after": "10.110.0.0/24        unicast [mesh_eu 21:30:14.058 from 172.31.0.9] * (100) [AS65011i]",
+      "deltaMilliseconds": 1
+    },
+    {
+      "state": "B2-with-UDR",
+      "site": "cn",
+      "prefix": "10.120.0.0/24",
+      "before": "10.120.0.0/24        unicast [mesh_us 21:30:14.480 from 172.31.0.17] * (100) [AS65012i]",
+      "after": "10.120.0.0/24        unicast [mesh_us 21:30:14.479 from 172.31.0.17] * (100) [AS65012i]",
+      "deltaMilliseconds": 1
+    },
+    {
+      "state": "B2-with-UDR",
+      "site": "cn",
+      "prefix": "10.140.0.0/24",
+      "before": "10.140.0.0/24        unicast [own_dc 21:30:08.948] * (200)",
+      "after": "10.140.0.0/24        unicast [own_dc 21:30:08.947] * (200)",
+      "deltaMilliseconds": 1
+    },
+    {
+      "state": "B2-with-UDR",
+      "site": "cn",
+      "prefix": "10.10.0.0/24",
+      "before": "10.10.0.0/24         unicast [mesh_eu 21:30:14.059 from 172.31.0.9] * (100) [AS65515i]",
+      "after": "10.10.0.0/24         unicast [mesh_eu 21:30:14.058 from 172.31.0.9] * (100) [AS65515i]",
+      "deltaMilliseconds": 1
+    },
+    {
+      "state": "B2-with-UDR",
+      "site": "cn",
+      "prefix": "10.20.0.0/24",
+      "before": "10.20.0.0/24         unicast [mesh_us 21:30:14.480 from 172.31.0.17] * (100) [AS65515i]",
+      "after": "10.20.0.0/24         unicast [mesh_us 21:30:14.479 from 172.31.0.17] * (100) [AS65515i]",
+      "deltaMilliseconds": 1
+    },
+    {
+      "state": "B2-reverted",
+      "site": "jp",
+      "prefix": "10.110.0.0/24",
+      "before": "10.110.0.0/24        unicast [mesh_eu 21:30:16.722 from 172.31.0.5] * (100) [AS65011i]",
+      "after": "10.110.0.0/24        unicast [mesh_eu 21:30:16.723 from 172.31.0.5] * (100) [AS65011i]",
+      "deltaMilliseconds": 1
+    },
+    {
+      "state": "B2-reverted",
+      "site": "jp",
+      "prefix": "10.10.0.0/24",
+      "before": "10.10.0.0/24         unicast [mesh_eu 21:30:16.722 from 172.31.0.5] * (100) [AS65515i]",
+      "after": "10.10.0.0/24         unicast [mesh_eu 21:30:16.723 from 172.31.0.5] * (100) [AS65515i]",
+      "deltaMilliseconds": 1
+    },
+    {
+      "state": "B2-reverted",
+      "site": "jp",
+      "prefix": "10.30.0.0/24",
+      "before": "10.30.0.0/24         unicast [azure_1 21:30:14.189] ! (100/?) [AS65515i]",
+      "after": "10.30.0.0/24         unicast [azure_1 21:30:14.190] ! (100/?) [AS65515i]",
+      "deltaMilliseconds": 1
+    },
+    {
+      "state": "B2-reverted",
+      "site": "cn",
+      "prefix": "10.110.0.0/24",
+      "before": "10.110.0.0/24        unicast [mesh_eu 21:30:14.059 from 172.31.0.9] * (100) [AS65011i]",
+      "after": "10.110.0.0/24        unicast [mesh_eu 21:30:14.058 from 172.31.0.9] * (100) [AS65011i]",
+      "deltaMilliseconds": 1
+    },
+    {
+      "state": "B2-reverted",
+      "site": "cn",
+      "prefix": "10.120.0.0/24",
+      "before": "10.120.0.0/24        unicast [mesh_us 21:30:14.480 from 172.31.0.17] * (100) [AS65012i]",
+      "after": "10.120.0.0/24        unicast [mesh_us 21:30:14.479 from 172.31.0.17] * (100) [AS65012i]",
+      "deltaMilliseconds": 1
+    },
+    {
+      "state": "B2-reverted",
+      "site": "cn",
+      "prefix": "10.140.0.0/24",
+      "before": "10.140.0.0/24        unicast [own_dc 21:30:08.948] * (200)",
+      "after": "10.140.0.0/24        unicast [own_dc 21:30:08.947] * (200)",
+      "deltaMilliseconds": 1
+    },
+    {
+      "state": "B2-reverted",
+      "site": "cn",
+      "prefix": "10.10.0.0/24",
+      "before": "10.10.0.0/24         unicast [mesh_eu 21:30:14.059 from 172.31.0.9] * (100) [AS65515i]",
+      "after": "10.10.0.0/24         unicast [mesh_eu 21:30:14.058 from 172.31.0.9] * (100) [AS65515i]",
+      "deltaMilliseconds": 1
+    },
+    {
+      "state": "B2-reverted",
+      "site": "cn",
+      "prefix": "10.20.0.0/24",
+      "before": "10.20.0.0/24         unicast [mesh_us 21:30:14.480 from 172.31.0.17] * (100) [AS65515i]",
+      "after": "10.20.0.0/24         unicast [mesh_us 21:30:14.479 from 172.31.0.17] * (100) [AS65515i]",
+      "deltaMilliseconds": 1
+    }
+  ],
+  "timestampUtc": "2026-10-17T22:48:07.571486+00:00",
+  "interpretation": "Original INCONCLUSIVE verdict is preserved. Its comparison included BIRD display timestamps; only <=1ms rendering differences changed. Structured selections, BGP hops/resolution, exact sources and firewall winners are unchanged across the 18/24 -> 24/24 -> 18/24 control."
+}

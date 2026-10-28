@@ -1,0 +1,196 @@
+{
+  "timestampUtc": "2026-10-15T21:00:27.957559+00:00",
+  "verdict": "BLOCKED",
+  "baselineVerified": false,
+  "restored": false,
+  "preference": "ExpressRoute",
+  "privateRoutingIntent": true,
+  "sourceProofs": {
+    "eu": {
+      "site": "eu",
+      "sha256": "20fbaef367e78dd78b3e7d55e791d5c69dbae0a00fbd3c50ee0c2a740bdb4120",
+      "stat": {
+        "uid": 113,
+        "gid": 122,
+        "mode": 384,
+        "mtimeNs": 1792000607648606479
+      },
+      "protocols": {
+        "mesh_us": "Established",
+        "mesh_jp": "Established",
+        "mesh_cn": "Established",
+        "azure_0": "Established",
+        "azure_1": "Established"
+      },
+      "exports": {
+        "azure_0": {
+          "routes": {
+            "10.110.0.0/24": [],
+            "10.140.0.0/24": [
+              65014
+            ],
+            "10.130.0.0/24": [
+              65013
+            ],
+            "10.120.0.0/24": [
+              65012
+            ]
+          },
+          "rawSha256": "a37cb5b0bfd32d9fa1ac317ab6729e0a8744d954a28c392bef169e1229302517"
+        },
+        "azure_1": {
+          "routes": {
+            "10.110.0.0/24": [],
+            "10.140.0.0/24": [
+              65014
+            ],
+            "10.130.0.0/24": [
+              65013
+            ],
+            "10.120.0.0/24": [
+              65012
+            ]
+          },
+          "rawSha256": "a37cb5b0bfd32d9fa1ac317ab6729e0a8744d954a28c392bef169e1229302517"
+        }
+      },
+      "ikeEstablished": null,
+      "additionalPrepends": 0,
+      "configureOutput": null,
+      "restored": false
+    },
+    "us": {
+      "site": "us",
+      "sha256": "5634db09d84a79a68b94ffd9dab64aa9a4e63dc7cdb24379285b04a32328c4cb",
+      "stat": {
+        "uid": 113,
+        "gid": 122,
+        "mode": 384,
+        "mtimeNs": 1792000609620725084
+      },
+      "protocols": {
+        "mesh_eu": "Established",
+        "mesh_jp": "Established",
+        "mesh_cn": "Established",
+        "azure_0": "Established",
+        "azure_1": "Established"
+      },
+      "exports": {
+        "azure_0": {
+          "routes": {
+            "10.110.0.0/24": [
+              65011
+            ],
+            "10.140.0.0/24": [
+              65014
+            ],
+            "10.130.0.0/24": [
+              65013
+            ],
+            "10.120.0.0/24": []
+          },
+          "rawSha256": "aac48879ded7f5a9df003546d8d859d8ec858595a0f115fefef4bfd8eb060e18"
+        },
+        "azure_1": {
+          "routes": {
+            "10.110.0.0/24": [
+              65011
+            ],
+            "10.140.0.0/24": [
+              65014
+            ],
+            "10.130.0.0/24": [
+              65013
+            ],
+            "10.120.0.0/24": []
+          },
+          "rawSha256": "aac48879ded7f5a9df003546d8d859d8ec858595a0f115fefef4bfd8eb060e18"
+        }
+      },
+      "ikeEstablished": null,
+      "additionalPrepends": 0,
+      "configureOutput": null,
+      "restored": false
+    },
+    "jp": {
+      "site": "jp",
+      "sha256": "89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006",
+      "stat": {
+        "uid": 113,
+        "gid": 122,
+        "mode": 384,
+        "mtimeNs": 1792000606196722098
+      },
+      "protocols": {
+        "mesh_eu": "Established",
+        "mesh_us": "Established",
+        "mesh_cn": "Established",
+        "azure_0": "Established",
+        "azure_1": "Established"
+      },
+      "exports": {
+        "azure_0": {
+          "routes": {
+            "10.110.0.0/24": [
+              65011
+            ],
+            "10.140.0.0/24": [
+              65014
+            ],
+            "10.130.0.0/24": [],
+            "10.120.0.0/24": [
+              65012
+            ]
+          },
+          "rawSha256": "63204b145c59ed20ebcb4ef8e216f1c59ac62ce5bea8631c464897639f787e43"
+        },
+        "azure_1": {
+          "routes": {
+            "10.110.0.0/24": [
+              65011
+            ],
+            "10.140.0.0/24": [
+              65014
+            ],
+            "10.130.0.0/24": [],
+            "10.120.0.0/24": [
+              65012
+            ]
+          },
+          "rawSha256": "63204b145c59ed20ebcb4ef8e216f1c59ac62ce5bea8631c464897639f787e43"
+        }
+      },
+      "ikeEstablished": 2,
+      "additionalPrepends": 0,
+      "configureOutput": null,
+      "restored": false
+    },
+    "cn": {
+      "site": "cn",
+      "sha256": "10e5591a16159a4a6e17350cb23f437623372f2ffd635ef20736f133c4738346",
+      "stat": {
+        "uid": 113,
+        "gid": 122,
+        "mode": 384,
+        "mtimeNs": 1792000608839202133
+      },
+      "protocols": {
+        "mesh_eu": "Established",
+        "mesh_us": "Established",
+        "mesh_jp": "Established"
+      },
+      "exports": {},
+      "ikeEstablished": null,
+      "additionalPrepends": 0,
+      "configureOutput": null,
+      "restored": false
+    }
+  },
+  "routeProof": null,
+  "errors": [
+    "Target absence unproven"
+  ],
+  "callsUsed": 13,
+  "mutationsUsed": 0,
+  "children": []
+}

@@ -1,0 +1,261 @@
+{
+  "schemaVersion": 1,
+  "checkId": "aged-c-control-details-20261019T070500Z",
+  "requestedBy": "Jose Moreno",
+  "verdict": "INCONCLUSIVE",
+  "collectionOutcome": "BOTH_REPORTS_INCOMPLETE_LOCATION_GUARD",
+  "createdAtUtc": "2026-10-19T07:13:36.414751+00:00",
+  "requestedPeriodUtc": {
+    "start": "2026-10-15",
+    "end": "2026-10-19"
+  },
+  "actualUsageDayLabels": [
+    "2026-10-15",
+    "2026-10-16",
+    "2026-10-17",
+    "2026-10-18",
+    "2026-10-19"
+  ],
+  "reportEndSemantics": "Echo unavailable: neither report reached manifest; midnight end has unknown inclusivity, not a full-day watermark. Requested labels are not observed usage dates.",
+  "actualBillingHttpRequests": 4,
+  "maxBillingHttpRequests": 6,
+  "httpRequestCounts": {
+    "generation": 2,
+    "poll": 2,
+    "download": 0,
+    "retries": 0
+  },
+  "unusedRequestsDiscarded": 2,
+  "sourceSha256": "cbd099e61013ba9fa2e308d42a6f2e3656302e489689449396684ed5981171f3",
+  "sourceUnchanged": true,
+  "collectorPullRequest": 24,
+  "transport": "native Windows existing Azure CLI",
+  "timeoutConfiguration": {
+    "publicFlagActuallyPassed": "--request-timeout-seconds 120",
+    "configuredRequestTimeoutSeconds": 120,
+    "requestTimeoutBoundedByRemainingWorkflow": true,
+    "workflowSeconds": 300,
+    "commandTimeoutSeconds": 600,
+    "oldRequestsRemain20SecondAttempts": true,
+    "newRequestsTimedOut": false
+  },
+  "actualInfrastructureMutations": 0,
+  "snapshots": {
+    "historical-C": {
+      "state": "INCOMPLETE",
+      "reason": "operation_location_changed",
+      "generationRequestedUtc": "2026-10-19T07:09:35.923952+00:00",
+      "lastResponseReceivedUtc": "2026-10-19T07:10:30.603277+00:00",
+      "invocationEndedAtUtc": "2026-10-19T07:10:30.820840+00:00",
+      "extractionComplete": false,
+      "ingestionFinal": false,
+      "actualHttpRequests": 2,
+      "httpRequestCounts": {
+        "generation": 1,
+        "poll": 1
+      },
+      "polls": 1,
+      "blobsDownloaded": 0,
+      "newQuantity": null,
+      "unit": null,
+      "effectivePrice": null,
+      "newCost": null,
+      "deltaQuantity": null,
+      "deltaCost": null,
+      "returnedPeriod": null,
+      "http": [
+        {
+          "status": 202,
+          "responseMetadata": {
+            "receivedAtUtc": "2026-10-19T07:09:57.869701+00:00",
+            "safeHeaders": {
+              "retry-after": "20",
+              "x-ms-request-id": "54b94b4e-f048-42a0-836a-fdf8da77dac8",
+              "x-ms-correlation-request-id": "8aa49f9f-ff09-445a-b4e6-a44c714888e9",
+              "date": "Mon, 19 Oct 2026 07:09:54 GMT"
+            },
+            "retryAfterSeconds": 20.0,
+            "suggestedRetryAtUtc": "2026-10-19T07:10:17.869701+00:00",
+            "retrySource": "known"
+          }
+        },
+        {
+          "status": 202,
+          "responseMetadata": {
+            "receivedAtUtc": "2026-10-19T07:10:30.603277+00:00",
+            "safeHeaders": {
+              "retry-after": "20",
+              "x-ms-request-id": "8cca5cb6-c4b9-4021-ba78-e386d6312f2a",
+              "x-ms-correlation-request-id": "85ca900f-fbcc-4b9a-abc3-bc7b3fe74ee3",
+              "date": "Mon, 19 Oct 2026 07:10:27 GMT"
+            },
+            "retryAfterSeconds": 20.0,
+            "suggestedRetryAtUtc": "2026-10-19T07:10:50.603277+00:00",
+            "retrySource": "known"
+          }
+        }
+      ],
+      "responseReference": "private\\aged-c-control-details-20261019T070500Z\\historical-C-response.private.json",
+      "filterContract": "Exact single pinned RG inventory (historical 6 IDs; fresh 7 IDs), actual UTC usage date, Bandwidth before persistence. No rows downloaded."
+    },
+    "fresh-C": {
+      "state": "INCOMPLETE",
+      "reason": "operation_location_changed",
+      "generationRequestedUtc": "2026-10-19T07:11:01.433899+00:00",
+      "lastResponseReceivedUtc": "2026-10-19T07:11:47.881071+00:00",
+      "invocationEndedAtUtc": "2026-10-19T07:11:48.143974+00:00",
+      "extractionComplete": false,
+      "ingestionFinal": false,
+      "actualHttpRequests": 2,
+      "httpRequestCounts": {
+        "generation": 1,
+        "poll": 1
+      },
+      "polls": 1,
+      "blobsDownloaded": 0,
+      "newQuantity": null,
+      "unit": null,
+      "effectivePrice": null,
+      "newCost": null,
+      "deltaQuantity": null,
+      "deltaCost": null,
+      "returnedPeriod": null,
+      "http": [
+        {
+          "status": 202,
+          "responseMetadata": {
+            "receivedAtUtc": "2026-10-19T07:11:16.593725+00:00",
+            "safeHeaders": {
+              "retry-after": "20",
+              "x-ms-request-id": "c8e53ebd-97f7-4130-93ef-bc330e3315a0",
+              "x-ms-correlation-request-id": "bb2da040-d3ef-4a3e-85b6-5f5ab855708f",
+              "date": "Mon, 19 Oct 2026 07:11:13 GMT"
+            },
+            "retryAfterSeconds": 20.0,
+            "suggestedRetryAtUtc": "2026-10-19T07:11:36.593725+00:00",
+            "retrySource": "known"
+          }
+        },
+        {
+          "status": 202,
+          "responseMetadata": {
+            "receivedAtUtc": "2026-10-19T07:11:47.881071+00:00",
+            "safeHeaders": {
+              "retry-after": "20",
+              "x-ms-request-id": "53b3e7da-e527-48bf-aace-60008b16b3c7",
+              "x-ms-correlation-request-id": "2a18a19c-ba6c-4e8f-8e1b-67ce3ea8de0a",
+              "date": "Mon, 19 Oct 2026 07:11:44 GMT"
+            },
+            "retryAfterSeconds": 20.0,
+            "suggestedRetryAtUtc": "2026-10-19T07:12:07.881071+00:00",
+            "retrySource": "known"
+          }
+        }
+      ],
+      "responseReference": "private\\aged-c-control-details-20261019T070500Z\\fresh-C-response.private.json",
+      "filterContract": "Exact single pinned RG inventory (historical 6 IDs; fresh 7 IDs), actual UTC usage date, Bandwidth before persistence. No rows downloaded."
+    }
+  },
+  "priorObservations": {
+    "historicalC": {
+      "status": "STALE_NOT_REFRESHED",
+      "baselineReference": "private\\cost-snapshots\\billing-reconciliation-20261016T0645\\correlation.private.json",
+      "dayTotals": [
+        {
+          "day": "2026-10-15",
+          "quantity": "2.402812242508E-6",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "currency": "USD",
+          "cost": "4.80562448501586884E-8"
+        },
+        {
+          "day": "2026-10-16",
+          "quantity": "0.6551259830594063",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "currency": "USD",
+          "cost": "0.013102519661188125"
+        }
+      ],
+      "lastQueryCostUsd": "0.0131025677174329501587",
+      "lastQueryReference": "results\\2026-10-18-historical-control-alternative.json",
+      "queryIsNotQuantityEvidence": true
+    },
+    "freshC": {
+      "status": "STALE_NOT_REFRESHED",
+      "baselineReference": "results\\2026-10-18-separated-detail-comparison-081000.json",
+      "completedUtc": "2026-10-18T08:15:52.451031+00:00",
+      "dayMeterTotals": [
+        {
+          "day": "2026-10-17",
+          "meterName": "Intra Continent Data Transfer Out",
+          "unit": "1 GB",
+          "effectivePrice": "0.02",
+          "unitPrice": "0.02",
+          "currency": "USD",
+          "quantity": "14.2374728210270405",
+          "cost": "0.28474945642054081",
+          "rows": 4,
+          "baselineQuantity": "10.8746547754853965",
+          "baselineCost": "0.21749309550970793",
+          "deltaQuantity": "3.3628180455416440",
+          "deltaCost": "0.06725636091083288"
+        },
+        {
+          "day": "2026-10-17",
+          "meterName": "Standard Data Transfer Out",
+          "unit": "1 GB",
+          "effectivePrice": "0.083",
+          "unitPrice": "0.083",
+          "currency": "USD",
+          "quantity": "0.000022615306079388",
+          "cost": "0.0000018770704045891761000000",
+          "rows": 3,
+          "baselineQuantity": "0.000016549602150917",
+          "baselineCost": "0.0000013736169785261154000000",
+          "deltaQuantity": "0.000006065703928471",
+          "deltaCost": "5.034534260630607000000E-7"
+        }
+      ],
+      "csvCostTotalUsd": "0.2847513334909453991761000000",
+      "lastQueryCostUsd": "0.28475133349094558918",
+      "queryCsvTinyDecimalAggregationDifferencePreserved": true,
+      "queryIsNotQuantityEvidence": true,
+      "dayMeterTotalsProvenance": "Exact prior baseline including its then-current deltas; not a comparison made by this check."
+    }
+  },
+  "qualification": {
+    "finalVerifiedTransportUtc": "2026-10-17T22:15:17.236880+00:00",
+    "verifiedApplicationBytes": 400000000000,
+    "all21CreatedRootsDeleted": true,
+    "transportAgeHours": "32.97199385305555555555555556",
+    "fresh24HourAgingGatePassed": true,
+    "elapsedSinceFreshBaselineHours": "22.96221214444444444444444444",
+    "atLeastSixHoursElapsedSinceFreshBaseline": true,
+    "qualifiedNewAgedSnapshot": false,
+    "qualifiedNewStabilityComparison": false,
+    "reason": "Elapsed aging and six-hour separation passed, but both extractions incomplete. No new actual quantities, unit/rate observations, costs, or deltas. No ingestion watermark, full-volume attribution, explicit zero rating, or eventual arrival of the full financial gap established.",
+    "ingestionFinal": false
+  },
+  "unchangedScopeCaveats": {
+    "A": "No A request; prior observations unchanged.",
+    "T": "No T request or repeated 422. Quantity, unit, identity and offer-specific contract unresolved; conflicting 1 TB versus retail 1 GB preserved without conversion."
+  },
+  "restore": {
+    "required": false,
+    "reason": "Read-only billing only; no infrastructure or traffic operations.",
+    "ownedNativeChildrenIdle": true
+  },
+  "budget": {
+    "startedAtUtc": "2026-10-19T09:06:22.278+02:00",
+    "expiresAtUtc": "2026-10-19T09:36:22.278+02:00",
+    "hardStopUtc": "2026-10-23T01:15:33+02:00",
+    "elapsedSeconds": 434.136751,
+    "maxElapsedSeconds": 1800,
+    "actualToolCalls": 27,
+    "maxToolCalls": 75,
+    "countConvention": "Skill plus individual direct tool executions; parallel wrapper dispatches excluded; includes final persistence verification."
+  },
+  "nextAction": "No more HTTP in this lease; no retry, changed-Location follow-up, Query, or extra poll. Existing schedule unchanged. A separate explicitly authorized fresh lease is required for any future collection."
+}

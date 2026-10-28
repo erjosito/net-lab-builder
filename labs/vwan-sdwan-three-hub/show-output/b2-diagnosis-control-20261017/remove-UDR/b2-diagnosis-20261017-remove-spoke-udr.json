@@ -1,0 +1,82 @@
+{
+  "timestampUtc": "2026-10-17T22:16:54.473037+00:00",
+  "finishedUtc": "2026-10-17T22:17:36.783197+00:00",
+  "command": [
+    "deployment",
+    "group",
+    "create",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "--name",
+    "aspath-b2-diagnosis-20261017-remove-spoke-udr",
+    "--template-file",
+    "C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\aspath-b2-diagnosis-20261017-remove-spoke-udr-template.json",
+    "--parameters",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\aspath-b2-diagnosis-20261017-remove-spoke-udr-parameters.json"
+  ],
+  "stdout": "{\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Resources/deployments/aspath-b2-diagnosis-20261017-remove-spoke-udr\",\n  \"location\": null,\n  \"name\": \"aspath-b2-diagnosis-20261017-remove-spoke-udr\",\n  \"properties\": {\n    \"correlationId\": \"e38df53d-fc02-4a54-8c05-19903bc624b9\",\n    \"debugSetting\": null,\n    \"dependencies\": [],\n    \"diagnostics\": null,\n    \"duration\": \"PT3.3535375S\",\n    \"error\": null,\n    \"extensions\": [],\n    \"mode\": \"Incremental\",\n    \"onErrorDeployment\": null,\n    \"outputResources\": [\n      {\n        \"apiVersion\": null,\n        \"extension\": null,\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-jp/subnets/workload\",\n        \"identifiers\": null,\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"resourceType\": \"Microsoft.Network/virtualNetworks/subnets\"\n      }\n    ],\n    \"outputs\": null,\n    \"parameters\": {},\n    \"parametersLink\": null,\n    \"providers\": [\n      {\n        \"id\": null,\n        \"namespace\": \"Microsoft.Network\",\n        \"providerAuthorizationConsentState\": null,\n        \"registrationPolicy\": null,\n        \"registrationState\": null,\n        \"resourceTypes\": [\n          {\n            \"aliases\": null,\n            \"apiProfiles\": null,\n            \"apiVersions\": null,\n            \"capabilities\": null,\n            \"defaultApiVersion\": null,\n            \"locationMappings\": null,\n            \"locations\": [\n              null\n            ],\n            \"properties\": null,\n            \"resourceType\": \"virtualNetworks/subnets\",\n            \"zoneMappings\": null\n          }\n        ]\n      }\n    ],\n    \"provisioningState\": \"Succeeded\",\n    \"templateHash\": \"14923010332905316383\",\n    \"templateLink\": null,\n    \"timestamp\": \"2026-10-17T22:17:08.678049+00:00\",\n    \"validatedResources\": null,\n    \"validationLevel\": null\n  },\n  \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n  \"tags\": null,\n  \"type\": \"Microsoft.Resources/deployments\"\n}\n",
+  "result": {
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Resources/deployments/aspath-b2-diagnosis-20261017-remove-spoke-udr",
+    "location": null,
+    "name": "aspath-b2-diagnosis-20261017-remove-spoke-udr",
+    "properties": {
+      "correlationId": "e38df53d-fc02-4a54-8c05-19903bc624b9",
+      "debugSetting": null,
+      "dependencies": [],
+      "diagnostics": null,
+      "duration": "PT3.3535375S",
+      "error": null,
+      "extensions": [],
+      "mode": "Incremental",
+      "onErrorDeployment": null,
+      "outputResources": [
+        {
+          "apiVersion": null,
+          "extension": null,
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-jp/subnets/workload",
+          "identifiers": null,
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "resourceType": "Microsoft.Network/virtualNetworks/subnets"
+        }
+      ],
+      "outputs": null,
+      "parameters": {},
+      "parametersLink": null,
+      "providers": [
+        {
+          "id": null,
+          "namespace": "Microsoft.Network",
+          "providerAuthorizationConsentState": null,
+          "registrationPolicy": null,
+          "registrationState": null,
+          "resourceTypes": [
+            {
+              "aliases": null,
+              "apiProfiles": null,
+              "apiVersions": null,
+              "capabilities": null,
+              "defaultApiVersion": null,
+              "locationMappings": null,
+              "locations": [
+                null
+              ],
+              "properties": null,
+              "resourceType": "virtualNetworks/subnets",
+              "zoneMappings": null
+            }
+          ]
+        }
+      ],
+      "provisioningState": "Succeeded",
+      "templateHash": "14923010332905316383",
+      "templateLink": null,
+      "timestamp": "2026-10-17T22:17:08.678049+00:00",
+      "validatedResources": null,
+      "validationLevel": null
+    },
+    "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+    "tags": null,
+    "type": "Microsoft.Resources/deployments"
+  },
+  "sha256": "bdd1afc74a46c9c0f55b95cfd701ed30cec5d15a9e2177984b1743c59e4ebfc4"
+}

@@ -1,7 +1,794 @@
 # Billing extraction and reconciliation plan
 
+## Weekly coverage completed — 19 October 2026, 13:59Z
+
+The [historical T weekly Query](results/2026-10-19-historical-t-weekly-query.json)
+completed through the public quantity workflow in native WSL with one HTTP
+200 response. It returned one **15 October** Intra Continent Data Transfer
+Out row: **EUR 0.000000074561667**, quantity **0.000004302710295**,
+unit **NOT_RETURNED**. It is separate from fresh T's 16/17 October traffic.
+No unit conversion, cross-flow attribution or zero-charge inference is made.
+
+This closes the previously missing sixth resource-group scope for
+**12–18 October** across both subscriptions. These six observations were
+collected at different times; coverage does not establish simultaneous
+consistency, ingestion finality or full-volume reconciliation. The fresh C
+shortfall and T unit/identity questions remain unresolved.
+
+The scheduled admission check at approximately **14:01Z** made **no Azure
+requests**: the new historical coverage was already collected, and ordinary
+fresh C and A/T comparisons remain deferred until **17:08:21Z** and
+**18:30:11Z**, respectively. No duplicate timer or collector was started.
+The existing six-hourly schedule and **22 October 23:15:33Z** hard stop remain.
+
+## Latest snapshot — 19 October 2026, 12:30Z (public quantity workflow)
+
+[End-to-end evidence](results/2026-10-19-public-query-quantity-validation.json)
+uses the published **#29** source and actual `--include-usage-quantity`
+flag, not a private ARM adapter. Native Windows A and native WSL T both
+returned HTTP 200 and CLI exit 0; the option is now empirically supported
+for both tested profiles/scopes/requests, not all Azure offers.
+
+A has **four** numeric day/meter quantities, equal to the new CSV's values.
+The **four retained CSV row projections are unchanged** over
+**28.2142287 hours** since 18 October 08:17:20Z; units are reported `1 GB`,
+with effective rates **USD 0.02 / 0.083** by meter. Query cost totals
+**USD 0.00000137982331216335287**; CSV totals
+**USD 0.0000013798233121633528712**, preserving their different precision.
+There is still no bulk-sized record for the verified same-region 100 GB.
+Query has no unit metadata; rowwise numeric equality does not assign CSV
+units to Query, and different meter quantities are not combined.
+
+T's one Intra Continent row reports numeric quantity **14.0853741280734**
+and cost **EUR 0.244085448265384**. Its Query unit is unavailable.
+No fresh T CSV was collected, and mixed T -> A / T -> C traffic is not
+individually attributed. The legacy unit/identity issue remains open.
+
+The phase used **5/6 HTTP requests**: two Queries, generation, poll and
+download. The report again echoed an end at **18 October midnight**;
+both A transfer days, **16/17 October**, lie inside the interval, without
+proving full-day 18 October or final ingestion. All owned children closed
+idle. A/T comparisons are deferred until **18:30:11Z**; C was not queried
+and its existing **17:08:21Z** minimum remains. Existing schedule 5 and
+the original hard stop are unchanged. **Transport/cleanup PASS; billing OPEN.**
+
+### Unit selector check — 19 October 2026, 12:51Z
+
+A separate [one-request MSDN capability check](results/2026-10-19-query-unit-capability.json)
+requested `ResourceId` + `UnitOfMeasure` grouping, with the same two cost
+and quantity aggregations and an exact Intra Continent meter filter.
+Azure returned **HTTP 400 / BadRequest**, identifying `UnitOfMeasure`
+as an invalid grouping selector. No unit-bearing rows were returned.
+This establishes rejection of that exact version/scope/request, not a
+universal claim about all ways to retrieve units.
+
+The existing public quantity flag is unchanged and still works on both
+tested profiles. Unit/rate evidence must remain separately sourced; the
+legacy T `1 TB` label is not converted or resolved by this failure.
+There were no selector guesses, fallback calls or new traffic. The one
+request is separately accounted; normal A/T and C refresh deferrals,
+existing schedule and original hard stop remain unchanged.
+
+## Initial Query capability — 19 October 2026, 11:43Z
+
+**The cost API can return quantity when asked and accepted.**
+The [single fresh-C empirical request](results/2026-10-19-query-quantity-capability.json)
+used ActualCost Query `2023-11-01`, Daily, **12–18 October**, two Sum
+aggregations (`PreTaxCost`, `UsageQuantity`), and two groupings
+(`ResourceId`, `Meter`). HTTP 200 returned `UsageQuantity` of type `Number`
+on all **15 rows**. This establishes support only for that tested offer,
+scope and request, not every subscription or selector.
+
+Bulk quantity **14.237472821027** is a narrow precision difference from the
+CSV's **14.2374728210270405**, not a new full-volume reconciliation. Neither
+units nor rates were returned at these groupings. No GB inference, unit math
+or aggregation across heterogeneous meters is justified. The unfiltered
+all-meter audit also found **USD 0.5496058782444444** on other labels,
+including **USD 0.168** on unclassified Standard Node / Standard P2 Node:
+those labels are not attributed bandwidth.
+
+The offline `query --include-usage-quantity` implementation is opt-in, requires
+meter-level and scope grouping, validates numeric quantities and each page's
+column definition, and reports `usageQuantityUnit: "NOT_RETURNED"`.
+See the [PowerShell command](costs/README.md#commands-powershell-from-repository-root).
+Default requests/rows/summaries remain cost-only; unsupported requests fail
+explicitly without fallback. Query remains JSON-only; detailed CSV and
+Consumption guards are unchanged. The
+[reviewed implementation](results/2026-10-19-query-quantity-implementation.json)
+also requires the requested meter identity on every page, preserves historical
+source pins, and made no billing HTTP requests. Its evidence distinguishes
+final native and focused WSL checks from the earlier full-WSL timing failure.
+
+**Billing remains OPEN**, including the missing full 100 GB, T semantics and
+the historical-control shortfall. Existing schedule and hard stop are
+unchanged. The dated snapshots below, including earlier cost-only projections
+and source/test receipts, are historical rather than universal API limits.
+
+## Latest snapshot — 19 October 2026, 11:08Z (quantity refresh)
+
+The [new detailed-report evidence](results/2026-10-19-last-week-quantity-recovery.json)
+contains two successful Cost Details extractions, not another cost-only
+Query. Both requested **12–18 October** and returned period endpoints
+**12 October 00:00 through 18 October 00:00**. This does not prove full-day
+18 October coverage; the observed bulk usage dates, **16 and 17 October**,
+are inside the returned interval.
+
+| Source / bulk usage day | Actual CSV quantity | Reported unit | USD/unit | Bulk cost, USD | Quantity change |
+|---|---:|---|---:|---:|---:|
+| Fresh C / 17 October | 14.2374728210270405 | 1 GB | 0.02 | 0.28474945642054081 | 0 |
+| Historical C / 16 October | 0.6551259830594063 | 1 GB | 0.02 | 0.013102519661188125 | 0 |
+
+Both bulk quantities and costs are unchanged against their earlier CSV
+baselines. Fresh C returns seven Bandwidth rows; the historical control
+returns two. The table excludes Standard rows and historical C's
+15 October microquantity; see the result for all rows. These quantities still do
+not reconcile the verified **100 decimal GB** fresh transfer or **1 GiB**
+historical control. Do not attribute the entire shortfall to ingestion lag,
+free allowance, rounding or another unverified cause.
+
+Collection used **6/6 HTTP requests: two generations, two polls and two
+downloads**, with `--request-timeout-seconds 120`, zero retries and no
+infrastructure mutations. Both polls completed without a changed-Location
+failure, so the earlier URL difference remains unknown. Owners and owned
+children closed idle. This is a separate detailed-quantity observation,
+not an extension or reset of the earlier five-request weekly Query snapshot.
+
+**Retrieval PASS; full billing reconciliation OPEN.** The weekly financial
+findings below, T's unresolved unit/identity semantics, existing six-hourly
+schedule 5 and **22 October 23:15:33Z hard stop** are unchanged.
+
+### Offline accounting audit — 19 October 2026
+
+The [reaggregation and scope audit](results/2026-10-19-offline-volume-audit.json)
+made no live requests. All **80** published directed records retain their
+canonical SHA256, matching producer/consumer counts and digests, and total
+exactly **100,000,000,000 application bytes per leg**. C's separate accepted
+guest ledger records **100,838,387,131 TX bytes** over its **20** completed
+cross-region pairs, counted once at C. This includes protocol/control
+traffic, not an exact invoice or full-lifecycle wire measurement.
+
+C sent **1,073,741,824 application bytes on 16 October** and
+**98,926,258,176 on 17 October**, by producer UTC timestamps; no chunk
+crosses midnight. Both days lie inside the returned report interval.
+These timestamp allocations do not establish which usage date Azure
+should assign to each financial row. The observed **17 October-only**
+bulk rows therefore must not be described as a reconciliation of all
+100 GB on that day.
+
+Every retained C row matches the transfer configuration's VM and its
+canonical billing inventory. The actual parser discarded **zero owned rows
+by date**, **13 by category**, and **2,282 by inventory**, retaining seven
+Bandwidth rows. The four bulk rows sum exactly to **14.2374728210270405
+reported `1 GB` / USD 0.28474945642054081**; every quantity times
+**USD 0.02** equals its row cost exactly. Dividing the application count
+by conventional decimal/binary GB divisors gives **100 / 93.1322574615478515625**,
+not 14.23747; this does not establish Azure's offer-specific unit semantics.
+The reviewed HTTPS harness forbids compressed payload encoding and checks
+counts/digests at both ends. Four focused existing date/filter/NIC tests pass.
+
+**No explanation was found in the checked local accounting.** This is not
+proof of a provider bug or a defect-free collector: discarded
+inventory/category rows were not retained and cannot be reaudited offline.
+Publication lag, alternative attribution and unit semantics remain open;
+no free-allowance, rounding or ingestion-lag explanation is assumed.
+No source, authentication, infrastructure, request budget or schedule
+was changed by this audit.
+
+<a id="latest-snapshot--19-october-2026-1050z-offline-refresh"></a>
+
+## Superseded snapshot — 19 October 2026, 10:50Z (offline refresh)
+
+### Qualified conclusion and confidence
+
+**Financial observation PASS; final invoice and full-volume reconciliation
+OPEN.** The immutable [last-week Query evidence](results/2026-10-19-last-week-bandwidth-meters.json)
+supports a useful financial conclusion: **cross-region outbound charges are
+observed; no bulk-sized same-region 100 GB charge is observed at fresh A
+after the closed-week Query. Tenant separation alone has not produced an
+observable bulk bandwidth charge in this setup.** This is consistent with
+the published Azure-to-Azure intra-region rule, not proof of final ingestion,
+an explicit zero-rate record or an explicit tenant-boundary policy quote.
+
+**Observed with high confidence:** five successful cost Queries across both
+subscriptions; positive cross-region meter charges; A has only four positive
+microcharge rows; all seven fresh daily meter costs are unchanged over more
+than 22 hours. **Qualified interpretation:** the same-region bulk leg has
+no observable bulk charge. **Unresolved:** quantity/unit/rate reconciliation,
+T's raw unit and identity semantics, allocation of mixed-source T costs,
+historical-control volume shortfall, and invoice finality. Missing rows
+are not measured zeros.
+
+The tested scope is verified actual Azure regions and Azure-owned public IP
+endpoints. It does not generalize to every SaaS destination or other product's
+fees. The existing [policy qualification and BYOIP exception](README.md#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress)
+still apply; no new policy research was performed.
+
+### Last-week scope and exact returned costs
+
+Requested usage week: **12–18 October 2026 UTC**. Actual serialized range:
+**2026-10-12T00:00:00Z through 2026-10-18T23:59:59+00:00**.
+No coverage of the final fractional second is claimed. Responses were
+received **19 October 10:44:55–10:46:03Z**. Fresh A/C/T, historical C and
+the shared historical A/B resource group comprise **five of six planned
+groups**, across both subscriptions. Older historical T was not queried;
+its omission does not block the fresh A/C/T finding.
+
+These are returned row sums within each experiment/alias/currency, not costs
+assigned to individual flows, quantities inferred from prices, or totals
+to add to previous snapshots:
+
+| Family / source | Returned usage days | Weekly total | Currency |
+|---|---|---:|---|
+| Fresh A | 16–17 October | 0.00000137982331216335287 | USD |
+| Fresh C | 17 October | 0.28475133349094558918 | USD |
+| Fresh T | 17 October | 0.244085448265384 | EUR |
+| Historical C | 15–16 October | 0.0131025677174329501587 | USD |
+| Historical A | 15 October | 0.0000728753264993429373 | USD |
+| Historical B | 15–16 October | 0.0000710848197340965883 | USD |
+
+Fresh A's same-region-only **100 GB bulk test** has **USD
+0.000001374235376715660 Standard Data Transfer Out** and **USD
+0.00000000558793544769287 Intra Continent Data Transfer Out**.
+Do not equate these microcharges with all 100 GB or say A costs zero.
+Fresh C comprises **USD 0.284749456420541 Intra Continent** and **USD
+0.00000187707040458918 Standard**. Fresh T is entirely **EUR
+0.244085448265384 Intra Continent**, but T sent both **same-region T → A**
+and **cross-region T → C** traffic. This is the cost of its returned
+Bandwidth rows, not its whole resource cost or either individual transfer.
+“Intra Continent” is not “same region.” USD and EUR remain separate.
+
+### Stability is financial, not quantity or invoice finality
+
+Exact-Decimal comparison finds **14 overlapping day/meter/currency rows
+unchanged**, including **all seven fresh rows** against the
+[18 October 11:51–11:52Z baseline](results/2026-10-18-control-financial-comparison-114700.json),
+more than **22 hours** before the fresh 19 October 10:44–10:45Z responses.
+Historical C's two rows are unchanged against the
+[18 October alternative](results/2026-10-18-historical-control-alternative.json).
+Historical A/B's overlapping rows also match their archived baseline, but
+**B's 16 October Intra Continent row, USD 0.0000701968744397164, has no
+row in that old baseline**. Do not claim all historical totals unchanged.
+
+**No new quantities, units or rates were returned by Query.** Fresh C's last
+bulk detail remains the **18 October 08:15Z CSV: 14.2374728210270405
+reported `1 GB` / USD 0.28474945642054081 at USD 0.02**, excluding Standard.
+It is not a 19 October quantity observation or a reconciled 100 GB.
+Historical C's **0.6551259830594063 reported `1 GB`** remains old,
+unreconciled control detail, not its weekly Query total. T's legacy raw
+`1 TB` / retail `1 GB` conflict and record identity remain unresolved;
+no unit conversion, currency conversion or per-flow attribution is made.
+
+### Collection closure and polling distinction
+
+The result is immutable **5/6 HTTP requests, five HTTP 200 Queries, zero
+retries**, not a revised old counter. At **83%** of the HTTP allowance the
+**80% no-new-work gate correctly stopped** the last planned historical-T
+Query; neither the tool limit (**28/75**) nor elapsed time (**173 seconds
+of 30 minutes**) was exhausted. The collection handoff records owned
+children idle and source unchanged at SHA256
+`1cd76089b9b690c991d4a6bf05ad6fd55195049633b30e75666b981c3e8d1c18`.
+This offline documentation task made no live or authentication requests.
+
+Cost Details' asynchronous POST returns a `Location` job-status URL; a later
+202 with a different `Location` string was rejected by **our strict guard**.
+This is not evidence of a network endpoint or meter-definition change;
+which URL components changed remains unknown. These synchronous weekly
+Queries avoided that polling path; **#25 diagnostics/source are unchanged**.
+
+**Transport PASS (400 GB); cleanup PASS (21 owned roots deleted); overall
+billing OPEN.** Only existing six-hourly **schedule 5** and its original
+**22 October 23:15:33Z hard stop** remain. No new traffic, resources,
+collection authority or timer is created by this evidence refresh.
+
+<a id="latest-snapshot--18-october-2026-1215z-offline-refresh"></a>
+
+## Superseded snapshot — 18 October 2026, 12:15Z (offline refresh)
+
+**Transport PASS (400 GB); cleanup PASS (21 owned roots deleted); billing
+INCONCLUSIVE and open.** This offline refresh links the new
+[11:51–11:52Z fresh financial comparison](results/2026-10-18-control-financial-comparison-114700.json)
+and [12:03Z historical-control alternative](results/2026-10-18-historical-control-alternative.json).
+No new quantity/rate extraction or live request was made for this publication.
+
+### Dated Query comparison: costs only
+
+All four Queries returned HTTP 200. Fresh T/A/C observations are each more
+than ten hours after **18 October 01:21:11.187291Z**. Compare returned
+day/meter rows within each alias and currency, not currencies or experiments:
+
+| Alias | Returned usage days | 01:21Z Query total | New Query total | Delta | Currency |
+|---|---|---:|---:|---:|---|
+| A | 16–17 October | 0.00000137982331216335287 | 0.00000137982331216335287 | 0 | USD |
+| C (fresh) | 17 October | 0.21749446912668652612 | 0.28475133349094558918 | +0.06725686436425906306 | USD |
+| T | 17 October | 0.165150215302437 | 0.244085448265384 | +0.078935232962947 | EUR |
+| historical-C (separate C → B control) | 15–16 October | 0.0131025677174329501587 | 0.0131025677174329501587 | 0 | USD |
+
+Query costs do **not** establish new quantities, units, rates, record-identity
+semantics, transfer attribution or final ingestion. Missing days/rows are
+not zeros. C's all-Bandwidth Query **USD 0.28475133349094558918** is
+nearly, not exactly, its **08:15Z CSV USD 0.2847513334909453991761**:
+the retained decimal difference is **USD 0.0000000000000001900039**.
+Do not force exact equality or derive a new quantity from either aggregate.
+The latest measured cross-region bulk subtotal remains the separate CSV
+**14.2374728210270405 reported `1 GB` / USD 0.28474945642054081**
+at effective/unit price **USD 0.02**; it excludes Standard microcharges.
+
+A's latest **08:17Z CSV** still has the same four positive microquantity
+records more than six hours after its baseline, not an explicit zero-rated
+100 GB record. T's higher cost is not proof of a same-region charge:
+its returned meter is Intra Continent Data Transfer Out and it sent both
+same-region and cross-region traffic. The raw legacy **`1 TB` versus retail
+`1 GB`**, same-ID/different-payload semantics, and asynchronous **422 cause
+UNKNOWN** remain unresolved under **#23**, not a proved service bug.
+
+### Historical control: financially stable, quantity still stale
+
+Historical-C's first CSV-generation attempt timed out; the separately leased
+legacy Consumption GET also timed out. Both used the then-fixed **20-second
+socket timeout**, not their orchestration ceilings. Neither produced a new
+quantity/rate report. The final historical Query's unchanged two-day total
+is **financial stability with a partial mismatch**, not a newly stable quantity
+or full reconciliation of the verified 1 GiB control. The old **16 October
+0.6551259830594063 reported `1 GB`, effective price USD 0.02**, and its
+single-row **USD 0.013102519661188125** cost remain **STALE**; that row is
+not the two-day Query total. Do not assume the entire verified-volume
+shortfall is necessarily ingestion lag or silently convert reported units.
+
+### Closed accounting and subsequent offline timeout change
+
+The original new result is immutable **4/6 as of its snapshot**:
+three fresh Queries plus one failed historical generation. The linked
+alternative adds **one legacy GET + one historical Query = global 6/6**,
+zero retries, polls or downloads. Across the two phases there were **four
+Queries**, not six. All owned children were recorded idle at closure;
+the earlier unused two-call allowance is exhausted, not restarted.
+Both phases used source SHA256
+`2ab6c0ce494ac2851afbbe0abeb5d2ba912948ef1488c0201dc6ecf221e584fb`.
+
+After those requests closed, the offline source change to SHA256
+`cbd099e61013ba9fa2e308d42a6f2e3656302e489689449396684ed5981171f3`
+added `--request-timeout-seconds`, default **20**, accepting a positive
+integer such as **120** for future bounded calls. ARM and blob requests
+use `min(configured, remaining at request start)`; existing bounded-read
+guards remain. This socket timeout is **not a hard real-time total request
+deadline**; CLI account/token subprocesses remain separately bounded to
+**<=15 seconds** and remaining time. It guarantees neither HTTP completion
+nor ingestion and has **not been rerun live** after the patch.
+
+Source review was approved directly by the coordinator, who independently
+reran **82 offline cost tests PASS**; the implementation owner also recorded
+**5 targeted native / 82 full native / 4 native-WSL PASS**. These are offline
+validation receipts, not repaired timeout evidence or new billing results.
+See [public flag semantics and future-call example](costs/README.md).
+Only existing **six-hourly schedule 5**, original **22 October 23:15:33Z
+hard stop**, and the no-new-traffic requirement remain. This refresh creates
+no timer, budget or collection authority; overall billing remains open.
+
+<a id="latest-snapshot--18-october-2026-0820z-offline-refresh"></a>
+
+## Superseded snapshot — 18 October 2026, 08:20Z (offline refresh)
+
+**Transport PASS (400 GB); cleanup PASS (21 owned roots deleted); billing
+INCONCLUSIVE and open.** The [separated comparison](results/2026-10-18-separated-detail-comparison-081000.json)
+contains fresh **COMPLETE C and A CSV extractions**, not final ingestion.
+The collection used exactly **6/6 HTTP requests: two generations, two polls,
+two downloads**. Source remained unchanged; the closed live owner's native
+inspection found no matching billing children at **08:19:14.3125252Z**.
+Those are collection receipts, not new observations made by this offline
+documentation refresh.
+
+### C: changed cross-region quantities, not a reconciled 100 GB
+
+The new extraction completed **18 October 08:15:52.451031Z**, versus
+**17 October 23:01:56.407133Z**: **33,236.043898 seconds
+(9h13m56.043898s)** apart. Compare actual **17 October** usage within each
+meter/unit/rate/currency, not cumulative snapshots added together:
+
+| C meter (all USD, reported `1 GB`) | Prior rows → new rows | Prior quantity → new quantity | Quantity delta | Prior cost → new cost | Cost delta |
+|---|---:|---|---:|---|---:|
+| Intra Continent Data Transfer Out; effective/unit price 0.02 | 3 → 4 | 10.8746547754853965 → 14.2374728210270405 | +3.3628180455416440 | 0.21749309550970793 → 0.28474945642054081 | +0.06725636091083288 |
+| Standard Data Transfer Out; effective/unit price 0.083 | 2 → 3 | 0.000016549602150917 → 0.000022615306079388 | +0.000006065703928471 | 0.0000013736169785261154 → 0.0000018770704045891761 | +0.0000005034534260630607 |
+
+Exactly **one bulk row and one Standard microquantity row** were added,
+not a full 100 GB bill. The seven-row C Bandwidth total is **USD
+0.2847513334909453991761**, versus **USD 0.2174944691266864561154**,
+a delta of **USD 0.0672568643642589430607**. This total includes Standard;
+only **USD 0.28474945642054081** is the distinct cross-region meter subtotal.
+“Intra Continent” is not “same region.” Preserve the reported unit and
+source precision; no binary/decimal conversion or byte attribution follows.
+
+All seven nonzero C Bandwidth rows are dated **17 October**. The old
+request covered 16–17 October and the new request 15–18 October; the
+comparison is by actual usage day, not a claim that absent days in either
+window are zeros. Echoed midnight report endpoints do not prove full-day
+coverage. The C report processed **1,536 rows**: **1,516 non-inventory +
+13 non-Bandwidth discarded in memory + 7 retained** (zero date discards).
+Exact inventory, pinned group, date and Bandwidth filtering preceded
+persistence; **zero raw off-scope rows were persisted**. The sanitized
+public result retains the seven scoped rows and filter counts, not the
+discarded rows, raw signed download URLs or credentials.
+
+### A: unchanged positive microcharges across a separated observation
+
+The **08:17:20.487233Z** extraction contains the same **four original
+16–17 October charged microquantity records** with an unchanged exact-Decimal
+row multiset. Its subtotal remains **USD 0.0000013798233121633528712**;
+quantity/cost deltas for each day/meter are zero. Positive microcharges are
+not “no charges at all,” and there is still no bulk-sized same-region
+100 GB line or explicit zero-rated 100 GB record.
+
+The source baseline CSV extraction completed **02:02:39.886655Z**;
+the operational baseline receipt completed **02:07:34.723864Z**.
+Elapsed to the new extraction is **22,480.600578 seconds
+(6h14m40.600578s)** from extraction, or **22,185.763369 seconds
+(6h09m45.763369s)** from receipt. Both exceed six hours. The older 02:25Z
+snapshot below retains its historical receipt-based timing, rather than
+being rewritten as though its operational receipt were an extraction.
+A processed **1,536 rows**: **1,518 non-inventory + 14 non-Bandwidth
+discarded in memory + 4 retained**, zero date discards and zero raw
+off-scope rows persisted.
+
+### Interpretation and remaining evidence
+
+**Billing-publication lag is empirically observed:** new 17 October usage
+appeared in the later C report more than nine hours after the prior report.
+That establishes a change between observations, not an exact arrival time,
+completion time, formal delivery SLA, or stable reconciliation. A's unchanged
+microquantity rows alone do not prove complete ingestion or same-region
+zero-rating, while C is explicitly still changing.
+
+Final verified transport ended **17 October 22:15:17.236880Z**, still
+under 24 hours before this collection. The **18 October 22:15:17.236880Z**
+24-hour aging checkpoint is not a formal ingestion watermark. Complete
+CSV extraction, six-hour separation and missing rows are each insufficient
+to close full 400 GB billing reconciliation.
+
+**No new Query or T collection occurred.** The 01:21Z Query baseline,
+including its costs, is not refreshed by these CSVs. T's genuine same-ID/
+different-payload records, raw legacy **`1 TB`** versus exact-meter retail
+**`1 GB`**, and correct fail-closed identity handling remain unresolved;
+asynchronous **HTTP 422 cause remains UNKNOWN**. Prior T cost corroboration
+is not new quantity, conversion, uniqueness or zero-price evidence.
+Historical-C remains a separate experiment.
+
+Only existing **schedule 5** remains active, with the unchanged original
+**22 October 23:15:33Z hard stop**. The handoff's **~14:19Z** suggestion is
+not an actual scheduler due time or new authority. No immediate retry,
+new traffic or recreated resources is warranted by this documentation.
+Published same-region policy still does not explicitly mention tenant
+boundaries; cross-tenant application remains an interpretation, subject to
+the [BYOIP Internet-egress exception and separate product/service charges](README.md#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress).
+Transport and deletion results are unchanged, not independently rechecked here.
+
+<a id="latest-snapshot--18-october-2026-0225z-offline-refresh"></a>
+
+## Superseded snapshot — 18 October 2026, 02:25Z (offline refresh)
+
+**Transport/cleanup PASS; billing INCONCLUSIVE and open.** The local
+[02:07:34.723864Z baseline](results/2026-10-18-detail-baseline-020010.json)
+adds A's first CSV quantity baseline and T diagnostic rows; the
+[02:21:56.745132Z provenance sidecar](results/2026-10-18-t-unit-provenance-021800.json)
+independently establishes T's raw field and current-page identity collision.
+No live calls were made for this publication.
+
+### Reported quantities, not deduced GB
+
+All rows below preserve source units, dates and decimal precision. A's CSV
+extraction is **COMPLETE**, not ingestion-final. T's diagnostic retention is
+**INCOMPLETE**: pagination finished, identity reconciliation did not.
+
+| Alias | Usage day | Meter | Reported quantity | Raw unit | Effective price | Unit price | Cost | Currency |
+|---|---|---|---:|---|---:|---:|---:|---|
+| A | 2026-10-16 | Standard Data Transfer Out | 0.000010487623512745 | 1 GB | 0.083 | 0.083 | 8.704727515578270000000E-7 | USD |
+| A | 2026-10-17 | Standard Data Transfer Out | 0.000006069429218769 | 1 GB | 0.083 | 0.083 | 5.037626251578330000000E-7 | USD |
+| A | 2026-10-17 | Intra Continent Data Transfer Out | 2.235174179080000000000E-7 | 1 GB | 0.02 | 0.02 | 4.4703483581542970000E-9 | USD |
+| A | 2026-10-16 | Intra Continent Data Transfer Out | 5.58793544770000000000E-8 | 1 GB | 0.02 | 0.02 | 1.1175870895385742000E-9 | USD |
+| T (diagnostic) | 2026-10-17 | Intra Continent Data Transfer Out | 5.5879354E-8 | 1 TB | 0.017329 | 0 | 9.68333E-10 | EUR |
+| T (diagnostic) | 2026-10-17 | Intra Continent Data Transfer Out | 9.53027955070138 | 1 TB | 0.017329 | 0 | 0.165150214334104 | EUR |
+
+A has only **four charged microquantities**, not a bulk-sized same-region
+100 GB line or explicit zero-rating. For T, `properties.date` is
+`2026-10-17T00:00:00.0000000Z`; `usageStart`/`usageEnd` are absent
+(projected null). This is a usage date, not an observed transfer hour,
+request, tenant or counterparty attribution. All baseline usage intervals
+are null. Missing dates/rows are not measured zero usage.
+
+### Independent source provenance and financial comparison
+
+T's **raw nested `properties.meterDetails.unitOfMeasure = "1 TB"`** is
+directly proven by the final Consumption GET, not invented by normalization.
+The outer `properties.unitOfMeasure` and nested `meterDetails.unit` are
+absent; no competing raw unit field or projection-precedence bug is proven.
+The two owned Bandwidth rows share the original service ID/name but differ
+in payload. Both original canonical hashes remain unchanged across the
+baseline and provenance check. Their uniqueness semantics remain unresolved;
+the public parser's **`conflicting_record_identity` is correct fail-closed
+behavior**, not permission to deduplicate, overwrite the frozen report or
+label diagnostic retention COMPLETE.
+
+Exact diagnostic cost sum **0.000000000968333 + 0.165150214334104 =
+EUR 0.165150215302437** equals the independent
+[01:21:11.187291Z Query](results/2026-10-18-query-alternative-011707.json)
+exactly. This is strong financial corroboration, **not proof of record
+uniqueness, billing-unit interpretation, conversion or zero-`unitPrice`
+credit treatment**. Positive cost and effective price coexist with reported
+`unitPrice = 0`; no credit/allowance/offer conclusion follows.
+
+The retained official, unauthenticated
+[Retail Prices API](https://prices.azure.com/api/retail/prices?%24filter=meterId%20eq%20%270ab798ac-6d96-4ccc-89d1-0cc91dcd5e21%27)
+metadata comprises **two HTTP 200 responses received 02:11:24Z**, exact meter
+`0ab798ac-6d96-4ccc-89d1-0cc91dcd5e21`, product **Bandwidth Inter-Region**,
+meter **Intra Continent Data Transfer Out**, effective start **2020-07-01**:
+**`1 GB`, EUR 0.0176 / USD 0.02**. This is independent public catalogue
+evidence, not customer billing. The retained capture is a structured
+transcription of response output, **not saved raw response bytes**.
+[Official API semantics](https://learn.microsoft.com/en-us/rest/api/cost-management/retail-prices/azure-retail-prices)
+describe undiscounted retail; non-USD rates are reference estimates.
+The legacy source's `1 TB` versus exact-meter retail `1 GB` discrepancy
+has **UNKNOWN cause**. Preserve both; do not divide quantities by 1,000 or
+silently relabel them GB. Legacy **EUR 0.017329** differs from retail
+**EUR 0.0176**; currency/date/offer comparability is unestablished and a
+negotiated rate is not proven.
+
+### What remains open
+
+Fresh C's last CSV is still **17 October 23:01:56Z**:
+**10.8746547754853965 reported `1 GB` × USD 0.02 =
+USD 0.21749309550970793**. This remains a positive partial cross-region
+control, not a fresh C extraction or full 100 GB reconciliation.
+Historical-C remains separate. T's asynchronous HTTP 422 cause is
+**UNKNOWN**; the successful date-bounded Consumption GET is a different route.
+
+The 02:07 artifact preserves **5/6 customer requests as of that snapshot**.
+The final sidecar consumes exactly one remaining call: **A generation/poll/
+download 3 + T first parser failure 1 + diagnostic 1 + provenance 1 = 6/6**,
+zero remaining, no new budget. The two prior public-metadata requests are
+separate unauthenticated catalogue calls, not extra customer calls.
+
+Earliest six-hour repeats on 18 October: Query
+**07:21:11.187291Z**, A detail **08:07:34.723864Z**; T's **02:18Z** provenance
+phase permits **08:18Z or later**, conservatively
+**08:21:56.745132Z** from completion. A stable incomplete dataset does not
+prove complete ingestion; no watermark, mature comparable A/C/T evidence or
+same-region zero-rating is established. Existing jobs and
+**22 October 23:15:33Z** hard stop are unchanged; no resources or traffic
+are needed. See the [public T reproduction](costs/README.md#t-date-bounded-consumption-reproduction)
+and [qualified policy interpretation](README.md#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress).
+
+## Superseded snapshot — 18 October 2026, 01:25Z
+
+**Transport PASS (four verified 100 GB legs / 400 GB); cleanup PASS (21
+owned roots); billing INCONCLUSIVE and still open.** Transport/cleanup
+evidence from #18 is unchanged, not newly observed. This section uses only
+the [01:20:25–01:21:11Z Query artifact](results/2026-10-18-query-alternative-011707.json)
+and [01:11:43–01:12:29Z manual CSV artifact](results/2026-10-18-manual-billing-011054.json).
+
+Four one-page ActualCost Queries succeeded with **four HTTP 200 responses /
+four requests**. All nine retained rows have exact canonical VM attribution;
+no duplicates, discarded or unattributed rows were reported. Request windows
+start **15 October 00:00Z** and end at individual **18 October 01:20Z**
+cutoffs, not end-of-day. These are actual returned daily rows, not inferred
+quantities:
+
+| Safe alias | Usage day (2026) | Actual returned meter | Query cost | Currency |
+|---|---|---|---:|---|
+| A | 10-16 | Intra Continent Data Transfer Out | 0.00000000111758708953857 | USD |
+| A | 10-16 | Standard Data Transfer Out | 0.000000870472751557827 | USD |
+| A | 10-17 | Intra Continent Data Transfer Out | 0.0000000044703483581543 | USD |
+| A | 10-17 | Standard Data Transfer Out | 0.000000503762625157833 | USD |
+| T | 10-17 | Intra Continent Data Transfer Out | 0.165150215302437 | EUR |
+| C | 10-17 | Intra Continent Data Transfer Out | 0.217493095509708 | USD |
+| C | 10-17 | Standard Data Transfer Out | 0.00000137361697852612 | USD |
+| historical-C | 10-15 | Intra Continent Data Transfer Out | 0.0000000480562448501587 | USD |
+| historical-C | 10-16 | Intra Continent Data Transfer Out | 0.0131025196611881 | USD |
+
+Exact decimal sums within this Query snapshot:
+**A USD 0.00000137982331216335287**,
+**T EUR 0.165150215302437**,
+**C USD 0.21749446912668652612**,
+**historical-C USD 0.0131025677174329501587**.
+Do not add currencies, aliases or repeated snapshots to reconcile traffic.
+Historical-C is the separate older C → B inventory, not fresh C. Its
+two-day total includes the 15 October microcost; it is not the single
+0.6551259830594063 “1 GB” CSV row's cost, nor a newly measured quantity/rate.
+
+**Meter distinction matters:** T's only observed row is Intra Continent Data
+Transfer Out. Although T produced both T → A same-region and T → C
+cross-region traffic, there is no separate same-region meter in these rows;
+the T total cannot be assigned to T → A. “Intra Continent” does not mean
+“same region.” A's observed microcosts likewise do not identify billing for
+the same-region 100 GB payload. All Query quantity/unit/rate fields are null;
+none is derived from costs or expected bytes. No-row days mean no rows
+observed, **not zero charges or proven absence of A usage**.
+
+The preceding manual check made **two CSV generation requests**:
+**A timed out (no response); T returned HTTP 422**. Neither produced a
+manifest, poll, download or financial row. The four subsequent Queries are
+part of that same bounded manual check: **2 + 4 = 6 of 6 requests, zero
+unused budget, zero retries**. The prior 23:02 collection's separate six
+requests remain unchanged. Public safe-header handling was fixed in #19;
+the later success does **not** prove `ClientType` caused the recovery, because
+wall-clock time also changed. Four HTTP-200 responses returned no valid
+retry hints; earlier unknown cooldowns / T's 422 remain unknown, not zero.
+
+The fresh-C **23:01:56Z on 17 October CSV** below remains the last actual
+quantity/rate snapshot: Intra Continent **10.8746547754853965 “1 GB” ×
+USD 0.02 = USD 0.21749309550970793**, plus a distinct tiny Standard
+meter. It is partial relative to the fresh 100 GB C → T leg, not a new CSV
+or a same-time Query/CSV comparison. Query rounding differs at the last
+digits; do not silently replace either source's precision. No fresh A/T CSV,
+ingestion watermark or full 400 GB reconciliation exists.
+
+**Remaining evidence / next target:** final verification ended
+**17 October 22:15:17.236880Z**, about three hours before the Query snapshot.
+Obtain mature comparable per-day/per-meter A/T/C quantity, unit, effective
+rate and currency evidence, preserving historical-C separately. Compare at
+least two stable snapshots **six hours apart**; for the **01:21:11Z**
+Query baseline, earliest qualifying repeat is **18 October 07:21:11Z**.
+Job 5's saved **~05:02:22Z** suggestion is not independently verified due
+time and is less than six hours after this baseline: useful as another
+baseline, **not** a qualifying six-hour-stable Query comparison. No job is
+created, stopped or rescheduled here; hard stop remains
+**22 October 23:15:33Z**. Do not recreate resources or add traffic.
+
+Documented policy says transfers between Azure services in the same region
+are free, with the BYOIP/custom-IP-prefix Internet-egress exception.
+Cross-tenant applicability is an interpretation of that unqualified policy,
+not explicit cross-tenant wording; separate service fees are outside it.
+See [policy sources/scope](README.md#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress).
+This offline refresh made no Azure/billing/authentication, infrastructure,
+source-code, git or schedule operations. **Collection success is not billing
+completion or ingestion finality.**
+
+## Superseded snapshot — 17 October 2026, 23:05Z
+
+**Transport PASS: 400,000,000,000 application bytes; cleanup PASS;
+full billing reconciliation INCONCLUSIVE.** Each A → T, T → A, C → T and
+T → C leg completed exactly 100,000,000,000 bytes with matching hashes.
+A/T are both Sweden Central; C is North Europe; both pairs cross tenants.
+See the [complete rerun](results/2026-10-17-large-rerun-complete.json) and
+[independent cleanup receipt](results/2026-10-17-large-rerun-cleanup.json).
+
+The [latest actual collection](results/2026-10-17-billing-refresh-230000.json)
+ran **23:01:03–23:02:22Z**: six billing HTTP requests, no automatic retries
+or infrastructure mutations. One generation, one poll and one download
+completed the **API-generated ActualCost CSV** for fresh C; this is not a
+portal export. Exact canonical inventory attribution retained five bandwidth
+rows, all dated **17 October**:
+
+| Fresh C meter | Rows | Reported quantity | Unit | Effective price (USD) | Cost (USD) |
+|---|---:|---:|---|---:|---:|
+| Intra Continent Data Transfer Out | 3 | 10.8746547754853965 | 1 GB | 0.02 | 0.21749309550970793 |
+| Standard Data Transfer Out | 2 | 0.000016549602150917 | 1 GB | 0.083 | 0.0000013736169785261154000000 |
+
+These are like-meter/unit/currency/day/rate totals within one snapshot,
+not totals added across refreshes. The first row demonstrates a nonzero
+cross-region charge, **not the full 100 GB C → T quantity**. Daily records
+cannot identify an individual chunk. Preserve the reported “1 GB” unit;
+no decimal/binary conversion or artificial reconciliation is asserted.
+The tiny Standard meter is separate, not bulk-transfer proof.
+
+The three independent C/A/T ResourceId+Meter Bandwidth Queries each returned
+**HTTP 429** after one request: unavailable charges, **not zero/empty success**.
+Fresh A/T CSVs were not refreshed. No same-region zero-rate or no-charge
+conclusion follows from missing rows. Historical C → B's 1-GiB control was
+**not queried**: its prior 0.6551259830594063 “1 GB” / USD 0.013102519661188125
+remains **STALE** and separate from fresh C.
+
+The date-only request was **16–17 October**, using actual UTC October 17,
+not future October 18. Returned period endpoints were October 16/17 midnight,
+yet retained records include October 17. End-date inclusivity and ingestion
+coverage are unconfirmed. `COMPLETE` means CSV extraction complete, **not**
+ingestion mature/final. There is no `DataIngestionEndMT` watermark, no new
+qualified mature historical comparison and no complete 400 GB billing verdict.
+
+All rerun resources were independently verified deleted before midnight
+17 October. Cleanup job 3 is **STOPPED**; existing six-hour billing follow-up
+continues only to its original **22 October 23:15:33Z hard stop**.
+Do not recreate assets or add traffic to obtain late usage records.
+This document refresh made **zero Azure/billing calls** or schedule changes.
+
+## Policy handoff cross-reference, 2026-10-18
+
+Historical cross-reference: the experimental missing-data description below
+predates the successful 01:20Z Queries and is superseded by the latest snapshot.
+The policy interpretation remains separate from the experimental verdict.
+
+Documented-policy-vs-experimental-verdict split re-verified this session (no
+Azure/billing/infra/auth calls); full text in
+[README.md](README.md#policy-handoff-2026-10-18-same-region-cross-tenant-public-ip-egress).
+Summary only: the Bandwidth pricing FAQ and BYOIP/custom-IP-prefix pricing page
+were re-checked and still read as before; neither mentions tenant/subscription
+boundaries, so cross-tenant applicability remains this lab's interpretation of
+an unqualified rule, not an explicit statement. The experimental verdict is
+still **INCONCLUSIVE**: same-region A/T CSV rows remain missing, and a missing
+row is not zero-rated proof. This is a pointer only — no evidence values below
+are changed.
+
+## Historical evidence and reconciliation design
+
 Reconciliation design plus [executable collectors and tested API matrix](costs/README.md).
-No experimental billing verdict or unrelated billing values retained. Updated 2026-10-15.
+Historical experimental billing verdict: **INCONCLUSIVE** after completed
+same-region cross-tenant transport; no unrelated billing values retained.
+Updated 2026-10-16 UTC. See the [sanitized result](results/2026-10-15-cross-tenant-public-ip.md).
+The [21:36Z interpretation](results/2026-10-15-billing-verdict.md) separates the
+practical published-pricing answer (no tenant-boundary surcharge expected for
+ordinary same-region Azure endpoints) from incomplete empirical invoice proof.
+The historical Query's three returned bandwidth rows are tiny positive USD
+costs, all attributed to A by a complete ResourceId+Meter Query; those Query
+rows report no quantity, unit or rate. The latest CSV does report those fields,
+but not a scale-confirmed intraregional 5 GiB meter.
+“Intra Continent” is not “intra region.”
+**Historical check, 16 October 06:50:38Z:** the
+[sanitized Query/CSV snapshot](results/2026-10-16-billing-check-0650.json)
+reports C's **16 October** quantity **0.6551259830594063 “1 GB”** at
+**USD 0.02**, cost **USD 0.013102519661188125**, on **Intra Continent Data
+Transfer Out**. C's separate **15 October** row is **0.000002402812242508
+“1 GB”**, cost **USD 4.80562448501586884E-8**. This is substantial
+bulk-sized-control evidence, **not a full quantity reconciliation** to the
+1-GiB transfer on 15 October 23:08–23:15Z. Partial ingestion is not proven:
+unit/coverage/attribution differences remain possible. Ingestion watermark,
+end-boundary inclusivity and day completeness are unknown; report dates are
+not receipt dates or exact request correlation.
+
+Both daily ActualCost Queries completed, from 15 October through the actual
+16 October 06:48Z request cutoffs; fresh Cost Details requested 15–16 October
+and retained seven Bandwidth rows. Exact historical VM attribution is **A: 3,
+B: 2, C: 2**, not five A rows; original A-group scope has five, C scope two.
+T's complete Query now returns one 15-October **EUR 7.4561667E-8** microcost
+row, no quantity/unit/rate; none were inferred. No headline-scale A/T charge
+is established. Five of six allowed HTTP requests, zero retries/mutations,
+contexts unchanged, lease closed, native children idle. **INCONCLUSIVE** after
+about 7.5 hours: six-hour read-only follow-up remains active, next around
+**12:50Z**, with two stable comparable snapshots at least six hours apart
+after the **16 October 23:15:33Z** control maturity threshold. Deleted owned
+assets are not retained for billing; late-arriving usage is not continuing rent.
+
+Historical live CSV extraction closed **16 October 00:29:24Z**:
+one generation, one poll and one streaming download; three HTTP requests, no
+retries/mutations. Actual mixed-case header mapping is now live-validated:
+`ResourceId` / `resourceGroupName` / `date` / `quantity` / `unitOfMeasure` /
+`effectivePrice` / `costInBillingCurrency` / `billingCurrency`.
+The report requested October 15–16; only exact owned October-15
+Bandwidth rows survive. Six rows retained (C: one; A source: three; B in original
+A group: two), 365 discarded before retention. C's actual quantity is
+**0.000002291053533554 “1 GB”**, effective price **USD 0.02**, cost
+**USD 4.58210706710815400000E-8**—not a scale-confirmed 1-GiB control.
+A's source-VM quantities/rates are **0.000966296531260014 / 0.05**,
+**0.000003241002559662 / 0.02**, and **0.000295128673315048 / 0.083**;
+all units are reported “1 GB”, rates in USD. No division by expected traffic
+or default-zero fields was used. That snapshot's latest owned usage date is October 15 only;
+date-only coverage cannot establish completeness. ActualCost reporting is not
+a final invoice. **Remaining blocker: billing maturity and transfer attribution**;
+T was not refreshed. Context/default-profile bytes unchanged, lease closed/idle,
+zero owned native children. Snapshots supersede comparisons; never add them.
+
+Historical quantity-source investigation closed **16 October 00:21Z**:
+C's isolated daily Query now returns one tiny positive row, **USD
+0.0000000458210706710815**, without quantity/unit/rate. Modern Cost Details
+generation/poll/download succeeded, but the runtime CSV schema check rejected
+the memory-only report before any rows were retained. The exact header was
+not retained; offline case/alias parser improvements are not live extraction
+proof. A/T were not refreshed and their prior snapshot is unchanged.
+See [reconciliation](results/2026-10-16-usage-reconciliation.json).
+That phase exhausted its 12 request reservations (11 reached HTTP, one invalid
+continuation failed before HTTP); the 00:29Z validation used its own new lease.
+Live lease is closed/idle with zero owned native children and zero mutations.
+
+The prior bounded billing refresh was **15 October 23:28Z**, after
+[C → B v4 transport/restoration PASS](results/2026-10-15-cross-region-control.md):
+**1 GiB, one upload, zero retries**. The earlier v1/v2/v3 history is unchanged.
+Read-only v3 inspection identified B's additional subnet NSG default deny
+65500, missed by NIC-only setup; v4 corrected/restored both layers.
+Independent validation PASS used **11 reads / zero mutations**, closing
+**23:25:22Z**. Successful expected-charged transport is **not yet a billed
+positive control**: three billing requests still returned only A's three tiny
+daily rows, C no Query rows/details timeout, T empty. No quantity/unit/rate,
+per-request attribution or zero-dollar proof exists.
+Known-owned cleanup closed PASS **16 October 00:00:11.806224Z**: 13 remaining
+original core assets absent, C/T groups gone, all known VMs/disks/PIPs deleted.
+**Core RG and one extra NSG were preserved**, independent creation ownership
+unproven; no standalone RG/NSG hourly rent, no authority to adopt/delete.
 Use **ActualCost** consistently, not AmortizedCost: this experiment measures
 consumed bandwidth and its actual meter economics, not reservation allocation.
 PAYG Ubuntu avoids new reservation purchases. Existing discounts/credits still
@@ -42,15 +829,72 @@ No billing request was made during the D0 infrastructure deployment lease.
 ## API contracts and implemented read-only collector
 
 `costs\cost_api.py` implements bounded Query and Consumption collection with
-offline contract tests. Cost Details asynchronous generation remains explicitly
-unimplemented, not a success-shaped fallback. Windows modern Consumption failed
-the tested RG predicates; WSL Consumption 2024-08-01 instead returned an
-offer-related 400. See the tested matrix for exact syntax, encoding and limits.
+offline contract tests and a pure in-memory Cost Details CSV projection helper.
+The CLI's Cost Details asynchronous command remains explicitly unimplemented,
+not a success-shaped fallback; the 16 October private runtime separately
+verified live report generation/download/projection at 00:29Z. The discarded
+00:21Z report itself was not reparsed.
+Windows modern Consumption failed
+the tested RG predicates. Earlier WSL Consumption 400s were resolved by
+valid explicit past usageStart/usageEnd ranges: **2019-10-01 and 2024-08-01
+both returned HTTP 200 empty**. Missing/future-date errors do not establish
+blanket offer rejection. See the tested matrix for exact syntax, encoding and limits.
 The executable keeps only normalized lab fields and a source-record hash;
 it intentionally does not retain full raw rows containing opaque metadata.
 
 Use placeholders resolved in the private run map; no subscription IDs in tracked
 artifacts. ARM host is `https://management.azure.com`.
+
+### Offline billing API clarification — 18 October 2026, ~08:45Z
+
+The [offline clarification artifact](results/2026-10-18-billing-api-clarification.json)
+includes the minimal redacted T pair and precise questions for Microsoft;
+it is **OFFLINE_RESEARCH_NOT_NEW_BILLING_OBSERVATION**, not a support ticket
+or a fresh collection. Existing public row hashes, raw-field provenance and
+the exact independent Query cost comparison are retained without new identity
+or unit conclusions.
+
+**Query:** the [official schema](https://learn.microsoft.com/en-us/rest/api/cost-management/query/usage?view=rest-cost-management-2026-06-01)
+permits generic aggregation column names and at most **two groupings**.
+`type: Usage` is equivalent to `ActualCost`, not a quantity switch.
+Neither generic strings nor aliases establish accepted `UsageQuantity`
+aggregation or `UnitOfMeasure` grouping. Those capabilities are **not
+documented in the inspected references for this scope**, not proven impossible
+throughout the API. Our implemented/observed projection supplies aggregate
+costs, not quantities or units; no speculative quantity probe is justified.
+
+**Identity:** the [legacy JSON reference](https://learn.microsoft.com/en-us/rest/api/consumption/usage-details/list?view=rest-consumption-2024-08-01)
+describes top-level `id/name` as resource ID/name, without an explicit
+unique-financial-line guarantee. The same-ID/different-payload pair is
+observed and unresolved, not a proven Azure contract violation.
+[Every-file-record-is-unique guidance](https://learn.microsoft.com/en-us/azure/cost-management-billing/automate/understand-usage-details-fields)
+applies to Cost Details/Exports/downloaded files, not automatically to this
+legacy JSON collision. Keep `conflicting_record_identity` fail-closed:
+do not deduplicate automatically, admit the pair as verified totals, or call
+local payload hashes Microsoft-issued billing identity. Exact cost agreement
+corroborates money only, not separate-charge identity or unit meaning.
+
+**Pricing/access:** [agreement-specific price-sheet guidance](https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/migrate-cost-management-api)
+associates subscription Consumption price sheets with EA and billing-profile
+price sheets with MCA/MPA. [Pricing access guidance](https://learn.microsoft.com/en-us/azure/cost-management-billing/manage/ea-pricing)
+requires the applicable billing roles/policies; MCA needs billing-profile
+owner, contributor, reader or invoice manager, and MPA needs partner Admin
+Agent or billing admin. An MSDN alias, subscription resource role or successful
+Query does not establish agreement or price-sheet eligibility/access.
+Meter GUID alone is not an offer/date/currency price join.
+[Retail metadata](https://learn.microsoft.com/en-us/rest/api/cost-management/retail-prices/azure-retail-prices)
+is undiscounted; non-USD prices are reference estimates, not T's actual offer
+price/unit authority. Preserve raw `1 TB` and retail `1 GB` separately;
+no conversion or offer/credit inference follows.
+
+T's asynchronous **422 cause remains UNKNOWN**. No undocumented backdoor
+probe, alternate report request or price-sheet scan is authorized by this
+research. No support ticket was opened or artifact shared externally.
+The **400 GB / 21-root deletion PASS**, C's **08:15Z 14.2374728210270405
+`1 GB` / USD 0.28474945642054081** partial subtotal, A's four unchanged
+microquantity rows over six hours (not explicit zero), unresolved T, and
+published comparison **#22** remain unchanged. Billing stays INCONCLUSIVE;
+schedule **5** and **22 October 23:15:33Z** hard stop continue unchanged.
 
 ### A. Cost Management Query: aggregate fallback
 
@@ -78,13 +922,19 @@ artifacts. ARM host is `https://management.azure.com`.
 }
 ```
 
-For the initial permission smoke-test omit grouping. At collection, discover
+For the initial permission smoke-test omit grouping. The executable collector
+uses **ResourceGroup + Meter**, which passed live tests; **MeterId returned
+HTTP 400**. The illustrative ResourceId grouping above is not the implemented
+collector request or a newly validated dimension. At collection, discover
 supported grouping/aggregation dimensions using the API contract/dimensions
 endpoint; if `Meter` is unavailable use supported meter category/subcategory.
-Honor Query's group-count limits; run separately filtered queries to refine.
-Do not assume Query exposes MeterId, quantity, unit or effective price. If
-`UsageQuantity` aggregation is supported, request only a single compatible
-meter/unit; never sum mixed units. Parse `properties.columns` by **name**, not
+Honor Query's **at-most-two-groupings** limit; separately filtered requests
+still need independent authorization. Do not assume Query exposes MeterId,
+quantity, unit or effective price. Accepted `UsageQuantity` aggregation and
+`UnitOfMeasure` grouping are not established by the inspected documentation;
+generic schema strings are not evidence of support. If separately established
+for an authorized workflow, quantity aggregation must use compatible meter/units,
+never mixed units. Parse `properties.columns` by **name**, not
 positional assumptions. Persist column definitions and currency with rows.
 Follow `properties.nextLink` until null, preserving POST/body semantics required
 by the Query API. Empty rows do not prove no metering.
@@ -141,8 +991,10 @@ inventory and RG, and reject ambiguous attribution. Set explicit page, elapsed
 and row-processing bounds. If a nextLink remains at any limit, mark the snapshot
 incomplete and billing INCONCLUSIVE; never silently treat bounded truncation as
 complete collection.
-If meter expansion lacks name/rate, resolve MeterId against authorized price
-sheet/rate card and keep provenance. Public Retail API is a comparison, not
+If meter expansion lacks name/rate, use an authorized price sheet/rate card
+only after agreement, offer/date/currency matching and access are established;
+an alias or Query success does not establish them. Keep provenance.
+Public Retail API is a comparison, not
 proof of an account's effective price. Never guess missing price as zero.
 
 ## Required normalized fields
@@ -219,12 +1071,113 @@ zero dollars, a traceroute or a public source IP cannot alone pass billing.
 
 ## Bounded calendar, retention and teardown
 
+### Actual 15 October run and dated follow-ups
+
+Transport completed **10:04:25–10:40:28 UTC**, 5,368,709,120 bytes each
+direction, all four endpoint/direction records matching the expected SHA256.
+A's **10,818,818,041-byte RX+TX** delta is corroboration only: count it once,
+not A+T, and never label it billed outbound.
+
+Initial ActualCost Query was daily, lab RG AND MeterCategory=Bandwidth,
+grouped by ResourceGroup + Meter, Sum(PreTaxCost):
+
+| Producer context | Collection UTC on 15 October | Outcome | Interpretation |
+|---|---|---|---|
+| Windows / A | 14:14:58–14:15:07 | HTTP 200, COMPLETE, 1 page, 0 received/retained rows | Complete requested pagination, not mature billing or a measured zero charge. |
+| Native WSL / T | 14:15:07–14:15:11 | HTTP 429, rate_limited ERROR, no snapshot | No rows obtained and completeness not established; **not an empty result**. |
+
+Only ~3.6h had passed since transport. No mature same-offer/feed inter-region
+known-charge positive control, attributable quantity/unit or effective-rate
+evidence exists. **INCONCLUSIVE**, not a confirmed SaaS exemption, not “both
+queries succeeded,” and not “free.” Credits, allowances and zero aggregate
+cost cannot prove absence of charge. Bandwidth-only collection also omits
+possible service-specific processing/provider fees.
+
+### Historical bounded refresh, 18:22Z
+
+The [sanitized machine-readable snapshot](results/2026-10-15-billing-refresh.json)
+preserves the earlier results rather than replacing their historical meaning.
+One invocation/HTTP attempt per endpoint/context, one page maximum, no retries:
+
+| Context | Aggregate | Consumption details | Meaning |
+|---|---|---|---|
+| Windows core | HTTP 429, ERROR | HTTP 200, **INCOMPLETE**, 1,000 received/unrelated rows discarded in memory, 0 retained, continuation remains | RG predicate did not scope the response; no complete attributable result, not zero usage/cost. |
+| Native WSL / T | HTTP 429, ERROR | HTTP 200, **COMPLETE empty**, 1 page | Complete request pagination, not mature billing or zero-charge proof. |
+
+Receipt-date predicates cannot guarantee actual usage coverage. Mandatory
+local inventory/RG/actual-date filtering precedes retention; no unrelated raw
+billing rows were retained. Missing quantity/unit/rate/cost remain **null, not
+zero**. At that time no successful control existed: v1 sent no bulk after
+12 connection/TLS timeouts (C NIC RX+TX once 284,630 bytes); v2 blocked before
+guest submission, zero payload and no guest NIC report. Do not call its
+unmeasured NIC traffic zero.
+
+Closing **invoice-level proof** requires mature attributable meter
+quantity/unit/rate and a billed positive control. The practical same-region
+pricing answer already follows the published rule, unqualified by tenant.
+The official
+[BYOIP destination Internet-egress exception](https://learn.microsoft.com/azure/virtual-network/ip-services/custom-ip-address-prefix#pricing)
+continues to apply. Neither transport PASS nor empty Cost API output overrides it.
+
+| Follow-up | Not before UTC | Actual usage day |
+|---|---|---|
+| 24h | 2026-10-16T10:40:28Z | 2026-10-15 |
+| 48h | 2026-10-17T10:40:28Z | 2026-10-15 |
+| 72h | 2026-10-18T10:40:28Z | 2026-10-15 |
+| Day 7, if needed | 2026-10-22T10:40:28Z | 2026-10-15 |
+
+For the successful **1 GiB C→B** control, separate 24/48/72h targets are
+**16/17/18 October 23:15:33Z** (actual usage day **15 October**).
+Its [23:28Z snapshot](results/2026-10-15-control-billing.json) used three billing
+HTTP attempts, no retry/mutation; A's exact total is
+**USD 0.0000728753264993429373**, not attributable to one request.
+C lacked ingested rows/quantity/rate and details timed out in that historical
+snapshot; T was empty. The 16 October 00:29Z CSV above supersedes the C/A
+quantity gap, not the missing scale-confirmed control or T coverage.
+At $0.02/decimal GB planning only, 1 GiB would be ~$0.0214748 before overhead,
+not an observed rate/cost. Do not infer quantity from those retail estimates.
+
+Use the [historical bounded collector templates](costs/README.md#historical-follow-up-command-examples)
+under a new approved read-only API lease. Each is a new cumulative snapshot:
+compare revisions, **never sum repeated snapshots**. Query actual usage UTC,
+not ingestion day. Detailed Consumption date predicates can be receipt windows;
+avoid future ranges, inspect actual row dates and widen past receipt coverage
+only within an approved bound. Partial pages and 429 remain incomplete/errors,
+never zero usage.
+
+Require **two stable future cumulative snapshots**, both at/after **16 October
+23:15:33Z** (24h after the completed control), with comparable A/T source/day
+coverage and a scale-confirmed charged C control. Together these can support a
+scoped **no additional charge observed** conclusion, not a claim that a
+zero-rated meter was emitted or that ActualCost is a final invoice. Reporting
+can lag beyond 24h; stable tiny control quantities alone are insufficient.
+
+**No automatic follow-up or cleanup job is established.** The table is an
+action calendar, not evidence of scheduled automation. Use fresh bounded
+read-only leases for 16/17 October, then historical queries after deletion.
+Standing cleanup authority covers only known owned lab assets, under a fresh
+exact-inventory lease; delete **before 18 October 07:33Z**, earlier if required
+by actual creation time. No extra-cost scope or further MSDN payload is approved.
+These were the original cleanup requirements. **Known-owned cleanup is now
+complete** at **16 October 00:00:11.806224Z**; all known lab VMs/disks/PIPs
+are deleted. The core RG and an additional unproven-ownership NSG remain
+preserved for manual review, without standalone hourly rent. Do not adopt/delete
+unknown roots. The prior whole-group cleanup BLOCKED record remains historical.
+
+**Historical TTL rationale, satisfied for known-owned assets:** T's deadline
+is **2026-10-18T08:20:59Z**. The earliest recorded core-resource creation gives
+**2026-10-18T07:38:11Z**; the RG can be older. Conservatively arrange confirmed
+core deletion before **07:33Z** that day (deployment lease start +72h), verifying
+the private RG timestamp for an earlier deadline. Preserve the private historical
+inventory, including deleted resource IDs; historical billing can be queried
+after deletion. Do not retain VM/disk/PIP for these follow-ups.
+
 - Collect once at **24, 48 and 72 hours after each test day's final transfer**.
   Coalesce due dates into at most one report request per usage day per calendar
   day. EA/MCA typically 8–24h; PAYG up to 72h, but uncommon delays can be longer.
 - At 72h: if positive control absent or relevant rows still changing, return
-  INCONCLUSIVE with exact missing evidence. Schedule one bounded **day-7**
-  follow-up, not an indefinitely running agent. If still absent close inconclusive
+  INCONCLUSIVE with exact missing evidence. Arrange one bounded **day-7**
+  follow-up (not currently scheduled), not an indefinitely running agent. If still absent close inconclusive
   and seek billing support/authorized invoice review as a separate task.
 - Keep VMs **deallocated between tests and deleted after confirmed cleanup**.
   Preserve read access and private ID/timestamp map; deletion does not erase

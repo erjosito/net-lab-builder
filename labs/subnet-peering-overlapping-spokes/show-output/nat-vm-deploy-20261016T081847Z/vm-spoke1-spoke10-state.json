@@ -1,0 +1,19 @@
+{
+  "command": [
+    "az",
+    "vm",
+    "get-instance-view",
+    "-g",
+    "rg-subnet-overlap-20261016-fde5ecf8",
+    "-n",
+    "vm-spoke1-spoke10",
+    "--query",
+    "{name:name,size:hardwareProfile.vmSize,state:provisioningState,statuses:instanceView.statuses}"
+  ],
+  "startedAtUtc": "2026-10-16T08:24:56.579803+00:00",
+  "completedAtUtc": "2026-10-16T08:25:01.423346+00:00",
+  "exitCode": 0,
+  "stdout": "{\r\n  \"name\": \"vm-spoke1-spoke10\",\r\n  \"size\": \"Standard_D2als_v6\",\r\n  \"state\": \"Succeeded\",\r\n  \"statuses\": [\r\n    {\r\n      \"code\": \"ProvisioningState/succeeded\",\r\n      \"displayStatus\": \"Provisioning succeeded\",\r\n      \"level\": \"Info\",\r\n      \"time\": \"2026-10-16T08:23:49.4396151+00:00\"\r\n    },\r\n    {\r\n      \"code\": \"PowerState/running\",\r\n      \"displayStatus\": \"VM running\",\r\n      \"level\": \"Info\"\r\n    }\r\n  ]\r\n}\r\n",
+  "stderr": "",
+  "action": null
+}

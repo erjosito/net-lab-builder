@@ -14,7 +14,7 @@ def arguments(subscription, group, site, connection=True, firewall_id=None):
     return ["network", "vhub", "get-effective-routes", "-g", group,
             "-n", f"hub-{site}", "--resource-id",
             firewall_id or resource_id(subscription, group, site, connection),
-            "--resource-type", "AzureFirewall" if firewall_id else
+            "--resource-type", "AzureFirewalls" if firewall_id else
             "HubVirtualNetworkConnection" if connection else "RouteTable"]
 
 

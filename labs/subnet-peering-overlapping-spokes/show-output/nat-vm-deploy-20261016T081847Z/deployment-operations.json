@@ -1,0 +1,21 @@
+{
+  "command": [
+    "az",
+    "deployment",
+    "operation",
+    "group",
+    "list",
+    "-g",
+    "rg-subnet-overlap-20261016-fde5ecf8",
+    "-n",
+    "nat-vm-deploy-20261016T081847Z",
+    "--query",
+    "[].{operation:properties.provisioningOperation,state:properties.provisioningState,target:properties.targetResource.resourceName,type:properties.targetResource.resourceType,timestamp:properties.timestamp,status:properties.statusMessage}"
+  ],
+  "startedAtUtc": "2026-10-16T08:24:06.012564+00:00",
+  "completedAtUtc": "2026-10-16T08:24:12.057267+00:00",
+  "exitCode": 0,
+  "stdout": "[\r\n  {\r\n    \"operation\": \"Create\",\r\n    \"state\": \"Succeeded\",\r\n    \"status\": null,\r\n    \"target\": \"vm-hub-hub10\",\r\n    \"timestamp\": \"2026-10-16T08:23:22.176008+00:00\",\r\n    \"type\": \"Microsoft.Compute/virtualMachines\"\r\n  },\r\n  {\r\n    \"operation\": \"Create\",\r\n    \"state\": \"Succeeded\",\r\n    \"status\": null,\r\n    \"target\": \"vm-spoke2-isolated192\",\r\n    \"timestamp\": \"2026-10-16T08:23:22.176008+00:00\",\r\n    \"type\": \"Microsoft.Compute/virtualMachines\"\r\n  },\r\n  {\r\n    \"operation\": \"Create\",\r\n    \"state\": \"Succeeded\",\r\n    \"status\": null,\r\n    \"target\": \"vm-spoke2-spoke10\",\r\n    \"timestamp\": \"2026-10-16T08:23:22.176008+00:00\",\r\n    \"type\": \"Microsoft.Compute/virtualMachines\"\r\n  },\r\n  {\r\n    \"operation\": \"Create\",\r\n    \"state\": \"Succeeded\",\r\n    \"status\": null,\r\n    \"target\": \"vm-spoke1-spoke10\",\r\n    \"timestamp\": \"2026-10-16T08:23:22.176008+00:00\",\r\n    \"type\": \"Microsoft.Compute/virtualMachines\"\r\n  },\r\n  {\r\n    \"operation\": \"Create\",\r\n    \"state\": \"Succeeded\",\r\n    \"status\": null,\r\n    \"target\": \"vm-spoke1-isolated192\",\r\n    \"timestamp\": \"2026-10-16T08:23:22.176008+00:00\",\r\n    \"type\": \"Microsoft.Compute/virtualMachines\"\r\n  },\r\n  {\r\n    \"operation\": \"Create\",\r\n    \"state\": \"Succeeded\",\r\n    \"status\": null,\r\n    \"target\": \"vm-spoke1-spoke10-nic\",\r\n    \"timestamp\": \"2026-10-16T08:23:22.176008+00:00\",\r\n    \"type\": \"Microsoft.Network/networkInterfaces\"\r\n  },\r\n  {\r\n    \"operation\": \"Create\",\r\n    \"state\": \"Succeeded\",\r\n    \"status\": null,\r\n    \"target\": \"vm-spoke2-spoke10-nic\",\r\n    \"timestamp\": \"2026-10-16T08:23:22.176008+00:00\",\r\n    \"type\": \"Microsoft.Network/networkInterfaces\"\r\n  },\r\n  {\r\n    \"operation\": \"Create\",\r\n    \"state\": \"Succeeded\",\r\n    \"status\": null,\r\n    \"target\": \"vm-hub-hub10-nic\",\r\n    \"timestamp\": \"2026-10-16T08:23:22.176008+00:00\",\r\n    \"type\": \"Microsoft.Network/networkInterfaces\"\r\n  },\r\n  {\r\n    \"operation\": \"Create\",\r\n    \"state\": \"Succeeded\",\r\n    \"status\": null,\r\n    \"target\": \"vm-spoke1-isolated192-nic\",\r\n    \"timestamp\": \"2026-10-16T08:23:22.176008+00:00\",\r\n    \"type\": \"Microsoft.Network/networkInterfaces\"\r\n  },\r\n  {\r\n    \"operation\": \"Create\",\r\n    \"state\": \"Succeeded\",\r\n    \"status\": null,\r\n    \"target\": \"vm-spoke2-isolated192-nic\",\r\n    \"timestamp\": \"2026-10-16T08:23:22.176008+00:00\",\r\n    \"type\": \"Microsoft.Network/networkInterfaces\"\r\n  },\r\n  {\r\n    \"operation\": \"EvaluateDeploymentOutput\",\r\n    \"state\": \"Succeeded\",\r\n    \"status\": null,\r\n    \"target\": null,\r\n    \"timestamp\": \"2026-10-16T08:23:55.061451+00:00\",\r\n    \"type\": null\r\n  }\r\n]\r\n",
+  "stderr": "",
+  "action": null
+}

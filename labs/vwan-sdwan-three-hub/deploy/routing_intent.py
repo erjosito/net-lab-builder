@@ -1,5 +1,6 @@
 """Task-owned secured-hub resources; private test traffic only, no Internet RI."""
 import argparse
+import json
 import time
 
 import aspath_sweep as sweep
@@ -9,6 +10,18 @@ import infra
 
 POLICY = "policy-threehub"
 PRIVATE_PREFIXES = infra.DC_PREFIXES + infra.SPOKE_PREFIXES
+
+
+def assert_owned_deployment_scope():
+    tags = sweep.az(["group", "show", "-n", control.RG, "--query", "tags"], "ri-owner-tags")
+    if not isinstance(tags, dict) or any(tags.get(k) != v for k, v in control.TAGS.items()):
+        raise RuntimeError("Resource group does not match this task's ownership tags")
+    resources = sweep.az(["resource", "list", "-g", control.RG,
+                          "--query", "[].{name:name,type:type}"], "ri-existing-resources")
+    targets = {("microsoft.network/firewallpolicies", POLICY),
+               *(("microsoft.network/azurefirewalls", f"fw-{site}") for site in sweep.SITES)}
+    if any((r["type"].lower(), r["name"]) in targets for r in resources):
+        raise RuntimeError("Refusing to overwrite existing firewall or policy resources")
 
 
 def secured_template():
@@ -89,6 +102,7 @@ def main():
     errors, observed = [], {}
     try:
         sweep.hub_metadata()
+        assert_owned_deployment_scope()
         template = control.RUNTIME / "routing-intent-template.json"
         control.save(template, secured_template())
         sweep.az(["deployment", "group", "validate", "-g", control.RG,
@@ -121,7 +135,8 @@ def main():
         errors.append(str(exc))
         print(f"ROUTING INTENT BLOCKED {exc}", flush=True)
     finally:
-        lease = control.guard(False)
+        # Persist the local verdict even when expiry forbids further live work.
+        lease = json.loads(control.LEASE.read_text(encoding="utf-8-sig"))
         complete = len(observed) == 3 and not errors
         verdict = "PASS" if complete else "BLOCKED"
         sweep.save("deployment-verdict.json", dict(

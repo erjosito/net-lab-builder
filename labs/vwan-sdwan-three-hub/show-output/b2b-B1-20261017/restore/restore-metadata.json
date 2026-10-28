@@ -1,0 +1,206 @@
+{
+  "eu": {
+    "hub": {
+      "etag": "W/\"48217659-a97c-4cc9-af50-26a32424393b\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu",
+      "location": "westeurope",
+      "name": "hub-eu",
+      "properties": {
+        "addressPrefix": "10.250.0.0/23",
+        "allowBranchToBranchTraffic": true,
+        "azureFirewall": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-eu"
+        },
+        "hubRoutingPreference": "ASPath",
+        "networkVirtualAppliances": [],
+        "provisioningState": "Succeeded",
+        "routeTable": {
+          "routes": []
+        },
+        "routingState": "Provisioned",
+        "sku": "Standard",
+        "virtualHubRouteTableV2s": [],
+        "virtualRouterAsn": 65515,
+        "virtualRouterAutoScaleConfiguration": {
+          "minCapacity": 2
+        },
+        "virtualRouterIps": [
+          "10.250.0.69",
+          "10.250.0.70"
+        ],
+        "virtualWan": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub"
+        }
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "jose",
+        "run_id": "20261014-threehub"
+      },
+      "type": "Microsoft.Network/virtualHubs"
+    },
+    "intent": {
+      "value": [
+        {
+          "etag": "W/\"48217659-a97c-4cc9-af50-26a32424393b\"",
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/routingIntent/private-traffic",
+          "name": "private-traffic",
+          "properties": {
+            "provisioningState": "Succeeded",
+            "routingPolicies": [
+              {
+                "destinations": [
+                  "PrivateTraffic"
+                ],
+                "name": "PrivateTraffic",
+                "nextHop": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-eu"
+              }
+            ]
+          },
+          "type": "Microsoft.Network/virtualHubs/routingIntent"
+        }
+      ]
+    },
+    "firewallId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-eu",
+    "preference": "ASPath"
+  },
+  "us": {
+    "hub": {
+      "etag": "W/\"892d683c-0670-415e-b08b-33d825a74bf7\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us",
+      "location": "northcentralus",
+      "name": "hub-us",
+      "properties": {
+        "addressPrefix": "10.250.2.0/23",
+        "allowBranchToBranchTraffic": true,
+        "azureFirewall": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-us"
+        },
+        "hubRoutingPreference": "ASPath",
+        "networkVirtualAppliances": [],
+        "provisioningState": "Succeeded",
+        "routeTable": {
+          "routes": []
+        },
+        "routingState": "Provisioned",
+        "sku": "Standard",
+        "virtualHubRouteTableV2s": [],
+        "virtualRouterAsn": 65515,
+        "virtualRouterAutoScaleConfiguration": {
+          "minCapacity": 2
+        },
+        "virtualRouterIps": [
+          "10.250.2.70",
+          "10.250.2.69"
+        ],
+        "virtualWan": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub"
+        }
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "jose",
+        "run_id": "20261014-threehub"
+      },
+      "type": "Microsoft.Network/virtualHubs"
+    },
+    "intent": {
+      "value": [
+        {
+          "etag": "W/\"892d683c-0670-415e-b08b-33d825a74bf7\"",
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/routingIntent/private-traffic",
+          "name": "private-traffic",
+          "properties": {
+            "provisioningState": "Succeeded",
+            "routingPolicies": [
+              {
+                "destinations": [
+                  "PrivateTraffic"
+                ],
+                "name": "PrivateTraffic",
+                "nextHop": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-us"
+              }
+            ]
+          },
+          "type": "Microsoft.Network/virtualHubs/routingIntent"
+        }
+      ]
+    },
+    "firewallId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-us",
+    "preference": "ASPath"
+  },
+  "jp": {
+    "hub": {
+      "etag": "W/\"e0189ca0-c1af-4abd-9d6b-88b02caecfe6\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp",
+      "location": "japaneast",
+      "name": "hub-jp",
+      "properties": {
+        "addressPrefix": "10.250.4.0/23",
+        "allowBranchToBranchTraffic": true,
+        "azureFirewall": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-jp"
+        },
+        "hubRoutingPreference": "ExpressRoute",
+        "networkVirtualAppliances": [],
+        "provisioningState": "Succeeded",
+        "routeTable": {
+          "routes": []
+        },
+        "routingState": "Provisioned",
+        "sku": "Standard",
+        "virtualHubRouteTableV2s": [],
+        "virtualRouterAsn": 65515,
+        "virtualRouterAutoScaleConfiguration": {
+          "minCapacity": 2
+        },
+        "virtualRouterIps": [
+          "10.250.4.70",
+          "10.250.4.69"
+        ],
+        "virtualWan": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub"
+        },
+        "vpnGateway": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+        }
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "jose",
+        "run_id": "20261014-threehub"
+      },
+      "type": "Microsoft.Network/virtualHubs"
+    },
+    "intent": {
+      "value": [
+        {
+          "etag": "W/\"e0189ca0-c1af-4abd-9d6b-88b02caecfe6\"",
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/routingIntent/private-traffic",
+          "name": "private-traffic",
+          "properties": {
+            "provisioningState": "Succeeded",
+            "routingPolicies": [
+              {
+                "destinations": [
+                  "PrivateTraffic"
+                ],
+                "name": "PrivateTraffic",
+                "nextHop": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-jp"
+              }
+            ]
+          },
+          "type": "Microsoft.Network/virtualHubs/routingIntent"
+        }
+      ]
+    },
+    "firewallId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-jp",
+    "preference": "ExpressRoute"
+  }
+}

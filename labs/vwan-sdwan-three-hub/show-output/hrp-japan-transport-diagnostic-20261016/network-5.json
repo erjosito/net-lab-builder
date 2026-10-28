@@ -1,0 +1,21 @@
+{
+  "timestampUtc": "2026-10-16T08:51:04.564081+00:00",
+  "finishedUtc": "2026-10-16T08:52:54.615615+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-jp?api-version=2024-05-01",
+    "--query",
+    "properties.subnets[].{name:name,routeTable:properties.routeTable}"
+  ],
+  "stdout": "[\n  {\n    \"name\": \"workload\",\n    \"routeTable\": null\n  }\n]\n",
+  "result": [
+    {
+      "name": "workload",
+      "routeTable": null
+    }
+  ],
+  "sha256": "35653daa35c2c70ea560df7217583668a7f8c8a8115a11acb34f055a47578f12"
+}

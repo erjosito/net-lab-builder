@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "startedAtUtc": "2026-10-16T12:06:32.922116+00:00",
+  "finishedAtUtc": "2026-10-16T12:06:48.596858+00:00",
+  "checksPassed": 61,
+  "checksTotal": 61,
+  "allThreeVMsDeallocated": true,
+  "completeBindingsIndependentlyVerified": true,
+  "actualIPsRecovered": true,
+  "publicFreshReady": false,
+  "sourceUnchanged": true,
+  "nativeCalls": 33,
+  "mutations": 0,
+  "readOnlyLeaseCallsAtRunEnd": 42,
+  "preLeaseInspectionCalls": 23,
+  "taskCallsAtRunEnd": 65,
+  "parserRecommendation": "At fresh.py:725-726 use the authoritative exact owned disk GET (supported disks API 2024-03-02), verify diskSizeGB=30, sku.name=StandardSSD_LRS, exact tags/ID/location and managedBy matching VM; require VM managedDisk.id, and reject any present contradictory VM size/SKU fields. Do not default missing values from template.",
+  "parserErrors": {
+    "A": {
+      "exceptionType": "KeyError",
+      "missingKey": "diskSizeGB",
+      "parserLine": 725
+    },
+    "C": {
+      "exceptionType": "KeyError",
+      "missingKey": "diskSizeGB",
+      "parserLine": 725
+    },
+    "T": {
+      "exceptionType": "KeyError",
+      "missingKey": "diskSizeGB",
+      "parserLine": 725
+    }
+  },
+  "leaseState": "completed",
+  "ownedProcessesIdle": true,
+  "trafficExecuted": false,
+  "broaderExperimentComplete": false,
+  "restoreState": "ALL_THREE_VMS_DEALLOCATED_VERIFIED",
+  "next": "Independent offline parser correction against minimal actual-response shapes; no deployment retry",
+  "allDiagnosticLeasesClosed": true,
+  "actualOwnedRoots": 21
+}

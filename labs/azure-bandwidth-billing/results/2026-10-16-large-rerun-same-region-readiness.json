@@ -1,0 +1,45 @@
+{
+  "verdict": "BLOCKED",
+  "readinessVerdict": "PASS",
+  "scope": "readiness only; no snapshot, pilot or batch",
+  "reason": "Local broad process-idle assertion found an unattributed process; independent closure attribution required. No live operation failed or was retried.",
+  "sessionId": "bwb-large-monitor-20261016-130600",
+  "chunkId": "same-region-000",
+  "startedAtUtc": "2026-10-16T13:13:51.042423+00:00",
+  "completedAtUtc": "2026-10-16T13:17:48.100945+00:00",
+  "guestReadiness": {
+    "A": "PASS",
+    "T": "PASS"
+  },
+  "finalVmState": {
+    "A": "deallocated",
+    "T": "deallocated",
+    "C": "untouched; prior evidence deallocated"
+  },
+  "cPriorEvidenceAtUtc": "2026-10-16T12:24:11.974725+00:00",
+  "leaseState": "completed",
+  "nativeAzureCliCalls": 32,
+  "orchestrationCallsIncludingPublicCommandsAndClosure": 32,
+  "totalCalls": 64,
+  "maxTotalCalls": 75,
+  "mutations": 6,
+  "allowedMutations": [
+    "start-a",
+    "start-t",
+    "ready-a",
+    "ready-t",
+    "deallocate-t",
+    "deallocate-a"
+  ],
+  "activeCommands": 0,
+  "runnerOwnedProcessesIdle": true,
+  "exactRuntimeAndDirectChildrenAbsent": true,
+  "unattributedNativeProcessCount": 1,
+  "sourcePinsUnchanged": true,
+  "readinessElapsedSeconds": 237.059,
+  "restoreUpperBoundSeconds": 80.932,
+  "payloadBytes": 0,
+  "nsgMutations": 0,
+  "monetaryMode": "monitor-only",
+  "nextPhase": "Independent incident-owner closure attribution first; only then separate Niobe read-only snapshot fresh lease, followed by different Tank traffic phase under separate approval."
+}

@@ -1,0 +1,57 @@
+{
+  "timestampUtc": "2026-10-16T08:42:32.921316+00:00",
+  "finishedUtc": "2026-10-16T08:43:31.617139+00:00",
+  "command": [
+    "vm",
+    "list",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "--show-details",
+    "--query",
+    "[].{name:name,powerState:powerState}"
+  ],
+  "stdout": "[\n  {\n    \"name\": \"probe-dc-us\",\n    \"powerState\": \"VM running\"\n  },\n  {\n    \"name\": \"probe-spoke-us\",\n    \"powerState\": \"VM running\"\n  },\n  {\n    \"name\": \"router-us\",\n    \"powerState\": \"VM running\"\n  },\n  {\n    \"name\": \"probe-dc-eu\",\n    \"powerState\": \"VM running\"\n  },\n  {\n    \"name\": \"probe-spoke-eu\",\n    \"powerState\": \"VM running\"\n  },\n  {\n    \"name\": \"router-eu\",\n    \"powerState\": \"VM running\"\n  },\n  {\n    \"name\": \"probe-dc-jp\",\n    \"powerState\": \"VM running\"\n  },\n  {\n    \"name\": \"probe-spoke-jp\",\n    \"powerState\": \"VM running\"\n  },\n  {\n    \"name\": \"router-cn\",\n    \"powerState\": \"VM running\"\n  },\n  {\n    \"name\": \"router-jp\",\n    \"powerState\": \"VM running\"\n  }\n]\n",
+  "result": [
+    {
+      "name": "probe-dc-us",
+      "powerState": "VM running"
+    },
+    {
+      "name": "probe-spoke-us",
+      "powerState": "VM running"
+    },
+    {
+      "name": "router-us",
+      "powerState": "VM running"
+    },
+    {
+      "name": "probe-dc-eu",
+      "powerState": "VM running"
+    },
+    {
+      "name": "probe-spoke-eu",
+      "powerState": "VM running"
+    },
+    {
+      "name": "router-eu",
+      "powerState": "VM running"
+    },
+    {
+      "name": "probe-dc-jp",
+      "powerState": "VM running"
+    },
+    {
+      "name": "probe-spoke-jp",
+      "powerState": "VM running"
+    },
+    {
+      "name": "router-cn",
+      "powerState": "VM running"
+    },
+    {
+      "name": "router-jp",
+      "powerState": "VM running"
+    }
+  ],
+  "sha256": "426219e221fd525212332b75b18440a9c742a0e1057e50c63b802b49a6e1f210"
+}

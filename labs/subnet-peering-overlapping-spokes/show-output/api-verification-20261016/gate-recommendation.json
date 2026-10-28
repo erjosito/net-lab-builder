@@ -1,0 +1,17 @@
+{
+  "recordedAtUtc": "2026-10-16T06:56:01.7900606Z",
+  "verdict": "PASS: metadata-child absence is not an API-version blocker",
+  "documentationUrl": "https://learn.microsoft.com/en-us/rest/api/virtualnetwork/virtual-network-peerings/create-or-update?view=rest-virtualnetwork-2026-01-01",
+  "documentationObservation": "Microsoft Learn fetched API Version 2026-01-01 and explicit virtualNetworkPeerings PUT URL pinned to 2026-01-01",
+  "gateRecommendationForMorpheus": "Replace mandatory child resourceTypes metadata entry with Microsoft.Network Registered + parent virtualNetworks advertising 2026-01-01 + official peering REST reference for pinned 2026-01-01. Exact peering GET returned authenticated ResourceGroupNotFound, not InvalidApiVersionParameter/NoRegisteredProviderFound. Missing child metadata alone must not block.",
+  "safeProceedConditions": "Fresh approved Tank mutation lease only, prior owner idle, STOP absent, configured account match and exact RG still authenticated 404. Keep API 2026-01-01 pinned and exact design. First peering PUT remains feature/enrollment capability gate. Auth/allowlist/policy/API rejection => BLOCKED, no retries, registration, downgrade, or topology repair. Existing mutation lease stays closed.",
+  "limitations": "A 404 in an absent RG is not standalone proof of Network RP method dispatch, allowlisting, schema acceptance or overlap acceptance. Documentation establishes API contract; only approved acceptance test establishes topology support.",
+  "baseline": "Exact planned RG absent; no restore necessary; zero Azure mutations",
+  "evidence": [
+    "account.json",
+    "resource-group-get.json",
+    "peering-get.json",
+    "verdict.json",
+    "idle-proof.json"
+  ]
+}

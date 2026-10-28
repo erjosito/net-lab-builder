@@ -1,0 +1,357 @@
+{
+  "schemaVersion": 1,
+  "taskId": "query-quantity-capability-20261019T1141Z",
+  "startedAtUtc": "2026-10-19T11:39:35.274179+00:00",
+  "objective": "Fresh C only: empirical UsageQuantity aggregation capability and all-meter audit",
+  "quantityVerdict": "SUPPORTED_FOR_THIS_OFFER_SCOPE_AND_REQUEST_ONLY",
+  "verdict": "PASS_EMPIRICAL_OBSERVATION_NOT_VOLUME_RECONCILIATION",
+  "requests": [
+    {
+      "requestNumber": 1,
+      "method": "POST",
+      "host": "management.azure.com",
+      "scope": "PINNED_FRESH_C_RESOURCE_GROUP",
+      "apiVersion": "2023-11-01",
+      "type": "ActualCost",
+      "timeframe": "Custom",
+      "timePeriod": {
+        "from": "2026-10-12T00:00:00Z",
+        "to": "2026-10-18T23:59:59Z"
+      },
+      "granularity": "Daily",
+      "grouping": [
+        {
+          "type": "Dimension",
+          "name": "ResourceId"
+        },
+        {
+          "type": "Dimension",
+          "name": "Meter"
+        }
+      ],
+      "aggregation": {
+        "totalCost": {
+          "name": "PreTaxCost",
+          "function": "Sum"
+        },
+        "totalQuantity": {
+          "name": "UsageQuantity",
+          "function": "Sum"
+        }
+      },
+      "filter": "ResourceId In seven exact pinned inventory IDs; no meter/service/category filter",
+      "status": 200,
+      "columns": [
+        {
+          "name": "PreTaxCost",
+          "type": "Number"
+        },
+        {
+          "name": "UsageQuantity",
+          "type": "Number"
+        },
+        {
+          "name": "UsageDate",
+          "type": "Number"
+        },
+        {
+          "name": "ResourceId",
+          "type": "String"
+        },
+        {
+          "name": "Meter",
+          "type": "String"
+        },
+        {
+          "name": "Currency",
+          "type": "String"
+        }
+      ],
+      "rowCount": 15,
+      "paginationPresent": false,
+      "discardCounts": {
+        "inventory": 0,
+        "date": 0
+      },
+      "retainedRowCount": 15,
+      "typedQuantityEvidence": {
+        "columnPresent": true,
+        "retainedNumericValues": 15,
+        "retainedNonNumericValues": 0
+      }
+    }
+  ],
+  "scopedMeterRows": [
+    {
+      "endpointAlias": "C",
+      "resourceType": "Microsoft.Compute/disks",
+      "usageDayUtc": "2026-10-16",
+      "meterName": "E4 LRS Disk",
+      "classification": "DISK_INFRASTRUCTURE_LABEL",
+      "currency": "USD",
+      "cost": "0.0387072",
+      "usageQuantity": "0.016128",
+      "quantityJsonType": "Decimal",
+      "quantityActuallyNumeric": true,
+      "unit": "UNAVAILABLE"
+    },
+    {
+      "endpointAlias": "C",
+      "resourceType": "Microsoft.Compute/disks",
+      "usageDayUtc": "2026-10-16",
+      "meterName": "E4 LRS Disk Operations",
+      "classification": "DISK_INFRASTRUCTURE_LABEL",
+      "currency": "USD",
+      "cost": "0.002558",
+      "usageQuantity": "1.279",
+      "quantityJsonType": "Decimal",
+      "quantityActuallyNumeric": true,
+      "unit": "UNAVAILABLE"
+    },
+    {
+      "endpointAlias": "C",
+      "resourceType": "Microsoft.Compute/virtualMachines",
+      "usageDayUtc": "2026-10-16",
+      "meterName": "B2ts v2",
+      "classification": "VM_INFRASTRUCTURE_LABEL",
+      "currency": "USD",
+      "cost": "0.0013300266",
+      "usageQuantity": "0.116669",
+      "quantityJsonType": "Decimal",
+      "quantityActuallyNumeric": true,
+      "unit": "UNAVAILABLE"
+    },
+    {
+      "endpointAlias": "C",
+      "resourceType": "Microsoft.Compute/virtualMachines",
+      "usageDayUtc": "2026-10-16",
+      "meterName": "Standard P2 Node",
+      "classification": "UNCLASSIFIED",
+      "currency": "USD",
+      "cost": "0.02",
+      "usageQuantity": "1.0",
+      "quantityJsonType": "Decimal",
+      "quantityActuallyNumeric": true,
+      "unit": "UNAVAILABLE"
+    },
+    {
+      "endpointAlias": "C",
+      "resourceType": "Microsoft.Network/publicIPAddresses",
+      "usageDayUtc": "2026-10-16",
+      "meterName": "Standard IPv4 Static Public IP",
+      "classification": "IP_INFRASTRUCTURE_LABEL",
+      "currency": "USD",
+      "cost": "0.0557569444444444",
+      "usageQuantity": "11.1513888888889",
+      "quantityJsonType": "Decimal",
+      "quantityActuallyNumeric": true,
+      "unit": "UNAVAILABLE"
+    },
+    {
+      "endpointAlias": "C",
+      "resourceType": "Microsoft.Compute/disks",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "E4 LRS Disk",
+      "classification": "DISK_INFRASTRUCTURE_LABEL",
+      "currency": "USD",
+      "cost": "0.031584",
+      "usageQuantity": "0.01316",
+      "quantityJsonType": "Decimal",
+      "quantityActuallyNumeric": true,
+      "unit": "UNAVAILABLE"
+    },
+    {
+      "endpointAlias": "C",
+      "resourceType": "Microsoft.Compute/disks",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "E4 LRS Disk Operations",
+      "classification": "DISK_INFRASTRUCTURE_LABEL",
+      "currency": "USD",
+      "cost": "0.0255886",
+      "usageQuantity": "12.7943",
+      "quantityJsonType": "Decimal",
+      "quantityActuallyNumeric": true,
+      "unit": "UNAVAILABLE"
+    },
+    {
+      "endpointAlias": "C",
+      "resourceType": "Microsoft.Compute/disks",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "S4 LRS Disk",
+      "classification": "DISK_INFRASTRUCTURE_LABEL",
+      "currency": "USD",
+      "cost": "0.022662144",
+      "usageQuantity": "0.014754",
+      "quantityJsonType": "Decimal",
+      "quantityActuallyNumeric": true,
+      "unit": "UNAVAILABLE"
+    },
+    {
+      "endpointAlias": "C",
+      "resourceType": "Microsoft.Compute/disks",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "S4 LRS Disk Operations",
+      "classification": "DISK_INFRASTRUCTURE_LABEL",
+      "currency": "USD",
+      "cost": "0.04161815",
+      "usageQuantity": "83.2363",
+      "quantityJsonType": "Decimal",
+      "quantityActuallyNumeric": true,
+      "unit": "UNAVAILABLE"
+    },
+    {
+      "endpointAlias": "C",
+      "resourceType": "Microsoft.Compute/virtualMachines",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "B2ts v2",
+      "classification": "VM_INFRASTRUCTURE_LABEL",
+      "currency": "USD",
+      "cost": "0.0418008132",
+      "usageQuantity": "3.666738",
+      "quantityJsonType": "Decimal",
+      "quantityActuallyNumeric": true,
+      "unit": "UNAVAILABLE"
+    },
+    {
+      "endpointAlias": "C",
+      "resourceType": "Microsoft.Compute/virtualMachines",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "Intra Continent Data Transfer Out",
+      "classification": "BANDWIDTH_KNOWN_EXACT_METER_LABEL",
+      "currency": "USD",
+      "cost": "0.284749456420541",
+      "usageQuantity": "14.237472821027",
+      "quantityJsonType": "Decimal",
+      "quantityActuallyNumeric": true,
+      "unit": "UNAVAILABLE"
+    },
+    {
+      "endpointAlias": "C",
+      "resourceType": "Microsoft.Compute/virtualMachines",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "Standard Data Transfer Out",
+      "classification": "BANDWIDTH_KNOWN_EXACT_METER_LABEL",
+      "currency": "USD",
+      "cost": "0.00000187707040458918",
+      "usageQuantity": "0.000022615306079388",
+      "quantityJsonType": "Decimal",
+      "quantityActuallyNumeric": true,
+      "unit": "UNAVAILABLE"
+    },
+    {
+      "endpointAlias": "C",
+      "resourceType": "Microsoft.Compute/virtualMachines",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "Standard Node",
+      "classification": "UNCLASSIFIED",
+      "currency": "USD",
+      "cost": "0.028",
+      "usageQuantity": "4.0",
+      "quantityJsonType": "Decimal",
+      "quantityActuallyNumeric": true,
+      "unit": "UNAVAILABLE"
+    },
+    {
+      "endpointAlias": "C",
+      "resourceType": "Microsoft.Compute/virtualMachines",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "Standard P2 Node",
+      "classification": "UNCLASSIFIED",
+      "currency": "USD",
+      "cost": "0.12",
+      "usageQuantity": "6.0",
+      "quantityJsonType": "Decimal",
+      "quantityActuallyNumeric": true,
+      "unit": "UNAVAILABLE"
+    },
+    {
+      "endpointAlias": "C",
+      "resourceType": "Microsoft.Network/publicIPAddresses",
+      "usageDayUtc": "2026-10-17",
+      "meterName": "Standard IPv4 Static Public IP",
+      "classification": "IP_INFRASTRUCTURE_LABEL",
+      "currency": "USD",
+      "cost": "0.12",
+      "usageQuantity": "24.0",
+      "quantityJsonType": "Decimal",
+      "quantityActuallyNumeric": true,
+      "unit": "UNAVAILABLE"
+    }
+  ],
+  "actualBillingHttpRequests": 1,
+  "maxBillingHttpRequests": 2,
+  "retries": 0,
+  "mutations": 0,
+  "sourceSha256": "1cd76089b9b690c991d4a6bf05ad6fd55195049633b30e75666b981c3e8d1c18",
+  "inventoryCount": 7,
+  "unit": "UNAVAILABLE",
+  "weeklyBandwidthCostUsd": "0.28475133349094558918",
+  "interpretation": "Single offer/scope observation only; no unit inference or quantity conversion.",
+  "limitations": [
+    "No universal Query selector support claim.",
+    "Unit-blind usage quantity does not establish full-volume reconciliation.",
+    "No inference of GUID meter meanings; no invoice finality claim.",
+    "T unit, identity and 422 remain UNKNOWN and outside this objective.",
+    "Previous CSV category/inventory discards are unavailable for offline re-audit."
+  ],
+  "extractionComplete": true,
+  "http": [
+    {
+      "status": 200,
+      "responseMetadata": {
+        "receivedAtUtc": "2026-10-19T11:42:22.799787+00:00",
+        "safeHeaders": {
+          "x-ms-request-id": "70ce84dc-9d98-4c24-a73b-72daa67dee2a",
+          "x-ms-correlation-request-id": "8e41855b-34b8-46a0-8b27-f0fe584a8e14",
+          "date": "Mon, 19 Oct 2026 11:42:19 GMT"
+        },
+        "retryAfterSeconds": null,
+        "suggestedRetryAtUtc": null,
+        "retrySource": "unknown"
+      }
+    }
+  ],
+  "contextVerifiedByExistingNativeAuth": true,
+  "costTotals": [
+    {
+      "classification": "DISK_INFRASTRUCTURE_LABEL",
+      "currency": "USD",
+      "cost": "0.162718094"
+    },
+    {
+      "classification": "VM_INFRASTRUCTURE_LABEL",
+      "currency": "USD",
+      "cost": "0.0431308398"
+    },
+    {
+      "classification": "UNCLASSIFIED",
+      "currency": "USD",
+      "cost": "0.168"
+    },
+    {
+      "classification": "IP_INFRASTRUCTURE_LABEL",
+      "currency": "USD",
+      "cost": "0.1757569444444444"
+    },
+    {
+      "classification": "BANDWIDTH_KNOWN_EXACT_METER_LABEL",
+      "currency": "USD",
+      "cost": "0.28475133349094558918"
+    }
+  ],
+  "knownBandwidthComparison": {
+    "currentUsd": "0.28475133349094558918",
+    "weeklyUsd": "0.28475133349094558918",
+    "deltaUsd": "0E-20",
+    "comparableRowsObserved": true
+  },
+  "nonBandwidthFinding": "OTHER_POSITIVE_COST_METER_LABELS_OBSERVED_NOT_BANDWIDTH_VOLUME",
+  "completedAtUtc": "2026-10-19T11:42:22.868617+00:00",
+  "unusedRequestBudgetDiscarded": 1,
+  "actualToolCalls": 27,
+  "allOwnedChildrenIdle": true,
+  "infrastructureRestore": "NOT_REQUIRED_ZERO_MUTATIONS",
+  "nonBandwidthCostUsd": "0.5496058782444444",
+  "allMeterCostUsd": "0.83435721173538998918",
+  "persistenceVerifiedAtUtc": "2026-10-19T11:43:00.300081+00:00"
+}

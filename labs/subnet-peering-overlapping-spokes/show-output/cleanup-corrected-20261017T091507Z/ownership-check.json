@@ -1,0 +1,23 @@
+{
+  "atUtc": "2026-10-17T09:16:53.438348+00:00",
+  "verdict": "PASS",
+  "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+  "subscriptionMatchesConfiguration": true,
+  "resourceGroupTags": {
+    "lab": "true",
+    "created_by": "copilot-lab",
+    "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983"
+  },
+  "inventoryExactMatch": true,
+  "counts": {
+    "microsoft.network/virtualnetworks": 3,
+    "microsoft.network/networkinterfaces": 5,
+    "microsoft.compute/virtualmachines": 5,
+    "microsoft.compute/disks": 5,
+    "microsoft.compute/virtualmachines/extensions": 8,
+    "microsoft.network/networksecuritygroups": 5
+  },
+  "ownershipEvidence": "labs\\subnet-peering-overlapping-spokes\\show-output\\ownership-correction-20261017T091447Z\\ownership-verdict.json",
+  "authorization": "User approved deletion of all resources of this lab RG, not a frozen old inventory",
+  "scope": "Only exact RG including five verified NSGs; preserve blog and archive"
+}

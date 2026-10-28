@@ -1,0 +1,22 @@
+{
+  "command": [
+    "az",
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-subnet-overlap-20261016-fde5ecf8",
+    "-n",
+    "vm-spoke1-spoke10",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "set -eu\ncloud-init status --wait --long\nsystemctl is-enabled lab-static-nat\nsystemctl is-active lab-static-nat\ntest \"$(sysctl -n net.ipv4.ip_forward)\" = 1\nip -o -4 addr show | grep -F ' 10.10.1.10/32 '\niptables -t nat -S\niptables -S FORWARD\nprintf '\\nBOOTSTRAP_READY\\n'\n"
+  ],
+  "startedAtUtc": "2026-10-16T08:25:07.303342+00:00",
+  "completedAtUtc": "2026-10-16T08:25:44.064627+00:00",
+  "exitCode": 0,
+  "stdout": "{\r\n  \"value\": [\r\n    {\r\n      \"code\": \"ProvisioningState/succeeded\",\r\n      \"displayStatus\": \"Provisioning succeeded\",\r\n      \"level\": \"Info\",\r\n      \"message\": \"Enable succeeded: \\n[stdout]\\nstatus: done\\nextended_status: done\\nboot_status_code: enabled-by-generator\\nlast_update: Thu, 01 Jan 1970 00:01:06 +0000\\ndetail: DataSourceAzure [seed=/dev/sr0]\\nerrors: []\\nrecoverable_errors: {}\\nenabled\\nactive\\n2: eth0    inet 10.10.1.10/32 scope global eth0\\\\       valid_lft forever preferred_lft forever\\n-P PREROUTING ACCEPT\\n-P INPUT ACCEPT\\n-P OUTPUT ACCEPT\\n-P POSTROUTING ACCEPT\\n-A PREROUTING -s 10.0.1.4/32 -d 10.10.1.10/32 -j DNAT --to-destination 192.168.1.4\\n-A POSTROUTING -s 10.0.1.4/32 -d 192.168.1.4/32 -j SNAT --to-source 10.10.1.4\\n-P FORWARD ACCEPT\\n-A FORWARD -s 10.0.1.4/32 -d 192.168.1.4/32 -j ACCEPT\\n-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\\n\\nBOOTSTRAP_READY\\n\\n[stderr]\\n\"\r\n    }\r\n  ]\r\n}\r\n",
+  "stderr": "",
+  "action": "bootstrap-read"
+}

@@ -1,0 +1,20 @@
+{
+  "command": [
+    "az",
+    "deployment",
+    "group",
+    "show",
+    "-g",
+    "rg-subnet-overlap-20261016-fde5ecf8",
+    "-n",
+    "nat-vm-deploy-20261016T081847Z",
+    "--query",
+    "{name:name,state:properties.provisioningState,timestamp:properties.timestamp,error:properties.error}"
+  ],
+  "startedAtUtc": "2026-10-16T08:24:01.847099+00:00",
+  "completedAtUtc": "2026-10-16T08:24:05.973430+00:00",
+  "exitCode": 0,
+  "stdout": "{\r\n  \"error\": null,\r\n  \"name\": \"nat-vm-deploy-20261016T081847Z\",\r\n  \"state\": \"Succeeded\",\r\n  \"timestamp\": \"2026-10-16T08:23:55.461410+00:00\"\r\n}\r\n",
+  "stderr": "",
+  "action": null
+}

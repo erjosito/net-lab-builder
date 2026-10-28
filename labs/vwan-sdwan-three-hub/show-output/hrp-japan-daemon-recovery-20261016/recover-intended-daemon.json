@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-16T09:05:03.143193+00:00",
+  "finishedUtc": "2026-10-16T09:06:50.823072+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-jp",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\jp-daemon-recovery.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\nDAEMON_RECOVERY_COMPLETE {\\\"configurationUnchanged\\\": true, \\\"ikeEstablished\\\": 2, \\\"protocols\\\": {\\\"mesh_eu\\\": \\\"Established\\\", \\\"mesh_us\\\": \\\"Established\\\", \\\"mesh_cn\\\": \\\"Established\\\", \\\"azure_0\\\": \\\"Established\\\", \\\"azure_1\\\": \\\"Established\\\"}, \\\"duplicateLegacyDaemonDisabled\\\": true}\\n\\n[stderr]\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\nDAEMON_RECOVERY_COMPLETE {\"configurationUnchanged\": true, \"ikeEstablished\": 2, \"protocols\": {\"mesh_eu\": \"Established\", \"mesh_us\": \"Established\", \"mesh_cn\": \"Established\", \"azure_0\": \"Established\", \"azure_1\": \"Established\"}, \"duplicateLegacyDaemonDisabled\": true}\n\n[stderr]\n"
+      }
+    ]
+  },
+  "sha256": "3d710b6ac87cd965b71f48c675ee2fd3a2eec884f83c53625a6cb881e16d46c4"
+}

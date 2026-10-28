@@ -1,0 +1,26 @@
+{
+  "timestampUtc": "2026-10-15T09:35:41.941731+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "probe-dc-jp",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\read-jp-probe-service.sh"
+  ],
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\nPROBE_SERVICE_BEGIN\ndefault via 10.130.0.1 dev eth0 proto dhcp src 10.130.0.10 metric 100 \n10.130.0.0/24 dev eth0 proto kernel scope link src 10.130.0.10 metric 100 \n10.130.0.1 dev eth0 proto dhcp scope link src 10.130.0.10 metric 100 \n168.63.129.16 via 10.130.0.1 dev eth0 proto dhcp src 10.130.0.10 metric 100 \n169.254.169.254 via 10.130.0.1 dev eth0 proto dhcp src 10.130.0.10 metric 100 \nResult=success\nExecMainStatus=0\nActiveState=inactive\nSubState=dead\nUnitFileState=\n\nResult=success\nExecMainStatus=0\nExecStart={ path=/opt/threehub/probe-routes.sh ; argv[]=/opt/threehub/probe-routes.sh ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }\nActiveState=active\nSubState=exited\nUnitFileState=enabled\n#!/bin/bash\nset -euo pipefail\nip route replace 10.110.0.0/24 via 10.130.0.4\nip route replace 10.120.0.0/24 via 10.130.0.4\nip route replace 10.140.0.0/24 via 10.130.0.4\nip route replace 10.10.0.0/24 via 10.130.0.4\nip route replace 10.20.0.0/24 via 10.130.0.4\nip route replace 10.30.0.0/24 via 10.130.0.4\nUNIT FILE              STATE   VENDOR PRESET\nthreehub-probe.service enabled enabled\n\n1 unit files listed.\nPROBE_SERVICE_END\n\n[stderr]\n"
+      }
+    ]
+  }
+}

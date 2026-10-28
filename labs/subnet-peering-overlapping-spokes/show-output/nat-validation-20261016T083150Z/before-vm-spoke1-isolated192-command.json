@@ -1,0 +1,21 @@
+{
+  "command": [
+    "az",
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-subnet-overlap-20261016-fde5ecf8",
+    "-n",
+    "vm-spoke1-isolated192",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "set -eu\ndate -u +%Y-%m-%dT%H:%M:%SZ\nip -4 -brief addr show\nip -4 route show\ncloud-init status --long\nsystemctl is-active lab-backend-http\nsystemctl show lab-backend-http --property=ActiveState,SubState,Result\npython3 - <<'PY'\nimport datetime,json,urllib.request\nu='http://127.0.0.1:8080/'\nwith urllib.request.urlopen(u,timeout=10) as r:\n print('BACKEND_HTTP '+json.dumps(dict(timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),url=u,status=r.status,body=r.read().decode())))\nPY\n"
+  ],
+  "startedAtUtc": "2026-10-16T08:32:40.887534+00:00",
+  "completedAtUtc": "2026-10-16T08:33:20.383155+00:00",
+  "exitCode": 0,
+  "stdout": "{\r\n  \"value\": [\r\n    {\r\n      \"code\": \"ProvisioningState/succeeded\",\r\n      \"displayStatus\": \"Provisioning succeeded\",\r\n      \"level\": \"Info\",\r\n      \"message\": \"Enable succeeded: \\n[stdout]\\n2026-10-16T08:32:50Z\\nlo               UNKNOWN        127.0.0.1/8 \\neth0             UP             192.168.1.4/24 metric 100 \\ndefault via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.4 metric 100 \\n168.63.129.16 via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.4 metric 100 \\n169.254.169.254 via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.4 metric 100 \\n192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.4 metric 100 \\n192.168.1.1 dev eth0 proto dhcp scope link src 192.168.1.4 metric 100 \\nstatus: done\\nextended_status: done\\nboot_status_code: enabled-by-generator\\nlast_update: Thu, 01 Jan 1970 00:00:57 +0000\\ndetail: DataSourceAzure [seed=/dev/sr0]\\nerrors: []\\nrecoverable_errors: {}\\nactive\\nResult=success\\nActiveState=active\\nSubState=running\\nBACKEND_HTTP {\\\"timestamp\\\": \\\"2026-10-16T08:32:50.559813+00:00\\\", \\\"url\\\": \\\"http://127.0.0.1:8080/\\\", \\\"status\\\": 200, \\\"body\\\": \\\"spoke1-backend-192.168.1.4\\\\n\\\"}\\n\\n[stderr]\\n\"\r\n    }\r\n  ]\r\n}\r\n",
+  "stderr": ""
+}

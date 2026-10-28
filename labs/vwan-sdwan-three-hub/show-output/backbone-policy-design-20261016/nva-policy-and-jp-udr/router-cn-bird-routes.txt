@@ -1,0 +1,102 @@
+BIRD 2.0.8 ready.
+Table lab4:
+10.110.0.0/24        unicast [mesh_eu 08:42:06.550 from 172.31.0.9] * (100) [AS65011i]
+	dev wgeucn
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65011
+	BGP.next_hop: 172.31.0.9
+	BGP.local_pref: 100
+	BGP.community: 
+10.30.0.0/24         unicast [mesh_jp 09:06:18.300 from 172.31.0.21] * (100) [AS65515i]
+	dev wgjpcn
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65013 65515
+	BGP.next_hop: 172.31.0.21
+	BGP.local_pref: 300
+	BGP.community: (65013,1)
+                     unicast [mesh_eu 10:21:01.436 from 172.31.0.9] (100) [AS65520e]
+	dev wgeucn
+	Type: BGP univ
+	BGP.origin: EGP
+	BGP.as_path: 65011 65515 65520 65520
+	BGP.next_hop: 172.31.0.9
+	BGP.local_pref: 100
+	BGP.community: (65011,1)
+                     unicast [mesh_us 10:21:38.901 from 172.31.0.17] (100) [AS65520e]
+	dev wguscn
+	Type: BGP univ
+	BGP.origin: EGP
+	BGP.as_path: 65012 65515 65520 65520
+	BGP.next_hop: 172.31.0.17
+	BGP.local_pref: 100
+	BGP.community: (65012,1)
+10.140.0.0/24        unicast [own_dc 08:41:54.912] * (200)
+	dev eth0
+	Type: static univ
+10.20.0.0/24         unicast [mesh_us 08:42:08.381 from 172.31.0.17] * (100) [AS65515i]
+	dev wguscn
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65012 65515
+	BGP.next_hop: 172.31.0.17
+	BGP.local_pref: 300
+	BGP.community: (65012,1)
+                     unicast [mesh_eu 10:21:01.436 from 172.31.0.9] (100) [AS65520e]
+	dev wgeucn
+	Type: BGP univ
+	BGP.origin: EGP
+	BGP.as_path: 65011 65515 65520 65520
+	BGP.next_hop: 172.31.0.9
+	BGP.local_pref: 100
+	BGP.community: (65011,1)
+                     unicast [mesh_jp 10:22:54.852 from 172.31.0.21] (100) [AS65520e]
+	dev wgjpcn
+	Type: BGP univ
+	BGP.origin: EGP
+	BGP.as_path: 65013 65515 65520 65520
+	BGP.next_hop: 172.31.0.21
+	BGP.local_pref: 100
+	BGP.community: (65013,1)
+10.130.0.0/24        unicast [mesh_jp 09:06:16.363 from 172.31.0.21] * (100) [AS65013i]
+	dev wgjpcn
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65013
+	BGP.next_hop: 172.31.0.21
+	BGP.local_pref: 100
+	BGP.community: 
+10.10.0.0/24         unicast [mesh_eu 08:42:06.777 from 172.31.0.9] * (100) [AS65515i]
+	dev wgeucn
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65011 65515
+	BGP.next_hop: 172.31.0.9
+	BGP.local_pref: 300
+	BGP.community: (65011,1)
+                     unicast [mesh_us 10:21:38.901 from 172.31.0.17] (100) [AS65520e]
+	dev wguscn
+	Type: BGP univ
+	BGP.origin: EGP
+	BGP.as_path: 65012 65515 65520 65520
+	BGP.next_hop: 172.31.0.17
+	BGP.local_pref: 100
+	BGP.community: (65012,1)
+                     unicast [mesh_jp 10:22:54.852 from 172.31.0.21] (100) [AS65520e]
+	dev wgjpcn
+	Type: BGP univ
+	BGP.origin: EGP
+	BGP.as_path: 65013 65515 65520 65520
+	BGP.next_hop: 172.31.0.21
+	BGP.local_pref: 100
+	BGP.community: (65013,1)
+10.120.0.0/24        unicast [mesh_us 08:42:08.381 from 172.31.0.17] * (100) [AS65012i]
+	dev wguscn
+	Type: BGP univ
+	BGP.origin: IGP
+	BGP.as_path: 65012
+	BGP.next_hop: 172.31.0.17
+	BGP.local_pref: 100
+	BGP.community: 
+

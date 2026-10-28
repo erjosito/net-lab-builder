@@ -1,0 +1,145 @@
+{
+  "deploymentSubmissions": 1,
+  "mutationBatches": 1,
+  "intendedResourcePuts": [
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "vm-hub-hub10-nic"
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "vm-hub-hub10"
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "vm-spoke1-spoke10-nic"
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "vm-spoke1-spoke10"
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "vm-spoke1-isolated192-nic"
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "vm-spoke1-isolated192"
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "vm-spoke2-spoke10-nic"
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "vm-spoke2-spoke10"
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "vm-spoke2-isolated192-nic"
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "vm-spoke2-isolated192"
+    }
+  ],
+  "implicitDisks": [
+    "vm-hub-hub10-osdisk",
+    "vm-spoke1-spoke10-osdisk",
+    "vm-spoke1-isolated192-osdisk",
+    "vm-spoke2-spoke10-osdisk",
+    "vm-spoke2-isolated192-osdisk"
+  ],
+  "operations": [
+    {
+      "operation": "Create",
+      "state": "Succeeded",
+      "status": null,
+      "target": "vm-hub-hub10",
+      "timestamp": "2026-10-16T08:23:22.176008+00:00",
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "operation": "Create",
+      "state": "Succeeded",
+      "status": null,
+      "target": "vm-spoke2-isolated192",
+      "timestamp": "2026-10-16T08:23:22.176008+00:00",
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "operation": "Create",
+      "state": "Succeeded",
+      "status": null,
+      "target": "vm-spoke2-spoke10",
+      "timestamp": "2026-10-16T08:23:22.176008+00:00",
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "operation": "Create",
+      "state": "Succeeded",
+      "status": null,
+      "target": "vm-spoke1-spoke10",
+      "timestamp": "2026-10-16T08:23:22.176008+00:00",
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "operation": "Create",
+      "state": "Succeeded",
+      "status": null,
+      "target": "vm-spoke1-isolated192",
+      "timestamp": "2026-10-16T08:23:22.176008+00:00",
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "operation": "Create",
+      "state": "Succeeded",
+      "status": null,
+      "target": "vm-spoke1-spoke10-nic",
+      "timestamp": "2026-10-16T08:23:22.176008+00:00",
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "operation": "Create",
+      "state": "Succeeded",
+      "status": null,
+      "target": "vm-spoke2-spoke10-nic",
+      "timestamp": "2026-10-16T08:23:22.176008+00:00",
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "operation": "Create",
+      "state": "Succeeded",
+      "status": null,
+      "target": "vm-hub-hub10-nic",
+      "timestamp": "2026-10-16T08:23:22.176008+00:00",
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "operation": "Create",
+      "state": "Succeeded",
+      "status": null,
+      "target": "vm-spoke1-isolated192-nic",
+      "timestamp": "2026-10-16T08:23:22.176008+00:00",
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "operation": "Create",
+      "state": "Succeeded",
+      "status": null,
+      "target": "vm-spoke2-isolated192-nic",
+      "timestamp": "2026-10-16T08:23:22.176008+00:00",
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "operation": "EvaluateDeploymentOutput",
+      "state": "Succeeded",
+      "status": null,
+      "target": null,
+      "timestamp": "2026-10-16T08:23:55.061451+00:00",
+      "type": null
+    }
+  ],
+  "configurationActions": 0,
+  "deleteSubmissions": 0
+}

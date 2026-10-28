@@ -1,0 +1,26 @@
+{
+  "timestampUtc": "2026-10-15T09:42:08.770003+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "probe-dc-eu",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\trace-us-spoke-eu-dc.sh"
+  ],
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\nTRACE_COMPLETE {\"startedAtUtc\":\"2026-10-15T09:38:47.907610+00:00\",\"finishedAtUtc\":\"2026-10-15T09:41:48.116370+00:00\",\"stoppedAtDeadline\":true,\"exitCode\":0,\"stderr\":\"tcpdump: data link type LINUX_SLL2\\ntcpdump: verbose output suppressed, use -v[v]... for full protocol decode\\nlistening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes\\n0 packets captured\\n0 packets received by filter\\n0 packets dropped by kernel\\n\",\"gzipBase64\":\"H4sIANyf0GoC/+MCAJMG1zIBAAAA\"}\n\n[stderr]\n"
+      }
+    ]
+  }
+}

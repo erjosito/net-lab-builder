@@ -1,0 +1,53 @@
+Enable succeeded: 
+[stdout]
+=== [S2 Workaround Stateful] Ping 10.1.1.4 from 172.16.1.4 ===
+PING 10.1.1.4 (10.1.1.4) from 172.16.1.4 : 56(84) bytes of data.
+64 bytes from 10.1.1.4: icmp_seq=1 ttl=63 time=4.21 ms
+64 bytes from 10.1.1.4: icmp_seq=2 ttl=63 time=2.97 ms
+64 bytes from 10.1.1.4: icmp_seq=3 ttl=63 time=2.92 ms
+
+--- 10.1.1.4 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2002ms
+rtt min/avg/max/mdev = 2.923/3.367/4.207/0.593 ms
+=== [S2 Workaround Stateful] HTTP GET http://10.1.1.4 from 172.16.1.4 ===
+*   Trying 10.1.1.4:80...
+* Name '172.16.1.4' family 2 resolved to '172.16.1.4' family 2
+* Local port: 0
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Connected to 10.1.1.4 (10.1.1.4) port 80 (#0)
+> GET / HTTP/1.1
+
+> Host: 10.1.1.4
+
+> User-Agent: curl/7.81.0
+
+> Accept: */*
+
+> 
+
+* Mark bundle as not supporting multiuse
+* HTTP 1.0, assume close after body
+< HTTP/1.0 200 OK
+
+< Server: SimpleHTTP/0.6 Python/3.10.12
+
+< Date: Thu, 22 Oct 2026 12:31:58 GMT
+
+< Content-type: text/html
+
+< Content-Length: 41
+
+< Last-Modified: Thu, 22 Oct 2026 11:59:37 GMT
+
+< 
+
+{ [41 bytes data]
+
+100    41  100    41    0     0   2971      0 --:--:-- --:--:-- --:--:--  3153
+* Closing connection 0
+SPOKE1_OK hostname=vm-spoke1 ip=10.1.1.4
+
+[stderr]
+

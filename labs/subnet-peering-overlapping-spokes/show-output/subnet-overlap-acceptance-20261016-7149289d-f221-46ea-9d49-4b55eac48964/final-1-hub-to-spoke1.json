@@ -1,0 +1,18 @@
+{
+  "startedAtUtc": "2026-10-16T07:01:38.812233+00:00",
+  "completedAtUtc": "2026-10-16T07:01:43.220463+00:00",
+  "command": [
+    "az",
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/hub/virtualNetworkPeerings/to-spoke1?api-version=2026-01-01"
+  ],
+  "exitCode": 0,
+  "pid": 6852,
+  "batch": null,
+  "stdout": "{\r\n  \"etag\": \"W/\\\"01f486ec-0da3-4e77-9757-de2265c82eb2\\\"\",\r\n  \"id\": \"/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/hub/virtualNetworkPeerings/to-spoke1\",\r\n  \"name\": \"to-spoke1\",\r\n  \"properties\": {\r\n    \"allowForwardedTraffic\": false,\r\n    \"allowGatewayTransit\": false,\r\n    \"allowVirtualNetworkAccess\": true,\r\n    \"doNotVerifyRemoteGateways\": false,\r\n    \"enableOnlyIPv6Peering\": false,\r\n    \"localAddressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"10.0.1.0/24\"\r\n      ]\r\n    },\r\n    \"localSubnetNames\": [\r\n      \"hub10\"\r\n    ],\r\n    \"localVirtualNetworkAddressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"10.0.1.0/24\"\r\n      ]\r\n    },\r\n    \"peerCompleteVnets\": false,\r\n    \"peeringState\": \"Connected\",\r\n    \"peeringSyncLevel\": \"FullyInSync\",\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"remoteAddressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"10.10.1.0/24\"\r\n      ]\r\n    },\r\n    \"remoteSubnetNames\": [\r\n      \"spoke10\"\r\n    ],\r\n    \"remoteVirtualNetwork\": {\r\n      \"id\": \"/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke1\"\r\n    },\r\n    \"remoteVirtualNetworkAddressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"10.10.1.0/24\"\r\n      ]\r\n    },\r\n    \"resourceGuid\": \"b13eadb2-8fee-0f09-2a9d-af5a5c3cd6f6\",\r\n    \"routeServiceVips\": {},\r\n    \"useRemoteGateways\": false\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualNetworks/virtualNetworkPeerings\"\r\n}\r\n",
+  "stderr": "",
+  "wrapperError": null
+}

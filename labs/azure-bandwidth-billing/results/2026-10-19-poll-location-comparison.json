@@ -1,0 +1,65 @@
+{
+  "classification": "DIAGNOSTIC_NOT_NEW_BILLING_DATA",
+  "outcome": "COMPARISON_NOT_AVAILABLE_NOT_REPRODUCED",
+  "reason": "first_poll_has_no_comparable_replacement",
+  "startedAtUtc": "2026-10-19T07:34:44.380980+00:00",
+  "endedAtUtc": "2026-10-19T07:35:26.676842+00:00",
+  "globalParentCheckId": "aged-c-control-details-20261019T070500Z",
+  "priorHttpRequests": 4,
+  "diagnosticHttpRequests": 2,
+  "globalCumulativeHttpRequests": 6,
+  "globalHttpCap": 6,
+  "unusedGlobalRequests": 0,
+  "comparison": {
+    "generationLocationPresent": true,
+    "generationURLPassesExistingValidator": true,
+    "replacementLocationPresent": false
+  },
+  "responseBooleans": {
+    "generationPending": true,
+    "firstPollPending": false,
+    "firstPollReady": true
+  },
+  "http": [
+    {
+      "status": 202,
+      "responseMetadata": {
+        "receivedAtUtc": "2026-10-19T07:34:52.993349+00:00",
+        "safeHeaders": {
+          "retry-after": "20",
+          "x-ms-request-id": "91bd1347-ed44-412e-b998-5b9b33636795",
+          "x-ms-correlation-request-id": "2771f9d2-8b3d-4f42-9ec3-85cec5c9cbb3",
+          "date": "Mon, 19 Oct 2026 07:34:49 GMT"
+        },
+        "retryAfterSeconds": 20.0,
+        "suggestedRetryAtUtc": "2026-10-19T07:35:12.993349+00:00",
+        "retrySource": "known"
+      }
+    },
+    {
+      "status": 200,
+      "responseMetadata": {
+        "receivedAtUtc": "2026-10-19T07:35:26.639796+00:00",
+        "safeHeaders": {
+          "x-ms-request-id": "fb29cd13-5447-4e12-9120-8be38306c9d8",
+          "x-ms-correlation-request-id": "eaad1746-8051-4fa9-83d0-1122588c3038",
+          "date": "Mon, 19 Oct 2026 07:35:23 GMT"
+        },
+        "retryAfterSeconds": null,
+        "suggestedRetryAtUtc": null,
+        "retrySource": "unknown"
+      }
+    }
+  ],
+  "requestPeriod": {
+    "start": "2026-10-15",
+    "end": "2026-10-19"
+  },
+  "requestTimeoutSeconds": 120,
+  "downloadedCsv": false,
+  "newBillingData": false,
+  "followedReplacement": false,
+  "cryptographicValidityProven": false,
+  "sourceAndParentFilesUnchanged": true,
+  "allOwnedChildrenIdle": true
+}

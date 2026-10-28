@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-15T20:48:15.327351+00:00",
+  "finishedUtc": "2026-10-15T20:50:14.933446+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-jp",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\static-vpn-jp-restore-jp.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\n\\n[stderr]\\nTraceback (most recent call last):\\n  File \\\"<stdin>\\\", line 48, in <module>\\nAssertionError: BIRD 2.0.8 ready.\\nReading configuration from /etc/bird/bird.conf\\nReconfiguration in progress\\n\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\n\n[stderr]\nTraceback (most recent call last):\n  File \"<stdin>\", line 48, in <module>\nAssertionError: BIRD 2.0.8 ready.\nReading configuration from /etc/bird/bird.conf\nReconfiguration in progress\n\n"
+      }
+    ]
+  },
+  "sha256": "7e312ad0d24bfaf0a4f1bfc5d85da89fc2e41a70f4f94f0f2f001d0202170198"
+}

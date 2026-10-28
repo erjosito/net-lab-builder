@@ -1,0 +1,226 @@
+[
+  {
+    "target": {
+      "name": "vm-hub-hub10",
+      "vnet": "hub",
+      "subnet": "hub10",
+      "ip": "10.0.1.4",
+      "role": "hub",
+      "nic": "vm-hub-hub10-nic",
+      "disk": "vm-hub-hub10-osdisk"
+    },
+    "vm": {
+      "name": "vm-hub-hub10",
+      "size": "Standard_D2als_v6",
+      "state": "Succeeded",
+      "statuses": [
+        {
+          "code": "ProvisioningState/succeeded",
+          "displayStatus": "Provisioning succeeded",
+          "level": "Info",
+          "time": "2026-10-16T08:23:50.0923507+00:00"
+        },
+        {
+          "code": "PowerState/running",
+          "displayStatus": "VM running",
+          "level": "Info"
+        }
+      ]
+    },
+    "nic": {
+      "forwarding": false,
+      "ips": [
+        {
+          "ip": "10.0.1.4",
+          "method": "Static",
+          "primary": true
+        }
+      ],
+      "name": "vm-hub-hub10-nic",
+      "state": "Succeeded"
+    },
+    "bootstrap": "READY"
+  },
+  {
+    "target": {
+      "name": "vm-spoke1-spoke10",
+      "vnet": "spoke1",
+      "subnet": "spoke10",
+      "ip": "10.10.1.4",
+      "alias": "10.10.1.10",
+      "role": "nva",
+      "nic": "vm-spoke1-spoke10-nic",
+      "disk": "vm-spoke1-spoke10-osdisk"
+    },
+    "vm": {
+      "name": "vm-spoke1-spoke10",
+      "size": "Standard_D2als_v6",
+      "state": "Succeeded",
+      "statuses": [
+        {
+          "code": "ProvisioningState/succeeded",
+          "displayStatus": "Provisioning succeeded",
+          "level": "Info",
+          "time": "2026-10-16T08:23:49.4396151+00:00"
+        },
+        {
+          "code": "PowerState/running",
+          "displayStatus": "VM running",
+          "level": "Info"
+        }
+      ]
+    },
+    "nic": {
+      "forwarding": true,
+      "ips": [
+        {
+          "ip": "10.10.1.4",
+          "method": "Static",
+          "primary": true
+        },
+        {
+          "ip": "10.10.1.10",
+          "method": "Static",
+          "primary": false
+        }
+      ],
+      "name": "vm-spoke1-spoke10-nic",
+      "state": "Succeeded"
+    },
+    "bootstrap": "READY"
+  },
+  {
+    "target": {
+      "name": "vm-spoke1-isolated192",
+      "vnet": "spoke1",
+      "subnet": "isolated192",
+      "ip": "192.168.1.4",
+      "role": "backend",
+      "identity": "spoke1-backend-192.168.1.4",
+      "nic": "vm-spoke1-isolated192-nic",
+      "disk": "vm-spoke1-isolated192-osdisk"
+    },
+    "vm": {
+      "name": "vm-spoke1-isolated192",
+      "size": "Standard_D2als_v6",
+      "state": "Succeeded",
+      "statuses": [
+        {
+          "code": "ProvisioningState/succeeded",
+          "displayStatus": "Provisioning succeeded",
+          "level": "Info",
+          "time": "2026-10-16T08:23:40.7889364+00:00"
+        },
+        {
+          "code": "PowerState/running",
+          "displayStatus": "VM running",
+          "level": "Info"
+        }
+      ]
+    },
+    "nic": {
+      "forwarding": false,
+      "ips": [
+        {
+          "ip": "192.168.1.4",
+          "method": "Static",
+          "primary": true
+        }
+      ],
+      "name": "vm-spoke1-isolated192-nic",
+      "state": "Succeeded"
+    },
+    "bootstrap": "READY"
+  },
+  {
+    "target": {
+      "name": "vm-spoke2-spoke10",
+      "vnet": "spoke2",
+      "subnet": "spoke10",
+      "ip": "10.20.0.4",
+      "alias": "10.20.0.10",
+      "role": "nva",
+      "nic": "vm-spoke2-spoke10-nic",
+      "disk": "vm-spoke2-spoke10-osdisk"
+    },
+    "vm": {
+      "name": "vm-spoke2-spoke10",
+      "size": "Standard_D2als_v6",
+      "state": "Succeeded",
+      "statuses": [
+        {
+          "code": "ProvisioningState/succeeded",
+          "displayStatus": "Provisioning succeeded",
+          "level": "Info",
+          "time": "2026-10-16T08:23:52.7559094+00:00"
+        },
+        {
+          "code": "PowerState/running",
+          "displayStatus": "VM running",
+          "level": "Info"
+        }
+      ]
+    },
+    "nic": {
+      "forwarding": true,
+      "ips": [
+        {
+          "ip": "10.20.0.4",
+          "method": "Static",
+          "primary": true
+        },
+        {
+          "ip": "10.20.0.10",
+          "method": "Static",
+          "primary": false
+        }
+      ],
+      "name": "vm-spoke2-spoke10-nic",
+      "state": "Succeeded"
+    },
+    "bootstrap": "READY"
+  },
+  {
+    "target": {
+      "name": "vm-spoke2-isolated192",
+      "vnet": "spoke2",
+      "subnet": "isolated192",
+      "ip": "192.168.1.4",
+      "role": "backend",
+      "identity": "spoke2-backend-192.168.1.4",
+      "nic": "vm-spoke2-isolated192-nic",
+      "disk": "vm-spoke2-isolated192-osdisk"
+    },
+    "vm": {
+      "name": "vm-spoke2-isolated192",
+      "size": "Standard_D2als_v6",
+      "state": "Succeeded",
+      "statuses": [
+        {
+          "code": "ProvisioningState/succeeded",
+          "displayStatus": "Provisioning succeeded",
+          "level": "Info",
+          "time": "2026-10-16T08:23:51.8807924+00:00"
+        },
+        {
+          "code": "PowerState/running",
+          "displayStatus": "VM running",
+          "level": "Info"
+        }
+      ]
+    },
+    "nic": {
+      "forwarding": false,
+      "ips": [
+        {
+          "ip": "192.168.1.4",
+          "method": "Static",
+          "primary": true
+        }
+      ],
+      "name": "vm-spoke2-isolated192-nic",
+      "state": "Succeeded"
+    },
+    "bootstrap": "READY"
+  }
+]

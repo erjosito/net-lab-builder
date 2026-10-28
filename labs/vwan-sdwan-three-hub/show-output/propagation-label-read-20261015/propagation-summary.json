@@ -1,0 +1,200 @@
+{
+  "tables-eu": [
+    {
+      "name": "defaultRouteTable",
+      "labels": [
+        "default"
+      ]
+    },
+    {
+      "name": "noneRouteTable",
+      "labels": [
+        "none"
+      ]
+    }
+  ],
+  "connections-eu": [
+    {
+      "name": "conn-transit-eu",
+      "routingConfiguration": {
+        "associatedRouteTable": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/hubRouteTables/defaultRouteTable"
+        },
+        "propagatedRouteTables": {
+          "ids": [
+            {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/hubRouteTables/defaultRouteTable"
+            }
+          ],
+          "labels": [
+            "Default"
+          ]
+        },
+        "vnetRoutes": {
+          "bgpConnections": [
+            {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/bgpConnections/bgp-router-eu"
+            }
+          ],
+          "staticRoutes": [],
+          "staticRoutesConfig": {
+            "propagateStaticRoutes": true,
+            "vnetLocalRouteOverrideCriteria": "Contains"
+          }
+        }
+      }
+    },
+    {
+      "name": "conn-spoke-eu",
+      "routingConfiguration": {
+        "associatedRouteTable": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/hubRouteTables/defaultRouteTable"
+        },
+        "propagatedRouteTables": {
+          "ids": [
+            {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu/hubRouteTables/defaultRouteTable"
+            }
+          ],
+          "labels": [
+            "Default"
+          ]
+        },
+        "vnetRoutes": {
+          "staticRoutes": [],
+          "staticRoutesConfig": {
+            "propagateStaticRoutes": true,
+            "vnetLocalRouteOverrideCriteria": "Contains"
+          }
+        }
+      }
+    }
+  ],
+  "tables-us": [
+    {
+      "name": "defaultRouteTable",
+      "labels": [
+        "default"
+      ]
+    },
+    {
+      "name": "noneRouteTable",
+      "labels": [
+        "none"
+      ]
+    }
+  ],
+  "connections-us": [
+    {
+      "name": "conn-transit-us",
+      "routingConfiguration": {
+        "associatedRouteTable": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubRouteTables/defaultRouteTable"
+        },
+        "propagatedRouteTables": {
+          "ids": [
+            {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubRouteTables/defaultRouteTable"
+            }
+          ],
+          "labels": [
+            "Default"
+          ]
+        },
+        "vnetRoutes": {
+          "bgpConnections": [
+            {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/bgpConnections/bgp-router-us"
+            }
+          ],
+          "staticRoutes": [],
+          "staticRoutesConfig": {
+            "propagateStaticRoutes": true,
+            "vnetLocalRouteOverrideCriteria": "Contains"
+          }
+        }
+      }
+    },
+    {
+      "name": "conn-spoke-us",
+      "routingConfiguration": {
+        "associatedRouteTable": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubRouteTables/defaultRouteTable"
+        },
+        "propagatedRouteTables": {
+          "ids": [
+            {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubRouteTables/defaultRouteTable"
+            }
+          ],
+          "labels": [
+            "Default"
+          ]
+        },
+        "vnetRoutes": {
+          "staticRoutes": [],
+          "staticRoutesConfig": {
+            "propagateStaticRoutes": true,
+            "vnetLocalRouteOverrideCriteria": "Contains"
+          }
+        }
+      }
+    }
+  ],
+  "tables-jp": [
+    {
+      "name": "defaultRouteTable",
+      "labels": [
+        "default"
+      ]
+    },
+    {
+      "name": "noneRouteTable",
+      "labels": [
+        "none"
+      ]
+    }
+  ],
+  "connections-jp": [
+    {
+      "name": "conn-spoke-jp",
+      "routingConfiguration": {
+        "associatedRouteTable": {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubRouteTables/defaultRouteTable"
+        },
+        "propagatedRouteTables": {
+          "ids": [
+            {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubRouteTables/defaultRouteTable"
+            }
+          ],
+          "labels": [
+            "Default"
+          ]
+        },
+        "vnetRoutes": {
+          "staticRoutes": [],
+          "staticRoutesConfig": {
+            "propagateStaticRoutes": true,
+            "vnetLocalRouteOverrideCriteria": "Contains"
+          }
+        }
+      }
+    }
+  ],
+  "vpn-routing": {
+    "associatedRouteTable": {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubRouteTables/defaultRouteTable"
+    },
+    "propagatedRouteTables": {
+      "ids": [
+        {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubRouteTables/defaultRouteTable"
+        }
+      ],
+      "labels": [
+        "Default"
+      ]
+    }
+  }
+}

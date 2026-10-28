@@ -1,0 +1,43 @@
+{
+  "timestampUtc": "2026-10-15T09:35:41.943698+00:00",
+  "command": [
+    "network",
+    "vnet",
+    "subnet",
+    "show",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "--vnet-name",
+    "vnet-dc-us",
+    "-n",
+    "workload"
+  ],
+  "result": {
+    "addressPrefix": "10.120.0.0/24",
+    "defaultOutboundAccess": false,
+    "delegations": [],
+    "etag": "W/\"deff37d7-0424-4582-956c-5e71103e3e88\"",
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-us/subnets/workload",
+    "ipConfigurations": [
+      {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Network/networkInterfaces/NIC-PROBE-DC-US/ipConfigurations/IPCONFIG1",
+        "resourceGroup": "RG-VWAN-SDWAN-THREEHUB-20261014"
+      }
+    ],
+    "name": "workload",
+    "networkSecurityGroup": {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/vnet-dc-us-workload-nsg-northcentralus",
+      "resourceGroup": "rg-vwan-sdwan-threehub-20261014"
+    },
+    "privateEndpointNetworkPolicies": "Disabled",
+    "privateLinkServiceNetworkPolicies": "Enabled",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+    "routeTable": {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/routeTables/rt-dc-us",
+      "resourceGroup": "rg-vwan-sdwan-threehub-20261014"
+    },
+    "serviceEndpoints": [],
+    "type": "Microsoft.Network/virtualNetworks/subnets"
+  }
+}

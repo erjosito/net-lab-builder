@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-16T08:45:31.631331+00:00",
+  "finishedUtc": "2026-10-16T08:47:15.720393+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-jp",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\design-startup-source-jp.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\n\\n[stderr]\\nTraceback (most recent call last):\\n  File \\\"<stdin>\\\", line 9, in <module>\\n  File \\\"<stdin>\\\", line 5, in run\\nRuntimeError: Unable to connect to server control socket (/run/bird/bird.ctl): No such file or directory\\n\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\n\n[stderr]\nTraceback (most recent call last):\n  File \"<stdin>\", line 9, in <module>\n  File \"<stdin>\", line 5, in run\nRuntimeError: Unable to connect to server control socket (/run/bird/bird.ctl): No such file or directory\n\n"
+      }
+    ]
+  },
+  "sha256": "4143ff0b5bb078474ae5fdebcdf289a0a183a636079cc2a97dd6ccd2dd2f6273"
+}

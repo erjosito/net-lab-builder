@@ -1,7 +1,7 @@
 # SKILL: Live Lab Execution Circuit Breaker
 
-**Version:** 2.0
-**Owner:** Morpheus
+**Version:** 2.1
+**Owner:** Lead agent (Morpheus in opt-in Squad mode)
 **Created:** 2026-09-28
 **Applies to:** Any agent that can mutate a live Azure, GCP, Megaport, or guest-OS lab
 
@@ -12,10 +12,22 @@
 Enforce `.squad/live-lab-policy.md` so an approved live action cannot turn into
 an open-ended deployment, validation, evidence-generation, documentation, or
 retry loop. Service-specific approval and cleanup gates still apply.
+Honor authorization already granted under `AGENTS.md`; do not create another
+approval round solely because execution passes a former Squad role boundary.
 
-## 1. One lease, one turn, one objective
+## Execution mode
 
-Before dispatch, the coordinator creates an ignored control directory:
+Read `AGENTS.md` and `.squad/live-lab-policy.md`. Single-agent mode is the
+default: one lead designs, implements, validates, and restores one bounded
+scenario without role handoffs. Optional reviewers are read-only. Squad-only
+role separation applies only when the user explicitly requests Squad.
+Documentation/vault/publication work is offline and never gates safe restore
+or authorized cleanup. Do not load member histories to execute this procedure.
+
+## 1. One lease, one objective
+
+Before live execution, the lead (coordinator in Squad mode) creates an ignored
+control directory, after confirming no other owner has active work there:
 
 ```text
 labs/<lab>/deploy/.runtime-control/
@@ -28,10 +40,10 @@ labs/<lab>/deploy/.runtime-control/
 ```json
 {
   "taskId": "<unique-id>",
-  "ownerRole": "Tank",
-  "objective": "<one bounded live action>",
+  "ownerRole": "lead",
+  "objective": "<one bounded scenario including validation and restore>",
   "allowedMutations": ["<exact operations>"],
-  "forbiddenWork": ["validation matrix", "bulk evidence import", "documentation expansion"],
+  "forbiddenWork": ["unrelated scenarios", "bulk evidence import", "documentation expansion"],
   "rollback": "<tested restore operation>",
   "expiresAtUtc": "<timestamp>",
   "maxToolCalls": 150,
@@ -43,9 +55,14 @@ labs/<lab>/deploy/.runtime-control/
 }
 ```
 
-- Tank mutation default: **60 minutes, 150 completed tool calls, 6 mutations**.
-- Niobe validation default: **30 minutes, 75 calls, zero mutations**.
+- Single-agent scenario default: **60 minutes, 150 completed tool calls,
+  6 mutations**, including required validation and restore.
+- Squad Tank mutation uses the same limits; separate read-only validation
+  (Niobe in Squad mode) uses **30 minutes, 75 calls, zero mutations**.
 - Offline evidence/docs default: **45 minutes, 100 calls, zero live mutations**.
+- `ownerRole` identifies the actual owner; retain any lab-specific wrapper's
+  required schema. Close the prior lease and prove commands idle before starting
+  a new one. Never overwrite another session's lease or clear its STOP file.
 - The approved experiment may set lower limits; it may not silently raise them.
 - A managed-resource operation expected to exceed 20 minutes must have its own
   explicit timeout and progress criterion in the lease. It does not extend the
@@ -53,29 +70,36 @@ labs/<lab>/deploy/.runtime-control/
 - The agent checks lease state, expiry, and `STOP` immediately before every
   mutation and every command expected to exceed 60 seconds, after every
   long-running command, and before commit.
-- The coordinator records a checkpoint at least every 15 minutes or 25 tool
+- The lead/coordinator records a checkpoint at least every 15 minutes or 25 tool
   calls with elapsed time, completed mutations, and remaining budget.
 - At 80% of elapsed, tool-call, or mutation budget, stop starting new work.
   Capture state, perform only
   the approved rollback/closure checks, and return a checkpoint.
 - At expiry, return immediately after terminating child processes. Do not
   diagnose, retry, document, or continue cleanup. An incomplete restore becomes
-  `BLOCKED` and requires a fresh recovery lease owned by another agent.
+  `BLOCKED`. Recovery requires a materially new plan, explicit approval, a
+  fresh lease, and confirmed idle. In single-agent mode the same lead may
+  execute recovery after user or independent review of the plan; Squad requires
+  a different recovery owner.
 
 ## 2. Separate live operations from evidence expansion
 
-- **Trinity turn:** define one scenario, decisive signal, minimal evidence, and
+- **Single-agent scenario:** the lead defines the baseline, decisive signal,
+  required evidence, approved mutations, and stop/restore criteria, then
+  implements, validates, returns a verdict, and verifies restore within the
+  same lease. Routine checks do not require fresh agents or budget resets.
+- **Squad-only Trinity turn:** define one scenario, decisive signal, minimal evidence, and
   stop/restore criteria.
-- **Tank turn:** deploy or mutate, plus the minimum before/action/after evidence
+- **Squad-only Tank turn:** deploy or mutate, plus the minimum before/action/after evidence
   needed to prove and restore that mutation.
-- **Niobe turn:** validate exactly one scenario, return its verdict, and verify
+- **Squad-only Niobe turn:** validate exactly one scenario, return its verdict, and verify
   baseline restore after Tank is idle and the mutation lease is closed.
 - **Offline audit turn:** historical transcript import, index regeneration,
-  corpus sanitization, report updates, and large commits.
-- **Oracle/Kid/Scribe turns:** only after live mutation is idle and their input
+  corpus sanitization, report updates, and large commits; the same lead may own it.
+- **Squad Oracle/Kid/Scribe turns:** only after live mutation is idle and their input
   evidence is stable.
-- **Incident review:** owned by Morpheus or a designated reviewer who is not the
-  active execution owner.
+- **Optional independent incident review:** read-only, owned by a reviewer who
+  is not the active execution owner (Morpheus or designated reviewer in Squad).
 - Do not reconstruct historical sessions or recursively scan the complete
   evidence corpus while a deployment/remediation command is active.
 - Generated evidence directories are outputs, never inputs to collectors.
@@ -88,7 +112,9 @@ labs/<lab>/deploy/.runtime-control/
 
 ## 3. Command controls
 
-- Every external command must have a timeout. Default: 20 minutes.
+- Every external command must have a timeout within its lease's remaining
+  budget. Defaults: 20 minutes for mutation/scenario commands, 10 minutes for
+  read-only validation or offline work; a lower approved limit wins.
 - A command expected to run longer must be named in the lease with a maximum
   duration and a progress signal. No-progress thresholds remain mandatory.
 - Wrappers must not use an unbounded `WaitForExit()`. On timeout they terminate
@@ -102,10 +128,10 @@ labs/<lab>/deploy/.runtime-control/
 
 ## 4. Stop and queued-message protocol
 
-1. Coordinator writes `STOP`, changes lease state to `stop-requested`, and uses
-   the runtime cancellation primitive if one exists.
-2. Coordinator sends one STOP message only. It sends no retry, audit expansion,
-   or replacement objective to the same active agent.
+1. Lead/controller writes `STOP`, changes lease state to `stop-requested`, and
+   uses the runtime cancellation primitive if one exists.
+2. If a worker was dispatched, send one STOP message only. Send no retry,
+   audit expansion, or replacement objective to the same active agent.
 3. A delivered message is presumed queued until the agent reports a new turn.
    A final/idle response can describe the prior turn while a queued turn is
    already active; verify both turn number and runtime status.
@@ -113,17 +139,21 @@ labs/<lab>/deploy/.runtime-control/
    cancellation. At 10 minutes, cancel the containing job/process if available
    and freeze all lab mutations; notify Jose with the last checkpoint.
 5. If cancellation is unavailable, do not add messages. Preserve the control
-   file, notify the incident commander, and wait for the active command boundary.
+   file, notify the user/controller, and wait for the active command boundary.
+   Do not start replacement work without proof that prior commands are idle.
 
 ## 5. Relaunch rule
 
 - Do not relaunch an agent for the same failed objective.
 - Discard every queued message from an expired/stopped lease.
-- A fresh agent is allowed only after runtime and process state prove the prior
-  owner idle, and Morpheus defines a materially new, approved objective with a
-  new lease. Never append new scope to an active lease.
-- Read-only recovery verification is a different objective and belongs to
-  Niobe. Architecture correction remains Trinity/Morpheus work.
+- Recovery is allowed only after runtime/process state proves prior work idle
+  and a materially new plan is explicitly approved with a new lease. The same
+  lead may resume after user or independent review; Squad requires a fresh
+  agent/different owner and Morpheus approval. STOP still requires explicit
+  authorization to resume. Never append new scope to an active lease.
+- In single-agent mode, read-only recovery verification and architecture
+  correction remain the lead's responsibility; no automatic reviewer dispatch.
+  In Squad mode, verification belongs to Niobe and design to Trinity/Morpheus.
 
 ## 6. Completion gate
 
@@ -134,7 +164,8 @@ A live turn is complete only when:
 - the exact mutation count and final state are recorded;
 - rollback is verified when required;
 - no queued follow-up remains for that agent;
-- evidence expansion is handed to a separate offline turn.
+- evidence expansion waits for a separate offline lease, which may have the
+  same owner in single-agent mode.
 
 ## 7. Checkpoint and verdict output
 
@@ -147,13 +178,15 @@ mutations <used>/<limit> | state <running|verdict|restoring|blocked|stopped> |
 next <single bounded action>
 ```
 
-No checkpoint for 15 minutes triggers Ralph escalation and a freeze on new
-dispatches until Morpheus confirms owner state.
+No checkpoint for 15 minutes requires checking owner/command state and freezing
+new mutations until it is known. Use bounded commands/runtime controls; this
+skill does not itself launch a watchdog. Squad uses Ralph/Morpheus escalation.
 
 ## 8. Scenario reset
 
 - Each scenario starts from a named clean baseline and includes a restore plan.
 - Restore consumes the same lease and is capped at 15 minutes by default.
-- No next scenario starts until Niobe verifies baseline state.
+- No next scenario starts until the lead (Niobe in Squad mode) verifies baseline
+  state. A blocked restore freezes subsequent scenarios until recovery succeeds.
 - If restore misses its budget, return `BLOCKED`; do not keep repairing under the
   expired scenario lease.

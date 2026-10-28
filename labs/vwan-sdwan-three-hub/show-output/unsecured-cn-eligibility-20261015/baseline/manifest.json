@@ -1,0 +1,155 @@
+{
+  "timestampUtc": "2026-10-15T10:05:24.346280+00:00",
+  "observedHubMetadata": {
+    "eu": {
+      "hub": {
+        "etag": "W/\"00465770-fb39-4e38-b3de-49d01110535a\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu",
+        "location": "westeurope",
+        "name": "hub-eu",
+        "properties": {
+          "addressPrefix": "10.250.0.0/23",
+          "allowBranchToBranchTraffic": false,
+          "hubRoutingPreference": "ASPath",
+          "networkVirtualAppliances": [],
+          "provisioningState": "Succeeded",
+          "routeTable": {
+            "routes": []
+          },
+          "routingState": "Provisioned",
+          "sku": "Standard",
+          "virtualHubRouteTableV2s": [],
+          "virtualRouterAsn": 65515,
+          "virtualRouterAutoScaleConfiguration": {
+            "minCapacity": 2
+          },
+          "virtualRouterIps": [
+            "10.250.0.69",
+            "10.250.0.70"
+          ],
+          "virtualWan": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub"
+          }
+        },
+        "tags": {
+          "created_by": "copilot-lab",
+          "ephemeral": "true",
+          "lab": "true",
+          "owner": "jose",
+          "run_id": "20261014-threehub"
+        },
+        "type": "Microsoft.Network/virtualHubs"
+      },
+      "routingIntentResponse": {
+        "value": []
+      },
+      "observedHubRoutingPreference": "ASPath",
+      "observedRoutingIntent": []
+    },
+    "us": {
+      "hub": {
+        "etag": "W/\"167e2066-766d-4fd0-85bb-3023240a1f96\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us",
+        "location": "northcentralus",
+        "name": "hub-us",
+        "properties": {
+          "addressPrefix": "10.250.2.0/23",
+          "allowBranchToBranchTraffic": false,
+          "hubRoutingPreference": "ASPath",
+          "networkVirtualAppliances": [],
+          "provisioningState": "Succeeded",
+          "routeTable": {
+            "routes": []
+          },
+          "routingState": "Provisioned",
+          "sku": "Standard",
+          "virtualHubRouteTableV2s": [],
+          "virtualRouterAsn": 65515,
+          "virtualRouterAutoScaleConfiguration": {
+            "minCapacity": 2
+          },
+          "virtualRouterIps": [
+            "10.250.2.70",
+            "10.250.2.69"
+          ],
+          "virtualWan": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub"
+          }
+        },
+        "tags": {
+          "created_by": "copilot-lab",
+          "ephemeral": "true",
+          "lab": "true",
+          "owner": "jose",
+          "run_id": "20261014-threehub"
+        },
+        "type": "Microsoft.Network/virtualHubs"
+      },
+      "routingIntentResponse": {
+        "value": []
+      },
+      "observedHubRoutingPreference": "ASPath",
+      "observedRoutingIntent": []
+    },
+    "jp": {
+      "hub": {
+        "etag": "W/\"bd444fe2-0012-4e89-a274-67518233d93e\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp",
+        "location": "japaneast",
+        "name": "hub-jp",
+        "properties": {
+          "addressPrefix": "10.250.4.0/23",
+          "allowBranchToBranchTraffic": false,
+          "hubRoutingPreference": "ASPath",
+          "networkVirtualAppliances": [],
+          "provisioningState": "Succeeded",
+          "routeTable": {
+            "routes": []
+          },
+          "routingState": "Provisioned",
+          "sku": "Standard",
+          "virtualHubRouteTableV2s": [],
+          "virtualRouterAsn": 65515,
+          "virtualRouterAutoScaleConfiguration": {
+            "minCapacity": 2
+          },
+          "virtualRouterIps": [
+            "10.250.4.70",
+            "10.250.4.69"
+          ],
+          "virtualWan": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub"
+          },
+          "vpnGateway": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp"
+          }
+        },
+        "tags": {
+          "created_by": "copilot-lab",
+          "ephemeral": "true",
+          "lab": "true",
+          "owner": "jose",
+          "run_id": "20261014-threehub"
+        },
+        "type": "Microsoft.Network/virtualHubs"
+      },
+      "routingIntentResponse": {
+        "value": []
+      },
+      "observedHubRoutingPreference": "ASPath",
+      "observedRoutingIntent": []
+    }
+  },
+  "expectedHRP": "ASPath",
+  "expectedRoutingIntentEnabled": false,
+  "withdrawCN": false,
+  "additionalASN": 0,
+  "ingress": "JP",
+  "prefixes": [
+    "10.110.0.0/24",
+    "10.120.0.0/24",
+    "10.130.0.0/24",
+    "10.140.0.0/24"
+  ],
+  "source": "spoke-connection effectiveRoutes"
+}

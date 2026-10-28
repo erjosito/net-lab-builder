@@ -35,7 +35,7 @@ function Invoke-LabAz {
     param([string[]]$Arguments, [string]$SubscriptionId, [int]$TimeoutSeconds = 120)
     $lease = Read-Lease
     if (-not $SubscriptionId) { throw 'Explicit subscription required.' }
-    $azPath = (Get-Command az -ErrorAction Stop).Source
+    $azPath = (Get-Command az -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
     $python = [IO.Path]::GetFullPath((Join-Path (Split-Path $azPath -Parent) '..\python.exe'))
     if (-not (Test-Path $python)) { throw 'Installed Azure CLI Python entry point unavailable; no installation allowed.' }
     $psi = [Diagnostics.ProcessStartInfo]::new($python)
@@ -113,12 +113,43 @@ function Invoke-Mutation {
     }
 }
 
+function Test-OwnedTags($Resource, $Context) {
+    $property = $Resource.PSObject.Properties['tags']
+    if (-not $property -or -not $property.Value) { return $false }
+    $tags = $property.Value
+    foreach ($name in @('lab', 'created_by', 'run_id')) {
+        if (-not $tags.PSObject.Properties[$name]) { return $false }
+    }
+    return ($tags.lab -eq 'true' -and $tags.created_by -eq 'copilot-lab' -and
+        $tags.run_id -eq $Context.runId)
+}
+
 function Get-OwnedInventory($Context) {
     [void](Assert-OwnedGroup $Context)
     $items = @(Invoke-LabAz -SubscriptionId $Context.subscriptionId -Arguments @('resource', 'list', '--resource-group', $Context.resourceGroup))
+    $inventory = @()
     foreach ($item in $items) {
-        if ($item.tags.lab -ne 'true' -or $item.tags.created_by -ne 'copilot-lab' -or
-            $item.tags.run_id -ne $Context.runId) { throw 'Foreign or untagged resource in owned group; freeze cleanup.' }
+        if ($item.type -ieq 'Microsoft.Compute/virtualMachines/extensions' -and
+            ($item.name.Split('/')[-1] -in @('MDE.Linux', 'RunCommandLinux'))) {
+            $tags = $item.PSObject.Properties['tags']
+            if ($tags -and $null -ne $tags.Value -and
+                @($tags.Value.PSObject.Properties).Count -gt 0 -and
+                -not (Test-OwnedTags $item $Context)) {
+                throw 'Foreign or untagged resource in owned group; freeze cleanup.'
+            }
+            $parentId = $item.id -replace '/extensions/[^/]+$', ''
+            $parents = @($items | Where-Object {
+                $_.type -ieq 'Microsoft.Compute/virtualMachines' -and
+                $_.id -ieq $parentId -and (Test-OwnedTags $_ $Context)
+            })
+            if ($parentId -ieq $item.id -or $parents.Count -ne 1) {
+                throw 'Service-managed VM extension has no uniquely verified owned parent.'
+            }
+            Write-Warning 'Verified service-managed VM extension through its owned parent; not an independently managed lab resource.'
+            continue
+        }
+        if (-not (Test-OwnedTags $item $Context)) { throw 'Foreign or untagged resource in owned group; freeze cleanup.' }
+        $inventory += $item
     }
-    return $items
+    return $inventory
 }

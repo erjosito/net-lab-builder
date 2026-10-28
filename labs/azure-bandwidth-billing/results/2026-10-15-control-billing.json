@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "retrievedUtc": "2026-10-15T23:28:41.925140+00:00",
+  "verdict": "INCONCLUSIVE",
+  "billingHttpAttempts": 3,
+  "nativeCliAuthCalls": 6,
+  "retries": 0,
+  "mutations": 0,
+  "nextMaturityTargetUtc": "2026-10-16T23:15:33Z",
+  "scheduled": false,
+  "operations": [
+    {
+      "operation": "windows-query",
+      "status": "COMPLETE",
+      "httpStatus": 200,
+      "received": 3,
+      "discarded": null,
+      "continuationRemaining": false,
+      "error": null
+    },
+    {
+      "operation": "wsl-query",
+      "status": "EMPTY",
+      "httpStatus": 200,
+      "received": 0,
+      "discarded": null,
+      "continuationRemaining": false,
+      "error": null
+    },
+    {
+      "operation": "windows-details",
+      "status": "ERROR",
+      "httpStatus": null,
+      "received": null,
+      "discarded": null,
+      "continuationRemaining": null,
+      "error": "TimeoutError"
+    }
+  ],
+  "rows": [
+    {
+      "alias": "A",
+      "meter": "Inter Continent Data Transfer Out - NAM or EU To Any",
+      "date": "2026-10-15",
+      "costUSD": "0.0000483148265630007",
+      "currency": "USD",
+      "quantity": null,
+      "unit": null,
+      "effectivePrice": null,
+      "unitPrice": null,
+      "status": "COMPLETE"
+    },
+    {
+      "alias": "A",
+      "meter": "Intra Continent Data Transfer Out",
+      "date": "2026-10-15",
+      "costUSD": "6.48200511932373E-8",
+      "currency": "USD",
+      "quantity": null,
+      "unit": null,
+      "effectivePrice": null,
+      "unitPrice": null,
+      "status": "COMPLETE"
+    },
+    {
+      "alias": "A",
+      "meter": "Standard Data Transfer Out",
+      "date": "2026-10-15",
+      "costUSD": "0.000024495679885149",
+      "currency": "USD",
+      "quantity": null,
+      "unit": null,
+      "effectivePrice": null,
+      "unitPrice": null,
+      "status": "COMPLETE"
+    }
+  ],
+  "interpretation": "No zero-charge claim. Daily meter rows cannot isolate either transfer. Missing quantities are not inferred from retail rates; remaining continuation is INCOMPLETE.",
+  "scopes": [
+    {
+      "aliases": [
+        "A",
+        "C"
+      ],
+      "operation": "windows-query",
+      "status": "COMPLETE"
+    },
+    {
+      "aliases": [
+        "T"
+      ],
+      "operation": "wsl-query",
+      "status": "EMPTY"
+    },
+    {
+      "aliases": [
+        "C"
+      ],
+      "operation": "windows-details",
+      "status": "ERROR",
+      "reason": "Single authorized request timed out before receipt; no retry."
+    }
+  ],
+  "observedCostTotalUSD": "0.0000728753264993429373",
+  "attribution": {
+    "A": "Three daily meter cost rows; quantities not reported; not isolated to headline transfer.",
+    "C": "No daily Bandwidth cost rows returned; consumption receipt timed out; not zero-charge evidence.",
+    "T": "Daily Bandwidth query empty; not zero-charge evidence."
+  },
+  "trafficContext": {
+    "headline": "A/T cross-tenant, 5 GiB each direction, 2026-10-15 10:04\u201310:40 UTC; unchanged.",
+    "control": "C to B, same core subscription, NE to SC, isolated producer RG, 1 GiB, 2026-10-15 23:08:23\u201323:15:32 UTC; no new payload.",
+    "billingAttribution": "INCONCLUSIVE"
+  }
+}

@@ -1,0 +1,457 @@
+{
+  "taskId": "cleanup-corrected-20261017T091507Z",
+  "ownerRole": "Tank",
+  "objective": "Delete exact approved lab RG including five newly verified lab-owned NSGs and eight own-VM policy extensions; materially corrected ownership scope, not replay of failed gate",
+  "state": "completed",
+  "createdAtUtc": "2026-10-17T09:15:07.848221+00:00",
+  "expiresAtUtc": "2026-10-17T09:35:07.848221+00:00",
+  "maxToolCalls": 40,
+  "toolCallsUsed": 22,
+  "maxMutations": 1,
+  "mutationsUsed": 1,
+  "commandTimeoutSeconds": 180,
+  "restoreTimeoutMinutes": 0,
+  "managedDeletionTimeoutMinutes": 12,
+  "pollIntervalSeconds": 30,
+  "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+  "location": "swedencentral",
+  "configuredSubscriptionMustMatch": true,
+  "subscriptionSwitchAllowed": false,
+  "allowedMutations": [
+    "One DELETE of exact resource group rg-subnet-overlap-20261016-fde5ecf8"
+  ],
+  "expectedCounts": {
+    "microsoft.compute/disks": 5,
+    "microsoft.compute/virtualmachines": 5,
+    "microsoft.compute/virtualmachines/extensions": 8,
+    "microsoft.network/networkinterfaces": 5,
+    "microsoft.network/networksecuritygroups": 5,
+    "microsoft.network/virtualnetworks": 3
+  },
+  "allowedResources": [
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/hub",
+      "name": "hub",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "swedencentral",
+      "tags": {
+        "created_by": "copilot-lab",
+        "lab": "true",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke1",
+      "name": "spoke1",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "swedencentral",
+      "tags": {
+        "created_by": "copilot-lab",
+        "lab": "true",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke2",
+      "name": "spoke2",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "swedencentral",
+      "tags": {
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "created_by": "copilot-lab",
+        "lab": "true"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkInterfaces/vm-spoke2-isolated192-nic",
+      "name": "vm-spoke2-isolated192-nic",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkInterfaces/vm-spoke1-spoke10-nic",
+      "name": "vm-spoke1-spoke10-nic",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkInterfaces/vm-hub-hub10-nic",
+      "name": "vm-hub-hub10-nic",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkInterfaces/vm-spoke2-spoke10-nic",
+      "name": "vm-spoke2-spoke10-nic",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkInterfaces/vm-spoke1-isolated192-nic",
+      "name": "vm-spoke1-isolated192-nic",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Compute/virtualMachines/vm-spoke2-isolated192",
+      "name": "vm-spoke2-isolated192",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Compute/virtualMachines/vm-hub-hub10",
+      "name": "vm-hub-hub10",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Compute/virtualMachines/vm-spoke1-isolated192",
+      "name": "vm-spoke1-isolated192",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Compute/virtualMachines/vm-spoke1-spoke10",
+      "name": "vm-spoke1-spoke10",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Compute/virtualMachines/vm-spoke2-spoke10",
+      "name": "vm-spoke2-spoke10",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Compute/disks/vm-spoke1-spoke10-osdisk",
+      "name": "vm-spoke1-spoke10-osdisk",
+      "type": "Microsoft.Compute/disks",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "managedBy": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Compute/virtualMachines/vm-spoke1-spoke10",
+      "location": "swedencentral"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Compute/disks/vm-spoke1-isolated192-osdisk",
+      "name": "vm-spoke1-isolated192-osdisk",
+      "type": "Microsoft.Compute/disks",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "managedBy": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Compute/virtualMachines/vm-spoke1-isolated192",
+      "location": "swedencentral"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Compute/disks/vm-spoke2-spoke10-osdisk",
+      "name": "vm-spoke2-spoke10-osdisk",
+      "type": "Microsoft.Compute/disks",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "managedBy": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Compute/virtualMachines/vm-spoke2-spoke10",
+      "location": "swedencentral"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Compute/disks/vm-spoke2-isolated192-osdisk",
+      "name": "vm-spoke2-isolated192-osdisk",
+      "type": "Microsoft.Compute/disks",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "managedBy": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Compute/virtualMachines/vm-spoke2-isolated192",
+      "location": "swedencentral"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Compute/disks/vm-hub-hub10-osdisk",
+      "name": "vm-hub-hub10-osdisk",
+      "type": "Microsoft.Compute/disks",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "managedBy": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Compute/virtualMachines/vm-hub-hub10",
+      "location": "swedencentral"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Compute/virtualMachines/vm-hub-hub10/extensions/enablevmAccess",
+      "name": "vm-hub-hub10/enablevmAccess",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "swedencentral"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Compute/virtualMachines/vm-spoke2-isolated192/extensions/enablevmAccess",
+      "name": "vm-spoke2-isolated192/enablevmAccess",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "swedencentral"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Compute/virtualMachines/vm-spoke1-isolated192/extensions/enablevmAccess",
+      "name": "vm-spoke1-isolated192/enablevmAccess",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "swedencentral"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Compute/virtualMachines/vm-spoke1-isolated192/extensions/MDE.Linux",
+      "name": "vm-spoke1-isolated192/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "swedencentral"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Compute/virtualMachines/vm-hub-hub10/extensions/MDE.Linux",
+      "name": "vm-hub-hub10/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "swedencentral"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Compute/virtualMachines/vm-spoke1-spoke10/extensions/MDE.Linux",
+      "name": "vm-spoke1-spoke10/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "swedencentral"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Compute/virtualMachines/vm-spoke2-isolated192/extensions/MDE.Linux",
+      "name": "vm-spoke2-isolated192/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "swedencentral"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Compute/virtualMachines/vm-spoke2-spoke10/extensions/MDE.Linux",
+      "name": "vm-spoke2-spoke10/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "swedencentral"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkSecurityGroups/spoke2-spoke10-nsg-swedencentral",
+      "name": "spoke2-spoke10-nsg-swedencentral",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "location": "swedencentral",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkSecurityGroups/spoke1-spoke10-nsg-swedencentral",
+      "name": "spoke1-spoke10-nsg-swedencentral",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "location": "swedencentral",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkSecurityGroups/hub-hub10-nsg-swedencentral",
+      "name": "hub-hub10-nsg-swedencentral",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "location": "swedencentral",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkSecurityGroups/spoke1-isolated192-nsg-swedencentral",
+      "name": "spoke1-isolated192-nsg-swedencentral",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "location": "swedencentral",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkSecurityGroups/spoke2-isolated192-nsg-swedencentral",
+      "name": "spoke2-isolated192-nsg-swedencentral",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "location": "swedencentral",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      }
+    }
+  ],
+  "verifiedNsgAllowlist": [
+    {
+      "name": "hub-hub10-nsg-swedencentral",
+      "purpose": "hub-hub10",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "tagMatch": true,
+      "networkInterfaces": [],
+      "subnets": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Network/virtualNetworks/HUB/subnets/HUB10"
+      ],
+      "referenceCondition": "Only exact owned lab NICs/subnets or unattached",
+      "createdAt": null
+    },
+    {
+      "name": "spoke1-spoke10-nsg-swedencentral",
+      "purpose": "spoke1-spoke10",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "tagMatch": true,
+      "networkInterfaces": [],
+      "subnets": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Network/virtualNetworks/SPOKE1/subnets/SPOKE10"
+      ],
+      "referenceCondition": "Only exact owned lab NICs/subnets or unattached",
+      "createdAt": null
+    },
+    {
+      "name": "spoke1-isolated192-nsg-swedencentral",
+      "purpose": "spoke1-isolated192",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "tagMatch": true,
+      "networkInterfaces": [],
+      "subnets": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Network/virtualNetworks/SPOKE1/subnets/ISOLATED192"
+      ],
+      "referenceCondition": "Only exact owned lab NICs/subnets or unattached",
+      "createdAt": null
+    },
+    {
+      "name": "spoke2-spoke10-nsg-swedencentral",
+      "purpose": "spoke2-spoke10",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "tagMatch": true,
+      "networkInterfaces": [],
+      "subnets": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Network/virtualNetworks/SPOKE2/subnets/SPOKE10"
+      ],
+      "referenceCondition": "Only exact owned lab NICs/subnets or unattached",
+      "createdAt": null
+    },
+    {
+      "name": "spoke2-isolated192-nsg-swedencentral",
+      "purpose": "spoke2-isolated192",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "tagMatch": true,
+      "networkInterfaces": [],
+      "subnets": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Network/virtualNetworks/SPOKE2/subnets/ISOLATED192"
+      ],
+      "referenceCondition": "Only exact owned lab NICs/subnets or unattached",
+      "createdAt": null
+    }
+  ],
+  "ownershipEvidence": "labs\\subnet-peering-overlapping-spokes\\show-output\\ownership-correction-20261017T091447Z\\ownership-verdict.json",
+  "priorLeaseArchive": "labs\\subnet-peering-overlapping-spokes\\deploy\\.runtime-control\\ownership-correction-20261017T091447Z-prior-cleanup-lease.json",
+  "authorization": "User approved deletion of all resources of this lab RG, not a frozen old inventory",
+  "runningChildren": [],
+  "queuedWork": [],
+  "rollback": "None; approved irreversible lab cleanup. No restore authorized.",
+  "gate": "Revalidate subscription, STOP absent, exact RG/tags/counts/allowlist and NSG-only-owned-or-unattached references before DELETE; normal platform children only. Any mismatch/external association/foreign resource => BLOCKED, preserve state, no expansion.",
+  "progressSignal": "Authenticated exact-RG GET; success only authenticated ResourceGroupNotFound",
+  "failurePolicy": "Stop at failed gate, timeout, STOP or expiry; preserve state. No retry, no automatic lease extension.",
+  "forbiddenWork": [
+    "Any outside-RG mutation",
+    "Deployment",
+    "Individual resource deletes",
+    "Retries",
+    "Auto lease extension",
+    "Restore",
+    "Blog/evidence changes",
+    "Publication"
+  ],
+  "preserve": "All outside-RG resources, blog, and existing evidence unchanged",
+  "evidenceDirectory": "cleanup-corrected-20261017T091507Z",
+  "lastCheckpointUtc": "2026-10-17T09:25:05.370171+00:00",
+  "beforeCounts": {
+    "microsoft.network/virtualnetworks": 3,
+    "microsoft.network/networkinterfaces": 5,
+    "microsoft.compute/virtualmachines": 5,
+    "microsoft.compute/disks": 5,
+    "microsoft.compute/virtualmachines/extensions": 8,
+    "microsoft.network/networksecuritygroups": 5
+  },
+  "preflightPassedAtUtc": "2026-10-17T09:16:53.440123+00:00",
+  "cleanupApproval": {
+    "recordedAtUtc": "2026-10-17T09:16:53.465602+00:00",
+    "approvedBy": "Jose Moreno",
+    "quote": "Thanks, you can delete the Azure resources",
+    "scope": "rg-subnet-overlap-20261016-fde5ecf8",
+    "supersedesPriorRetentionForThisRGOnly": true
+  },
+  "deletionStartedAtUtc": "2026-10-17T09:16:53.466980+00:00",
+  "closedAtUtc": "2026-10-17T09:25:06.079615+00:00",
+  "reason": "Authenticated exact-RG ResourceGroupNotFound HTTP 404; scoped resource list confirms absence"
+}

@@ -1,0 +1,61 @@
+{
+  "passed": true,
+  "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+  "region": "swedencentral",
+  "namesAbsent": true,
+  "sameConfiguredAccount": true,
+  "bootstrapRecipe": "PASS",
+  "templateSha256": "b2d55a4a36fa92b90a8455b393868f364fda8f35a4ef671af754559e8d264fde",
+  "targets": [
+    {
+      "name": "vm-hub-hub10",
+      "vnet": "hub",
+      "subnet": "hub10",
+      "ip": "10.0.1.4",
+      "role": "hub",
+      "nic": "vm-hub-hub10-nic",
+      "disk": "vm-hub-hub10-osdisk"
+    },
+    {
+      "name": "vm-spoke1-spoke10",
+      "vnet": "spoke1",
+      "subnet": "spoke10",
+      "ip": "10.10.1.4",
+      "alias": "10.10.1.10",
+      "role": "nva",
+      "nic": "vm-spoke1-spoke10-nic",
+      "disk": "vm-spoke1-spoke10-osdisk"
+    },
+    {
+      "name": "vm-spoke1-isolated192",
+      "vnet": "spoke1",
+      "subnet": "isolated192",
+      "ip": "192.168.1.4",
+      "role": "backend",
+      "identity": "spoke1-backend-192.168.1.4",
+      "nic": "vm-spoke1-isolated192-nic",
+      "disk": "vm-spoke1-isolated192-osdisk"
+    },
+    {
+      "name": "vm-spoke2-spoke10",
+      "vnet": "spoke2",
+      "subnet": "spoke10",
+      "ip": "10.20.0.4",
+      "alias": "10.20.0.10",
+      "role": "nva",
+      "nic": "vm-spoke2-spoke10-nic",
+      "disk": "vm-spoke2-spoke10-osdisk"
+    },
+    {
+      "name": "vm-spoke2-isolated192",
+      "vnet": "spoke2",
+      "subnet": "isolated192",
+      "ip": "192.168.1.4",
+      "role": "backend",
+      "identity": "spoke2-backend-192.168.1.4",
+      "nic": "vm-spoke2-isolated192-nic",
+      "disk": "vm-spoke2-isolated192-osdisk"
+    }
+  ],
+  "retention": "NEVER DELETE"
+}

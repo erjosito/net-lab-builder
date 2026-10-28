@@ -1,0 +1,22 @@
+{
+  "command": [
+    "az",
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-subnet-overlap-20261016-fde5ecf8",
+    "-n",
+    "vm-spoke1-isolated192",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "set -eu\ncloud-init status --wait --long\nsystemctl is-enabled lab-backend-http\nsystemctl is-active lab-backend-http\ncat /opt/lab-http/index.html\nprintf '\\nBOOTSTRAP_READY\\n'\n"
+  ],
+  "startedAtUtc": "2026-10-16T08:25:57.464451+00:00",
+  "completedAtUtc": "2026-10-16T08:26:33.516442+00:00",
+  "exitCode": 0,
+  "stdout": "{\r\n  \"value\": [\r\n    {\r\n      \"code\": \"ProvisioningState/succeeded\",\r\n      \"displayStatus\": \"Provisioning succeeded\",\r\n      \"level\": \"Info\",\r\n      \"message\": \"Enable succeeded: \\n[stdout]\\nstatus: done\\nextended_status: done\\nboot_status_code: enabled-by-generator\\nlast_update: Thu, 01 Jan 1970 00:00:57 +0000\\ndetail: DataSourceAzure [seed=/dev/sr0]\\nerrors: []\\nrecoverable_errors: {}\\nenabled\\nactive\\nspoke1-backend-192.168.1.4\\n\\nBOOTSTRAP_READY\\n\\n[stderr]\\n\"\r\n    }\r\n  ]\r\n}\r\n",
+  "stderr": "",
+  "action": "bootstrap-read"
+}

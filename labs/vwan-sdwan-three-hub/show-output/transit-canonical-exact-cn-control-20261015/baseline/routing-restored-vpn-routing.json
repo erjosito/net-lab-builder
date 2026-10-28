@@ -1,0 +1,30 @@
+{
+  "timestampUtc": "2026-10-15T18:56:20.058860+00:00",
+  "finishedUtc": "2026-10-15T18:56:33.341715+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp/vpnConnections/conn-dc-jp?api-version=2024-05-01",
+    "--query",
+    "properties.routingConfiguration"
+  ],
+  "stdout": "{\n  \"associatedRouteTable\": {\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubRouteTables/defaultRouteTable\"\n  },\n  \"propagatedRouteTables\": {\n    \"ids\": [\n      {\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubRouteTables/defaultRouteTable\"\n      }\n    ],\n    \"labels\": [\n      \"Default\"\n    ]\n  }\n}\n",
+  "result": {
+    "associatedRouteTable": {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubRouteTables/defaultRouteTable"
+    },
+    "propagatedRouteTables": {
+      "ids": [
+        {
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubRouteTables/defaultRouteTable"
+        }
+      ],
+      "labels": [
+        "Default"
+      ]
+    }
+  },
+  "sha256": "3b009b1219c6ce0332a4cbebed75dfacd91bb20053c050843bc8b6c859c63062"
+}

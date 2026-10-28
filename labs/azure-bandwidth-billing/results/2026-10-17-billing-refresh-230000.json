@@ -1,0 +1,230 @@
+{
+  "schema": "bounded-per-rg-billing-refresh-v1",
+  "verdict": "INCONCLUSIVE",
+  "billingConclusion": "INCONCLUSIVE",
+  "collectionOutcome": "PARTIAL_FRESH_C_DETAILS_COMPLETE_THREE_QUERY_429",
+  "startedAtUtc": "2026-10-17T23:01:03.909850+00:00",
+  "endedAtUtc": "2026-10-17T23:02:22.602927+00:00",
+  "actualBillingHttpRequests": 6,
+  "maxBillingHttpRequests": 6,
+  "billingHttpBreakdown": {
+    "C-generation": 1,
+    "C-poll": 1,
+    "C-download": 1,
+    "C-query-429": 1,
+    "A-query-429": 1,
+    "T-query-429": 1
+  },
+  "actualInfrastructureMutations": 0,
+  "automaticRetries": 0,
+  "requestedUsageDates": {
+    "start": "2026-10-16",
+    "end": "2026-10-17"
+  },
+  "endPolicy": "Actual UTC date at invocation; public date-only API contract, not exact-now/full-day ingestion proof.",
+  "transport": "PASS_400000000000_APPLICATION_BYTES",
+  "cleanup": "PASS_INDEPENDENTLY_VERIFIED_DELETED",
+  "verifiedApplicationBytes": {
+    "A->T": 100000000000,
+    "T->A": 100000000000,
+    "C->T": 100000000000,
+    "T->C": 100000000000,
+    "total": 400000000000
+  },
+  "expectedApplicationDecimalGBPerLeg": 100,
+  "freshCDetails": {
+    "extractionComplete": true,
+    "ingestionFinal": false,
+    "exactCanonicalInventoryMatched": true,
+    "attribution": "fresh C VM only, not historical control",
+    "rows": [
+      {
+        "endpoint": "fresh-C",
+        "sourceClass": "exact_canonical_fresh_vm",
+        "day": "2026-10-17",
+        "meterName": "Standard Data Transfer Out",
+        "quantity": "0.000010422430932522",
+        "unit": "1 GB",
+        "effectivePrice": "0.083",
+        "unitPrice": "0.083",
+        "cost": "8.650617673993110000000E-7",
+        "currency": "USD",
+        "sourceRecordHash": "5def5e8d56e09f8e10362d70c83d6a340080bd0efd5848bafec8be0b3d210e32"
+      },
+      {
+        "endpoint": "fresh-C",
+        "sourceClass": "exact_canonical_fresh_vm",
+        "day": "2026-10-17",
+        "meterName": "Intra Continent Data Transfer Out",
+        "quantity": "3.342501014471054",
+        "unit": "1 GB",
+        "effectivePrice": "0.02",
+        "unitPrice": "0.02",
+        "cost": "0.06685002028942108",
+        "currency": "USD",
+        "sourceRecordHash": "30fd92f2858f5bafac92c56046af3016788449fdfce75a30cdedda467cb33ef2"
+      },
+      {
+        "endpoint": "fresh-C",
+        "sourceClass": "exact_canonical_fresh_vm",
+        "day": "2026-10-17",
+        "meterName": "Intra Continent Data Transfer Out",
+        "quantity": "4.0861718859523535",
+        "unit": "1 GB",
+        "effectivePrice": "0.02",
+        "unitPrice": "0.02",
+        "cost": "0.08172343771904707",
+        "currency": "USD",
+        "sourceRecordHash": "1620064596fa299552cbae269bb275ee350f98ad45a53db1573e548f8bbf7086"
+      },
+      {
+        "endpoint": "fresh-C",
+        "sourceClass": "exact_canonical_fresh_vm",
+        "day": "2026-10-17",
+        "meterName": "Standard Data Transfer Out",
+        "quantity": "0.000006127171218395",
+        "unit": "1 GB",
+        "effectivePrice": "0.083",
+        "unitPrice": "0.083",
+        "cost": "5.085552111268044000000E-7",
+        "currency": "USD",
+        "sourceRecordHash": "656125a822152f616349c2cbd18bb319116278a8f48135726b11209fa4ffd94b"
+      },
+      {
+        "endpoint": "fresh-C",
+        "sourceClass": "exact_canonical_fresh_vm",
+        "day": "2026-10-17",
+        "meterName": "Intra Continent Data Transfer Out",
+        "quantity": "3.445981875061989",
+        "unit": "1 GB",
+        "effectivePrice": "0.02",
+        "unitPrice": "0.02",
+        "cost": "0.06891963750123978",
+        "currency": "USD",
+        "sourceRecordHash": "8409f4b57c6b3ca673aaf6b53ba5a376d5b41291ed869c5362a4123737ab24dd"
+      }
+    ],
+    "likeMeterUnitCurrencyDayRateTotals": [
+      {
+        "day": "2026-10-17",
+        "meterName": "Standard Data Transfer Out",
+        "unit": "1 GB",
+        "currency": "USD",
+        "effectivePrice": "0.083",
+        "unitPrice": "0.083",
+        "quantity": "0.000016549602150917",
+        "cost": "0.0000013736169785261154000000",
+        "rows": 2
+      },
+      {
+        "day": "2026-10-17",
+        "meterName": "Intra Continent Data Transfer Out",
+        "unit": "1 GB",
+        "currency": "USD",
+        "effectivePrice": "0.02",
+        "unitPrice": "0.02",
+        "quantity": "10.8746547754853965",
+        "cost": "0.21749309550970793",
+        "rows": 3
+      }
+    ],
+    "comparison": "Inter-region reported quantity below expected 100 decimal application GB for C->T; raw '1 GB' unit preserved without assuming binary/decimal conversion. Current-day partial billing expected. Daily records cannot assign traffic to a transfer chunk.",
+    "requestedPeriod": {
+      "start": "2026-10-16",
+      "end": "2026-10-17"
+    },
+    "returnedPeriod": {
+      "start": "2026-10-16T00:00:00",
+      "end": "2026-10-17T00:00:00"
+    },
+    "retainedBandwidthDays": [
+      "2026-10-17"
+    ],
+    "generationRequestedUtc": "2026-10-17T23:01:05.107910+00:00",
+    "completedUtc": "2026-10-17T23:01:56.407133+00:00",
+    "received": 747,
+    "discarded": 742,
+    "discardCounts": {
+      "inventory": 729,
+      "date": 0,
+      "category": 13
+    }
+  },
+  "freshQueries": [
+    {
+      "endpoint": "fresh-C",
+      "state": "ERROR",
+      "code": "rate_limited",
+      "httpStatus": 429,
+      "actualBillingHttpRequests": 1,
+      "transport": "windows-core",
+      "groupBy": [
+        "ResourceId",
+        "Meter"
+      ],
+      "meterCategory": "Bandwidth",
+      "attribution": "one separate canonical RG and its exact inventory"
+    },
+    {
+      "endpoint": "fresh-A",
+      "state": "ERROR",
+      "code": "rate_limited",
+      "httpStatus": 429,
+      "actualBillingHttpRequests": 1,
+      "transport": "windows-core",
+      "groupBy": [
+        "ResourceId",
+        "Meter"
+      ],
+      "meterCategory": "Bandwidth",
+      "attribution": "one separate canonical RG and its exact inventory"
+    },
+    {
+      "endpoint": "fresh-T",
+      "state": "ERROR",
+      "code": "rate_limited",
+      "httpStatus": 429,
+      "actualBillingHttpRequests": 1,
+      "transport": "native-wsl",
+      "groupBy": [
+        "ResourceId",
+        "Meter"
+      ],
+      "meterCategory": "Bandwidth",
+      "attribution": "one separate canonical RG and its exact inventory"
+    }
+  ],
+  "historicalControl": {
+    "refreshed": false,
+    "status": "STALE_NOT_QUERIED_NOT_FRESH_C",
+    "previousObservedAtUtc": "2026-10-16T08:06:03.354732+00:00"
+  },
+  "newQualifiedMatureHistoricalSnapshots": 0,
+  "DataIngestionEndMT": null,
+  "ingestionFinal": false,
+  "completeConclusiveCharges": false,
+  "remainingGaps": [
+    "Fresh C CSV extraction COMPLETE, but current October 17 partial rows do not reconcile 100000000000 application bytes on C->T; no per-request attribution or confirmed reported-GB conversion.",
+    "Fresh C/A/T ResourceId+Meter Bandwidth queries each made exactly one actual request and returned HTTP 429. No retries or replacement queries. Query charges unavailable, not zero.",
+    "Fresh A and T have no refreshed CSV in this check; do not infer same-region free transfer, explicit zero rate, or final offer/credit treatment from missing records.",
+    "Historical 1-GiB control was NOT QUERIED. Its prior October 16 quantity/cost remains STALE, separate from fresh C. No new qualified mature historical comparison.",
+    "No DataIngestionEndMT watermark. HTTP 200 and COMPLETE extraction are not ingestion maturity. Report end date echoed midnight October 17 yet includes October 17 rows; boundary semantics remain unconfirmed.",
+    "Public CLI accepts date-only start/end, not actual-now timestamps. End used actual UTC date October 17, never future October 18. Do not claim full-day or exact-now ingestion coverage.",
+    "Schedule service unavailable in this child session (Session not found); no schedule created, changed, stopped or duplicated. Retain existing job 4 six-hour cadence and original October 22 23:15:33Z hard stop. Job 3 STOPPED per user authority."
+  ],
+  "automation": {
+    "billingJob4": "RETAIN_EXISTING_6H_NO_DUPLICATE",
+    "hardStopUtc": "2026-10-22T23:15:33Z",
+    "nextCheckSuggestedUtc": "2026-10-18T05:02:22.602927+00:00",
+    "cleanupJob3": "STOPPED_PER_USER",
+    "scheduleService": "UNAVAILABLE_CHILD_SESSION"
+  },
+  "runtime": {
+    "state": "idle",
+    "activeCommands": 0,
+    "allOwnedChildrenIdle": true,
+    "queuedFollowups": 0,
+    "detachedWorkers": 0
+  },
+  "sourceHashUnchanged": "4d592f689e41207d302b5f6a7978092357f2c65b877c8980da25d8f21f9ce519"
+}

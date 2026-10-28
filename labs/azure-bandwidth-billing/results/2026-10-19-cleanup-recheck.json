@@ -1,0 +1,49 @@
+{
+  "checkedAtUtc": "2026-10-19T15:49:11.693618+00:00",
+  "verdict": "PASS_OWNED_RESOURCES_ABSENT",
+  "actualInfrastructureMutations": 0,
+  "billingHttpRequests": 0,
+  "groups": [
+    {
+      "alias": "historical-core",
+      "exists": true,
+      "remainingResourceTypes": [
+        "Microsoft.Network/networkSecurityGroups"
+      ],
+      "disposition": "Preserved previously unverified-ownership NSG and its resource group"
+    },
+    {
+      "alias": "historical-C",
+      "exists": false,
+      "remainingResourceTypes": []
+    },
+    {
+      "alias": "historical-T",
+      "exists": false,
+      "remainingResourceTypes": []
+    },
+    {
+      "alias": "fresh-A",
+      "exists": false,
+      "remainingResourceTypes": []
+    },
+    {
+      "alias": "fresh-C",
+      "exists": false,
+      "remainingResourceTypes": []
+    },
+    {
+      "alias": "fresh-T",
+      "exists": false,
+      "remainingResourceTypes": []
+    }
+  ],
+  "billingFollowup": "PAUSED_USER_REQUEST",
+  "schedule5": "STOPPED",
+  "supportCaseOpened": false,
+  "absentResourceGroups": 5,
+  "remainingKnownLabBillableResources": 0,
+  "preservedUnknownOwnershipResources": 1,
+  "interpretation": "No compute, disks or public IPs remain in the scoped groups. Historical billed charges can still arrive after deletion; this is not an invoice or zero-residual-cost assertion.",
+  "actualAzureReadCommands": 9
+}

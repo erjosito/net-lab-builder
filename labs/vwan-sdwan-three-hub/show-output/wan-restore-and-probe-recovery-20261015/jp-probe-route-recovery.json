@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-15T09:52:09.445803+00:00",
+  "finishedUtc": "2026-10-15T09:52:46.518037+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "probe-dc-jp",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\reapply-jp-probe-routes.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\nPROBE_ROUTES_COMPLETE {\\\"10.110.0.10\\\":{\\\"dst\\\":\\\"10.110.0.10\\\",\\\"gateway\\\":\\\"10.130.0.4\\\",\\\"dev\\\":\\\"eth0\\\",\\\"prefsrc\\\":\\\"10.130.0.10\\\",\\\"flags\\\":[],\\\"uid\\\":0,\\\"cache\\\":[]},\\\"10.120.0.10\\\":{\\\"dst\\\":\\\"10.120.0.10\\\",\\\"gateway\\\":\\\"10.130.0.4\\\",\\\"dev\\\":\\\"eth0\\\",\\\"prefsrc\\\":\\\"10.130.0.10\\\",\\\"flags\\\":[],\\\"uid\\\":0,\\\"cache\\\":[]},\\\"10.140.0.4\\\":{\\\"dst\\\":\\\"10.140.0.4\\\",\\\"gateway\\\":\\\"10.130.0.4\\\",\\\"dev\\\":\\\"eth0\\\",\\\"prefsrc\\\":\\\"10.130.0.10\\\",\\\"flags\\\":[],\\\"uid\\\":0,\\\"cache\\\":[]},\\\"10.10.0.10\\\":{\\\"dst\\\":\\\"10.10.0.10\\\",\\\"gateway\\\":\\\"10.130.0.4\\\",\\\"dev\\\":\\\"eth0\\\",\\\"prefsrc\\\":\\\"10.130.0.10\\\",\\\"flags\\\":[],\\\"uid\\\":0,\\\"cache\\\":[]},\\\"10.20.0.10\\\":{\\\"dst\\\":\\\"10.20.0.10\\\",\\\"gateway\\\":\\\"10.130.0.4\\\",\\\"dev\\\":\\\"eth0\\\",\\\"prefsrc\\\":\\\"10.130.0.10\\\",\\\"flags\\\":[],\\\"uid\\\":0,\\\"cache\\\":[]},\\\"10.30.0.10\\\":{\\\"dst\\\":\\\"10.30.0.10\\\",\\\"gateway\\\":\\\"10.130.0.4\\\",\\\"dev\\\":\\\"eth0\\\",\\\"prefsrc\\\":\\\"10.130.0.10\\\",\\\"flags\\\":[],\\\"uid\\\":0,\\\"cache\\\":[]}}\\n\\n[stderr]\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\nPROBE_ROUTES_COMPLETE {\"10.110.0.10\":{\"dst\":\"10.110.0.10\",\"gateway\":\"10.130.0.4\",\"dev\":\"eth0\",\"prefsrc\":\"10.130.0.10\",\"flags\":[],\"uid\":0,\"cache\":[]},\"10.120.0.10\":{\"dst\":\"10.120.0.10\",\"gateway\":\"10.130.0.4\",\"dev\":\"eth0\",\"prefsrc\":\"10.130.0.10\",\"flags\":[],\"uid\":0,\"cache\":[]},\"10.140.0.4\":{\"dst\":\"10.140.0.4\",\"gateway\":\"10.130.0.4\",\"dev\":\"eth0\",\"prefsrc\":\"10.130.0.10\",\"flags\":[],\"uid\":0,\"cache\":[]},\"10.10.0.10\":{\"dst\":\"10.10.0.10\",\"gateway\":\"10.130.0.4\",\"dev\":\"eth0\",\"prefsrc\":\"10.130.0.10\",\"flags\":[],\"uid\":0,\"cache\":[]},\"10.20.0.10\":{\"dst\":\"10.20.0.10\",\"gateway\":\"10.130.0.4\",\"dev\":\"eth0\",\"prefsrc\":\"10.130.0.10\",\"flags\":[],\"uid\":0,\"cache\":[]},\"10.30.0.10\":{\"dst\":\"10.30.0.10\",\"gateway\":\"10.130.0.4\",\"dev\":\"eth0\",\"prefsrc\":\"10.130.0.10\",\"flags\":[],\"uid\":0,\"cache\":[]}}\n\n[stderr]\n"
+      }
+    ]
+  },
+  "sha256": "32faa0c25c608f1bb024a37a3efa26ea81039f3b2866bf0939a01ffae81e1b51"
+}

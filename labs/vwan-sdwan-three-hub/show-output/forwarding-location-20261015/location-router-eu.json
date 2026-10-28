@@ -1,0 +1,26 @@
+{
+  "timestampUtc": "2026-10-15T09:35:41.935886+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-eu",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\read-forwarding-location.sh"
+  ],
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\nFIB_COMPLETE {\"routes\":{\"10.110.0.10\":{\"exitCode\":0,\"stdout\":\"[{\\\"dst\\\":\\\"10.110.0.10\\\",\\\"gateway\\\":\\\"10.210.0.1\\\",\\\"dev\\\":\\\"eth0\\\",\\\"prefsrc\\\":\\\"10.210.0.4\\\",\\\"flags\\\":[],\\\"uid\\\":0,\\\"cache\\\":[]}]\",\"stderr\":\"\"},\"10.120.0.10\":{\"exitCode\":0,\"stdout\":\"[{\\\"dst\\\":\\\"10.120.0.10\\\",\\\"dev\\\":\\\"wgeuus\\\",\\\"prefsrc\\\":\\\"172.31.0.1\\\",\\\"flags\\\":[],\\\"uid\\\":0,\\\"cache\\\":[]}]\",\"stderr\":\"\"},\"10.130.0.10\":{\"exitCode\":0,\"stdout\":\"[{\\\"dst\\\":\\\"10.130.0.10\\\",\\\"dev\\\":\\\"wgeujp\\\",\\\"prefsrc\\\":\\\"172.31.0.5\\\",\\\"flags\\\":[],\\\"uid\\\":0,\\\"cache\\\":[]}]\",\"stderr\":\"\"},\"10.140.0.4\":{\"exitCode\":0,\"stdout\":\"[{\\\"dst\\\":\\\"10.140.0.4\\\",\\\"dev\\\":\\\"wgeucn\\\",\\\"prefsrc\\\":\\\"172.31.0.9\\\",\\\"flags\\\":[],\\\"uid\\\":0,\\\"cache\\\":[]}]\",\"stderr\":\"\"},\"10.10.0.10\":{\"exitCode\":0,\"stdout\":\"[{\\\"dst\\\":\\\"10.10.0.10\\\",\\\"gateway\\\":\\\"10.210.0.1\\\",\\\"dev\\\":\\\"eth0\\\",\\\"prefsrc\\\":\\\"10.210.0.4\\\",\\\"flags\\\":[],\\\"uid\\\":0,\\\"cache\\\":[]}]\",\"stderr\":\"\"},\"10.20.0.10\":{\"exitCode\":0,\"stdout\":\"[{\\\"dst\\\":\\\"10.20.0.10\\\",\\\"dev\\\":\\\"wgeuus\\\",\\\"prefsrc\\\":\\\"172.31.0.1\\\",\\\"flags\\\":[],\\\"uid\\\":0,\\\"cache\\\":[]}]\",\"stderr\":\"\"},\"10.30.0.10\":{\"exitCode\":0,\"stdout\":\"[{\\\"dst\\\":\\\"10.30.0.10\\\",\\\"dev\\\":\\\"wgeujp\\\",\\\"prefsrc\\\":\\\"172.31.0.5\\\",\\\"flags\\\":[],\\\"uid\\\":0,\\\"cache\\\":[]}]\",\"stderr\":\"\"}},\"bgp\":{\"10.110.0.0/24\":[\"Network not found\"],\"10.120.0.0/24\":[\"Network not found\"],\"10.130.0.0/24\":[\"Network not found\"],\"10.140.0.0/24\":[\"Network not found\"],\"10.10.0.0/24\":[\"Network not found\"],\"10.20.0.0/24\":[\"Network not found\"],\"10.30.0.0/24\":[\"Network not found\"]},\"forward\":{\"exitCode\":0,\"stdout\":\"1\",\"stderr\":\"\"},\"rules\":{\"exitCode\":0,\"stdout\":\"0:\\tfrom all lookup local\\n100:\\tfrom all fwmark 0x200 lookup 100\\n32766:\\tfrom all lookup main\\n32767:\\tfrom all lookup default\",\"stderr\":\"\"},\"firewall\":{\"exitCode\":0,\"stdout\":\"-P FORWARD ACCEPT\",\"stderr\":\"\"},\"complete\":true}\n\n[stderr]\n"
+      }
+    ]
+  }
+}

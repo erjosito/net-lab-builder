@@ -1,0 +1,143 @@
+{
+  "timestampUtc": "2026-10-16T08:51:04.564081+00:00",
+  "finishedUtc": "2026-10-16T08:52:54.344103+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp?api-version=2024-05-01",
+    "--query",
+    "properties.{state:provisioningState,connections:connections,ipConfigurations:ipConfigurations,bgp:bgpSettings}"
+  ],
+  "stdout": "{\n  \"bgp\": {\n    \"asn\": 65515,\n    \"bgpPeeringAddresses\": [\n      {\n        \"customBgpIpAddresses\": [\n          \"169.254.21.2\"\n        ],\n        \"defaultBgpIpAddresses\": [\n          \"10.250.4.13\"\n        ],\n        \"ipconfigurationId\": \"Instance0\",\n        \"tunnelIpAddresses\": [\n          \"20.27.135.137\",\n          \"10.250.4.4\"\n        ]\n      },\n      {\n        \"customBgpIpAddresses\": [\n          \"169.254.21.6\"\n        ],\n        \"defaultBgpIpAddresses\": [\n          \"10.250.4.12\"\n        ],\n        \"ipconfigurationId\": \"Instance1\",\n        \"tunnelIpAddresses\": [\n          \"4.190.54.71\",\n          \"10.250.4.5\"\n        ]\n      }\n    ],\n    \"peerWeight\": 0\n  },\n  \"connections\": [\n    {\n      \"etag\": \"W/\\\"276f77ee-124f-431b-99fc-7181efc0f579\\\"\",\n      \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp/vpnConnections/conn-dc-jp\",\n      \"name\": \"conn-dc-jp\",\n      \"properties\": {\n        \"egressBytesTransferred\": 0,\n        \"enableInternetSecurity\": false,\n        \"ingressBytesTransferred\": 0,\n        \"provisioningState\": \"Succeeded\",\n        \"remoteVpnSite\": {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnSites/site-dc-jp\"\n        },\n        \"routingConfiguration\": {\n          \"associatedRouteTable\": {\n            \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubRouteTables/defaultRouteTable\"\n          },\n          \"propagatedRouteTables\": {\n            \"ids\": [\n              {\n                \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubRouteTables/noneRouteTable\"\n              }\n            ],\n            \"labels\": [\n              \"none\"\n            ]\n          }\n        },\n        \"vpnLinkConnections\": [\n          {\n            \"etag\": \"W/\\\"276f77ee-124f-431b-99fc-7181efc0f579\\\"\",\n            \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp/vpnConnections/conn-dc-jp/vpnLinkConnections/link-jp\",\n            \"name\": \"link-jp\",\n            \"properties\": {\n              \"connectionBandwidth\": 10,\n              \"connectionStatusDetails\": [],\n              \"dpdTimeoutSeconds\": 0,\n              \"egressBytesTransferred\": 0,\n              \"enableBgp\": true,\n              \"enableRateLimiting\": false,\n              \"ingressBytesTransferred\": 0,\n              \"ipsecPolicies\": [\n                {\n                  \"dhGroup\": \"DHGroup14\",\n                  \"ikeEncryption\": \"AES256\",\n                  \"ikeIntegrity\": \"SHA256\",\n                  \"ipsecEncryption\": \"AES256\",\n                  \"ipsecIntegrity\": \"SHA256\",\n                  \"pfsGroup\": \"PFS14\",\n                  \"saDataSizeKilobytes\": 102400000,\n                  \"saLifeTimeSeconds\": 3600\n                }\n              ],\n              \"packetCaptureDiagnosticState\": \"None\",\n              \"provisioningState\": \"Succeeded\",\n              \"routingWeight\": 0,\n              \"useLocalAzureIpAddress\": false,\n              \"usePolicyBasedTrafficSelectors\": false,\n              \"vpnConnectionProtocolType\": \"IKEv2\",\n              \"vpnGatewayCustomBgpAddresses\": [\n                {\n                  \"customBgpIpAddress\": \"169.254.21.2\",\n                  \"ipConfigurationId\": \"Instance0\"\n                },\n                {\n                  \"customBgpIpAddress\": \"169.254.21.6\",\n                  \"ipConfigurationId\": \"Instance1\"\n                }\n              ],\n              \"vpnLinkConnectionMode\": \"Default\",\n              \"vpnSiteLink\": {\n                \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnSites/site-dc-jp/vpnSiteLinks/link-jp\"\n              }\n            },\n            \"type\": \"Microsoft.Network/vpnGateways/vpnConnections/vpnLinkConnections\"\n          }\n        ]\n      },\n      \"type\": \"Microsoft.Network/vpnGateways/vpnConnections\"\n    }\n  ],\n  \"ipConfigurations\": [\n    {\n      \"id\": \"Instance0\",\n      \"privateIpAddress\": \"10.250.4.4\",\n      \"publicIpAddress\": \"20.27.135.137\"\n    },\n    {\n      \"id\": \"Instance1\",\n      \"privateIpAddress\": \"10.250.4.5\",\n      \"publicIpAddress\": \"4.190.54.71\"\n    }\n  ],\n  \"state\": \"Succeeded\"\n}\n",
+  "result": {
+    "bgp": {
+      "asn": 65515,
+      "bgpPeeringAddresses": [
+        {
+          "customBgpIpAddresses": [
+            "169.254.21.2"
+          ],
+          "defaultBgpIpAddresses": [
+            "10.250.4.13"
+          ],
+          "ipconfigurationId": "Instance0",
+          "tunnelIpAddresses": [
+            "20.27.135.137",
+            "10.250.4.4"
+          ]
+        },
+        {
+          "customBgpIpAddresses": [
+            "169.254.21.6"
+          ],
+          "defaultBgpIpAddresses": [
+            "10.250.4.12"
+          ],
+          "ipconfigurationId": "Instance1",
+          "tunnelIpAddresses": [
+            "4.190.54.71",
+            "10.250.4.5"
+          ]
+        }
+      ],
+      "peerWeight": 0
+    },
+    "connections": [
+      {
+        "etag": "W/\"276f77ee-124f-431b-99fc-7181efc0f579\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp/vpnConnections/conn-dc-jp",
+        "name": "conn-dc-jp",
+        "properties": {
+          "egressBytesTransferred": 0,
+          "enableInternetSecurity": false,
+          "ingressBytesTransferred": 0,
+          "provisioningState": "Succeeded",
+          "remoteVpnSite": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnSites/site-dc-jp"
+          },
+          "routingConfiguration": {
+            "associatedRouteTable": {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubRouteTables/defaultRouteTable"
+            },
+            "propagatedRouteTables": {
+              "ids": [
+                {
+                  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubRouteTables/noneRouteTable"
+                }
+              ],
+              "labels": [
+                "none"
+              ]
+            }
+          },
+          "vpnLinkConnections": [
+            {
+              "etag": "W/\"276f77ee-124f-431b-99fc-7181efc0f579\"",
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp/vpnConnections/conn-dc-jp/vpnLinkConnections/link-jp",
+              "name": "link-jp",
+              "properties": {
+                "connectionBandwidth": 10,
+                "connectionStatusDetails": [],
+                "dpdTimeoutSeconds": 0,
+                "egressBytesTransferred": 0,
+                "enableBgp": true,
+                "enableRateLimiting": false,
+                "ingressBytesTransferred": 0,
+                "ipsecPolicies": [
+                  {
+                    "dhGroup": "DHGroup14",
+                    "ikeEncryption": "AES256",
+                    "ikeIntegrity": "SHA256",
+                    "ipsecEncryption": "AES256",
+                    "ipsecIntegrity": "SHA256",
+                    "pfsGroup": "PFS14",
+                    "saDataSizeKilobytes": 102400000,
+                    "saLifeTimeSeconds": 3600
+                  }
+                ],
+                "packetCaptureDiagnosticState": "None",
+                "provisioningState": "Succeeded",
+                "routingWeight": 0,
+                "useLocalAzureIpAddress": false,
+                "usePolicyBasedTrafficSelectors": false,
+                "vpnConnectionProtocolType": "IKEv2",
+                "vpnGatewayCustomBgpAddresses": [
+                  {
+                    "customBgpIpAddress": "169.254.21.2",
+                    "ipConfigurationId": "Instance0"
+                  },
+                  {
+                    "customBgpIpAddress": "169.254.21.6",
+                    "ipConfigurationId": "Instance1"
+                  }
+                ],
+                "vpnLinkConnectionMode": "Default",
+                "vpnSiteLink": {
+                  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnSites/site-dc-jp/vpnSiteLinks/link-jp"
+                }
+              },
+              "type": "Microsoft.Network/vpnGateways/vpnConnections/vpnLinkConnections"
+            }
+          ]
+        },
+        "type": "Microsoft.Network/vpnGateways/vpnConnections"
+      }
+    ],
+    "ipConfigurations": [
+      {
+        "id": "Instance0",
+        "privateIpAddress": "10.250.4.4",
+        "publicIpAddress": "20.27.135.137"
+      },
+      {
+        "id": "Instance1",
+        "privateIpAddress": "10.250.4.5",
+        "publicIpAddress": "4.190.54.71"
+      }
+    ],
+    "state": "Succeeded"
+  },
+  "sha256": "c3d21a66b69c8238cc9468eeb776f5ab16fdedfb3a647a8ee0edba567b3a3aca"
+}

@@ -1,0 +1,139 @@
+{
+  "site": "cn",
+  "timestampUtc": "2026-10-17T18:46:37.274151+00:00",
+  "sha256": "10e5591a16159a4a6e17350cb23f437623372f2ffd635ef20736f133c4738346",
+  "stat": {
+    "uid": 113,
+    "gid": 122,
+    "mode": 384,
+    "mtimeNs": 1792000608839202133
+  },
+  "protocols": {
+    "mesh_eu": "Established",
+    "mesh_us": "Established",
+    "mesh_jp": "Established"
+  },
+  "healthWaitObservations": [],
+  "birdProtocols": {
+    "command": [
+      "birdc",
+      "show",
+      "protocols"
+    ],
+    "exitCode": 0,
+    "stdout": "BIRD 2.0.8 ready.\nName       Proto      Table      State  Since         Info\ndevices    Device     ---        up     15:57:28.056  \nconnected  Direct     ---        up     15:57:28.056  \ncontrol_pins Static     underlay4  up     15:57:28.056  \nown_dc     Static     lab4       up     15:57:28.056  \nkernel_lab Kernel     lab4       up     15:57:28.056  \nmesh_eu    BGP        ---        up     15:57:32.861  Established   \nmesh_us    BGP        ---        up     15:57:31.520  Established   \nmesh_jp    BGP        ---        up     15:57:33.124  Established   \n",
+    "stderr": ""
+  },
+  "birdRoutes": {
+    "command": [
+      "birdc",
+      "show",
+      "route",
+      "table",
+      "lab4",
+      "all"
+    ],
+    "exitCode": 0,
+    "stdout": "BIRD 2.0.8 ready.\nTable lab4:\n10.110.0.0/24        unicast [mesh_eu 15:57:33.358 from 172.31.0.9] * (100) [AS65011i]\n\tdev wgeucn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65011\n\tBGP.next_hop: 172.31.0.9\n\tBGP.local_pref: 100\n\tBGP.community: \n10.30.0.0/24         unicast [mesh_jp 15:57:34.695 from 172.31.0.21] * (100) [AS65515i]\n\tdev wgjpcn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65013 65515\n\tBGP.next_hop: 172.31.0.21\n\tBGP.local_pref: 300\n\tBGP.community: (65013,1)\n10.140.0.0/24        unicast [own_dc 15:57:28.056] * (200)\n\tdev eth0\n\tType: static univ\n10.20.0.0/24         unicast [mesh_us 15:57:32.084 from 172.31.0.17] * (100) [AS65515i]\n\tdev wguscn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65012 65515\n\tBGP.next_hop: 172.31.0.17\n\tBGP.local_pref: 300\n\tBGP.community: (65012,1)\n10.130.0.0/24        unicast [mesh_jp 15:57:33.261 from 172.31.0.21] * (100) [AS65013i]\n\tdev wgjpcn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65013\n\tBGP.next_hop: 172.31.0.21\n\tBGP.local_pref: 100\n\tBGP.community: \n10.10.0.0/24         unicast [mesh_eu 15:57:33.586 from 172.31.0.9] * (100) [AS65515i]\n\tdev wgeucn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65011 65515\n\tBGP.next_hop: 172.31.0.9\n\tBGP.local_pref: 300\n\tBGP.community: (65011,1)\n10.120.0.0/24        unicast [mesh_us 15:57:32.084 from 172.31.0.17] * (100) [AS65012i]\n\tdev wguscn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65012\n\tBGP.next_hop: 172.31.0.17\n\tBGP.local_pref: 100\n\tBGP.community: \n",
+    "stderr": ""
+  },
+  "kernelRoutes": {
+    "command": [
+      "ip",
+      "-j",
+      "route",
+      "show",
+      "table",
+      "main"
+    ],
+    "exitCode": 0,
+    "stdout": "[{\"dst\":\"default\",\"gateway\":\"10.140.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"prefsrc\":\"10.140.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"10.10.0.0/24\",\"dev\":\"wgeucn\",\"protocol\":\"bird\",\"scope\":\"link\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.20.0.0/24\",\"dev\":\"wguscn\",\"protocol\":\"bird\",\"scope\":\"link\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.30.0.0/24\",\"dev\":\"wgjpcn\",\"protocol\":\"bird\",\"scope\":\"link\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.110.0.0/24\",\"dev\":\"wgeucn\",\"protocol\":\"bird\",\"scope\":\"link\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.120.0.0/24\",\"dev\":\"wguscn\",\"protocol\":\"bird\",\"scope\":\"link\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.130.0.0/24\",\"dev\":\"wgjpcn\",\"protocol\":\"bird\",\"scope\":\"link\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.140.0.0/24\",\"dev\":\"eth0\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"10.140.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"10.140.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"scope\":\"link\",\"prefsrc\":\"10.140.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"168.63.129.16\",\"gateway\":\"10.140.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"prefsrc\":\"10.140.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"169.254.169.254\",\"gateway\":\"10.140.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"prefsrc\":\"10.140.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"172.31.0.8/30\",\"dev\":\"wgeucn\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"172.31.0.10\",\"flags\":[]},{\"dst\":\"172.31.0.16/30\",\"dev\":\"wguscn\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"172.31.0.18\",\"flags\":[]},{\"dst\":\"172.31.0.20/30\",\"dev\":\"wgjpcn\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"172.31.0.22\",\"flags\":[]}]\n",
+    "stderr": ""
+  },
+  "policyRules": {
+    "command": [
+      "ip",
+      "-j",
+      "rule",
+      "show"
+    ],
+    "exitCode": 0,
+    "stdout": "[{\"priority\":0,\"src\":\"all\",\"table\":\"local\"},{\"priority\":100,\"src\":\"all\",\"fwmark\":\"0x200\",\"table\":\"100\"},{\"priority\":220,\"src\":\"all\",\"table\":\"220\"},{\"priority\":32766,\"src\":\"all\",\"table\":\"main\"},{\"priority\":32767,\"src\":\"all\",\"table\":\"default\"}]\n",
+    "stderr": ""
+  },
+  "lookups": [
+    {
+      "command": [
+        "ip",
+        "-j",
+        "route",
+        "get",
+        "10.130.0.10"
+      ],
+      "exitCode": 0,
+      "stdout": "[{\"dst\":\"10.130.0.10\",\"dev\":\"wgjpcn\",\"prefsrc\":\"172.31.0.22\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "ip",
+        "-j",
+        "route",
+        "get",
+        "10.130.0.4"
+      ],
+      "exitCode": 0,
+      "stdout": "[{\"dst\":\"10.130.0.4\",\"dev\":\"wgjpcn\",\"prefsrc\":\"172.31.0.22\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "ip",
+        "-j",
+        "route",
+        "get",
+        "10.140.0.4"
+      ],
+      "exitCode": 0,
+      "stdout": "[{\"type\":\"local\",\"dst\":\"10.140.0.4\",\"dev\":\"lo\",\"table\":\"local\",\"prefsrc\":\"10.140.0.4\",\"flags\":[],\"uid\":0,\"cache\":[\"local\"]}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "ip",
+        "-j",
+        "route",
+        "get",
+        "10.10.0.10"
+      ],
+      "exitCode": 0,
+      "stdout": "[{\"dst\":\"10.10.0.10\",\"dev\":\"wgeucn\",\"prefsrc\":\"172.31.0.10\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "ip",
+        "-j",
+        "route",
+        "get",
+        "10.20.0.10"
+      ],
+      "exitCode": 0,
+      "stdout": "[{\"dst\":\"10.20.0.10\",\"dev\":\"wguscn\",\"prefsrc\":\"172.31.0.18\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "ip",
+        "-j",
+        "route",
+        "get",
+        "10.30.0.10"
+      ],
+      "exitCode": 0,
+      "stdout": "[{\"dst\":\"10.30.0.10\",\"dev\":\"wgjpcn\",\"prefsrc\":\"172.31.0.22\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+      "stderr": ""
+    }
+  ],
+  "exports": {}
+}

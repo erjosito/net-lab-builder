@@ -1,0 +1,18 @@
+{
+  "startedAtUtc": "2026-10-16T06:55:18.326184+00:00",
+  "completedAtUtc": "2026-10-16T06:55:25.039875+00:00",
+  "command": [
+    "az",
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8?api-version=2022-09-01"
+  ],
+  "pid": 11608,
+  "exitCode": 1,
+  "stdout": "",
+  "stderr": "ERROR: Not Found({\"error\":{\"code\":\"ResourceGroupNotFound\",\"message\":\"Resource group 'rg-subnet-overlap-20261016-fde5ecf8' could not be found.\"}})\r\n",
+  "timeoutSeconds": 90,
+  "childReaped": true
+}

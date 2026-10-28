@@ -341,6 +341,15 @@ def hub_metadata(preference="ASPath", routing_intent=False):
            bool(x["observedRoutingIntent"]) != routing_intent
            for x in observed.values()):
         raise RuntimeError("Actual hub GET preference/intent differs from expected state")
+    if routing_intent:
+        for site, value in observed.items():
+            entries = value["observedRoutingIntent"]
+            policies = entries[0].get("properties", {}).get("routingPolicies", []) if len(entries) == 1 else []
+            expected = (f"/subscriptions/{SUB}/resourceGroups/{control.RG}"
+                        f"/providers/Microsoft.Network/azureFirewalls/fw-{site}")
+            if (len(policies) != 1 or policies[0].get("destinations") != ["PrivateTraffic"] or
+                    policies[0].get("nextHop", "").lower() != expected.lower()):
+                raise RuntimeError(f"{site}: actual RI does not match expected private firewall next hop")
     return observed
 
 

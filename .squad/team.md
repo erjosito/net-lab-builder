@@ -2,6 +2,11 @@
 
 > net-lab-builder
 
+> **Opt-in team:** Normal sessions use the single-agent workflow in the root
+> `AGENTS.md`. This roster and its role-exclusive rules apply only when the user
+> explicitly requests Squad. Existing technical references remain available on
+> demand; ordinary lab work does not require activating the team.
+
 ## Coordinator
 
 | Name | Role | Notes |

@@ -1,0 +1,54 @@
+{
+  "timestampUtc": "2026-10-17T17:23:25.819160+00:00",
+  "finishedUtc": "2026-10-17T17:23:36.139805+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu?api-version=2024-05-01"
+  ],
+  "stdout": "{\n  \"etag\": \"W/\\\"027833c0-c38a-433e-b01a-b9942f2d2119\\\"\",\n  \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu\",\n  \"location\": \"westeurope\",\n  \"name\": \"hub-eu\",\n  \"properties\": {\n    \"addressPrefix\": \"10.250.0.0/23\",\n    \"allowBranchToBranchTraffic\": true,\n    \"azureFirewall\": {\n      \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-eu\"\n    },\n    \"hubRoutingPreference\": \"ExpressRoute\",\n    \"networkVirtualAppliances\": [],\n    \"provisioningState\": \"Succeeded\",\n    \"routeTable\": {\n      \"routes\": []\n    },\n    \"routingState\": \"Provisioned\",\n    \"sku\": \"Standard\",\n    \"virtualHubRouteTableV2s\": [],\n    \"virtualRouterAsn\": 65515,\n    \"virtualRouterAutoScaleConfiguration\": {\n      \"minCapacity\": 2\n    },\n    \"virtualRouterIps\": [\n      \"10.250.0.69\",\n      \"10.250.0.70\"\n    ],\n    \"virtualWan\": {\n      \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub\"\n    }\n  },\n  \"tags\": {\n    \"created_by\": \"copilot-lab\",\n    \"ephemeral\": \"true\",\n    \"lab\": \"true\",\n    \"owner\": \"jose\",\n    \"run_id\": \"20261014-threehub\"\n  },\n  \"type\": \"Microsoft.Network/virtualHubs\"\n}\n",
+  "result": {
+    "etag": "W/\"027833c0-c38a-433e-b01a-b9942f2d2119\"",
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu",
+    "location": "westeurope",
+    "name": "hub-eu",
+    "properties": {
+      "addressPrefix": "10.250.0.0/23",
+      "allowBranchToBranchTraffic": true,
+      "azureFirewall": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/azureFirewalls/fw-eu"
+      },
+      "hubRoutingPreference": "ExpressRoute",
+      "networkVirtualAppliances": [],
+      "provisioningState": "Succeeded",
+      "routeTable": {
+        "routes": []
+      },
+      "routingState": "Provisioned",
+      "sku": "Standard",
+      "virtualHubRouteTableV2s": [],
+      "virtualRouterAsn": 65515,
+      "virtualRouterAutoScaleConfiguration": {
+        "minCapacity": 2
+      },
+      "virtualRouterIps": [
+        "10.250.0.69",
+        "10.250.0.70"
+      ],
+      "virtualWan": {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub"
+      }
+    },
+    "tags": {
+      "created_by": "copilot-lab",
+      "ephemeral": "true",
+      "lab": "true",
+      "owner": "jose",
+      "run_id": "20261014-threehub"
+    },
+    "type": "Microsoft.Network/virtualHubs"
+  },
+  "sha256": "93dc40f9ed0148a657f1888ac85595bfa893bd196f1ab251363d145e8ec1c506"
+}

@@ -1,0 +1,116 @@
+{
+  "schema": "sanitized-large-rerun-partial-v1",
+  "documentationRefreshedAtUtc": "2026-10-16T20:49:10Z",
+  "evidenceBasis": "Offline projection of three completed execution handoffs, current ledger and independent allocation-stop review; no fresh Azure queries.",
+  "transport": "PASS_FOR_COMPLETED_CHUNKS",
+  "restoration": "PASS",
+  "billing": "INCONCLUSIVE",
+  "continuation": "STOPPED_PROJECTION_EXCEEDS_APPROVED_ALLOCATION",
+  "targetComplete": false,
+  "endpoints": {
+    "A": {"region": "Sweden Central", "tenantRelationship": "same tenant as C; different from T"},
+    "C": {"region": "North Europe", "tenantRelationship": "same tenant as A; different from T"},
+    "T": {"region": "Sweden Central", "tenantRelationship": "different from A and C"}
+  },
+  "completedChunks": [
+    {
+      "phase": "same-region",
+      "kind": "pilot",
+      "completedAtUtc": "2026-10-16T19:46:46.845717Z",
+      "applicationBytesEachDirection": 1073741824,
+      "directions": ["A->T", "T->A"],
+      "producerConsumerBytesAgree": true,
+      "producerConsumerHashesAgree": true,
+      "payloadSha256": "e6cbc4b20371fff3ba9a14b0b90e29ba996a786c48b67151ca0e5fbbafa11a2d",
+      "payloadRetries": 0,
+      "participatingVmsDeallocatedVerified": true,
+      "receiverNicAndSubnetNsgStateAndAssociationsRestored": true,
+      "ownedChildrenIdle": true
+    },
+    {
+      "phase": "cross-region",
+      "kind": "pilot",
+      "completedAtUtc": "2026-10-16T20:10:07.911882Z",
+      "applicationBytesEachDirection": 1073741824,
+      "directions": ["C->T", "T->C"],
+      "producerConsumerBytesAgree": true,
+      "producerConsumerHashesAgree": true,
+      "payloadSha256": "e6cbc4b20371fff3ba9a14b0b90e29ba996a786c48b67151ca0e5fbbafa11a2d",
+      "payloadRetries": 0,
+      "participatingVmsDeallocatedVerified": true,
+      "receiverNicAndSubnetNsgStateAndAssociationsRestored": true,
+      "ownedChildrenIdle": true
+    },
+    {
+      "phase": "same-region",
+      "kind": "bulk",
+      "completedAtUtc": "2026-10-16T20:40:14.413164Z",
+      "applicationBytesEachDirection": 5368709120,
+      "directions": ["A->T", "T->A"],
+      "producerConsumerBytesAgree": true,
+      "producerConsumerHashesAgree": true,
+      "payloadSha256": "75b8584d16aee90a4bf4ae52b11e3362a6193ba0e5b7a0a595f6b569a381eb3f",
+      "payloadRetries": 0,
+      "participatingVmsDeallocatedVerified": true,
+      "receiverNicAndSubnetNsgStateAndAssociationsRestored": true,
+      "ownedChildrenIdle": true,
+      "finalLocalEvidenceVerifiedAtUtc": "2026-10-16T20:43:18.268123Z"
+    }
+  ],
+  "verifiedApplicationBytes": {
+    "A->T": 6442450944,
+    "T->A": 6442450944,
+    "C->T": 1073741824,
+    "T->C": 1073741824,
+    "total": 15032385536,
+    "totalGiB": 14
+  },
+  "approvedScope": {
+    "applicationBytesPerLeg": 100000000000,
+    "applicationBytesTotal": 400000000000,
+    "unit": "decimal GB for target; GiB only where explicitly stated",
+    "moneyBudgetMode": "monitor-only",
+    "monetaryCap": null,
+    "withdrawnUsdPlanningCeiling": 45,
+    "allocatedSecondsPerEndpoint": 43200,
+    "cleanupDeadlineUtc": "2026-10-18T07:33:00Z"
+  },
+  "allocation": {
+    "conservativeActualSecondsIncludingPriorCarry": {"A": 4976, "C": 1445, "T": 5521},
+    "priorCarrySeconds": {"A": 3600, "C": 900, "T": 3600},
+    "fullPhaseForecastMargin": 1.25,
+    "updatedSameRegionFullPhaseSeconds": 21127,
+    "retainedCrossRegionFullPhaseSeconds": 19465,
+    "wholeTIncludingCarrySeconds": 44192,
+    "wholeTDuration": "12h16m32s",
+    "overApprovedCapSeconds": 992,
+    "independentReview": "No arithmetic double count established. Concurrent directions use one bulk duration; carry is included once. Full-phase forecasts already include completed chunks, so actual T=5521 is not added again.",
+    "publicLedgerCaveat": "Public ledger retains pilot-only phase projections 18528/19465. The refreshed forecast and stop decision are external review evidence, not rewritten public admission receipts.",
+    "proposedThirteenHourCapApproved": false,
+    "approvalState": "Explicit approval required; user unavailable and no choice obtained. No implicit approval."
+  },
+  "closure": {
+    "activeCommands": 0,
+    "activePhase": null,
+    "ownedChildrenIdle": true,
+    "nextChunkStarted": false,
+    "newChunkOrProbeAuthorized": false,
+    "publicLeasesAndReceiptsImmutableAfterReturn": true,
+    "freshEndpointResourceSetsRetained": 3,
+    "freshEndpointResourcesDeleted": false,
+    "ongoingCharges": "Retained disks and public IPs continue accruing charges despite VM deallocation.",
+    "cleanup": "Guarded cleanup still required before the unchanged deadline; this update establishes no cleanup job."
+  },
+  "billingCaveats": [
+    "Application bytes, NIC counters and planning reserves are not billed quantities.",
+    "Report dates are not ingestion watermarks.",
+    "The older C->B 1-GiB control and its 0.6551259830594063 '1 GB' row use distinct historical IDs and scenarios; reconciliation remains unresolved.",
+    "Neither the partial rerun nor the older control establishes invoice-level zero-charge proof."
+  ],
+  "attestedSourceSha256": {
+    "run.py": "308da413a3b491c9437a84b122c13f5b007874aeb2847eece235688e56c04453",
+    "repeat.py": "20690fc9d286bd60b69a690bdcdb9628be7fc794f629a5e4be8ff3d92c3b249c",
+    "stream.py": "7f01a8cc358460e54b6ec698be78e9fcc39157b6f14f4a050bf44d40d49adbdb"
+  },
+  "validation": "Historical 170-test PASS supplied with handoffs; not rerun for this documentation-only update."
+}

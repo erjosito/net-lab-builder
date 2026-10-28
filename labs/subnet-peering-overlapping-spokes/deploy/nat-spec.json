@@ -1,0 +1,61 @@
+{
+  "region": "swedencentral",
+  "vmSize": "Standard_D2als_v6",
+  "image": {
+    "publisher": "Canonical",
+    "offer": "0001-com-ubuntu-server-jammy",
+    "sku": "22_04-lts-gen2",
+    "version": "latest"
+  },
+  "targets": [
+    {
+      "name": "vm-hub-hub10",
+      "vnet": "hub",
+      "subnet": "hub10",
+      "ip": "10.0.1.4",
+      "role": "hub",
+      "nic": "vm-hub-hub10-nic",
+      "disk": "vm-hub-hub10-osdisk"
+    },
+    {
+      "name": "vm-spoke1-spoke10",
+      "vnet": "spoke1",
+      "subnet": "spoke10",
+      "ip": "10.10.1.4",
+      "alias": "10.10.1.10",
+      "role": "nva",
+      "nic": "vm-spoke1-spoke10-nic",
+      "disk": "vm-spoke1-spoke10-osdisk"
+    },
+    {
+      "name": "vm-spoke1-isolated192",
+      "vnet": "spoke1",
+      "subnet": "isolated192",
+      "ip": "192.168.1.4",
+      "role": "backend",
+      "identity": "spoke1-backend-192.168.1.4",
+      "nic": "vm-spoke1-isolated192-nic",
+      "disk": "vm-spoke1-isolated192-osdisk"
+    },
+    {
+      "name": "vm-spoke2-spoke10",
+      "vnet": "spoke2",
+      "subnet": "spoke10",
+      "ip": "10.20.0.4",
+      "alias": "10.20.0.10",
+      "role": "nva",
+      "nic": "vm-spoke2-spoke10-nic",
+      "disk": "vm-spoke2-spoke10-osdisk"
+    },
+    {
+      "name": "vm-spoke2-isolated192",
+      "vnet": "spoke2",
+      "subnet": "isolated192",
+      "ip": "192.168.1.4",
+      "role": "backend",
+      "identity": "spoke2-backend-192.168.1.4",
+      "nic": "vm-spoke2-isolated192-nic",
+      "disk": "vm-spoke2-isolated192-osdisk"
+    }
+  ]
+}

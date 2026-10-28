@@ -103,6 +103,13 @@ class GuestTests(unittest.TestCase):
         active = guest.activate_script("eu")
         self.assertLess(active.index("bird -p"), active.index("systemctl restart bird"))
 
+    def test_japan_uses_only_swanctl_daemon(self):
+        active = guest.activate_script("jp")
+        self.assertLess(active.index("systemctl disable --now strongswan-starter.service"),
+                        active.index("systemctl enable --now strongswan.service"))
+        self.assertIn("if systemctl list-unit-files strongswan-starter.service", active)
+        self.assertNotIn("strongswan-starter", guest.activate_script("eu"))
+
     def test_listener_can_read_public_content_but_keys_stay_private(self):
         stage = guest.stage_script(guest.listener_files())
         final = guest.write_final_files(guest.listener_files())

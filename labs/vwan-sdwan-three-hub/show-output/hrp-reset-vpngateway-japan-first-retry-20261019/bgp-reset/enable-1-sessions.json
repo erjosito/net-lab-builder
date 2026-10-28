@@ -1,0 +1,84 @@
+{
+  "eu": {
+    "timestampUtc": "2026-10-19T15:51:30.182304+00:00",
+    "action": "enable",
+    "before": {
+      "rows": {
+        "mesh_us": {
+          "state": "up",
+          "since": "15:07:42.920",
+          "info": "Established"
+        },
+        "mesh_jp": {
+          "state": "up",
+          "since": "15:07:40.034",
+          "info": "Established"
+        },
+        "mesh_cn": {
+          "state": "up",
+          "since": "15:07:36.956",
+          "info": "Established"
+        },
+        "azure_0": {
+          "state": "down",
+          "since": "15:45:20.517",
+          "info": ""
+        },
+        "azure_1": {
+          "state": "down",
+          "since": "15:45:20.518",
+          "info": ""
+        }
+      },
+      "raw": "BIRD 2.0.8 ready.\nName       Proto      Table      State  Since         Info\ndevices    Device     ---        up     15:07:34.027  \nconnected  Direct     ---        up     15:07:34.027  \ncontrol_pins Static     underlay4  up     15:07:34.027  \nown_dc     Static     lab4       up     15:07:34.027  \nkernel_lab Kernel     lab4       up     15:07:34.027  \nmesh_us    BGP        ---        up     15:07:42.920  Established   \nmesh_jp    BGP        ---        up     15:07:40.034  Established   \nmesh_cn    BGP        ---        up     15:07:36.956  Established   \nazure_0    BGP        ---        down   15:45:20.517  \nazure_1    BGP        ---        down   15:45:20.518  \n"
+    },
+    "after": {
+      "rows": {
+        "mesh_us": {
+          "state": "up",
+          "since": "15:07:42.920",
+          "info": "Established"
+        },
+        "mesh_jp": {
+          "state": "up",
+          "since": "15:07:40.034",
+          "info": "Established"
+        },
+        "mesh_cn": {
+          "state": "up",
+          "since": "15:07:36.956",
+          "info": "Established"
+        },
+        "azure_0": {
+          "state": "up",
+          "since": "15:51:29.065",
+          "info": "Established"
+        },
+        "azure_1": {
+          "state": "up",
+          "since": "15:51:28.174",
+          "info": "Established"
+        }
+      },
+      "raw": "BIRD 2.0.8 ready.\nName       Proto      Table      State  Since         Info\ndevices    Device     ---        up     15:07:34.027  \nconnected  Direct     ---        up     15:07:34.027  \ncontrol_pins Static     underlay4  up     15:07:34.027  \nown_dc     Static     lab4       up     15:07:34.027  \nkernel_lab Kernel     lab4       up     15:07:34.027  \nmesh_us    BGP        ---        up     15:07:42.920  Established   \nmesh_jp    BGP        ---        up     15:07:40.034  Established   \nmesh_cn    BGP        ---        up     15:07:36.956  Established   \nazure_0    BGP        ---        up     15:51:29.065  Established   \nazure_1    BGP        ---        up     15:51:28.174  Established   \n"
+    },
+    "actions": [
+      {
+        "peer": "azure_0",
+        "output": "BIRD 2.0.8 ready.\nazure_0: enabled\n"
+      },
+      {
+        "peer": "azure_1",
+        "output": "BIRD 2.0.8 ready.\nazure_1: enabled\n"
+      }
+    ],
+    "birdPid": 753,
+    "sha256": "541fbc090c262a646456dffc83829b50f5da669345b8febb8e039c90236af5b8",
+    "stat": {
+      "uid": 113,
+      "gid": 122,
+      "mode": 384,
+      "mtimeNs": 1792099133477812763
+    }
+  }
+}

@@ -1,3 +1,4 @@
+import copy
 import unittest
 from unittest.mock import patch
 
@@ -5,6 +6,22 @@ import vpn_sdwan_boundary as boundary
 
 
 class DirectBoundaryTests(unittest.TestCase):
+    def test_source_equality_uses_paths_not_volatile_cli_hashes(self):
+        before = dict(sha256="original", stat={"mode": 384},
+                      protocols={"azure_0": "Established"}, ikeEstablished=2,
+                      exports={"azure_0": {"routes": {"10.140.0.0/24": [65014]},
+                                           "rawSha256": "first"}})
+        after = copy.deepcopy(before)
+        after["exports"]["azure_0"]["rawSha256"] = "different"
+        self.assertTrue(boundary.same_source(before, after))
+        for key, value in (("sha256", "changed"), ("stat", {"mode": 420}),
+                           ("protocols", {"azure_0": "Idle"}), ("ikeEstablished", 1),
+                           ("exports", {}),
+                           ("exports", {"azure_0": {"routes": {"10.140.0.0/24": [65012]}}})):
+            changed = copy.deepcopy(after)
+            changed[key] = value
+            self.assertFalse(boundary.same_source(before, changed), key)
+
     def test_guest_metadata_precedes_atomic_replace(self):
         for site, asn in (("jp", 65013), ("eu", 65011)):
             text = boundary.script(site, 4)

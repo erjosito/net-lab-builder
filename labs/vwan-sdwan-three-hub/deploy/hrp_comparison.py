@@ -10,6 +10,8 @@ import vpn_sdwan_boundary as boundary
 
 
 def set_preference(preference, label):
+    if preference not in ("ASPath", "VpnGateway", "ExpressRoute"):
+        raise ValueError("Unsupported ARM hubRoutingPreference")
     resources = []
     for site in sweep.SITES:
         actual = sweep.rest(sweep.network_url("virtualHubs", "hub-" + site),
@@ -61,7 +63,7 @@ def main():
         nonlocal dirty_guest
         sweep.CURRENT = sweep.OUT / label
         proof = boundary.invoke(ingress, label, restore=True)
-        if any(proof[k] != before[ingress][k] for k in ("sha256", "stat", "exports")):
+        if not boundary.same_source(before[ingress], proof):
             raise RuntimeError(f"{ingress}: exact restore differs")
         dirty_guest = False
 
@@ -79,7 +81,7 @@ def main():
             restored = capture(prefix + "-restore")
             if restored["rows"] != baseline["rows"]:
                 raise RuntimeError("Restored ASPath winner matrix differs")
-        for preference, label in (("Vpn", "vpn-zero"), ("ExpressRoute", "er-zero")):
+        for preference, label in (("VpnGateway", "vpn-zero"), ("ExpressRoute", "er-zero")):
             sweep.reserve_restore(control.guard(True))
             sweep.CURRENT = sweep.OUT / label
             dirty_hubs = True
@@ -104,8 +106,7 @@ def main():
             sweep.CURRENT = sweep.OUT / "closure"
             after = boundary.invoke_all("closure")
             for site in (*sweep.SITES, "cn"):
-                if any(after[site][k] != before.get(site, {}).get(k)
-                       for k in ("sha256", "stat", "exports", "protocols", "ikeEstablished")):
+                if not boundary.same_source(before[site], after[site]):
                     raise RuntimeError(f"{site}: exact source closure differs")
         except Exception as exc:
             errors.append("RESTORE: " + str(exc))
@@ -113,7 +114,8 @@ def main():
                        not any(e.startswith("RESTORE:") for e in errors))
         complete = restored_ok and len(states) == (4 if args.preferences_only else 6) and not errors
         verdict = "PASS" if complete else "INCONCLUSIVE" if restored_ok else "BLOCKED"
-        lease = control.guard(False)
+        # Persist the local verdict even when expiry forbids further live work.
+        lease = json.loads(control.LEASE.read_text(encoding="utf-8-sig"))
         sweep.CURRENT = sweep.OUT
         summary = dict(timestampUtc=sweep.utc(), verdict=verdict, restored=restored_ok,
                        states=states, sourceBefore=before, sourceAfter=after, errors=errors,

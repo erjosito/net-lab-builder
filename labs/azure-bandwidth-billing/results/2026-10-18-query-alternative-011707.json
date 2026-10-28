@@ -1,0 +1,430 @@
+{
+  "taskId": "query-alternative-20261018T011707Z",
+  "parentManualCheckId": "manual-at-20261018T011054Z",
+  "phase": "NEW_READ_ONLY_QUERY_ALTERNATIVE_SAME_MANUAL_CHECK",
+  "verdict": "INCONCLUSIVE",
+  "collectionComplete": false,
+  "startedAtUtc": "2026-10-18T01:20:25.194373+00:00",
+  "completedAtUtc": "2026-10-18T01:21:11.187291+00:00",
+  "parentDeadlineUtc": "2026-10-18T01:41:43.860703+00:00",
+  "actualAdditionalHttpRequests": 4,
+  "priorManualCsvHttpRequests": 2,
+  "combinedManualHttpRequests": 6,
+  "maxCombinedManualHttpRequests": 6,
+  "unusedManualHttpBudget": 0,
+  "prior2302CheckHttpRequests": 6,
+  "prior2302CounterUnchanged": true,
+  "reports": {
+    "T": {
+      "state": "COMPLETE",
+      "reason": null,
+      "httpStatus": null,
+      "azureCode": null,
+      "errorCategory": null,
+      "responseMetadata": null,
+      "http": [
+        {
+          "status": 200,
+          "responseMetadata": {
+            "receivedAtUtc": "2026-10-18T01:20:32.507042+00:00",
+            "safeHeaders": {
+              "x-ms-request-id": "3cef3f45-09b2-42ce-9f33-a5232a0d6223",
+              "x-ms-correlation-request-id": "b008f1aa-b811-4617-9f78-3f3c218eaf88",
+              "date": "Sun, 18 Oct 2026 01:20:33 GMT"
+            },
+            "retryAfterSeconds": null,
+            "suggestedRetryAtUtc": null,
+            "retrySource": "unknown"
+          }
+        }
+      ],
+      "httpRequests": 1,
+      "httpRequestCounts": {
+        "query": 1
+      },
+      "pages": 1,
+      "received": 1,
+      "discarded": 0,
+      "duplicates": 0,
+      "unattributedLabRows": 0,
+      "extractionComplete": null,
+      "ingestionFinal": false,
+      "window": {
+        "from": "2026-10-15T00:00:00Z",
+        "to": "2026-10-18T01:20:27.589464+00:00"
+      },
+      "rows": [
+        {
+          "alias": "T",
+          "resourceClass": "microsoft.compute",
+          "exactCanonicalVm": true,
+          "day": "2026-10-17",
+          "meter": "Intra Continent Data Transfer Out",
+          "cost": "0.165150215302437",
+          "currency": "EUR",
+          "quantity": null,
+          "unit": null,
+          "rate": null,
+          "costClassification": "POSITIVE"
+        }
+      ],
+      "interpretation": "Query supplies cost, not verified bytes, quantities, units or rates.",
+      "offerContextAlias": "wsl-msdn",
+      "queryPageExtractionComplete": true,
+      "retryMetadataStatus": "HTTP_200_NO_RETRY_HINT_RETURNED_UNKNOWN_NOT_ZERO",
+      "dailyCoverage": {
+        "2026-10-15": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-16": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-17": "ROWS_OBSERVED_NOT_INGESTION_FINAL",
+        "2026-10-18": "NO_ROWS_OBSERVED_NOT_ZERO"
+      }
+    },
+    "A": {
+      "state": "COMPLETE",
+      "reason": null,
+      "httpStatus": null,
+      "azureCode": null,
+      "errorCategory": null,
+      "responseMetadata": null,
+      "http": [
+        {
+          "status": 200,
+          "responseMetadata": {
+            "receivedAtUtc": "2026-10-18T01:20:45.389020+00:00",
+            "safeHeaders": {
+              "x-ms-request-id": "19419b8e-6b4a-40e1-a579-7575c5bb3478",
+              "x-ms-correlation-request-id": "f0897d6e-a23d-4797-b345-151c3e04289e",
+              "date": "Sun, 18 Oct 2026 01:20:46 GMT"
+            },
+            "retryAfterSeconds": null,
+            "suggestedRetryAtUtc": null,
+            "retrySource": "unknown"
+          }
+        }
+      ],
+      "httpRequests": 1,
+      "httpRequestCounts": {
+        "query": 1
+      },
+      "pages": 1,
+      "received": 4,
+      "discarded": 0,
+      "duplicates": 0,
+      "unattributedLabRows": 0,
+      "extractionComplete": null,
+      "ingestionFinal": false,
+      "window": {
+        "from": "2026-10-15T00:00:00Z",
+        "to": "2026-10-18T01:20:33.679105+00:00"
+      },
+      "rows": [
+        {
+          "alias": "A",
+          "resourceClass": "microsoft.compute",
+          "exactCanonicalVm": true,
+          "day": "2026-10-16",
+          "meter": "Intra Continent Data Transfer Out",
+          "cost": "1.11758708953857E-9",
+          "currency": "USD",
+          "quantity": null,
+          "unit": null,
+          "rate": null,
+          "costClassification": "POSITIVE"
+        },
+        {
+          "alias": "A",
+          "resourceClass": "microsoft.compute",
+          "exactCanonicalVm": true,
+          "day": "2026-10-16",
+          "meter": "Standard Data Transfer Out",
+          "cost": "8.70472751557827E-7",
+          "currency": "USD",
+          "quantity": null,
+          "unit": null,
+          "rate": null,
+          "costClassification": "POSITIVE"
+        },
+        {
+          "alias": "A",
+          "resourceClass": "microsoft.compute",
+          "exactCanonicalVm": true,
+          "day": "2026-10-17",
+          "meter": "Intra Continent Data Transfer Out",
+          "cost": "4.4703483581543E-9",
+          "currency": "USD",
+          "quantity": null,
+          "unit": null,
+          "rate": null,
+          "costClassification": "POSITIVE"
+        },
+        {
+          "alias": "A",
+          "resourceClass": "microsoft.compute",
+          "exactCanonicalVm": true,
+          "day": "2026-10-17",
+          "meter": "Standard Data Transfer Out",
+          "cost": "5.03762625157833E-7",
+          "currency": "USD",
+          "quantity": null,
+          "unit": null,
+          "rate": null,
+          "costClassification": "POSITIVE"
+        }
+      ],
+      "interpretation": "Query supplies cost, not verified bytes, quantities, units or rates.",
+      "offerContextAlias": "native-core",
+      "queryPageExtractionComplete": true,
+      "retryMetadataStatus": "HTTP_200_NO_RETRY_HINT_RETURNED_UNKNOWN_NOT_ZERO",
+      "dailyCoverage": {
+        "2026-10-15": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-16": "ROWS_OBSERVED_NOT_INGESTION_FINAL",
+        "2026-10-17": "ROWS_OBSERVED_NOT_INGESTION_FINAL",
+        "2026-10-18": "NO_ROWS_OBSERVED_NOT_ZERO"
+      }
+    },
+    "C": {
+      "state": "COMPLETE",
+      "reason": null,
+      "httpStatus": null,
+      "azureCode": null,
+      "errorCategory": null,
+      "responseMetadata": null,
+      "http": [
+        {
+          "status": 200,
+          "responseMetadata": {
+            "receivedAtUtc": "2026-10-18T01:20:57.288453+00:00",
+            "safeHeaders": {
+              "x-ms-request-id": "47c8e267-72a1-46e6-95f2-36e3aac09da3",
+              "x-ms-correlation-request-id": "a2b4fdd7-8165-40ff-bd43-b120c9e7e4db",
+              "date": "Sun, 18 Oct 2026 01:20:58 GMT"
+            },
+            "retryAfterSeconds": null,
+            "suggestedRetryAtUtc": null,
+            "retrySource": "unknown"
+          }
+        }
+      ],
+      "httpRequests": 1,
+      "httpRequestCounts": {
+        "query": 1
+      },
+      "pages": 1,
+      "received": 2,
+      "discarded": 0,
+      "duplicates": 0,
+      "unattributedLabRows": 0,
+      "extractionComplete": null,
+      "ingestionFinal": false,
+      "window": {
+        "from": "2026-10-15T00:00:00Z",
+        "to": "2026-10-18T01:20:47.130556+00:00"
+      },
+      "rows": [
+        {
+          "alias": "C",
+          "resourceClass": "microsoft.compute",
+          "exactCanonicalVm": true,
+          "day": "2026-10-17",
+          "meter": "Intra Continent Data Transfer Out",
+          "cost": "0.217493095509708",
+          "currency": "USD",
+          "quantity": null,
+          "unit": null,
+          "rate": null,
+          "costClassification": "POSITIVE"
+        },
+        {
+          "alias": "C",
+          "resourceClass": "microsoft.compute",
+          "exactCanonicalVm": true,
+          "day": "2026-10-17",
+          "meter": "Standard Data Transfer Out",
+          "cost": "0.00000137361697852612",
+          "currency": "USD",
+          "quantity": null,
+          "unit": null,
+          "rate": null,
+          "costClassification": "POSITIVE"
+        }
+      ],
+      "interpretation": "Query supplies cost, not verified bytes, quantities, units or rates.",
+      "offerContextAlias": "native-core",
+      "queryPageExtractionComplete": true,
+      "retryMetadataStatus": "HTTP_200_NO_RETRY_HINT_RETURNED_UNKNOWN_NOT_ZERO",
+      "dailyCoverage": {
+        "2026-10-15": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-16": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-17": "ROWS_OBSERVED_NOT_INGESTION_FINAL",
+        "2026-10-18": "NO_ROWS_OBSERVED_NOT_ZERO"
+      }
+    },
+    "historical-C": {
+      "state": "COMPLETE",
+      "reason": null,
+      "httpStatus": null,
+      "azureCode": null,
+      "errorCategory": null,
+      "responseMetadata": null,
+      "http": [
+        {
+          "status": 200,
+          "responseMetadata": {
+            "receivedAtUtc": "2026-10-18T01:21:10.932899+00:00",
+            "safeHeaders": {
+              "x-ms-request-id": "06df84a7-d76e-4ecb-a5d7-02ad2183ce74",
+              "x-ms-correlation-request-id": "069395af-1bcf-4119-a6e0-60daa0d8e71d",
+              "date": "Sun, 18 Oct 2026 01:21:11 GMT"
+            },
+            "retryAfterSeconds": null,
+            "suggestedRetryAtUtc": null,
+            "retrySource": "unknown"
+          }
+        }
+      ],
+      "httpRequests": 1,
+      "httpRequestCounts": {
+        "query": 1
+      },
+      "pages": 1,
+      "received": 2,
+      "discarded": 0,
+      "duplicates": 0,
+      "unattributedLabRows": 0,
+      "extractionComplete": null,
+      "ingestionFinal": false,
+      "window": {
+        "from": "2026-10-15T00:00:00Z",
+        "to": "2026-10-18T01:20:58.153466+00:00"
+      },
+      "rows": [
+        {
+          "alias": "historical-C",
+          "resourceClass": "microsoft.compute",
+          "exactCanonicalVm": true,
+          "day": "2026-10-15",
+          "meter": "Intra Continent Data Transfer Out",
+          "cost": "4.80562448501587E-8",
+          "currency": "USD",
+          "quantity": null,
+          "unit": null,
+          "rate": null,
+          "costClassification": "POSITIVE"
+        },
+        {
+          "alias": "historical-C",
+          "resourceClass": "microsoft.compute",
+          "exactCanonicalVm": true,
+          "day": "2026-10-16",
+          "meter": "Intra Continent Data Transfer Out",
+          "cost": "0.0131025196611881",
+          "currency": "USD",
+          "quantity": null,
+          "unit": null,
+          "rate": null,
+          "costClassification": "POSITIVE"
+        }
+      ],
+      "interpretation": "Query supplies cost, not verified bytes, quantities, units or rates.",
+      "offerContextAlias": "native-core",
+      "queryPageExtractionComplete": true,
+      "retryMetadataStatus": "HTTP_200_NO_RETRY_HINT_RETURNED_UNKNOWN_NOT_ZERO",
+      "dailyCoverage": {
+        "2026-10-15": "ROWS_OBSERVED_NOT_INGESTION_FINAL",
+        "2026-10-16": "ROWS_OBSERVED_NOT_INGESTION_FINAL",
+        "2026-10-17": "NO_ROWS_OBSERVED_NOT_ZERO",
+        "2026-10-18": "NO_ROWS_OBSERVED_NOT_ZERO"
+      }
+    }
+  },
+  "cooldownByContext": {
+    "T": {
+      "state": "NO_NEW_429_OBSERVED",
+      "nextEligibleUtc": null,
+      "priorCooldown": "UNKNOWN_NOT_ZERO"
+    },
+    "Core": {
+      "state": "NO_NEW_429_OBSERVED",
+      "nextEligibleUtc": null,
+      "priorCooldown": "UNKNOWN_NOT_ZERO"
+    }
+  },
+  "deferred": {},
+  "error": null,
+  "preservedUsageDays": [
+    "2026-10-15",
+    "2026-10-16",
+    "2026-10-17",
+    "2026-10-18"
+  ],
+  "priorCsvOutcomes": {
+    "A": "HTTP_TIMEOUT_NO_CSV",
+    "T": "HTTP_422_NO_CSV_RETRY_UNKNOWN_NOT_ZERO"
+  },
+  "collectorInvocation": "Unchanged public collector Query/Transport functions; private lease avoids forbidden runtime-directory writes.",
+  "bounds": {
+    "additionalHttp": 4,
+    "perQueryHttp": 1,
+    "maxPages": 1,
+    "retries": 0,
+    "maxMinutes": 25,
+    "maxToolCalls": 60,
+    "commandTimeoutSeconds": 180
+  },
+  "actualInfrastructureCalls": 0,
+  "actualAuthenticationMutations": 0,
+  "runtime": {
+    "activeCommands": 0,
+    "ownedChildrenIdle": true,
+    "queuedWork": 0
+  },
+  "schedule": {
+    "id": 5,
+    "changed": false,
+    "hardStopUtc": "2026-10-22T23:15:33Z"
+  },
+  "remainingUnknown": [
+    "Missing rows are not explicit zero-rated records; same-region free treatment unproven.",
+    "Query costs do not establish byte quantities, reported units, effective rates, offer IDs or credits.",
+    "CSV A timeout and T 422 remain generation failures; older CSV rows are not a current complete comparison.",
+    "No ingestion watermark, mature complete A/C/T reconciliation or stable six-hour comparison established.",
+    "Historical C and fresh C remain distinct RG inventories and observations."
+  ],
+  "costTotalsByAliasCurrency": [
+    {
+      "alias": "T",
+      "currency": "EUR",
+      "cost": "0.165150215302437",
+      "positiveZeroDistinction": "POSITIVE"
+    },
+    {
+      "alias": "A",
+      "currency": "USD",
+      "cost": "0.00000137982331216335287",
+      "positiveZeroDistinction": "POSITIVE"
+    },
+    {
+      "alias": "C",
+      "currency": "USD",
+      "cost": "0.21749446912668652612",
+      "positiveZeroDistinction": "POSITIVE"
+    },
+    {
+      "alias": "historical-C",
+      "currency": "USD",
+      "cost": "0.0131025677174329501587",
+      "positiveZeroDistinction": "POSITIVE"
+    }
+  ],
+  "retrySummary": {
+    "http429Responses": 0,
+    "validRetryHintsReturned": 0,
+    "retryAfterSeconds": null,
+    "knownNextEligibleByContext": {
+      "Core": null,
+      "T": null
+    },
+    "meaning": "All four Query responses HTTP 200; no server cooldown was supplied. Prior unknown headers and T CSV 422 remain unknown, not zero."
+  },
+  "phaseStatus": "CLOSED_IDLE"
+}

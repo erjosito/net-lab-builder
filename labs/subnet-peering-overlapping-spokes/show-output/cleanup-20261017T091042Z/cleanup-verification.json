@@ -1,0 +1,46 @@
+{
+  "verdict": "BLOCKED",
+  "reason": "Five unexpected networkSecurityGroups absent from approved prior inventory; ownership not established. Platform MDE.Linux child extensions also observed, but are not the blocking resource class. No DELETE submitted; frozen without retry.",
+  "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+  "atUtc": "2026-10-17T11:10:50.414267+02:00",
+  "countsBefore": [
+    {
+      "type": "Microsoft.Compute/disks",
+      "count": 5
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "count": 5
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "count": 8
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "count": 5
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "count": 5
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "count": 3
+    }
+  ],
+  "mutationsUsed": 0,
+  "remainingResourcesInRG": "unverified",
+  "polls": [],
+  "restore": "Not applicable; irreversible approved cleanup",
+  "outsideRGMutations": 0,
+  "blogAndArchivePreserved": true,
+  "authenticatedRGStatus": 200,
+  "unknownOwnershipResourceNames": [
+    "spoke2-spoke10-nsg-swedencentral",
+    "spoke1-spoke10-nsg-swedencentral",
+    "hub-hub10-nsg-swedencentral",
+    "spoke1-isolated192-nsg-swedencentral",
+    "spoke2-isolated192-nsg-swedencentral"
+  ]
+}

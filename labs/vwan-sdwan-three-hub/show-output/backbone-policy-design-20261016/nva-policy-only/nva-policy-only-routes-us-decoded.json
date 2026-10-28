@@ -1,0 +1,168 @@
+{
+  "site": "us",
+  "timestampUtc": "2026-10-16T10:29:19.550464+00:00",
+  "sha256": "3977aa2043eccce5e35ee881866d5d9e4ad9ad495023f93aa089f90ea631d9fe",
+  "stat": {
+    "uid": 113,
+    "gid": 122,
+    "mode": 384,
+    "mtimeNs": 1792000609620725084
+  },
+  "protocols": {
+    "mesh_eu": "Established",
+    "mesh_jp": "Established",
+    "mesh_cn": "Established",
+    "azure_0": "Established",
+    "azure_1": "Established"
+  },
+  "healthWaitObservations": [],
+  "birdProtocols": {
+    "command": [
+      "birdc",
+      "show",
+      "protocols"
+    ],
+    "exitCode": 0,
+    "stdout": "BIRD 2.0.8 ready.\nName       Proto      Table      State  Since         Info\ndevices    Device     ---        up     08:42:02.642  \nconnected  Direct     ---        up     08:42:02.642  \ncontrol_pins Static     underlay4  up     08:42:02.642  \nown_dc     Static     lab4       up     08:42:02.642  \nkernel_lab Kernel     lab4       up     08:42:02.642  \nmesh_eu    BGP        ---        up     08:42:06.751  Established   \nmesh_jp    BGP        ---        up     09:06:18.127  Established   \nmesh_cn    BGP        ---        up     08:42:07.654  Established   \nazure_0    BGP        ---        up     08:42:06.023  Established   \nazure_1    BGP        ---        up     08:42:04.981  Established   \n",
+    "stderr": ""
+  },
+  "birdRoutes": {
+    "command": [
+      "birdc",
+      "show",
+      "route",
+      "table",
+      "lab4",
+      "all"
+    ],
+    "exitCode": 0,
+    "stdout": "BIRD 2.0.8 ready.\nTable lab4:\n10.110.0.0/24        unicast [azure_1 10:21:38.690 from 10.250.2.69] * (100/?) [AS65011e]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520 65011\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n                     unicast [mesh_eu 08:42:06.911 from 172.31.0.1] (100) [AS65011i]\n\tdev wgeuus\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65011\n\tBGP.next_hop: 172.31.0.1\n\tBGP.local_pref: 100\n\tBGP.community: \n                     unicast [azure_0 10:21:38.690 from 10.250.2.70] (100/?) [AS65011e]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520 65011\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n10.30.0.0/24         unicast [azure_1 10:21:38.690 from 10.250.2.69] * (100/?) [AS65520e]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n                     unicast [mesh_jp 09:06:18.500 from 172.31.0.14] (100) [AS65515i]\n\tdev wgusjp\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65013 65515\n\tBGP.next_hop: 172.31.0.14\n\tBGP.local_pref: 300\n\tBGP.community: (65013,1)\n                     unicast [azure_0 10:21:38.690 from 10.250.2.70] (100/?) [AS65520e]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n                     unicast [mesh_eu 10:21:01.246 from 172.31.0.1] (100) [AS65520e]\n\tdev wgeuus\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65011 65515 65520 65520\n\tBGP.next_hop: 172.31.0.1\n\tBGP.local_pref: 100\n\tBGP.community: (65011,1)\n10.140.0.0/24        unicast [mesh_cn 08:42:08.165 from 172.31.0.18] * (100) [AS65014i]\n\tdev wguscn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65014\n\tBGP.next_hop: 172.31.0.18\n\tBGP.local_pref: 100\n\tBGP.community: \n10.20.0.0/24         unicast [azure_1 10:21:38.690 from 10.250.2.69] * (100/?) [AS65515i]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65515\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n                     unicast [azure_0 10:21:38.690 from 10.250.2.70] (100/?) [AS65515i]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65515\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n                     unicast [mesh_eu 10:21:01.246 from 172.31.0.1] (100) [AS65520e]\n\tdev wgeuus\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65011 65515 65520 65520\n\tBGP.next_hop: 172.31.0.1\n\tBGP.local_pref: 100\n\tBGP.community: (65011,1)\n                     unicast [mesh_jp 10:22:55.064 from 172.31.0.14] (100) [AS65520e]\n\tdev wgusjp\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65013 65515 65520 65520\n\tBGP.next_hop: 172.31.0.14\n\tBGP.local_pref: 100\n\tBGP.community: (65013,1)\n10.130.0.0/24        unicast [azure_1 10:21:38.690 from 10.250.2.69] * (100/?) [AS65013e]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520 65013\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n                     unicast [mesh_jp 09:06:18.358 from 172.31.0.14] (100) [AS65013i]\n\tdev wgusjp\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65013\n\tBGP.next_hop: 172.31.0.14\n\tBGP.local_pref: 100\n\tBGP.community: \n                     unicast [azure_0 10:21:38.690 from 10.250.2.70] (100/?) [AS65013e]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520 65013\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n10.10.0.0/24         unicast [azure_1 10:21:38.690 from 10.250.2.69] * (100/?) [AS65520e]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n                     unicast [mesh_eu 08:42:07.012 from 172.31.0.1] (100) [AS65515i]\n\tdev wgeuus\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65011 65515\n\tBGP.next_hop: 172.31.0.1\n\tBGP.local_pref: 300\n\tBGP.community: (65011,1)\n                     unicast [azure_0 10:21:38.690 from 10.250.2.70] (100/?) [AS65520e]\n\tvia 10.220.0.1 on eth0\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65515 65520 65520\n\tBGP.next_hop: 10.220.0.1\n\tBGP.local_pref: 400\n\tBGP.community: (65012,1)\n                     unicast [mesh_jp 10:22:55.064 from 172.31.0.14] (100) [AS65520e]\n\tdev wgusjp\n\tType: BGP univ\n\tBGP.origin: EGP\n\tBGP.as_path: 65013 65515 65520 65520\n\tBGP.next_hop: 172.31.0.14\n\tBGP.local_pref: 100\n\tBGP.community: (65013,1)\n10.120.0.0/24        unicast [own_dc 08:42:02.642] * (200)\n\tvia 10.220.0.1 on eth0\n\tType: static univ\n",
+    "stderr": ""
+  },
+  "kernelRoutes": {
+    "command": [
+      "ip",
+      "-j",
+      "route",
+      "show",
+      "table",
+      "main"
+    ],
+    "exitCode": 0,
+    "stdout": "[{\"dst\":\"default\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"prefsrc\":\"10.220.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"10.10.0.0/24\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.20.0.0/24\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.30.0.0/24\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.110.0.0/24\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.120.0.0/24\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.130.0.0/24\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"bird\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.140.0.0/24\",\"dev\":\"wguscn\",\"protocol\":\"bird\",\"scope\":\"link\",\"metric\":80,\"flags\":[]},{\"dst\":\"10.220.0.0/24\",\"dev\":\"eth0\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"10.220.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"scope\":\"link\",\"prefsrc\":\"10.220.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"10.250.2.69\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"flags\":[]},{\"dst\":\"10.250.2.70\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"flags\":[]},{\"dst\":\"168.63.129.16\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"prefsrc\":\"10.220.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"169.254.169.254\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"protocol\":\"dhcp\",\"prefsrc\":\"10.220.0.4\",\"metric\":100,\"flags\":[]},{\"dst\":\"172.31.0.0/30\",\"dev\":\"wgeuus\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"172.31.0.2\",\"flags\":[]},{\"dst\":\"172.31.0.12/30\",\"dev\":\"wgusjp\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"172.31.0.13\",\"flags\":[]},{\"dst\":\"172.31.0.16/30\",\"dev\":\"wguscn\",\"protocol\":\"kernel\",\"scope\":\"link\",\"prefsrc\":\"172.31.0.17\",\"flags\":[]}]\n",
+    "stderr": ""
+  },
+  "policyRules": {
+    "command": [
+      "ip",
+      "-j",
+      "rule",
+      "show"
+    ],
+    "exitCode": 0,
+    "stdout": "[{\"priority\":0,\"src\":\"all\",\"table\":\"local\"},{\"priority\":100,\"src\":\"all\",\"fwmark\":\"0x200\",\"table\":\"100\"},{\"priority\":220,\"src\":\"all\",\"table\":\"220\"},{\"priority\":32766,\"src\":\"all\",\"table\":\"main\"},{\"priority\":32767,\"src\":\"all\",\"table\":\"default\"}]\n",
+    "stderr": ""
+  },
+  "lookups": [
+    {
+      "command": [
+        "ip",
+        "-j",
+        "route",
+        "get",
+        "10.130.0.10"
+      ],
+      "exitCode": 0,
+      "stdout": "[{\"dst\":\"10.130.0.10\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"prefsrc\":\"10.220.0.4\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "ip",
+        "-j",
+        "route",
+        "get",
+        "10.130.0.4"
+      ],
+      "exitCode": 0,
+      "stdout": "[{\"dst\":\"10.130.0.4\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"prefsrc\":\"10.220.0.4\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "ip",
+        "-j",
+        "route",
+        "get",
+        "10.140.0.4"
+      ],
+      "exitCode": 0,
+      "stdout": "[{\"dst\":\"10.140.0.4\",\"dev\":\"wguscn\",\"prefsrc\":\"172.31.0.17\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "ip",
+        "-j",
+        "route",
+        "get",
+        "10.10.0.10"
+      ],
+      "exitCode": 0,
+      "stdout": "[{\"dst\":\"10.10.0.10\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"prefsrc\":\"10.220.0.4\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "ip",
+        "-j",
+        "route",
+        "get",
+        "10.20.0.10"
+      ],
+      "exitCode": 0,
+      "stdout": "[{\"dst\":\"10.20.0.10\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"prefsrc\":\"10.220.0.4\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "ip",
+        "-j",
+        "route",
+        "get",
+        "10.30.0.10"
+      ],
+      "exitCode": 0,
+      "stdout": "[{\"dst\":\"10.30.0.10\",\"gateway\":\"10.220.0.1\",\"dev\":\"eth0\",\"prefsrc\":\"10.220.0.4\",\"flags\":[],\"uid\":0,\"cache\":[]}]\n",
+      "stderr": ""
+    }
+  ],
+  "exports": {
+    "azure_0": {
+      "command": [
+        "birdc",
+        "show",
+        "route",
+        "export",
+        "azure_0",
+        "all"
+      ],
+      "exitCode": 0,
+      "stdout": "BIRD 2.0.8 ready.\nTable lab4:\n10.140.0.0/24        unicast [mesh_cn 08:42:08.165 from 172.31.0.18] * (100) [AS65014i]\n\tdev wguscn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65012 65012 65012 65014\n\tBGP.next_hop: 172.31.0.18\n\tBGP.local_pref: 100\n\tBGP.community: \n10.120.0.0/24        unicast [own_dc 08:42:02.642] * (200)\n\tvia 10.220.0.1 on eth0\n\tType: static univ\n",
+      "stderr": ""
+    },
+    "azure_1": {
+      "command": [
+        "birdc",
+        "show",
+        "route",
+        "export",
+        "azure_1",
+        "all"
+      ],
+      "exitCode": 0,
+      "stdout": "BIRD 2.0.8 ready.\nTable lab4:\n10.140.0.0/24        unicast [mesh_cn 08:42:08.165 from 172.31.0.18] * (100) [AS65014i]\n\tdev wguscn\n\tType: BGP univ\n\tBGP.origin: IGP\n\tBGP.as_path: 65012 65012 65012 65014\n\tBGP.next_hop: 172.31.0.18\n\tBGP.local_pref: 100\n\tBGP.community: \n10.120.0.0/24        unicast [own_dc 08:42:02.642] * (200)\n\tvia 10.220.0.1 on eth0\n\tType: static univ\n",
+      "stderr": ""
+    }
+  }
+}

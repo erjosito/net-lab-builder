@@ -1,0 +1,216 @@
+{
+  "schema": "sanitized-t-unit-provenance-diagnostic-v1",
+  "checkId": "t-unit-provenance-20261018T021800Z",
+  "globalParentCheckId": "detail-baseline-20261018T020010Z",
+  "completedAtUtc": "2026-10-18T02:21:56.745132+00:00",
+  "verdict": "INCONCLUSIVE",
+  "state": "INCOMPLETE",
+  "billingIdentityReconciliationComplete": false,
+  "ingestionFinal": false,
+  "sourceUnchanged": true,
+  "publishedCollectorSha256": "2ab6c0ce494ac2851afbbe0abeb5d2ba912948ef1488c0201dc6ecf221e584fb",
+  "requestWindow": {
+    "fromUtc": "2026-10-15T00:00:00Z",
+    "toUtc": "2026-10-18T02:21:52.083429Z",
+    "filterVariant": "legacy-date",
+    "apiVersion": "2024-08-01",
+    "publishedUrlHelper": "details_url (no build_url symbol in pinned source)"
+  },
+  "httpStatuses": [
+    200
+  ],
+  "additionalCustomerHttpRequests": 1,
+  "historicalCustomerHttpRequestsPreserved": 5,
+  "globalCustomerHttpRequests": 6,
+  "globalMaximumCustomerHttpRequests": 6,
+  "remainingCustomerHttpRequests": 0,
+  "newRequestBudgetGranted": false,
+  "historicalFinalizedLeaseEdited": false,
+  "maxPages": 1,
+  "automaticRetries": 0,
+  "requestTimeoutSeconds": 90,
+  "commandTimeoutSeconds": 180,
+  "maxPhaseToolCalls": 35,
+  "infrastructureMutations": 0,
+  "newInfrastructureRequests": 0,
+  "newQueryRequests": 0,
+  "newMetadataRequests": 0,
+  "loginOrContextChanges": 0,
+  "tenantOrProfileLookups": 0,
+  "nativeCredentialUse": "Existing native WSL CLI credential; pinned token tenant/subscription checked in memory.",
+  "receivedRows": 10,
+  "retainedOwnedBandwidthRows": 2,
+  "unownedOrOtherCategoryRawRowsPersisted": 0,
+  "entireRawPagePersisted": false,
+  "paginationComplete": true,
+  "classification": "OWNED_BANDWIDTH_SAME_ID_DIFFERENT_CONTENT_PROVEN_CURRENT_PAGE",
+  "ownedBandwidthIdsEqual": true,
+  "originalHashSetUnchanged": true,
+  "pageCollisionSummary": {
+    "allPageDifferentContentIdGroups": 1,
+    "publicOwnedDateDifferentContentIdGroups": 1,
+    "ownedBandwidthCollisionMembers": 2
+  },
+  "rows": [
+    {
+      "endpoint": "T",
+      "sourceRecordHash": "7cffe6e436a1a72c07051537a744b001029e819e796cdcee9d26d0d1c0aea6f0",
+      "originalHashUnchangedSinceBaseline": true,
+      "serviceIdSha256": "4c2e15d88b410ecaba26f8da46432c5179164b180f3b39a2e27ab034bf2d479b",
+      "serviceNameSha256": "b2fcb4a7d3505ea364dc42d551e226de1cbacd690b26f6ace41a8573a86fed5d",
+      "serviceType": "Microsoft.Consumption/usageDetails",
+      "sourceKind": "legacy",
+      "serviceIdShape": "/subscriptions/{subscription}/providers/Microsoft.Billing/billingPeriods/{period}/providers/Microsoft.Consumption/usageDetails/{guid}",
+      "serviceIdLength": 183,
+      "propertiesUnitOfMeasure": {
+        "present": false,
+        "value": null
+      },
+      "meterDetailsUnitOfMeasure": {
+        "present": true,
+        "value": "1 TB"
+      },
+      "meterDetailsUnit": {
+        "present": false,
+        "value": null
+      },
+      "normalizerSelectedField": "properties.meterDetails.unitOfMeasure",
+      "rawUnitFieldsDisagree": false,
+      "collisionMembership": {
+        "sameIdPageMembers": 2,
+        "differentContentSameId": true,
+        "ownedBandwidthMembers": 2,
+        "ownedOtherCategoryMembers": 0,
+        "outsideInventoryOrDateMembers": 0,
+        "wouldTriggerPublicOwnedDateConflict": true
+      },
+      "date": "2026-10-17T00:00:00.0000000Z",
+      "usageStart": {
+        "present": false,
+        "value": null
+      },
+      "usageEnd": {
+        "present": false,
+        "value": null
+      },
+      "day": "2026-10-17",
+      "quantity": "5.5879354E-8",
+      "unit": "1 TB",
+      "effectivePrice": "0.017329",
+      "unitPrice": "0",
+      "cost": "9.68333E-10",
+      "currency": "EUR",
+      "meterId": "0ab798ac-6d96-4ccc-89d1-0cc91dcd5e21",
+      "meterName": "Intra Continent Data Transfer Out",
+      "meterCategory": "Bandwidth",
+      "meterSubCategory": "Inter-Region",
+      "rawCostSource": "properties.cost",
+      "rawCurrencySource": "properties.billingCurrency"
+    },
+    {
+      "endpoint": "T",
+      "sourceRecordHash": "49a60b244b3cc2d2450cfb7ace0976bab665ae47a8d4b66657ed386f7cceb91b",
+      "originalHashUnchangedSinceBaseline": true,
+      "serviceIdSha256": "4c2e15d88b410ecaba26f8da46432c5179164b180f3b39a2e27ab034bf2d479b",
+      "serviceNameSha256": "b2fcb4a7d3505ea364dc42d551e226de1cbacd690b26f6ace41a8573a86fed5d",
+      "serviceType": "Microsoft.Consumption/usageDetails",
+      "sourceKind": "legacy",
+      "serviceIdShape": "/subscriptions/{subscription}/providers/Microsoft.Billing/billingPeriods/{period}/providers/Microsoft.Consumption/usageDetails/{guid}",
+      "serviceIdLength": 183,
+      "propertiesUnitOfMeasure": {
+        "present": false,
+        "value": null
+      },
+      "meterDetailsUnitOfMeasure": {
+        "present": true,
+        "value": "1 TB"
+      },
+      "meterDetailsUnit": {
+        "present": false,
+        "value": null
+      },
+      "normalizerSelectedField": "properties.meterDetails.unitOfMeasure",
+      "rawUnitFieldsDisagree": false,
+      "collisionMembership": {
+        "sameIdPageMembers": 2,
+        "differentContentSameId": true,
+        "ownedBandwidthMembers": 2,
+        "ownedOtherCategoryMembers": 0,
+        "outsideInventoryOrDateMembers": 0,
+        "wouldTriggerPublicOwnedDateConflict": true
+      },
+      "date": "2026-10-17T00:00:00.0000000Z",
+      "usageStart": {
+        "present": false,
+        "value": null
+      },
+      "usageEnd": {
+        "present": false,
+        "value": null
+      },
+      "day": "2026-10-17",
+      "quantity": "9.53027955070138",
+      "unit": "1 TB",
+      "effectivePrice": "0.017329",
+      "unitPrice": "0",
+      "cost": "0.165150214334104",
+      "currency": "EUR",
+      "meterId": "0ab798ac-6d96-4ccc-89d1-0cc91dcd5e21",
+      "meterName": "Intra Continent Data Transfer Out",
+      "meterCategory": "Bandwidth",
+      "meterSubCategory": "Inter-Region",
+      "rawCostSource": "properties.cost",
+      "rawCurrencySource": "properties.billingCurrency"
+    }
+  ],
+  "unitConclusion": {
+    "customerRawUnitProven": "1 TB",
+    "customerRawUnitField": "properties.meterDetails.unitOfMeasure",
+    "outerUnitPresent": false,
+    "otherNestedUnitPresent": false,
+    "publicNormalizerFaithfullyProjectsSource": true,
+    "projectionPrecedenceBugProven": false,
+    "exactMeterRetailUnit": "1 GB",
+    "retailMetadataEvidence": "private\\unit-identity-20261018T021000Z\\public-metadata.private.json",
+    "classification": "CUSTOMER_NESTED_SOURCE_VERSUS_EXACT_METER_RETAIL_UNIT_CONTRADICTION",
+    "customerUnitVersusRetailCause": "UNKNOWN",
+    "quantityConversionApplied": false,
+    "byteAttributionProven": false,
+    "agreementOrCreditTreatmentProven": false
+  },
+  "identityConclusion": {
+    "bothOwnedBandwidthRowsShareOriginalIdAndName": true,
+    "originalContentsDiffer": true,
+    "otherCategoryCollisionExplanationForThisPair": false,
+    "semanticCauseOfServiceIdReuse": "UNKNOWN",
+    "historicalFullPageNotRetained": true,
+    "historicalPairSameContentsAsCurrentPair": true,
+    "historicalConflictOrderOrAdditionalHistoricalCollisionsProven": false,
+    "publicFailClosedBehaviorPreserved": true,
+    "deduplicationApplied": false
+  },
+  "financialCorroboration": {
+    "sumAsReportedEUR": "0.165150215302437",
+    "priorQueryEUR": "0.165150215302437",
+    "equalsPriorQuery": true,
+    "newQueryRequests": 0,
+    "confidence": "HIGH_ARITHMETIC_ONLY_NOT_UNIQUENESS_OR_UNITS"
+  },
+  "confidence": {
+    "unitFieldProvenance": "HIGH_DIRECT_CURRENT_RESPONSE",
+    "twoBandwidthRowsCollisionMembership": "HIGH_DIRECT_CURRENT_RESPONSE",
+    "originalHashContinuity": "HIGH_EXACT_PUBLISHED_CANONICAL_DIGEST",
+    "financialSumComparison": "HIGH_ARITHMETIC_AND_PRIOR_QUERY_ONLY",
+    "billingUnitMeaningAndUniqueRecordReconciliation": "UNRESOLVED"
+  },
+  "nativeChildIdle": true,
+  "activeCommands": 0,
+  "queuedWork": 0,
+  "finishedBeforeOriginalExpiry": true,
+  "gaps": [
+    "No unique billing-record reconciliation; default published conflicting_record_identity remains appropriate.",
+    "No unit conversion, byte attribution, service-side root cause, credit or agreement conclusion.",
+    "Prior Query amount is corroborated arithmetically; no new Query or six-hour stable comparison.",
+    "No ingestion-finality, explicit same-region zero-rating, or full experiment completion claim."
+  ]
+}

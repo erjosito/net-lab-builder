@@ -1,0 +1,24 @@
+{
+  "timestampUtc": "2026-10-16T08:51:04.564081+00:00",
+  "finishedUtc": "2026-10-16T08:52:54.434665+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnSites/site-dc-jp?api-version=2024-05-01",
+    "--query",
+    "properties.{addressSpace:addressSpace,links:vpnSiteLinks[].{name:name,ip:properties.ipAddress}}"
+  ],
+  "stdout": "{\n  \"addressSpace\": null,\n  \"links\": [\n    {\n      \"ip\": \"104.46.220.128\",\n      \"name\": \"link-jp\"\n    }\n  ]\n}\n",
+  "result": {
+    "addressSpace": null,
+    "links": [
+      {
+        "ip": "104.46.220.128",
+        "name": "link-jp"
+      }
+    ]
+  },
+  "sha256": "a008f6b54107c06894ded7a04b88b94271c59ab39c7d73e8b75b19442326dbdb"
+}

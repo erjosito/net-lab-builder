@@ -5,16 +5,17 @@ This folder is the **cross-lab knowledge base** for `net-lab-builder`. Anything 
 **Who reads it:**
 
 - **Humans** — you're at a console, you want a known-good command, you don't want to grep a 50 KB `design.md` for it
-- **Niobe** — at every validation pass, she reads the pages relevant to the lab's network layers before running captures (so she uses the canonical commands and avoids the documented gotchas)
-- **Trinity, Tank, Oracle** — read on demand when the topic intersects their work
+- **The lead agent** — reads only the pages relevant to the current lab's network layers before designing or capturing evidence
+- **Optional reviewers or Squad specialists** — read on demand within their bounded scope
 
 **Who writes to it:**
 
-- **Niobe (primary)** — appends every novel gotcha she discovers during validation. Charter mandates this; see her "KB contribution" section.
-- **Trinity (occasional)** — adds CLI tricks she discovers when prototyping designs. Cross-cutting design patterns also go to her Obsidian vault (private); the *commands* go here (public).
-- **Jose (manual)** — drops in references he wants the squad to consult.
+- **The lead agent** — adds verified, sanitized cross-lab commands and gotchas after verdict/restore, not during live mutation
+- **Jose (manual)** — drops in references for future labs
+- **Opt-in Squad sessions** — retain Niobe/Trinity contributor mappings; independent reviewers remain read-only
 
-**Who DOESN'T write to it:** Tank, Oracle, Kid. Tank writes IaC and code comments; Oracle writes diagrams; Kid writes blog drafts. None of them should append KB entries.
+The root `AGENTS.md` governs normal sessions. Squad charter permissions and
+mandatory handoffs do not restrict the single lead.
 
 ## Index
 

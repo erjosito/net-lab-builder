@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-16T09:51:54.699034+00:00",
+  "finishedUtc": "2026-10-16T09:53:25.936878+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-jp",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\design-ExpressRoute-nva-jp.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\n\\n[stderr]\\nTraceback (most recent call last):\\n  File \\\"<stdin>\\\", line 14, in <module>\\nAssertionError: {'command': ['birdc', 'show', 'protocols'], 'exitCode': 0, 'stdout': 'BIRD 2.0.8 ready.\\\\nName       Proto      Table      State  Since         Info\\\\ndevices    Device     ---        up     09:06:14.166  \\\\nconnected  Direct     ---        up     09:06:14.166  \\\\ncontrol_pins Static     underlay4  up     09:06:14.166  \\\\nown_dc     Static     lab4       up     09:06:14.166  \\\\nkernel_lab Kernel     lab4       up     09:06:14.166  \\\\nmesh_eu    BGP        ---        up     09:06:14.881  Established   \\\\nmesh_us    BGP        ---        up     09:06:18.056  Established   \\\\nmesh_cn    BGP        ---        up     09:06:16.140  Established   \\\\nazure_0    BGP        ---        start  09:53:04.167  Idle          BGP Error: Hold timer expired\\\\nazure_1    BGP        ---        up     09:06:18.582  Established   \\\\n', 'stderr': ''}\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\n\n[stderr]\nTraceback (most recent call last):\n  File \"<stdin>\", line 14, in <module>\nAssertionError: {'command': ['birdc', 'show', 'protocols'], 'exitCode': 0, 'stdout': 'BIRD 2.0.8 ready.\\nName       Proto      Table      State  Since         Info\\ndevices    Device     ---        up     09:06:14.166  \\nconnected  Direct     ---        up     09:06:14.166  \\ncontrol_pins Static     underlay4  up     09:06:14.166  \\nown_dc     Static     lab4       up     09:06:14.166  \\nkernel_lab Kernel     lab4       up     09:06:14.166  \\nmesh_eu    BGP        ---        up     09:06:14.881  Established   \\nmesh_us    BGP        ---        up     09:06:18.056  Established   \\nmesh_cn    BGP        ---        up     09:06:16.140  Established   \\nazure_0    BGP        ---        start  09:53:04.167  Idle          BGP Error: Hold timer expired\\nazure_1    BGP        ---        up     09:06:18.582  Established   \\n', 'stderr': ''}\n"
+      }
+    ]
+  },
+  "sha256": "97d9b09d3af217a57be12005284eb379e49bb31816ef8ea5b14474772fb25322"
+}

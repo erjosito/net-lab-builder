@@ -1,0 +1,28 @@
+Enable succeeded: 
+[stdout]
+=== NVA iptables FORWARD counters (S2 Workaround Stateful) ===
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+    8   592 LOG        all  --  *      *       172.16.0.0/16        10.0.0.0/8           LOG flags 0 level 4 prefix "NVA_FWD_ONPREM_TO_SPOKE: "
+    8   747 LOG        all  --  *      *       10.0.0.0/8           172.16.0.0/16        LOG flags 0 level 4 prefix "NVA_FWD_SPOKE_TO_ONPREM: "
+   14  1195 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+    1    60 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate NEW tcp flags:0x17/0x02
+    1    84 ACCEPT     icmp --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate NEW icmptype 8
+    0     0 LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate INVALID LOG flags 0 level 4 prefix "NVA_DROP_ASYM_INVALID: "
+    0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate INVALID
+    0     0 LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0            LOG flags 0 level 4 prefix "NVA_DROP_ASYM_UNSEEN: "
+    0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           
+=== NVA kernel log (S2 Workaround Stateful) ===
+[ 3477.046455] NVA_FWD_ONPREM_TO_SPOKE: IN=eth0 OUT=eth0 MAC=e4:fa:de:1c:53:d5:70:a8:a5:79:db:03:08:00 SRC=172.16.1.4 DST=10.1.1.4 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=52733 DF PROTO=TCP SPT=59324 DPT=80 WINDOW=65280 RES=0x00 SYN URGP=0 
+[ 3477.047436] NVA_FWD_SPOKE_TO_ONPREM: IN=eth0 OUT=eth0 MAC=e4:fa:de:1c:53:d5:70:a8:a5:52:98:b8:08:00 SRC=10.1.1.4 DST=172.16.1.4 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=0 DF PROTO=TCP SPT=80 DPT=59324 WINDOW=65160 RES=0x00 ACK SYN URGP=0 
+[ 3477.052675] NVA_FWD_ONPREM_TO_SPOKE: IN=eth0 OUT=eth0 MAC=e4:fa:de:1c:53:d5:70:a8:a5:79:db:03:08:00 SRC=172.16.1.4 DST=10.1.1.4 LEN=52 TOS=0x00 PREC=0x00 TTL=63 ID=52734 DF PROTO=TCP SPT=59324 DPT=80 WINDOW=510 RES=0x00 ACK URGP=0 
+[ 3477.052686] NVA_FWD_ONPREM_TO_SPOKE: IN=eth0 OUT=eth0 MAC=e4:fa:de:1c:53:d5:70:a8:a5:79:db:03:08:00 SRC=172.16.1.4 DST=10.1.1.4 LEN=124 TOS=0x00 PREC=0x00 TTL=63 ID=52735 DF PROTO=TCP SPT=59324 DPT=80 WINDOW=510 RES=0x00 ACK PSH URGP=0 
+[ 3477.053089] NVA_FWD_SPOKE_TO_ONPREM: IN=eth0 OUT=eth0 MAC=e4:fa:de:1c:53:d5:70:a8:a5:52:98:b8:08:00 SRC=10.1.1.4 DST=172.16.1.4 LEN=52 TOS=0x00 PREC=0x00 TTL=63 ID=13902 DF PROTO=TCP SPT=80 DPT=59324 WINDOW=509 RES=0x00 ACK URGP=0 
+[ 3477.053748] NVA_FWD_SPOKE_TO_ONPREM: IN=eth0 OUT=eth0 MAC=e4:fa:de:1c:53:d5:70:a8:a5:52:98:b8:08:00 SRC=10.1.1.4 DST=172.16.1.4 LEN=238 TOS=0x00 PREC=0x00 TTL=63 ID=13903 DF PROTO=TCP SPT=80 DPT=59324 WINDOW=509 RES=0x00 ACK PSH URGP=0 
+[ 3477.054149] NVA_FWD_SPOKE_TO_ONPREM: IN=eth0 OUT=eth0 MAC=e4:fa:de:1c:53:d5:70:a8:a5:52:98:b8:08:00 SRC=10.1.1.4 DST=172.16.1.4 LEN=93 TOS=0x00 PREC=0x00 TTL=63 ID=13904 DF PROTO=TCP SPT=80 DPT=59324 WINDOW=509 RES=0x00 ACK PSH FIN URGP=0 
+[ 3477.055088] NVA_FWD_ONPREM_TO_SPOKE: IN=eth0 OUT=eth0 MAC=e4:fa:de:1c:53:d5:70:a8:a5:79:db:03:08:00 SRC=172.16.1.4 DST=10.1.1.4 LEN=52 TOS=0x00 PREC=0x00 TTL=63 ID=52736 DF PROTO=TCP SPT=59324 DPT=80 WINDOW=509 RES=0x00 ACK URGP=0 
+[ 3477.055445] NVA_FWD_ONPREM_TO_SPOKE: IN=eth0 OUT=eth0 MAC=e4:fa:de:1c:53:d5:70:a8:a5:79:db:03:08:00 SRC=172.16.1.4 DST=10.1.1.4 LEN=52 TOS=0x00 PREC=0x00 TTL=63 ID=52737 DF PROTO=TCP SPT=59324 DPT=80 WINDOW=509 RES=0x00 ACK FIN URGP=0 
+[ 3477.055782] NVA_FWD_SPOKE_TO_ONPREM: IN=eth0 OUT=eth0 MAC=e4:fa:de:1c:53:d5:70:a8:a5:52:98:b8:08:00 SRC=10.1.1.4 DST=172.16.1.4 LEN=52 TOS=0x00 PREC=0x00 TTL=63 ID=13905 DF PROTO=TCP SPT=80 DPT=59324 WINDOW=509 RES=0x00 ACK URGP=0 
+
+[stderr]
+

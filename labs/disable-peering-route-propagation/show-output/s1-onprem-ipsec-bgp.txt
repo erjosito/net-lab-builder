@@ -1,0 +1,71 @@
+Enable succeeded: 
+[stdout]
+.9.5, Linux 6.8.0-1070-azure, x86_64):
+  uptime: 40 minutes, since Oct 22 11:52:56 2026
+  malloc: sbrk 3096576, mmap 0, used 1420992, free 1675584
+  worker threads: 11 of 16 idle, 5/0/0/0 working, job queue: 0/0/0/0, scheduled: 4
+  loaded plugins: charon aesni aes rc2 sha2 sha1 md5 mgf1 random nonce x509 revocation constraints pubkey pkcs1 pkcs7 pkcs8 pkcs12 pgp dnskey sshkey pem openssl fips-prf gmp agent xcbc hmac gcm drbg attr kernel-netlink resolve socket-default connmark stroke vici updown eap-mschapv2 xauth-generic counters
+Listening IP addresses:
+  172.16.1.4
+Connections:
+ azure-vpngw:  172.16.1.4...20.240.221.177  IKEv2, dpddelay=10s
+ azure-vpngw:   local:  [20.91.221.26] uses pre-shared key authentication
+ azure-vpngw:   remote: [20.240.221.177] uses pre-shared key authentication
+ azure-vpngw:   child:  0.0.0.0/0 === 0.0.0.0/0 TUNNEL, dpdaction=restart
+Security Associations (1 up, 0 connecting):
+ azure-vpngw[1]: ESTABLISHED 40 minutes ago, 172.16.1.4[20.91.221.26]...20.240.221.177[20.240.221.177]
+ azure-vpngw[1]: IKEv2 SPIs: 54a2ebd96581a25c_i* 0fb971fba532b7da_r, pre-shared key reauthentication in 7 hours
+ azure-vpngw[1]: IKE proposal: AES_CBC_256/HMAC_SHA1_96/PRF_HMAC_SHA1/MODP_1024
+ azure-vpngw{1}:  INSTALLED, TUNNEL, reqid 1, ESP in UDP SPIs: c9f524d6_i 8696deda_o
+ azure-vpngw{1}:  AES_GCM_16_256, 410 bytes_i (6 pkts, 17s ago), 559 bytes_o (7 pkts, 17s ago), rekeying in 7 minutes
+ azure-vpngw{1}:   0.0.0.0/0 === 0.0.0.0/0
+ azure-vpngw{2}:  INSTALLED, TUNNEL, reqid 1, ESP in UDP SPIs: ca754f56_i 5569c854_o
+ azure-vpngw{2}:  AES_GCM_16_256, 7535 bytes_i (121 pkts, 18s ago), 7824 bytes_o (135 pkts, 18s ago), rekeying in 6 minutes
+ azure-vpngw{2}:   0.0.0.0/0 === 0.0.0.0/0
+
+=== FRR BGP Summary ===
+
+IPv4 Unicast Summary (VRF default):
+BGP router identifier 172.16.1.4, local AS number 65010 vrf-id 0
+BGP table version 12
+RIB entries 23, using 4232 bytes of memory
+Peers 1, using 723 KiB of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+10.0.0.254      4      65515        48        45        0    0    0 00:40:29           11       12 N/A
+
+Total number of neighbors 1
+
+=== FRR BGP Routes ===
+Codes: K - kernel route, C - connected, S - static, R - RIP,
+       O - OSPF, I - IS-IS, B - BGP, E - EIGRP, N - NHRP,
+       T - Table, v - VNC, V - VNC-Direct, A - Babel, F - PBR,
+       f - OpenFabric,
+       > - selected route, * - FIB route, q - queued, r - rejected, b - backup
+       t - trapped, o - offload failure
+
+B>  10.0.0.0/16 [20/0] via 10.0.0.254 (recursive), weight 1, 00:40:29
+  *                      via 10.0.0.254, vti0 onlink, weight 1, 00:40:29
+B>  10.1.0.0/16 [20/0] via 10.0.0.254 (recursive), weight 1, 00:40:29
+  *                      via 10.0.0.254, vti0 onlink, weight 1, 00:40:29
+B>  10.2.0.0/16 [20/0] via 10.0.0.254 (recursive), weight 1, 00:40:29
+  *                      via 10.0.0.254, vti0 onlink, weight 1, 00:40:29
+B>  10.3.0.0/16 [20/0] via 10.0.0.254 (recursive), weight 1, 00:40:29
+  *                      via 10.0.0.254, vti0 onlink, weight 1, 00:40:29
+B>  10.4.0.0/16 [20/0] via 10.0.0.254 (recursive), weight 1, 00:40:29
+  *                      via 10.0.0.254, vti0 onlink, weight 1, 00:40:29
+B>  10.5.0.0/16 [20/0] via 10.0.0.254 (recursive), weight 1, 00:40:29
+  *                      via 10.0.0.254, vti0 onlink, weight 1, 00:40:29
+B>  10.6.0.0/16 [20/0] via 10.0.0.254 (recursive), weight 1, 00:40:29
+  *                      via 10.0.0.254, vti0 onlink, weight 1, 00:40:29
+B>  10.7.0.0/16 [20/0] via 10.0.0.254 (recursive), weight 1, 00:40:29
+  *                      via 10.0.0.254, vti0 onlink, weight 1, 00:40:29
+B>  10.8.0.0/16 [20/0] via 10.0.0.254 (recursive), weight 1, 00:40:29
+  *                      via 10.0.0.254, vti0 onlink, weight 1, 00:40:29
+B>  10.9.0.0/16 [20/0] via 10.0.0.254 (recursive), weight 1, 00:40:29
+  *                      via 10.0.0.254, vti0 onlink, weight 1, 00:40:29
+B>  10.10.0.0/16 [20/0] via 10.0.0.254 (recursive), weight 1, 00:40:29
+  *                       via 10.0.0.254, vti0 onlink, weight 1, 00:40:29
+
+[stderr]
+

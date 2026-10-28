@@ -1,0 +1,337 @@
+state,source,destination,TCP,ICMP
+Mixed baseline,10.110.0.10,10.10.0.10,PASS,PASS
+Mixed baseline,10.110.0.10,10.20.0.10,FAIL,FAIL
+Mixed baseline,10.110.0.10,10.30.0.10,PASS,PASS
+Mixed baseline,10.120.0.10,10.10.0.10,FAIL,FAIL
+Mixed baseline,10.120.0.10,10.20.0.10,PASS,PASS
+Mixed baseline,10.120.0.10,10.30.0.10,PASS,PASS
+Mixed baseline,10.130.0.10,10.10.0.10,FAIL,FAIL
+Mixed baseline,10.130.0.10,10.20.0.10,FAIL,FAIL
+Mixed baseline,10.130.0.10,10.30.0.10,FAIL,FAIL
+Mixed baseline,10.140.0.4,10.10.0.10,FAIL,FAIL
+Mixed baseline,10.140.0.4,10.20.0.10,FAIL,FAIL
+Mixed baseline,10.140.0.4,10.30.0.10,PASS,PASS
+Mixed baseline,10.10.0.10,10.110.0.10,PASS,PASS
+Mixed baseline,10.10.0.10,10.120.0.10,FAIL,PASS
+Mixed baseline,10.10.0.10,10.130.0.10,FAIL,FAIL
+Mixed baseline,10.10.0.10,10.140.0.4,FAIL,PASS
+Mixed baseline,10.20.0.10,10.110.0.10,FAIL,PASS
+Mixed baseline,10.20.0.10,10.120.0.10,PASS,PASS
+Mixed baseline,10.20.0.10,10.130.0.10,FAIL,FAIL
+Mixed baseline,10.20.0.10,10.140.0.4,FAIL,PASS
+Mixed baseline,10.30.0.10,10.110.0.10,PASS,PASS
+Mixed baseline,10.30.0.10,10.120.0.10,PASS,PASS
+Mixed baseline,10.30.0.10,10.130.0.10,FAIL,FAIL
+Mixed baseline,10.30.0.10,10.140.0.4,PASS,PASS
+All B2B baseline,10.110.0.10,10.10.0.10,PASS,PASS
+All B2B baseline,10.110.0.10,10.20.0.10,FAIL,FAIL
+All B2B baseline,10.110.0.10,10.30.0.10,PASS,PASS
+All B2B baseline,10.120.0.10,10.10.0.10,FAIL,FAIL
+All B2B baseline,10.120.0.10,10.20.0.10,PASS,PASS
+All B2B baseline,10.120.0.10,10.30.0.10,PASS,PASS
+All B2B baseline,10.130.0.10,10.10.0.10,FAIL,FAIL
+All B2B baseline,10.130.0.10,10.20.0.10,FAIL,FAIL
+All B2B baseline,10.130.0.10,10.30.0.10,FAIL,FAIL
+All B2B baseline,10.140.0.4,10.10.0.10,FAIL,FAIL
+All B2B baseline,10.140.0.4,10.20.0.10,FAIL,FAIL
+All B2B baseline,10.140.0.4,10.30.0.10,PASS,PASS
+All B2B baseline,10.10.0.10,10.110.0.10,PASS,PASS
+All B2B baseline,10.10.0.10,10.120.0.10,FAIL,PASS
+All B2B baseline,10.10.0.10,10.130.0.10,FAIL,FAIL
+All B2B baseline,10.10.0.10,10.140.0.4,FAIL,PASS
+All B2B baseline,10.20.0.10,10.110.0.10,FAIL,PASS
+All B2B baseline,10.20.0.10,10.120.0.10,PASS,PASS
+All B2B baseline,10.20.0.10,10.130.0.10,FAIL,FAIL
+All B2B baseline,10.20.0.10,10.140.0.4,FAIL,PASS
+All B2B baseline,10.30.0.10,10.110.0.10,PASS,PASS
+All B2B baseline,10.30.0.10,10.120.0.10,PASS,PASS
+All B2B baseline,10.30.0.10,10.130.0.10,FAIL,FAIL
+All B2B baseline,10.30.0.10,10.140.0.4,PASS,PASS
+"A, NVA policy only",10.110.0.10,10.10.0.10,PASS,PASS
+"A, NVA policy only",10.110.0.10,10.20.0.10,PASS,PASS
+"A, NVA policy only",10.110.0.10,10.30.0.10,PASS,PASS
+"A, NVA policy only",10.120.0.10,10.10.0.10,PASS,PASS
+"A, NVA policy only",10.120.0.10,10.20.0.10,PASS,PASS
+"A, NVA policy only",10.120.0.10,10.30.0.10,PASS,PASS
+"A, NVA policy only",10.130.0.10,10.10.0.10,FAIL,FAIL
+"A, NVA policy only",10.130.0.10,10.20.0.10,FAIL,FAIL
+"A, NVA policy only",10.130.0.10,10.30.0.10,FAIL,FAIL
+"A, NVA policy only",10.140.0.4,10.10.0.10,PASS,PASS
+"A, NVA policy only",10.140.0.4,10.20.0.10,PASS,PASS
+"A, NVA policy only",10.140.0.4,10.30.0.10,PASS,PASS
+"A, NVA policy only",10.10.0.10,10.110.0.10,PASS,PASS
+"A, NVA policy only",10.10.0.10,10.120.0.10,PASS,PASS
+"A, NVA policy only",10.10.0.10,10.130.0.10,FAIL,FAIL
+"A, NVA policy only",10.10.0.10,10.140.0.4,PASS,PASS
+"A, NVA policy only",10.20.0.10,10.110.0.10,PASS,PASS
+"A, NVA policy only",10.20.0.10,10.120.0.10,PASS,PASS
+"A, NVA policy only",10.20.0.10,10.130.0.10,FAIL,FAIL
+"A, NVA policy only",10.20.0.10,10.140.0.4,PASS,PASS
+"A, NVA policy only",10.30.0.10,10.110.0.10,PASS,PASS
+"A, NVA policy only",10.30.0.10,10.120.0.10,PASS,PASS
+"A, NVA policy only",10.30.0.10,10.130.0.10,FAIL,FAIL
+"A, NVA policy only",10.30.0.10,10.140.0.4,PASS,PASS
+"A, plus JP workload UDR",10.110.0.10,10.10.0.10,PASS,PASS
+"A, plus JP workload UDR",10.110.0.10,10.20.0.10,PASS,PASS
+"A, plus JP workload UDR",10.110.0.10,10.30.0.10,PASS,PASS
+"A, plus JP workload UDR",10.120.0.10,10.10.0.10,PASS,PASS
+"A, plus JP workload UDR",10.120.0.10,10.20.0.10,PASS,PASS
+"A, plus JP workload UDR",10.120.0.10,10.30.0.10,PASS,PASS
+"A, plus JP workload UDR",10.130.0.10,10.10.0.10,PASS,PASS
+"A, plus JP workload UDR",10.130.0.10,10.20.0.10,PASS,PASS
+"A, plus JP workload UDR",10.130.0.10,10.30.0.10,PASS,PASS
+"A, plus JP workload UDR",10.140.0.4,10.10.0.10,PASS,PASS
+"A, plus JP workload UDR",10.140.0.4,10.20.0.10,PASS,PASS
+"A, plus JP workload UDR",10.140.0.4,10.30.0.10,PASS,PASS
+"A, plus JP workload UDR",10.10.0.10,10.110.0.10,PASS,PASS
+"A, plus JP workload UDR",10.10.0.10,10.120.0.10,PASS,PASS
+"A, plus JP workload UDR",10.10.0.10,10.130.0.10,PASS,PASS
+"A, plus JP workload UDR",10.10.0.10,10.140.0.4,PASS,PASS
+"A, plus JP workload UDR",10.20.0.10,10.110.0.10,PASS,PASS
+"A, plus JP workload UDR",10.20.0.10,10.120.0.10,PASS,PASS
+"A, plus JP workload UDR",10.20.0.10,10.130.0.10,PASS,PASS
+"A, plus JP workload UDR",10.20.0.10,10.140.0.4,PASS,PASS
+"A, plus JP workload UDR",10.30.0.10,10.110.0.10,PASS,PASS
+"A, plus JP workload UDR",10.30.0.10,10.120.0.10,PASS,PASS
+"A, plus JP workload UDR",10.30.0.10,10.130.0.10,PASS,PASS
+"A, plus JP workload UDR",10.30.0.10,10.140.0.4,PASS,PASS
+"B1, ExpressRoute initial",10.110.0.10,10.10.0.10,PASS,PASS
+"B1, ExpressRoute initial",10.110.0.10,10.20.0.10,FAIL,FAIL
+"B1, ExpressRoute initial",10.110.0.10,10.30.0.10,PASS,PASS
+"B1, ExpressRoute initial",10.120.0.10,10.10.0.10,FAIL,FAIL
+"B1, ExpressRoute initial",10.120.0.10,10.20.0.10,PASS,PASS
+"B1, ExpressRoute initial",10.120.0.10,10.30.0.10,PASS,PASS
+"B1, ExpressRoute initial",10.130.0.10,10.10.0.10,FAIL,FAIL
+"B1, ExpressRoute initial",10.130.0.10,10.20.0.10,FAIL,FAIL
+"B1, ExpressRoute initial",10.130.0.10,10.30.0.10,FAIL,FAIL
+"B1, ExpressRoute initial",10.140.0.4,10.10.0.10,FAIL,FAIL
+"B1, ExpressRoute initial",10.140.0.4,10.20.0.10,FAIL,FAIL
+"B1, ExpressRoute initial",10.140.0.4,10.30.0.10,PASS,PASS
+"B1, ExpressRoute initial",10.10.0.10,10.110.0.10,PASS,PASS
+"B1, ExpressRoute initial",10.10.0.10,10.120.0.10,FAIL,PASS
+"B1, ExpressRoute initial",10.10.0.10,10.130.0.10,FAIL,FAIL
+"B1, ExpressRoute initial",10.10.0.10,10.140.0.4,FAIL,PASS
+"B1, ExpressRoute initial",10.20.0.10,10.110.0.10,FAIL,PASS
+"B1, ExpressRoute initial",10.20.0.10,10.120.0.10,PASS,PASS
+"B1, ExpressRoute initial",10.20.0.10,10.130.0.10,FAIL,FAIL
+"B1, ExpressRoute initial",10.20.0.10,10.140.0.4,FAIL,PASS
+"B1, ExpressRoute initial",10.30.0.10,10.110.0.10,PASS,PASS
+"B1, ExpressRoute initial",10.30.0.10,10.120.0.10,PASS,PASS
+"B1, ExpressRoute initial",10.30.0.10,10.130.0.10,FAIL,FAIL
+"B1, ExpressRoute initial",10.30.0.10,10.140.0.4,PASS,PASS
+"B1, JP direct prefix withdrawn",10.110.0.10,10.10.0.10,PASS,PASS
+"B1, JP direct prefix withdrawn",10.110.0.10,10.20.0.10,FAIL,FAIL
+"B1, JP direct prefix withdrawn",10.110.0.10,10.30.0.10,PASS,PASS
+"B1, JP direct prefix withdrawn",10.120.0.10,10.10.0.10,FAIL,FAIL
+"B1, JP direct prefix withdrawn",10.120.0.10,10.20.0.10,PASS,PASS
+"B1, JP direct prefix withdrawn",10.120.0.10,10.30.0.10,PASS,PASS
+"B1, JP direct prefix withdrawn",10.130.0.10,10.10.0.10,FAIL,FAIL
+"B1, JP direct prefix withdrawn",10.130.0.10,10.20.0.10,FAIL,FAIL
+"B1, JP direct prefix withdrawn",10.130.0.10,10.30.0.10,FAIL,FAIL
+"B1, JP direct prefix withdrawn",10.140.0.4,10.10.0.10,FAIL,FAIL
+"B1, JP direct prefix withdrawn",10.140.0.4,10.20.0.10,FAIL,FAIL
+"B1, JP direct prefix withdrawn",10.140.0.4,10.30.0.10,PASS,PASS
+"B1, JP direct prefix withdrawn",10.10.0.10,10.110.0.10,PASS,PASS
+"B1, JP direct prefix withdrawn",10.10.0.10,10.120.0.10,FAIL,PASS
+"B1, JP direct prefix withdrawn",10.10.0.10,10.130.0.10,FAIL,FAIL
+"B1, JP direct prefix withdrawn",10.10.0.10,10.140.0.4,FAIL,PASS
+"B1, JP direct prefix withdrawn",10.20.0.10,10.110.0.10,FAIL,PASS
+"B1, JP direct prefix withdrawn",10.20.0.10,10.120.0.10,PASS,PASS
+"B1, JP direct prefix withdrawn",10.20.0.10,10.130.0.10,FAIL,FAIL
+"B1, JP direct prefix withdrawn",10.20.0.10,10.140.0.4,FAIL,PASS
+"B1, JP direct prefix withdrawn",10.30.0.10,10.110.0.10,PASS,PASS
+"B1, JP direct prefix withdrawn",10.30.0.10,10.120.0.10,PASS,PASS
+"B1, JP direct prefix withdrawn",10.30.0.10,10.130.0.10,FAIL,FAIL
+"B1, JP direct prefix withdrawn",10.30.0.10,10.140.0.4,PASS,PASS
+"B1, JP direct prefix returned",10.110.0.10,10.10.0.10,PASS,PASS
+"B1, JP direct prefix returned",10.110.0.10,10.20.0.10,FAIL,FAIL
+"B1, JP direct prefix returned",10.110.0.10,10.30.0.10,PASS,PASS
+"B1, JP direct prefix returned",10.120.0.10,10.10.0.10,FAIL,FAIL
+"B1, JP direct prefix returned",10.120.0.10,10.20.0.10,PASS,PASS
+"B1, JP direct prefix returned",10.120.0.10,10.30.0.10,PASS,PASS
+"B1, JP direct prefix returned",10.130.0.10,10.10.0.10,FAIL,FAIL
+"B1, JP direct prefix returned",10.130.0.10,10.20.0.10,FAIL,FAIL
+"B1, JP direct prefix returned",10.130.0.10,10.30.0.10,FAIL,FAIL
+"B1, JP direct prefix returned",10.140.0.4,10.10.0.10,FAIL,FAIL
+"B1, JP direct prefix returned",10.140.0.4,10.20.0.10,FAIL,FAIL
+"B1, JP direct prefix returned",10.140.0.4,10.30.0.10,PASS,PASS
+"B1, JP direct prefix returned",10.10.0.10,10.110.0.10,PASS,PASS
+"B1, JP direct prefix returned",10.10.0.10,10.120.0.10,FAIL,PASS
+"B1, JP direct prefix returned",10.10.0.10,10.130.0.10,FAIL,FAIL
+"B1, JP direct prefix returned",10.10.0.10,10.140.0.4,FAIL,PASS
+"B1, JP direct prefix returned",10.20.0.10,10.110.0.10,FAIL,PASS
+"B1, JP direct prefix returned",10.20.0.10,10.120.0.10,PASS,PASS
+"B1, JP direct prefix returned",10.20.0.10,10.130.0.10,FAIL,FAIL
+"B1, JP direct prefix returned",10.20.0.10,10.140.0.4,FAIL,PASS
+"B1, JP direct prefix returned",10.30.0.10,10.110.0.10,PASS,PASS
+"B1, JP direct prefix returned",10.30.0.10,10.120.0.10,PASS,PASS
+"B1, JP direct prefix returned",10.30.0.10,10.130.0.10,FAIL,FAIL
+"B1, JP direct prefix returned",10.30.0.10,10.140.0.4,PASS,PASS
+"B1 one-ASN, initial",10.110.0.10,10.10.0.10,PASS,PASS
+"B1 one-ASN, initial",10.110.0.10,10.20.0.10,FAIL,FAIL
+"B1 one-ASN, initial",10.110.0.10,10.30.0.10,PASS,PASS
+"B1 one-ASN, initial",10.120.0.10,10.10.0.10,FAIL,FAIL
+"B1 one-ASN, initial",10.120.0.10,10.20.0.10,PASS,PASS
+"B1 one-ASN, initial",10.120.0.10,10.30.0.10,PASS,PASS
+"B1 one-ASN, initial",10.130.0.10,10.10.0.10,FAIL,FAIL
+"B1 one-ASN, initial",10.130.0.10,10.20.0.10,FAIL,FAIL
+"B1 one-ASN, initial",10.130.0.10,10.30.0.10,FAIL,FAIL
+"B1 one-ASN, initial",10.140.0.4,10.10.0.10,PASS,PASS
+"B1 one-ASN, initial",10.140.0.4,10.20.0.10,FAIL,FAIL
+"B1 one-ASN, initial",10.140.0.4,10.30.0.10,PASS,PASS
+"B1 one-ASN, initial",10.10.0.10,10.110.0.10,PASS,PASS
+"B1 one-ASN, initial",10.10.0.10,10.120.0.10,FAIL,PASS
+"B1 one-ASN, initial",10.10.0.10,10.130.0.10,FAIL,FAIL
+"B1 one-ASN, initial",10.10.0.10,10.140.0.4,PASS,PASS
+"B1 one-ASN, initial",10.20.0.10,10.110.0.10,FAIL,PASS
+"B1 one-ASN, initial",10.20.0.10,10.120.0.10,PASS,PASS
+"B1 one-ASN, initial",10.20.0.10,10.130.0.10,FAIL,FAIL
+"B1 one-ASN, initial",10.20.0.10,10.140.0.4,FAIL,PASS
+"B1 one-ASN, initial",10.30.0.10,10.110.0.10,PASS,PASS
+"B1 one-ASN, initial",10.30.0.10,10.120.0.10,PASS,PASS
+"B1 one-ASN, initial",10.30.0.10,10.130.0.10,FAIL,FAIL
+"B1 one-ASN, initial",10.30.0.10,10.140.0.4,PASS,PASS
+"B1 one-ASN, withdrawn",10.110.0.10,10.10.0.10,PASS,PASS
+"B1 one-ASN, withdrawn",10.110.0.10,10.20.0.10,FAIL,FAIL
+"B1 one-ASN, withdrawn",10.110.0.10,10.30.0.10,PASS,PASS
+"B1 one-ASN, withdrawn",10.120.0.10,10.10.0.10,FAIL,FAIL
+"B1 one-ASN, withdrawn",10.120.0.10,10.20.0.10,PASS,PASS
+"B1 one-ASN, withdrawn",10.120.0.10,10.30.0.10,PASS,PASS
+"B1 one-ASN, withdrawn",10.130.0.10,10.10.0.10,FAIL,FAIL
+"B1 one-ASN, withdrawn",10.130.0.10,10.20.0.10,FAIL,FAIL
+"B1 one-ASN, withdrawn",10.130.0.10,10.30.0.10,FAIL,FAIL
+"B1 one-ASN, withdrawn",10.140.0.4,10.10.0.10,PASS,PASS
+"B1 one-ASN, withdrawn",10.140.0.4,10.20.0.10,FAIL,FAIL
+"B1 one-ASN, withdrawn",10.140.0.4,10.30.0.10,PASS,PASS
+"B1 one-ASN, withdrawn",10.10.0.10,10.110.0.10,PASS,PASS
+"B1 one-ASN, withdrawn",10.10.0.10,10.120.0.10,FAIL,PASS
+"B1 one-ASN, withdrawn",10.10.0.10,10.130.0.10,FAIL,FAIL
+"B1 one-ASN, withdrawn",10.10.0.10,10.140.0.4,PASS,PASS
+"B1 one-ASN, withdrawn",10.20.0.10,10.110.0.10,FAIL,PASS
+"B1 one-ASN, withdrawn",10.20.0.10,10.120.0.10,PASS,PASS
+"B1 one-ASN, withdrawn",10.20.0.10,10.130.0.10,FAIL,FAIL
+"B1 one-ASN, withdrawn",10.20.0.10,10.140.0.4,FAIL,PASS
+"B1 one-ASN, withdrawn",10.30.0.10,10.110.0.10,PASS,PASS
+"B1 one-ASN, withdrawn",10.30.0.10,10.120.0.10,PASS,PASS
+"B1 one-ASN, withdrawn",10.30.0.10,10.130.0.10,FAIL,FAIL
+"B1 one-ASN, withdrawn",10.30.0.10,10.140.0.4,PASS,PASS
+"B1 one-ASN, returned",10.110.0.10,10.10.0.10,PASS,PASS
+"B1 one-ASN, returned",10.110.0.10,10.20.0.10,FAIL,FAIL
+"B1 one-ASN, returned",10.110.0.10,10.30.0.10,PASS,PASS
+"B1 one-ASN, returned",10.120.0.10,10.10.0.10,FAIL,FAIL
+"B1 one-ASN, returned",10.120.0.10,10.20.0.10,PASS,PASS
+"B1 one-ASN, returned",10.120.0.10,10.30.0.10,PASS,PASS
+"B1 one-ASN, returned",10.130.0.10,10.10.0.10,FAIL,FAIL
+"B1 one-ASN, returned",10.130.0.10,10.20.0.10,FAIL,FAIL
+"B1 one-ASN, returned",10.130.0.10,10.30.0.10,FAIL,FAIL
+"B1 one-ASN, returned",10.140.0.4,10.10.0.10,PASS,PASS
+"B1 one-ASN, returned",10.140.0.4,10.20.0.10,FAIL,FAIL
+"B1 one-ASN, returned",10.140.0.4,10.30.0.10,PASS,PASS
+"B1 one-ASN, returned",10.10.0.10,10.110.0.10,PASS,PASS
+"B1 one-ASN, returned",10.10.0.10,10.120.0.10,FAIL,PASS
+"B1 one-ASN, returned",10.10.0.10,10.130.0.10,FAIL,FAIL
+"B1 one-ASN, returned",10.10.0.10,10.140.0.4,PASS,PASS
+"B1 one-ASN, returned",10.20.0.10,10.110.0.10,FAIL,PASS
+"B1 one-ASN, returned",10.20.0.10,10.120.0.10,PASS,PASS
+"B1 one-ASN, returned",10.20.0.10,10.130.0.10,FAIL,FAIL
+"B1 one-ASN, returned",10.20.0.10,10.140.0.4,FAIL,PASS
+"B1 one-ASN, returned",10.30.0.10,10.110.0.10,PASS,PASS
+"B1 one-ASN, returned",10.30.0.10,10.120.0.10,PASS,PASS
+"B1 one-ASN, returned",10.30.0.10,10.130.0.10,FAIL,FAIL
+"B1 one-ASN, returned",10.30.0.10,10.140.0.4,PASS,PASS
+"B1, VPN HRP",10.110.0.10,10.10.0.10,PASS,PASS
+"B1, VPN HRP",10.110.0.10,10.20.0.10,FAIL,FAIL
+"B1, VPN HRP",10.110.0.10,10.30.0.10,PASS,PASS
+"B1, VPN HRP",10.120.0.10,10.10.0.10,PASS,PASS
+"B1, VPN HRP",10.120.0.10,10.20.0.10,PASS,PASS
+"B1, VPN HRP",10.120.0.10,10.30.0.10,PASS,PASS
+"B1, VPN HRP",10.130.0.10,10.10.0.10,FAIL,FAIL
+"B1, VPN HRP",10.130.0.10,10.20.0.10,FAIL,FAIL
+"B1, VPN HRP",10.130.0.10,10.30.0.10,FAIL,FAIL
+"B1, VPN HRP",10.140.0.4,10.10.0.10,PASS,PASS
+"B1, VPN HRP",10.140.0.4,10.20.0.10,FAIL,FAIL
+"B1, VPN HRP",10.140.0.4,10.30.0.10,PASS,PASS
+"B1, VPN HRP",10.10.0.10,10.110.0.10,PASS,PASS
+"B1, VPN HRP",10.10.0.10,10.120.0.10,PASS,PASS
+"B1, VPN HRP",10.10.0.10,10.130.0.10,FAIL,FAIL
+"B1, VPN HRP",10.10.0.10,10.140.0.4,PASS,PASS
+"B1, VPN HRP",10.20.0.10,10.110.0.10,FAIL,PASS
+"B1, VPN HRP",10.20.0.10,10.120.0.10,PASS,PASS
+"B1, VPN HRP",10.20.0.10,10.130.0.10,FAIL,FAIL
+"B1, VPN HRP",10.20.0.10,10.140.0.4,FAIL,PASS
+"B1, VPN HRP",10.30.0.10,10.110.0.10,PASS,PASS
+"B1, VPN HRP",10.30.0.10,10.120.0.10,PASS,PASS
+"B1, VPN HRP",10.30.0.10,10.130.0.10,FAIL,FAIL
+"B1, VPN HRP",10.30.0.10,10.140.0.4,PASS,PASS
+"B2, zero extra EU/US prepends",10.110.0.10,10.10.0.10,PASS,PASS
+"B2, zero extra EU/US prepends",10.110.0.10,10.20.0.10,PASS,PASS
+"B2, zero extra EU/US prepends",10.110.0.10,10.30.0.10,PASS,PASS
+"B2, zero extra EU/US prepends",10.120.0.10,10.10.0.10,PASS,PASS
+"B2, zero extra EU/US prepends",10.120.0.10,10.20.0.10,PASS,PASS
+"B2, zero extra EU/US prepends",10.120.0.10,10.30.0.10,PASS,PASS
+"B2, zero extra EU/US prepends",10.130.0.10,10.10.0.10,FAIL,FAIL
+"B2, zero extra EU/US prepends",10.130.0.10,10.20.0.10,FAIL,FAIL
+"B2, zero extra EU/US prepends",10.130.0.10,10.30.0.10,FAIL,FAIL
+"B2, zero extra EU/US prepends",10.140.0.4,10.10.0.10,PASS,PASS
+"B2, zero extra EU/US prepends",10.140.0.4,10.20.0.10,PASS,PASS
+"B2, zero extra EU/US prepends",10.140.0.4,10.30.0.10,PASS,PASS
+"B2, zero extra EU/US prepends",10.10.0.10,10.110.0.10,PASS,PASS
+"B2, zero extra EU/US prepends",10.10.0.10,10.120.0.10,PASS,PASS
+"B2, zero extra EU/US prepends",10.10.0.10,10.130.0.10,FAIL,FAIL
+"B2, zero extra EU/US prepends",10.10.0.10,10.140.0.4,PASS,PASS
+"B2, zero extra EU/US prepends",10.20.0.10,10.110.0.10,PASS,PASS
+"B2, zero extra EU/US prepends",10.20.0.10,10.120.0.10,PASS,PASS
+"B2, zero extra EU/US prepends",10.20.0.10,10.130.0.10,FAIL,FAIL
+"B2, zero extra EU/US prepends",10.20.0.10,10.140.0.4,PASS,PASS
+"B2, zero extra EU/US prepends",10.30.0.10,10.110.0.10,PASS,PASS
+"B2, zero extra EU/US prepends",10.30.0.10,10.120.0.10,PASS,PASS
+"B2, zero extra EU/US prepends",10.30.0.10,10.130.0.10,FAIL,FAIL
+"B2, zero extra EU/US prepends",10.30.0.10,10.140.0.4,PASS,PASS
+Original mixed state restored,10.110.0.10,10.10.0.10,PASS,PASS
+Original mixed state restored,10.110.0.10,10.20.0.10,FAIL,FAIL
+Original mixed state restored,10.110.0.10,10.30.0.10,PASS,PASS
+Original mixed state restored,10.120.0.10,10.10.0.10,FAIL,FAIL
+Original mixed state restored,10.120.0.10,10.20.0.10,PASS,PASS
+Original mixed state restored,10.120.0.10,10.30.0.10,PASS,PASS
+Original mixed state restored,10.130.0.10,10.10.0.10,FAIL,FAIL
+Original mixed state restored,10.130.0.10,10.20.0.10,FAIL,FAIL
+Original mixed state restored,10.130.0.10,10.30.0.10,FAIL,FAIL
+Original mixed state restored,10.140.0.4,10.10.0.10,FAIL,FAIL
+Original mixed state restored,10.140.0.4,10.20.0.10,FAIL,FAIL
+Original mixed state restored,10.140.0.4,10.30.0.10,PASS,PASS
+Original mixed state restored,10.10.0.10,10.110.0.10,PASS,PASS
+Original mixed state restored,10.10.0.10,10.120.0.10,FAIL,PASS
+Original mixed state restored,10.10.0.10,10.130.0.10,FAIL,FAIL
+Original mixed state restored,10.10.0.10,10.140.0.4,FAIL,PASS
+Original mixed state restored,10.20.0.10,10.110.0.10,FAIL,PASS
+Original mixed state restored,10.20.0.10,10.120.0.10,PASS,PASS
+Original mixed state restored,10.20.0.10,10.130.0.10,FAIL,FAIL
+Original mixed state restored,10.20.0.10,10.140.0.4,FAIL,PASS
+Original mixed state restored,10.30.0.10,10.110.0.10,PASS,PASS
+Original mixed state restored,10.30.0.10,10.120.0.10,PASS,PASS
+Original mixed state restored,10.30.0.10,10.130.0.10,FAIL,FAIL
+Original mixed state restored,10.30.0.10,10.140.0.4,PASS,PASS
+Independent original-state verification,10.110.0.10,10.10.0.10,PASS,PASS
+Independent original-state verification,10.110.0.10,10.20.0.10,FAIL,FAIL
+Independent original-state verification,10.110.0.10,10.30.0.10,PASS,PASS
+Independent original-state verification,10.120.0.10,10.10.0.10,FAIL,FAIL
+Independent original-state verification,10.120.0.10,10.20.0.10,PASS,PASS
+Independent original-state verification,10.120.0.10,10.30.0.10,PASS,PASS
+Independent original-state verification,10.130.0.10,10.10.0.10,FAIL,FAIL
+Independent original-state verification,10.130.0.10,10.20.0.10,FAIL,FAIL
+Independent original-state verification,10.130.0.10,10.30.0.10,FAIL,FAIL
+Independent original-state verification,10.140.0.4,10.10.0.10,FAIL,FAIL
+Independent original-state verification,10.140.0.4,10.20.0.10,FAIL,FAIL
+Independent original-state verification,10.140.0.4,10.30.0.10,PASS,PASS
+Independent original-state verification,10.10.0.10,10.110.0.10,PASS,PASS
+Independent original-state verification,10.10.0.10,10.120.0.10,FAIL,PASS
+Independent original-state verification,10.10.0.10,10.130.0.10,FAIL,FAIL
+Independent original-state verification,10.10.0.10,10.140.0.4,FAIL,PASS
+Independent original-state verification,10.20.0.10,10.110.0.10,FAIL,PASS
+Independent original-state verification,10.20.0.10,10.120.0.10,PASS,PASS
+Independent original-state verification,10.20.0.10,10.130.0.10,FAIL,FAIL
+Independent original-state verification,10.20.0.10,10.140.0.4,FAIL,PASS
+Independent original-state verification,10.30.0.10,10.110.0.10,PASS,PASS
+Independent original-state verification,10.30.0.10,10.120.0.10,PASS,PASS
+Independent original-state verification,10.30.0.10,10.130.0.10,FAIL,FAIL
+Independent original-state verification,10.30.0.10,10.140.0.4,PASS,PASS

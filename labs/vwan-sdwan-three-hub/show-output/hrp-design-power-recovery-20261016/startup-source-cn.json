@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-16T08:45:31.631331+00:00",
+  "finishedUtc": "2026-10-16T08:47:15.747247+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-cn",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\design-startup-source-cn.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\n\\n[stderr]\\nTraceback (most recent call last):\\n  File \\\"<stdin>\\\", line 14, in <module>\\nAssertionError: {'command': ['birdc', 'show', 'protocols'], 'exitCode': 0, 'stdout': 'BIRD 2.0.8 ready.\\\\nName       Proto      Table      State  Since         Info\\\\ndevices    Device     ---        up     08:41:54.912  \\\\nconnected  Direct     ---        up     08:41:54.912  \\\\ncontrol_pins Static     underlay4  up     08:41:54.912  \\\\nown_dc     Static     lab4       up     08:41:54.912  \\\\nkernel_lab Kernel     lab4       up     08:41:54.912  \\\\nmesh_eu    BGP        ---        up     08:42:05.077  Established   \\\\nmesh_us    BGP        ---        up     08:42:07.723  Established   \\\\nmesh_jp    BGP        ---        start  08:41:54.912  Active        Socket: Connection refused\\\\n', 'stderr': ''}\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\n\n[stderr]\nTraceback (most recent call last):\n  File \"<stdin>\", line 14, in <module>\nAssertionError: {'command': ['birdc', 'show', 'protocols'], 'exitCode': 0, 'stdout': 'BIRD 2.0.8 ready.\\nName       Proto      Table      State  Since         Info\\ndevices    Device     ---        up     08:41:54.912  \\nconnected  Direct     ---        up     08:41:54.912  \\ncontrol_pins Static     underlay4  up     08:41:54.912  \\nown_dc     Static     lab4       up     08:41:54.912  \\nkernel_lab Kernel     lab4       up     08:41:54.912  \\nmesh_eu    BGP        ---        up     08:42:05.077  Established   \\nmesh_us    BGP        ---        up     08:42:07.723  Established   \\nmesh_jp    BGP        ---        start  08:41:54.912  Active        Socket: Connection refused\\n', 'stderr': ''}\n"
+      }
+    ]
+  },
+  "sha256": "58983a57ea16adef2f5036e260cb74e7ac81c9023b77672adb9326b6b0f02a79"
+}

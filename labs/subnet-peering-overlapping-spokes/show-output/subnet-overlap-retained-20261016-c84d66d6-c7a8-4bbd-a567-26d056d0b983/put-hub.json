@@ -1,0 +1,22 @@
+{
+  "startedAtUtc": "2026-10-16T08:03:26.765519+00:00",
+  "completedAtUtc": "2026-10-16T08:03:30.710027+00:00",
+  "command": [
+    "az",
+    "rest",
+    "--method",
+    "put",
+    "--url",
+    "https://management.azure.com/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/hub?api-version=2026-01-01",
+    "--headers",
+    "Content-Type=application/json",
+    "--body",
+    "{\"location\": \"swedencentral\", \"tags\": {\"lab\": \"true\", \"created_by\": \"copilot-lab\", \"correlation_id\": \"subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983\"}, \"properties\": {\"addressSpace\": {\"addressPrefixes\": [\"10.0.0.0/16\"]}, \"subnets\": [{\"name\": \"hub10\", \"properties\": {\"addressPrefix\": \"10.0.1.0/24\"}}]}}"
+  ],
+  "exitCode": 0,
+  "pid": 40980,
+  "batch": 2,
+  "stdout": "{\r\n  \"etag\": \"W/\\\"7a25b83e-3e2a-42e5-b214-d2367868a73c\\\"\",\r\n  \"id\": \"/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/hub\",\r\n  \"location\": \"swedencentral\",\r\n  \"name\": \"hub\",\r\n  \"properties\": {\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"enableDdosProtection\": false,\r\n    \"privateEndpointVNetPolicies\": \"Disabled\",\r\n    \"provisioningState\": \"Updating\",\r\n    \"resourceGuid\": \"30c23cef-ca1d-49b0-8676-b9d3ec0815d1\",\r\n    \"subnets\": [\r\n      {\r\n        \"etag\": \"W/\\\"7a25b83e-3e2a-42e5-b214-d2367868a73c\\\"\",\r\n        \"id\": \"/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/hub/subnets/hub10\",\r\n        \"name\": \"hub10\",\r\n        \"properties\": {\r\n          \"addressPrefix\": \"10.0.1.0/24\",\r\n          \"defaultOutboundAccess\": false,\r\n          \"delegations\": [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\": \"Enabled\",\r\n          \"provisioningState\": \"Updating\",\r\n          \"resourceGuid\": \"9a20c558-085b-4a77-9e02-a7f115ce8722\"\r\n        },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n      }\r\n    ],\r\n    \"virtualNetworkPeerings\": []\r\n  },\r\n  \"tags\": {\r\n    \"correlation_id\": \"subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983\",\r\n    \"created_by\": \"copilot-lab\",\r\n    \"lab\": \"true\"\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualNetworks\"\r\n}\r\n",
+  "stderr": "",
+  "wrapperError": null
+}

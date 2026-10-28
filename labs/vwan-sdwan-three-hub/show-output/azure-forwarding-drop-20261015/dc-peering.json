@@ -1,0 +1,31 @@
+{
+  "allowForwardedTraffic": true,
+  "allowGatewayTransit": false,
+  "allowVirtualNetworkAccess": true,
+  "doNotVerifyRemoteGateways": false,
+  "etag": "W/\"c9485f81-d278-4347-b862-8f131f49254e\"",
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-eu/virtualNetworkPeerings/to-transit-eu",
+  "name": "to-transit-eu",
+  "peerCompleteVnets": true,
+  "peeringState": "Connected",
+  "peeringSyncLevel": "FullyInSync",
+  "provisioningState": "Succeeded",
+  "remoteAddressSpace": {
+    "addressPrefixes": [
+      "10.210.0.0/24"
+    ]
+  },
+  "remoteVirtualNetwork": {
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-transit-eu",
+    "resourceGroup": "rg-vwan-sdwan-threehub-20261014"
+  },
+  "remoteVirtualNetworkAddressSpace": {
+    "addressPrefixes": [
+      "10.210.0.0/24"
+    ]
+  },
+  "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+  "resourceGuid": "64cfd179-82cd-0618-1238-ffce5d54d606",
+  "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+  "useRemoteGateways": false
+}

@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-16T13:02:05.041901+00:00",
+  "finishedUtc": "2026-10-16T13:02:48.652795+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-us",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\backbone-apply-us.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\nBACKBONE_CONFIG_COMPLETE {\\\"sha256\\\": \\\"fbb2f45b94b8095ffe4e8cda2a909360c822a6fb7c96640abf4f71d30f2bef1d\\\", \\\"restore\\\": false, \\\"configure\\\": \\\"BIRD 2.0.8 ready.\\\\nReading configuration from /etc/bird/bird.conf\\\\nReconfigured\\\\n\\\"}\\n\\n[stderr]\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\nBACKBONE_CONFIG_COMPLETE {\"sha256\": \"fbb2f45b94b8095ffe4e8cda2a909360c822a6fb7c96640abf4f71d30f2bef1d\", \"restore\": false, \"configure\": \"BIRD 2.0.8 ready.\\nReading configuration from /etc/bird/bird.conf\\nReconfigured\\n\"}\n\n[stderr]\n"
+      }
+    ]
+  },
+  "sha256": "0d103962ecee321edc8eff30eec6f8b7572973590c47e628d234045ccf2dfb93"
+}
