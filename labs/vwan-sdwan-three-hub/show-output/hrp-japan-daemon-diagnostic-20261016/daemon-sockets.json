@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-16T09:01:04.894718+00:00",
+  "finishedUtc": "2026-10-16T09:02:16.573713+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-jp",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@<LOCAL_USER>\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\jp-daemon-diagnostic.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\n\\n[stderr]\\n  File \\\"<stdin>\\\", line 6\\n    if c[0]=='ss':text='\\n                       ^\\nSyntaxError: unterminated string literal (detected at line 6)\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\n\n[stderr]\n  File \"<stdin>\", line 6\n    if c[0]=='ss':text='\n                       ^\nSyntaxError: unterminated string literal (detected at line 6)\n"
+      }
+    ]
+  },
+  "sha256": "3bcfd86b4be3ecfd311ffc27d842c77120db20b8c90d8c40c4c22135d67d12e9"
+}

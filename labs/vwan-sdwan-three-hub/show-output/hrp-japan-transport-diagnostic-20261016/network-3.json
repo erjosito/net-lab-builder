@@ -1,0 +1,19 @@
+{
+  "timestampUtc": "2026-10-16T08:51:04.564081+00:00",
+  "finishedUtc": "2026-10-16T08:52:54.500482+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-router-jp?api-version=2024-05-01",
+    "--query",
+    "properties.{ip:ipAddress,allocation:publicIPAllocationMethod}"
+  ],
+  "stdout": "{\n  \"allocation\": \"Static\",\n  \"ip\": \"104.46.220.128\"\n}\n",
+  "result": {
+    "allocation": "Static",
+    "ip": "104.46.220.128"
+  },
+  "sha256": "a07786adde48146e74421e82edad805bab287e837927ded8d5d91319f2075370"
+}

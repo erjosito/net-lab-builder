@@ -1,0 +1,495 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "sshPublicKey": {
+      "type": "securestring"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2026-01-01",
+      "name": "vm-hub-hub10-nic",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      },
+      "properties": {
+        "enableIPForwarding": false,
+        "enableAcceleratedNetworking": false,
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.0.1.4",
+              "privateIPAddressVersion": "IPv4",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'hub', 'hub10')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-11-01",
+      "name": "vm-hub-hub10",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', 'vm-hub-hub10-nic')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_D2als_v6"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "vm-hub-hub10-osdisk",
+            "diskSizeGB": 30,
+            "createOption": "FromImage",
+            "deleteOption": "Detach",
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
+          }
+        },
+        "osProfile": {
+          "computerName": "vm-hub-hub10",
+          "adminUsername": "azurelabuser",
+          "customData": "I2Nsb3VkLWNvbmZpZwp7IndyaXRlX2ZpbGVzIjogW10sICJwYWNrYWdlX3VwZGF0ZSI6IGZhbHNlLCAicGFja2FnZV91cGdyYWRlIjogZmFsc2V9",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "/home/azurelabuser/.ssh/authorized_keys",
+                  "keyData": "[parameters('sshPublicKey')]"
+                }
+              ]
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'vm-hub-hub10-nic')]",
+              "properties": {
+                "primary": true,
+                "deleteOption": "Detach"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2026-01-01",
+      "name": "vm-spoke1-spoke10-nic",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      },
+      "properties": {
+        "enableIPForwarding": true,
+        "enableAcceleratedNetworking": false,
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.10.1.4",
+              "privateIPAddressVersion": "IPv4",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'spoke1', 'spoke10')]"
+              }
+            }
+          },
+          {
+            "name": "nat-alias",
+            "properties": {
+              "primary": false,
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.10.1.10",
+              "privateIPAddressVersion": "IPv4",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'spoke1', 'spoke10')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-11-01",
+      "name": "vm-spoke1-spoke10",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', 'vm-spoke1-spoke10-nic')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_D2als_v6"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "vm-spoke1-spoke10-osdisk",
+            "diskSizeGB": 30,
+            "createOption": "FromImage",
+            "deleteOption": "Detach",
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
+          }
+        },
+        "osProfile": {
+          "computerName": "vm-spoke1-spoke10",
+          "adminUsername": "azurelabuser",
+          "customData": "I2Nsb3VkLWNvbmZpZwp7IndyaXRlX2ZpbGVzIjogW3sicGF0aCI6ICIvdXNyL2xvY2FsL3NiaW4vbGFiLXN0YXRpYy1uYXQiLCAicGVybWlzc2lvbnMiOiAiMDc1NSIsICJjb250ZW50IjogIiMhL2Jpbi9zaFxuc2V0IC1ldVxuY29tbWFuZCAtdiBpcHRhYmxlc1xuSUZBQ0U9JChpcCAtNCByb3V0ZSBzaG93IGRlZmF1bHQgfCBhd2sgJ05SPT0xIHtwcmludCAkNX0nKVxuaXAgYWRkcmVzcyByZXBsYWNlIDEwLjEwLjEuMTAvMzIgZGV2IFwiJElGQUNFXCJcbnN5c2N0bCAtdyBuZXQuaXB2NC5pcF9mb3J3YXJkPTFcbnN5c2N0bCAtdyBuZXQuaXB2NC5jb25mLmFsbC5ycF9maWx0ZXI9MFxuc3lzY3RsIC13IG5ldC5pcHY0LmNvbmYuXCIkSUZBQ0VcIi5ycF9maWx0ZXI9MFxuaXB0YWJsZXMgLXQgbmF0IC1DIFBSRVJPVVRJTkcgLXMgMTAuMC4xLjQvMzIgLWQgMTAuMTAuMS4xMC8zMiAtaiBETkFUIC0tdG8tZGVzdGluYXRpb24gMTkyLjE2OC4xLjQgMj4vZGV2L251bGwgfHwgaXB0YWJsZXMgLXQgbmF0IC1BIFBSRVJPVVRJTkcgLXMgMTAuMC4xLjQvMzIgLWQgMTAuMTAuMS4xMC8zMiAtaiBETkFUIC0tdG8tZGVzdGluYXRpb24gMTkyLjE2OC4xLjRcbmlwdGFibGVzIC10IG5hdCAtQyBQT1NUUk9VVElORyAtcyAxMC4wLjEuNC8zMiAtZCAxOTIuMTY4LjEuNC8zMiAtaiBTTkFUIC0tdG8tc291cmNlIDEwLjEwLjEuNCAyPi9kZXYvbnVsbCB8fCBpcHRhYmxlcyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcgLXMgMTAuMC4xLjQvMzIgLWQgMTkyLjE2OC4xLjQvMzIgLWogU05BVCAtLXRvLXNvdXJjZSAxMC4xMC4xLjRcbmlwdGFibGVzIC1DIEZPUldBUkQgLXMgMTAuMC4xLjQvMzIgLWQgMTkyLjE2OC4xLjQvMzIgLWogQUNDRVBUIDI+L2Rldi9udWxsIHx8IGlwdGFibGVzIC1BIEZPUldBUkQgLXMgMTAuMC4xLjQvMzIgLWQgMTkyLjE2OC4xLjQvMzIgLWogQUNDRVBUXG5pcHRhYmxlcyAtQyBGT1JXQVJEIC1tIGNvbm50cmFjayAtLWN0c3RhdGUgRVNUQUJMSVNIRUQsUkVMQVRFRCAtaiBBQ0NFUFQgMj4vZGV2L251bGwgfHwgaXB0YWJsZXMgLUEgRk9SV0FSRCAtbSBjb25udHJhY2sgLS1jdHN0YXRlIEVTVEFCTElTSEVELFJFTEFURUQgLWogQUNDRVBUXG4ifSwgeyJwYXRoIjogIi9ldGMvc3lzdGVtZC9zeXN0ZW0vbGFiLXN0YXRpYy1uYXQuc2VydmljZSIsICJjb250ZW50IjogIltVbml0XVxuQWZ0ZXI9bmV0d29yay1vbmxpbmUudGFyZ2V0XG5XYW50cz1uZXR3b3JrLW9ubGluZS50YXJnZXRcbltTZXJ2aWNlXVxuVHlwZT1vbmVzaG90XG5FeGVjU3RhcnQ9L3Vzci9sb2NhbC9zYmluL2xhYi1zdGF0aWMtbmF0XG5SZW1haW5BZnRlckV4aXQ9eWVzXG5bSW5zdGFsbF1cbldhbnRlZEJ5PW11bHRpLXVzZXIudGFyZ2V0XG4ifV0sICJwYWNrYWdlX3VwZGF0ZSI6IGZhbHNlLCAicGFja2FnZV91cGdyYWRlIjogZmFsc2UsICJydW5jbWQiOiBbWyJzeXN0ZW1jdGwiLCAiZGFlbW9uLXJlbG9hZCJdLCBbInN5c3RlbWN0bCIsICJlbmFibGUiLCAiLS1ub3ciLCAibGFiLXN0YXRpYy1uYXQiXV19",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "/home/azurelabuser/.ssh/authorized_keys",
+                  "keyData": "[parameters('sshPublicKey')]"
+                }
+              ]
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'vm-spoke1-spoke10-nic')]",
+              "properties": {
+                "primary": true,
+                "deleteOption": "Detach"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2026-01-01",
+      "name": "vm-spoke1-isolated192-nic",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      },
+      "properties": {
+        "enableIPForwarding": false,
+        "enableAcceleratedNetworking": false,
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "192.168.1.4",
+              "privateIPAddressVersion": "IPv4",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'spoke1', 'isolated192')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-11-01",
+      "name": "vm-spoke1-isolated192",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', 'vm-spoke1-isolated192-nic')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_D2als_v6"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "vm-spoke1-isolated192-osdisk",
+            "diskSizeGB": 30,
+            "createOption": "FromImage",
+            "deleteOption": "Detach",
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
+          }
+        },
+        "osProfile": {
+          "computerName": "vm-spoke1-isolated192",
+          "adminUsername": "azurelabuser",
+          "customData": "I2Nsb3VkLWNvbmZpZwp7IndyaXRlX2ZpbGVzIjogW3sicGF0aCI6ICIvb3B0L2xhYi1odHRwL2luZGV4Lmh0bWwiLCAicGVybWlzc2lvbnMiOiAiMDY0NCIsICJjb250ZW50IjogInNwb2tlMS1iYWNrZW5kLTE5Mi4xNjguMS40XG4ifSwgeyJwYXRoIjogIi9ldGMvc3lzdGVtZC9zeXN0ZW0vbGFiLWJhY2tlbmQtaHR0cC5zZXJ2aWNlIiwgImNvbnRlbnQiOiAiW1VuaXRdXG5BZnRlcj1uZXR3b3JrLW9ubGluZS50YXJnZXRcbltTZXJ2aWNlXVxuVXNlcj1ub2JvZHlcbldvcmtpbmdEaXJlY3Rvcnk9L29wdC9sYWItaHR0cFxuRXhlY1N0YXJ0PS91c3IvYmluL3B5dGhvbjMgLW0gaHR0cC5zZXJ2ZXIgODA4MCAtLWJpbmQgMC4wLjAuMFxuUmVzdGFydD1vbi1mYWlsdXJlXG5bSW5zdGFsbF1cbldhbnRlZEJ5PW11bHRpLXVzZXIudGFyZ2V0XG4ifV0sICJwYWNrYWdlX3VwZGF0ZSI6IGZhbHNlLCAicGFja2FnZV91cGdyYWRlIjogZmFsc2UsICJydW5jbWQiOiBbWyJzeXN0ZW1jdGwiLCAiZGFlbW9uLXJlbG9hZCJdLCBbInN5c3RlbWN0bCIsICJlbmFibGUiLCAiLS1ub3ciLCAibGFiLWJhY2tlbmQtaHR0cCJdXX0=",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "/home/azurelabuser/.ssh/authorized_keys",
+                  "keyData": "[parameters('sshPublicKey')]"
+                }
+              ]
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'vm-spoke1-isolated192-nic')]",
+              "properties": {
+                "primary": true,
+                "deleteOption": "Detach"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2026-01-01",
+      "name": "vm-spoke2-spoke10-nic",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      },
+      "properties": {
+        "enableIPForwarding": true,
+        "enableAcceleratedNetworking": false,
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.20.0.4",
+              "privateIPAddressVersion": "IPv4",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'spoke2', 'spoke10')]"
+              }
+            }
+          },
+          {
+            "name": "nat-alias",
+            "properties": {
+              "primary": false,
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.20.0.10",
+              "privateIPAddressVersion": "IPv4",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'spoke2', 'spoke10')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-11-01",
+      "name": "vm-spoke2-spoke10",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', 'vm-spoke2-spoke10-nic')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_D2als_v6"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "vm-spoke2-spoke10-osdisk",
+            "diskSizeGB": 30,
+            "createOption": "FromImage",
+            "deleteOption": "Detach",
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
+          }
+        },
+        "osProfile": {
+          "computerName": "vm-spoke2-spoke10",
+          "adminUsername": "azurelabuser",
+          "customData": "I2Nsb3VkLWNvbmZpZwp7IndyaXRlX2ZpbGVzIjogW3sicGF0aCI6ICIvdXNyL2xvY2FsL3NiaW4vbGFiLXN0YXRpYy1uYXQiLCAicGVybWlzc2lvbnMiOiAiMDc1NSIsICJjb250ZW50IjogIiMhL2Jpbi9zaFxuc2V0IC1ldVxuY29tbWFuZCAtdiBpcHRhYmxlc1xuSUZBQ0U9JChpcCAtNCByb3V0ZSBzaG93IGRlZmF1bHQgfCBhd2sgJ05SPT0xIHtwcmludCAkNX0nKVxuaXAgYWRkcmVzcyByZXBsYWNlIDEwLjIwLjAuMTAvMzIgZGV2IFwiJElGQUNFXCJcbnN5c2N0bCAtdyBuZXQuaXB2NC5pcF9mb3J3YXJkPTFcbnN5c2N0bCAtdyBuZXQuaXB2NC5jb25mLmFsbC5ycF9maWx0ZXI9MFxuc3lzY3RsIC13IG5ldC5pcHY0LmNvbmYuXCIkSUZBQ0VcIi5ycF9maWx0ZXI9MFxuaXB0YWJsZXMgLXQgbmF0IC1DIFBSRVJPVVRJTkcgLXMgMTAuMC4xLjQvMzIgLWQgMTAuMjAuMC4xMC8zMiAtaiBETkFUIC0tdG8tZGVzdGluYXRpb24gMTkyLjE2OC4xLjQgMj4vZGV2L251bGwgfHwgaXB0YWJsZXMgLXQgbmF0IC1BIFBSRVJPVVRJTkcgLXMgMTAuMC4xLjQvMzIgLWQgMTAuMjAuMC4xMC8zMiAtaiBETkFUIC0tdG8tZGVzdGluYXRpb24gMTkyLjE2OC4xLjRcbmlwdGFibGVzIC10IG5hdCAtQyBQT1NUUk9VVElORyAtcyAxMC4wLjEuNC8zMiAtZCAxOTIuMTY4LjEuNC8zMiAtaiBTTkFUIC0tdG8tc291cmNlIDEwLjIwLjAuNCAyPi9kZXYvbnVsbCB8fCBpcHRhYmxlcyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcgLXMgMTAuMC4xLjQvMzIgLWQgMTkyLjE2OC4xLjQvMzIgLWogU05BVCAtLXRvLXNvdXJjZSAxMC4yMC4wLjRcbmlwdGFibGVzIC1DIEZPUldBUkQgLXMgMTAuMC4xLjQvMzIgLWQgMTkyLjE2OC4xLjQvMzIgLWogQUNDRVBUIDI+L2Rldi9udWxsIHx8IGlwdGFibGVzIC1BIEZPUldBUkQgLXMgMTAuMC4xLjQvMzIgLWQgMTkyLjE2OC4xLjQvMzIgLWogQUNDRVBUXG5pcHRhYmxlcyAtQyBGT1JXQVJEIC1tIGNvbm50cmFjayAtLWN0c3RhdGUgRVNUQUJMSVNIRUQsUkVMQVRFRCAtaiBBQ0NFUFQgMj4vZGV2L251bGwgfHwgaXB0YWJsZXMgLUEgRk9SV0FSRCAtbSBjb25udHJhY2sgLS1jdHN0YXRlIEVTVEFCTElTSEVELFJFTEFURUQgLWogQUNDRVBUXG4ifSwgeyJwYXRoIjogIi9ldGMvc3lzdGVtZC9zeXN0ZW0vbGFiLXN0YXRpYy1uYXQuc2VydmljZSIsICJjb250ZW50IjogIltVbml0XVxuQWZ0ZXI9bmV0d29yay1vbmxpbmUudGFyZ2V0XG5XYW50cz1uZXR3b3JrLW9ubGluZS50YXJnZXRcbltTZXJ2aWNlXVxuVHlwZT1vbmVzaG90XG5FeGVjU3RhcnQ9L3Vzci9sb2NhbC9zYmluL2xhYi1zdGF0aWMtbmF0XG5SZW1haW5BZnRlckV4aXQ9eWVzXG5bSW5zdGFsbF1cbldhbnRlZEJ5PW11bHRpLXVzZXIudGFyZ2V0XG4ifV0sICJwYWNrYWdlX3VwZGF0ZSI6IGZhbHNlLCAicGFja2FnZV91cGdyYWRlIjogZmFsc2UsICJydW5jbWQiOiBbWyJzeXN0ZW1jdGwiLCAiZGFlbW9uLXJlbG9hZCJdLCBbInN5c3RlbWN0bCIsICJlbmFibGUiLCAiLS1ub3ciLCAibGFiLXN0YXRpYy1uYXQiXV19",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "/home/azurelabuser/.ssh/authorized_keys",
+                  "keyData": "[parameters('sshPublicKey')]"
+                }
+              ]
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'vm-spoke2-spoke10-nic')]",
+              "properties": {
+                "primary": true,
+                "deleteOption": "Detach"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2026-01-01",
+      "name": "vm-spoke2-isolated192-nic",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      },
+      "properties": {
+        "enableIPForwarding": false,
+        "enableAcceleratedNetworking": false,
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "192.168.1.4",
+              "privateIPAddressVersion": "IPv4",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'spoke2', 'isolated192')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-11-01",
+      "name": "vm-spoke2-isolated192",
+      "location": "swedencentral",
+      "tags": {
+        "lab": "true",
+        "created_by": "copilot-lab",
+        "correlation_id": "nat-preflight-20261016T081812Z"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', 'vm-spoke2-isolated192-nic')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_D2als_v6"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "vm-spoke2-isolated192-osdisk",
+            "diskSizeGB": 30,
+            "createOption": "FromImage",
+            "deleteOption": "Detach",
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
+          }
+        },
+        "osProfile": {
+          "computerName": "vm-spoke2-isolated192",
+          "adminUsername": "azurelabuser",
+          "customData": "I2Nsb3VkLWNvbmZpZwp7IndyaXRlX2ZpbGVzIjogW3sicGF0aCI6ICIvb3B0L2xhYi1odHRwL2luZGV4Lmh0bWwiLCAicGVybWlzc2lvbnMiOiAiMDY0NCIsICJjb250ZW50IjogInNwb2tlMi1iYWNrZW5kLTE5Mi4xNjguMS40XG4ifSwgeyJwYXRoIjogIi9ldGMvc3lzdGVtZC9zeXN0ZW0vbGFiLWJhY2tlbmQtaHR0cC5zZXJ2aWNlIiwgImNvbnRlbnQiOiAiW1VuaXRdXG5BZnRlcj1uZXR3b3JrLW9ubGluZS50YXJnZXRcbltTZXJ2aWNlXVxuVXNlcj1ub2JvZHlcbldvcmtpbmdEaXJlY3Rvcnk9L29wdC9sYWItaHR0cFxuRXhlY1N0YXJ0PS91c3IvYmluL3B5dGhvbjMgLW0gaHR0cC5zZXJ2ZXIgODA4MCAtLWJpbmQgMC4wLjAuMFxuUmVzdGFydD1vbi1mYWlsdXJlXG5bSW5zdGFsbF1cbldhbnRlZEJ5PW11bHRpLXVzZXIudGFyZ2V0XG4ifV0sICJwYWNrYWdlX3VwZGF0ZSI6IGZhbHNlLCAicGFja2FnZV91cGdyYWRlIjogZmFsc2UsICJydW5jbWQiOiBbWyJzeXN0ZW1jdGwiLCAiZGFlbW9uLXJlbG9hZCJdLCBbInN5c3RlbWN0bCIsICJlbmFibGUiLCAiLS1ub3ciLCAibGFiLWJhY2tlbmQtaHR0cCJdXX0=",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "/home/azurelabuser/.ssh/authorized_keys",
+                  "keyData": "[parameters('sshPublicKey')]"
+                }
+              ]
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'vm-spoke2-isolated192-nic')]",
+              "properties": {
+                "primary": true,
+                "deleteOption": "Detach"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

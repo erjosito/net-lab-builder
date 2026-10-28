@@ -15,11 +15,19 @@ import vpn_sdwan_boundary as boundary
 
 class TransitEligibilityTests(unittest.TestCase):
     def test_transit_control_and_original_flag_restore(self):
-        for incorrect_restore, accepted in ((False, True), (True, True), (False, False)):
-            with self.subTest(incorrect_restore=incorrect_restore, accepted=accepted):
-                self.run_control(incorrect_restore, accepted)
+        for canonical in (False, True):
+            for incorrect_restore, accepted in ((False, True), (True, True), (False, False)):
+                with self.subTest(incorrect_restore=incorrect_restore, accepted=accepted,
+                                  canonical=canonical):
+                    self.run_control(incorrect_restore, accepted, canonical)
 
-    def run_control(self, incorrect_restore, accepted):
+    def test_unaccepted_labels_prevent_withdrawal(self):
+        self.run_control(False, True, True, "normalized")
+
+    def test_unrestored_labels_block_completion(self):
+        self.run_control(False, True, True, "restored")
+
+    def run_control(self, incorrect_restore, accepted, canonical, incorrect_labels=None):
         with tempfile.TemporaryDirectory() as temp, contextlib.ExitStack() as stack:
             root = pathlib.Path(temp)
             runtime = root / "deploy" / ".runtime-control"
@@ -39,6 +47,32 @@ class TransitEligibilityTests(unittest.TestCase):
                          properties=dict(allowBranchToBranchTraffic=False,
                                          hubRoutingPreference="ASPath"))
                     for site in sweep.SITES]
+            routing = []
+            for site in sweep.SITES:
+                names = ["conn-spoke-" + site]
+                if site != "jp":
+                    names.append("conn-transit-" + site)
+                routing.append({"value": [
+                    dict(name=name, id="hub-" + site + "/" + name,
+                         properties={"routingConfiguration": {
+                             "associatedRouteTable": {"id": "table-" + site},
+                             "propagatedRouteTables": {"labels": ["Default"], "ids": []}}})
+                    for name in names]})
+            routing.append(copy.deepcopy(routing[2]["value"][0]["properties"]
+                                         ["routingConfiguration"]))
+            normalized = copy.deepcopy(routing)
+            for value in normalized[:3]:
+                for connection in value["value"]:
+                    connection["properties"]["routingConfiguration"][
+                        "propagatedRouteTables"]["labels"] = ["default"]
+            normalized[3]["propagatedRouteTables"]["labels"] = ["default"]
+            restored_routing = copy.deepcopy(routing)
+            if incorrect_labels == "normalized":
+                normalized[0]["value"][0]["properties"]["routingConfiguration"][
+                    "propagatedRouteTables"]["labels"] = ["Default"]
+            if incorrect_labels == "restored":
+                restored_routing[0]["value"][0]["properties"]["routingConfiguration"][
+                    "propagatedRouteTables"]["labels"] = ["default"]
 
             def capture(label, *args, **kwargs):
                 sweep.CURRENT = sweep.OUT / label
@@ -67,14 +101,24 @@ class TransitEligibilityTests(unittest.TestCase):
                 boundary, "invoke", return_value=before["jp"]))
             stack.enter_context(patch.object(sweep, "reserve_restore"))
             stack.enter_context(patch.object(sweep, "capture", side_effect=capture))
-            stack.enter_context(patch.object(sweep, "az_batch", return_value=hubs))
+            if canonical:
+                stack.enter_context(patch.object(
+                    sweep, "az_batch", side_effect=[hubs, routing, normalized, restored_routing]))
+            else:
+                stack.enter_context(patch.object(sweep, "az_batch", return_value=hubs))
+            vpn = stack.enter_context(patch.object(route_eligibility.propagation, "vpn_labels"))
             submit = stack.enter_context(patch.object(sweep, "submit"))
-            stack.enter_context(patch("sys.argv", [
+            arguments = [
                 "route_eligibility", "--lease", "test.json", "--out", "scenario",
-                "--enable-hub-transit"]))
+                "--enable-hub-transit"]
+            if canonical:
+                arguments.append("--canonical-labels")
+            stack.enter_context(patch("sys.argv", arguments))
             output = io.StringIO()
+            blocked = incorrect_restore or incorrect_labels == "restored"
+            accepted_control = accepted and incorrect_labels != "normalized"
             with contextlib.redirect_stdout(output):
-                if incorrect_restore or not accepted:
+                if blocked or not accepted_control:
                     with self.assertRaises(SystemExit):
                         route_eligibility.main()
                 else:
@@ -84,17 +128,28 @@ class TransitEligibilityTests(unittest.TestCase):
                         self.fail(output.getvalue())
             verdict = json.loads((root / "show-output" / "scenario" /
                                   "eligibility-verdict.json").read_text())
-            expected = "BLOCKED" if incorrect_restore else "PASS" if accepted else "INCONCLUSIVE"
+            expected = "BLOCKED" if blocked else "PASS" if accepted_control else "INCONCLUSIVE"
             self.assertEqual(verdict["verdict"], expected,
                              verdict["errors"])
-            self.assertEqual(verdict["restored"], not incorrect_restore)
+            self.assertEqual(verdict["restored"], not blocked)
             self.assertEqual(verdict["remoteCNEligible"],
-                             True if accepted and not incorrect_restore else None)
-            self.assertEqual(invoke.call_count, 2 if accepted else 0)
+                             True if accepted_control and not blocked else None)
+            self.assertEqual(invoke.call_count, 2 if accepted_control else 0)
+            self.assertEqual(vpn.call_count, 2 if canonical else 0)
+            if canonical:
+                self.assertEqual(vpn.call_args_list[0].args[0], ["default"])
+                self.assertEqual(vpn.call_args_list[1].args[0], ["Default"])
             self.assertEqual(submit.call_count, 2)
             for call, expected in zip(submit.call_args_list, (True, False)):
-                self.assertTrue(all(resource["properties"]["allowBranchToBranchTraffic"] is expected
-                                    for resource in call.args[0]["resources"]))
+                resources = call.args[0]["resources"]
+                self.assertEqual(len(resources), 8 if canonical else 3)
+                self.assertTrue(all(r["properties"]["allowBranchToBranchTraffic"] is expected
+                                    for r in resources if r["type"] == "Microsoft.Network/virtualHubs"))
+                for resource in resources:
+                    if resource["type"].endswith("/hubVirtualNetworkConnections"):
+                        hub = resource["name"].split("/")[0]
+                        self.assertIn(route_eligibility.infra.rid("virtualHubs", hub),
+                                      resource["dependsOn"])
 
 
 if __name__ == "__main__":

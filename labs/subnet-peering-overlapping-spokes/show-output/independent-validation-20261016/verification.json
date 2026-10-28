@@ -1,0 +1,192 @@
+{
+  "taskId": "independent-validation-20261016",
+  "startedAtUtc": "2026-10-16T07:07:22.885600+00:00",
+  "scope": "CONTROL PLANE ONLY",
+  "dataPlaneClaim": false,
+  "azureMutations": 0,
+  "accountSwitches": 0,
+  "assertions": {
+    "originalOwnerRolledBackIdle": true,
+    "sourceProcessIdle": true,
+    "sourceRestore": true,
+    "sourceVerdictControlPlaneOnly": true,
+    "exactFourPeeringIdentities": true,
+    "hub:to-spoke1:state": true,
+    "hub:to-spoke1:selectors": true,
+    "hub:to-spoke1:selectedProjections": true,
+    "hub:to-spoke1:flags": true,
+    "hub:to-spoke1:rawGetMatches": true,
+    "hub:to-spoke1:laterVnetGetConfirms": true,
+    "spoke1:to-hub:state": true,
+    "spoke1:to-hub:selectors": true,
+    "spoke1:to-hub:selectedProjections": true,
+    "spoke1:to-hub:flags": true,
+    "spoke1:to-hub:rawGetMatches": true,
+    "spoke1:to-hub:laterVnetGetConfirms": true,
+    "hub:to-spoke2:state": true,
+    "hub:to-spoke2:selectors": true,
+    "hub:to-spoke2:selectedProjections": true,
+    "hub:to-spoke2:flags": true,
+    "hub:to-spoke2:rawGetMatches": true,
+    "hub:to-spoke2:laterVnetGetConfirms": true,
+    "spoke2:to-hub:state": true,
+    "spoke2:to-hub:selectors": true,
+    "spoke2:to-hub:selectedProjections": true,
+    "spoke2:to-hub:flags": true,
+    "spoke2:to-hub:rawGetMatches": true,
+    "spoke2:to-hub:laterVnetGetConfirms": true,
+    "hub:exactVnetAndSubnets": true,
+    "hub:rawGetMatches": true,
+    "spoke1:exactVnetAndSubnets": true,
+    "spoke1:rawGetMatches": true,
+    "spoke2:exactVnetAndSubnets": true,
+    "spoke2:rawGetMatches": true,
+    "noWritesDuringFinalReadWindow": true,
+    "deleteOnlyAfterAllFinalGets": true,
+    "inventoryMatchesExactCounts": true,
+    "configuredAccountMatchesWithoutSwitch": true,
+    "independentAuthenticatedResourceGroupNotFound404": true,
+    "independentOsProcessIdle": true,
+    "stopAbsentAtCompletion": true
+  },
+  "limitations": [],
+  "peeringObservations": [
+    {
+      "localVnet": "hub",
+      "peering": "to-spoke1",
+      "remoteVnet": "spoke1",
+      "peeringState": "Connected",
+      "provisioningState": "Succeeded",
+      "peerCompleteVnets": false,
+      "localSubnetNames": [
+        "hub10"
+      ],
+      "remoteSubnetNames": [
+        "spoke10"
+      ],
+      "localSelectedPrefixes": [
+        "10.0.1.0/24"
+      ],
+      "remoteSelectedPrefixes": [
+        "10.10.1.0/24"
+      ]
+    },
+    {
+      "localVnet": "spoke1",
+      "peering": "to-hub",
+      "remoteVnet": "hub",
+      "peeringState": "Connected",
+      "provisioningState": "Succeeded",
+      "peerCompleteVnets": false,
+      "localSubnetNames": [
+        "spoke10"
+      ],
+      "remoteSubnetNames": [
+        "hub10"
+      ],
+      "localSelectedPrefixes": [
+        "10.10.1.0/24"
+      ],
+      "remoteSelectedPrefixes": [
+        "10.0.1.0/24"
+      ]
+    },
+    {
+      "localVnet": "hub",
+      "peering": "to-spoke2",
+      "remoteVnet": "spoke2",
+      "peeringState": "Connected",
+      "provisioningState": "Succeeded",
+      "peerCompleteVnets": false,
+      "localSubnetNames": [
+        "hub10"
+      ],
+      "remoteSubnetNames": [
+        "spoke10"
+      ],
+      "localSelectedPrefixes": [
+        "10.0.1.0/24"
+      ],
+      "remoteSelectedPrefixes": [
+        "10.20.0.0/27"
+      ]
+    },
+    {
+      "localVnet": "spoke2",
+      "peering": "to-hub",
+      "remoteVnet": "hub",
+      "peeringState": "Connected",
+      "provisioningState": "Succeeded",
+      "peerCompleteVnets": false,
+      "localSubnetNames": [
+        "spoke10"
+      ],
+      "remoteSubnetNames": [
+        "hub10"
+      ],
+      "localSelectedPrefixes": [
+        "10.20.0.0/27"
+      ],
+      "remoteSelectedPrefixes": [
+        "10.0.1.0/24"
+      ]
+    }
+  ],
+  "fullVnetPrefixes": {
+    "hub": [
+      "10.0.0.0/16"
+    ],
+    "spoke1": [
+      "10.10.0.0/16",
+      "192.168.0.0/16"
+    ],
+    "spoke2": [
+      "10.20.0.0/26",
+      "192.168.0.0/16"
+    ]
+  },
+  "simultaneousEvidence": {
+    "method": "All four final GETs after final peering PUT, no intervening writes, corroborated by later parent VNet GETs before deletion",
+    "windowStartedAtUtc": "2026-10-16T07:01:38.812233+00:00",
+    "windowCompletedAtUtc": "2026-10-16T07:01:58.549497+00:00",
+    "limitation": "Sequential ARM GETs, not an atomic snapshot; resources subsequently deleted so live peering re-query is unavailable."
+  },
+  "evidenceSha256": {
+    "verdict.json": "e8807f1247865293c2ce7a2967de059fdcce42c0cfdd68c6bd24f5d4099e104c",
+    "peerings-final.json": "ad1baebe421e43037ac784f628d4da3fd808b09d842beb7c3b5cdd8fa24550c3",
+    "vnets-final.json": "ef5879d4798ada78061354102deb9725d4ea404dd7781b5f968204975d688e04",
+    "resource-inventory.json": "357fa4053a1470da88a8774013cdbc9f31f691496430fc423c476a10b6e849f1",
+    "restore.json": "d0892a62a22c06e3a8c5c5bbc97265da7411abb5f4018f79bb80d8da9a6836d1",
+    "process-idle.json": "b91d3de587975130386252a4fb9cf70bef0c09963b93b4519d1118b647503c90",
+    "journal.jsonl": "faa8caf5d5ef603a68f7f43b48c07d24338cea627cdc76bc7c2089bfd2aef7b9"
+  },
+  "actualCleanupCheck": {
+    "startedAtUtc": "2026-10-16T07:07:31.594458+00:00",
+    "completedAtUtc": "2026-10-16T07:08:05.319551+00:00",
+    "method": "GET",
+    "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+    "apiVersion": "2022-09-01",
+    "exitCode": 1,
+    "errorCode": "ResourceGroupNotFound",
+    "httpStatus": 404,
+    "authenticated404": true,
+    "stderr": "ERROR: Not Found({\"error\":{\"code\":\"ResourceGroupNotFound\",\"message\":\"Resource group 'rg-subnet-overlap-20261016-fde5ecf8' could not be found.\"}})\r\n"
+  },
+  "processIdle": {
+    "runningChildren": [],
+    "allSpawnedProcessesReaped": true,
+    "validationChildPids": [
+      57124,
+      14284
+    ],
+    "originalChildPidsChecked": 29,
+    "liveObservedPids": [],
+    "uncertainPids": [],
+    "queuedWork": [],
+    "backgroundProcessesStarted": false,
+    "containment": "Unmodified execute.py Executor.command with isolated read-only subclass and separate lease; Windows kill-on-close job per command."
+  },
+  "verdict": "PASS",
+  "reason": "Independent evidence assertions passed and live exact-RG GET returned authenticated ResourceGroupNotFound 404; control plane only.",
+  "completedAtUtc": "2026-10-16T07:08:05.328592+00:00"
+}

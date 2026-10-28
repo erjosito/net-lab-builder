@@ -1,0 +1,51 @@
+{
+  "site": "jp",
+  "sha256": "89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006",
+  "stat": {
+    "uid": 113,
+    "gid": 122,
+    "mode": 384,
+    "mtimeNs": 1792000606196722098
+  },
+  "configureOutput": "BIRD 2.0.8 ready.\nReading configuration from /etc/bird/bird.conf\nReconfigured\n",
+  "exports": {
+    "azure_0": {},
+    "azure_1": {}
+  },
+  "protocols": {
+    "mesh_eu": "Established",
+    "mesh_us": "Established",
+    "mesh_cn": "Established",
+    "azure_0": "Established",
+    "azure_1": "Established"
+  },
+  "ikeEstablished": 2,
+  "targetAddressPresent": false,
+  "routes": [
+    {
+      "dst": "10.10.0.0/24",
+      "dev": "wgeujp",
+      "protocol": "bird",
+      "scope": "link",
+      "metric": 80,
+      "flags": []
+    },
+    {
+      "dst": "10.20.0.0/24",
+      "dev": "wgusjp",
+      "protocol": "bird",
+      "scope": "link",
+      "metric": 80,
+      "flags": []
+    },
+    {
+      "dst": "10.30.0.0/24",
+      "gateway": "169.254.21.6",
+      "dev": "xfrm42",
+      "protocol": "bird",
+      "metric": 80,
+      "flags": []
+    }
+  ],
+  "restored": true
+}

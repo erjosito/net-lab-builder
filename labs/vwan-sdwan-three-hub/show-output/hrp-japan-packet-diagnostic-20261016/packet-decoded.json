@@ -1,0 +1,27 @@
+{
+  "journalctl -u strongswan -n 25 --no-pager -o cat": {
+    "exitCode": 0,
+    "stdout": "generating IKE_SA_INIT response 0 [ N(NO_PROP) ]\nsending packet: from 10.130.0.4[500] to 20.27.135.137[500] (36 bytes)\nreceived unencrypted informational: from 20.27.135.137[500] to 10.130.0.4[500]\npayload type NOTIFY was not encrypted\ncould not decrypt payloads\nINFORMATIONAL request with message ID 0 processing failed\nreceived unencrypted informational: from 20.27.135.137[500] to 10.130.0.4[500]\npayload type NOTIFY was not encrypted\ncould not decrypt payloads\nINFORMATIONAL request with message ID 0 processing failed\nreceived packet: from 20.27.135.137[500] to 10.130.0.4[500] (536 bytes)\nparsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]\nno IKE config found for 10.130.0.4...20.27.135.137, sending NO_PROPOSAL_CHOSEN\ngenerating IKE_SA_INIT response 0 [ N(NO_PROP) ]\nsending packet: from 10.130.0.4[500] to 20.27.135.137[500] (36 bytes)\nreceived packet: from 20.27.135.137[500] to 10.130.0.4[500] (536 bytes)\nparsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]\nno IKE config found for 10.130.0.4...20.27.135.137, sending NO_PROPOSAL_CHOSEN\ngenerating IKE_SA_INIT response 0 [ N(NO_PROP) ]\nsending packet: from 10.130.0.4[500] to 20.27.135.137[500] (36 bytes)\nreceived packet: from 20.27.135.137[500] to 10.130.0.4[500] (536 bytes)\nparsed IKE_SA_INIT request 0 [ SA KE No N(NATD_S_IP) N(NATD_D_IP) V V V V ]\nno IKE config found for 10.130.0.4...20.27.135.137, sending NO_PROPOSAL_CHOSEN\ngenerating IKE_SA_INIT response 0 [ N(NO_PROP) ]\nsending packet: from 10.130.0.4[500] to 20.27.135.137[500] (36 bytes)\n",
+    "stderr": ""
+  },
+  "iptables -S": {
+    "exitCode": 0,
+    "stdout": "-P INPUT ACCEPT\n-P FORWARD ACCEPT\n-P OUTPUT ACCEPT\n",
+    "stderr": ""
+  },
+  "iptables -t mangle -S": {
+    "exitCode": 0,
+    "stdout": "-P PREROUTING ACCEPT\n-P INPUT ACCEPT\n-P FORWARD ACCEPT\n-P OUTPUT ACCEPT\n-P POSTROUTING ACCEPT\n-A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1340\n",
+    "stderr": ""
+  },
+  "swanctl --list-sas": {
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "timeout 65 tcpdump -nn -i eth0 -c 12 udp and (port 500 or port 4500)": {
+    "exitCode": 124,
+    "stdout": "08:59:00.531686 IP 20.27.135.137.500 > 10.130.0.4.500: isakmp: parent_sa ikev2_init[I]\n08:59:00.532028 IP 10.130.0.4.500 > 20.27.135.137.500: isakmp: parent_sa ikev2_init[R]\n08:59:19.999301 IP 20.27.135.137.500 > 10.130.0.4.500: isakmp: parent_sa ikev2_init[I]\n08:59:20.000208 IP 10.130.0.4.500 > 20.27.135.137.500: isakmp: parent_sa ikev2_init[R]\n08:59:37.982815 IP 20.27.135.137.500 > 10.130.0.4.500: isakmp: parent_sa ikev2_init[I]\n08:59:37.983180 IP 10.130.0.4.500 > 20.27.135.137.500: isakmp: parent_sa ikev2_init[R]\n08:59:49.964181 IP 20.27.135.137.500 > 10.130.0.4.500: isakmp: parent_sa inf2\n\n",
+    "stderr": "tcpdump: verbose output suppressed, use -v[v]... for full protocol decode\nlistening on eth0, link-type EN10MB (Ethernet), snapshot length 262144 bytes\n7 packets captured\n7 packets received by filter\n0 packets dropped by kernel\n"
+  }
+}

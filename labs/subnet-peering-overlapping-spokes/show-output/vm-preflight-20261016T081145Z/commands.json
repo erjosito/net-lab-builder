@@ -1,0 +1,43 @@
+[
+  {
+    "label": "account-match",
+    "command": [
+      "az",
+      "account",
+      "show"
+    ],
+    "startedAtUtc": "2026-10-16T08:11:45.502009+00:00",
+    "completedAtUtc": "2026-10-16T08:11:47.903104+00:00",
+    "exitCode": 0,
+    "stderr": ""
+  },
+  {
+    "label": "inventory-before",
+    "command": [
+      "az",
+      "resource",
+      "list",
+      "-g",
+      "rg-subnet-overlap-20261016-fde5ecf8"
+    ],
+    "startedAtUtc": "2026-10-16T08:11:47.913660+00:00",
+    "completedAtUtc": "2026-10-16T08:11:55.171479+00:00",
+    "exitCode": 0,
+    "stderr": ""
+  },
+  {
+    "label": "network-baseline",
+    "command": [
+      "az",
+      "network",
+      "vnet",
+      "list",
+      "-g",
+      "rg-subnet-overlap-20261016-fde5ecf8"
+    ],
+    "startedAtUtc": "2026-10-16T08:11:55.212243+00:00",
+    "completedAtUtc": "2026-10-16T08:12:01.624099+00:00",
+    "exitCode": 0,
+    "stderr": ""
+  }
+]

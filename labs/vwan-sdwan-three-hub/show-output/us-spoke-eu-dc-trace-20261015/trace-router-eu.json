@@ -1,0 +1,26 @@
+{
+  "timestampUtc": "2026-10-15T09:42:08.762919+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-eu",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@<LOCAL_USER>\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\trace-us-spoke-eu-dc.sh"
+  ],
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\nTRACE_COMPLETE {\"startedAtUtc\":\"2026-10-15T09:38:55.698805+00:00\",\"finishedAtUtc\":\"2026-10-15T09:41:55.803017+00:00\",\"stoppedAtDeadline\":true,\"exitCode\":0,\"stderr\":\"tcpdump: data link type LINUX_SLL2\\ntcpdump: verbose output suppressed, use -v[v]... for full protocol decode\\nlistening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes\\n96 packets captured\\n96 packets received by filter\\n0 packets dropped by kernel\\n\",\"gzipBase64\":\"H4sIAOOf0GoC/82bzW4bNxCA73kKPoCymF9y6EMvBQoYRRED6a3IwXAF26grJ5Fdv365XiNAge6KP0pI3yTLmm+sjzPD5YqA/HuE96gO4gXHCwwTQdAo7uV2//x8dJcH5y6vHEJ6foIJwf00P0BcHl24y59/u3L7m7tH93X/5Xl/fNq5+z+d7txx/8Xhzj3sD7dPd87LO/r/YB6i2z/dgXMfnp++d6z0nvvDlUdv4YjfN6BNhMrIq//JyYMG+2/ISQnwwv3ycH17dH98/LREsmgaA1LcuZf7QwpHAjv3+Pnp/vGQXvb38eiQ01PH65u/Pvy6+/2j++f6wXH6K42ePaYUvjrYHR4/716ON9cPexc+fYOHVXb2ax/M+Oi2+TkPzB8Tv+dInbUJ7LmOXQj7atOCLgNoU8OfAFMEJeusjbGFSnaxvto0oCsOoE0Vv5+IVAM3tnuf0xHfgkVsa/dFseQM7T4vYJovmCOsD06TWECfY0F6ITNEkWILkmhsUGzBwk7rC3B0dD6xAMflt9cCAqGzNr6meCzsxH21aUHXAbSp4k/jihefxsu+2gRBrGSf10pPbVrQeQBtavhZU7U0I9/Y7kNOR3wLJtrW7oti2RnafV7ANF9IEKbNBZh+nWEBxYhM7LV86vMoqfkVa7DA+80VODg7nVyCoyYQXmtItN7maE0BeYWfq1tfc1rYbQRzqhJIQ4tZROltjhfWSnjuXXNa2HkEc2oSEJlIDSI29n3LaY1LMERo6/tFsegMfT8vYBo0vKe0cVhfg0iaNf2xqKkAEJZrQCxz0oUaLPAS1tfg6OwKJ9bguAn4uYhwhN7mSE0BeYUXos7mtLDrCOZUJRAmRkobxd7mqGishBff2ZwW9jiCOTUJKE+UhvWojX0/5rTGJVhAbuv7RbH8Gfp+XsA0aBgAbFxwU2LNOuRhjADBCHy5BkxCvliDBX7jXHZ89hMHswMnoHMRCZ56m8M1BWSB37hWOz47j2BOVQJ+YvbW3xwR40r47ua0sA9hTnECAhdAE0Uwa93vI5zsjd+iRWi80F8W7BxX+jMjplkjGqUpcHUZsrFlTYDIKKoxzfLlJgiKSLEJC3xY37iNz35i4zZwAjLXkfTT2xyqqSELvHFnc1rYhzCnKoE0u3iY9zedzeH51pQ6eO5tTgu7H8GcmgQQJwbT0HoDP2JOb3yLFqmx9RcF03O0/ryIlLYQfvMefhaLlmkCQ4DIodwEhdcD70ITFnjW9WU4PPuJs9qBE+C5jtjW9aIfA481NWSBx9jZnAZ2ohHMqUogzS4mtnXK/2PgSRkr4bda//DsOoI5NQkkQqY0sENr66ec3vgWTRq/vFcUTM9xzp8ZMQ0brHHji5CTep/2hDkmhPT2qSapVZgQUy0oNmGG94DrB/3Ds9OJg/6BE6C5jkThzubMX0iohdfY15wW9lO3hg6cAE8CFqR3zfGoqpXwHjub08IuI5iTkcC7fwG6giIUuD8AAA==\"}\n\n[stderr]\n"
+      }
+    ]
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "recordedAtUtc": "2026-10-16T07:04:58.4328703Z",
+  "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+  "createdCounts": {
+    "directedPeerings": 4,
+    "resourceGroups": 1,
+    "virtualNetworks": 3,
+    "inlineSubnets": 5
+  },
+  "finalInventory": "Exact owned RG authenticated404; zero remaining task resources",
+  "deployedVnets": [
+    {
+      "subnets": [
+        {
+          "name": "hub10",
+          "addressPrefix": "10.0.1.0/24"
+        }
+      ],
+      "addressPrefixes": [
+        "10.0.0.0/16"
+      ],
+      "name": "hub"
+    },
+    {
+      "subnets": [
+        {
+          "name": "spoke10",
+          "addressPrefix": "10.10.1.0/24"
+        },
+        {
+          "name": "isolated192",
+          "addressPrefix": "192.168.1.0/24"
+        }
+      ],
+      "addressPrefixes": [
+        "10.10.0.0/16",
+        "192.168.0.0/16"
+      ],
+      "name": "spoke1"
+    },
+    {
+      "subnets": [
+        {
+          "name": "spoke10",
+          "addressPrefix": "10.20.0.0/27"
+        },
+        {
+          "name": "isolated192",
+          "addressPrefix": "192.168.1.0/24"
+        }
+      ],
+      "addressPrefixes": [
+        "10.20.0.0/26",
+        "192.168.0.0/16"
+      ],
+      "name": "spoke2"
+    }
+  ],
+  "directedPeerings": [
+    {
+      "peeringState": "Connected",
+      "provisioningState": "Succeeded",
+      "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/hub/virtualNetworkPeerings/to-spoke1",
+      "remoteSubnetNames": [
+        "spoke10"
+      ],
+      "localSubnetNames": [
+        "hub10"
+      ]
+    },
+    {
+      "peeringState": "Connected",
+      "provisioningState": "Succeeded",
+      "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke1/virtualNetworkPeerings/to-hub",
+      "remoteSubnetNames": [
+        "hub10"
+      ],
+      "localSubnetNames": [
+        "spoke10"
+      ]
+    },
+    {
+      "peeringState": "Connected",
+      "provisioningState": "Succeeded",
+      "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/hub/virtualNetworkPeerings/to-spoke2",
+      "remoteSubnetNames": [
+        "spoke10"
+      ],
+      "localSubnetNames": [
+        "hub10"
+      ]
+    },
+    {
+      "peeringState": "Connected",
+      "provisioningState": "Succeeded",
+      "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke2/virtualNetworkPeerings/to-hub",
+      "remoteSubnetNames": [
+        "hub10"
+      ],
+      "localSubnetNames": [
+        "spoke10"
+      ]
+    }
+  ],
+  "verifiedRunningChildProcessIds": [],
+  "leaseState": "rolled-back",
+  "armWrites": 9,
+  "mutationBatches": 5,
+  "externalCommands": 29
+}

@@ -1,0 +1,38 @@
+{
+  "timestampUtc": "2026-10-15T21:42:00.741822+00:00",
+  "verdict": "PASS",
+  "router": "router-us",
+  "localAsn": 65012,
+  "localPrefixExcluded": "10.120.0.0/24",
+  "additionalPrepends": 3,
+  "retained": true,
+  "restoredOriginal": false,
+  "expectedExports": {
+    "10.110.0.0/24": [
+      65012,
+      65012,
+      65012,
+      65011
+    ],
+    "10.140.0.0/24": [
+      65012,
+      65012,
+      65012,
+      65014
+    ],
+    "10.130.0.0/24": [
+      65012,
+      65012,
+      65012,
+      65013
+    ],
+    "10.120.0.0/24": []
+  },
+  "actualFilter": "filter azure_export {\n  if net ~ [10.110.0.0/24, 10.120.0.0/24, 10.130.0.0/24, 10.140.0.0/24] &&\n     (proto = \"own_dc\" || proto ~ \"mesh_*\") then {\n    if net != 10.120.0.0/24 then {\n      bgp_path.prepend(65012);\n      bgp_path.prepend(65012);\n      bgp_path.prepend(65012);\n    }\n    accept;\n  }\n  reject;\n}",
+  "protectedBackup": "/var/lib/threehub/us-nonlocal-prepend-request-20261015-baseline.conf",
+  "errors": [],
+  "broaderTestsStopped": true,
+  "otherRoutersTouched": false,
+  "ipsecTouched": false,
+  "children": []
+}

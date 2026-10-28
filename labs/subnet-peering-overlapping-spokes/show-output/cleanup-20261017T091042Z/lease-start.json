@@ -1,0 +1,31 @@
+{
+  "taskId": "cleanup-20261017T091042Z",
+  "ownerRole": "Tank",
+  "objective": "Delete only approved exact lab RG",
+  "createdAtUtc": "2026-10-17T09:10:42.583254+00:00",
+  "expiresAtUtc": "2026-10-17T09:35:42.583254+00:00",
+  "maxToolCalls": 50,
+  "toolCallsUsed": 0,
+  "maxMutations": 1,
+  "mutationsUsed": 0,
+  "commandTimeoutSeconds": 180,
+  "restoreTimeoutMinutes": 0,
+  "rollback": "None; explicitly approved irreversible deletion",
+  "managedDeletionTimeoutMinutes": 15,
+  "pollIntervalSeconds": 30,
+  "progressSignal": "Authenticated exact-RG GET provisioningState/status",
+  "allowedMutations": [
+    "DELETE exact resource group rg-subnet-overlap-20261016-fde5ecf8"
+  ],
+  "forbiddenWork": [
+    "Other mutations",
+    "Retries",
+    "Subscription switch",
+    "Publication"
+  ],
+  "runningChildren": [],
+  "queuedWork": [],
+  "state": "active",
+  "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+  "evidenceDirectory": "cleanup-20261017T091042Z"
+}

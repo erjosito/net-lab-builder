@@ -1,0 +1,56 @@
+{
+  "timestampUtc": "2026-10-15T16:21:11.316108+00:00",
+  "finishedUtc": "2026-10-15T16:21:30.510052+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubVirtualNetworkConnections?api-version=2024-05-01"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"etag\": \"W/\\\"2972284e-d732-4eee-aefb-2dc8c7411518\\\"\",\n      \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubVirtualNetworkConnections/conn-spoke-jp\",\n      \"name\": \"conn-spoke-jp\",\n      \"properties\": {\n        \"allowHubToRemoteVnetTransit\": true,\n        \"allowRemoteVnetToUseHubVnetGateways\": true,\n        \"connectivityStatus\": \"Connected\",\n        \"enableInternetSecurity\": false,\n        \"provisioningState\": \"Succeeded\",\n        \"remoteVirtualNetwork\": {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-spoke-jp\"\n        },\n        \"resourceGuid\": \"0db752a5-95b2-49aa-842b-04180b113337\",\n        \"routingConfiguration\": {\n          \"associatedRouteTable\": {\n            \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubRouteTables/defaultRouteTable\"\n          },\n          \"propagatedRouteTables\": {\n            \"ids\": [\n              {\n                \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubRouteTables/defaultRouteTable\"\n              }\n            ],\n            \"labels\": [\n              \"Default\"\n            ]\n          },\n          \"vnetRoutes\": {\n            \"staticRoutes\": [],\n            \"staticRoutesConfig\": {\n              \"propagateStaticRoutes\": true,\n              \"vnetLocalRouteOverrideCriteria\": \"Contains\"\n            }\n          }\n        }\n      },\n      \"type\": \"Microsoft.Network/virtualHubs/hubVirtualNetworkConnections\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "etag": "W/\"2972284e-d732-4eee-aefb-2dc8c7411518\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubVirtualNetworkConnections/conn-spoke-jp",
+        "name": "conn-spoke-jp",
+        "properties": {
+          "allowHubToRemoteVnetTransit": true,
+          "allowRemoteVnetToUseHubVnetGateways": true,
+          "connectivityStatus": "Connected",
+          "enableInternetSecurity": false,
+          "provisioningState": "Succeeded",
+          "remoteVirtualNetwork": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-spoke-jp"
+          },
+          "resourceGuid": "0db752a5-95b2-49aa-842b-04180b113337",
+          "routingConfiguration": {
+            "associatedRouteTable": {
+              "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubRouteTables/defaultRouteTable"
+            },
+            "propagatedRouteTables": {
+              "ids": [
+                {
+                  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp/hubRouteTables/defaultRouteTable"
+                }
+              ],
+              "labels": [
+                "Default"
+              ]
+            },
+            "vnetRoutes": {
+              "staticRoutes": [],
+              "staticRoutesConfig": {
+                "propagateStaticRoutes": true,
+                "vnetLocalRouteOverrideCriteria": "Contains"
+              }
+            }
+          }
+        },
+        "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections"
+      }
+    ]
+  },
+  "sha256": "fb1e33da90f4d68f68c4e37178fcc6f2e6708dc356138be3762fe9a322aef4cc"
+}

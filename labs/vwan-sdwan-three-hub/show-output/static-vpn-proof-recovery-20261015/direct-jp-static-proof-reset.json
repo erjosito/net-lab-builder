@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-15T20:52:02.115522+00:00",
+  "finishedUtc": "2026-10-15T20:53:57.733471+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-jp",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@<LOCAL_USER>\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\boundary-jp-static-proof-reset.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\nBOUNDARY_COMPLETE {\\\"site\\\":\\\"jp\\\",\\\"sha256\\\":\\\"89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006\\\",\\\"stat\\\":{\\\"uid\\\":113,\\\"gid\\\":122,\\\"mode\\\":384,\\\"mtimeNs\\\":1792000606196722098},\\\"protocols\\\":{\\\"mesh_eu\\\":\\\"Established\\\",\\\"mesh_us\\\":\\\"Established\\\",\\\"mesh_cn\\\":\\\"Established\\\",\\\"azure_0\\\":\\\"Established\\\",\\\"azure_1\\\":\\\"Established\\\"},\\\"exports\\\":{\\\"azure_0\\\":{\\\"routes\\\":{\\\"10.110.0.0/24\\\":[65011],\\\"10.140.0.0/24\\\":[65014],\\\"10.130.0.0/24\\\":[],\\\"10.120.0.0/24\\\":[65012]},\\\"rawSha256\\\":\\\"63204b145c59ed20ebcb4ef8e216f1c59ac62ce5bea8631c464897639f787e43\\\"},\\\"azure_1\\\":{\\\"routes\\\":{\\\"10.110.0.0/24\\\":[65011],\\\"10.140.0.0/24\\\":[65014],\\\"10.130.0.0/24\\\":[],\\\"10.120.0.0/24\\\":[65012]},\\\"rawSha256\\\":\\\"63204b145c59ed20ebcb4ef8e216f1c59ac62ce5bea8631c464897639f787e43\\\"}},\\\"ikeEstablished\\\":2,\\\"additionalPrepends\\\":0,\\\"configureOutput\\\":null,\\\"restored\\\":false}\\n\\n[stderr]\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\nBOUNDARY_COMPLETE {\"site\":\"jp\",\"sha256\":\"89b67f35ed1750b258c61e3760f9c290da6f865f5580a56b7e6553625d45e006\",\"stat\":{\"uid\":113,\"gid\":122,\"mode\":384,\"mtimeNs\":1792000606196722098},\"protocols\":{\"mesh_eu\":\"Established\",\"mesh_us\":\"Established\",\"mesh_cn\":\"Established\",\"azure_0\":\"Established\",\"azure_1\":\"Established\"},\"exports\":{\"azure_0\":{\"routes\":{\"10.110.0.0/24\":[65011],\"10.140.0.0/24\":[65014],\"10.130.0.0/24\":[],\"10.120.0.0/24\":[65012]},\"rawSha256\":\"63204b145c59ed20ebcb4ef8e216f1c59ac62ce5bea8631c464897639f787e43\"},\"azure_1\":{\"routes\":{\"10.110.0.0/24\":[65011],\"10.140.0.0/24\":[65014],\"10.130.0.0/24\":[],\"10.120.0.0/24\":[65012]},\"rawSha256\":\"63204b145c59ed20ebcb4ef8e216f1c59ac62ce5bea8631c464897639f787e43\"}},\"ikeEstablished\":2,\"additionalPrepends\":0,\"configureOutput\":null,\"restored\":false}\n\n[stderr]\n"
+      }
+    ]
+  },
+  "sha256": "43e63a5b0bda5650c7cb304ba217c1c846b5783d88f46bcc8ebd83a064fb3763"
+}

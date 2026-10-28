@@ -1,0 +1,26 @@
+{
+  "timestampUtc": "2026-10-15T09:42:08.772609+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "probe-spoke-us",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@<LOCAL_USER>\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\generate-us-spoke-eu-dc.sh"
+  ],
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\nGENERATE_COMPLETE {\"startedAtUtc\":\"2026-10-15T09:38:47.134115+00:00\",\"tests\":[{\"timestampUtc\":\"2026-10-15T09:39:21.168652+00:00\",\"pingExit\":1,\"curlExit\":28,\"curlError\":\"curl: (28) Connection timed out after 3001 milliseconds\\n\"},{\"timestampUtc\":\"2026-10-15T09:39:30.186356+00:00\",\"pingExit\":1,\"curlExit\":28,\"curlError\":\"curl: (28) Connection timed out after 3000 milliseconds\\n\"},{\"timestampUtc\":\"2026-10-15T09:39:39.200375+00:00\",\"pingExit\":1,\"curlExit\":28,\"curlError\":\"curl: (28) Connection timed out after 3001 milliseconds\\n\"},{\"timestampUtc\":\"2026-10-15T09:39:48.218959+00:00\",\"pingExit\":1,\"curlExit\":28,\"curlError\":\"curl: (28) Connection timed out after 3000 milliseconds\\n\"},{\"timestampUtc\":\"2026-10-15T09:39:57.232311+00:00\",\"pingExit\":1,\"curlExit\":28,\"curlError\":\"curl: (28) Connection timed out after 3000 milliseconds\\n\"},{\"timestampUtc\":\"2026-10-15T09:40:06.251312+00:00\",\"pingExit\":1,\"curlExit\":28,\"curlError\":\"curl: (28) Connection timed out after 3001 milliseconds\\n\"},{\"timestampUtc\":\"2026-10-15T09:40:15.269304+00:00\",\"pingExit\":1,\"curlExit\":28,\"curlError\":\"curl: (28) Connection timed out after 3001 milliseconds\\n\"},{\"timestampUtc\":\"2026-10-15T09:40:24.288304+00:00\",\"pingExit\":1,\"curlExit\":28,\"curlError\":\"curl: (28) Connection timed out after 3001 milliseconds\\n\"}]}\n\n[stderr]\n"
+      }
+    ]
+  }
+}

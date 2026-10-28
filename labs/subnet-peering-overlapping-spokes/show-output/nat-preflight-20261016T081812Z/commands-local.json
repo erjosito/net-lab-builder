@@ -1,0 +1,92 @@
+[
+  {
+    "label": "account",
+    "startedAtUtc": "2026-10-16T08:18:12.732667+00:00",
+    "completedAtUtc": "2026-10-16T08:18:14.670587+00:00",
+    "command": [
+      "az",
+      "account",
+      "show"
+    ],
+    "exitCode": 0,
+    "stderr": ""
+  },
+  {
+    "label": "inventory-before",
+    "startedAtUtc": "2026-10-16T08:18:14.673863+00:00",
+    "completedAtUtc": "2026-10-16T08:18:20.946659+00:00",
+    "command": [
+      "az",
+      "resource",
+      "list",
+      "-g",
+      "rg-subnet-overlap-20261016-fde5ecf8"
+    ],
+    "exitCode": 0,
+    "stderr": ""
+  },
+  {
+    "label": "network-baseline",
+    "startedAtUtc": "2026-10-16T08:18:20.948586+00:00",
+    "completedAtUtc": "2026-10-16T08:18:26.319812+00:00",
+    "command": [
+      "az",
+      "network",
+      "vnet",
+      "list",
+      "-g",
+      "rg-subnet-overlap-20261016-fde5ecf8"
+    ],
+    "exitCode": 0,
+    "stderr": ""
+  },
+  {
+    "label": "quota",
+    "startedAtUtc": "2026-10-16T08:18:26.344192+00:00",
+    "completedAtUtc": "2026-10-16T08:18:30.397978+00:00",
+    "command": [
+      "az",
+      "vm",
+      "list-usage",
+      "-l",
+      "swedencentral"
+    ],
+    "exitCode": 0,
+    "stderr": ""
+  },
+  {
+    "label": "exact-live-five-vm-validate",
+    "startedAtUtc": "2026-10-16T08:18:31.114995+00:00",
+    "completedAtUtc": "2026-10-16T08:18:40.850433+00:00",
+    "command": [
+      "az",
+      "deployment",
+      "group",
+      "validate",
+      "-g",
+      "rg-subnet-overlap-20261016-fde5ecf8",
+      "-n",
+      "nat-preflight-20261016T081812Z",
+      "--template-file",
+      "<LOCAL_USER>\\Repos\\net-lab-builder\\labs\\subnet-peering-overlapping-spokes\\deploy\\.runtime-control\\nat-validation-template.json",
+      "--parameters",
+      "@<LOCAL_USER>\\Repos\\net-lab-builder\\labs\\subnet-peering-overlapping-spokes\\deploy\\.runtime-control\\nat-validation-parameters.json"
+    ],
+    "exitCode": 0,
+    "stderr": ""
+  },
+  {
+    "label": "inventory-after",
+    "startedAtUtc": "2026-10-16T08:18:40.852617+00:00",
+    "completedAtUtc": "2026-10-16T08:18:47.251717+00:00",
+    "command": [
+      "az",
+      "resource",
+      "list",
+      "-g",
+      "rg-subnet-overlap-20261016-fde5ecf8"
+    ],
+    "exitCode": 0,
+    "stderr": ""
+  }
+]

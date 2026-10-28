@@ -1,0 +1,27 @@
+{
+  "timestampUtc": "2026-10-16T08:51:04.564081+00:00",
+  "finishedUtc": "2026-10-16T08:52:54.396245+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnGateways/vpngw-jp/vpnConnections/conn-dc-jp?api-version=2024-05-01",
+    "--query",
+    "properties.{state:provisioningState,status:connectionStatus,links:vpnLinkConnections[].{name:name,state:properties.provisioningState,status:properties.connectionStatus,bgp:properties.enableBgp}}"
+  ],
+  "stdout": "{\n  \"links\": [\n    {\n      \"bgp\": true,\n      \"name\": \"link-jp\",\n      \"state\": \"Succeeded\",\n      \"status\": \"NotConnected\"\n    }\n  ],\n  \"state\": \"Succeeded\",\n  \"status\": null\n}\n",
+  "result": {
+    "links": [
+      {
+        "bgp": true,
+        "name": "link-jp",
+        "state": "Succeeded",
+        "status": "NotConnected"
+      }
+    ],
+    "state": "Succeeded",
+    "status": null
+  },
+  "sha256": "99c823135dce8882124e025813aed8f325850868645b4270a0631a67f48b79d7"
+}

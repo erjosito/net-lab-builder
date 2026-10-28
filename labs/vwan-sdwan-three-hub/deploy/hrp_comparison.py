@@ -63,7 +63,7 @@ def main():
         nonlocal dirty_guest
         sweep.CURRENT = sweep.OUT / label
         proof = boundary.invoke(ingress, label, restore=True)
-        if any(proof[k] != before[ingress][k] for k in ("sha256", "stat", "exports")):
+        if not boundary.same_source(before[ingress], proof):
             raise RuntimeError(f"{ingress}: exact restore differs")
         dirty_guest = False
 
@@ -106,8 +106,7 @@ def main():
             sweep.CURRENT = sweep.OUT / "closure"
             after = boundary.invoke_all("closure")
             for site in (*sweep.SITES, "cn"):
-                if any(after[site][k] != before.get(site, {}).get(k)
-                       for k in ("sha256", "stat", "exports", "protocols", "ikeEstablished")):
+                if not boundary.same_source(before[site], after[site]):
                     raise RuntimeError(f"{site}: exact source closure differs")
         except Exception as exc:
             errors.append("RESTORE: " + str(exc))

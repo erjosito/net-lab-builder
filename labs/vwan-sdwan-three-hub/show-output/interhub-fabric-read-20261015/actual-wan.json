@@ -1,0 +1,44 @@
+{
+  "timestampUtc": "2026-10-15T09:46:33.794794+00:00",
+  "result": {
+    "allowBranchToBranchTraffic": true,
+    "allowVnetToVnetTraffic": null,
+    "disableVpnEncryption": false,
+    "etag": "W/\"ca0ca4f0-02a7-49f3-ba1a-a4a7e5498aa3\"",
+    "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualWans/vwan-threehub",
+    "location": "japaneast",
+    "name": "vwan-threehub",
+    "office365LocalBreakoutCategory": "None",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+    "tags": {
+      "created_by": "copilot-lab",
+      "ephemeral": "true",
+      "lab": "true",
+      "owner": "<LAB_OWNER>",
+      "run_id": "20261014-threehub"
+    },
+    "type": "Microsoft.Network/virtualWans",
+    "typePropertiesType": "Standard",
+    "virtualHubs": [
+      {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-jp",
+        "resourceGroup": "rg-vwan-sdwan-threehub-20261014"
+      },
+      {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us",
+        "resourceGroup": "rg-vwan-sdwan-threehub-20261014"
+      },
+      {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-eu",
+        "resourceGroup": "rg-vwan-sdwan-threehub-20261014"
+      }
+    ],
+    "vpnSites": [
+      {
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/vpnSites/site-dc-jp",
+        "resourceGroup": "rg-vwan-sdwan-threehub-20261014"
+      }
+    ]
+  }
+}

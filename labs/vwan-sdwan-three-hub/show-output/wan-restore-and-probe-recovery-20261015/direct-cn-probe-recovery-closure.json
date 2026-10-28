@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-15T09:52:46.525630+00:00",
+  "finishedUtc": "2026-10-15T09:54:25.509416+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-cn",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@<LOCAL_USER>\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\boundary-cn-probe-recovery-closure.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\nBOUNDARY_COMPLETE {\\\"site\\\":\\\"cn\\\",\\\"sha256\\\":\\\"10e5591a16159a4a6e17350cb23f437623372f2ffd635ef20736f133c4738346\\\",\\\"stat\\\":{\\\"uid\\\":113,\\\"gid\\\":122,\\\"mode\\\":384,\\\"mtimeNs\\\":1792000608839202133},\\\"protocols\\\":{\\\"mesh_eu\\\":\\\"Established\\\",\\\"mesh_us\\\":\\\"Established\\\",\\\"mesh_jp\\\":\\\"Established\\\"},\\\"exports\\\":{},\\\"ikeEstablished\\\":null,\\\"additionalPrepends\\\":0,\\\"configureOutput\\\":null,\\\"restored\\\":false}\\n\\n[stderr]\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\nBOUNDARY_COMPLETE {\"site\":\"cn\",\"sha256\":\"10e5591a16159a4a6e17350cb23f437623372f2ffd635ef20736f133c4738346\",\"stat\":{\"uid\":113,\"gid\":122,\"mode\":384,\"mtimeNs\":1792000608839202133},\"protocols\":{\"mesh_eu\":\"Established\",\"mesh_us\":\"Established\",\"mesh_jp\":\"Established\"},\"exports\":{},\"ikeEstablished\":null,\"additionalPrepends\":0,\"configureOutput\":null,\"restored\":false}\n\n[stderr]\n"
+      }
+    ]
+  },
+  "sha256": "bb4fa7d7a39cafc338a9977586cf9f79afdaaa12b9349b4ec028e0decb1bdd90"
+}

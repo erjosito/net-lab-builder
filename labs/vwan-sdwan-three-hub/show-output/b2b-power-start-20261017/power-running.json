@@ -1,0 +1,1091 @@
+{
+  "timestampUtc": "2026-10-17T15:58:53.146264+00:00",
+  "finishedUtc": "2026-10-17T16:00:30.580292+00:00",
+  "command": [
+    "vm",
+    "list",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "--show-details"
+  ],
+  "stdout": "[\n  {\n    \"etag\": \"\\\"18\\\"\",\n    \"fqdns\": \"\",\n    \"hardwareProfile\": {\n      \"vmSize\": \"Standard_B2als_v2\"\n    },\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-us\",\n    \"location\": \"northcentralus\",\n    \"macAddresses\": \"00-22-48-8E-EB-BD\",\n    \"name\": \"probe-dc-us\",\n    \"networkProfile\": {\n      \"networkInterfaces\": [\n        {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-dc-us\",\n          \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\"\n        }\n      ]\n    },\n    \"osProfile\": {\n      \"adminUsername\": \"azurelabuser\",\n      \"allowExtensionOperations\": true,\n      \"computerName\": \"probe-dc-us\",\n      \"linuxConfiguration\": {\n        \"disablePasswordAuthentication\": true,\n        \"enableVMAgentPlatformUpdates\": true,\n        \"patchSettings\": {\n          \"assessmentMode\": \"AutomaticByPlatform\",\n          \"automaticByPlatformSettings\": {\n            \"bypassPlatformSafetyChecksOnUserSchedule\": true\n          },\n          \"patchMode\": \"AutomaticByPlatform\"\n        },\n        \"provisionVMAgent\": true,\n        \"ssh\": {\n          \"publicKeys\": [\n            {\n              \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/\",\n              \"path\": \"/home/<USER>/.ssh/authorized_keys\"\n            }\n          ]\n        }\n      },\n      \"requireGuestProvisionSignal\": true,\n      \"secrets\": []\n    },\n    \"powerState\": \"VM running\",\n    \"priority\": \"Regular\",\n    \"privateIps\": \"10.120.0.10\",\n    \"provisioningState\": \"Succeeded\",\n    \"publicIps\": \"64.236.209.252\",\n    \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n    \"resources\": [\n      {\n        \"autoUpgradeMinorVersion\": true,\n        \"forceUpdateTag\": \"6c298404-2655-4c37-81ca-1d3d667f9fcf\",\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-us/extensions/MDE.Linux\",\n        \"location\": \"northcentralus\",\n        \"name\": \"MDE.Linux\",\n        \"provisioningState\": \"Succeeded\",\n        \"publisher\": \"Microsoft.Azure.AzureDefenderForServers\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"settings\": {\n          \"autoUpdate\": true,\n          \"azureResourceId\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-us\",\n          \"forceReOnboarding\": false,\n          \"vNextEnabled\": false\n        },\n        \"typeHandlerVersion\": \"1.0\",\n        \"typePropertiesType\": \"MDE.Linux\"\n      }\n    ],\n    \"storageProfile\": {\n      \"dataDisks\": [],\n      \"diskControllerType\": \"SCSI\",\n      \"imageReference\": {\n        \"exactVersion\": \"22.04.202608060\",\n        \"offer\": \"0001-com-ubuntu-server-jammy\",\n        \"publisher\": \"Canonical\",\n        \"sku\": \"22_04-lts-gen2\",\n        \"version\": \"latest\"\n      },\n      \"osDisk\": {\n        \"caching\": \"ReadWrite\",\n        \"createOption\": \"FromImage\",\n        \"deleteOption\": \"Detach\",\n        \"diskSizeGB\": 30,\n        \"managedDisk\": {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-probe-dc-us\",\n          \"resourceGroup\": \"RG-VWAN-SDWAN-THREEHUB-20261014\",\n          \"storageAccountType\": \"Standard_LRS\"\n        },\n        \"name\": \"osdisk-probe-dc-us\",\n        \"osType\": \"Linux\"\n      }\n    },\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    },\n    \"timeCreated\": \"2026-10-14T15:55:38.03787+00:00\",\n    \"type\": \"Microsoft.Compute/virtualMachines\",\n    \"vmId\": \"433313fd-8fd2-410c-9dca-a60e482b2f4f\"\n  },\n  {\n    \"etag\": \"\\\"18\\\"\",\n    \"fqdns\": \"\",\n    \"hardwareProfile\": {\n      \"vmSize\": \"Standard_B2als_v2\"\n    },\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-us\",\n    \"location\": \"northcentralus\",\n    \"macAddresses\": \"00-22-48-8E-E0-A1\",\n    \"name\": \"probe-spoke-us\",\n    \"networkProfile\": {\n      \"networkInterfaces\": [\n        {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-spoke-us\",\n          \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\"\n        }\n      ]\n    },\n    \"osProfile\": {\n      \"adminUsername\": \"azurelabuser\",\n      \"allowExtensionOperations\": true,\n      \"computerName\": \"probe-spoke-us\",\n      \"linuxConfiguration\": {\n        \"disablePasswordAuthentication\": true,\n        \"enableVMAgentPlatformUpdates\": true,\n        \"patchSettings\": {\n          \"assessmentMode\": \"AutomaticByPlatform\",\n          \"automaticByPlatformSettings\": {\n            \"bypassPlatformSafetyChecksOnUserSchedule\": true\n          },\n          \"patchMode\": \"AutomaticByPlatform\"\n        },\n        \"provisionVMAgent\": true,\n        \"ssh\": {\n          \"publicKeys\": [\n            {\n              \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/\",\n              \"path\": \"/home/<USER>/.ssh/authorized_keys\"\n            }\n          ]\n        }\n      },\n      \"requireGuestProvisionSignal\": true,\n      \"secrets\": []\n    },\n    \"powerState\": \"VM running\",\n    \"priority\": \"Regular\",\n    \"privateIps\": \"10.20.0.10\",\n    \"provisioningState\": \"Succeeded\",\n    \"publicIps\": \"20.25.215.187\",\n    \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n    \"resources\": [\n      {\n        \"autoUpgradeMinorVersion\": true,\n        \"forceUpdateTag\": \"109b8fac-031b-40c7-a650-f9e9900ffe2e\",\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-us/extensions/MDE.Linux\",\n        \"location\": \"northcentralus\",\n        \"name\": \"MDE.Linux\",\n        \"provisioningState\": \"Succeeded\",\n        \"publisher\": \"Microsoft.Azure.AzureDefenderForServers\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"settings\": {\n          \"autoUpdate\": true,\n          \"azureResourceId\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-us\",\n          \"forceReOnboarding\": false,\n          \"vNextEnabled\": false\n        },\n        \"typeHandlerVersion\": \"1.0\",\n        \"typePropertiesType\": \"MDE.Linux\"\n      }\n    ],\n    \"storageProfile\": {\n      \"dataDisks\": [],\n      \"diskControllerType\": \"SCSI\",\n      \"imageReference\": {\n        \"exactVersion\": \"22.04.202608060\",\n        \"offer\": \"0001-com-ubuntu-server-jammy\",\n        \"publisher\": \"Canonical\",\n        \"sku\": \"22_04-lts-gen2\",\n        \"version\": \"latest\"\n      },\n      \"osDisk\": {\n        \"caching\": \"ReadWrite\",\n        \"createOption\": \"FromImage\",\n        \"deleteOption\": \"Detach\",\n        \"diskSizeGB\": 30,\n        \"managedDisk\": {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-probe-spoke-us\",\n          \"resourceGroup\": \"RG-VWAN-SDWAN-THREEHUB-20261014\",\n          \"storageAccountType\": \"Standard_LRS\"\n        },\n        \"name\": \"osdisk-probe-spoke-us\",\n        \"osType\": \"Linux\"\n      }\n    },\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    },\n    \"timeCreated\": \"2026-10-14T15:55:37.3924551+00:00\",\n    \"type\": \"Microsoft.Compute/virtualMachines\",\n    \"vmId\": \"d342b987-b3ba-47dc-80b1-a4e427152544\"\n  },\n  {\n    \"etag\": \"\\\"33\\\"\",\n    \"fqdns\": \"\",\n    \"hardwareProfile\": {\n      \"vmSize\": \"Standard_B2als_v2\"\n    },\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-us\",\n    \"location\": \"northcentralus\",\n    \"macAddresses\": \"7C-ED-8D-55-1D-FF\",\n    \"name\": \"router-us\",\n    \"networkProfile\": {\n      \"networkInterfaces\": [\n        {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-us\",\n          \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\"\n        }\n      ]\n    },\n    \"osProfile\": {\n      \"adminUsername\": \"azurelabuser\",\n      \"allowExtensionOperations\": true,\n      \"computerName\": \"router-us\",\n      \"linuxConfiguration\": {\n        \"disablePasswordAuthentication\": true,\n        \"enableVMAgentPlatformUpdates\": true,\n        \"patchSettings\": {\n          \"assessmentMode\": \"AutomaticByPlatform\",\n          \"automaticByPlatformSettings\": {\n            \"bypassPlatformSafetyChecksOnUserSchedule\": true\n          },\n          \"patchMode\": \"AutomaticByPlatform\"\n        },\n        \"provisionVMAgent\": true,\n        \"ssh\": {\n          \"publicKeys\": [\n            {\n              \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/\",\n              \"path\": \"/home/<USER>/.ssh/authorized_keys\"\n            }\n          ]\n        }\n      },\n      \"requireGuestProvisionSignal\": true,\n      \"secrets\": []\n    },\n    \"powerState\": \"VM running\",\n    \"priority\": \"Regular\",\n    \"privateIps\": \"10.220.0.4\",\n    \"provisioningState\": \"Succeeded\",\n    \"publicIps\": \"52.159.77.219\",\n    \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n    \"resources\": [\n      {\n        \"autoUpgradeMinorVersion\": true,\n        \"forceUpdateTag\": \"ccddf0ff-fd04-4343-8eca-72096e26bc9f\",\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-us/extensions/MDE.Linux\",\n        \"location\": \"northcentralus\",\n        \"name\": \"MDE.Linux\",\n        \"provisioningState\": \"Succeeded\",\n        \"publisher\": \"Microsoft.Azure.AzureDefenderForServers\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"settings\": {\n          \"autoUpdate\": true,\n          \"azureResourceId\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/router-us\",\n          \"forceReOnboarding\": false,\n          \"vNextEnabled\": false\n        },\n        \"typeHandlerVersion\": \"1.0\",\n        \"typePropertiesType\": \"MDE.Linux\"\n      }\n    ],\n    \"storageProfile\": {\n      \"dataDisks\": [],\n      \"diskControllerType\": \"SCSI\",\n      \"imageReference\": {\n        \"exactVersion\": \"22.04.202608060\",\n        \"offer\": \"0001-com-ubuntu-server-jammy\",\n        \"publisher\": \"Canonical\",\n        \"sku\": \"22_04-lts-gen2\",\n        \"version\": \"latest\"\n      },\n      \"osDisk\": {\n        \"caching\": \"ReadWrite\",\n        \"createOption\": \"FromImage\",\n        \"deleteOption\": \"Detach\",\n        \"diskSizeGB\": 30,\n        \"managedDisk\": {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-router-us\",\n          \"resourceGroup\": \"RG-VWAN-SDWAN-THREEHUB-20261014\",\n          \"storageAccountType\": \"Standard_LRS\"\n        },\n        \"name\": \"osdisk-router-us\",\n        \"osType\": \"Linux\"\n      }\n    },\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    },\n    \"timeCreated\": \"2026-10-14T15:55:37.5642466+00:00\",\n    \"type\": \"Microsoft.Compute/virtualMachines\",\n    \"vmId\": \"6912401d-a698-4aed-8472-4902aa019581\"\n  },\n  {\n    \"etag\": \"\\\"18\\\"\",\n    \"fqdns\": \"\",\n    \"hardwareProfile\": {\n      \"vmSize\": \"Standard_B2ts_v2\"\n    },\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-eu\",\n    \"location\": \"westeurope\",\n    \"macAddresses\": \"70-A8-A5-3A-8F-81\",\n    \"name\": \"probe-dc-eu\",\n    \"networkProfile\": {\n      \"networkInterfaces\": [\n        {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-dc-eu\",\n          \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\"\n        }\n      ]\n    },\n    \"osProfile\": {\n      \"adminUsername\": \"azurelabuser\",\n      \"allowExtensionOperations\": true,\n      \"computerName\": \"probe-dc-eu\",\n      \"linuxConfiguration\": {\n        \"disablePasswordAuthentication\": true,\n        \"enableVMAgentPlatformUpdates\": true,\n        \"patchSettings\": {\n          \"assessmentMode\": \"AutomaticByPlatform\",\n          \"automaticByPlatformSettings\": {\n            \"bypassPlatformSafetyChecksOnUserSchedule\": true\n          },\n          \"patchMode\": \"AutomaticByPlatform\"\n        },\n        \"provisionVMAgent\": true,\n        \"ssh\": {\n          \"publicKeys\": [\n            {\n              \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/\",\n              \"path\": \"/home/<USER>/.ssh/authorized_keys\"\n            }\n          ]\n        }\n      },\n      \"requireGuestProvisionSignal\": true,\n      \"secrets\": []\n    },\n    \"powerState\": \"VM running\",\n    \"priority\": \"Regular\",\n    \"privateIps\": \"10.110.0.10\",\n    \"provisioningState\": \"Succeeded\",\n    \"publicIps\": \"20.126.10.252\",\n    \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n    \"resources\": [\n      {\n        \"autoUpgradeMinorVersion\": true,\n        \"forceUpdateTag\": \"d56c7f3b-3983-4e9d-b275-a42636fc0cba\",\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-eu/extensions/MDE.Linux\",\n        \"location\": \"westeurope\",\n        \"name\": \"MDE.Linux\",\n        \"provisioningState\": \"Succeeded\",\n        \"publisher\": \"Microsoft.Azure.AzureDefenderForServers\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"settings\": {\n          \"autoUpdate\": true,\n          \"azureResourceId\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-eu\",\n          \"forceReOnboarding\": false,\n          \"vNextEnabled\": false\n        },\n        \"typeHandlerVersion\": \"1.0\",\n        \"typePropertiesType\": \"MDE.Linux\"\n      }\n    ],\n    \"storageProfile\": {\n      \"dataDisks\": [],\n      \"diskControllerType\": \"SCSI\",\n      \"imageReference\": {\n        \"exactVersion\": \"22.04.202608060\",\n        \"offer\": \"0001-com-ubuntu-server-jammy\",\n        \"publisher\": \"Canonical\",\n        \"sku\": \"22_04-lts-gen2\",\n        \"version\": \"latest\"\n      },\n      \"osDisk\": {\n        \"caching\": \"ReadWrite\",\n        \"createOption\": \"FromImage\",\n        \"deleteOption\": \"Detach\",\n        \"diskSizeGB\": 30,\n        \"managedDisk\": {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-probe-dc-eu\",\n          \"resourceGroup\": \"RG-VWAN-SDWAN-THREEHUB-20261014\",\n          \"storageAccountType\": \"Standard_LRS\"\n        },\n        \"name\": \"osdisk-probe-dc-eu\",\n        \"osType\": \"Linux\"\n      }\n    },\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    },\n    \"timeCreated\": \"2026-10-14T15:55:43.2992188+00:00\",\n    \"type\": \"Microsoft.Compute/virtualMachines\",\n    \"vmId\": \"a0f08ccc-e869-475c-8979-763ea5614d8d\"\n  },\n  {\n    \"etag\": \"\\\"18\\\"\",\n    \"fqdns\": \"\",\n    \"hardwareProfile\": {\n      \"vmSize\": \"Standard_B2ts_v2\"\n    },\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-eu\",\n    \"location\": \"westeurope\",\n    \"macAddresses\": \"70-A8-A5-3C-52-F5\",\n    \"name\": \"probe-spoke-eu\",\n    \"networkProfile\": {\n      \"networkInterfaces\": [\n        {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-spoke-eu\",\n          \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\"\n        }\n      ]\n    },\n    \"osProfile\": {\n      \"adminUsername\": \"azurelabuser\",\n      \"allowExtensionOperations\": true,\n      \"computerName\": \"probe-spoke-eu\",\n      \"linuxConfiguration\": {\n        \"disablePasswordAuthentication\": true,\n        \"enableVMAgentPlatformUpdates\": true,\n        \"patchSettings\": {\n          \"assessmentMode\": \"AutomaticByPlatform\",\n          \"automaticByPlatformSettings\": {\n            \"bypassPlatformSafetyChecksOnUserSchedule\": true\n          },\n          \"patchMode\": \"AutomaticByPlatform\"\n        },\n        \"provisionVMAgent\": true,\n        \"ssh\": {\n          \"publicKeys\": [\n            {\n              \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/\",\n              \"path\": \"/home/<USER>/.ssh/authorized_keys\"\n            }\n          ]\n        }\n      },\n      \"requireGuestProvisionSignal\": true,\n      \"secrets\": []\n    },\n    \"powerState\": \"VM running\",\n    \"priority\": \"Regular\",\n    \"privateIps\": \"10.10.0.10\",\n    \"provisioningState\": \"Succeeded\",\n    \"publicIps\": \"20.67.99.163\",\n    \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n    \"resources\": [\n      {\n        \"autoUpgradeMinorVersion\": true,\n        \"forceUpdateTag\": \"f296fea4-b571-4647-89b1-029b672f72fe\",\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-eu/extensions/MDE.Linux\",\n        \"location\": \"westeurope\",\n        \"name\": \"MDE.Linux\",\n        \"provisioningState\": \"Succeeded\",\n        \"publisher\": \"Microsoft.Azure.AzureDefenderForServers\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"settings\": {\n          \"autoUpdate\": true,\n          \"azureResourceId\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-eu\",\n          \"forceReOnboarding\": false,\n          \"vNextEnabled\": false\n        },\n        \"typeHandlerVersion\": \"1.0\",\n        \"typePropertiesType\": \"MDE.Linux\"\n      }\n    ],\n    \"storageProfile\": {\n      \"dataDisks\": [],\n      \"diskControllerType\": \"SCSI\",\n      \"imageReference\": {\n        \"exactVersion\": \"22.04.202608060\",\n        \"offer\": \"0001-com-ubuntu-server-jammy\",\n        \"publisher\": \"Canonical\",\n        \"sku\": \"22_04-lts-gen2\",\n        \"version\": \"latest\"\n      },\n      \"osDisk\": {\n        \"caching\": \"ReadWrite\",\n        \"createOption\": \"FromImage\",\n        \"deleteOption\": \"Detach\",\n        \"diskSizeGB\": 30,\n        \"managedDisk\": {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-probe-spoke-eu\",\n          \"resourceGroup\": \"RG-VWAN-SDWAN-THREEHUB-20261014\",\n          \"storageAccountType\": \"Standard_LRS\"\n        },\n        \"name\": \"osdisk-probe-spoke-eu\",\n        \"osType\": \"Linux\"\n      }\n    },\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    },\n    \"timeCreated\": \"2026-10-14T15:55:45.8094025+00:00\",\n    \"type\": \"Microsoft.Compute/virtualMachines\",\n    \"vmId\": \"cb0b8a6a-b9e1-472e-9ca9-cf1565f78097\"\n  },\n  {\n    \"diagnosticsProfile\": {\n      \"bootDiagnostics\": {\n        \"enabled\": true\n      }\n    },\n    \"etag\": \"\\\"34\\\"\",\n    \"fqdns\": \"\",\n    \"hardwareProfile\": {\n      \"vmSize\": \"Standard_B2ts_v2\"\n    },\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu\",\n    \"location\": \"westeurope\",\n    \"macAddresses\": \"70-A8-A5-59-DE-AB\",\n    \"name\": \"router-eu\",\n    \"networkProfile\": {\n      \"networkInterfaces\": [\n        {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-eu\",\n          \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\"\n        }\n      ]\n    },\n    \"osProfile\": {\n      \"adminUsername\": \"azurelabuser\",\n      \"allowExtensionOperations\": true,\n      \"computerName\": \"router-eu\",\n      \"linuxConfiguration\": {\n        \"disablePasswordAuthentication\": true,\n        \"enableVMAgentPlatformUpdates\": true,\n        \"patchSettings\": {\n          \"assessmentMode\": \"AutomaticByPlatform\",\n          \"automaticByPlatformSettings\": {\n            \"bypassPlatformSafetyChecksOnUserSchedule\": true\n          },\n          \"patchMode\": \"AutomaticByPlatform\"\n        },\n        \"provisionVMAgent\": true,\n        \"ssh\": {\n          \"publicKeys\": [\n            {\n              \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/\",\n              \"path\": \"/home/<USER>/.ssh/authorized_keys\"\n            }\n          ]\n        }\n      },\n      \"requireGuestProvisionSignal\": true,\n      \"secrets\": []\n    },\n    \"powerState\": \"VM running\",\n    \"priority\": \"Regular\",\n    \"privateIps\": \"10.210.0.4\",\n    \"provisioningState\": \"Succeeded\",\n    \"publicIps\": \"51.124.30.234\",\n    \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n    \"resources\": [\n      {\n        \"autoUpgradeMinorVersion\": true,\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/extensions/enablevmAccess\",\n        \"location\": \"westeurope\",\n        \"name\": \"enablevmAccess\",\n        \"provisioningState\": \"Succeeded\",\n        \"publisher\": \"Microsoft.OSTCExtensions\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"typeHandlerVersion\": \"1.5\",\n        \"typePropertiesType\": \"VMAccessForLinux\"\n      },\n      {\n        \"autoUpgradeMinorVersion\": true,\n        \"forceUpdateTag\": \"b3385de6-1eca-472e-b78e-8c4601332043\",\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/extensions/MDE.Linux\",\n        \"location\": \"westeurope\",\n        \"name\": \"MDE.Linux\",\n        \"provisioningState\": \"Succeeded\",\n        \"publisher\": \"Microsoft.Azure.AzureDefenderForServers\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"settings\": {\n          \"autoUpdate\": true,\n          \"azureResourceId\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/router-eu\",\n          \"forceReOnboarding\": false,\n          \"vNextEnabled\": false\n        },\n        \"typeHandlerVersion\": \"1.0\",\n        \"typePropertiesType\": \"MDE.Linux\"\n      }\n    ],\n    \"storageProfile\": {\n      \"dataDisks\": [],\n      \"diskControllerType\": \"SCSI\",\n      \"imageReference\": {\n        \"exactVersion\": \"22.04.202608060\",\n        \"offer\": \"0001-com-ubuntu-server-jammy\",\n        \"publisher\": \"Canonical\",\n        \"sku\": \"22_04-lts-gen2\",\n        \"version\": \"latest\"\n      },\n      \"osDisk\": {\n        \"caching\": \"ReadWrite\",\n        \"createOption\": \"FromImage\",\n        \"deleteOption\": \"Detach\",\n        \"diskSizeGB\": 30,\n        \"managedDisk\": {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-router-eu\",\n          \"resourceGroup\": \"RG-VWAN-SDWAN-THREEHUB-20261014\",\n          \"storageAccountType\": \"Standard_LRS\"\n        },\n        \"name\": \"osdisk-router-eu\",\n        \"osType\": \"Linux\"\n      }\n    },\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    },\n    \"timeCreated\": \"2026-10-14T15:55:47.9994174+00:00\",\n    \"type\": \"Microsoft.Compute/virtualMachines\",\n    \"vmId\": \"e13074aa-e565-4582-8735-af5d4708e725\"\n  },\n  {\n    \"etag\": \"\\\"18\\\"\",\n    \"fqdns\": \"\",\n    \"hardwareProfile\": {\n      \"vmSize\": \"Standard_B2ts_v2\"\n    },\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-jp\",\n    \"location\": \"japaneast\",\n    \"macAddresses\": \"00-0D-3A-52-45-D5\",\n    \"name\": \"probe-dc-jp\",\n    \"networkProfile\": {\n      \"networkInterfaces\": [\n        {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-dc-jp\",\n          \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\"\n        }\n      ]\n    },\n    \"osProfile\": {\n      \"adminUsername\": \"azurelabuser\",\n      \"allowExtensionOperations\": true,\n      \"computerName\": \"probe-dc-jp\",\n      \"linuxConfiguration\": {\n        \"disablePasswordAuthentication\": true,\n        \"enableVMAgentPlatformUpdates\": true,\n        \"patchSettings\": {\n          \"assessmentMode\": \"AutomaticByPlatform\",\n          \"automaticByPlatformSettings\": {\n            \"bypassPlatformSafetyChecksOnUserSchedule\": true\n          },\n          \"patchMode\": \"AutomaticByPlatform\"\n        },\n        \"provisionVMAgent\": true,\n        \"ssh\": {\n          \"publicKeys\": [\n            {\n              \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/\",\n              \"path\": \"/home/<USER>/.ssh/authorized_keys\"\n            }\n          ]\n        }\n      },\n      \"requireGuestProvisionSignal\": true,\n      \"secrets\": []\n    },\n    \"powerState\": \"VM running\",\n    \"priority\": \"Regular\",\n    \"privateIps\": \"10.130.0.10\",\n    \"provisioningState\": \"Succeeded\",\n    \"publicIps\": \"20.44.176.116\",\n    \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n    \"resources\": [\n      {\n        \"autoUpgradeMinorVersion\": true,\n        \"forceUpdateTag\": \"cd51a0ea-1398-4e61-a7dd-b0d9269b8561\",\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-jp/extensions/MDE.Linux\",\n        \"location\": \"japaneast\",\n        \"name\": \"MDE.Linux\",\n        \"provisioningState\": \"Succeeded\",\n        \"publisher\": \"Microsoft.Azure.AzureDefenderForServers\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"settings\": {\n          \"autoUpdate\": true,\n          \"azureResourceId\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-jp\",\n          \"forceReOnboarding\": false,\n          \"vNextEnabled\": false\n        },\n        \"typeHandlerVersion\": \"1.0\",\n        \"typePropertiesType\": \"MDE.Linux\"\n      }\n    ],\n    \"storageProfile\": {\n      \"dataDisks\": [],\n      \"diskControllerType\": \"SCSI\",\n      \"imageReference\": {\n        \"exactVersion\": \"22.04.202608060\",\n        \"offer\": \"0001-com-ubuntu-server-jammy\",\n        \"publisher\": \"Canonical\",\n        \"sku\": \"22_04-lts-gen2\",\n        \"version\": \"latest\"\n      },\n      \"osDisk\": {\n        \"caching\": \"ReadWrite\",\n        \"createOption\": \"FromImage\",\n        \"deleteOption\": \"Detach\",\n        \"diskSizeGB\": 30,\n        \"managedDisk\": {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-probe-dc-jp\",\n          \"resourceGroup\": \"RG-VWAN-SDWAN-THREEHUB-20261014\",\n          \"storageAccountType\": \"Standard_LRS\"\n        },\n        \"name\": \"osdisk-probe-dc-jp\",\n        \"osType\": \"Linux\"\n      }\n    },\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    },\n    \"timeCreated\": \"2026-10-14T15:55:29.4290221+00:00\",\n    \"type\": \"Microsoft.Compute/virtualMachines\",\n    \"vmId\": \"6cfbefcb-4d16-45f4-8454-cb4918736ccc\"\n  },\n  {\n    \"etag\": \"\\\"18\\\"\",\n    \"fqdns\": \"\",\n    \"hardwareProfile\": {\n      \"vmSize\": \"Standard_B2ts_v2\"\n    },\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-jp\",\n    \"location\": \"japaneast\",\n    \"macAddresses\": \"7C-1E-52-38-83-BF\",\n    \"name\": \"probe-spoke-jp\",\n    \"networkProfile\": {\n      \"networkInterfaces\": [\n        {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-spoke-jp\",\n          \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\"\n        }\n      ]\n    },\n    \"osProfile\": {\n      \"adminUsername\": \"azurelabuser\",\n      \"allowExtensionOperations\": true,\n      \"computerName\": \"probe-spoke-jp\",\n      \"linuxConfiguration\": {\n        \"disablePasswordAuthentication\": true,\n        \"enableVMAgentPlatformUpdates\": true,\n        \"patchSettings\": {\n          \"assessmentMode\": \"AutomaticByPlatform\",\n          \"automaticByPlatformSettings\": {\n            \"bypassPlatformSafetyChecksOnUserSchedule\": true\n          },\n          \"patchMode\": \"AutomaticByPlatform\"\n        },\n        \"provisionVMAgent\": true,\n        \"ssh\": {\n          \"publicKeys\": [\n            {\n              \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/\",\n              \"path\": \"/home/<USER>/.ssh/authorized_keys\"\n            }\n          ]\n        }\n      },\n      \"requireGuestProvisionSignal\": true,\n      \"secrets\": []\n    },\n    \"powerState\": \"VM running\",\n    \"priority\": \"Regular\",\n    \"privateIps\": \"10.30.0.10\",\n    \"provisioningState\": \"Succeeded\",\n    \"publicIps\": \"20.89.135.8\",\n    \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n    \"resources\": [\n      {\n        \"autoUpgradeMinorVersion\": true,\n        \"forceUpdateTag\": \"fc559176-7768-4ed5-a2d7-0480640e4cf1\",\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-jp/extensions/MDE.Linux\",\n        \"location\": \"japaneast\",\n        \"name\": \"MDE.Linux\",\n        \"provisioningState\": \"Succeeded\",\n        \"publisher\": \"Microsoft.Azure.AzureDefenderForServers\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"settings\": {\n          \"autoUpdate\": true,\n          \"azureResourceId\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-jp\",\n          \"forceReOnboarding\": false,\n          \"vNextEnabled\": false\n        },\n        \"typeHandlerVersion\": \"1.0\",\n        \"typePropertiesType\": \"MDE.Linux\"\n      }\n    ],\n    \"storageProfile\": {\n      \"dataDisks\": [],\n      \"diskControllerType\": \"SCSI\",\n      \"imageReference\": {\n        \"exactVersion\": \"22.04.202608060\",\n        \"offer\": \"0001-com-ubuntu-server-jammy\",\n        \"publisher\": \"Canonical\",\n        \"sku\": \"22_04-lts-gen2\",\n        \"version\": \"latest\"\n      },\n      \"osDisk\": {\n        \"caching\": \"ReadWrite\",\n        \"createOption\": \"FromImage\",\n        \"deleteOption\": \"Detach\",\n        \"diskSizeGB\": 30,\n        \"managedDisk\": {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-probe-spoke-jp\",\n          \"resourceGroup\": \"RG-VWAN-SDWAN-THREEHUB-20261014\",\n          \"storageAccountType\": \"Standard_LRS\"\n        },\n        \"name\": \"osdisk-probe-spoke-jp\",\n        \"osType\": \"Linux\"\n      }\n    },\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    },\n    \"timeCreated\": \"2026-10-14T15:55:30.5507803+00:00\",\n    \"type\": \"Microsoft.Compute/virtualMachines\",\n    \"vmId\": \"4c6f02a2-f837-4772-8d5b-27f7a57d7f4a\"\n  },\n  {\n    \"etag\": \"\\\"33\\\"\",\n    \"fqdns\": \"\",\n    \"hardwareProfile\": {\n      \"vmSize\": \"Standard_B2ts_v2\"\n    },\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-cn\",\n    \"location\": \"japaneast\",\n    \"macAddresses\": \"7C-1E-52-4B-BD-95\",\n    \"name\": \"router-cn\",\n    \"networkProfile\": {\n      \"networkInterfaces\": [\n        {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-cn\",\n          \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\"\n        }\n      ]\n    },\n    \"osProfile\": {\n      \"adminUsername\": \"azurelabuser\",\n      \"allowExtensionOperations\": true,\n      \"computerName\": \"router-cn\",\n      \"linuxConfiguration\": {\n        \"disablePasswordAuthentication\": true,\n        \"enableVMAgentPlatformUpdates\": true,\n        \"patchSettings\": {\n          \"assessmentMode\": \"AutomaticByPlatform\",\n          \"automaticByPlatformSettings\": {\n            \"bypassPlatformSafetyChecksOnUserSchedule\": true\n          },\n          \"patchMode\": \"AutomaticByPlatform\"\n        },\n        \"provisionVMAgent\": true,\n        \"ssh\": {\n          \"publicKeys\": [\n            {\n              \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/\",\n              \"path\": \"/home/<USER>/.ssh/authorized_keys\"\n            }\n          ]\n        }\n      },\n      \"requireGuestProvisionSignal\": true,\n      \"secrets\": []\n    },\n    \"powerState\": \"VM running\",\n    \"priority\": \"Regular\",\n    \"privateIps\": \"10.140.0.4\",\n    \"provisioningState\": \"Succeeded\",\n    \"publicIps\": \"20.43.85.49\",\n    \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n    \"resources\": [\n      {\n        \"autoUpgradeMinorVersion\": true,\n        \"forceUpdateTag\": \"25776a07-fa71-4c4e-9c51-34092dd20153\",\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-cn/extensions/MDE.Linux\",\n        \"location\": \"japaneast\",\n        \"name\": \"MDE.Linux\",\n        \"provisioningState\": \"Succeeded\",\n        \"publisher\": \"Microsoft.Azure.AzureDefenderForServers\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"settings\": {\n          \"autoUpdate\": true,\n          \"azureResourceId\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/router-cn\",\n          \"forceReOnboarding\": false,\n          \"vNextEnabled\": false\n        },\n        \"typeHandlerVersion\": \"1.0\",\n        \"typePropertiesType\": \"MDE.Linux\"\n      }\n    ],\n    \"storageProfile\": {\n      \"dataDisks\": [],\n      \"diskControllerType\": \"SCSI\",\n      \"imageReference\": {\n        \"exactVersion\": \"22.04.202608060\",\n        \"offer\": \"0001-com-ubuntu-server-jammy\",\n        \"publisher\": \"Canonical\",\n        \"sku\": \"22_04-lts-gen2\",\n        \"version\": \"latest\"\n      },\n      \"osDisk\": {\n        \"caching\": \"ReadWrite\",\n        \"createOption\": \"FromImage\",\n        \"deleteOption\": \"Detach\",\n        \"diskSizeGB\": 30,\n        \"managedDisk\": {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-router-cn\",\n          \"resourceGroup\": \"RG-VWAN-SDWAN-THREEHUB-20261014\",\n          \"storageAccountType\": \"Standard_LRS\"\n        },\n        \"name\": \"osdisk-router-cn\",\n        \"osType\": \"Linux\"\n      }\n    },\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    },\n    \"timeCreated\": \"2026-10-14T15:55:30.5353434+00:00\",\n    \"type\": \"Microsoft.Compute/virtualMachines\",\n    \"vmId\": \"ca381a99-135d-4530-891e-d99f595d5569\"\n  },\n  {\n    \"etag\": \"\\\"33\\\"\",\n    \"fqdns\": \"\",\n    \"hardwareProfile\": {\n      \"vmSize\": \"Standard_B2ts_v2\"\n    },\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp\",\n    \"location\": \"japaneast\",\n    \"macAddresses\": \"7C-ED-8D-E9-65-84\",\n    \"name\": \"router-jp\",\n    \"networkProfile\": {\n      \"networkInterfaces\": [\n        {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-jp\",\n          \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\"\n        }\n      ]\n    },\n    \"osProfile\": {\n      \"adminUsername\": \"azurelabuser\",\n      \"allowExtensionOperations\": true,\n      \"computerName\": \"router-jp\",\n      \"linuxConfiguration\": {\n        \"disablePasswordAuthentication\": true,\n        \"enableVMAgentPlatformUpdates\": true,\n        \"patchSettings\": {\n          \"assessmentMode\": \"AutomaticByPlatform\",\n          \"automaticByPlatformSettings\": {\n            \"bypassPlatformSafetyChecksOnUserSchedule\": true\n          },\n          \"patchMode\": \"AutomaticByPlatform\"\n        },\n        \"provisionVMAgent\": true,\n        \"ssh\": {\n          \"publicKeys\": [\n            {\n              \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/\",\n              \"path\": \"/home/<USER>/.ssh/authorized_keys\"\n            }\n          ]\n        }\n      },\n      \"requireGuestProvisionSignal\": true,\n      \"secrets\": []\n    },\n    \"powerState\": \"VM running\",\n    \"priority\": \"Regular\",\n    \"privateIps\": \"10.130.0.4\",\n    \"provisioningState\": \"Succeeded\",\n    \"publicIps\": \"104.46.220.128\",\n    \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n    \"resources\": [\n      {\n        \"autoUpgradeMinorVersion\": true,\n        \"forceUpdateTag\": \"20950140-6b46-45fe-97db-7f4a7516cc96\",\n        \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp/extensions/MDE.Linux\",\n        \"location\": \"japaneast\",\n        \"name\": \"MDE.Linux\",\n        \"provisioningState\": \"Succeeded\",\n        \"publisher\": \"Microsoft.Azure.AzureDefenderForServers\",\n        \"resourceGroup\": \"rg-vwan-sdwan-threehub-20261014\",\n        \"settings\": {\n          \"autoUpdate\": true,\n          \"azureResourceId\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/router-jp\",\n          \"forceReOnboarding\": false,\n          \"vNextEnabled\": false\n        },\n        \"typeHandlerVersion\": \"1.0\",\n        \"typePropertiesType\": \"MDE.Linux\"\n      }\n    ],\n    \"storageProfile\": {\n      \"dataDisks\": [],\n      \"diskControllerType\": \"SCSI\",\n      \"imageReference\": {\n        \"exactVersion\": \"22.04.202608060\",\n        \"offer\": \"0001-com-ubuntu-server-jammy\",\n        \"publisher\": \"Canonical\",\n        \"sku\": \"22_04-lts-gen2\",\n        \"version\": \"latest\"\n      },\n      \"osDisk\": {\n        \"caching\": \"ReadWrite\",\n        \"createOption\": \"FromImage\",\n        \"deleteOption\": \"Detach\",\n        \"diskSizeGB\": 30,\n        \"managedDisk\": {\n          \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-router-jp\",\n          \"resourceGroup\": \"RG-VWAN-SDWAN-THREEHUB-20261014\",\n          \"storageAccountType\": \"Standard_LRS\"\n        },\n        \"name\": \"osdisk-router-jp\",\n        \"osType\": \"Linux\"\n      }\n    },\n    \"tags\": {\n      \"created_by\": \"copilot-lab\",\n      \"ephemeral\": \"true\",\n      \"lab\": \"true\",\n      \"owner\": \"<LAB_OWNER>\",\n      \"run_id\": \"20261014-threehub\"\n    },\n    \"timeCreated\": \"2026-10-14T15:55:29.9938359+00:00\",\n    \"type\": \"Microsoft.Compute/virtualMachines\",\n    \"vmId\": \"aa653ea3-c101-4401-9641-403e6dab6675\"\n  }\n]\n",
+  "result": [
+    {
+      "etag": "\"18\"",
+      "fqdns": "",
+      "hardwareProfile": {
+        "vmSize": "Standard_B2als_v2"
+      },
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-us",
+      "location": "northcentralus",
+      "macAddresses": "00-22-48-8E-EB-BD",
+      "name": "probe-dc-us",
+      "networkProfile": {
+        "networkInterfaces": [
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-dc-us",
+            "resourceGroup": "rg-vwan-sdwan-threehub-20261014"
+          }
+        ]
+      },
+      "osProfile": {
+        "adminUsername": "azurelabuser",
+        "allowExtensionOperations": true,
+        "computerName": "probe-dc-us",
+        "linuxConfiguration": {
+          "disablePasswordAuthentication": true,
+          "enableVMAgentPlatformUpdates": true,
+          "patchSettings": {
+            "assessmentMode": "AutomaticByPlatform",
+            "automaticByPlatformSettings": {
+              "bypassPlatformSafetyChecksOnUserSchedule": true
+            },
+            "patchMode": "AutomaticByPlatform"
+          },
+          "provisionVMAgent": true,
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/",
+                "path": "/home/<USER>/.ssh/authorized_keys"
+              }
+            ]
+          }
+        },
+        "requireGuestProvisionSignal": true,
+        "secrets": []
+      },
+      "powerState": "VM running",
+      "priority": "Regular",
+      "privateIps": "10.120.0.10",
+      "provisioningState": "Succeeded",
+      "publicIps": "64.236.209.252",
+      "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+      "resources": [
+        {
+          "autoUpgradeMinorVersion": true,
+          "forceUpdateTag": "6c298404-2655-4c37-81ca-1d3d667f9fcf",
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-us/extensions/MDE.Linux",
+          "location": "northcentralus",
+          "name": "MDE.Linux",
+          "provisioningState": "Succeeded",
+          "publisher": "Microsoft.Azure.AzureDefenderForServers",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "settings": {
+            "autoUpdate": true,
+            "azureResourceId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-us",
+            "forceReOnboarding": false,
+            "vNextEnabled": false
+          },
+          "typeHandlerVersion": "1.0",
+          "typePropertiesType": "MDE.Linux"
+        }
+      ],
+      "storageProfile": {
+        "dataDisks": [],
+        "diskControllerType": "SCSI",
+        "imageReference": {
+          "exactVersion": "22.04.202608060",
+          "offer": "0001-com-ubuntu-server-jammy",
+          "publisher": "Canonical",
+          "sku": "22_04-lts-gen2",
+          "version": "latest"
+        },
+        "osDisk": {
+          "caching": "ReadWrite",
+          "createOption": "FromImage",
+          "deleteOption": "Detach",
+          "diskSizeGB": 30,
+          "managedDisk": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-probe-dc-us",
+            "resourceGroup": "RG-VWAN-SDWAN-THREEHUB-20261014",
+            "storageAccountType": "Standard_LRS"
+          },
+          "name": "osdisk-probe-dc-us",
+          "osType": "Linux"
+        }
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      },
+      "timeCreated": "2026-10-14T15:55:38.03787+00:00",
+      "type": "Microsoft.Compute/virtualMachines",
+      "vmId": "433313fd-8fd2-410c-9dca-a60e482b2f4f"
+    },
+    {
+      "etag": "\"18\"",
+      "fqdns": "",
+      "hardwareProfile": {
+        "vmSize": "Standard_B2als_v2"
+      },
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-us",
+      "location": "northcentralus",
+      "macAddresses": "00-22-48-8E-E0-A1",
+      "name": "probe-spoke-us",
+      "networkProfile": {
+        "networkInterfaces": [
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-spoke-us",
+            "resourceGroup": "rg-vwan-sdwan-threehub-20261014"
+          }
+        ]
+      },
+      "osProfile": {
+        "adminUsername": "azurelabuser",
+        "allowExtensionOperations": true,
+        "computerName": "probe-spoke-us",
+        "linuxConfiguration": {
+          "disablePasswordAuthentication": true,
+          "enableVMAgentPlatformUpdates": true,
+          "patchSettings": {
+            "assessmentMode": "AutomaticByPlatform",
+            "automaticByPlatformSettings": {
+              "bypassPlatformSafetyChecksOnUserSchedule": true
+            },
+            "patchMode": "AutomaticByPlatform"
+          },
+          "provisionVMAgent": true,
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/",
+                "path": "/home/<USER>/.ssh/authorized_keys"
+              }
+            ]
+          }
+        },
+        "requireGuestProvisionSignal": true,
+        "secrets": []
+      },
+      "powerState": "VM running",
+      "priority": "Regular",
+      "privateIps": "10.20.0.10",
+      "provisioningState": "Succeeded",
+      "publicIps": "20.25.215.187",
+      "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+      "resources": [
+        {
+          "autoUpgradeMinorVersion": true,
+          "forceUpdateTag": "109b8fac-031b-40c7-a650-f9e9900ffe2e",
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-us/extensions/MDE.Linux",
+          "location": "northcentralus",
+          "name": "MDE.Linux",
+          "provisioningState": "Succeeded",
+          "publisher": "Microsoft.Azure.AzureDefenderForServers",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "settings": {
+            "autoUpdate": true,
+            "azureResourceId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-us",
+            "forceReOnboarding": false,
+            "vNextEnabled": false
+          },
+          "typeHandlerVersion": "1.0",
+          "typePropertiesType": "MDE.Linux"
+        }
+      ],
+      "storageProfile": {
+        "dataDisks": [],
+        "diskControllerType": "SCSI",
+        "imageReference": {
+          "exactVersion": "22.04.202608060",
+          "offer": "0001-com-ubuntu-server-jammy",
+          "publisher": "Canonical",
+          "sku": "22_04-lts-gen2",
+          "version": "latest"
+        },
+        "osDisk": {
+          "caching": "ReadWrite",
+          "createOption": "FromImage",
+          "deleteOption": "Detach",
+          "diskSizeGB": 30,
+          "managedDisk": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-probe-spoke-us",
+            "resourceGroup": "RG-VWAN-SDWAN-THREEHUB-20261014",
+            "storageAccountType": "Standard_LRS"
+          },
+          "name": "osdisk-probe-spoke-us",
+          "osType": "Linux"
+        }
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      },
+      "timeCreated": "2026-10-14T15:55:37.3924551+00:00",
+      "type": "Microsoft.Compute/virtualMachines",
+      "vmId": "d342b987-b3ba-47dc-80b1-a4e427152544"
+    },
+    {
+      "etag": "\"33\"",
+      "fqdns": "",
+      "hardwareProfile": {
+        "vmSize": "Standard_B2als_v2"
+      },
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-us",
+      "location": "northcentralus",
+      "macAddresses": "7C-ED-8D-55-1D-FF",
+      "name": "router-us",
+      "networkProfile": {
+        "networkInterfaces": [
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-us",
+            "resourceGroup": "rg-vwan-sdwan-threehub-20261014"
+          }
+        ]
+      },
+      "osProfile": {
+        "adminUsername": "azurelabuser",
+        "allowExtensionOperations": true,
+        "computerName": "router-us",
+        "linuxConfiguration": {
+          "disablePasswordAuthentication": true,
+          "enableVMAgentPlatformUpdates": true,
+          "patchSettings": {
+            "assessmentMode": "AutomaticByPlatform",
+            "automaticByPlatformSettings": {
+              "bypassPlatformSafetyChecksOnUserSchedule": true
+            },
+            "patchMode": "AutomaticByPlatform"
+          },
+          "provisionVMAgent": true,
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/",
+                "path": "/home/<USER>/.ssh/authorized_keys"
+              }
+            ]
+          }
+        },
+        "requireGuestProvisionSignal": true,
+        "secrets": []
+      },
+      "powerState": "VM running",
+      "priority": "Regular",
+      "privateIps": "10.220.0.4",
+      "provisioningState": "Succeeded",
+      "publicIps": "52.159.77.219",
+      "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+      "resources": [
+        {
+          "autoUpgradeMinorVersion": true,
+          "forceUpdateTag": "ccddf0ff-fd04-4343-8eca-72096e26bc9f",
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-us/extensions/MDE.Linux",
+          "location": "northcentralus",
+          "name": "MDE.Linux",
+          "provisioningState": "Succeeded",
+          "publisher": "Microsoft.Azure.AzureDefenderForServers",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "settings": {
+            "autoUpdate": true,
+            "azureResourceId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/router-us",
+            "forceReOnboarding": false,
+            "vNextEnabled": false
+          },
+          "typeHandlerVersion": "1.0",
+          "typePropertiesType": "MDE.Linux"
+        }
+      ],
+      "storageProfile": {
+        "dataDisks": [],
+        "diskControllerType": "SCSI",
+        "imageReference": {
+          "exactVersion": "22.04.202608060",
+          "offer": "0001-com-ubuntu-server-jammy",
+          "publisher": "Canonical",
+          "sku": "22_04-lts-gen2",
+          "version": "latest"
+        },
+        "osDisk": {
+          "caching": "ReadWrite",
+          "createOption": "FromImage",
+          "deleteOption": "Detach",
+          "diskSizeGB": 30,
+          "managedDisk": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-router-us",
+            "resourceGroup": "RG-VWAN-SDWAN-THREEHUB-20261014",
+            "storageAccountType": "Standard_LRS"
+          },
+          "name": "osdisk-router-us",
+          "osType": "Linux"
+        }
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      },
+      "timeCreated": "2026-10-14T15:55:37.5642466+00:00",
+      "type": "Microsoft.Compute/virtualMachines",
+      "vmId": "6912401d-a698-4aed-8472-4902aa019581"
+    },
+    {
+      "etag": "\"18\"",
+      "fqdns": "",
+      "hardwareProfile": {
+        "vmSize": "Standard_B2ts_v2"
+      },
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-eu",
+      "location": "westeurope",
+      "macAddresses": "70-A8-A5-3A-8F-81",
+      "name": "probe-dc-eu",
+      "networkProfile": {
+        "networkInterfaces": [
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-dc-eu",
+            "resourceGroup": "rg-vwan-sdwan-threehub-20261014"
+          }
+        ]
+      },
+      "osProfile": {
+        "adminUsername": "azurelabuser",
+        "allowExtensionOperations": true,
+        "computerName": "probe-dc-eu",
+        "linuxConfiguration": {
+          "disablePasswordAuthentication": true,
+          "enableVMAgentPlatformUpdates": true,
+          "patchSettings": {
+            "assessmentMode": "AutomaticByPlatform",
+            "automaticByPlatformSettings": {
+              "bypassPlatformSafetyChecksOnUserSchedule": true
+            },
+            "patchMode": "AutomaticByPlatform"
+          },
+          "provisionVMAgent": true,
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/",
+                "path": "/home/<USER>/.ssh/authorized_keys"
+              }
+            ]
+          }
+        },
+        "requireGuestProvisionSignal": true,
+        "secrets": []
+      },
+      "powerState": "VM running",
+      "priority": "Regular",
+      "privateIps": "10.110.0.10",
+      "provisioningState": "Succeeded",
+      "publicIps": "20.126.10.252",
+      "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+      "resources": [
+        {
+          "autoUpgradeMinorVersion": true,
+          "forceUpdateTag": "d56c7f3b-3983-4e9d-b275-a42636fc0cba",
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-eu/extensions/MDE.Linux",
+          "location": "westeurope",
+          "name": "MDE.Linux",
+          "provisioningState": "Succeeded",
+          "publisher": "Microsoft.Azure.AzureDefenderForServers",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "settings": {
+            "autoUpdate": true,
+            "azureResourceId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-eu",
+            "forceReOnboarding": false,
+            "vNextEnabled": false
+          },
+          "typeHandlerVersion": "1.0",
+          "typePropertiesType": "MDE.Linux"
+        }
+      ],
+      "storageProfile": {
+        "dataDisks": [],
+        "diskControllerType": "SCSI",
+        "imageReference": {
+          "exactVersion": "22.04.202608060",
+          "offer": "0001-com-ubuntu-server-jammy",
+          "publisher": "Canonical",
+          "sku": "22_04-lts-gen2",
+          "version": "latest"
+        },
+        "osDisk": {
+          "caching": "ReadWrite",
+          "createOption": "FromImage",
+          "deleteOption": "Detach",
+          "diskSizeGB": 30,
+          "managedDisk": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-probe-dc-eu",
+            "resourceGroup": "RG-VWAN-SDWAN-THREEHUB-20261014",
+            "storageAccountType": "Standard_LRS"
+          },
+          "name": "osdisk-probe-dc-eu",
+          "osType": "Linux"
+        }
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      },
+      "timeCreated": "2026-10-14T15:55:43.2992188+00:00",
+      "type": "Microsoft.Compute/virtualMachines",
+      "vmId": "a0f08ccc-e869-475c-8979-763ea5614d8d"
+    },
+    {
+      "etag": "\"18\"",
+      "fqdns": "",
+      "hardwareProfile": {
+        "vmSize": "Standard_B2ts_v2"
+      },
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-eu",
+      "location": "westeurope",
+      "macAddresses": "70-A8-A5-3C-52-F5",
+      "name": "probe-spoke-eu",
+      "networkProfile": {
+        "networkInterfaces": [
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-spoke-eu",
+            "resourceGroup": "rg-vwan-sdwan-threehub-20261014"
+          }
+        ]
+      },
+      "osProfile": {
+        "adminUsername": "azurelabuser",
+        "allowExtensionOperations": true,
+        "computerName": "probe-spoke-eu",
+        "linuxConfiguration": {
+          "disablePasswordAuthentication": true,
+          "enableVMAgentPlatformUpdates": true,
+          "patchSettings": {
+            "assessmentMode": "AutomaticByPlatform",
+            "automaticByPlatformSettings": {
+              "bypassPlatformSafetyChecksOnUserSchedule": true
+            },
+            "patchMode": "AutomaticByPlatform"
+          },
+          "provisionVMAgent": true,
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/",
+                "path": "/home/<USER>/.ssh/authorized_keys"
+              }
+            ]
+          }
+        },
+        "requireGuestProvisionSignal": true,
+        "secrets": []
+      },
+      "powerState": "VM running",
+      "priority": "Regular",
+      "privateIps": "10.10.0.10",
+      "provisioningState": "Succeeded",
+      "publicIps": "20.67.99.163",
+      "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+      "resources": [
+        {
+          "autoUpgradeMinorVersion": true,
+          "forceUpdateTag": "f296fea4-b571-4647-89b1-029b672f72fe",
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-eu/extensions/MDE.Linux",
+          "location": "westeurope",
+          "name": "MDE.Linux",
+          "provisioningState": "Succeeded",
+          "publisher": "Microsoft.Azure.AzureDefenderForServers",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "settings": {
+            "autoUpdate": true,
+            "azureResourceId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-eu",
+            "forceReOnboarding": false,
+            "vNextEnabled": false
+          },
+          "typeHandlerVersion": "1.0",
+          "typePropertiesType": "MDE.Linux"
+        }
+      ],
+      "storageProfile": {
+        "dataDisks": [],
+        "diskControllerType": "SCSI",
+        "imageReference": {
+          "exactVersion": "22.04.202608060",
+          "offer": "0001-com-ubuntu-server-jammy",
+          "publisher": "Canonical",
+          "sku": "22_04-lts-gen2",
+          "version": "latest"
+        },
+        "osDisk": {
+          "caching": "ReadWrite",
+          "createOption": "FromImage",
+          "deleteOption": "Detach",
+          "diskSizeGB": 30,
+          "managedDisk": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-probe-spoke-eu",
+            "resourceGroup": "RG-VWAN-SDWAN-THREEHUB-20261014",
+            "storageAccountType": "Standard_LRS"
+          },
+          "name": "osdisk-probe-spoke-eu",
+          "osType": "Linux"
+        }
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      },
+      "timeCreated": "2026-10-14T15:55:45.8094025+00:00",
+      "type": "Microsoft.Compute/virtualMachines",
+      "vmId": "cb0b8a6a-b9e1-472e-9ca9-cf1565f78097"
+    },
+    {
+      "diagnosticsProfile": {
+        "bootDiagnostics": {
+          "enabled": true
+        }
+      },
+      "etag": "\"34\"",
+      "fqdns": "",
+      "hardwareProfile": {
+        "vmSize": "Standard_B2ts_v2"
+      },
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu",
+      "location": "westeurope",
+      "macAddresses": "70-A8-A5-59-DE-AB",
+      "name": "router-eu",
+      "networkProfile": {
+        "networkInterfaces": [
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-eu",
+            "resourceGroup": "rg-vwan-sdwan-threehub-20261014"
+          }
+        ]
+      },
+      "osProfile": {
+        "adminUsername": "azurelabuser",
+        "allowExtensionOperations": true,
+        "computerName": "router-eu",
+        "linuxConfiguration": {
+          "disablePasswordAuthentication": true,
+          "enableVMAgentPlatformUpdates": true,
+          "patchSettings": {
+            "assessmentMode": "AutomaticByPlatform",
+            "automaticByPlatformSettings": {
+              "bypassPlatformSafetyChecksOnUserSchedule": true
+            },
+            "patchMode": "AutomaticByPlatform"
+          },
+          "provisionVMAgent": true,
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/",
+                "path": "/home/<USER>/.ssh/authorized_keys"
+              }
+            ]
+          }
+        },
+        "requireGuestProvisionSignal": true,
+        "secrets": []
+      },
+      "powerState": "VM running",
+      "priority": "Regular",
+      "privateIps": "10.210.0.4",
+      "provisioningState": "Succeeded",
+      "publicIps": "51.124.30.234",
+      "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+      "resources": [
+        {
+          "autoUpgradeMinorVersion": true,
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/extensions/enablevmAccess",
+          "location": "westeurope",
+          "name": "enablevmAccess",
+          "provisioningState": "Succeeded",
+          "publisher": "Microsoft.OSTCExtensions",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "typeHandlerVersion": "1.5",
+          "typePropertiesType": "VMAccessForLinux"
+        },
+        {
+          "autoUpgradeMinorVersion": true,
+          "forceUpdateTag": "b3385de6-1eca-472e-b78e-8c4601332043",
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-eu/extensions/MDE.Linux",
+          "location": "westeurope",
+          "name": "MDE.Linux",
+          "provisioningState": "Succeeded",
+          "publisher": "Microsoft.Azure.AzureDefenderForServers",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "settings": {
+            "autoUpdate": true,
+            "azureResourceId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/router-eu",
+            "forceReOnboarding": false,
+            "vNextEnabled": false
+          },
+          "typeHandlerVersion": "1.0",
+          "typePropertiesType": "MDE.Linux"
+        }
+      ],
+      "storageProfile": {
+        "dataDisks": [],
+        "diskControllerType": "SCSI",
+        "imageReference": {
+          "exactVersion": "22.04.202608060",
+          "offer": "0001-com-ubuntu-server-jammy",
+          "publisher": "Canonical",
+          "sku": "22_04-lts-gen2",
+          "version": "latest"
+        },
+        "osDisk": {
+          "caching": "ReadWrite",
+          "createOption": "FromImage",
+          "deleteOption": "Detach",
+          "diskSizeGB": 30,
+          "managedDisk": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-router-eu",
+            "resourceGroup": "RG-VWAN-SDWAN-THREEHUB-20261014",
+            "storageAccountType": "Standard_LRS"
+          },
+          "name": "osdisk-router-eu",
+          "osType": "Linux"
+        }
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      },
+      "timeCreated": "2026-10-14T15:55:47.9994174+00:00",
+      "type": "Microsoft.Compute/virtualMachines",
+      "vmId": "e13074aa-e565-4582-8735-af5d4708e725"
+    },
+    {
+      "etag": "\"18\"",
+      "fqdns": "",
+      "hardwareProfile": {
+        "vmSize": "Standard_B2ts_v2"
+      },
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-jp",
+      "location": "japaneast",
+      "macAddresses": "00-0D-3A-52-45-D5",
+      "name": "probe-dc-jp",
+      "networkProfile": {
+        "networkInterfaces": [
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-dc-jp",
+            "resourceGroup": "rg-vwan-sdwan-threehub-20261014"
+          }
+        ]
+      },
+      "osProfile": {
+        "adminUsername": "azurelabuser",
+        "allowExtensionOperations": true,
+        "computerName": "probe-dc-jp",
+        "linuxConfiguration": {
+          "disablePasswordAuthentication": true,
+          "enableVMAgentPlatformUpdates": true,
+          "patchSettings": {
+            "assessmentMode": "AutomaticByPlatform",
+            "automaticByPlatformSettings": {
+              "bypassPlatformSafetyChecksOnUserSchedule": true
+            },
+            "patchMode": "AutomaticByPlatform"
+          },
+          "provisionVMAgent": true,
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/",
+                "path": "/home/<USER>/.ssh/authorized_keys"
+              }
+            ]
+          }
+        },
+        "requireGuestProvisionSignal": true,
+        "secrets": []
+      },
+      "powerState": "VM running",
+      "priority": "Regular",
+      "privateIps": "10.130.0.10",
+      "provisioningState": "Succeeded",
+      "publicIps": "20.44.176.116",
+      "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+      "resources": [
+        {
+          "autoUpgradeMinorVersion": true,
+          "forceUpdateTag": "cd51a0ea-1398-4e61-a7dd-b0d9269b8561",
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-jp/extensions/MDE.Linux",
+          "location": "japaneast",
+          "name": "MDE.Linux",
+          "provisioningState": "Succeeded",
+          "publisher": "Microsoft.Azure.AzureDefenderForServers",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "settings": {
+            "autoUpdate": true,
+            "azureResourceId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/probe-dc-jp",
+            "forceReOnboarding": false,
+            "vNextEnabled": false
+          },
+          "typeHandlerVersion": "1.0",
+          "typePropertiesType": "MDE.Linux"
+        }
+      ],
+      "storageProfile": {
+        "dataDisks": [],
+        "diskControllerType": "SCSI",
+        "imageReference": {
+          "exactVersion": "22.04.202608060",
+          "offer": "0001-com-ubuntu-server-jammy",
+          "publisher": "Canonical",
+          "sku": "22_04-lts-gen2",
+          "version": "latest"
+        },
+        "osDisk": {
+          "caching": "ReadWrite",
+          "createOption": "FromImage",
+          "deleteOption": "Detach",
+          "diskSizeGB": 30,
+          "managedDisk": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-probe-dc-jp",
+            "resourceGroup": "RG-VWAN-SDWAN-THREEHUB-20261014",
+            "storageAccountType": "Standard_LRS"
+          },
+          "name": "osdisk-probe-dc-jp",
+          "osType": "Linux"
+        }
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      },
+      "timeCreated": "2026-10-14T15:55:29.4290221+00:00",
+      "type": "Microsoft.Compute/virtualMachines",
+      "vmId": "6cfbefcb-4d16-45f4-8454-cb4918736ccc"
+    },
+    {
+      "etag": "\"18\"",
+      "fqdns": "",
+      "hardwareProfile": {
+        "vmSize": "Standard_B2ts_v2"
+      },
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-jp",
+      "location": "japaneast",
+      "macAddresses": "7C-1E-52-38-83-BF",
+      "name": "probe-spoke-jp",
+      "networkProfile": {
+        "networkInterfaces": [
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-probe-spoke-jp",
+            "resourceGroup": "rg-vwan-sdwan-threehub-20261014"
+          }
+        ]
+      },
+      "osProfile": {
+        "adminUsername": "azurelabuser",
+        "allowExtensionOperations": true,
+        "computerName": "probe-spoke-jp",
+        "linuxConfiguration": {
+          "disablePasswordAuthentication": true,
+          "enableVMAgentPlatformUpdates": true,
+          "patchSettings": {
+            "assessmentMode": "AutomaticByPlatform",
+            "automaticByPlatformSettings": {
+              "bypassPlatformSafetyChecksOnUserSchedule": true
+            },
+            "patchMode": "AutomaticByPlatform"
+          },
+          "provisionVMAgent": true,
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/",
+                "path": "/home/<USER>/.ssh/authorized_keys"
+              }
+            ]
+          }
+        },
+        "requireGuestProvisionSignal": true,
+        "secrets": []
+      },
+      "powerState": "VM running",
+      "priority": "Regular",
+      "privateIps": "10.30.0.10",
+      "provisioningState": "Succeeded",
+      "publicIps": "20.89.135.8",
+      "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+      "resources": [
+        {
+          "autoUpgradeMinorVersion": true,
+          "forceUpdateTag": "fc559176-7768-4ed5-a2d7-0480640e4cf1",
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-jp/extensions/MDE.Linux",
+          "location": "japaneast",
+          "name": "MDE.Linux",
+          "provisioningState": "Succeeded",
+          "publisher": "Microsoft.Azure.AzureDefenderForServers",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "settings": {
+            "autoUpdate": true,
+            "azureResourceId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/probe-spoke-jp",
+            "forceReOnboarding": false,
+            "vNextEnabled": false
+          },
+          "typeHandlerVersion": "1.0",
+          "typePropertiesType": "MDE.Linux"
+        }
+      ],
+      "storageProfile": {
+        "dataDisks": [],
+        "diskControllerType": "SCSI",
+        "imageReference": {
+          "exactVersion": "22.04.202608060",
+          "offer": "0001-com-ubuntu-server-jammy",
+          "publisher": "Canonical",
+          "sku": "22_04-lts-gen2",
+          "version": "latest"
+        },
+        "osDisk": {
+          "caching": "ReadWrite",
+          "createOption": "FromImage",
+          "deleteOption": "Detach",
+          "diskSizeGB": 30,
+          "managedDisk": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-probe-spoke-jp",
+            "resourceGroup": "RG-VWAN-SDWAN-THREEHUB-20261014",
+            "storageAccountType": "Standard_LRS"
+          },
+          "name": "osdisk-probe-spoke-jp",
+          "osType": "Linux"
+        }
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      },
+      "timeCreated": "2026-10-14T15:55:30.5507803+00:00",
+      "type": "Microsoft.Compute/virtualMachines",
+      "vmId": "4c6f02a2-f837-4772-8d5b-27f7a57d7f4a"
+    },
+    {
+      "etag": "\"33\"",
+      "fqdns": "",
+      "hardwareProfile": {
+        "vmSize": "Standard_B2ts_v2"
+      },
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-cn",
+      "location": "japaneast",
+      "macAddresses": "7C-1E-52-4B-BD-95",
+      "name": "router-cn",
+      "networkProfile": {
+        "networkInterfaces": [
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-cn",
+            "resourceGroup": "rg-vwan-sdwan-threehub-20261014"
+          }
+        ]
+      },
+      "osProfile": {
+        "adminUsername": "azurelabuser",
+        "allowExtensionOperations": true,
+        "computerName": "router-cn",
+        "linuxConfiguration": {
+          "disablePasswordAuthentication": true,
+          "enableVMAgentPlatformUpdates": true,
+          "patchSettings": {
+            "assessmentMode": "AutomaticByPlatform",
+            "automaticByPlatformSettings": {
+              "bypassPlatformSafetyChecksOnUserSchedule": true
+            },
+            "patchMode": "AutomaticByPlatform"
+          },
+          "provisionVMAgent": true,
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/",
+                "path": "/home/<USER>/.ssh/authorized_keys"
+              }
+            ]
+          }
+        },
+        "requireGuestProvisionSignal": true,
+        "secrets": []
+      },
+      "powerState": "VM running",
+      "priority": "Regular",
+      "privateIps": "10.140.0.4",
+      "provisioningState": "Succeeded",
+      "publicIps": "20.43.85.49",
+      "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+      "resources": [
+        {
+          "autoUpgradeMinorVersion": true,
+          "forceUpdateTag": "25776a07-fa71-4c4e-9c51-34092dd20153",
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-cn/extensions/MDE.Linux",
+          "location": "japaneast",
+          "name": "MDE.Linux",
+          "provisioningState": "Succeeded",
+          "publisher": "Microsoft.Azure.AzureDefenderForServers",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "settings": {
+            "autoUpdate": true,
+            "azureResourceId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/router-cn",
+            "forceReOnboarding": false,
+            "vNextEnabled": false
+          },
+          "typeHandlerVersion": "1.0",
+          "typePropertiesType": "MDE.Linux"
+        }
+      ],
+      "storageProfile": {
+        "dataDisks": [],
+        "diskControllerType": "SCSI",
+        "imageReference": {
+          "exactVersion": "22.04.202608060",
+          "offer": "0001-com-ubuntu-server-jammy",
+          "publisher": "Canonical",
+          "sku": "22_04-lts-gen2",
+          "version": "latest"
+        },
+        "osDisk": {
+          "caching": "ReadWrite",
+          "createOption": "FromImage",
+          "deleteOption": "Detach",
+          "diskSizeGB": 30,
+          "managedDisk": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-router-cn",
+            "resourceGroup": "RG-VWAN-SDWAN-THREEHUB-20261014",
+            "storageAccountType": "Standard_LRS"
+          },
+          "name": "osdisk-router-cn",
+          "osType": "Linux"
+        }
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      },
+      "timeCreated": "2026-10-14T15:55:30.5353434+00:00",
+      "type": "Microsoft.Compute/virtualMachines",
+      "vmId": "ca381a99-135d-4530-891e-d99f595d5569"
+    },
+    {
+      "etag": "\"33\"",
+      "fqdns": "",
+      "hardwareProfile": {
+        "vmSize": "Standard_B2ts_v2"
+      },
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp",
+      "location": "japaneast",
+      "macAddresses": "7C-ED-8D-E9-65-84",
+      "name": "router-jp",
+      "networkProfile": {
+        "networkInterfaces": [
+          {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkInterfaces/nic-router-jp",
+            "resourceGroup": "rg-vwan-sdwan-threehub-20261014"
+          }
+        ]
+      },
+      "osProfile": {
+        "adminUsername": "azurelabuser",
+        "allowExtensionOperations": true,
+        "computerName": "router-jp",
+        "linuxConfiguration": {
+          "disablePasswordAuthentication": true,
+          "enableVMAgentPlatformUpdates": true,
+          "patchSettings": {
+            "assessmentMode": "AutomaticByPlatform",
+            "automaticByPlatformSettings": {
+              "bypassPlatformSafetyChecksOnUserSchedule": true
+            },
+            "patchMode": "AutomaticByPlatform"
+          },
+          "provisionVMAgent": true,
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtkWA6gJ/EHjIJn5jJZBvBVQE8T4IfLWkiGUFJraXZ56HttZcLm6pO9FFdHfHoFfykjOeH4NchwyUrobOOjIlf00CKOYHkljJbTstHog3ZXX/1N+ucMCM9+qbgiYJBsUkXihjiZuj3RHY+710/MloKTROE+9NOZ9zzB/5x4dVC+UXfxaYvfs5xZNezZYgrHHkg4yQT0vgufFYlxkKvVep//kBRZd+aNPTou16fUgZI+mh03PoNjgVc55pfpzbtrof698goVumzkGLq0Wi1vGy/SJ10EQnMXfFI3l1sWKbc3xDHHlYbbLwP0WtbprQRvhVCsH06STe4BD77JckduEe/",
+                "path": "/home/<USER>/.ssh/authorized_keys"
+              }
+            ]
+          }
+        },
+        "requireGuestProvisionSignal": true,
+        "secrets": []
+      },
+      "powerState": "VM running",
+      "priority": "Regular",
+      "privateIps": "10.130.0.4",
+      "provisioningState": "Succeeded",
+      "publicIps": "104.46.220.128",
+      "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+      "resources": [
+        {
+          "autoUpgradeMinorVersion": true,
+          "forceUpdateTag": "20950140-6b46-45fe-97db-7f4a7516cc96",
+          "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Compute/virtualMachines/router-jp/extensions/MDE.Linux",
+          "location": "japaneast",
+          "name": "MDE.Linux",
+          "provisioningState": "Succeeded",
+          "publisher": "Microsoft.Azure.AzureDefenderForServers",
+          "resourceGroup": "rg-vwan-sdwan-threehub-20261014",
+          "settings": {
+            "autoUpdate": true,
+            "azureResourceId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/virtualMachines/router-jp",
+            "forceReOnboarding": false,
+            "vNextEnabled": false
+          },
+          "typeHandlerVersion": "1.0",
+          "typePropertiesType": "MDE.Linux"
+        }
+      ],
+      "storageProfile": {
+        "dataDisks": [],
+        "diskControllerType": "SCSI",
+        "imageReference": {
+          "exactVersion": "22.04.202608060",
+          "offer": "0001-com-ubuntu-server-jammy",
+          "publisher": "Canonical",
+          "sku": "22_04-lts-gen2",
+          "version": "latest"
+        },
+        "osDisk": {
+          "caching": "ReadWrite",
+          "createOption": "FromImage",
+          "deleteOption": "Detach",
+          "diskSizeGB": 30,
+          "managedDisk": {
+            "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-VWAN-SDWAN-THREEHUB-20261014/providers/Microsoft.Compute/disks/osdisk-router-jp",
+            "resourceGroup": "RG-VWAN-SDWAN-THREEHUB-20261014",
+            "storageAccountType": "Standard_LRS"
+          },
+          "name": "osdisk-router-jp",
+          "osType": "Linux"
+        }
+      },
+      "tags": {
+        "created_by": "copilot-lab",
+        "ephemeral": "true",
+        "lab": "true",
+        "owner": "<LAB_OWNER>",
+        "run_id": "20261014-threehub"
+      },
+      "timeCreated": "2026-10-14T15:55:29.9938359+00:00",
+      "type": "Microsoft.Compute/virtualMachines",
+      "vmId": "aa653ea3-c101-4401-9641-403e6dab6675"
+    }
+  ],
+  "sha256": "f84474857c8ed83aee18b2c87f6a254f3b1e0f3757b9bf6635e02b12d356725b"
+}

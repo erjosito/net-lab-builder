@@ -1,0 +1,22 @@
+{
+  "startedAtUtc": "2026-10-16T08:03:21.446511+00:00",
+  "completedAtUtc": "2026-10-16T08:03:26.725618+00:00",
+  "command": [
+    "az",
+    "rest",
+    "--method",
+    "put",
+    "--url",
+    "https://management.azure.com/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8?api-version=2022-09-01",
+    "--headers",
+    "Content-Type=application/json",
+    "--body",
+    "{\"location\": \"swedencentral\", \"tags\": {\"lab\": \"true\", \"created_by\": \"copilot-lab\", \"correlation_id\": \"subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983\"}}"
+  ],
+  "exitCode": 0,
+  "pid": 35220,
+  "batch": 1,
+  "stdout": "{\r\n  \"id\": \"/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8\",\r\n  \"location\": \"swedencentral\",\r\n  \"name\": \"rg-subnet-overlap-20261016-fde5ecf8\",\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"tags\": {\r\n    \"correlation_id\": \"subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983\",\r\n    \"created_by\": \"copilot-lab\",\r\n    \"lab\": \"true\"\r\n  },\r\n  \"type\": \"Microsoft.Resources/resourceGroups\"\r\n}\r\n",
+  "stderr": "",
+  "wrapperError": null
+}

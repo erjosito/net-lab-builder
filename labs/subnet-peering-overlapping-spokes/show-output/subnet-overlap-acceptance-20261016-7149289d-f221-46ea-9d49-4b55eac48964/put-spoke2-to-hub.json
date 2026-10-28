@@ -1,0 +1,22 @@
+{
+  "startedAtUtc": "2026-10-16T07:01:33.266388+00:00",
+  "completedAtUtc": "2026-10-16T07:01:38.765208+00:00",
+  "command": [
+    "az",
+    "rest",
+    "--method",
+    "put",
+    "--url",
+    "https://management.azure.com/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke2/virtualNetworkPeerings/to-hub?api-version=2026-01-01",
+    "--headers",
+    "Content-Type=application/json",
+    "--body",
+    "{\"properties\": {\"remoteVirtualNetwork\": {\"id\": \"/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/hub\"}, \"peerCompleteVnets\": false, \"localSubnetNames\": [\"spoke10\"], \"remoteSubnetNames\": [\"hub10\"], \"enableOnlyIPv6Peering\": false, \"allowVirtualNetworkAccess\": true, \"allowForwardedTraffic\": false, \"allowGatewayTransit\": false, \"useRemoteGateways\": false}}"
+  ],
+  "exitCode": 0,
+  "pid": 48120,
+  "batch": 4,
+  "stdout": "{\r\n  \"etag\": \"W/\\\"b7fa280a-fafc-463d-bfa5-4b7782280619\\\"\",\r\n  \"id\": \"/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke2/virtualNetworkPeerings/to-hub\",\r\n  \"name\": \"to-hub\",\r\n  \"properties\": {\r\n    \"allowForwardedTraffic\": false,\r\n    \"allowGatewayTransit\": false,\r\n    \"allowVirtualNetworkAccess\": true,\r\n    \"doNotVerifyRemoteGateways\": false,\r\n    \"enableOnlyIPv6Peering\": false,\r\n    \"localAddressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"10.20.0.0/27\"\r\n      ]\r\n    },\r\n    \"localSubnetNames\": [\r\n      \"spoke10\"\r\n    ],\r\n    \"localVirtualNetworkAddressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"10.20.0.0/27\"\r\n      ]\r\n    },\r\n    \"peerCompleteVnets\": false,\r\n    \"peeringState\": \"Connected\",\r\n    \"peeringSyncLevel\": \"FullyInSync\",\r\n    \"provisioningState\": \"Updating\",\r\n    \"remoteAddressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"10.0.1.0/24\"\r\n      ]\r\n    },\r\n    \"remoteSubnetNames\": [\r\n      \"hub10\"\r\n    ],\r\n    \"remoteVirtualNetwork\": {\r\n      \"id\": \"/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/hub\"\r\n    },\r\n    \"remoteVirtualNetworkAddressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"10.0.1.0/24\"\r\n      ]\r\n    },\r\n    \"resourceGuid\": \"1b468c6d-8284-057f-3b25-d93560a28eb5\",\r\n    \"routeServiceVips\": {},\r\n    \"useRemoteGateways\": false\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualNetworks/virtualNetworkPeerings\"\r\n}\r\n",
+  "stderr": "",
+  "wrapperError": null
+}

@@ -1,0 +1,22 @@
+{
+  "systemctl show strongswan strongswan-starter --property=Id,MainPID,ActiveState,SubState,UnitFileState": {
+    "exitCode": 0,
+    "stdout": "MainPID=550\nId=strongswan.service\nActiveState=active\nSubState=running\nUnitFileState=enabled\n\nMainPID=548\nId=strongswan-starter.service\nActiveState=active\nSubState=running\nUnitFileState=enabled\n",
+    "stderr": ""
+  },
+  "ss -lunp": {
+    "exitCode": 0,
+    "stdout": "UNCONN 0      0              0.0.0.0:4500       0.0.0.0:*    users:((\"charon-systemd\",pid=550,fd=14)) \nUNCONN 0      0              0.0.0.0:4500       0.0.0.0:*    users:((\"charon\",pid=627,fd=14))         \nUNCONN 0      0              0.0.0.0:500        0.0.0.0:*    users:((\"charon-systemd\",pid=550,fd=13)) \nUNCONN 0      0              0.0.0.0:500        0.0.0.0:*    users:((\"charon\",pid=627,fd=13))         \nUNCONN 0      0                    *:4500             *:*    users:((\"charon-systemd\",pid=550,fd=12)) \nUNCONN 0      0                    *:4500             *:*    users:((\"charon\",pid=627,fd=12))         \nUNCONN 0      0                    *:500              *:*    users:((\"charon-systemd\",pid=550,fd=11)) \nUNCONN 0      0                    *:500              *:*    users:((\"charon\",pid=627,fd=11))         ",
+    "stderr": ""
+  },
+  "swanctl --list-conns": {
+    "exitCode": 0,
+    "stdout": "vng0: IKEv2, no reauthentication, rekeying every 14400s, dpd delay 30s\n  local:  10.130.0.4\n  remote: 20.27.135.137\n  local pre-shared key authentication:\n    id: 104.46.220.128\n  remote pre-shared key authentication:\n    id: 20.27.135.137\n  s2s0: TUNNEL, rekeying every 3600s, dpd action is restart\n    local:  0.0.0.0/0\n    remote: 0.0.0.0/0\nvng1: IKEv2, no reauthentication, rekeying every 14400s, dpd delay 30s\n  local:  10.130.0.4\n  remote: 4.190.54.71\n  local pre-shared key authentication:\n    id: 104.46.220.128\n  remote pre-shared key authentication:\n    id: 4.190.54.71\n  s2s1: TUNNEL, rekeying every 3600s, dpd action is restart\n    local:  0.0.0.0/0\n    remote: 0.0.0.0/0\n",
+    "stderr": ""
+  },
+  "ps -eo pid,comm": {
+    "exitCode": 0,
+    "stdout": "    548 starter\n    550 charon-systemd\n    627 charon",
+    "stderr": ""
+  }
+}

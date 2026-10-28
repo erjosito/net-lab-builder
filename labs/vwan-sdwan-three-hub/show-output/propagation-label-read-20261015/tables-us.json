@@ -1,0 +1,53 @@
+{
+  "timestampUtc": "2026-10-15T16:21:11.316108+00:00",
+  "finishedUtc": "2026-10-15T16:21:29.982651+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubRouteTables?api-version=2024-05-01"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"etag\": \"W/\\\"5b34c57b-6703-4a0c-bce0-2d466be2daf1\\\"\",\n      \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubRouteTables/defaultRouteTable\",\n      \"name\": \"defaultRouteTable\",\n      \"properties\": {\n        \"associatedConnections\": [\n          \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubVirtualNetworkConnections/conn-transit-us\",\n          \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubVirtualNetworkConnections/conn-spoke-us\"\n        ],\n        \"labels\": [\n          \"default\"\n        ],\n        \"propagatingConnections\": [\n          \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubVirtualNetworkConnections/conn-transit-us\",\n          \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubVirtualNetworkConnections/conn-spoke-us\"\n        ],\n        \"provisioningState\": \"Succeeded\",\n        \"routes\": []\n      },\n      \"type\": \"Microsoft.Network/virtualHubs/hubRouteTables\"\n    },\n    {\n      \"etag\": \"W/\\\"5b34c57b-6703-4a0c-bce0-2d466be2daf1\\\"\",\n      \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubRouteTables/noneRouteTable\",\n      \"name\": \"noneRouteTable\",\n      \"properties\": {\n        \"associatedConnections\": [],\n        \"labels\": [\n          \"none\"\n        ],\n        \"propagatingConnections\": [],\n        \"provisioningState\": \"Succeeded\",\n        \"routes\": []\n      },\n      \"type\": \"Microsoft.Network/virtualHubs/hubRouteTables\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "etag": "W/\"5b34c57b-6703-4a0c-bce0-2d466be2daf1\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubRouteTables/defaultRouteTable",
+        "name": "defaultRouteTable",
+        "properties": {
+          "associatedConnections": [
+            "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubVirtualNetworkConnections/conn-transit-us",
+            "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubVirtualNetworkConnections/conn-spoke-us"
+          ],
+          "labels": [
+            "default"
+          ],
+          "propagatingConnections": [
+            "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubVirtualNetworkConnections/conn-transit-us",
+            "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubVirtualNetworkConnections/conn-spoke-us"
+          ],
+          "provisioningState": "Succeeded",
+          "routes": []
+        },
+        "type": "Microsoft.Network/virtualHubs/hubRouteTables"
+      },
+      {
+        "etag": "W/\"5b34c57b-6703-4a0c-bce0-2d466be2daf1\"",
+        "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualHubs/hub-us/hubRouteTables/noneRouteTable",
+        "name": "noneRouteTable",
+        "properties": {
+          "associatedConnections": [],
+          "labels": [
+            "none"
+          ],
+          "propagatingConnections": [],
+          "provisioningState": "Succeeded",
+          "routes": []
+        },
+        "type": "Microsoft.Network/virtualHubs/hubRouteTables"
+      }
+    ]
+  },
+  "sha256": "59b8a35c2026421d3d9f0f57a9ecd6b9960e54f972dc4fe248cd12b6fd06dd23"
+}

@@ -1,0 +1,55 @@
+[
+  {
+    "command": [
+      "ip",
+      "-4",
+      "route",
+      "show",
+      "table",
+      "all"
+    ],
+    "exitCode": 0,
+    "stdout": "default via 10.130.0.1 dev eth0 table 100 onlink \n10.140.0.4 via 10.130.0.1 dev eth0 table 100 onlink \n10.210.0.4 via 10.130.0.1 dev eth0 table 100 onlink \n10.220.0.4 via 10.130.0.1 dev eth0 table 100 onlink \ndefault via 10.130.0.1 dev eth0 proto dhcp src 10.130.0.4 metric 100 \n4.190.54.71 via 10.130.0.1 dev eth0 \n10.10.0.0/24 dev wgeujp proto bird scope link metric 80 \n10.20.0.0/24 dev wgusjp proto bird scope link metric 80 \n10.30.0.0/24 via 169.254.21.6 dev xfrm42 proto bird metric 80 \n10.110.0.0/24 dev wgeujp proto bird scope link metric 80 \n10.120.0.0/24 dev wgusjp proto bird scope link metric 80 \n10.130.0.0/24 dev eth0 proto kernel scope link src 10.130.0.4 metric 100 \n10.130.0.1 dev eth0 proto dhcp scope link src 10.130.0.4 metric 100 \n10.140.0.0/24 dev wgjpcn proto bird scope link metric 80 \n20.27.135.137 via 10.130.0.1 dev eth0 \n168.63.129.16 via 10.130.0.1 dev eth0 proto dhcp src 10.130.0.4 metric 100 \n169.254.21.2 dev xfrm41 scope link src 169.254.21.1 \n169.254.21.6 dev xfrm42 scope link src 169.254.21.1 \n169.254.169.254 via 10.130.0.1 dev eth0 proto dhcp src 10.130.0.4 metric 100 \n172.31.0.4/30 dev wgeujp proto kernel scope link src 172.31.0.6 \n172.31.0.12/30 dev wgusjp proto kernel scope link src 172.31.0.14 \n172.31.0.20/30 dev wgjpcn proto kernel scope link src 172.31.0.21 \nlocal 10.130.0.4 dev eth0 table local proto kernel scope host src 10.130.0.4 \nbroadcast 10.130.0.255 dev eth0 table local proto kernel scope link src 10.130.0.4 \nlocal 127.0.0.0/8 dev lo table local proto kernel scope host src 127.0.0.1 \nlocal 127.0.0.1 dev lo table local proto kernel scope host src 127.0.0.1 \nbroadcast 127.255.255.255 dev lo table local proto kernel scope link src 127.0.0.1 \nlocal 169.254.21.1 dev lo table local proto kernel scope host src 169.254.21.1 \nlocal 172.31.0.6 dev wgeujp table local proto kernel scope host src 172.31.0.6 \nbroadcast 172.31.0.7 dev wgeujp table local proto kernel scope link src 172.31.0.6 \nlocal 172.31.0.14 dev wgusjp table local proto kernel scope host src 172.31.0.14 \nbroadcast 172.31.0.15 dev wgusjp table local proto kernel scope link src 172.31.0.14 \nlocal 172.31.0.21 dev wgjpcn table local proto kernel scope host src 172.31.0.21 \nbroadcast 172.31.0.23 dev wgjpcn table local proto kernel scope link src 172.31.0.21 \n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "ip",
+      "-j",
+      "link",
+      "show",
+      "type",
+      "xfrm"
+    ],
+    "exitCode": 0,
+    "stdout": "[{\"ifindex\":4,\"link\":\"eth0\",\"ifname\":\"xfrm41\",\"flags\":[\"NOARP\",\"UP\",\"LOWER_UP\"],\"mtu\":1380,\"qdisc\":\"noqueue\",\"operstate\":\"UNKNOWN\",\"linkmode\":\"DEFAULT\",\"group\":\"default\",\"txqlen\":1000,\"link_type\":\"none\"},{\"ifindex\":5,\"link\":\"eth0\",\"ifname\":\"xfrm42\",\"flags\":[\"NOARP\",\"UP\",\"LOWER_UP\"],\"mtu\":1380,\"qdisc\":\"noqueue\",\"operstate\":\"UNKNOWN\",\"linkmode\":\"DEFAULT\",\"group\":\"default\",\"txqlen\":1000,\"link_type\":\"none\"}]\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "birdc",
+      "show",
+      "protocols",
+      "all",
+      "kernel_lab"
+    ],
+    "exitCode": 0,
+    "stdout": "BIRD 2.0.8 ready.\nName       Proto      Table      State  Since         Info\nkernel_lab Kernel     lab4       up     09:06:14.166  \n  Channel ipv4\n    State:          UP\n    Table:          lab4\n    Preference:     10\n    Input filter:   REJECT\n    Output filter:  (unnamed)\n    Routes:         0 imported, 6 exported, 0 preferred\n    Route change stats:     received   rejected   filtered    ignored   accepted\n      Import updates:              0          0          0          0          0\n      Import withdraws:            0          0        ---          0          0\n      Export updates:             10          0          1        ---          9\n      Export withdraws:            0        ---        ---        ---          0\n\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "journalctl",
+      "-u",
+      "bird",
+      "-n",
+      "35",
+      "--no-pager",
+      "-o",
+      "cat"
+    ],
+    "exitCode": 0,
+    "stdout": "KRT: Received route 10.30.0.0/24 with strange next-hop 169.254.21.6\nNetlink: File exists\nKRT: Received route 10.30.0.0/24 with strange next-hop 169.254.21.6\nNetlink: File exists\nKRT: Received route 10.30.0.0/24 with strange next-hop 169.254.21.6\nNetlink: File exists\nazure_0: Error: Hold timer expired\nKRT: Received route 10.30.0.0/24 with strange next-hop 169.254.21.6\nNetlink: File exists\nKRT: Received route 10.30.0.0/24 with strange next-hop 169.254.21.6\nNetlink: File exists\nKRT: Received route 10.30.0.0/24 with strange next-hop 169.254.21.6\nNetlink: File exists\nKRT: Received route 10.30.0.0/24 with strange next-hop 169.254.21.6\nNetlink: File exists\nKRT: Received route 10.30.0.0/24 with strange next-hop 169.254.21.6\nNetlink: File exists\nKRT: Received route 10.30.0.0/24 with strange next-hop 169.254.21.6\nNetlink: File exists\nKRT: Received route 10.30.0.0/24 with strange next-hop 169.254.21.6\nNetlink: File exists\nKRT: Received route 10.30.0.0/24 with strange next-hop 169.254.21.6\nNetlink: File exists\nKRT: Received route 10.30.0.0/24 with strange next-hop 169.254.21.6\nNetlink: File exists\nKRT: Received route 10.30.0.0/24 with strange next-hop 169.254.21.6\nNetlink: File exists\nKRT: Received route 10.30.0.0/24 with strange next-hop 169.254.21.6\nNetlink: File exists\nKRT: Received route 10.30.0.0/24 with strange next-hop 169.254.21.6\nNetlink: File exists\nKRT: Received route 10.30.0.0/24 with strange next-hop 169.254.21.6\nNetlink: File exists\nKRT: Received route 10.30.0.0/24 with strange next-hop 169.254.21.6\nNetlink: File exists\n",
+    "stderr": ""
+  }
+]

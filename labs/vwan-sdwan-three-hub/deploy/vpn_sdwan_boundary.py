@@ -145,6 +145,14 @@ def parse_result(site, label, value, count=None, withdraw_cn=False):
     return result
 
 
+def same_source(before, after):
+    """Keep raw CLI hashes as evidence, not invariants of volatile route output."""
+    return (all(before[k] == after[k]
+                for k in ("sha256", "stat", "protocols", "ikeEstablished")) and
+            {peer: export["routes"] for peer, export in before["exports"].items()} ==
+            {peer: export["routes"] for peer, export in after["exports"].items()})
+
+
 def main():
     control.LEASE = control.RUNTIME / "vpn-sdwan-boundary-lease.json"
     lease = json.loads(control.LEASE.read_text(encoding="utf-8-sig"))
@@ -207,8 +215,7 @@ def main():
         sweep.CURRENT = OUT / "closure"
         for site in (*sweep.SITES, "cn"):
             after[site] = invoke(site, "closure")
-            if any(before[site][k] != after[site][k]
-                   for k in ("sha256", "stat", "protocols", "exports", "ikeEstablished")):
+            if not same_source(before[site], after[site]):
                 raise RuntimeError(f"{site}: final hash/metadata/protocol/export proof differs")
     except Exception as exc:
         errors.append(str(exc))

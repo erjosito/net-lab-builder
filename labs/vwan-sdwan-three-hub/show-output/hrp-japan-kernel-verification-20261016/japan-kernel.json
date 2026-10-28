@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-16T10:04:28.275656+00:00",
+  "finishedUtc": "2026-10-16T10:05:43.464111+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-jp",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "#!/bin/bash\nset -euo pipefail\npython3 - <<'PY'\nimport subprocess,json,gzip,base64\ncommands=[['ip','-4','route','show','table','all'],['ip','-j','link','show','type','xfrm'],['birdc','show','protocols','all','kernel_lab'],['journalctl','-u','bird','-n','35','--no-pager','-o','cat']]\nr=[]\nfor c in commands:\n p=subprocess.run(c,text=True,capture_output=True,timeout=30);r.append(dict(command=c,exitCode=p.returncode,stdout=p.stdout,stderr=p.stderr))\nb=base64.b64encode(gzip.compress(json.dumps(r).encode())).decode();assert len(b)<3500;print('DESIGN_SNAPSHOT '+b)\nPY\n"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\n\\n[stderr]\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\n\n[stderr]\n"
+      }
+    ]
+  },
+  "sha256": "5f2564652432ab34e3a3a959e3f9639eaefb416e09f36efc491a02e973d54f8e"
+}

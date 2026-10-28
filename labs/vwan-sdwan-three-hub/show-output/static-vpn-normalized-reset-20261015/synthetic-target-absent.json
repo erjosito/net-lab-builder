@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-15T20:58:41.923403+00:00",
+  "finishedUtc": "2026-10-15T21:00:27.940626+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-jp",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@<LOCAL_USER>\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\static-vpn-target-absence.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\n\\n[stderr]\\nTraceback (most recent call last):\\n  File \\\"<stdin>\\\", line 3, in <module>\\nAssertionError\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\n\n[stderr]\nTraceback (most recent call last):\n  File \"<stdin>\", line 3, in <module>\nAssertionError\n"
+      }
+    ]
+  },
+  "sha256": "3f4fd69870d6289047d42132ea45087550dc4cb6ffcdf455e36deb934d90cc3c"
+}

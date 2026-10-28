@@ -1,0 +1,513 @@
+{
+  "timestampUtc": "2026-10-16T08:51:04.564081+00:00",
+  "finishedUtc": "2026-10-16T08:52:54.572945+00:00",
+  "command": [
+    "rest",
+    "--method",
+    "get",
+    "--url",
+    "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp?api-version=2024-05-01",
+    "--query",
+    "properties.securityRules"
+  ],
+  "stdout": "[\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/private-icmp\",\n    \"name\": \"private-icmp\",\n    \"properties\": {\n      \"access\": \"Allow\",\n      \"destinationAddressPrefix\": \"10.130.0.4\",\n      \"destinationAddressPrefixes\": [],\n      \"destinationPortRange\": \"*\",\n      \"destinationPortRanges\": [],\n      \"direction\": \"Inbound\",\n      \"priority\": 130,\n      \"protocol\": \"Icmp\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefixes\": [\n        \"10.110.0.0/24\",\n        \"10.120.0.0/24\",\n        \"10.130.0.0/24\",\n        \"10.140.0.0/24\",\n        \"10.10.0.0/24\",\n        \"10.20.0.0/24\",\n        \"10.30.0.0/24\"\n      ],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/private-http\",\n    \"name\": \"private-http\",\n    \"properties\": {\n      \"access\": \"Allow\",\n      \"destinationAddressPrefix\": \"10.130.0.4\",\n      \"destinationAddressPrefixes\": [],\n      \"destinationPortRange\": \"5201\",\n      \"destinationPortRanges\": [],\n      \"direction\": \"Inbound\",\n      \"priority\": 131,\n      \"protocol\": \"Tcp\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefixes\": [\n        \"10.110.0.0/24\",\n        \"10.120.0.0/24\",\n        \"10.130.0.0/24\",\n        \"10.140.0.0/24\",\n        \"10.10.0.0/24\",\n        \"10.20.0.0/24\",\n        \"10.30.0.0/24\"\n      ],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/out-private-icmp\",\n    \"name\": \"out-private-icmp\",\n    \"properties\": {\n      \"access\": \"Allow\",\n      \"destinationAddressPrefixes\": [\n        \"10.110.0.0/24\",\n        \"10.120.0.0/24\",\n        \"10.130.0.0/24\",\n        \"10.140.0.0/24\",\n        \"10.10.0.0/24\",\n        \"10.20.0.0/24\",\n        \"10.30.0.0/24\"\n      ],\n      \"destinationPortRange\": \"*\",\n      \"destinationPortRanges\": [],\n      \"direction\": \"Outbound\",\n      \"priority\": 130,\n      \"protocol\": \"Icmp\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefix\": \"10.130.0.4\",\n      \"sourceAddressPrefixes\": [],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/out-private-http\",\n    \"name\": \"out-private-http\",\n    \"properties\": {\n      \"access\": \"Allow\",\n      \"destinationAddressPrefixes\": [\n        \"10.110.0.0/24\",\n        \"10.120.0.0/24\",\n        \"10.130.0.0/24\",\n        \"10.140.0.0/24\",\n        \"10.10.0.0/24\",\n        \"10.20.0.0/24\",\n        \"10.30.0.0/24\"\n      ],\n      \"destinationPortRange\": \"5201\",\n      \"destinationPortRanges\": [],\n      \"direction\": \"Outbound\",\n      \"priority\": 131,\n      \"protocol\": \"Tcp\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefix\": \"10.130.0.4\",\n      \"sourceAddressPrefixes\": [],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/bootstrap-web\",\n    \"name\": \"bootstrap-web\",\n    \"properties\": {\n      \"access\": \"Allow\",\n      \"destinationAddressPrefix\": \"Internet\",\n      \"destinationAddressPrefixes\": [],\n      \"destinationPortRanges\": [\n        \"80\",\n        \"443\"\n      ],\n      \"direction\": \"Outbound\",\n      \"priority\": 200,\n      \"protocol\": \"Tcp\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefix\": \"10.130.0.4\",\n      \"sourceAddressPrefixes\": [],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/platform-agent\",\n    \"name\": \"platform-agent\",\n    \"properties\": {\n      \"access\": \"Allow\",\n      \"destinationAddressPrefixes\": [\n        \"168.63.129.16\",\n        \"169.254.169.254\"\n      ],\n      \"destinationPortRanges\": [\n        \"80\",\n        \"32526\"\n      ],\n      \"direction\": \"Outbound\",\n      \"priority\": 202,\n      \"protocol\": \"Tcp\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefix\": \"10.130.0.4\",\n      \"sourceAddressPrefixes\": [],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/wireguard-private\",\n    \"name\": \"wireguard-private\",\n    \"properties\": {\n      \"access\": \"Allow\",\n      \"destinationAddressPrefix\": \"10.130.0.4\",\n      \"destinationAddressPrefixes\": [],\n      \"destinationPortRange\": \"51820\",\n      \"destinationPortRanges\": [],\n      \"direction\": \"Inbound\",\n      \"priority\": 100,\n      \"protocol\": \"Udp\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefixes\": [\n        \"10.210.0.4/32\",\n        \"10.220.0.4/32\",\n        \"10.140.0.4/32\"\n      ],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/out-wireguard-private\",\n    \"name\": \"out-wireguard-private\",\n    \"properties\": {\n      \"access\": \"Allow\",\n      \"destinationAddressPrefixes\": [\n        \"10.210.0.4/32\",\n        \"10.220.0.4/32\",\n        \"10.140.0.4/32\"\n      ],\n      \"destinationPortRange\": \"51820\",\n      \"destinationPortRanges\": [],\n      \"direction\": \"Outbound\",\n      \"priority\": 100,\n      \"protocol\": \"Udp\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefix\": \"10.130.0.4\",\n      \"sourceAddressPrefixes\": [],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/forward-private\",\n    \"name\": \"forward-private\",\n    \"properties\": {\n      \"access\": \"Allow\",\n      \"destinationAddressPrefixes\": [\n        \"10.110.0.0/24\",\n        \"10.120.0.0/24\",\n        \"10.130.0.0/24\",\n        \"10.140.0.0/24\",\n        \"10.10.0.0/24\",\n        \"10.20.0.0/24\",\n        \"10.30.0.0/24\"\n      ],\n      \"destinationPortRange\": \"*\",\n      \"destinationPortRanges\": [],\n      \"direction\": \"Inbound\",\n      \"priority\": 140,\n      \"protocol\": \"*\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefixes\": [\n        \"10.110.0.0/24\",\n        \"10.120.0.0/24\",\n        \"10.130.0.0/24\",\n        \"10.140.0.0/24\",\n        \"10.10.0.0/24\",\n        \"10.20.0.0/24\",\n        \"10.30.0.0/24\"\n      ],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/out-forward-private\",\n    \"name\": \"out-forward-private\",\n    \"properties\": {\n      \"access\": \"Allow\",\n      \"destinationAddressPrefixes\": [\n        \"10.110.0.0/24\",\n        \"10.120.0.0/24\",\n        \"10.130.0.0/24\",\n        \"10.140.0.0/24\",\n        \"10.10.0.0/24\",\n        \"10.20.0.0/24\",\n        \"10.30.0.0/24\"\n      ],\n      \"destinationPortRange\": \"*\",\n      \"destinationPortRanges\": [],\n      \"direction\": \"Outbound\",\n      \"priority\": 140,\n      \"protocol\": \"*\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefixes\": [\n        \"10.110.0.0/24\",\n        \"10.120.0.0/24\",\n        \"10.130.0.0/24\",\n        \"10.140.0.0/24\",\n        \"10.10.0.0/24\",\n        \"10.20.0.0/24\",\n        \"10.30.0.0/24\"\n      ],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/jp-ike\",\n    \"name\": \"jp-ike\",\n    \"properties\": {\n      \"access\": \"Allow\",\n      \"destinationAddressPrefix\": \"10.130.0.4\",\n      \"destinationAddressPrefixes\": [],\n      \"destinationPortRanges\": [\n        \"500\",\n        \"4500\"\n      ],\n      \"direction\": \"Inbound\",\n      \"priority\": 120,\n      \"protocol\": \"Udp\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefixes\": [\n        \"20.27.135.137/32\",\n        \"4.190.54.71/32\"\n      ],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/out-jp-ike\",\n    \"name\": \"out-jp-ike\",\n    \"properties\": {\n      \"access\": \"Allow\",\n      \"destinationAddressPrefixes\": [\n        \"20.27.135.137/32\",\n        \"4.190.54.71/32\"\n      ],\n      \"destinationPortRanges\": [\n        \"500\",\n        \"4500\"\n      ],\n      \"direction\": \"Outbound\",\n      \"priority\": 120,\n      \"protocol\": \"Udp\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefix\": \"10.130.0.4\",\n      \"sourceAddressPrefixes\": [],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/deny-other-inbound\",\n    \"name\": \"deny-other-inbound\",\n    \"properties\": {\n      \"access\": \"Deny\",\n      \"destinationAddressPrefix\": \"*\",\n      \"destinationAddressPrefixes\": [],\n      \"destinationPortRange\": \"*\",\n      \"destinationPortRanges\": [],\n      \"direction\": \"Inbound\",\n      \"priority\": 4000,\n      \"protocol\": \"*\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefix\": \"*\",\n      \"sourceAddressPrefixes\": [],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/deny-other-outbound\",\n    \"name\": \"deny-other-outbound\",\n    \"properties\": {\n      \"access\": \"Deny\",\n      \"destinationAddressPrefix\": \"*\",\n      \"destinationAddressPrefixes\": [],\n      \"destinationPortRange\": \"*\",\n      \"destinationPortRanges\": [],\n      \"direction\": \"Outbound\",\n      \"priority\": 4000,\n      \"protocol\": \"*\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefix\": \"*\",\n      \"sourceAddressPrefixes\": [],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/direct-link-eu-inbound\",\n    \"name\": \"direct-link-eu-inbound\",\n    \"properties\": {\n      \"access\": \"Allow\",\n      \"destinationAddressPrefix\": \"10.130.0.4/32\",\n      \"destinationAddressPrefixes\": [],\n      \"destinationPortRange\": \"51822\",\n      \"destinationPortRanges\": [],\n      \"direction\": \"Inbound\",\n      \"priority\": 1000,\n      \"protocol\": \"Udp\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefix\": \"10.210.0.4/32\",\n      \"sourceAddressPrefixes\": [],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/direct-link-eu-outbound\",\n    \"name\": \"direct-link-eu-outbound\",\n    \"properties\": {\n      \"access\": \"Allow\",\n      \"destinationAddressPrefix\": \"10.210.0.4/32\",\n      \"destinationAddressPrefixes\": [],\n      \"destinationPortRange\": \"51822\",\n      \"destinationPortRanges\": [],\n      \"direction\": \"Outbound\",\n      \"priority\": 1000,\n      \"protocol\": \"Udp\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefix\": \"10.130.0.4/32\",\n      \"sourceAddressPrefixes\": [],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/direct-link-us-inbound\",\n    \"name\": \"direct-link-us-inbound\",\n    \"properties\": {\n      \"access\": \"Allow\",\n      \"destinationAddressPrefix\": \"10.130.0.4/32\",\n      \"destinationAddressPrefixes\": [],\n      \"destinationPortRange\": \"51824\",\n      \"destinationPortRanges\": [],\n      \"direction\": \"Inbound\",\n      \"priority\": 1001,\n      \"protocol\": \"Udp\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefix\": \"10.220.0.4/32\",\n      \"sourceAddressPrefixes\": [],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/direct-link-us-outbound\",\n    \"name\": \"direct-link-us-outbound\",\n    \"properties\": {\n      \"access\": \"Allow\",\n      \"destinationAddressPrefix\": \"10.220.0.4/32\",\n      \"destinationAddressPrefixes\": [],\n      \"destinationPortRange\": \"51824\",\n      \"destinationPortRanges\": [],\n      \"direction\": \"Outbound\",\n      \"priority\": 1001,\n      \"protocol\": \"Udp\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefix\": \"10.130.0.4/32\",\n      \"sourceAddressPrefixes\": [],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/direct-link-cn-inbound\",\n    \"name\": \"direct-link-cn-inbound\",\n    \"properties\": {\n      \"access\": \"Allow\",\n      \"destinationAddressPrefix\": \"10.130.0.4/32\",\n      \"destinationAddressPrefixes\": [],\n      \"destinationPortRange\": \"51826\",\n      \"destinationPortRanges\": [],\n      \"direction\": \"Inbound\",\n      \"priority\": 1002,\n      \"protocol\": \"Udp\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefix\": \"10.140.0.4/32\",\n      \"sourceAddressPrefixes\": [],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  },\n  {\n    \"etag\": \"W/\\\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\\\"\",\n    \"id\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/direct-link-cn-outbound\",\n    \"name\": \"direct-link-cn-outbound\",\n    \"properties\": {\n      \"access\": \"Allow\",\n      \"destinationAddressPrefix\": \"10.140.0.4/32\",\n      \"destinationAddressPrefixes\": [],\n      \"destinationPortRange\": \"51826\",\n      \"destinationPortRanges\": [],\n      \"direction\": \"Outbound\",\n      \"priority\": 1002,\n      \"protocol\": \"Udp\",\n      \"provisioningState\": \"Succeeded\",\n      \"sourceAddressPrefix\": \"10.130.0.4/32\",\n      \"sourceAddressPrefixes\": [],\n      \"sourcePortRange\": \"*\",\n      \"sourcePortRanges\": []\n    },\n    \"type\": \"Microsoft.Network/networkSecurityGroups/securityRules\"\n  }\n]\n",
+  "result": [
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/private-icmp",
+      "name": "private-icmp",
+      "properties": {
+        "access": "Allow",
+        "destinationAddressPrefix": "10.130.0.4",
+        "destinationAddressPrefixes": [],
+        "destinationPortRange": "*",
+        "destinationPortRanges": [],
+        "direction": "Inbound",
+        "priority": 130,
+        "protocol": "Icmp",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefixes": [
+          "10.110.0.0/24",
+          "10.120.0.0/24",
+          "10.130.0.0/24",
+          "10.140.0.0/24",
+          "10.10.0.0/24",
+          "10.20.0.0/24",
+          "10.30.0.0/24"
+        ],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/private-http",
+      "name": "private-http",
+      "properties": {
+        "access": "Allow",
+        "destinationAddressPrefix": "10.130.0.4",
+        "destinationAddressPrefixes": [],
+        "destinationPortRange": "5201",
+        "destinationPortRanges": [],
+        "direction": "Inbound",
+        "priority": 131,
+        "protocol": "Tcp",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefixes": [
+          "10.110.0.0/24",
+          "10.120.0.0/24",
+          "10.130.0.0/24",
+          "10.140.0.0/24",
+          "10.10.0.0/24",
+          "10.20.0.0/24",
+          "10.30.0.0/24"
+        ],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/out-private-icmp",
+      "name": "out-private-icmp",
+      "properties": {
+        "access": "Allow",
+        "destinationAddressPrefixes": [
+          "10.110.0.0/24",
+          "10.120.0.0/24",
+          "10.130.0.0/24",
+          "10.140.0.0/24",
+          "10.10.0.0/24",
+          "10.20.0.0/24",
+          "10.30.0.0/24"
+        ],
+        "destinationPortRange": "*",
+        "destinationPortRanges": [],
+        "direction": "Outbound",
+        "priority": 130,
+        "protocol": "Icmp",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefix": "10.130.0.4",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/out-private-http",
+      "name": "out-private-http",
+      "properties": {
+        "access": "Allow",
+        "destinationAddressPrefixes": [
+          "10.110.0.0/24",
+          "10.120.0.0/24",
+          "10.130.0.0/24",
+          "10.140.0.0/24",
+          "10.10.0.0/24",
+          "10.20.0.0/24",
+          "10.30.0.0/24"
+        ],
+        "destinationPortRange": "5201",
+        "destinationPortRanges": [],
+        "direction": "Outbound",
+        "priority": 131,
+        "protocol": "Tcp",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefix": "10.130.0.4",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/bootstrap-web",
+      "name": "bootstrap-web",
+      "properties": {
+        "access": "Allow",
+        "destinationAddressPrefix": "Internet",
+        "destinationAddressPrefixes": [],
+        "destinationPortRanges": [
+          "80",
+          "443"
+        ],
+        "direction": "Outbound",
+        "priority": 200,
+        "protocol": "Tcp",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefix": "10.130.0.4",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/platform-agent",
+      "name": "platform-agent",
+      "properties": {
+        "access": "Allow",
+        "destinationAddressPrefixes": [
+          "168.63.129.16",
+          "169.254.169.254"
+        ],
+        "destinationPortRanges": [
+          "80",
+          "32526"
+        ],
+        "direction": "Outbound",
+        "priority": 202,
+        "protocol": "Tcp",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefix": "10.130.0.4",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/wireguard-private",
+      "name": "wireguard-private",
+      "properties": {
+        "access": "Allow",
+        "destinationAddressPrefix": "10.130.0.4",
+        "destinationAddressPrefixes": [],
+        "destinationPortRange": "51820",
+        "destinationPortRanges": [],
+        "direction": "Inbound",
+        "priority": 100,
+        "protocol": "Udp",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefixes": [
+          "10.210.0.4/32",
+          "10.220.0.4/32",
+          "10.140.0.4/32"
+        ],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/out-wireguard-private",
+      "name": "out-wireguard-private",
+      "properties": {
+        "access": "Allow",
+        "destinationAddressPrefixes": [
+          "10.210.0.4/32",
+          "10.220.0.4/32",
+          "10.140.0.4/32"
+        ],
+        "destinationPortRange": "51820",
+        "destinationPortRanges": [],
+        "direction": "Outbound",
+        "priority": 100,
+        "protocol": "Udp",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefix": "10.130.0.4",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/forward-private",
+      "name": "forward-private",
+      "properties": {
+        "access": "Allow",
+        "destinationAddressPrefixes": [
+          "10.110.0.0/24",
+          "10.120.0.0/24",
+          "10.130.0.0/24",
+          "10.140.0.0/24",
+          "10.10.0.0/24",
+          "10.20.0.0/24",
+          "10.30.0.0/24"
+        ],
+        "destinationPortRange": "*",
+        "destinationPortRanges": [],
+        "direction": "Inbound",
+        "priority": 140,
+        "protocol": "*",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefixes": [
+          "10.110.0.0/24",
+          "10.120.0.0/24",
+          "10.130.0.0/24",
+          "10.140.0.0/24",
+          "10.10.0.0/24",
+          "10.20.0.0/24",
+          "10.30.0.0/24"
+        ],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/out-forward-private",
+      "name": "out-forward-private",
+      "properties": {
+        "access": "Allow",
+        "destinationAddressPrefixes": [
+          "10.110.0.0/24",
+          "10.120.0.0/24",
+          "10.130.0.0/24",
+          "10.140.0.0/24",
+          "10.10.0.0/24",
+          "10.20.0.0/24",
+          "10.30.0.0/24"
+        ],
+        "destinationPortRange": "*",
+        "destinationPortRanges": [],
+        "direction": "Outbound",
+        "priority": 140,
+        "protocol": "*",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefixes": [
+          "10.110.0.0/24",
+          "10.120.0.0/24",
+          "10.130.0.0/24",
+          "10.140.0.0/24",
+          "10.10.0.0/24",
+          "10.20.0.0/24",
+          "10.30.0.0/24"
+        ],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/jp-ike",
+      "name": "jp-ike",
+      "properties": {
+        "access": "Allow",
+        "destinationAddressPrefix": "10.130.0.4",
+        "destinationAddressPrefixes": [],
+        "destinationPortRanges": [
+          "500",
+          "4500"
+        ],
+        "direction": "Inbound",
+        "priority": 120,
+        "protocol": "Udp",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefixes": [
+          "20.27.135.137/32",
+          "4.190.54.71/32"
+        ],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/out-jp-ike",
+      "name": "out-jp-ike",
+      "properties": {
+        "access": "Allow",
+        "destinationAddressPrefixes": [
+          "20.27.135.137/32",
+          "4.190.54.71/32"
+        ],
+        "destinationPortRanges": [
+          "500",
+          "4500"
+        ],
+        "direction": "Outbound",
+        "priority": 120,
+        "protocol": "Udp",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefix": "10.130.0.4",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/deny-other-inbound",
+      "name": "deny-other-inbound",
+      "properties": {
+        "access": "Deny",
+        "destinationAddressPrefix": "*",
+        "destinationAddressPrefixes": [],
+        "destinationPortRange": "*",
+        "destinationPortRanges": [],
+        "direction": "Inbound",
+        "priority": 4000,
+        "protocol": "*",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefix": "*",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/deny-other-outbound",
+      "name": "deny-other-outbound",
+      "properties": {
+        "access": "Deny",
+        "destinationAddressPrefix": "*",
+        "destinationAddressPrefixes": [],
+        "destinationPortRange": "*",
+        "destinationPortRanges": [],
+        "direction": "Outbound",
+        "priority": 4000,
+        "protocol": "*",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefix": "*",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/direct-link-eu-inbound",
+      "name": "direct-link-eu-inbound",
+      "properties": {
+        "access": "Allow",
+        "destinationAddressPrefix": "10.130.0.4/32",
+        "destinationAddressPrefixes": [],
+        "destinationPortRange": "51822",
+        "destinationPortRanges": [],
+        "direction": "Inbound",
+        "priority": 1000,
+        "protocol": "Udp",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefix": "10.210.0.4/32",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/direct-link-eu-outbound",
+      "name": "direct-link-eu-outbound",
+      "properties": {
+        "access": "Allow",
+        "destinationAddressPrefix": "10.210.0.4/32",
+        "destinationAddressPrefixes": [],
+        "destinationPortRange": "51822",
+        "destinationPortRanges": [],
+        "direction": "Outbound",
+        "priority": 1000,
+        "protocol": "Udp",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefix": "10.130.0.4/32",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/direct-link-us-inbound",
+      "name": "direct-link-us-inbound",
+      "properties": {
+        "access": "Allow",
+        "destinationAddressPrefix": "10.130.0.4/32",
+        "destinationAddressPrefixes": [],
+        "destinationPortRange": "51824",
+        "destinationPortRanges": [],
+        "direction": "Inbound",
+        "priority": 1001,
+        "protocol": "Udp",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefix": "10.220.0.4/32",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/direct-link-us-outbound",
+      "name": "direct-link-us-outbound",
+      "properties": {
+        "access": "Allow",
+        "destinationAddressPrefix": "10.220.0.4/32",
+        "destinationAddressPrefixes": [],
+        "destinationPortRange": "51824",
+        "destinationPortRanges": [],
+        "direction": "Outbound",
+        "priority": 1001,
+        "protocol": "Udp",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefix": "10.130.0.4/32",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/direct-link-cn-inbound",
+      "name": "direct-link-cn-inbound",
+      "properties": {
+        "access": "Allow",
+        "destinationAddressPrefix": "10.130.0.4/32",
+        "destinationAddressPrefixes": [],
+        "destinationPortRange": "51826",
+        "destinationPortRanges": [],
+        "direction": "Inbound",
+        "priority": 1002,
+        "protocol": "Udp",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefix": "10.140.0.4/32",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    },
+    {
+      "etag": "W/\"ac09e4ab-378b-4bb1-84c5-a78b842c9db1\"",
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp/securityRules/direct-link-cn-outbound",
+      "name": "direct-link-cn-outbound",
+      "properties": {
+        "access": "Allow",
+        "destinationAddressPrefix": "10.140.0.4/32",
+        "destinationAddressPrefixes": [],
+        "destinationPortRange": "51826",
+        "destinationPortRanges": [],
+        "direction": "Outbound",
+        "priority": 1002,
+        "protocol": "Udp",
+        "provisioningState": "Succeeded",
+        "sourceAddressPrefix": "10.130.0.4/32",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": []
+      },
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    }
+  ],
+  "sha256": "cdbffc4186df58bdd6efa3dcdaf577f71295bc182bd53014bb5b996e0a1cfc29"
+}

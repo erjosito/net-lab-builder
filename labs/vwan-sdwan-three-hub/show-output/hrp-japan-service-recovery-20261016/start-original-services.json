@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-16T08:53:54.209511+00:00",
+  "finishedUtc": "2026-10-16T08:56:11.280040+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-jp",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@<LOCAL_USER>\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\jp-service-recovery.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\nVPN_SERVICE_RESULT {\\\"exitCode\\\": 1, \\\"stdout\\\": \\\"\\\", \\\"stderr\\\": \\\"Job for threehub-ipsec.service failed because the control process exited with error code.\\\\nSee \\\\\\\"systemctl status threehub-ipsec.service\\\\\\\" and \\\\\\\"journalctl -xeu threehub-ipsec.service\\\\\\\" for details.\\\\n\\\"}\\n\\n[stderr]\\nTraceback (most recent call last):\\n  File \\\"<stdin>\\\", line 7, in <module>\\nAssertionError: Existing VPN service failed to establish; no configuration changes made\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\nVPN_SERVICE_RESULT {\"exitCode\": 1, \"stdout\": \"\", \"stderr\": \"Job for threehub-ipsec.service failed because the control process exited with error code.\\nSee \\\"systemctl status threehub-ipsec.service\\\" and \\\"journalctl -xeu threehub-ipsec.service\\\" for details.\\n\"}\n\n[stderr]\nTraceback (most recent call last):\n  File \"<stdin>\", line 7, in <module>\nAssertionError: Existing VPN service failed to establish; no configuration changes made\n"
+      }
+    ]
+  },
+  "sha256": "3a63203047032854a70907155617953964e179d9da958adf4b7826c749dfbb2b"
+}

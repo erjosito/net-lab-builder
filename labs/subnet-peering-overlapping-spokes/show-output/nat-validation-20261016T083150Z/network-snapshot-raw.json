@@ -1,0 +1,377 @@
+[
+  {
+    "addressSpace": {
+      "addressPrefixes": [
+        "10.0.0.0/16"
+      ]
+    },
+    "enableDdosProtection": false,
+    "etag": "W/\"<redacted-guid>\"",
+    "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/hub",
+    "location": "swedencentral",
+    "name": "hub",
+    "privateEndpointVNetPolicies": "Disabled",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+    "resourceGuid": "<redacted-guid>",
+    "subnets": [
+      {
+        "addressPrefix": "10.0.1.0/24",
+        "defaultOutboundAccess": false,
+        "delegations": [],
+        "etag": "W/\"<redacted-guid>\"",
+        "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/hub/subnets/hub10",
+        "ipConfigurations": [
+          {
+            "id": "/subscriptions/<redacted-guid>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Network/networkInterfaces/VM-HUB-HUB10-NIC/ipConfigurations/IPCONFIG1",
+            "resourceGroup": "RG-SUBNET-OVERLAP-20261016-FDE5ECF8"
+          }
+        ],
+        "name": "hub10",
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Enabled",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      }
+    ],
+    "tags": {
+      "correlation_id": "subnet-overlap-retained-20261016-<redacted-guid>",
+      "created_by": "copilot-lab",
+      "lab": "true"
+    },
+    "type": "Microsoft.Network/virtualNetworks",
+    "virtualNetworkPeerings": [
+      {
+        "allowForwardedTraffic": false,
+        "allowGatewayTransit": false,
+        "allowVirtualNetworkAccess": true,
+        "doNotVerifyRemoteGateways": false,
+        "enableOnlyIPv6Peering": false,
+        "etag": "W/\"<redacted-guid>\"",
+        "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/hub/virtualNetworkPeerings/to-spoke1",
+        "localAddressSpace": {
+          "addressPrefixes": [
+            "10.0.1.0/24"
+          ]
+        },
+        "localSubnetNames": [
+          "hub10"
+        ],
+        "localVirtualNetworkAddressSpace": {
+          "addressPrefixes": [
+            "10.0.1.0/24"
+          ]
+        },
+        "name": "to-spoke1",
+        "peerCompleteVnets": false,
+        "peeringState": "Connected",
+        "peeringSyncLevel": "FullyInSync",
+        "provisioningState": "Succeeded",
+        "remoteAddressSpace": {
+          "addressPrefixes": [
+            "10.10.1.0/24"
+          ]
+        },
+        "remoteSubnetNames": [
+          "spoke10"
+        ],
+        "remoteVirtualNetwork": {
+          "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke1",
+          "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8"
+        },
+        "remoteVirtualNetworkAddressSpace": {
+          "addressPrefixes": [
+            "10.10.1.0/24"
+          ]
+        },
+        "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+        "resourceGuid": "<redacted-guid>",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "useRemoteGateways": false
+      },
+      {
+        "allowForwardedTraffic": false,
+        "allowGatewayTransit": false,
+        "allowVirtualNetworkAccess": true,
+        "doNotVerifyRemoteGateways": false,
+        "enableOnlyIPv6Peering": false,
+        "etag": "W/\"<redacted-guid>\"",
+        "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/hub/virtualNetworkPeerings/to-spoke2",
+        "localAddressSpace": {
+          "addressPrefixes": [
+            "10.0.1.0/24"
+          ]
+        },
+        "localSubnetNames": [
+          "hub10"
+        ],
+        "localVirtualNetworkAddressSpace": {
+          "addressPrefixes": [
+            "10.0.1.0/24"
+          ]
+        },
+        "name": "to-spoke2",
+        "peerCompleteVnets": false,
+        "peeringState": "Connected",
+        "peeringSyncLevel": "FullyInSync",
+        "provisioningState": "Succeeded",
+        "remoteAddressSpace": {
+          "addressPrefixes": [
+            "10.20.0.0/27"
+          ]
+        },
+        "remoteSubnetNames": [
+          "spoke10"
+        ],
+        "remoteVirtualNetwork": {
+          "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke2",
+          "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8"
+        },
+        "remoteVirtualNetworkAddressSpace": {
+          "addressPrefixes": [
+            "10.20.0.0/27"
+          ]
+        },
+        "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+        "resourceGuid": "<redacted-guid>",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "useRemoteGateways": false
+      }
+    ]
+  },
+  {
+    "addressSpace": {
+      "addressPrefixes": [
+        "10.10.0.0/16",
+        "192.168.0.0/16"
+      ]
+    },
+    "enableDdosProtection": false,
+    "etag": "W/\"<redacted-guid>\"",
+    "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke1",
+    "location": "swedencentral",
+    "name": "spoke1",
+    "privateEndpointVNetPolicies": "Disabled",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+    "resourceGuid": "<redacted-guid>",
+    "subnets": [
+      {
+        "addressPrefix": "10.10.1.0/24",
+        "defaultOutboundAccess": false,
+        "delegations": [],
+        "etag": "W/\"<redacted-guid>\"",
+        "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke1/subnets/spoke10",
+        "ipConfigurations": [
+          {
+            "id": "/subscriptions/<redacted-guid>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Network/networkInterfaces/VM-SPOKE1-SPOKE10-NIC/ipConfigurations/IPCONFIG1",
+            "resourceGroup": "RG-SUBNET-OVERLAP-20261016-FDE5ECF8"
+          },
+          {
+            "id": "/subscriptions/<redacted-guid>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Network/networkInterfaces/VM-SPOKE1-SPOKE10-NIC/ipConfigurations/NAT-ALIAS",
+            "resourceGroup": "RG-SUBNET-OVERLAP-20261016-FDE5ECF8"
+          }
+        ],
+        "name": "spoke10",
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Enabled",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      },
+      {
+        "addressPrefix": "192.168.1.0/24",
+        "defaultOutboundAccess": false,
+        "delegations": [],
+        "etag": "W/\"<redacted-guid>\"",
+        "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke1/subnets/isolated192",
+        "ipConfigurations": [
+          {
+            "id": "/subscriptions/<redacted-guid>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Network/networkInterfaces/VM-SPOKE1-ISOLATED192-NIC/ipConfigurations/IPCONFIG1",
+            "resourceGroup": "RG-SUBNET-OVERLAP-20261016-FDE5ECF8"
+          }
+        ],
+        "name": "isolated192",
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Enabled",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      }
+    ],
+    "tags": {
+      "correlation_id": "subnet-overlap-retained-20261016-<redacted-guid>",
+      "created_by": "copilot-lab",
+      "lab": "true"
+    },
+    "type": "Microsoft.Network/virtualNetworks",
+    "virtualNetworkPeerings": [
+      {
+        "allowForwardedTraffic": false,
+        "allowGatewayTransit": false,
+        "allowVirtualNetworkAccess": true,
+        "doNotVerifyRemoteGateways": false,
+        "enableOnlyIPv6Peering": false,
+        "etag": "W/\"<redacted-guid>\"",
+        "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke1/virtualNetworkPeerings/to-hub",
+        "localAddressSpace": {
+          "addressPrefixes": [
+            "10.10.1.0/24"
+          ]
+        },
+        "localSubnetNames": [
+          "spoke10"
+        ],
+        "localVirtualNetworkAddressSpace": {
+          "addressPrefixes": [
+            "10.10.1.0/24"
+          ]
+        },
+        "name": "to-hub",
+        "peerCompleteVnets": false,
+        "peeringState": "Connected",
+        "peeringSyncLevel": "FullyInSync",
+        "provisioningState": "Succeeded",
+        "remoteAddressSpace": {
+          "addressPrefixes": [
+            "10.0.1.0/24"
+          ]
+        },
+        "remoteSubnetNames": [
+          "hub10"
+        ],
+        "remoteVirtualNetwork": {
+          "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/hub",
+          "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8"
+        },
+        "remoteVirtualNetworkAddressSpace": {
+          "addressPrefixes": [
+            "10.0.1.0/24"
+          ]
+        },
+        "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+        "resourceGuid": "<redacted-guid>",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "useRemoteGateways": false
+      }
+    ]
+  },
+  {
+    "addressSpace": {
+      "addressPrefixes": [
+        "10.20.0.0/26",
+        "192.168.0.0/16"
+      ]
+    },
+    "enableDdosProtection": false,
+    "etag": "W/\"<redacted-guid>\"",
+    "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke2",
+    "location": "swedencentral",
+    "name": "spoke2",
+    "privateEndpointVNetPolicies": "Disabled",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+    "resourceGuid": "<redacted-guid>",
+    "subnets": [
+      {
+        "addressPrefix": "10.20.0.0/27",
+        "defaultOutboundAccess": false,
+        "delegations": [],
+        "etag": "W/\"<redacted-guid>\"",
+        "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke2/subnets/spoke10",
+        "ipConfigurations": [
+          {
+            "id": "/subscriptions/<redacted-guid>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Network/networkInterfaces/VM-SPOKE2-SPOKE10-NIC/ipConfigurations/IPCONFIG1",
+            "resourceGroup": "RG-SUBNET-OVERLAP-20261016-FDE5ECF8"
+          },
+          {
+            "id": "/subscriptions/<redacted-guid>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Network/networkInterfaces/VM-SPOKE2-SPOKE10-NIC/ipConfigurations/NAT-ALIAS",
+            "resourceGroup": "RG-SUBNET-OVERLAP-20261016-FDE5ECF8"
+          }
+        ],
+        "name": "spoke10",
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Enabled",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      },
+      {
+        "addressPrefix": "192.168.1.0/24",
+        "defaultOutboundAccess": false,
+        "delegations": [],
+        "etag": "W/\"<redacted-guid>\"",
+        "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke2/subnets/isolated192",
+        "ipConfigurations": [
+          {
+            "id": "/subscriptions/<redacted-guid>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Network/networkInterfaces/VM-SPOKE2-ISOLATED192-NIC/ipConfigurations/IPCONFIG1",
+            "resourceGroup": "RG-SUBNET-OVERLAP-20261016-FDE5ECF8"
+          }
+        ],
+        "name": "isolated192",
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Enabled",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      }
+    ],
+    "tags": {
+      "correlation_id": "subnet-overlap-retained-20261016-<redacted-guid>",
+      "created_by": "copilot-lab",
+      "lab": "true"
+    },
+    "type": "Microsoft.Network/virtualNetworks",
+    "virtualNetworkPeerings": [
+      {
+        "allowForwardedTraffic": false,
+        "allowGatewayTransit": false,
+        "allowVirtualNetworkAccess": true,
+        "doNotVerifyRemoteGateways": false,
+        "enableOnlyIPv6Peering": false,
+        "etag": "W/\"<redacted-guid>\"",
+        "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke2/virtualNetworkPeerings/to-hub",
+        "localAddressSpace": {
+          "addressPrefixes": [
+            "10.20.0.0/27"
+          ]
+        },
+        "localSubnetNames": [
+          "spoke10"
+        ],
+        "localVirtualNetworkAddressSpace": {
+          "addressPrefixes": [
+            "10.20.0.0/27"
+          ]
+        },
+        "name": "to-hub",
+        "peerCompleteVnets": false,
+        "peeringState": "Connected",
+        "peeringSyncLevel": "FullyInSync",
+        "provisioningState": "Succeeded",
+        "remoteAddressSpace": {
+          "addressPrefixes": [
+            "10.0.1.0/24"
+          ]
+        },
+        "remoteSubnetNames": [
+          "hub10"
+        ],
+        "remoteVirtualNetwork": {
+          "id": "/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/hub",
+          "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8"
+        },
+        "remoteVirtualNetworkAddressSpace": {
+          "addressPrefixes": [
+            "10.0.1.0/24"
+          ]
+        },
+        "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+        "resourceGuid": "<redacted-guid>",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "useRemoteGateways": false
+      }
+    ]
+  }
+]

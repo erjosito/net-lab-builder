@@ -1,0 +1,125 @@
+{
+  "verdict": "INCONCLUSIVE",
+  "scenario": "separate fresh and historical C billing refresh",
+  "collectedUtc": "2026-10-18T05:08:43.689090+00:00",
+  "reports": {
+    "fresh-c": {
+      "endpoint": "CostDetailsCSV",
+      "state": "INCOMPLETE",
+      "reason": "operation_location_changed",
+      "extractionComplete": false,
+      "ingestionFinal": false,
+      "actualBillingHttpRequests": 2,
+      "startedUtc": "2026-10-18T05:07:44.767521+00:00",
+      "endedUtc": "2026-10-18T05:08:41.355102+00:00",
+      "requestPeriod": {
+        "metric": "ActualCost",
+        "timePeriod": {
+          "start": "2026-10-15",
+          "end": "2026-10-18"
+        }
+      },
+      "returnedPeriod": null,
+      "apiEndSemantics": "UNKNOWN_NOT_PROOF_OF_FULL_DAY_COVERAGE",
+      "localRetention": "2026-10-15 through 2026-10-18 inclusive; absent day is unobserved, not zero",
+      "days": {
+        "2026-10-15": [],
+        "2026-10-16": [],
+        "2026-10-17": [],
+        "2026-10-18": []
+      },
+      "bulk": {
+        "meter": "Intra Continent Data Transfer Out",
+        "unit": "1 GB",
+        "effectivePrice": "0.02",
+        "currency": "USD",
+        "quantity": null,
+        "cost": null,
+        "baselineQuantity": "10.8746547754853965",
+        "baselineCost": "0.21749309550970793",
+        "quantityChange": null,
+        "costChange": null,
+        "baselineReference": "private\\billing-refresh-20261017T230000Z\\c-cost-details.private.json"
+      }
+    },
+    "historical-c": {
+      "endpoint": "CostDetailsCSV",
+      "state": "DEFERRED_NOT_REQUESTED",
+      "reason": "First fresh report incomplete; defer remaining work without retry or extra poll",
+      "actualBillingHttpRequests": 0,
+      "bulk": {
+        "quantity": null,
+        "cost": null,
+        "unit": "1 GB",
+        "effectivePrice": "0.02",
+        "currency": "USD",
+        "quantityChange": null,
+        "costChange": null,
+        "baselineQuantity": "0.6551259830594063",
+        "baselineCost": "0.013102519661188125",
+        "baselineUsageDate": "2026-10-16",
+        "baselineReference": "private\\cost-snapshots\\billing-reconciliation-20261016T0645\\correlation.private.json"
+      },
+      "days": {
+        "2026-10-15": {
+          "state": "NOT_OBSERVED_THIS_CHECK"
+        },
+        "2026-10-16": {
+          "state": "NOT_OBSERVED_THIS_CHECK"
+        },
+        "2026-10-17": {
+          "state": "NOT_OBSERVED_THIS_CHECK"
+        },
+        "2026-10-18": {
+          "state": "NOT_OBSERVED_THIS_CHECK"
+        }
+      }
+    }
+  },
+  "actualBillingHttpRequests": 2,
+  "maxBillingHttpRequests": 6,
+  "actualInfrastructureMutations": 0,
+  "failure": null,
+  "restore": "No live mutations; prior cleanup 21 roots deleted and 400000000000 bytes complete carried forward; no resource GET",
+  "allOwnedChildrenIdle": true,
+  "remainingGap": "Fresh C report incomplete at operation_location_changed before CSV download; historical C deferred. Neither has a refreshed quantity/cost or delta. Fresh aging and ingestion watermark/stability remain unestablished.",
+  "query": "No Query requests; latest HTTP 200 baseline known, not a continuing 429 claim",
+  "querySixHourGateUtc": "2026-10-18T07:21:11.187291Z",
+  "aDetailsGateUtc": "2026-10-18T08:07:34Z",
+  "t": "Not requested; CSV 422 cause UNKNOWN; legacy identity and 1 TB versus 1 GB mismatch unresolved",
+  "scheduleId": 5,
+  "hardStopUtc": "2026-10-22T23:15:33Z",
+  "billingRequests": {
+    "generation": 1,
+    "poll": 1,
+    "download": 0,
+    "retry": 0,
+    "query": 0,
+    "historical": 0,
+    "total": 2,
+    "budget": 6,
+    "unused": 4
+  },
+  "qualifiedMatureSnapshotsAdded": 0,
+  "executionAccounting": {
+    "toolCalls": {
+      "leafToolInvocationsIncludingTwoRejectedCommands": 34,
+      "rejectedCommandsBeforeAnyExecution": 2,
+      "parallelWrapperInvocations": 6,
+      "totalToolInvocations": 40,
+      "completedToolInvocations": 38,
+      "maxToolCalls": 75,
+      "includesFinalVerification": true,
+      "validationCorrection": "Two verification assumptions corrected: prior parent ledger is five (sixth separate child); no child lease filename assumed. Prior parent lease SHA256 verified unchanged."
+    },
+    "taskElapsedSecondsAtClosureUpdate": 338.291893,
+    "admittedLeaseElapsedSeconds": 61.58311250002589,
+    "closedAtUtc": "2026-10-18T05:08:43.689090+00:00",
+    "finalExternalProcessProof": {
+      "observedUtc": "2026-10-18T05:10:51.594567+00:00",
+      "matchingChildren": [],
+      "observation": "External Win32_Process check immediately before final artifact verification"
+    },
+    "taskElapsedSecondsAtFinalVerification": 434.581605
+  }
+}

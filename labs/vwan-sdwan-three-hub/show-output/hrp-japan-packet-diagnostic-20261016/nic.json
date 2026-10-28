@@ -1,0 +1,27 @@
+{
+  "timestampUtc": "2026-10-16T08:57:38.926840+00:00",
+  "finishedUtc": "2026-10-16T09:00:27.874116+00:00",
+  "command": [
+    "network",
+    "nic",
+    "show",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "nic-router-jp",
+    "--query",
+    "{ipConfigs:ipConfigurations[].{private:privateIPAddress,public:publicIPAddress.id,subnet:subnet.id},nsg:networkSecurityGroup.id}"
+  ],
+  "stdout": "{\n  \"ipConfigs\": [\n    {\n      \"private\": \"10.130.0.4\",\n      \"public\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-router-jp\",\n      \"subnet\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-jp/subnets/workload\"\n    }\n  ],\n  \"nsg\": \"/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp\"\n}\n",
+  "result": {
+    "ipConfigs": [
+      {
+        "private": "10.130.0.4",
+        "public": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/publicIPAddresses/pip-router-jp",
+        "subnet": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/virtualNetworks/vnet-dc-jp/subnets/workload"
+      }
+    ],
+    "nsg": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-vwan-sdwan-threehub-20261014/providers/Microsoft.Network/networkSecurityGroups/nsg-router-jp"
+  },
+  "sha256": "98c4117be2a50073631234a7b80096db57185eeb8aa32f1154f835164e7a12e6"
+}

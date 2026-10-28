@@ -1,0 +1,25 @@
+{
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "probe-spoke-eu",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@<LOCAL_USER>\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\forwarding-probe-spoke-eu.sh"
+  ],
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\nFORWARDING_COMPLETE {\"timestampUtc\":\"2026-10-15T10:01:51.556432+00:00\",\"cells\":[{\"source\":\"10.10.0.10\",\"destination\":\"10.110.0.10\",\"route\":{\"exitCode\":0,\"stdout\":\"[{\\\"dst\\\":\\\"10.110.0.10\\\",\\\"from\\\":\\\"10.10.0.10\\\",\\\"gateway\\\":\\\"10.10.0.1\\\",\\\"dev\\\":\\\"eth0\\\",\\\"flags\\\":[],\\\"uid\\\":0,\\\"cache\\\":[]}]\",\"stderr\":\"\"},\"tcp\":\"PASS\",\"icmp\":\"PASS\",\"tcpDetail\":{\"exitCode\":0,\"stdout\":\"200 10.10.0.10 10.110.0.10\",\"stderr\":\"\"},\"icmpExitCode\":0},{\"source\":\"10.10.0.10\",\"destination\":\"10.120.0.10\",\"route\":{\"exitCode\":0,\"stdout\":\"[{\\\"dst\\\":\\\"10.120.0.10\\\",\\\"from\\\":\\\"10.10.0.10\\\",\\\"gateway\\\":\\\"10.10.0.1\\\",\\\"dev\\\":\\\"eth0\\\",\\\"flags\\\":[],\\\"uid\\\":0,\\\"cache\\\":[]}]\",\"stderr\":\"\"},\"tcp\":\"FAIL\",\"icmp\":\"FAIL\",\"tcpDetail\":{\"exitCode\":28,\"stdout\":\"000\",\"stderr\":\"curl: (28) Connection timeout after 3001 ms\"},\"icmpExitCode\":1},{\"source\":\"10.10.0.10\",\"destination\":\"10.130.0.10\",\"route\":{\"exitCode\":0,\"stdout\":\"[{\\\"dst\\\":\\\"10.130.0.10\\\",\\\"from\\\":\\\"10.10.0.10\\\",\\\"gateway\\\":\\\"10.10.0.1\\\",\\\"dev\\\":\\\"eth0\\\",\\\"flags\\\":[],\\\"uid\\\":0,\\\"cache\\\":[]}]\",\"stderr\":\"\"},\"tcp\":\"FAIL\",\"icmp\":\"FAIL\",\"tcpDetail\":{\"exitCode\":28,\"stdout\":\"000\",\"stderr\":\"curl: (28) Connection timeout after 3000 ms\"},\"icmpExitCode\":1},{\"source\":\"10.10.0.10\",\"destination\":\"10.140.0.4\",\"route\":{\"exitCode\":0,\"stdout\":\"[{\\\"dst\\\":\\\"10.140.0.4\\\",\\\"from\\\":\\\"10.10.0.10\\\",\\\"gateway\\\":\\\"10.10.0.1\\\",\\\"dev\\\":\\\"eth0\\\",\\\"flags\\\":[],\\\"uid\\\":0,\\\"cache\\\":[]}]\",\"stderr\":\"\"},\"tcp\":\"PASS\",\"icmp\":\"PASS\",\"tcpDetail\":{\"exitCode\":0,\"stdout\":\"200 10.10.0.10 10.140.0.4\",\"stderr\":\"\"},\"icmpExitCode\":0}]}\n\n[stderr]\n"
+      }
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "command": [
+    "az",
+    "network",
+    "nic",
+    "show",
+    "-g",
+    "rg-subnet-overlap-20261016-fde5ecf8",
+    "-n",
+    "vm-spoke1-isolated192-nic",
+    "--query",
+    "{name:name,state:provisioningState,forwarding:enableIPForwarding,ips:ipConfigurations[].{ip:privateIPAddress,method:privateIPAllocationMethod,primary:primary}}"
+  ],
+  "startedAtUtc": "2026-10-16T08:25:51.104399+00:00",
+  "completedAtUtc": "2026-10-16T08:25:57.425421+00:00",
+  "exitCode": 0,
+  "stdout": "{\r\n  \"forwarding\": false,\r\n  \"ips\": [\r\n    {\r\n      \"ip\": \"192.168.1.4\",\r\n      \"method\": \"Static\",\r\n      \"primary\": true\r\n    }\r\n  ],\r\n  \"name\": \"vm-spoke1-isolated192-nic\",\r\n  \"state\": \"Succeeded\"\r\n}\r\n",
+  "stderr": "",
+  "action": null
+}

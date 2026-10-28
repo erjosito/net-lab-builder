@@ -1,0 +1,62 @@
+{
+  "recordedAtUtc": "2026-10-16T08:04:50.990974+00:00",
+  "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+  "region": "swedencentral",
+  "armPutSubmissions": 8,
+  "armDeleteSubmissions": 0,
+  "leaseState": "completed",
+  "resourcesRetained": true,
+  "retentionPolicy": "keep_until_explicit_user_cleanup",
+  "peerings": [
+    {
+      "name": "hub/virtualNetworkPeerings/to-spoke1",
+      "peeringState": "Connected",
+      "provisioningState": "Succeeded",
+      "localSubnetNames": [
+        "hub10"
+      ],
+      "remoteSubnetNames": [
+        "spoke10"
+      ],
+      "peerCompleteVnets": false
+    },
+    {
+      "name": "spoke1/virtualNetworkPeerings/to-hub",
+      "peeringState": "Connected",
+      "provisioningState": "Succeeded",
+      "localSubnetNames": [
+        "spoke10"
+      ],
+      "remoteSubnetNames": [
+        "hub10"
+      ],
+      "peerCompleteVnets": false
+    },
+    {
+      "name": "hub/virtualNetworkPeerings/to-spoke2",
+      "peeringState": "Connected",
+      "provisioningState": "Succeeded",
+      "localSubnetNames": [
+        "hub10"
+      ],
+      "remoteSubnetNames": [
+        "spoke10"
+      ],
+      "peerCompleteVnets": false
+    },
+    {
+      "name": "spoke2/virtualNetworkPeerings/to-hub",
+      "peeringState": "Connected",
+      "provisioningState": "Succeeded",
+      "localSubnetNames": [
+        "spoke10"
+      ],
+      "remoteSubnetNames": [
+        "hub10"
+      ],
+      "peerCompleteVnets": false
+    }
+  ],
+  "executorProcessIdleProof": "process-idle.json",
+  "tests": "tests.txt (11 passed)"
+}

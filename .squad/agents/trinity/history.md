@@ -15,6 +15,16 @@
 
 ## Learnings
 
+### 2026-10-14 — Explicit compute recovery exception, stopped at resource acceptance
+
+- Separate recovery lease preserved Tank's blocked lease. Corrected compute live
+  validation passed; one ARM submission then failed all ten NSG writes with
+  `SecurityRuleInvalidAccessType` (`Allow`, allowed `Deny`). No retry/bindings.
+- Nine VNets, ten PIPs, two route tables and 26 peerings succeeded; no NICs/VMs.
+  Base ARM still running, inherited deadline 16:24Z unchanged. Local processes
+  terminated; sanitized inventory and next lease gates persisted in the lab
+  infrastructure/recovery handoffs. Seven static tests pass; guest lease blocked.
+
 ### 2026-09-29 - Niobe's re-validation correctly reopened S1 after the BGP chain was already fixed
 
 - The first five S1 defects were real and the BGP chain is still considered closed for its own scope.

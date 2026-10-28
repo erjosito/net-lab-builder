@@ -1,0 +1,70 @@
+[
+  {
+    "name": "hub",
+    "addressPrefixes": [
+      "10.0.0.0/16"
+    ],
+    "subnets": [
+      {
+        "name": "hub10",
+        "prefix": "10.0.1.0/24"
+      }
+    ],
+    "peerings": [
+      {
+        "name": "to-spoke1",
+        "state": "Connected"
+      },
+      {
+        "name": "to-spoke2",
+        "state": "Connected"
+      }
+    ]
+  },
+  {
+    "name": "spoke1",
+    "addressPrefixes": [
+      "10.10.0.0/16",
+      "192.168.0.0/16"
+    ],
+    "subnets": [
+      {
+        "name": "spoke10",
+        "prefix": "10.10.1.0/24"
+      },
+      {
+        "name": "isolated192",
+        "prefix": "192.168.1.0/24"
+      }
+    ],
+    "peerings": [
+      {
+        "name": "to-hub",
+        "state": "Connected"
+      }
+    ]
+  },
+  {
+    "name": "spoke2",
+    "addressPrefixes": [
+      "10.20.0.0/26",
+      "192.168.0.0/16"
+    ],
+    "subnets": [
+      {
+        "name": "spoke10",
+        "prefix": "10.20.0.0/27"
+      },
+      {
+        "name": "isolated192",
+        "prefix": "192.168.1.0/24"
+      }
+    ],
+    "peerings": [
+      {
+        "name": "to-hub",
+        "state": "Connected"
+      }
+    ]
+  }
+]

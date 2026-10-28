@@ -1,5 +1,21 @@
 # Azure public-endpoint bandwidth billing
 
+## Current checkpoint — 19 October 2026, 15:49Z
+
+**Cleanup reverified; billing follow-up paused at the user's request.**
+The [fresh Azure inventory check](results/2026-10-19-cleanup-recheck.json)
+confirms all five dedicated historical/rerun resource groups are absent.
+The original shared group contains only the previously preserved NSG of
+unverified ownership; neither it nor unrelated resources were deleted.
+No known lab compute, disks or public IPs remain. Late billing publication
+does not imply those resources are still running.
+
+The six-hourly billing schedule is stopped, with no replacement timer.
+Reconciliation remains inconclusive and can be retried on user return in a
+few days using the retained resource IDs, without recreating infrastructure.
+No support case was opened. The original 22 October 23:15:33Z follow-up
+limit is not extended; a check after it needs fresh scope.
+
 ## Latest coverage — 19 October 2026, 13:59Z
 
 **Weekly retrieval now covers all six resource-group scopes across both

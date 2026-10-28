@@ -1,0 +1,22 @@
+{
+  "startedAtUtc": "2026-10-16T08:03:30.748026+00:00",
+  "completedAtUtc": "2026-10-16T08:03:34.807046+00:00",
+  "command": [
+    "az",
+    "rest",
+    "--method",
+    "put",
+    "--url",
+    "https://management.azure.com/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke1?api-version=2026-01-01",
+    "--headers",
+    "Content-Type=application/json",
+    "--body",
+    "{\"location\": \"swedencentral\", \"tags\": {\"lab\": \"true\", \"created_by\": \"copilot-lab\", \"correlation_id\": \"subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983\"}, \"properties\": {\"addressSpace\": {\"addressPrefixes\": [\"10.10.0.0/16\", \"192.168.0.0/16\"]}, \"subnets\": [{\"name\": \"spoke10\", \"properties\": {\"addressPrefix\": \"10.10.1.0/24\"}}, {\"name\": \"isolated192\", \"properties\": {\"addressPrefix\": \"192.168.1.0/24\"}}]}}"
+  ],
+  "exitCode": 0,
+  "pid": 55388,
+  "batch": 2,
+  "stdout": "{\r\n  \"etag\": \"W/\\\"42f19593-f35d-4c51-b043-ae22acf41429\\\"\",\r\n  \"id\": \"/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke1\",\r\n  \"location\": \"swedencentral\",\r\n  \"name\": \"spoke1\",\r\n  \"properties\": {\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"10.10.0.0/16\",\r\n        \"192.168.0.0/16\"\r\n      ]\r\n    },\r\n    \"enableDdosProtection\": false,\r\n    \"privateEndpointVNetPolicies\": \"Disabled\",\r\n    \"provisioningState\": \"Updating\",\r\n    \"resourceGuid\": \"a2b7f150-2888-403b-8a41-db7e05f45e77\",\r\n    \"subnets\": [\r\n      {\r\n        \"etag\": \"W/\\\"42f19593-f35d-4c51-b043-ae22acf41429\\\"\",\r\n        \"id\": \"/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke1/subnets/spoke10\",\r\n        \"name\": \"spoke10\",\r\n        \"properties\": {\r\n          \"addressPrefix\": \"10.10.1.0/24\",\r\n          \"defaultOutboundAccess\": false,\r\n          \"delegations\": [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\": \"Enabled\",\r\n          \"provisioningState\": \"Updating\",\r\n          \"resourceGuid\": \"e65ea1bc-34dc-49d4-8137-5a6a8c157ddc\"\r\n        },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n      },\r\n      {\r\n        \"etag\": \"W/\\\"42f19593-f35d-4c51-b043-ae22acf41429\\\"\",\r\n        \"id\": \"/subscriptions/<redacted-guid>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/virtualNetworks/spoke1/subnets/isolated192\",\r\n        \"name\": \"isolated192\",\r\n        \"properties\": {\r\n          \"addressPrefix\": \"192.168.1.0/24\",\r\n          \"defaultOutboundAccess\": false,\r\n          \"delegations\": [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\": \"Enabled\",\r\n          \"provisioningState\": \"Updating\",\r\n          \"resourceGuid\": \"21a3be0c-b7c7-455c-a1ea-308194e792ff\"\r\n        },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n      }\r\n    ],\r\n    \"virtualNetworkPeerings\": []\r\n  },\r\n  \"tags\": {\r\n    \"correlation_id\": \"subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983\",\r\n    \"created_by\": \"copilot-lab\",\r\n    \"lab\": \"true\"\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualNetworks\"\r\n}\r\n",
+  "stderr": "",
+  "wrapperError": null
+}

@@ -1,0 +1,96 @@
+{
+  "verdict": "BLOCKED",
+  "sameLogicalOperation": "unknown",
+  "reason": "diagnostic_exception_stopped",
+  "startedUtc": "2026-10-18T05:19:27.708839+00:00",
+  "endedUtc": "2026-10-18T05:20:16.919404+00:00",
+  "elapsedSeconds": 49.210565,
+  "comparison": {
+    "nextLocationPresent": false,
+    "exactStringEqual": null,
+    "HTTPSboth": null,
+    "trustedARMhostBoth": null,
+    "sameNetloc": null,
+    "samePort": null,
+    "userinfoAbsent": null,
+    "samePath": null,
+    "sameSubscription": null,
+    "sameOperationFamily": null,
+    "sameOperationId": null,
+    "queryKeySetsEqual": null,
+    "sameParsedQueryValues": null,
+    "queryKeyOrderEqual": null,
+    "nextURLformValid": null,
+    "URLcomparisonAvailable": null,
+    "initialURLformValid": true,
+    "extractionAvailable": false,
+    "valuesChangedForNamedAllowlist": {
+      "apiVersion": null,
+      "t": null,
+      "c": null,
+      "s": null,
+      "h": null
+    }
+  },
+  "http": [
+    {
+      "status": 202,
+      "responseMetadata": {
+        "receivedAtUtc": "2026-10-18T05:19:45.381175+00:00",
+        "safeHeaders": {
+          "retry-after": "20",
+          "x-ms-request-id": "fac4b928-cda7-4b6b-b5e3-ca3d08568372",
+          "x-ms-correlation-request-id": "4e0574a8-d489-4535-a6bd-ca4073f4deda",
+          "date": "Sun, 18 Oct 2026 05:19:45 GMT"
+        },
+        "retryAfterSeconds": 20.0,
+        "suggestedRetryAtUtc": "2026-10-18T05:20:05.381175+00:00",
+        "retrySource": "known"
+      }
+    },
+    {
+      "status": 200,
+      "responseMetadata": {
+        "receivedAtUtc": "2026-10-18T05:20:16.866631+00:00",
+        "safeHeaders": {
+          "x-ms-request-id": "3a954816-050f-468a-b2c7-ec1127a0872f",
+          "x-ms-correlation-request-id": "5c1f02af-6076-440a-83f8-f494131d8b53",
+          "date": "Sun, 18 Oct 2026 05:20:16 GMT"
+        },
+        "retryAfterSeconds": null,
+        "suggestedRetryAtUtc": null,
+        "retrySource": "unknown"
+      }
+    }
+  ],
+  "requestPeriod": {
+    "metric": "ActualCost",
+    "timePeriod": {
+      "start": "2026-10-15",
+      "end": "2026-10-18"
+    }
+  },
+  "billingRequests": {
+    "actual": 2,
+    "diagnosticCap": 2,
+    "prior": 2,
+    "globalCumulative": 4,
+    "globalCap": 6,
+    "remainingParentBudget": 2
+  },
+  "requestCounts": {
+    "generation": 1,
+    "poll": 1
+  },
+  "downloads": 0,
+  "mutations": 0,
+  "changedLocationFollowed": false,
+  "originalReceiptsUnchanged": true,
+  "collectorUnchanged": true,
+  "allOwnedChildrenIdle": true,
+  "interpretation": "URL shape evidence only; no legitimacy, attack, billing, or ingestion conclusion.",
+  "diagnosticScope": "DIAGNOSTIC_NOTCOLLECTION",
+  "observation": "No replacement Location on the single HTTP 200 poll; the prior pending-Location change did not reproduce. Comparisons requiring a second URL are unavailable. Adapter stopped on exception; no retry or further HTTP.",
+  "externalFinalChildrenIdle": true,
+  "leaseClosed": true
+}

@@ -1,0 +1,43 @@
+{
+  "verdict": "PASS",
+  "scope": "Deployment and OS bootstrap only",
+  "reason": "Five VMs running; cloud-init and services ready; dataplane reserved for Niobe",
+  "atUtc": "2026-10-16T08:28:18.041773+00:00",
+  "retained": true,
+  "deleteSubmissions": 0,
+  "childrenIdle": true,
+  "queuedWork": [],
+  "actions": [
+    {
+      "label": "deployment-submit",
+      "action": "deployment",
+      "atUtc": "2026-10-16T08:23:06.224600+00:00"
+    },
+    {
+      "label": "vm-hub-hub10-bootstrap",
+      "action": "bootstrap-read",
+      "atUtc": "2026-10-16T08:24:20.699044+00:00"
+    },
+    {
+      "label": "vm-spoke1-spoke10-bootstrap",
+      "action": "bootstrap-read",
+      "atUtc": "2026-10-16T08:25:07.303326+00:00"
+    },
+    {
+      "label": "vm-spoke1-isolated192-bootstrap",
+      "action": "bootstrap-read",
+      "atUtc": "2026-10-16T08:25:57.464440+00:00"
+    },
+    {
+      "label": "vm-spoke2-spoke10-bootstrap",
+      "action": "bootstrap-read",
+      "atUtc": "2026-10-16T08:26:42.881975+00:00"
+    },
+    {
+      "label": "vm-spoke2-isolated192-bootstrap",
+      "action": "bootstrap-read",
+      "atUtc": "2026-10-16T08:27:30.163910+00:00"
+    }
+  ],
+  "retailDailyUsd": 10.7145
+}

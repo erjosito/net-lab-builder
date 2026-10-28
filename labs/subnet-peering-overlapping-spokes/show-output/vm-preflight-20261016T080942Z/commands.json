@@ -1,0 +1,74 @@
+[
+  {
+    "label": "account-match",
+    "command": [
+      "az",
+      "account",
+      "show"
+    ],
+    "startedAtUtc": "2026-10-16T08:09:42.206290+00:00",
+    "completedAtUtc": "2026-10-16T08:09:45.521600+00:00",
+    "exitCode": 0,
+    "stderr": ""
+  },
+  {
+    "label": "inventory-before",
+    "command": [
+      "az",
+      "resource",
+      "list",
+      "-g",
+      "rg-subnet-overlap-20261016-fde5ecf8"
+    ],
+    "startedAtUtc": "2026-10-16T08:09:45.534649+00:00",
+    "completedAtUtc": "2026-10-16T08:09:53.527773+00:00",
+    "exitCode": 0,
+    "stderr": ""
+  },
+  {
+    "label": "network-baseline",
+    "command": [
+      "az",
+      "network",
+      "vnet",
+      "list",
+      "-g",
+      "rg-subnet-overlap-20261016-fde5ecf8"
+    ],
+    "startedAtUtc": "2026-10-16T08:09:53.533774+00:00",
+    "completedAtUtc": "2026-10-16T08:09:59.225146+00:00",
+    "exitCode": 0,
+    "stderr": ""
+  },
+  {
+    "label": "regional-sku-catalog",
+    "command": [
+      "az",
+      "vm",
+      "list-skus",
+      "-l",
+      "swedencentral",
+      "--resource-type",
+      "virtualMachines",
+      "--all"
+    ],
+    "startedAtUtc": "2026-10-16T08:09:59.232727+00:00",
+    "completedAtUtc": "2026-10-16T08:11:23.419616+00:00",
+    "exitCode": 0,
+    "stderr": ""
+  },
+  {
+    "label": "regional-and-family-quota",
+    "command": [
+      "az",
+      "vm",
+      "list-usage",
+      "-l",
+      "swedencentral"
+    ],
+    "startedAtUtc": "2026-10-16T08:11:25.993286+00:00",
+    "completedAtUtc": "2026-10-16T08:11:31.678673+00:00",
+    "exitCode": 0,
+    "stderr": ""
+  }
+]

@@ -1,0 +1,29 @@
+{
+  "timestampUtc": "2026-10-16T08:45:31.631331+00:00",
+  "finishedUtc": "2026-10-16T08:47:15.683800+00:00",
+  "command": [
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vwan-sdwan-threehub-20261014",
+    "-n",
+    "router-us",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "@<LOCAL_USER>\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\design-startup-source-us.sh"
+  ],
+  "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\n\\n[stderr]\\nTraceback (most recent call last):\\n  File \\\"<stdin>\\\", line 14, in <module>\\nAssertionError: {'command': ['birdc', 'show', 'protocols'], 'exitCode': 0, 'stdout': 'BIRD 2.0.8 ready.\\\\nName       Proto      Table      State  Since         Info\\\\ndevices    Device     ---        up     08:42:02.642  \\\\nconnected  Direct     ---        up     08:42:02.642  \\\\ncontrol_pins Static     underlay4  up     08:42:02.642  \\\\nown_dc     Static     lab4       up     08:42:02.642  \\\\nkernel_lab Kernel     lab4       up     08:42:02.642  \\\\nmesh_eu    BGP        ---        up     08:42:06.751  Established   \\\\nmesh_jp    BGP        ---        start  08:42:02.642  Active        Socket: Connection refused\\\\nmesh_cn    BGP        ---        up     08:42:07.654  Established   \\\\nazure_0    BGP        ---        up     08:42:06.023  Established   \\\\nazure_1    BGP        ---        up     08:42:04.981  Established   \\\\n', 'stderr': ''}\\n\"\n    }\n  ]\n}\n",
+  "result": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\n\n[stderr]\nTraceback (most recent call last):\n  File \"<stdin>\", line 14, in <module>\nAssertionError: {'command': ['birdc', 'show', 'protocols'], 'exitCode': 0, 'stdout': 'BIRD 2.0.8 ready.\\nName       Proto      Table      State  Since         Info\\ndevices    Device     ---        up     08:42:02.642  \\nconnected  Direct     ---        up     08:42:02.642  \\ncontrol_pins Static     underlay4  up     08:42:02.642  \\nown_dc     Static     lab4       up     08:42:02.642  \\nkernel_lab Kernel     lab4       up     08:42:02.642  \\nmesh_eu    BGP        ---        up     08:42:06.751  Established   \\nmesh_jp    BGP        ---        start  08:42:02.642  Active        Socket: Connection refused\\nmesh_cn    BGP        ---        up     08:42:07.654  Established   \\nazure_0    BGP        ---        up     08:42:06.023  Established   \\nazure_1    BGP        ---        up     08:42:04.981  Established   \\n', 'stderr': ''}\n"
+      }
+    ]
+  },
+  "sha256": "07675fd16b87d841a6255163c6b15ef2d80ff0f4f19630b3a2bebf5bf0724454"
+}

@@ -1,0 +1,185 @@
+{
+  "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+  "reason": "Five unexpected networkSecurityGroups absent from approved prior inventory; ownership not established. Platform MDE.Linux child extensions also observed, but are not the blocking resource class. No DELETE submitted; frozen without retry.",
+  "inventoryExactMatch": false,
+  "subscriptionMatchesConfiguration": true,
+  "authorization": "Jose Moreno explicitly approved original exact inventory cleanup, not unknown resources",
+  "counts": [
+    {
+      "type": "Microsoft.Compute/disks",
+      "count": 5
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "count": 5
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "count": 8
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "count": 5
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "count": 5
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "count": 3
+    }
+  ],
+  "unexpectedResources": [
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Compute/virtualMachines/vm-spoke1-isolated192/extensions/MDE.Linux",
+      "name": "vm-spoke1-isolated192/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "tags": null,
+      "managedBy": null
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Compute/virtualMachines/vm-hub-hub10/extensions/MDE.Linux",
+      "name": "vm-hub-hub10/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "tags": null,
+      "managedBy": null
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Compute/virtualMachines/vm-spoke1-spoke10/extensions/MDE.Linux",
+      "name": "vm-spoke1-spoke10/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "tags": null,
+      "managedBy": null
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Compute/virtualMachines/vm-spoke2-isolated192/extensions/MDE.Linux",
+      "name": "vm-spoke2-isolated192/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "tags": null,
+      "managedBy": null
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Compute/virtualMachines/vm-spoke2-spoke10/extensions/MDE.Linux",
+      "name": "vm-spoke2-spoke10/MDE.Linux",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "tags": null,
+      "managedBy": null
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkSecurityGroups/spoke2-spoke10-nsg-swedencentral",
+      "name": "spoke2-spoke10-nsg-swedencentral",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "managedBy": null
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkSecurityGroups/spoke1-spoke10-nsg-swedencentral",
+      "name": "spoke1-spoke10-nsg-swedencentral",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "managedBy": null
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkSecurityGroups/hub-hub10-nsg-swedencentral",
+      "name": "hub-hub10-nsg-swedencentral",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "managedBy": null
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkSecurityGroups/spoke1-isolated192-nsg-swedencentral",
+      "name": "spoke1-isolated192-nsg-swedencentral",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "managedBy": null
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkSecurityGroups/spoke2-isolated192-nsg-swedencentral",
+      "name": "spoke2-isolated192-nsg-swedencentral",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "managedBy": null
+    }
+  ],
+  "resourceGroupTagsMatch": true,
+  "unknownOwnershipResources": [
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkSecurityGroups/spoke2-spoke10-nsg-swedencentral",
+      "name": "spoke2-spoke10-nsg-swedencentral",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "managedBy": null
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkSecurityGroups/spoke1-spoke10-nsg-swedencentral",
+      "name": "spoke1-spoke10-nsg-swedencentral",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "managedBy": null
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkSecurityGroups/hub-hub10-nsg-swedencentral",
+      "name": "hub-hub10-nsg-swedencentral",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "managedBy": null
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkSecurityGroups/spoke1-isolated192-nsg-swedencentral",
+      "name": "spoke1-isolated192-nsg-swedencentral",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "managedBy": null
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-subnet-overlap-20261016-fde5ecf8/providers/Microsoft.Network/networkSecurityGroups/spoke2-isolated192-nsg-swedencentral",
+      "name": "spoke2-isolated192-nsg-swedencentral",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "managedBy": null
+    }
+  ],
+  "verdict": "BLOCKED",
+  "atUtc": "2026-10-17T09:11:23.9613000Z"
+}

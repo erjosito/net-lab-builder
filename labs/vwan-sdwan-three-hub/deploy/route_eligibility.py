@@ -7,7 +7,30 @@ import time
 import aspath_sweep as sweep
 import control
 import infra
+import propagation_repair as propagation
 import vpn_sdwan_boundary as boundary
+
+
+def read_routing(label):
+    commands = [
+        (["rest", "--method", "get", "--url",
+          sweep.network_url("virtualHubs", f"hub-{site}/hubVirtualNetworkConnections") +
+          "?api-version=2024-05-01"], f"{label}-connections-{site}")
+        for site in sweep.SITES
+    ]
+    commands.append(([
+        "rest", "--method", "get", "--url",
+        sweep.network_url("vpnGateways", "vpngw-jp/vpnConnections/conn-dc-jp") +
+        "?api-version=2024-05-01", "--query", "properties.routingConfiguration"
+    ], label + "-vpn-routing"))
+    return sweep.az_batch(commands)
+
+
+def with_parent_dependencies(resources):
+    for resource in resources:
+        hub = resource["name"].split("/")[0]
+        resource.setdefault("dependsOn", []).append(infra.rid("virtualHubs", hub))
+    return resources
 
 
 def main():
@@ -16,7 +39,10 @@ def main():
     parser.add_argument("--out", required=True)
     parser.add_argument("--secured", action="store_true")
     parser.add_argument("--enable-hub-transit", action="store_true")
+    parser.add_argument("--canonical-labels", action="store_true")
     args = parser.parse_args()
+    if args.canonical_labels and not args.enable_hub_transit:
+        parser.error("--canonical-labels requires --enable-hub-transit")
     control.LEASE = control.RUNTIME / args.lease
     lease = control.guard(True)
     if lease.get("toolCallsUsed", 0) or lease.get("mutationsUsed", 0):
@@ -34,7 +60,10 @@ def main():
     before, after, states, errors = {}, {}, {}, []
     dirty = False
     dirty_hubs = False
+    dirty_vpn = False
     original_hubs = []
+    original_resources = []
+    original_routing = None
     try:
         before = boundary.invoke_all("baseline")
         boundary.BASE.update(before)
@@ -50,12 +79,32 @@ def main():
             ])
             original_hubs = [sweep.hub_resource(v) for v in values]
             candidate = copy.deepcopy(original_hubs)
+            original_resources = copy.deepcopy(original_hubs)
             for resource in candidate:
                 resource["properties"]["allowBranchToBranchTraffic"] = True
+            if args.canonical_labels:
+                original_routing = read_routing("routing-before")
+                connections = propagation.connection_resources(original_routing[:3])
+                expected = {f"hub-{s}/conn-spoke-{s}" for s in sweep.SITES}
+                expected.update(f"hub-{s}/conn-transit-{s}" for s in ("eu", "us"))
+                if {r["name"] for r in connections} != expected:
+                    raise RuntimeError("Expected exactly five task-owned VNet connections")
+                original_resources.extend(with_parent_dependencies(connections))
+                candidate.extend(with_parent_dependencies(
+                    propagation.connection_resources(original_routing[:3], "default")))
             sweep.reserve_restore(control.guard(True))
             dirty_hubs = True
             sweep.submit(infra.template(candidate), {"parameters": {}},
                          "cn-control-enable-transit", True)
+            if args.canonical_labels:
+                dirty_vpn = True
+                propagation.vpn_labels(["default"], "cn-control-normalize-vpn")
+                actual = read_routing("routing-normalized")
+                if ({r["name"] for r in propagation.connection_resources(actual[:3])} != expected or
+                        any(c["properties"]["routingConfiguration"]["propagatedRouteTables"]
+                        ["labels"] != ["default"] for v in actual[:3] for c in v["value"]) or
+                        actual[3]["propagatedRouteTables"]["labels"] != ["default"]):
+                    raise RuntimeError("Canonical labels were not accepted on all six connections")
             states["transit-enabled"] = sweep.capture(
                 "transit-enabled", 0, firewall_ids=firewall_ids, parallel=True)
             metadata = json.loads((sweep.CURRENT / "hub-metadata.json").read_text())
@@ -76,19 +125,30 @@ def main():
         print(f"ELIGIBILITY ERROR {exc}", flush=True)
     finally:
         sweep.RESTORING = True
-        sweep.RESTORE_DEADLINE = time.monotonic() + 900
-        changed = dirty or dirty_hubs
+        sweep.RESTORE_DEADLINE = time.monotonic() + 60 * lease.get("restoreTimeoutMinutes", 15)
+        changed = dirty or dirty_hubs or dirty_vpn
         try:
             if dirty:
                 sweep.CURRENT = sweep.OUT / "restore"
                 proof = boundary.invoke("jp", "restore", restore=True)
-                if any(proof[k] != before["jp"][k] for k in ("sha256", "stat", "exports")):
+                if not boundary.same_source(before["jp"], proof):
                     raise RuntimeError("Japan exact file/export restore differs")
                 dirty = False
+            if dirty_vpn:
+                propagation.vpn_labels(
+                    original_routing[3]["propagatedRouteTables"]["labels"],
+                    "cn-control-restore-vpn")
+                dirty_vpn = False
             if dirty_hubs:
-                sweep.submit(infra.template(original_hubs), {"parameters": {}},
+                sweep.submit(infra.template(original_resources), {"parameters": {}},
                              "cn-control-restore-transit", True)
                 dirty_hubs = False
+            if original_routing:
+                actual = read_routing("routing-restored")
+                if (propagation.connection_resources(actual[:3]) !=
+                        propagation.connection_resources(original_routing[:3]) or
+                        actual[3] != original_routing[3]):
+                    raise RuntimeError("Original connection routing configurations differ")
             if before and changed:
                 states["restore"] = sweep.capture("restore", 0, firewall_ids=firewall_ids, parallel=True)
                 if (states["restore"]["verdict"] != "PASS" or
@@ -104,8 +164,7 @@ def main():
             sweep.CURRENT = sweep.OUT / "closure"
             after = boundary.invoke_all("closure")
             for site in (*sweep.SITES, "cn"):
-                if any(after[site][k] != before.get(site, {}).get(k)
-                       for k in ("sha256", "stat", "exports", "protocols", "ikeEstablished")):
+                if not boundary.same_source(before[site], after[site]):
                     raise RuntimeError(f"{site}: closure differs")
         except Exception as exc:
             errors.append("RESTORE: " + str(exc))
@@ -117,7 +176,7 @@ def main():
                   sweep.winning_identity(candidate[0]) != sweep.winning_identity(baseline_cn[0]))
         if candidate and not remote:
             errors.append("Withdrawal still shows the original local winner; remote eligibility unproven")
-        restored = not dirty and not dirty_hubs and len(after) == 4 and not any(
+        restored = not dirty and not dirty_hubs and not dirty_vpn and len(after) == 4 and not any(
             e.startswith("RESTORE:") for e in errors)
         complete = restored and len(states) == (4 if args.enable_hub_transit else 3) and not errors
         # Persist the local verdict even when expiry forbids further live work.

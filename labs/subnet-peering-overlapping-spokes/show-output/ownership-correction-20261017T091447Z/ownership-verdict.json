@@ -1,0 +1,102 @@
+{
+  "verdict": "PASS",
+  "azureWrites": 0,
+  "taskId": "ownership-correction-20261017T091447Z",
+  "atUtc": "2026-10-17T09:15:07.837996+00:00",
+  "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+  "subscriptionMatchesConfiguration": true,
+  "counts": {
+    "microsoft.network/virtualnetworks": 3,
+    "microsoft.network/networkinterfaces": 5,
+    "microsoft.compute/virtualmachines": 5,
+    "microsoft.compute/disks": 5,
+    "microsoft.compute/virtualmachines/extensions": 8,
+    "microsoft.network/networksecuritygroups": 5
+  },
+  "verifiedNsgs": [
+    {
+      "name": "hub-hub10-nsg-swedencentral",
+      "purpose": "hub-hub10",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "tagMatch": true,
+      "networkInterfaces": [],
+      "subnets": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Network/virtualNetworks/HUB/subnets/HUB10"
+      ],
+      "referenceCondition": "Only exact owned lab NICs/subnets or unattached",
+      "createdAt": null
+    },
+    {
+      "name": "spoke1-spoke10-nsg-swedencentral",
+      "purpose": "spoke1-spoke10",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "tagMatch": true,
+      "networkInterfaces": [],
+      "subnets": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Network/virtualNetworks/SPOKE1/subnets/SPOKE10"
+      ],
+      "referenceCondition": "Only exact owned lab NICs/subnets or unattached",
+      "createdAt": null
+    },
+    {
+      "name": "spoke1-isolated192-nsg-swedencentral",
+      "purpose": "spoke1-isolated192",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "tagMatch": true,
+      "networkInterfaces": [],
+      "subnets": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Network/virtualNetworks/SPOKE1/subnets/ISOLATED192"
+      ],
+      "referenceCondition": "Only exact owned lab NICs/subnets or unattached",
+      "createdAt": null
+    },
+    {
+      "name": "spoke2-spoke10-nsg-swedencentral",
+      "purpose": "spoke2-spoke10",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "tagMatch": true,
+      "networkInterfaces": [],
+      "subnets": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Network/virtualNetworks/SPOKE2/subnets/SPOKE10"
+      ],
+      "referenceCondition": "Only exact owned lab NICs/subnets or unattached",
+      "createdAt": null
+    },
+    {
+      "name": "spoke2-isolated192-nsg-swedencentral",
+      "purpose": "spoke2-isolated192",
+      "tags": {
+        "created_by": "copilot-lab",
+        "correlation_id": "subnet-overlap-retained-20261016-c84d66d6-c7a8-4bbd-a567-26d056d0b983",
+        "lab": "true"
+      },
+      "tagMatch": true,
+      "networkInterfaces": [],
+      "subnets": [
+        "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/RG-SUBNET-OVERLAP-20261016-FDE5ECF8/providers/Microsoft.Network/virtualNetworks/SPOKE2/subnets/ISOLATED192"
+      ],
+      "referenceCondition": "Only exact owned lab NICs/subnets or unattached",
+      "createdAt": null
+    }
+  ],
+  "authorization": "User approved deletion of all resources of this lab RG, not a frozen old inventory",
+  "correction": "Matching lab tags and exclusively lab-owned associations establish NSG ownership; absence from old inventory is not foreign ownership",
+  "platformExtensions": "8 children of the five owned lab VMs",
+  "priorOwnerIdle": true
+}

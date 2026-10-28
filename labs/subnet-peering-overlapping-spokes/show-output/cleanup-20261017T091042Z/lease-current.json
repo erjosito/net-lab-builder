@@ -1,0 +1,60 @@
+{
+  "taskId": "cleanup-20261017T091042Z",
+  "ownerRole": "Tank",
+  "objective": "Delete only approved exact lab RG",
+  "createdAtUtc": "2026-10-17T11:10:42.583254+02:00",
+  "expiresAtUtc": "2026-10-17T11:35:42.583254+02:00",
+  "maxToolCalls": 50,
+  "toolCallsUsed": 4,
+  "maxMutations": 1,
+  "mutationsUsed": 0,
+  "commandTimeoutSeconds": 180,
+  "restoreTimeoutMinutes": 0,
+  "rollback": "None; explicitly approved irreversible deletion",
+  "managedDeletionTimeoutMinutes": 15,
+  "pollIntervalSeconds": 30,
+  "progressSignal": "Authenticated exact-RG GET provisioningState/status",
+  "allowedMutations": [
+    "DELETE exact resource group rg-subnet-overlap-20261016-fde5ecf8"
+  ],
+  "forbiddenWork": [
+    "Other mutations",
+    "Retries",
+    "Subscription switch",
+    "Publication"
+  ],
+  "runningChildren": [],
+  "queuedWork": [],
+  "state": "blocked",
+  "resourceGroup": "rg-subnet-overlap-20261016-fde5ecf8",
+  "evidenceDirectory": "cleanup-20261017T091042Z",
+  "lastCheckpointUtc": "2026-10-17T11:10:49.424888+02:00",
+  "closedAtUtc": "2026-10-17T11:10:50.410729+02:00",
+  "reason": "Five unexpected networkSecurityGroups absent from approved prior inventory; ownership not established. Platform MDE.Linux child extensions also observed, but are not the blocking resource class. No DELETE submitted; frozen without retry.",
+  "beforeCounts": [
+    {
+      "type": "Microsoft.Compute/disks",
+      "count": 5
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "count": 5
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "count": 8
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "count": 5
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "count": 5
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "count": 3
+    }
+  ]
+}
