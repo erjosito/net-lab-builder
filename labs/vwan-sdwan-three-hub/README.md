@@ -1,11 +1,196 @@
 # Three-hub Virtual WAN / SD-WAN lab
 
-> **IN PROGRESS — resources retained for the remaining experiments.**
-> Progress report dated 2026-10-15. Post-restart mesh recovery is verified.
+> **2026-10-19: B1 passes four controlled HRP-update / BGP-only-reset runs.**
 > **Three Standard Azure Firewalls and PrivateTraffic routing intent are deployed.**
-> Secured route/forwarding validation and the static-VPN reproduction are unfinished.
-> The complete HRP/RI comparison and current forwarding validation are unfinished.
-> Completed control-plane states below do not establish end-to-end forwarding.
+> **A:** ASPath plus NVA import policy selected Microsoft's backbone.
+> **B1:** ExpressRoute and VPN HRP select the longer local Japan paths after a complete Azure-facing BGP reset, with both tested establishment orders.
+> **B2:** ASPath with no extra nonlocal prepends selected local customer-mesh paths at the hub firewalls and NVAs.
+> Acceptance covers **24 DC/Azure directions**, not DC-to-DC traffic. A plus its Japan workload UDR passes all 24 for TCP and ICMP.
+> All ten VMs are back to their original **deallocated** states. Hubs, firewalls and VPN gateway remain deployed and billable.
+
+## Latest result: HRP updates followed by BGP-only resets
+
+The [four-control reset report](show-output/hrp-reset-summary-20261019/README.md)
+tests ExpressRoute and VPN HRP, each with Japan-first and EU/US-first BGP
+establishment. All six Azure-facing adjacencies are disabled together,
+all DC-prefix withdrawals are confirmed at the firewalls, and then the
+sessions are re-enabled in the prescribed order. BIRD processes, mesh
+BGP sessions and IPsec configuration are preserved during each reset.
+
+| HRP | Japan-first TCP / ICMP | EU/US-first TCP / ICMP | All 12 DC-prefix firewall winners identical across orders |
+| --- | --- | --- | --- |
+| ExpressRoute | 24/24 / 24/24 | 24/24 / 24/24 | Yes |
+| VPN | 24/24 / 24/24 | 24/24 / 24/24 | Yes |
+
+Both hubs select their local length-five Japan route after every reset,
+rather than Japan's remote length-three route. In the first run of each
+HRP mode, the HRP change alone retained the remote winner; the reset changed
+it to local. In the second run, local preference was already present before
+resetting. Thus a reset is a **tested operational recovery caveat**, not
+proof that every HRP change requires one or a guarantee for all future
+reconvergence sequences. B1 need not remain a scenario blocker under these
+tested conditions.
+
+All traffic captures consistently include the Japan workload's three-spoke
+UDR through `10.130.0.4`, and all hub branch flags are enabled. The report
+contains complete matched firewall/NVA tables, BIRD configurations, packet
+observations, transport invariants and the unsuccessful timeout attempt.
+The older forwarding failures are preserved; this follow-up does not isolate
+the reset as the cause of every improvement over those captures.
+
+Original BIRD bytes/metadata, mixed hub preferences/flags, subnet association
+and firewall winners were restored. The independent check initially differed
+by one ICMP direction; a single bounded retry reproduced the original
+10/24 TCP and 14/24 ICMP matrix. Both captures remain available. Temporary
+route tables are removed and all ten VMs are again deallocated.
+
+## Earlier result: all-hub B2B rerun with forwarding evidence
+
+The [complete rerun report](show-output/b2b-summary-20261017/README.md)
+contains fourteen measured states, full three-hub firewall tables, full
+four-router BIRD configurations/routes and packet-interface observations.
+The historical capture preserves all 42 initiated directions, using
+source-bound private TCP/HTTP and ICMP. Acceptance is now derived from
+only the **24 DC/Azure directions**: twelve DC-to-DC directions are excluded
+and six spoke-to-spoke directions are auxiliary. Original raw verdicts
+remain unchanged; [acceptance.csv](show-output/b2b-summary-20261017/acceptance.csv)
+contains the explicitly scoped measurements.
+
+| State | TCP passes / 24 | ICMP passes / 24 |
+| --- | --- | --- |
+| Original mixed hub B2B flags | 10 | 14 |
+| All hub B2B flags enabled, no other policy change | 10 | 14 |
+| A, NVA policy only | 18 | 18 |
+| A, plus Japan workload UDR | 24 | 24 |
+| B1, ExpressRoute, original three prepends, initial / withdrawn / returned | 10 | 14 |
+| B1, EU two-prepend control, initial / withdrawn / returned | 12 | 15 |
+| B1, VPN HRP | 14 | 16 |
+| B2, ASPath with zero extra EU/US prepends | 18 | 18 |
+| B2, same BGP policy plus three-spoke Japan workload UDR | 24 | 24 |
+
+Enabling Japan's per-hub flag changed **neither the twelve DC-prefix firewall
+winners nor any traffic outcome** in the matched baseline. The WAN flag
+was already enabled. The original flags were EU/US `true`, Japan `false`.
+
+**B1's history dependency persists with all hub flags enabled:** initial
+remote Japan length three, local length five after the JP-only direct
+export withdrawal, and local length five retained after return. The
+separate EU four-versus-three control repeats it. The inconsistent flags
+therefore do not explain away that result. VPN HRP is now measured too,
+but sequential route history prevents a universal ER/VPN comparison.
+
+The [step-by-step explanation](show-output/b2b-summary-20261017/README.md#start-with-one-destination-and-two-ways-to-reach-it)
+defines local versus remote advertisements and walks through the competing
+paths, withdrawal and return. History dependence is observed; an Azure-internal
+race is not proved. The documented two-or-more-longer caveat fits five
+versus three, but alone does not explain four versus three.
+
+**Reachability does not prove the intended backbone.** A with its UDR passes
+the requested DC/Azure criterion; its historical DC-to-DC failures are not
+acceptance failures. B2 without a workload UDR fails the six Japan workload
+<-> Azure-spoke directions. BIRD kernel-export `!` warnings remain visible,
+but do not by themselves identify a packet-drop cause; Linux routes and
+packet observations must be checked separately.
+
+The [focused B2 diagnosis](show-output/b2b-summary-20261017/README.md#b2s-six-japan-workload-failures-a-workload-steering-fault-not-an-as-path-fault)
+captures the Japan workload's guest and Azure NIC routes, then changes only
+its subnet steering. Before the UDR, Linux reports `via 10.130.0.4`, but
+Azure's active fabric route is `10.0.0.0/8 -> None` for every spoke.
+Three /24 UDRs to the Japan NVA change B2 from 18/24 to **24/24 TCP and ICMP**;
+removing the association reproduces 18/24. Firewall winners and selected
+NVA routes remain unchanged. The temporary table is deleted afterward.
+Those historical B1 captures predate the workload correction. The 19 October
+reset controls above now repeat both HRP modes with consistent workload
+steering; the old counts remain historical, not an HRP-only comparison
+with corrected A/B2.
+
+Exact BIRD bytes/metadata, original mixed HRPs/flags and paired firewall
+winners were independently restored and verified. The original traffic
+matrix also repeated. All ten VMs are again deallocated; the temporary
+A route table was deleted and the original subnet association verified.
+No IPsec or WireGuard configuration was changed.
+
+## Earlier result: why the ExpressRoute-HRP controls differed
+
+The [17 October route-history control](show-output/hrp-reselection-control-20261017/README.md)
+used the original **three-extra-prepend** EU/US configuration without changing
+it. After switching from the saved mixed HRPs to all-hub ExpressRoute,
+EU/US initially retained Japan's remote path, length three. Withdrawing
+only Japan's direct Azure export of `10.130.0.0/24` made their local NVA
+paths, length five, win. After restoring that export, **the longer local
+paths remained selected at both hubs**, reproducing the intended B1 behavior.
+
+All four BIRD configuration files and metadata, and all three HRPs, were
+identical before and after the withdrawal/re-advertisement. This establishes
+**history-dependent selection**, not a general inability to prefer local
+peered-NVA routes. It also confirms that the local routes were eligible.
+The original three-prepend paths are two ASNs longer than the remote path,
+within the documented race-condition warning. That does not retroactively
+explain the separate 16 October two-prepend, one-ASN-difference control or
+identify Azure's internal mechanism.
+
+A [separate one-ASN-difference control](show-output/hrp-one-asn-control-20261017/README.md)
+then reproduced the same history dependency with EU's local path length
+four versus the remote length three. The local path remained selected after
+Japan's direct export returned, despite identical EU configuration and HRP
+before and after. Thus the observation is not limited to the documented
+two-longer condition. Its internal cause still requires Azure backend
+investigation; the older negative verdict remains preserved.
+
+The [scenario verdict](show-output/hrp-reselection-control-20261017/reselection-verdict.json),
+[independent exact reset](show-output/hrp-reselection-verify-20261017/verification-verdict.json)
+and [original power inventory restoration](show-output/hrp-reselection-power-20261017/power-verdict.json)
+all passed. No IPsec, WireGuard, mesh-export, workload-subnet or traffic-test
+changes were made.
+
+## A or B: which backbone should carry the traffic?
+
+The [A/B design comparison](show-output/ab-design-comparison-20261016/README.md)
+organizes the measured states around the operational choice: **A, Microsoft
+backbone preferred**, or **B, customer backbone preferred**. It links matched
+EU/Japan firewall tables and EU/Japan/China NVA configurations and routes for
+A, B1 and B2. US is collected as well.
+
+The earlier 16 October B1 control used all-hub ExpressRoute HRP and two extra nonlocal prepends at EU/US.
+Their local Japan path had four ASNs versus three on the remote VPN path;
+both firewalls still selected the remote path. This does not reproduce the
+intended B1 design, and the result must not be presented as successful
+HRP-only customer-backbone preference. VPN HRP was not measured.
+
+B2 used all-hub ASPath HRP and removed EU/US extra nonlocal prepends. The
+local two-ASN Japan paths won at EU/US; Japan selected its local VPN ingress
+for the EU prefix. NVA mesh selections passed the customer-first assertions.
+Its original run records **BLOCKED** because the lease expired during
+read-only restoration proof, after the restore commands completed.
+The subsequent [independent recovery verification](show-output/ab-final-recovery-verification-20261016/verification-verdict.json)
+passed exact source/metadata, original mixed HRPs and paired firewall winners.
+[Power restoration](show-output/ab-router-power-restore-20261016/power-restore-verdict.json)
+returned only the four routers started for these controls to their saved
+states; all six probes were untouched.
+
+## Latest result: two routing decisions, not one
+
+The [matched three-state report](show-output/backbone-policy-design-20261016/README.md)
+compares the current user-configured baseline, ASPath plus NVA policy, and that
+same policy plus a temporary Japan workload UDR. Every state includes firewall
+effective tables, full BIRD configuration, selected routes, kernel routes and
+seven directional TCP/ICMP cells.
+
+At baseline, EU/US firewalls already selected the remote Japan VPN route
+`65520-65520-65013`, but their NVAs selected `mesh_jp` with path `65013`.
+After accepting foreign DC routes from Azure and assigning Azure imports
+local-pref 400, EU/US NVAs selected `azure_*` with path
+`65515-65520-65520-65013`. Japan selected EU DC and spoke routes through Azure
+too. This demonstrates why HRP and outbound prepends alone do not select the
+NVA's DC-to-Azure forwarding path.
+
+The [independent final verification](show-output/backbone-final-verification-20261016/verification-verdict.json)
+preserves the user's exact EU/US prepended BIRD files, original Japan/China
+files and metadata, mixed HRPs (EU/US ASPath, Japan ExpressRoute), eighteen
+Established BIRD endpoints, two Japan IKE SAs and original paired firewall
+winners. The temporary route table was deleted and Japan's original subnet
+association restored. [Power restoration](show-output/backbone-power-restoration-20261016/power-restoration-verdict.json)
+returned only the ten VMs started for this request to deallocated.
 
 ## Objective and result so far
 
@@ -34,13 +219,14 @@ are needed to establish directionality/symmetry. No throughput claim is intended
 | [Firewall query discriminator control](show-output/firewall-resource-type-validation-20261015/probe-verdict.json), 2026-10-15 | **PASS**: the completed EU firewall query using **`AzureFirewalls` (plural)** exposed all four DC prefixes. The preceding secured collector used singular `AzureFirewall` and received empty responses; its route baseline was inconclusive and it ran no traffic probes. The helper and commands below are corrected. Empty responses to the wrong discriminator are not evidence of missing routes. |
 | [Secured baseline with corrected firewall query](show-output/secured-firewall-supported-type-baseline-20261015/forwarding-verdict.json), 2026-10-15 | Route baseline **PASS**: twelve stable DC-prefix winners in paired firewall snapshots, all four original router source/export/protocol checks passed. Forwarding **FAIL**: TCP and ICMP each passed **18/24 directions**. All six failures are to/from Japan's workload probe `10.130.0.10`; all six CN-target directions pass. This uses ASPath HRP and the existing BGP VPN, not the static-VPN/ExpressRoute-preference reproduction. Zero configuration mutations. |
 
-**Current decisive limitation:** the same CN prefix is advertised locally at EU
+**Historical limitation of the 2026-10-15 withdrawal controls:** the same CN prefix is advertised locally at EU
 and US, but neither controlled withdrawal demonstrated its remote availability
 at Japan. Consequently, the earlier no-switch prepend observations cannot
 establish an ASPath threshold or an unconditional preference for local routes.
 The remaining HRP/prepend comparisons require a proven same-prefix remote
-alternative. Forwarding and secured HRP/prepend measurements remain unfinished;
-the deployed firewalls alone do not establish the static-VPN reproduction.
+alternative. Those controls do not invalidate the later same-prefix remote
+Japan winner above. The full forwarding matrix and static-VPN reproduction
+remain unfinished; deployed firewalls alone do not establish that reproduction.
 
 The historical restore attempt's `SNAPSHOT` failure remains a limitation of
 that experiment, not a description of current guest health. The later fresh

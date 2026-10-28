@@ -12,7 +12,7 @@
     "--command-id",
     "RunShellScript",
     "--scripts",
-    "@C:\\Users\\jomore\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\design-startup-source-eu.sh"
+    "@<LOCAL_USER>\\Repos\\net-lab-builder\\labs\\vwan-sdwan-three-hub\\deploy\\.runtime-control\\design-startup-source-eu.sh"
   ],
   "stdout": "{\n  \"value\": [\n    {\n      \"code\": \"ProvisioningState/succeeded\",\n      \"displayStatus\": \"Provisioning succeeded\",\n      \"level\": \"Info\",\n      \"message\": \"Enable succeeded: \\n[stdout]\\n\\n[stderr]\\nTraceback (most recent call last):\\n  File \\\"<stdin>\\\", line 14, in <module>\\nAssertionError: {'command': ['birdc', 'show', 'protocols'], 'exitCode': 0, 'stdout': 'BIRD 2.0.8 ready.\\\\nName       Proto      Table      State  Since         Info\\\\ndevices    Device     ---        up     08:42:04.305  \\\\nconnected  Direct     ---        up     08:42:04.305  \\\\ncontrol_pins Static     underlay4  up     08:42:04.305  \\\\nown_dc     Static     lab4       up     08:42:04.305  \\\\nkernel_lab Kernel     lab4       up     08:42:04.305  \\\\nmesh_us    BGP        ---        up     08:42:06.700  Established   \\\\nmesh_jp    BGP        ---        start  08:42:04.305  Active        Socket: Connection refused\\\\nmesh_cn    BGP        ---        up     08:42:04.968  Established   \\\\nazure_0    BGP        ---        up     08:42:06.860  Established   \\\\nazure_1    BGP        ---        up     08:42:06.440  Established   \\\\n', 'stderr': ''}\\n\"\n    }\n  ]\n}\n",
   "result": {

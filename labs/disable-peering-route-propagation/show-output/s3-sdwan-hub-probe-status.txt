@@ -1,0 +1,94 @@
+Enable succeeded: 
+[stdout]
+=== SWANCTL SAS ===
+sdwan: #2, ESTABLISHED, IKEv2, 40876cc34a0d48e1_i e9339deafa15326e_r*
+  local  '172.160.244.171' @ 10.0.2.4[4500]
+  remote '172.160.243.233' @ 172.160.243.233[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_2048
+  established 8200s ago, rekeying in 4996s
+  sdwan-child: #6, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 1682s ago, rekeying in 1614s, expires in 2278s
+    in  c2e1ed8d (-|0x0000002a),    686 bytes,    11 packets,    10s ago
+    out c68582ac (-|0x0000002a),    667 bytes,    11 packets,     5s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+  sdwan-child: #7, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 1631s ago, rekeying in 1810s, expires in 2329s
+    in  c69819da (-|0x0000002a),  22930 bytes,   373 packets,     1s ago
+    out c07a2153 (-|0x0000002a),  22949 bytes,   373 packets,     1s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+=== BIRDC PROTOCOLS ===
+BIRD 2.0.8 ready.
+Name       Proto      Table      State  Since         Info
+sdwan_ebgp BGP        ---        up     07:35:14.468  Established   
+  BGP state:          Established
+    Neighbor address: 169.254.20.2
+    Neighbor AS:      65020
+    Local AS:         65002
+    Neighbor ID:      172.17.1.4
+    Local capabilities
+      Multiprotocol
+        AF announced: ipv4
+      Route refresh
+      Graceful restart
+      4-octet AS numbers
+      Enhanced refresh
+      Long-lived graceful restart
+    Neighbor capabilities
+      Multiprotocol
+        AF announced: ipv4
+      Route refresh
+      Graceful restart
+      4-octet AS numbers
+      Enhanced refresh
+      Long-lived graceful restart
+    Session:          external AS4
+    Source address:   169.254.20.1
+    Hold timer:       20.025/30
+    Keepalive timer:  7.597/10
+  Channel ipv4
+    State:          UP
+    Table:          master4
+    Preference:     100
+    Input filter:   ACCEPT
+    Output filter:  (unnamed)
+    Routes:         1 imported, 11 exported, 1 preferred
+    Route change stats:     received   rejected   filtered    ignored   accepted
+      Import updates:              1          0          0          0          1
+      Import withdraws:            0          0        ---          0          0
+      Export updates:             14          1          2        ---         11
+      Export withdraws:            0        ---        ---        ---          0
+    BGP Next hop:   169.254.20.1
+
+=== BIRDC ROUTES ===
+BIRD 2.0.8 ready.
+Table master4:
+10.6.0.0/16          unreachable [static_azure 07:33:47.695] * (200)
+10.3.0.0/16          unreachable [static_azure 07:33:47.695] * (200)
+10.4.0.0/16          unreachable [static_azure 07:33:47.695] * (200)
+10.1.0.0/16          unreachable [static_azure 07:33:47.695] * (200)
+10.9.0.0/16          unreachable [static_azure 07:33:47.695] * (200)
+172.17.0.0/16        unicast [sdwan_ebgp 07:35:17.471] * (100) [AS65020i]
+	via 169.254.20.2 on xfrm0
+10.2.0.0/16          unreachable [static_azure 07:33:47.695] * (200)
+10.10.0.0/16         unreachable [static_azure 07:33:47.695] * (200)
+10.7.0.0/16          unreachable [static_azure 07:33:47.695] * (200)
+169.254.20.0/30      unicast [direct1 07:33:47.696] * (240)
+	dev xfrm0
+10.0.0.0/16          unreachable [static_azure 07:33:47.695] * (200)
+10.8.0.0/16          unreachable [static_azure 07:33:47.695] * (200)
+10.5.0.0/16          unreachable [static_azure 07:33:47.695] * (200)
+10.0.2.0/24          unicast [direct1 07:33:47.696] * (240)
+	dev eth0
+=== IP ROUTE ===
+default via 10.0.2.1 dev eth0 proto dhcp src 10.0.2.4 metric 100 
+10.0.2.0/24 dev eth0 proto kernel scope link src 10.0.2.4 metric 100 
+10.0.2.1 dev eth0 proto dhcp scope link src 10.0.2.4 metric 100 
+168.63.129.16 via 10.0.2.1 dev eth0 proto dhcp src 10.0.2.4 metric 100 
+169.254.20.0/30 dev xfrm0 proto kernel scope link src 169.254.20.1 
+169.254.169.254 via 10.0.2.1 dev eth0 proto dhcp src 10.0.2.4 metric 100 
+172.17.0.0/16 via 169.254.20.2 dev xfrm0 proto bird metric 32 
+
+[stderr]
+

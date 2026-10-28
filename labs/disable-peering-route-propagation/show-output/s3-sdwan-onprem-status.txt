@@ -1,0 +1,99 @@
+Enable succeeded: 
+[stdout]
+ (-|0x0000002a),  23545 bytes,   383 packets,     1s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+=== BIRDC PROTOCOLS ===
+BIRD 2.0.8 ready.
+Name       Proto      Table      State  Since         Info
+sdwan_ebgp BGP        ---        up     07:35:14.468  Established   
+  BGP state:          Established
+    Neighbor address: 169.254.20.1
+    Neighbor AS:      65002
+    Local AS:         65020
+    Neighbor ID:      10.0.2.4
+    Local capabilities
+      Multiprotocol
+        AF announced: ipv4
+      Route refresh
+      Graceful restart
+      4-octet AS numbers
+      Enhanced refresh
+      Long-lived graceful restart
+    Neighbor capabilities
+      Multiprotocol
+        AF announced: ipv4
+      Route refresh
+      Graceful restart
+      4-octet AS numbers
+      Enhanced refresh
+      Long-lived graceful restart
+    Session:          external AS4
+    Source address:   169.254.20.2
+    Hold timer:       27.764/30
+    Keepalive timer:  7.100/10
+  Channel ipv4
+    State:          UP
+    Table:          master4
+    Preference:     100
+    Input filter:   ACCEPT
+    Output filter:  (unnamed)
+    Routes:         11 imported, 1 exported, 11 preferred
+    Route change stats:     received   rejected   filtered    ignored   accepted
+      Import updates:             11          0          0          0         11
+      Import withdraws:            0          0        ---          0          0
+      Export updates:             14         11          2        ---          1
+      Export withdraws:            0        ---        ---        ---          0
+    BGP Next hop:   169.254.20.2
+
+=== BIRDC ROUTES ===
+BIRD 2.0.8 ready.
+Table master4:
+10.6.0.0/16          unicast [sdwan_ebgp 07:35:17.471] * (100) [AS65002i]
+	via 169.254.20.1 on xfrm0
+10.3.0.0/16          unicast [sdwan_ebgp 07:35:17.471] * (100) [AS65002i]
+	via 169.254.20.1 on xfrm0
+10.4.0.0/16          unicast [sdwan_ebgp 07:35:17.471] * (100) [AS65002i]
+	via 169.254.20.1 on xfrm0
+10.1.0.0/16          unicast [sdwan_ebgp 07:35:17.471] * (100) [AS65002i]
+	via 169.254.20.1 on xfrm0
+10.9.0.0/16          unicast [sdwan_ebgp 07:35:17.471] * (100) [AS65002i]
+	via 169.254.20.1 on xfrm0
+172.17.0.0/16        unreachable [static_onprem2 07:35:14.079] * (200)
+10.2.0.0/16          unicast [sdwan_ebgp 07:35:17.471] * (100) [AS65002i]
+	via 169.254.20.1 on xfrm0
+10.10.0.0/16         unicast [sdwan_ebgp 07:35:17.471] * (100) [AS65002i]
+	via 169.254.20.1 on xfrm0
+10.7.0.0/16          unicast [sdwan_ebgp 07:35:17.471] * (100) [AS65002i]
+	via 169.254.20.1 on xfrm0
+172.17.1.0/24        unicast [direct1 07:35:14.080] * (240)
+	dev eth0
+169.254.20.0/30      unicast [direct1 07:35:14.080] * (240)
+	dev xfrm0
+10.0.0.0/16          unicast [sdwan_ebgp 07:35:17.471] * (100) [AS65002i]
+	via 169.254.20.1 on xfrm0
+10.8.0.0/16          unicast [sdwan_ebgp 07:35:17.471] * (100) [AS65002i]
+	via 169.254.20.1 on xfrm0
+10.5.0.0/16          unicast [sdwan_ebgp 07:35:17.471] * (100) [AS65002i]
+	via 169.254.20.1 on xfrm0
+=== IP ROUTE ===
+default via 172.17.1.1 dev eth0 proto dhcp src 172.17.1.4 metric 100 
+10.0.0.0/16 via 169.254.20.1 dev xfrm0 proto bird metric 32 
+10.1.0.0/16 via 169.254.20.1 dev xfrm0 proto bird metric 32 
+10.2.0.0/16 via 169.254.20.1 dev xfrm0 proto bird metric 32 
+10.3.0.0/16 via 169.254.20.1 dev xfrm0 proto bird metric 32 
+10.4.0.0/16 via 169.254.20.1 dev xfrm0 proto bird metric 32 
+10.5.0.0/16 via 169.254.20.1 dev xfrm0 proto bird metric 32 
+10.6.0.0/16 via 169.254.20.1 dev xfrm0 proto bird metric 32 
+10.7.0.0/16 via 169.254.20.1 dev xfrm0 proto bird metric 32 
+10.8.0.0/16 via 169.254.20.1 dev xfrm0 proto bird metric 32 
+10.9.0.0/16 via 169.254.20.1 dev xfrm0 proto bird metric 32 
+10.10.0.0/16 via 169.254.20.1 dev xfrm0 proto bird metric 32 
+168.63.129.16 via 172.17.1.1 dev eth0 proto dhcp src 172.17.1.4 metric 100 
+169.254.20.0/30 dev xfrm0 proto kernel scope link src 169.254.20.2 
+169.254.169.254 via 172.17.1.1 dev eth0 proto dhcp src 172.17.1.4 metric 100 
+172.17.1.0/24 dev eth0 proto kernel scope link src 172.17.1.4 metric 100 
+172.17.1.1 dev eth0 proto dhcp scope link src 172.17.1.4 metric 100 
+
+[stderr]
+

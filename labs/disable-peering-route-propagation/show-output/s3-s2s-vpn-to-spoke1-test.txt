@@ -1,0 +1,16 @@
+Enable succeeded: 
+[stdout]
+=== S2S VPN -> SPOKE1 PING ===
+PING 10.1.1.4 (10.1.1.4) from 172.16.1.4 : 56(84) bytes of data.
+64 bytes from 10.1.1.4: icmp_seq=1 ttl=63 time=4.32 ms
+64 bytes from 10.1.1.4: icmp_seq=2 ttl=63 time=3.11 ms
+64 bytes from 10.1.1.4: icmp_seq=3 ttl=63 time=2.38 ms
+
+--- 10.1.1.4 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2002ms
+rtt min/avg/max/mdev = 2.375/3.267/4.318/0.801 ms
+=== S2S VPN -> SPOKE1 HTTP ===
+SPOKE1_OK hostname=vm-spoke1 ip=10.1.1.4
+
+[stderr]
+
