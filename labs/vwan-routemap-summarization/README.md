@@ -280,7 +280,7 @@ and reimport it to retain the selected state; importing replaces the current wor
 
 The reconstruction preserves both hubs, both ER locations and their bow-tie hub attachments,
 MCR ASN `133937` with the original three `/24`s, VPN observer ASN `65001`, and the local VNet
-contributor only in the baseline. Case D' removes that contributor and applies the recorded
+contributor in the baseline and the three #101 cuts. Case D' removes that contributor and applies the recorded
 Contains `10.0.0.0/16` -> Replace `10.0.0.0/16` outbound rule. No historical resources were
 queried, changed, deployed or deleted for this replay.
 
