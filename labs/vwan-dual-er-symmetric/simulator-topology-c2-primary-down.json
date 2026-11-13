@@ -1,0 +1,213 @@
+{
+  "version": 1,
+  "name": "Archived dual ER C2: CE-facing advertisements - c2-primary-down",
+  "hubs": [
+    {
+      "id": "hub1",
+      "name": "hub1-swedencentral",
+      "region": "swedencentral",
+      "preference": "ASPath",
+      "routingIntent": {
+        "private": true,
+        "internet": false,
+        "privatePrefixes": []
+      }
+    },
+    {
+      "id": "hub2",
+      "name": "hub2-northeurope",
+      "region": "northeurope",
+      "preference": "ASPath",
+      "routingIntent": {
+        "private": true,
+        "internet": false,
+        "privatePrefixes": []
+      },
+      "routeMapAssignments": [
+        {
+          "connectionId": "er2",
+          "inboundMapId": "c2-in",
+          "outboundMapId": "c2-out"
+        }
+      ]
+    }
+  ],
+  "sites": [
+    {
+      "id": "mcr1",
+      "name": "MCR1",
+      "asn": 65001,
+      "prefixes": []
+    },
+    {
+      "id": "mcr2",
+      "name": "MCR2",
+      "asn": 65002,
+      "prefixes": []
+    },
+    {
+      "id": "ce",
+      "name": "CE advertisement observation (not GCP best-path model)",
+      "asn": 16550,
+      "prefixes": [
+        "10.50.1.0/24",
+        "10.50.2.0/24"
+      ]
+    }
+  ],
+  "spokes": [
+    {
+      "id": "spoke1",
+      "name": "Spoke1",
+      "hubId": "hub1",
+      "prefixes": [
+        "10.11.0.0/24"
+      ]
+    },
+    {
+      "id": "spoke2",
+      "name": "Spoke2",
+      "hubId": "hub1",
+      "prefixes": [
+        "10.12.0.0/24"
+      ]
+    },
+    {
+      "id": "spoke3",
+      "name": "Spoke3",
+      "hubId": "hub2",
+      "prefixes": [
+        "10.21.0.0/24"
+      ]
+    },
+    {
+      "id": "spoke4",
+      "name": "Spoke4",
+      "hubId": "hub2",
+      "prefixes": [
+        "10.22.0.0/24"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "er1",
+      "name": "ER1",
+      "hubId": "hub1",
+      "siteId": "mcr1",
+      "transport": "ExpressRoute",
+      "enabled": true,
+      "inbound": [],
+      "outbound": [],
+      "learnSiteRoutes": true
+    },
+    {
+      "id": "er2",
+      "name": "ER2",
+      "hubId": "hub2",
+      "siteId": "mcr2",
+      "transport": "ExpressRoute",
+      "enabled": true,
+      "inbound": [],
+      "outbound": [],
+      "learnSiteRoutes": true
+    }
+  ],
+  "siteLinks": [
+    {
+      "id": "ce-mcr1",
+      "name": "MCR1 to CE BGP",
+      "a": "mcr1",
+      "b": "ce",
+      "enabled": false,
+      "aToB": {
+        "prefixes": [],
+        "prepend": [],
+        "receivePrepend": []
+      },
+      "bToA": {
+        "prefixes": [
+          "10.50.1.0/24",
+          "10.50.2.0/24"
+        ],
+        "prepend": [],
+        "receivePrepend": []
+      }
+    },
+    {
+      "id": "ce-mcr2",
+      "name": "MCR2 to CE BGP",
+      "a": "mcr2",
+      "b": "ce",
+      "enabled": true,
+      "aToB": {
+        "prefixes": [],
+        "prepend": [],
+        "receivePrepend": []
+      },
+      "bToA": {
+        "prefixes": [
+          "10.50.1.0/24",
+          "10.50.2.0/24"
+        ],
+        "prepend": [],
+        "receivePrepend": []
+      }
+    }
+  ],
+  "routeMaps": [
+    {
+      "id": "c2-in",
+      "name": "hub2-in-depref-gcp (bounded)",
+      "hubId": "hub2",
+      "rules": [
+        {
+          "id": "in",
+          "prefixes": [
+            "10.50.1.0/24",
+            "10.50.2.0/24"
+          ],
+          "match": "equals",
+          "action": "prepend",
+          "summaryPrefixes": [],
+          "prepend": [
+            64496,
+            64496,
+            64496,
+            64496,
+            64496
+          ],
+          "nextStep": "terminate"
+        }
+      ]
+    },
+    {
+      "id": "c2-out",
+      "name": "hub2-out-blanket-depref (spoke cut)",
+      "hubId": "hub2",
+      "rules": [
+        {
+          "id": "out",
+          "prefixes": [
+            "10.11.0.0/24",
+            "10.12.0.0/24",
+            "10.21.0.0/24",
+            "10.22.0.0/24"
+          ],
+          "match": "equals",
+          "action": "prepend",
+          "summaryPrefixes": [],
+          "prepend": [
+            64496,
+            64496,
+            64496,
+            64496,
+            64496
+          ],
+          "nextStep": "terminate"
+        }
+      ]
+    }
+  ],
+  "allowBranchToBranchTraffic": true
+}
