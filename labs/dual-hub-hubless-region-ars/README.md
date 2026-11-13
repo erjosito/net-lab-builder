@@ -1,5 +1,36 @@
 # Dual-Hub/Hubless-Region-ARS Lab
 
+## Archived simulator replay
+
+Two native [Azure Networking Simulator](https://aznet-simulator.com/?mode=full)
+exports reproduce the bounded Poland ARS/default-selection cut from the
+consistent, dated pre/post-Delta3 evidence:
+
+| Export | Recorded state | Verdict |
+|---|---|---|
+| [simulator-topology.json](simulator-topology.json) | Pre-Delta3: both remote NVA default paths have one ASN; c1 has both next-hop IPs (ECMP) | PASS for selected ARS/NIC routes |
+| [simulator-topology-default-preferred.json](simulator-topology-default-preferred.json) | BIRD fallback: NVA2 prepends AS65002 twice on default; c1 selects NVA1 only | PASS for selected ARS/NIC routes |
+
+These are actual browser exports, checked for native import/export/reload and
+peer editing, not a reconstruction of the entire lab. Nine distinct observations
+come from `baseline-pre-delta3/08`, `09`, `15` and `delta3-bird/01-post-*`
+under `show-output/`. Duplicate ARS-instance rows and unchanged post-policy routes
+are not counted again. The simulator represents native ARS-injected NIC
+`VirtualNetworkGateway` rows as `RouteServer` / `VirtualAppliance`; the validated
+NIC assertion is the active default next-hop set.
+
+The original pinned evidence is
+`5ba98831d8244eef162e6dbb2cc12a5b58f02e74`; exact paths, hashes, phase boundaries
+and reconstruction limits are in the simulator's
+[fixture](https://github.com/erjosito/vwan-visual-topology/blob/main/verification/issue-98-ars-hubless-archive.json).
+Direct peering BGP reachability is separate from spoke gateway-transit injection.
+The ARS route-map activation failed historically; the second export models the
+observed **BIRD source prepend**, not a successful Azure route-map deployment.
+No VPN/on-premises route exchange, packet delivery/loss, ECMP hashing, session
+state, BIRD daemon or convergence-time validation is claimed. Bicep export warns
+when these non-transit remote BGP peers cannot be generated; native JSON is the
+replay format. No live resources were queried or created for this replay.
+
 ## Overview
 This lab validates Azure Route Server (ARS) + VPN Gateway routing topology. It originally spanned 4
 regions: two hub regions (Sweden Central, Switzerland North), one hubless region (Poland Central),
