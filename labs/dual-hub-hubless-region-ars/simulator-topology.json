@@ -1,0 +1,296 @@
+{
+  "version": 2,
+  "kind": "azure-network-topology",
+  "name": "Archived hubless Poland ARS: remote NVA default selection",
+  "subtitle": "Bounded ARS/NIC route cut; VPN, packet forwarding and convergence are not validated.",
+  "vnets": [
+    {
+      "id": "hub1",
+      "name": "vnet-hub1",
+      "region": "swedencentral",
+      "role": "hub",
+      "prefixes": [
+        "10.10.0.0/16"
+      ],
+      "subnets": [
+        {
+          "id": "hub1-ars",
+          "name": "RouteServerSubnet",
+          "prefix": "10.10.0.64/27"
+        },
+        {
+          "id": "hub1-gw",
+          "name": "GatewaySubnet",
+          "prefix": "10.10.0.0/27"
+        },
+        {
+          "id": "hub1-nva",
+          "name": "snet-nva",
+          "prefix": "10.10.1.0/27"
+        }
+      ],
+      "gateways": [
+        {
+          "id": "vpn1",
+          "name": "vpngw-hub1",
+          "kind": "Vpn",
+          "asn": 65515,
+          "bgpEnabled": true,
+          "enabled": true
+        }
+      ],
+      "routeServer": {
+        "id": "ars-hub1",
+        "name": "ars-hub1",
+        "subnetId": "hub1-ars",
+        "enabled": true,
+        "branchToBranchTraffic": true,
+        "hubRoutingPreference": "ASPath",
+        "peerApplianceIds": [
+          "nva1"
+        ]
+      },
+      "appliances": [
+        {
+          "id": "nva1",
+          "name": "NVA1",
+          "kind": "nva-vm",
+          "subnetId": "hub1-nva",
+          "privateIp": "10.10.1.4",
+          "asn": 65001,
+          "bgpEnabled": true,
+          "enableIpForwarding": true,
+          "advertisedPrefixes": [
+            "0.0.0.0/0",
+            "10.10.1.0/27",
+            "10.10.0.64/27"
+          ],
+          "staticRoutes": []
+        }
+      ]
+    },
+    {
+      "id": "hub2",
+      "name": "vnet-hub2",
+      "region": "switzerlandnorth",
+      "role": "hub",
+      "prefixes": [
+        "10.20.0.0/16"
+      ],
+      "subnets": [
+        {
+          "id": "hub2-ars",
+          "name": "RouteServerSubnet",
+          "prefix": "10.20.0.64/27"
+        },
+        {
+          "id": "hub2-gw",
+          "name": "GatewaySubnet",
+          "prefix": "10.20.0.0/27"
+        },
+        {
+          "id": "hub2-nva",
+          "name": "snet-nva",
+          "prefix": "10.20.1.0/27"
+        }
+      ],
+      "gateways": [
+        {
+          "id": "vpn2",
+          "name": "vpngw-hub2",
+          "kind": "Vpn",
+          "asn": 65515,
+          "bgpEnabled": true,
+          "enabled": true
+        }
+      ],
+      "routeServer": {
+        "id": "ars-hub2",
+        "name": "ars-hub2",
+        "subnetId": "hub2-ars",
+        "enabled": true,
+        "branchToBranchTraffic": true,
+        "hubRoutingPreference": "ASPath",
+        "peerApplianceIds": [
+          "nva2"
+        ]
+      },
+      "appliances": [
+        {
+          "id": "nva2",
+          "name": "NVA2",
+          "kind": "nva-vm",
+          "subnetId": "hub2-nva",
+          "privateIp": "10.20.1.4",
+          "asn": 65002,
+          "bgpEnabled": true,
+          "enableIpForwarding": true,
+          "advertisedPrefixes": [
+            "0.0.0.0/0",
+            "10.20.1.0/27",
+            "10.20.0.64/27"
+          ],
+          "advertisedRouteAttributes": [
+            {
+              "prefix": "0.0.0.0/0",
+              "asPath": []
+            }
+          ],
+          "staticRoutes": []
+        }
+      ]
+    },
+    {
+      "id": "poland",
+      "name": "vnet-poland-ars",
+      "region": "polandcentral",
+      "role": "transit",
+      "prefixes": [
+        "10.30.0.0/24"
+      ],
+      "subnets": [
+        {
+          "id": "poland-ars",
+          "name": "RouteServerSubnet",
+          "prefix": "10.30.0.0/27"
+        }
+      ],
+      "gateways": [],
+      "appliances": [],
+      "routeServer": {
+        "id": "ars-poland",
+        "name": "ars-poland",
+        "subnetId": "poland-ars",
+        "enabled": true,
+        "branchToBranchTraffic": false,
+        "hubRoutingPreference": "ASPath",
+        "peerApplianceIds": [
+          "nva1",
+          "nva2"
+        ]
+      }
+    },
+    {
+      "id": "c1",
+      "name": "vnet-spoke-c1",
+      "region": "polandcentral",
+      "role": "spoke",
+      "prefixes": [
+        "10.31.0.0/24"
+      ],
+      "subnets": [
+        {
+          "id": "c1-work",
+          "name": "snet-workload",
+          "prefix": "10.31.0.0/25"
+        }
+      ],
+      "gateways": [],
+      "appliances": []
+    }
+  ],
+  "vnetPeerings": [
+    {
+      "id": "poland-hub1",
+      "name": "Poland / hub1 BGP underlay",
+      "vnetAId": "poland",
+      "vnetBId": "hub1",
+      "enabled": true,
+      "aToB": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "bToA": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      }
+    },
+    {
+      "id": "poland-hub2",
+      "name": "Poland / hub2 BGP underlay",
+      "vnetAId": "poland",
+      "vnetBId": "hub2",
+      "enabled": true,
+      "aToB": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "bToA": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      }
+    },
+    {
+      "id": "poland-c1",
+      "name": "Poland ARS injection / c1",
+      "vnetAId": "poland",
+      "vnetBId": "c1",
+      "enabled": true,
+      "aToB": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": true,
+        "useRemoteGateways": false
+      },
+      "bToA": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": true
+      }
+    },
+    {
+      "id": "c1-hub1",
+      "name": "c1 / hub1 data plane",
+      "vnetAId": "c1",
+      "vnetBId": "hub1",
+      "enabled": true,
+      "aToB": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "bToA": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      }
+    },
+    {
+      "id": "c1-hub2",
+      "name": "c1 / hub2 data plane",
+      "vnetAId": "c1",
+      "vnetBId": "hub2",
+      "enabled": true,
+      "aToB": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "bToA": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      }
+    }
+  ],
+  "udrTables": [],
+  "vwanHubs": [],
+  "erLocations": [],
+  "erLinks": [],
+  "sites": [],
+  "vpnConnections": [],
+  "siteLinks": []
+}

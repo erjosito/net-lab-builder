@@ -15,6 +15,19 @@ hub1/hub2 BGP peerings and route maps unchanged).
 
 ---
 
+## Offline simulator replay (#98)
+
+The dated pre-Delta3 and post-BIRD-Delta3 ARS/NIC captures are consistent and
+support a bounded native replay: six baseline peer prefix/AS-path facts,
+one changed NVA2 default AS path and two state-specific c1 default next-hop sets.
+Both native exports and exact source/hash/reconstruction references are linked
+in [README.md](README.md#archived-simulator-replay). Redundant ARS-instance rows
+are collapsed, not counted as additional validation observations.
+
+This validates neither the whole lab nor packet forwarding, timing or Azure
+route-map activation. The latter failed; the accepted post-state is the BIRD
+prepend fallback. No live resources were queried or created for replay.
+
 ## FINAL CERTIFICATION — 2026-08-04T09:39+02:00 (Niobe)
 
 **VERDICT: ✅ READY FOR JOSE TO EXPLORE**
