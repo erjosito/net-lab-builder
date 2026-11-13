@@ -5,6 +5,42 @@
 
 > **Lab status: CLEANED UP** -- Resource group `rg-dual-hub-vnra-udr-transit` deleted 2026-08-20 (~7 min 54 sec). All 22 resources removed. See `show-output/cleanup/cleanup-evidence.md`.
 
+## Simulator replay (archived evidence, 2026-11-13)
+
+Open [AzNet Simulator in Hub & Spoke mode](https://aznet-simulator.com/?mode=hub-spoke),
+download one JSON below, and choose **Import JSON**. These are native v2
+`azure-network-topology` files, not Azure capture files. Inspect `spoke1-vnet` /
+`vm-subnet` effective routes, then open the path explorer to `spoke2-vnet` /
+`vm-subnet` (or reverse the endpoints). Export/reimport and reload preserve the design.
+
+| Archived state | Native topology | Independently compared observations | Replay result |
+|---|---|---|---|
+| Before access correction | [simulator-topology-access-disabled.json](simulator-topology-access-disabled.json) | Six NIC route facts, two Network Watcher next hops, two guest probes with 0/10 received | **PASS after simulator fix**: connected peering routes remain Active, UDR next hops remain selected, but logical forwarding is denied by peering access. |
+| After access correction | [simulator-topology.json](simulator-topology.json) | Native all-six peering verification and two guest probes with 10/10 received | **PASS** for bidirectional logical reachability. Configured path traverses both managed VNRAs; this is not an independently observed TTL-hop sequence. |
+
+Expected source next hops are `10.20.0.0/16 -> 10.1.0.4` and
+`10.10.0.0/16 -> 10.2.0.4`. All four route-table associations and exact VNet/subnet
+prefixes are retained. The corrected export changes only the six directional
+access flags and descriptive text; forwarded-traffic flags remain enabled.
+
+The [pinned fixture](https://github.com/erjosito/vwan-visual-topology/blob/main/verification/issue-98-vnra-archive.json)
+records source revision `c14b2bd94787a0645392eb000cdd3cfbd9b59e7d`, exact evidence
+paths and SHA-256 hashes of source Git blobs. Native pre-fix full peering output
+corroborates two hub1 directions; the historical report supplies the all-six
+disabled state (the abbreviated retry snapshots do not contain the access flag).
+All-six corrected flags and actual ping stdout are native. NIC/Network Watcher
+observations precede correction, not newly measured post-fix tables.
+
+The [validation matrix and reproducible tests](https://github.com/erjosito/vwan-visual-topology/blob/main/verification/issue-98-archive-validation.md)
+separate route visibility from actual probe results. Capture timestamps/commands/API
+versions are incomplete; the dated retry directory is context, not a per-probe
+timestamp. No VNRA-subnet effective-route table was inferred from the archived
+404s. No TTL/latency/throughput/SKU, NSG/session enforcement or post-fix Monitor
+metrics are certified. The historical appliances were 50 Gbps; the simulator's
+generic VNRA badge is not a bandwidth model. Management IDs and reserved secondary
+IPs are omitted. No cloud/provider resources were queried or changed for this replay.
+The pair is a future educational sample candidate, not an automatic gallery addition.
+
 ## Designs Studied
 
 ### Design 1: Dual-hub VNRA east-west transit via UDR chain -- PASS (after peering correction)

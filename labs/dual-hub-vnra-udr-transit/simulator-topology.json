@@ -1,0 +1,231 @@
+{
+  "version": 2,
+  "kind": "azure-network-topology",
+  "name": "Recorded VNRA transit - corrected peering access",
+  "subtitle": "2026-08-19 archived positive state; two managed VNRAs and four associated UDR tables.",
+  "vnets": [
+    {
+      "id": "hub2-vnet",
+      "name": "hub2-vnet",
+      "role": "hub-vnet",
+      "region": "northeurope",
+      "prefixes": [
+        "10.2.0.0/16"
+      ],
+      "subnets": [
+        {
+          "id": "hub2-vnet-VirtualNetworkApplianceSubnet",
+          "name": "VirtualNetworkApplianceSubnet",
+          "prefix": "10.2.0.0/24",
+          "routeTableId": "rt-hub2-vnra"
+        }
+      ],
+      "gateways": [],
+      "appliances": [
+        {
+          "id": "vnra2",
+          "name": "vnra2",
+          "kind": "vnra",
+          "subnetId": "hub2-vnet-VirtualNetworkApplianceSubnet",
+          "privateIp": "10.2.0.4",
+          "enableIpForwarding": true,
+          "staticRoutes": []
+        }
+      ]
+    },
+    {
+      "id": "spoke2-vnet",
+      "name": "spoke2-vnet",
+      "role": "spoke-vnet",
+      "region": "northeurope",
+      "prefixes": [
+        "10.20.0.0/16"
+      ],
+      "subnets": [
+        {
+          "id": "spoke2-vnet-vm-subnet",
+          "name": "vm-subnet",
+          "prefix": "10.20.1.0/24",
+          "routeTableId": "rt-spoke2"
+        }
+      ],
+      "gateways": [],
+      "appliances": []
+    },
+    {
+      "id": "hub1-vnet",
+      "name": "hub1-vnet",
+      "role": "hub-vnet",
+      "region": "swedencentral",
+      "prefixes": [
+        "10.1.0.0/16"
+      ],
+      "subnets": [
+        {
+          "id": "hub1-vnet-VirtualNetworkApplianceSubnet",
+          "name": "VirtualNetworkApplianceSubnet",
+          "prefix": "10.1.0.0/24",
+          "routeTableId": "rt-hub1-vnra"
+        }
+      ],
+      "gateways": [],
+      "appliances": [
+        {
+          "id": "vnra1",
+          "name": "vnra1",
+          "kind": "vnra",
+          "subnetId": "hub1-vnet-VirtualNetworkApplianceSubnet",
+          "privateIp": "10.1.0.4",
+          "enableIpForwarding": true,
+          "staticRoutes": []
+        }
+      ]
+    },
+    {
+      "id": "spoke1-vnet",
+      "name": "spoke1-vnet",
+      "role": "spoke-vnet",
+      "region": "swedencentral",
+      "prefixes": [
+        "10.10.0.0/16"
+      ],
+      "subnets": [
+        {
+          "id": "spoke1-vnet-vm-subnet",
+          "name": "vm-subnet",
+          "prefix": "10.10.1.0/24",
+          "routeTableId": "rt-spoke1"
+        }
+      ],
+      "gateways": [],
+      "appliances": []
+    }
+  ],
+  "vnetPeerings": [
+    {
+      "id": "hub1-vnet-spoke1-vnet",
+      "name": "hub1-vnet / spoke1-vnet",
+      "vnetAId": "hub1-vnet",
+      "vnetBId": "spoke1-vnet",
+      "enabled": true,
+      "aToB": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "bToA": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      }
+    },
+    {
+      "id": "hub1-vnet-hub2-vnet",
+      "name": "hub1-vnet / hub2-vnet",
+      "vnetAId": "hub1-vnet",
+      "vnetBId": "hub2-vnet",
+      "enabled": true,
+      "aToB": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "bToA": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      }
+    },
+    {
+      "id": "hub2-vnet-spoke2-vnet",
+      "name": "hub2-vnet / spoke2-vnet",
+      "vnetAId": "hub2-vnet",
+      "vnetBId": "spoke2-vnet",
+      "enabled": true,
+      "aToB": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      },
+      "bToA": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false
+      }
+    }
+  ],
+  "udrTables": [
+    {
+      "id": "rt-hub2-vnra",
+      "name": "rt-hub2-vnra",
+      "disableBgpRoutePropagation": false,
+      "routes": [
+        {
+          "id": "rt-hub2-vnra-0",
+          "name": "To 10.10.0.0/16",
+          "prefix": "10.10.0.0/16",
+          "nextHopType": "VirtualAppliance",
+          "nextHopIp": "10.1.0.4",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "rt-spoke2",
+      "name": "rt-spoke2",
+      "disableBgpRoutePropagation": false,
+      "routes": [
+        {
+          "id": "rt-spoke2-0",
+          "name": "To 10.10.0.0/16",
+          "prefix": "10.10.0.0/16",
+          "nextHopType": "VirtualAppliance",
+          "nextHopIp": "10.2.0.4",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "rt-hub1-vnra",
+      "name": "rt-hub1-vnra",
+      "disableBgpRoutePropagation": false,
+      "routes": [
+        {
+          "id": "rt-hub1-vnra-0",
+          "name": "To 10.20.0.0/16",
+          "prefix": "10.20.0.0/16",
+          "nextHopType": "VirtualAppliance",
+          "nextHopIp": "10.2.0.4",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "rt-spoke1",
+      "name": "rt-spoke1",
+      "disableBgpRoutePropagation": false,
+      "routes": [
+        {
+          "id": "rt-spoke1-0",
+          "name": "To 10.20.0.0/16",
+          "prefix": "10.20.0.0/16",
+          "nextHopType": "VirtualAppliance",
+          "nextHopIp": "10.1.0.4",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "vwanHubs": [],
+  "erLocations": [],
+  "erLinks": [],
+  "sites": [],
+  "vpnConnections": [],
+  "siteLinks": []
+}
