@@ -22,9 +22,15 @@ These are actual browser exports, replaying eight distinct prefix/path facts and
 four primary withdrawal absences. They do **not** validate the simulator's
 standard-CE best-path selection against GCP's installed routes: native GCP retains
 unequal-AS-path ECMP. No firewall sessions, packet ratios, hub aggregates, hashing
-or convergence-time claim is made. C1 exact complete paths remain blocked pending
-matching intermediate rewrite evidence for its asymmetric retention of private
-ASN `65520`; no rewrite policy is invented to fit those captures.
+or convergence-time claim is made. C1 exact complete paths are deferred and are
+not admitted as a simulator regression: the customer-side paths retain the normal
+inter-hub `65520 65520` segment in only one remote direction. By user disposition
+in [simulator #98](https://github.com/erjosito/vwan-visual-topology/issues/98),
+this is treated as a suspected MSEE private-AS-stripping glitch pending the
+user's investigation, not a confirmed platform bug or a missing customer rewrite.
+Both captured Azure maps preserve the intended rules/associations and the
+documented `23456` to `64496` update. No rewrite policy or simulator exception is
+invented to fit the anomaly; the admitted C2 validation remains complete.
 
 Provenance: this lab at `efe260c688733dfc647bdb6cd0d2fccfd9c740e0`,
 `show-output/design-c-mechC2-symmetric-2026-06-16/{01-gcp-cr-beststatus.json,
@@ -114,7 +120,7 @@ Provenance: this lab at `efe260c688733dfc647bdb6cd0d2fccfd9c740e0`,
 
 **Evidence:**
 - `show-output/design-c-mechC1-symmetric-2026-06-16/14-verdict.md`: final C1 verdict.
-- `show-output/design-c-mechC1-symmetric-2026-06-16/01-cr-status-full.json` and `02-cr-routes-summary.txt`: BGP best-path intent is correct (2-hop home path vs 5-hop prepended path per /24).
+- `show-output/design-c-mechC1-symmetric-2026-06-16/01-cr-status-full.json` and `02-cr-routes-summary.txt`: 2-hop home paths versus 5-hop and 7-hop remote paths; the latter includes the asymmetric `65520 65520` retention deferred from exact simulator replay above.
 - `show-output/design-c-mechC1-symmetric-2026-06-16/10-azfw1-kql.txt` and `11-azfw2-kql.txt`: 54→1 contamination reduction.
 - `design.md` §4.1: C1 route-map design and ASN rationale.
 
