@@ -606,6 +606,43 @@ firewall-effective comparison; exact zero-prepend/config restore; then
 tag-scoped cleanup. Progress is published to the existing repository at the
 user's request; no separate public repository or blog is created.
 
+### Offline simulator replay
+
+Seven native VWAN simulator exports replay the four DC prefixes in the three
+firewall RIBs, pinned to archive revision
+`efe260c688733dfc647bdb6cd0d2fccfd9c740e0`:
+
+- [Frozen A](simulator-topology-policy-a.json) and
+  [frozen B2](simulator-topology-policy-b2.json).
+- [ASPath seed](simulator-topology-aspath-seed.json).
+- [ER / Japan first](simulator-topology-er-japan-first.json) and
+  [ER / NVA first](simulator-topology-er-nva-first.json).
+- [VPN / Japan first](simulator-topology-vpn-japan-first.json) and
+  [VPN / NVA first](simulator-topology-vpn-nva-first.json).
+
+Import these files into [the simulator](https://vwan-simulator.com/?mode=vwan).
+Every export was downloaded through the application and reimported/reloaded
+without page errors. Each state's twelve firewall winners match both native
+samples (168 corroborating rows; 27 distinct winner facts). Frozen A additionally
+checks the three routers' own-DC/CN exports and two foreign-DC absences against
+both `export-azure_0` and `export-azure_1` captures.
+
+A requires site inbound local preference 400 and Azure-aware site export
+selection. A static AS-path-only reconstruction can match firewall winners while
+still incorrectly advertising the foreign mesh routes. The simulator fix
+converges site selection and hub exports; source outbound AS-path rejection
+represents the captured own_dc/mesh-only export predicate in this DC-only cut.
+Each mesh sender exports only its own DC prefix. B2 and reset/seed policies
+reject Azure DC imports as captured. Two Azure peers collapse to one logical
+connection, not an ECMP or timer claim.
+
+Workload-prefix community/regional preferences, Japan workload UDR forwarding,
+the historical 18/24 or corrected 24/24 packet outcomes, incomplete resets,
+session timing and history-dependent recovery are **not** validated by these
+files. No cloud/provider resources were queried or modified for the offline
+replay. Evidence and regressions are tracked in
+[simulator #98](https://github.com/erjosito/vwan-visual-topology/issues/98).
+
 ### Official references
 
 - [Hub routing preference and interhub AS paths](https://learn.microsoft.com/en-us/azure/virtual-wan/about-virtual-hub-routing-preference)

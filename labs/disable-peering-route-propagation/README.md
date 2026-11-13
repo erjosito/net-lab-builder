@@ -1,5 +1,40 @@
 # Disable Peering Route Propagation (`disablePeeringRoute`): Hub-and-Spoke with 3 Hybrid Connections (S2S VPN, SD-WAN, ExpressRoute) and NVA
 
+## Simulator replay (S4 hybrid routing and asymmetry)
+
+[Download the native S4 topology](simulator-topology-s4-hybrid.json) and import it
+into [AzNet Simulator Full Hybrid mode](https://aznet-simulator.com/?mode=full).
+It is a separate later state, not an expansion of the S1/S2 measurement claims
+below. Source captures are pinned to
+`efe260c688733dfc647bdb6cd0d2fccfd9c740e0`; filenames beginning `s3` are the
+report's later S4 evidence.
+
+The replay checks 21 selected NIC rows, eleven SD-WAN BGP prefixes/terminal ASNs,
+eleven exact MSEE Azure-prefix paths and two ER gateway customer paths. BIRD
+locally originates the Azure `/16`s using `static_azure`; no Azure Route Server
+is present. Its default route listing reports terminal `AS65002i`, not the
+complete AS_PATH. The simulator's one-AS overlay path follows those local
+origins and sender ASN, rather than incorrectly inserting Azure ASN 65515.
+Paired MSEE sessions corroborate the same Azure path; additional secondary
+alternates are not relabeled as selected or exported paths.
+
+Trace VPN and SD-WAN sites to spoke1 (`10.1.1.4`) in Path explorer. Both forward
+paths bypass `vm-hub-nva`, while return paths traverse it. The SD-WAN return
+follows `rt-nva` to `vm-hub-probe` and its overlay. The simulator identifies
+**asymmetric firewall bypass**; it does not emulate conntrack or claim a
+stateful packet-drop replay. Native `3/3` pings, HTTP body receipts and `0`
+forward / `8` return NVA counters independently support these two paths.
+ER packet reachability/asymmetry has no matching native probe and is not
+validated by this export.
+
+The file was exported through the browser and reimported/reloaded exactly,
+with no page errors. Full timestamps/commands and an atomic native configuration
+dump are absent; report/design/deploy intent is corroborated by the selected
+routes and status outputs. Physical session ECMP, public gateway next hops,
+VPN LNG host routes, timers, NAT, throughput and preview suppression are outside
+the cut. No Azure/provider resources were queried or changed.
+See the [independent fixture and limits](https://github.com/erjosito/vwan-visual-topology/blob/main/verification/issue-98-udr-s4-archive.json).
+
 ## Simulator replay (S1/S2 NIC route cuts, 2026-11-13)
 
 Open [AzNet Simulator in Hub & Spoke mode](https://aznet-simulator.com/?mode=hub-spoke),

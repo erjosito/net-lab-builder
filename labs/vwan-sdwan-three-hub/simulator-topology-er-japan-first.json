@@ -1,0 +1,418 @@
+{
+  "version": 1,
+  "name": "Archived three-hub DC firewall control plane (not forwarding) - er-japan-first",
+  "hubs": [
+    {
+      "id": "eu",
+      "name": "hub-eu",
+      "region": "westeurope",
+      "preference": "ExpressRoute",
+      "routingIntent": {
+        "private": true,
+        "internet": false,
+        "privatePrefixes": []
+      }
+    },
+    {
+      "id": "us",
+      "name": "hub-us",
+      "region": "northcentralus",
+      "preference": "ExpressRoute",
+      "routingIntent": {
+        "private": true,
+        "internet": false,
+        "privatePrefixes": []
+      }
+    },
+    {
+      "id": "jp",
+      "name": "hub-jp",
+      "region": "japaneast",
+      "preference": "ExpressRoute",
+      "routingIntent": {
+        "private": true,
+        "internet": false,
+        "privatePrefixes": []
+      }
+    }
+  ],
+  "sites": [
+    {
+      "id": "router-eu",
+      "name": "router-eu",
+      "asn": 65011,
+      "prefixes": [
+        "10.110.0.0/24"
+      ],
+      "role": "spoke-nva",
+      "routeMapAssignments": [
+        {
+          "connectionId": "cx-eu",
+          "inboundMapId": "eu-import",
+          "outboundMapId": "eu-export"
+        }
+      ]
+    },
+    {
+      "id": "router-us",
+      "name": "router-us",
+      "asn": 65012,
+      "prefixes": [
+        "10.120.0.0/24"
+      ],
+      "role": "spoke-nva",
+      "routeMapAssignments": [
+        {
+          "connectionId": "cx-us",
+          "inboundMapId": "us-import",
+          "outboundMapId": "us-export"
+        }
+      ]
+    },
+    {
+      "id": "router-jp",
+      "name": "router-jp",
+      "asn": 65013,
+      "prefixes": [
+        "10.130.0.0/24"
+      ],
+      "routeMapAssignments": [
+        {
+          "connectionId": "cx-jp",
+          "inboundMapId": "jp-import"
+        }
+      ]
+    },
+    {
+      "id": "router-cn",
+      "name": "router-cn",
+      "asn": 65014,
+      "prefixes": [
+        "10.140.0.0/24"
+      ]
+    }
+  ],
+  "spokes": [
+    {
+      "id": "work-eu",
+      "name": "spoke-eu",
+      "hubId": "eu",
+      "prefixes": [
+        "10.10.0.0/24"
+      ]
+    },
+    {
+      "id": "work-us",
+      "name": "spoke-us",
+      "hubId": "us",
+      "prefixes": [
+        "10.20.0.0/24"
+      ]
+    },
+    {
+      "id": "work-jp",
+      "name": "spoke-jp",
+      "hubId": "jp",
+      "prefixes": [
+        "10.30.0.0/24"
+      ]
+    },
+    {
+      "id": "nva-eu",
+      "name": "NVA host EU",
+      "hubId": "eu",
+      "prefixes": [
+        "10.210.0.0/24"
+      ]
+    },
+    {
+      "id": "nva-us",
+      "name": "NVA host US",
+      "hubId": "us",
+      "prefixes": [
+        "10.220.0.0/24"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "cx-eu",
+      "name": "EU spoke NVA BGP",
+      "hubId": "eu",
+      "siteId": "router-eu",
+      "transport": "SpokeNVA",
+      "enabled": true,
+      "inbound": [],
+      "outbound": [],
+      "spokeId": "nva-eu",
+      "peerIp": "10.210.0.4",
+      "learnSiteRoutes": true
+    },
+    {
+      "id": "cx-us",
+      "name": "US spoke NVA BGP",
+      "hubId": "us",
+      "siteId": "router-us",
+      "transport": "SpokeNVA",
+      "enabled": true,
+      "inbound": [],
+      "outbound": [],
+      "spokeId": "nva-us",
+      "peerIp": "10.220.0.4",
+      "learnSiteRoutes": true
+    },
+    {
+      "id": "cx-jp",
+      "name": "Japan S2S VPN",
+      "hubId": "jp",
+      "siteId": "router-jp",
+      "transport": "VPN",
+      "enabled": true,
+      "inbound": [],
+      "outbound": [],
+      "learnSiteRoutes": true
+    }
+  ],
+  "siteLinks": [
+    {
+      "id": "eu-us",
+      "name": "EU-US mesh",
+      "a": "router-eu",
+      "b": "router-us",
+      "enabled": true,
+      "aToB": {
+        "prefixes": [
+          "10.110.0.0/24"
+        ],
+        "prepend": [],
+        "receivePrepend": []
+      },
+      "bToA": {
+        "prefixes": [
+          "10.120.0.0/24"
+        ],
+        "prepend": [],
+        "receivePrepend": []
+      }
+    },
+    {
+      "id": "eu-jp",
+      "name": "EU-JP mesh",
+      "a": "router-eu",
+      "b": "router-jp",
+      "enabled": true,
+      "aToB": {
+        "prefixes": [
+          "10.110.0.0/24"
+        ],
+        "prepend": [],
+        "receivePrepend": []
+      },
+      "bToA": {
+        "prefixes": [
+          "10.130.0.0/24"
+        ],
+        "prepend": [],
+        "receivePrepend": []
+      }
+    },
+    {
+      "id": "eu-cn",
+      "name": "EU-CN mesh",
+      "a": "router-eu",
+      "b": "router-cn",
+      "enabled": true,
+      "aToB": {
+        "prefixes": [
+          "10.110.0.0/24"
+        ],
+        "prepend": [],
+        "receivePrepend": []
+      },
+      "bToA": {
+        "prefixes": [
+          "10.140.0.0/24"
+        ],
+        "prepend": [],
+        "receivePrepend": []
+      }
+    },
+    {
+      "id": "us-jp",
+      "name": "US-JP mesh",
+      "a": "router-us",
+      "b": "router-jp",
+      "enabled": true,
+      "aToB": {
+        "prefixes": [
+          "10.120.0.0/24"
+        ],
+        "prepend": [],
+        "receivePrepend": []
+      },
+      "bToA": {
+        "prefixes": [
+          "10.130.0.0/24"
+        ],
+        "prepend": [],
+        "receivePrepend": []
+      }
+    },
+    {
+      "id": "us-cn",
+      "name": "US-CN mesh",
+      "a": "router-us",
+      "b": "router-cn",
+      "enabled": true,
+      "aToB": {
+        "prefixes": [
+          "10.120.0.0/24"
+        ],
+        "prepend": [],
+        "receivePrepend": []
+      },
+      "bToA": {
+        "prefixes": [
+          "10.140.0.0/24"
+        ],
+        "prepend": [],
+        "receivePrepend": []
+      }
+    },
+    {
+      "id": "jp-cn",
+      "name": "JP-CN mesh",
+      "a": "router-jp",
+      "b": "router-cn",
+      "enabled": true,
+      "aToB": {
+        "prefixes": [
+          "10.130.0.0/24"
+        ],
+        "prepend": [],
+        "receivePrepend": []
+      },
+      "bToA": {
+        "prefixes": [
+          "10.140.0.0/24"
+        ],
+        "prepend": [],
+        "receivePrepend": []
+      }
+    }
+  ],
+  "routeMaps": [
+    {
+      "id": "eu-export",
+      "name": "EU nonlocal DC source prepend",
+      "siteId": "router-eu",
+      "rules": [
+        {
+          "id": "eu-prepend",
+          "prefixes": [
+            "10.120.0.0/24",
+            "10.130.0.0/24",
+            "10.140.0.0/24"
+          ],
+          "match": "equals",
+          "action": "prepend",
+          "summaryPrefixes": [],
+          "prepend": [
+            65011,
+            65011,
+            65011
+          ],
+          "nextStep": "terminate"
+        }
+      ]
+    },
+    {
+      "id": "us-export",
+      "name": "US nonlocal DC source prepend",
+      "siteId": "router-us",
+      "rules": [
+        {
+          "id": "us-prepend",
+          "prefixes": [
+            "10.110.0.0/24",
+            "10.130.0.0/24",
+            "10.140.0.0/24"
+          ],
+          "match": "equals",
+          "action": "prepend",
+          "summaryPrefixes": [],
+          "prepend": [
+            65012,
+            65012,
+            65012
+          ],
+          "nextStep": "terminate"
+        }
+      ]
+    },
+    {
+      "id": "eu-import",
+      "name": "EU reject Azure DC imports",
+      "siteId": "router-eu",
+      "rules": [
+        {
+          "id": "eu-block-dc",
+          "prefixes": [
+            "10.110.0.0/24",
+            "10.120.0.0/24",
+            "10.130.0.0/24",
+            "10.140.0.0/24"
+          ],
+          "match": "equals",
+          "action": "drop",
+          "summaryPrefixes": [],
+          "prepend": [],
+          "nextStep": "terminate"
+        }
+      ]
+    },
+    {
+      "id": "us-import",
+      "name": "US reject Azure DC imports",
+      "siteId": "router-us",
+      "rules": [
+        {
+          "id": "us-block-dc",
+          "prefixes": [
+            "10.110.0.0/24",
+            "10.120.0.0/24",
+            "10.130.0.0/24",
+            "10.140.0.0/24"
+          ],
+          "match": "equals",
+          "action": "drop",
+          "summaryPrefixes": [],
+          "prepend": [],
+          "nextStep": "terminate"
+        }
+      ]
+    },
+    {
+      "id": "jp-import",
+      "name": "JP reject Azure DC imports",
+      "siteId": "router-jp",
+      "rules": [
+        {
+          "id": "jp-block-dc",
+          "prefixes": [
+            "10.110.0.0/24",
+            "10.120.0.0/24",
+            "10.130.0.0/24",
+            "10.140.0.0/24"
+          ],
+          "match": "equals",
+          "action": "drop",
+          "summaryPrefixes": [],
+          "prepend": [],
+          "nextStep": "terminate"
+        }
+      ]
+    }
+  ],
+  "allowBranchToBranchTraffic": true
+}

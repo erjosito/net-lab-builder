@@ -1,5 +1,38 @@
 # vwan-dual-er-symmetric
 
+## Offline simulator replay: bounded C2 advertisements
+
+The [VWAN simulator](https://vwan-simulator.com/?mode=vwan) can import these native
+exports without deploying any resources:
+
+| File | Recorded state |
+|---|---|
+| [simulator-topology-c2.json](simulator-topology-c2.json) | Both CE-facing MCR BGP links enabled |
+| [simulator-topology-c2-primary-down.json](simulator-topology-c2-primary-down.json) | MCR1-to-CE BGP disabled; both Azure ER links remain enabled |
+| [simulator-topology-c2-restored.json](simulator-topology-c2-restored.json) | Primary CE-facing BGP restored |
+
+Select the CE observation site, **Learned routes**, then each MCR neighbor. The
+four spoke `/24`s have paths `65001 12076` on MCR1 and
+`65002 12076 64496 64496 64496 64496 64496` on MCR2. The primary-down state withdraws
+the four MCR1 advertisements; the restored state repeats the baseline. The
+captured CE export allowlists advertise only the two on-premises `/24`s back to
+the MCRs. Do not replace the CE-side fault with an Azure circuit failure.
+
+These are actual browser exports, replaying eight distinct prefix/path facts and
+four primary withdrawal absences. They do **not** validate the simulator's
+standard-CE best-path selection against GCP's installed routes: native GCP retains
+unequal-AS-path ECMP. No firewall sessions, packet ratios, hub aggregates, hashing
+or convergence-time claim is made. C1 exact complete paths remain blocked pending
+matching intermediate rewrite evidence for its asymmetric retention of private
+ASN `65520`; no rewrite policy is invented to fit those captures.
+
+Provenance: this lab at `efe260c688733dfc647bdb6cd0d2fccfd9c740e0`,
+`show-output/design-c-mechC2-symmetric-2026-06-16/{01-gcp-cr-beststatus.json,
+03-azure-c2-config.txt,12-failover-before-primary-up.json,
+13-failover-during-primary-down.json,14-failover-after-primary-restored.json,
+15-verdict.md}`. Full source hashes, reconstruction and assertions are in
+[simulator issue #98](https://github.com/erjosito/vwan-visual-topology/issues/98).
+
 > 📝 **Blog post:** _pending publication_ (Kid)
 
 ## Designs studied
