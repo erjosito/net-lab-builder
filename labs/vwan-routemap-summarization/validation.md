@@ -5,16 +5,26 @@
 ## Recorded simulator replay checkpoint (2026-11-13; no deployment)
 
 The [Round 2 replay matrix](README.md#simulator-replay-recorded-round-2-evidence)
-documents two importable VWAN-native exports, independent evidence/provenance, expected
-and actual BGP-advertisement facts, and explicit unassessed portions. All nine selected
+documents five importable VWAN-native exports, independent evidence/provenance, expected
+and actual BGP-advertisement facts, and explicit unassessed portions. The original nine selected
 prefix/path/absence observations match after the summary-AS-path correction in
 [erjosito/vwan-visual-topology#100](https://github.com/erjosito/vwan-visual-topology/pull/100).
 Local verification: 363 unit tests, both new browser import/inspection/round-trip cases,
 lint and production build pass (existing warnings retained).
 
+The #101 extension adds 14 recorded facts across AS12076 drop-only, drop before summary,
+and B2B-off mixed-contributor summary cuts. The actual AS-path conditions and WAN-wide
+flag now survive native import/export and editing. Local extension verification:
+384 unit tests, four browser cases (three archive cuts plus editor/toggle/history),
+lint and build pass. Expected observations are independent archived text, not simulator
+snapshots; two exact source hashes and quality limitations are retained in the additional
+fixture linked from the matrix. Publication and full CI status are tracked in
+[erjosito/vwan-visual-topology#101](https://github.com/erjosito/vwan-visual-topology/issues/101).
+
 This checkpoint does not replace the historical live results below or verify today's
-existence/status of their resources. No forwarding, convergence, B2B-off behavior,
-AS-path-drop mitigation, origin-classification race or complete-RIB certification is claimed.
+existence/status of their resources. No forwarding, convergence, internal aggregate
+origin-classification race or complete-RIB certification is claimed. B2B suppression is
+route-propagation control, not a firewall packet ACL; stateful firewall behavior is not modeled.
 The broader [erjosito/vwan-visual-topology#98](https://github.com/erjosito/vwan-visual-topology/issues/98)
 remains open.
 

@@ -11,7 +11,7 @@ hand (mixed-origin attribute inheritance + Branch-to-Branch disabled).
 
 ## Orientation for a first-time reader
 
-**Offline simulator replay:** [importable JSONs, validation matrix and evidence boundaries](#simulator-replay-recorded-round-2-evidence) are available below. They replay two B2B-enabled control-plane states, not the intermittent bug or the entire lab. No resources were deployed or inspected for this replay; the historical live-status line above is not a current resource check.
+**Offline simulator replay:** [importable JSONs, validation matrix and evidence boundaries](#simulator-replay-recorded-round-2-evidence) are available below. Five recorded advertisement cuts cover the original pilot, AS-path-drop mitigation and a B2B-disabled summary, not the intermittent bug or the entire lab. No resources were deployed or inspected for this replay; the historical live-status line above is not a current resource check.
 
 **What this is.** A self-contained Azure lab that reproduces a customer's Virtual WAN route-map
 summarization problem end-to-end, so the behaviour can be observed directly rather than inferred from
@@ -266,11 +266,14 @@ the remaining lab inventory and scenarios are still open.
 |---|---|---|
 | B2B on, both contributors, no map: [simulator-topology.json](simulator-topology.json) | VNet `10.0.128.0/24`: `65515`; ER `10.0.1/2/3.0/24`: `65515 12076 133937`; no `/16` | PASS: four prefix/path facts and one explicit absence |
 | B2B on, ER-only contributors, summarize-out on cx-nva1 (Case D'): [simulator-topology-er-only-summary.json](simulator-topology-er-only-summary.json) | `10.0.0.0/16`: `65515`; all three ER `/24`s absent | PASS after simulator correction: one prefix/path fact and three explicit absences |
-| B2B-off cases, AS-path-drop mitigation, origin-classification race, 63-prefix scale-up, provider/FIB/packet behavior | Other portions of this investigation | NOT ASSESSED; not silently approximated by a different mechanism |
+| B2B on, AS-path Contains `12076` -> Drop: [simulator-topology-as-path-drop.json](simulator-topology-as-path-drop.json) | VNet `/24`: `65515`; ER `/24`s absent (65, section 2) | PASS: real AS-path filtering, not a prefix-filter substitute |
+| B2B on, AS-path drop before summary: [simulator-topology-as-path-drop-summary.json](simulator-topology-as-path-drop-summary.json) | `/16`: `65515`; VNet and ER `/24`s absent (65, section 3) | PASS: surviving VNet contribution produces summary |
+| B2B off, both contributors, outbound summary: [simulator-topology-b2b-off-summary.json](simulator-topology-b2b-off-summary.json) | `/16`: `65515`; specifics suppressed (62, Case A) | PASS for recorded advertisements, not Azure internal aggregate classification |
+| Origin-classification race, other B2B-off cuts, 63-prefix scale-up, provider/FIB/packet behavior | Other portions of this investigation | NOT ASSESSED; not silently approximated by a different mechanism |
 
-Both exports are native **Virtual WAN-Only / version 1** JSON, not Azure capture files.
+All five exports are native **Virtual WAN-Only / version 1** JSON, not Azure capture files.
 Open [the simulator in VWAN mode](https://vwan-simulator.com/?mode=vwan), save your existing
-work, and use **Import JSON** to select either file. At **nva1 - VPN observation branch**,
+work, and use **Import JSON** to select a file. At **nva1 - VPN observation branch**,
 open **Learned routes**, choose neighbor **nva1 BGP VPN**, and inspect the **After** stage.
 The same facts appear at **hub-eu1 / Advertised routes** for that neighbor. Export JSON
 and reimport it to retain the selected state; importing replaces the current workspace.
@@ -286,7 +289,8 @@ queried, changed, deployed or deleted for this replay.
 Source repository revision: `5ba98831d8244eef162e6dbb2cc12a5b58f02e74`.
 Expected results are transcribed from the saved observations, not generated from the simulator:
 
-- [65-vpnbranch-mitigation-validation.txt, section (1)](https://github.com/erjosito/net-lab-builder/blob/5ba98831d8244eef162e6dbb2cc12a5b58f02e74/labs/vwan-routemap-summarization/show-output/round2/65-vpnbranch-mitigation-validation.txt): a curated observed prefix/AS-path listing, **not** a complete native RIB dump. Sections (2)/(3), the mitigation, are excluded.
+- [65-vpnbranch-mitigation-validation.txt](https://github.com/erjosito/net-lab-builder/blob/5ba98831d8244eef162e6dbb2cc12a5b58f02e74/labs/vwan-routemap-summarization/show-output/round2/65-vpnbranch-mitigation-validation.txt): section (1) is the baseline; (2) records drop-only mitigation; (3) records drop before summary, including native BIRD output at `10:27:38.310/323`. Curated presence/absence lists are not full native RIB dumps.
+- [62-vpnbranch-caseA-both-contributors-b2b-off.txt](https://github.com/erjosito/net-lab-builder/blob/5ba98831d8244eef162e6dbb2cc12a5b58f02e74/labs/vwan-routemap-summarization/show-output/round2/62-vpnbranch-caseA-both-contributors-b2b-off.txt): native `/16` output at `09:40:12.022/025`; WAN/rule configuration and specific-prefix suppression come from the adjacent recorded descriptions.
 - [64-vpnbranch-caseD-only-ER-b2b-on.txt](https://github.com/erjosito/net-lab-builder/blob/5ba98831d8244eef162e6dbb2cc12a5b58f02e74/labs/vwan-routemap-summarization/show-output/round2/64-vpnbranch-caseD-only-ER-b2b-on.txt): native `birdc show route all` excerpt with two observed VPN peers at `10:06:49.631/632`, plus explicit `/24` absence observations. Its interpretation is not adopted as proof of internal origin attributes or universal behavior.
 
 The [simulator evidence fixture](https://github.com/erjosito/vwan-visual-topology/blob/3966d7b/verification/issue-98-routemap-archive.json)
@@ -311,8 +315,16 @@ as logical prefix/path facts, not as a physical redundancy or session-count cert
 The native BIRD excerpt includes a `!` marker: prefix presence is **not** treated as evidence
 of installation in a FIB or working packet delivery.
 
-The model assumes B2B enabled; VWAN mode cannot configure its disabled state or the lab's
-AS-path-matching mitigation. Communities are not compared. MCR/circuits use logical site/ER
+The additional [simulator #101 fixture](https://github.com/erjosito/vwan-visual-topology/blob/main/verification/issue-101-routemap-archive.json)
+pins the two source hashes and adds 14 recorded prefix/path/absence facts. Use a build
+containing the implementation of [erjosito/vwan-visual-topology#101](https://github.com/erjosito/vwan-visual-topology/issues/101).
+The WAN-wide checkbox defaults to enabled in old files; the B2B-off export explicitly
+sets `allowBranchToBranchTraffic: false`. Branch origins are suppressed before outbound
+policy, while hub learning and VNet connectivity remain enabled. This model pipeline
+does not establish Azure's internal aggregate-classification order, nor certify forwarding
+or the absence of the unreproduced race. AS-path matching uses the actual advertised
+attributes; matching AS12076 is permitted even though prepending Azure-reserved ASNs is not.
+Communities are not compared. MCR/circuits use logical site/ER
 abstractions, not provider behavior. Hub preference is left at the simulator's ExpressRoute
 default; the excerpts do not independently record that setting or validate preference
 competition. No credentials, service keys or Azure resource/account identifiers are in the
