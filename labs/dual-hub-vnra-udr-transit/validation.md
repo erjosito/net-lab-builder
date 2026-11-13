@@ -6,6 +6,18 @@
 
 ---
 
+## Offline simulator checkpoint (2026-11-13)
+
+The [native negative/positive replay pair](README.md#simulator-replay-archived-evidence-2026-11-13)
+compares twelve distinct archived observations: six NIC routes, two SDN next hops
+and four guest probe outcomes. This found and corrected a simulator defect:
+connected peering routes were incorrectly hidden when access was disabled.
+Both logical reachability states and the selected routes now match the bounded
+evidence. The [cross-lab matrix](https://github.com/erjosito/vwan-visual-topology/blob/main/verification/issue-98-archive-validation.md)
+links regressions and provenance limitations. No new Azure measurements, TTL-hop,
+throughput or post-fix metric result is claimed; original historical results below
+are unchanged.
+
 ## Overall Verdict
 
 | Gate | Result |

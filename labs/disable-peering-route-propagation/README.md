@@ -1,5 +1,44 @@
 # Disable Peering Route Propagation (`disablePeeringRoute`): Hub-and-Spoke with 3 Hybrid Connections (S2S VPN, SD-WAN, ExpressRoute) and NVA
 
+## Simulator replay (S1/S2 NIC route cuts, 2026-11-13)
+
+Open [AzNet Simulator in Hub & Spoke mode](https://aznet-simulator.com/?mode=hub-spoke),
+download a native v2 `azure-network-topology` file below, and choose **Import JSON**.
+Inspect `vnet-hub` / `snet-hub-probe` effective routes and test LPM with `10.1.1.4`.
+Inspect `vnet-spoke1` / `snet-workload` for the cross-VNet NVA next-hop dependency.
+Export/reimport/reload preserve both designs.
+
+| Selected archived cut | Native topology | Compared observations | Result |
+|---|---|---|---|
+| S1 summary `/8`, normal peering propagation | [simulator-topology.json](simulator-topology.json) | Ten active peering `/16`s and the active User `/8`; three spoke route/dependency facts | **PASS**: `/16` peering route wins LPM for each spoke; spoke UDR next hop `10.0.1.4` remains reachable through the peered hub prefix. |
+| S2 explicit `/16` workaround, normal peering propagation | [simulator-topology-explicit-spokes.json](simulator-topology-explicit-spokes.json) | Ten Invalid peering `/16`s, ten active User `/16`s and active User `/8` | **PASS**: equal-prefix User routes win and retain the invalidated peering alternatives. This does not enable the blocked preview feature. |
+
+These are **selected NIC routing cuts, not the complete later three-hybrid
+topology or stateful packet/session tests**. All ten spoke prefixes, relevant
+subnets, route-table associations and NVA address are retained. Both gateway and
+hub-probe subnets use `rt-gw`; only spoke1 has its observed S1 UDR table. The VPN
+`172.16.0.0/16` context is retained, but native LNG connected host `/32`, public
+VPN next-hop representation, conntrack enforcement and later ER/SD-WAN branches
+are not asserted. The later SD-WAN `rt-nva` route is not mixed into S1/S2.
+Archived counters remain valuable context, not newly certified firewall emulation.
+
+The [independent fixture](https://github.com/erjosito/vwan-visual-topology/blob/main/verification/issue-98-udr-archive.json)
+pins revision `c14b2bd94787a0645392eb000cdd3cfbd9b59e7d`, exact source paths and
+Git-blob SHA-256 hashes. The 35 distinct selected route facts come from
+`s1-nic-vm-hub-probe-routes.txt`, `s1-nic-vm-spoke1-routes.txt` and
+`s2-workaround-nic-vm-hub-probe-routes.txt`. These text files lack exact capture
+timestamps and command/API metadata; report/scenario names establish order.
+The later-expanded deployment script supplies configuration intent, not an
+atomic native S1 inventory.
+
+The [validation matrix/tests](https://github.com/erjosito/vwan-visual-topology/blob/main/verification/issue-98-archive-validation.md)
+also record the preview's **BLOCKED** state: registration was Pending/
+ApprovalRequired and the update returned UnauthorizedClientApplication.
+No positive preview result, full VPN RIB equality, S4 hybrid BGP/forwarding,
+stateful connection success or current live-resource status is inferred.
+No cloud/provider resources were queried or changed. The route pair is a future
+sample candidate, not an automatic gallery addition.
+
 ## Status Summary
 
 | Item | Value |
