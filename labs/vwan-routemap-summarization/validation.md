@@ -2,6 +2,22 @@
 
 ← Back to [README.md](README.md) | Design spec: [design-phase3.md](design-phase3.md) | Gotchas: [lessons-learned.md](lessons-learned.md)
 
+## Recorded simulator replay checkpoint (2026-11-13; no deployment)
+
+The [Round 2 replay matrix](README.md#simulator-replay-recorded-round-2-evidence)
+documents two importable VWAN-native exports, independent evidence/provenance, expected
+and actual BGP-advertisement facts, and explicit unassessed portions. All nine selected
+prefix/path/absence observations match after the summary-AS-path correction in
+[erjosito/vwan-visual-topology#100](https://github.com/erjosito/vwan-visual-topology/pull/100).
+Local verification: 363 unit tests, both new browser import/inspection/round-trip cases,
+lint and production build pass (existing warnings retained).
+
+This checkpoint does not replace the historical live results below or verify today's
+existence/status of their resources. No forwarding, convergence, B2B-off behavior,
+AS-path-drop mitigation, origin-classification race or complete-RIB certification is claimed.
+The broader [erjosito/vwan-visual-topology#98](https://github.com/erjosito/vwan-visual-topology/issues/98)
+remains open.
+
 ## Summary
 
 Phase 1 lab is deployed and the VPN data plane + BGP control plane are healthy on both hubs. Route-map
