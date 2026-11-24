@@ -64,8 +64,9 @@ resource "google_compute_interconnect_attachment" "lab" {
 }
 
 resource "google_compute_address" "cpe" {
-  name   = "pip-${local.prefix}"
-  region = "europe-north2"
+  name       = "pip-${local.prefix}"
+  region     = "europe-north2"
+  depends_on = [google_project_service.lab]
 }
 
 resource "google_compute_firewall" "ike" {

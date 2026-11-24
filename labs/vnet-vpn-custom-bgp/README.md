@@ -99,7 +99,7 @@ addresses and a distinct ordinary CPE loopback.
 
 | Design | Status | Verdict | Evidence |
 |---|---|---|---|
-| Default private BGP plus Internet APIPA BGP | Foundation deployment in progress | NOT TESTED | [Assessment](assessment.md); no live reproduction yet |
+| Default private BGP plus Internet APIPA BGP | Foundation partially deployed; recovery pending | NOT TESTED | [Assessment](assessment.md); no live reproduction yet |
 | Three-overlay converged routing abstraction | Three simulator states evaluated | PASS within abstraction; customer issue INCONCLUSIVE | [Simulator evidence and limits](simulator.md) |
 
 ## Required scenarios
@@ -126,7 +126,7 @@ failed payload or unavailable provider connectivity is not a passing result.
 
 ## Infrastructure actually deployed
 
-**2026-11-24 19:10 UTC: foundation apply is running.** The earlier Azure state
+**2026-11-24 19:33 UTC: foundation apply stopped, verdict BLOCKED.** The earlier Azure state
 bootstrap group `rg-vnbgp-state-20261124` and storage account
 `stvnbgp20261124`, with container `tfstate`, were rolled back.
 ARM deployment succeeded, but effective account settings were
@@ -150,17 +150,39 @@ The dedicated Azure group was created through a targeted preflight plan.
 Live VM validation passed for Sweden Central `Standard_B2ts_v2`. The subsequent
 foundation plan contained 26 creates, no updates/deletes/replacements.
 
+The apply subsequently stopped on two explicit deployment errors, unrelated
+to the customer's BGP failure:
+
+1. The installed AzureRM provider rejects `public_ip_address_id` for an
+   ExpressRoute gateway. That field has now been removed from the ER gateway.
+2. The GCP static address had no dependency on the new project/API resources,
+   so creation raced project creation and returned project-not-found (404).
+   It now explicitly depends on the enabled project services.
+
+The source fixes pass Terraform format/validation but have **not** been applied.
+The failed run is idle and its live lease is blocked. A fresh approved bounded
+recovery must inspect a new saved plan before applying, not reuse the failed
+plan or silently renew its lease. The allocated `er` public IP is currently
+unused; it remains tracked for task-only cleanup and is not attached to the
+ER gateway by the corrected source.
+
 | Component | Actual state at handoff |
 |---|---|
 | Azure state group/account/container | Created, then deleted; group deletion verified |
 | GCP state project and private bucket | Created; Terraform backend initialized |
 | Azure lab group `rg-vnbgp-20261124` | Created and tracked in GCS state |
-| VPN gateway, ER circuit, VNet, PIPs, NSG and NIC | Resource presence verified; foundation apply still running |
-| ER gateway and probe VM | Not yet verified complete |
-| GCP project `gcp-vnbgp-20261124`, CPE and attachment | Included in running apply; readiness not yet verified |
+| VPN gateway `vpngw-vnbgp-20261124` | Azure API reports `Succeeded`, `VpnGw1AZ` |
+| ER circuit, VNet, subnets, PIPs, NSG and NIC | Created and tracked in GCS state; circuit is not provider-connected |
+| Probe VM | In GCS state; latest Azure API state `Updating`, not yet accepted as ready |
+| ER gateway | Not created, provider validation error above |
+| GCP project, APIs, VPC, subnet, Cloud Router and firewall rules | Created and tracked in GCS state |
+| GCP Partner attachment | Created, `PENDING_PARTNER` |
+| GCP CPE public IP and CPE VM | Not created, dependency error above |
 | Megaport MCR and three VXCs | Not purchased |
 
-This is an active foundation deployment, not yet a ready or validated test bed.
+This is a partial foundation, not a ready or validated test bed. No traffic
+baseline existed to restore. Partial resources and the private state backend
+are preserved for recovery; cleanup has not been claimed complete.
 Existing demo resources, including MCRs deployed earlier that day, are unrelated
 and must not be changed, reused without review, or cleaned up.
 
@@ -186,16 +208,18 @@ and must not be changed, reused without review, or cleaned up.
   was changed. This does not block use of the working environment credentials.
 - Megaport location catalog advertises MCR capacity in Stockholm, Amsterdam
   and Milan. Account-specific order validation and pricing are still required.
-- Next bounded action: verify the current foundation apply and remote state,
-  then validate/quote provider connections before any provider purchase.
+- Next bounded action: obtain approval for a fresh bounded foundation recovery,
+  inspect a new plan using the two source fixes and finish the missing resources.
+  Then validate/quote provider connections before any provider purchase.
 - Quote result: Stockholm order validation failed because the account lacks
   the Sweden market. Amsterdam AM1 (location 85) validated at EUR 600/month
   rack rate for a 1000 Mbps MCR with a one-month term. The response includes a
   promotional discount; do not assume that discount is guaranteed. VXCs have
   not been quoted or purchased.
 - Restore/resource state: original Azure bootstrap rollback verified; GCP state
-  recovery completed; dedicated foundation creation is in progress. No faults
-  have been injected and no Megaport products purchased.
+  recovery completed; foundation apply stopped partially complete. No faults
+  have been injected and no Megaport products purchased. Created resources
+  remain billable pending recovery or task-only cleanup.
 - Ignored `.runtime-control/` files contain local readiness inventories and
   leases only. They are deliberately **not portable through Git**. Recreate
   fresh leases and reauthenticate on the next laptop; do not copy old tokens,
@@ -213,15 +237,16 @@ Terraform configuration validates and the GCS backend initializes. Neither
 alone constitutes a successful deployment.
 Gateways are created sequentially to avoid competing gateway-subnet operations.
 The source includes a distinct dedicated GCP project and never uses the CLI's
-current project as the deployment target.
+current project as the deployment target. The two apply-time blockers and
+unapplied fixes are recorded above; syntax validation did not catch them.
 
 Before any live command, follow the repository live-lab policy and create a
 fresh ignored `deploy/.runtime-control/lease.json` with the approved scope,
 budgets, expiry and restore plan. The runner refuses expired/inactive leases,
 STOP, or a command timeout beyond the remaining lease reserve.
 
-After reauthentication and checking that the current apply is idle, the staged
-workflow from the repository root on Windows is:
+After reauthentication, fresh recovery approval/lease and confirming the
+previous apply is idle, the staged workflow from the repository root on Windows is:
 
 ```powershell
 python labs\vnet-vpn-custom-bgp\deploy\run_terraform.py init

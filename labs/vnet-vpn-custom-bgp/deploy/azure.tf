@@ -91,7 +91,6 @@ resource "azurerm_virtual_network_gateway" "er" {
   ip_configuration {
     name                          = "er"
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.gateway["er"].id
     subnet_id                     = azurerm_subnet.gateway.id
   }
 
