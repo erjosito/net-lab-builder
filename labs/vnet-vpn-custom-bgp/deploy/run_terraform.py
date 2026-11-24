@@ -10,8 +10,7 @@ from datetime import datetime, timezone
 
 ROOT = Path(__file__).resolve().parent
 CONTROL = ROOT / ".runtime-control"
-STATE_GROUP = "rg-vnbgp-state-20261124"
-STATE_STORAGE = "stvnbgp20261124"
+STATE_BUCKET = "gcp-vnbgp-state-20261124-tfstate"
 LAB_GROUP = "rg-vnbgp-20261124"
 SUBSCRIPTION_NAME = "Litware-MngEnvMCAP642473-jomore"
 
@@ -54,7 +53,7 @@ def check_lease():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("action", choices=["init", "plan", "apply", "inventory"])
-    parser.add_argument("--stage", choices=["foundation", "provider", "connection"],
+    parser.add_argument("--stage", choices=["preflight", "foundation", "provider", "connection"],
                         default="foundation")
     parser.add_argument("--timeout", type=int, default=120)
     args = parser.parse_args()
@@ -70,25 +69,18 @@ def main():
     ]))
     env["ARM_SUBSCRIPTION_ID"] = account["id"]
     env["ARM_TENANT_ID"] = account["tenantId"]
-    env["ARM_ACCESS_KEY"] = json.loads(run([
-        "az.cmd", "storage", "account", "keys", "list", "--subscription", account["id"],
-        "--resource-group", STATE_GROUP, "--account-name", STATE_STORAGE, "-o", "json"
-    ]))[0]["value"]
+    token = run(["wsl.exe", "--", "gcloud", "auth", "print-access-token"]).strip()
+    env["GOOGLE_OAUTH_ACCESS_TOKEN"] = token
     command = ["terraform", args.action, "-no-color"]
     if args.action == "init":
         command += [
             "-input=false", "-reconfigure",
-            f"-backend-config=resource_group_name={STATE_GROUP}",
-            f"-backend-config=storage_account_name={STATE_STORAGE}",
-            "-backend-config=container_name=tfstate",
-            "-backend-config=key=vnet-vpn-custom-bgp.tfstate",
-            f"-backend-config=subscription_id={account['id']}",
+            f"-backend-config=bucket={STATE_BUCKET}",
+            "-backend-config=prefix=vnet-vpn-custom-bgp",
         ]
     elif args.action == "inventory":
         command = ["terraform", "show", "-json"]
     else:
-        token = run(["wsl.exe", "--", "gcloud", "auth", "print-access-token"]).strip()
-        env["GOOGLE_OAUTH_ACCESS_TOKEN"] = token
         billing = json.loads(run([
             "wsl.exe", "--", "gcloud", "beta", "billing", "accounts", "list",
             "--filter=open=true", "--format=json",
@@ -120,9 +112,11 @@ def main():
         if args.action == "plan":
             command += [
                 "-input=false", "-lock-timeout=30s", f"-out={plan}",
-                f"-var=deploy_megaport={'false' if args.stage == 'foundation' else 'true'}",
+                f"-var=deploy_megaport={'true' if args.stage in ['provider', 'connection'] else 'false'}",
                 f"-var=connect_expressroute={'true' if args.stage == 'connection' else 'false'}",
             ]
+            if args.stage == "preflight":
+                command.append("-target=azurerm_resource_group.lab")
         else:
             if not plan.exists():
                 raise RuntimeError("A reviewed saved plan for this stage is required.")

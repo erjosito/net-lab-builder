@@ -1,6 +1,6 @@
 terraform {
   required_version = ">= 1.9.0"
-  backend "azurerm" {}
+  backend "gcs" {}
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"

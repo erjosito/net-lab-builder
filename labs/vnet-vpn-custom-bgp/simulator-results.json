@@ -1,0 +1,71 @@
+{
+  "capturedDateUtc": "2026-11-24",
+  "engineVersion": "2026.11.16.13",
+  "contractVersion": 2,
+  "evidenceKind": "Selected exact field excerpts from completed simulator responses, not live cloud evidence",
+  "runs": [
+    {
+      "state": "healthy",
+      "revision": "v1-94cfcaaa",
+      "resultStatus": "complete",
+      "controlPlaneComplete": true,
+      "errors": [],
+      "assessments": [
+        {"id": "overlay-payload-configured", "outcome": "satisfied", "reasons": []}
+      ],
+      "vpnGatewayPayloadRoutes": [
+        {"connectionId": "private0", "prefix": "10.246.1.0/24", "asPath": [64513], "preferred": true},
+        {"connectionId": "private1", "prefix": "10.246.1.0/24", "asPath": [64513], "preferred": true},
+        {"connectionId": "internet", "prefix": "10.246.1.0/24", "asPath": [64513, 64513, 64513], "preferred": false}
+      ],
+      "cpeAzureRoutes": [
+        {"connectionId": "private0", "prefix": "10.244.0.0/16", "asPath": [65515], "preferred": true},
+        {"connectionId": "private1", "prefix": "10.244.0.0/16", "asPath": [65515], "preferred": true},
+        {"connectionId": "internet", "prefix": "10.244.0.0/16", "asPath": [65515], "preferred": true}
+      ],
+      "sampleForwardTraversedEdgeIds": ["private0"],
+      "sampleReverseTraversedEdgeIds": ["private0"]
+    },
+    {
+      "state": "declared-private-withdrawal",
+      "revision": "v1-9a1ef7c9",
+      "resultStatus": "complete",
+      "controlPlaneComplete": true,
+      "errors": [],
+      "assessments": [
+        {"id": "backup-after-declared-withdrawal", "outcome": "satisfied", "reasons": []},
+        {"id": "outer-route-withdrawn", "outcome": "satisfied", "reasons": []},
+        {"id": "payload-route-remains", "outcome": "satisfied", "reasons": []}
+      ],
+      "vpnGatewayPayloadRoutes": [
+        {"connectionId": "internet", "prefix": "10.246.1.0/24", "asPath": [64513, 64513, 64513], "preferred": true}
+      ],
+      "erGatewayRoutes": []
+    },
+    {
+      "state": "er-only-withdrawal-boundary-control",
+      "revision": "v1-dda8686f",
+      "resultStatus": "complete",
+      "controlPlaneComplete": true,
+      "errors": [],
+      "assessments": [
+        {"id": "boundary-overlay-still-configured", "outcome": "satisfied", "reasons": []},
+        {"id": "outer-route-withdrawn", "outcome": "satisfied", "reasons": []}
+      ],
+      "vpnGatewayPayloadRoutes": [
+        {"connectionId": "private0", "prefix": "10.246.1.0/24", "asPath": [64513], "preferred": true},
+        {"connectionId": "private1", "prefix": "10.246.1.0/24", "asPath": [64513], "preferred": true},
+        {"connectionId": "internet", "prefix": "10.246.1.0/24", "asPath": [64513, 64513, 64513], "preferred": false}
+      ],
+      "erGatewayRoutes": []
+    }
+  ],
+  "notAssessed": [
+    "APIPA/default BGP TCP endpoint selection",
+    "Actual private VPN dependence on ER",
+    "Shared underlay/overlay CPE forwarding interactions",
+    "PAN-OS sessions and IPsec state",
+    "Static-to-BGP conversion history",
+    "Live packet delivery and convergence timing"
+  ]
+}

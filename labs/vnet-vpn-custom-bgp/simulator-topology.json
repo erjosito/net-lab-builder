@@ -1,0 +1,110 @@
+{
+  "version": 2,
+  "kind": "azure-network-topology",
+  "name": "IPsec over ER with single Internet backup: routing abstraction",
+  "subtitle": "Declared routing only; no APIPA TCP, IPsec nesting or underlay dependency validation.",
+  "vnets": [{
+    "id": "azure",
+    "name": "Azure VNet",
+    "role": "hub-vnet",
+    "region": "swedencentral",
+    "prefixes": ["10.244.0.0/16"],
+    "subnets": [
+      {"id": "gw", "name": "GatewaySubnet", "prefix": "10.244.255.0/26"},
+      {"id": "workload", "name": "workload", "prefix": "10.244.1.0/24"}
+    ],
+    "gateways": [
+      {
+        "id": "vpn",
+        "name": "Active-active VNet VPN Gateway",
+        "kind": "Vpn",
+        "asn": 65515,
+        "bgpEnabled": true,
+        "activeActive": true,
+        "enabled": true
+      },
+      {
+        "id": "er",
+        "name": "ER underlay gateway",
+        "kind": "ExpressRoute",
+        "asn": 65515,
+        "bgpEnabled": true,
+        "enabled": true
+      }
+    ],
+    "appliances": []
+  }],
+  "vnetPeerings": [],
+  "udrTables": [],
+  "vwanHubs": [],
+  "erLocations": [{
+    "id": "stockholm",
+    "name": "Stockholm underlay",
+    "globalReachEnabled": false
+  }],
+  "erLinks": [
+    {
+      "id": "azure-er",
+      "name": "Azure ER underlay",
+      "locationId": "stockholm",
+      "targetKind": "vnet-gateway",
+      "targetId": "er",
+      "enabled": true
+    },
+    {
+      "id": "gcp-er",
+      "name": "CPE outer endpoint only",
+      "locationId": "stockholm",
+      "targetKind": "site",
+      "targetId": "underlay",
+      "enabled": true
+    }
+  ],
+  "sites": [
+    {
+      "id": "underlay",
+      "name": "Same CPE underlay identity, not a second router",
+      "asn": 65060,
+      "prefixes": ["10.245.0.10/32"]
+    },
+    {
+      "id": "cpe",
+      "name": "Single CPE overlay",
+      "asn": 64513,
+      "prefixes": ["10.246.1.0/24"]
+    }
+  ],
+  "vpnConnections": [
+    {
+      "id": "private0",
+      "name": "Private instance 0, abstract ER-carried overlay",
+      "siteId": "cpe",
+      "targetKind": "vnet-gateway",
+      "targetId": "vpn",
+      "bgpEnabled": true,
+      "inboundPrepend": [],
+      "enabled": true
+    },
+    {
+      "id": "private1",
+      "name": "Private instance 1, abstract ER-carried overlay",
+      "siteId": "cpe",
+      "targetKind": "vnet-gateway",
+      "targetId": "vpn",
+      "bgpEnabled": true,
+      "inboundPrepend": [],
+      "enabled": true
+    },
+    {
+      "id": "internet",
+      "name": "Single Internet backup",
+      "siteId": "cpe",
+      "targetKind": "vnet-gateway",
+      "targetId": "vpn",
+      "bgpEnabled": true,
+      "inboundPrepend": [64513, 64513],
+      "enabled": true
+    }
+  ],
+  "siteLinks": []
+}
