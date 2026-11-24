@@ -1,7 +1,31 @@
 # Initial assessment of the reported outage
 
-**Date:** 2026-11-24. **Status:** hypotheses from the supplied email and six
-screenshots, not a reproduced root cause. The Linux lab is not a PAN-OS test.
+**Date:** 2026-11-24. **Status:** hypotheses from the supplied screenshots and
+the latest email with quoted history retrieved through WorkIQ, not a reproduced
+root cause. The Linux lab is not a PAN-OS test.
+
+## Thread findings that change the reproduction
+
+The latest message is a follow-up; the detailed failure report was sent four
+days earlier. Earlier quoted messages establish that private and public tunnels
+terminate on the same on-premises device, and describe a prior asymmetric
+forwarding problem while legacy Internet static routes remained configured.
+That makes shared forwarding/peer reachability a stronger test priority.
+
+However, the quoted July report also describes unexpected default-source BGP
+attempts when custom addresses were tried on the initial private VPN. The
+source-address symptom therefore predates the later Internet-backup enablement.
+It must not be attributed solely to converting the Internet connection.
+The earlier custom addresses and complete configuration are unknown.
+
+A September suggestion to float a single adjacency between tunnels was
+explicitly withdrawn in the subsequent reply. Dedicated per-transport peers
+were selected instead. Do not revive the superseded suggestion as a supported
+fix, or treat the prior vWAN lab as validation of this VNet gateway deployment.
+
+The primary reproduction now follows the customer's migration sequence and
+exactly three active tunnels. A fresh APIPA connection is a comparison, not the
+primary test. See the [fidelity contract](customer-fidelity.md).
 
 ## Bottom line
 
@@ -105,11 +129,14 @@ scenario, not an unrecorded attempt that destroys the failing evidence.
 
 1. Establish two private default-address adjacencies, private best paths and
    bidirectional encrypted payload.
-2. Add the Internet APIPA adjacency with explicit CPE initiation and independent
-   peer routes. Collect all TCP/179 traffic inside each tunnel, the exact
-   established tuples, both route tables, IPsec counters and payload results.
-3. If coexistence passes, repeat the customer's in-place BGP enablement sequence
-   from a separately verified baseline. Compare it with fresh configuration.
+2. Enable APIPA BGP in place on the existing, formerly static Internet
+   connection, preserving exactly one Internet tunnel and the two private
+   tunnels. Use explicit CPE initiation and independent peer routes. Collect
+   all TCP/179 traffic, exact established tuples, both route tables, IPsec
+   counters and payload results.
+3. From a separately restored baseline, compare this with fresh APIPA
+   configuration if needed. Do not replace the customer-like sequence with
+   the simpler clean-create case.
 4. If adding backup breaks forwarding, capture whether private BGP actually
    withdraws, whether routes change without withdrawal, or whether the CPE
    rejects an unexpected peer. Restore the saved baseline promptly.

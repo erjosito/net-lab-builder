@@ -9,6 +9,9 @@ reproduction and cannot establish a Palo Alto-specific root cause.
 
 See [initial assessment](assessment.md) for the ranked hypotheses, evidence
 limitations and decisive tests. It is not a confirmed root cause.
+The [customer fidelity contract](customer-fidelity.md) records the required
+three-tunnel topology, migration sequence, known substitutions and acceptance
+gates, updated from the email thread retrieved through WorkIQ.
 
 The supplied screenshots identify a VNet VPN Gateway, not Virtual WAN.
 They show a connected APIPA peer with received routes while the local address
@@ -97,12 +100,17 @@ addresses and a distinct ordinary CPE loopback.
 
 ## Required scenarios
 
-1. Establish two private IPsec/BGP paths and prove bidirectional workload
-   traffic crosses IPsec rather than cleartext ER. Capture the clean baseline.
-2. Enable Internet APIPA BGP while private sessions remain active. Capture
+1. Start with one established static Internet VPN on the same CPE. Introduce
+   private BGP, capture the static/BGP coexistence, remove conflicting Internet
+   static prefixes, then establish both private IPsec/BGP paths. Prove
+   bidirectional encrypted payload, not cleartext ER. Preserve the existing
+   Internet connection and capture the clean pre-enablement baseline.
+2. Enable Internet APIPA BGP in place while private sessions remain active.
+   Keep exactly one Internet tunnel for the primary reproduction. Capture
    per-tunnel TCP/179 packets, FRR peer state, gateway-reported peer state,
    route selection and bidirectional payload. On disruption, capture decisive
-   evidence and restore the saved baseline without open-ended troubleshooting.
+   evidence and disable backup BGP as the first rollback; verify private
+   forwarding recovery without gateway recreation or gratuitous SA resets.
 3. From a verified coexistence baseline, interrupt only the task-created ER
    transport. Prove Internet takeover, route withdrawal, actual payload recovery
    and absence of cleartext bypass. Restore transport, verify failback and
