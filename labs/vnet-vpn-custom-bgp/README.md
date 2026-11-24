@@ -7,6 +7,9 @@ using default Azure BGP addresses and Internet backup using custom APIPA peers.
 Use Linux StrongSwan/FRR to isolate Azure behavior. This is not a PAN-OS
 reproduction and cannot establish a Palo Alto-specific root cause.
 
+See [initial assessment](assessment.md) for the ranked hypotheses, evidence
+limitations and decisive tests. It is not a confirmed root cause.
+
 The supplied screenshots identify a VNet VPN Gateway, not Virtual WAN.
 They show a connected APIPA peer with received routes while the local address
 column and Palo Alto traffic logs show the default Azure address. These are
@@ -90,7 +93,7 @@ addresses and a distinct ordinary CPE loopback.
 
 | Design | Status | Verdict | Evidence |
 |---|---|---|---|
-| Default private BGP plus Internet APIPA BGP | Readiness | NOT TESTED | Supplied screenshots; no live reproduction yet |
+| Default private BGP plus Internet APIPA BGP | Deployment prerequisite blocked | NOT TESTED | [Assessment](assessment.md); no live reproduction yet |
 
 ## Required scenarios
 
@@ -111,9 +114,28 @@ failed payload or unavailable provider connectivity is not a passing result.
 
 ## Infrastructure actually deployed
 
-**None as of the handoff checkpoint on 2026-11-24.** Every cloud operation so
-far has been read-only. No Azure resource group, gateway, circuit or VM; GCP
-project, VM or attachment; Megaport MCR or VXC has been created for this lab.
+**No task resources remain after the 2026-11-24 rollback.** The only resources
+created were state bootstrap group `rg-vnbgp-state-20261124` and storage account
+`stvnbgp20261124` in Sweden Central, with container `tfstate`.
+ARM deployment succeeded, but effective account settings were
+`publicNetworkAccess=Disabled` and `allowSharedKeyAccess=false`.
+Terraform initialization failed with `KeyBasedAuthenticationNotPermitted`;
+Entra-authenticated data access was also unavailable from this laptop.
+
+Neither setting was relaxed. After verifying the group contained only the
+task-tagged state account, the account and group were deleted. A subsequent
+resource-group existence query returned false. No Terraform infrastructure
+apply was attempted, so there is no remote Terraform state to recover.
+
+| Component | Actual state at handoff |
+|---|---|
+| Azure state group/account/container | Created, then deleted; group deletion verified |
+| Azure lab group `rg-vnbgp-20261124` | Not created |
+| VPN/ER gateways, ER circuit and probe VM | Not created |
+| GCP project `gcp-vnbgp-20261124`, CPE and attachment | Not created |
+| Megaport MCR and three VXCs | Not purchased |
+
+This is a blocked deployment, not a deployed or validated test bed.
 Existing demo resources, including MCRs deployed earlier that day, are unrelated
 and must not be changed, reused without review, or cleaned up.
 
@@ -139,18 +161,66 @@ and must not be changed, reused without review, or cleaned up.
   was changed. This does not block use of the working environment credentials.
 - Megaport location catalog advertises MCR capacity in Stockholm, Amsterdam
   and Milan. Account-specific order validation and pricing are still required.
-- Next bounded action: validate/quote a dedicated 1000 Mbps MCR on a one-month
-  term, select a supported European PoP, and prepare isolated deployment.
-- Restore/resource state: no resource mutations or injected faults to restore.
+- Next bounded action: obtain confirmation of the proposed state-backend
+  recovery, then create a fresh bounded deployment lease.
+- Quote result: Stockholm order validation failed because the account lacks
+  the Sweden market. Amsterdam AM1 (location 85) validated at EUR 600/month
+  rack rate for a 1000 Mbps MCR with a one-month term. The response includes a
+  promotional discount; do not assume that discount is guaranteed. VXCs have
+  not been quoted or purchased.
+- Restore/resource state: bootstrap rollback completed and deletion verified.
+  No injected faults and no task-created running infrastructure remain.
 - Ignored `.runtime-control/` files contain local readiness inventories and
   leases only. They are deliberately **not portable through Git**. Recreate
   fresh leases and reauthenticate on the next laptop; do not copy old tokens,
   credentials, expired leases or another session's local state.
-- Before resources exist, choose a portable, access-controlled state strategy
-  if Terraform is used. Do not depend on uncommitted local state for next-day
-  ownership or cleanup. Record task-created resource names, regions, provider
-  order terms and status here after each deployment wave, without secret keys
-  or subscription/tenant IDs.
+- The proposed recovery is a private GCP bucket for portable state, without
+  changing Azure storage security settings. A confirmation question was raised,
+  but the user was unavailable; **this recovery was not performed**.
+- The current source still contains the original Azure backend/bootstrap.
+  Do not simply rerun it or silently enable public networking/shared keys.
+  Confirm the replacement backend, adapt the source and ownership/cleanup plan,
+  and only then provision. Tokens, keys and resource IDs must stay out of Git.
+
+## Deployment source and resume commands
+
+`deploy/` contains the prepared VNet gateway topology and reuses the existing
+StrongSwan/FRR startup script. Terraform provider versions are locked. The
+Terraform configuration validates and the Bicep bootstrap compiles, but this
+does not validate the live backend or constitute a successful deployment.
+Gateways are created sequentially to avoid competing gateway-subnet operations.
+The source includes a distinct dedicated GCP project and never uses the CLI's
+current project as the deployment target.
+
+Before any live command, follow the repository live-lab policy and create a
+fresh ignored `deploy/.runtime-control/lease.json` with the approved scope,
+budgets, expiry and restore plan. The runner refuses expired/inactive leases,
+STOP, or a command timeout beyond the remaining lease reserve.
+
+After resolving the backend blocker, the intended staged workflow from the
+repository root on Windows is:
+
+```powershell
+python labs\vnet-vpn-custom-bgp\deploy\run_terraform.py init
+python labs\vnet-vpn-custom-bgp\deploy\run_terraform.py plan --stage foundation --timeout 120
+```
+
+Inspect the printed actions and the saved private plan before applying.
+Foundation creates Azure/GCP resources only. Provider and connection stages
+are separate: **do not return to a lower stage after a higher stage is
+deployed**, because that would propose removing its resources. The runner
+refuses deletion/replacement plans.
+
+The current runner is Windows-specific and uses Azure CLI, WSL `gcloud` and
+Megaport key environment variables. It requires exactly one open GCP billing
+account; ambiguity is an explicit error. On a new laptop it recovers the probe's
+existing public SSH key from Azure, rather than planning VM replacement.
+Tokens, plans and raw diagnostics stay in ignored runtime storage. Do not
+publish them.
+
+No IPsec connections, FRR peer configuration or fault tests have been applied.
+Those are subsequent work after infrastructure readiness, not outcomes implied
+by successful Terraform syntax validation.
 
 ## References
 
