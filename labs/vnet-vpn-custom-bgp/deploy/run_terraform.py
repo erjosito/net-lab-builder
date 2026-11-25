@@ -23,13 +23,18 @@ def gcloud_command(*arguments):
     return ["wsl.exe", "--", "gcloud", *arguments]
 
 
-def run(command, *, timeout=90, env=None):
+def run(command, *, timeout=90, env=None, input_text=None):
+    binary = input_text is not None
     process = subprocess.Popen(
         command, cwd=ROOT, env=env, stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE, text=True, encoding="utf-8", errors="replace",
+        stderr=subprocess.PIPE, stdin=subprocess.PIPE if input_text is not None else None,
+        text=not binary, encoding=None if binary else "utf-8",
+        errors=None if binary else "replace",
     )
     try:
-        stdout, stderr = process.communicate(timeout=timeout)
+        stdout, stderr = process.communicate(
+            input=input_text.encode("utf-8") if binary else None, timeout=timeout,
+        )
     except subprocess.TimeoutExpired:
         script = (
             "function Stop-Tree([int]$processId) { "
@@ -42,6 +47,9 @@ def run(command, *, timeout=90, env=None):
                        capture_output=True, timeout=30, check=True)
         process.communicate(timeout=30)
         raise RuntimeError(f"Command exceeded its {timeout}s bound; process tree stopped.")
+    if binary:
+        stdout = stdout.decode("utf-8", errors="replace")
+        stderr = stderr.decode("utf-8", errors="replace")
     if process.returncode:
         raise RuntimeError(f"{command[0]} failed: {stderr or stdout}")
     return stdout

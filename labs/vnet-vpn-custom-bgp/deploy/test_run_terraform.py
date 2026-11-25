@@ -1,11 +1,21 @@
 import json
 from pathlib import Path
 import tempfile
+import sys
 import unittest
 from unittest.mock import patch
 from datetime import datetime, timedelta, timezone
 
 import run_terraform
+
+
+class CommandInputTests(unittest.TestCase):
+    def test_ssh_stdin_preserves_linux_line_endings_on_windows(self):
+        output = run_terraform.run(
+            [sys.executable, "-c", "import sys; print(sys.stdin.buffer.read().hex())"],
+            input_text="line1\nline2\n",
+        )
+        self.assertEqual(output.strip(), "6c696e65310a6c696e65320a")
 
 
 class GcloudCommandTests(unittest.TestCase):

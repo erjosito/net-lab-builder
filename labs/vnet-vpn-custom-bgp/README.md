@@ -7,6 +7,13 @@ using default Azure BGP addresses and Internet backup using custom APIPA peers.
 Use Linux StrongSwan/FRR to isolate Azure behavior. This is not a PAN-OS
 reproduction and cannot establish a Palo Alto-specific root cause.
 
+**Current state, 2026-11-25 13:50 UTC: configured and running.** Both Azure
+IPsec connections use BGP; the CPE has two private tunnels and one Internet
+APIPA backup. All three adjacencies are established and private encrypted
+payload passes. See the [current checkpoint](#current-checkpoint-and-cross-laptop-resume).
+The user explicitly requested the final state directly, rather than completing
+the historical migration sequence.
+
 See [initial assessment](assessment.md) for the ranked hypotheses, evidence
 limitations and decisive tests. It is not a confirmed root cause.
 The [customer fidelity contract](customer-fidelity.md) records the required
@@ -99,10 +106,16 @@ addresses and a distinct ordinary CPE loopback.
 
 | Design | Status | Verdict | Evidence |
 |---|---|---|---|
-| Default private BGP plus Internet APIPA BGP | Foundations and PAYG transport connected; tunnel configuration pending | NOT TESTED | [Assessment](assessment.md); no live reproduction yet |
+| Default private BGP plus Internet APIPA BGP | Two private tunnels and one Internet backup configured; three adjacencies established | PASS for direct configuration and private encrypted payload; customer migration and failover NOT TESTED | [Final-state evidence](raw-output/bgp-final-state-20261125.json) |
+| Temporary static Internet baseline | One Internet tunnel verified before user requested the direct BGP end state | PASS within baseline scope; no longer the configured routing design | [Baseline evidence](raw-output/internet-baseline-20261125.json) |
 | Three-overlay converged routing abstraction | Three simulator states evaluated | PASS within abstraction; customer issue INCONCLUSIVE | [Simulator evidence and limits](simulator.md) |
 
-## Required scenarios
+## Reproduction scenarios (deferred)
+
+The user directed on 2026-11-25: go straight to the end state with BGP over
+both connections. The sequence below remains a future reproduction plan,
+not work required to complete that configuration request or a claim that the
+customer's migration has been reproduced.
 
 1. Start with one established static Internet VPN on the same CPE. Introduce
    private BGP, capture the static/BGP coexistence, remove conflicting Internet
@@ -124,7 +137,10 @@ Every live scenario requires its own bounded control lease. A failed gate
 permits bounded restore, not an unlimited retry loop. Missing packet evidence,
 failed payload or unavailable provider connectivity is not a passing result.
 
-## Infrastructure actually deployed
+## Infrastructure deployment history
+
+The dated checkpoints below preserve earlier states. Use the newest checkpoint
+for current readiness; historical BLOCKED results are not the current verdict.
 
 **2026-11-24 19:33 UTC: foundation apply stopped, verdict BLOCKED.** The earlier Azure state
 bootstrap group `rg-vnbgp-state-20261124` and storage account
@@ -187,6 +203,56 @@ Existing demo resources, including MCRs deployed earlier that day, are unrelated
 and must not be changed, reused without review, or cleaned up.
 
 ## Current checkpoint and cross-laptop resume
+
+### BGP end state configured, 2026-11-25 13:50 UTC
+
+**Verdict: PASS for the requested direct BGP configuration and private
+encrypted payload.** The user superseded the remaining static-to-BGP migration
+sequence. The existing Internet connection and PSK were preserved; no Megaport
+product was changed. Resources remain running for inspection and further tests.
+
+| Azure connection | CPE tunnels | Outer transport | BGP identities |
+|---|---|---|---|
+| `conn-private-vnbgp-20261124` | `private0`, `private1` | Private IPsec over real ER | CPE `10.245.254.6` to Azure `10.244.255.7` and `.6` |
+| `conn-internet-vnbgp-20261124` | `internet` only | Public IPsec | CPE `169.254.21.1` to Azure `169.254.21.2` |
+
+Both connection resources report `Succeeded` with BGP enabled. One
+active-active private connection supplies the two private instance tunnels;
+these are **two Azure connection objects and three configured CPE tunnels**.
+The unused second public gateway endpoint is intentional. Its APIPA peer can
+appear `Connecting` in Azure and is not a failed required fourth tunnel.
+
+All three CPE BGP sessions are established. The CPE installs the two private
+paths for Azure `10.244.0.0/16`, with local preference 200 versus Internet 100.
+Azure receives `10.246.1.0/24` with AS path `64513` on private and
+`64513-64513-64513` on Internet. The Internet LNG has no remaining static
+payload prefix, and the CPE has no static route to the Azure workload.
+The local discard route for originating the CPE prefix is not a static VPN
+fallback. Google still advertises only the CPE outer `10.245.0.10/32`.
+
+Five ordinary source-bound workload pings passed with no loss. The capture
+also shows five requests leaving `xfrm-private0` and all five replies entering
+`xfrm-private1`: valid asymmetric ECMP across the private tunnels. A ping
+socket bound to only the sending interface reported loss because it filtered
+those replies. Do not confuse that tool artefact with a forwarding outage.
+The Internet capture proves a CPE-initiated TCP handshake from
+`169.254.21.1` to `169.254.21.2:179`. Azure still labels that established
+peer with its default local BGP address in API metadata; the packet tuple,
+not that column, establishes the working source identity.
+
+State contains **36 managed instances**, and the final overlay-only plan
+has **zero changes**. Persistent XFRM/endpoint-route and StrongSwan-loading
+services are enabled along with FRR. A reboot was not performed. The Internet
+child was explicitly initiated once after the Azure update; the private BGP
+sessions remained up. The deployment helper now starts absent existing
+children when configuration reload alone does not do so.
+
+See [sanitized final evidence](raw-output/bgp-final-state-20261125.json).
+Historical migration reproduction, ER failure/failback timings, final-state
+Internet workload takeover and a PAN-OS-specific root cause are **not claimed**.
+The default Azure policy negotiated MODP_1024, which is a lab observation,
+not a production crypto recommendation. No live command or packet capture
+remains active; cleanup has not been run because the configured lab is retained.
 
 ### ER underlay reconciled, 2026-11-25 11:55 UTC
 
@@ -454,44 +520,55 @@ Current official reference: [MCR pricing and contract terms](https://docs.megapo
 ## Deployment source and resume commands
 
 `deploy/` contains the prepared VNet gateway topology and reuses the existing
-StrongSwan/FRR startup script. Terraform provider versions are locked. The
-Terraform configuration validates and the GCS backend initializes. Neither
-alone constitutes a successful deployment.
+StrongSwan/FRR package-install startup script. `overlay.tf` defines the two
+LNG/IPsec pairs; `overlay_guest.py` renders persistent CPE routes, three
+StrongSwan children and FRR policies. Terraform provider versions are locked.
 Gateways are created sequentially to avoid competing gateway-subnet operations.
 The source includes a distinct dedicated GCP project and never uses the CLI's
-current project as the deployment target. The two apply-time blockers and
-unapplied fixes are recorded above; syntax validation did not catch them.
+current project as the deployment target. Earlier blockers are historical.
 
 Before any live command, follow the repository live-lab policy and create a
 fresh ignored `deploy/.runtime-control/lease.json` with the approved scope,
 budgets, expiry and restore plan. The runner refuses expired/inactive leases,
 STOP, or a command timeout beyond the remaining lease reserve.
 
-After reauthentication, fresh recovery approval/lease and confirming the
-previous apply is idle, the staged workflow from the repository root on Windows is:
+After reauthentication and a scoped lease, the current overlay-only check
+from the repository root on Windows is:
 
 ```powershell
+# Initialize the existing GCS backend only when needed on a new laptop.
 python labs\vnet-vpn-custom-bgp\deploy\run_terraform.py init
-python labs\vnet-vpn-custom-bgp\deploy\run_terraform.py plan --stage foundation --timeout 120
+python -X utf8 labs\vnet-vpn-custom-bgp\deploy\configure_overlay.py plan --stage backup
 ```
 
-Inspect the printed actions and the saved private plan before applying.
-Foundation creates Azure/GCP resources only. Provider and connection stages
-are separate: **do not return to a lower stage after a higher stage is
-deployed**, because that would propose removing its resources. The runner
-refuses deletion/replacement plans.
+The final plan should be `[]`. For an approved actual change, inspect its
+private saved plan before using `apply --stage backup`; the helper rechecks
+the actual plan, rejects prerequisite writes, replacements and existing PSK
+rotation, and applies serially. It targets only the LNG/IPsec resources to
+avoid the known imported-Megaport provider drift. A full apply is still unsafe.
+Do not run foundation/provider stages or use the historical `internet` stage
+as the final routing design.
 
-The current runner is Windows-specific and uses Azure CLI, native Windows
+`guest --stage backup` installs the persistent CPE end state through pinned
+host-key IAP SSH; `inspect --stage backup` is read-only. This transport requires
+the native Windows Google SDK and its PuTTY client. Before guest access on a
+new laptop, reconstruct ignored `overlay-inventory.json` from authenticated
+gateway/CPE reads (`gateway` and `cpe` objects), and
+`cpe-serial-current.txt` from the CPE serial console. Verify its ED25519
+fingerprint and authorize a task-local `cpe-key` through IAP; the helper uses
+the resulting `cpe-key.ppk`. Do not bypass host-key checking or copy another
+laptop's credentials.
+
+The runners are Windows-specific and use Azure CLI, native Windows
 `gcloud.cmd` when available (otherwise WSL `gcloud`) and
-Megaport key environment variables. It requires exactly one open GCP billing
+the foundation runner's Megaport key environment variables. Billing discovery
+requires exactly one open GCP billing
 account; ambiguity is an explicit error. On a new laptop it recovers the probe's
 existing public SSH key from Azure, rather than planning VM replacement.
-Tokens, plans and raw diagnostics stay in ignored runtime storage. Do not
-publish them.
-
-No IPsec connections, FRR peer configuration or fault tests have been applied.
-Those are subsequent work after infrastructure readiness, not outcomes implied
-by successful Terraform syntax validation.
+Missing local VPN keys are read from the existing Azure connections, not
+silently regenerated. Only a genuinely new connection gets a generated key.
+Tokens, PSKs, SSH keys, plans, raw state and diagnostics remain in ignored
+runtime storage and must not be published.
 
 ## References
 

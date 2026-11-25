@@ -38,6 +38,13 @@ do not hardcode the customer's dynamically assigned default addresses.
 
 ## Primary sequence and acceptance gates
 
+**Execution scope update, 2026-11-25:** the user explicitly requested going
+straight to the end state with BGP over both connections. That direct
+configuration is now verified; see the README's latest checkpoint. The
+historical sequence below is deferred, not executed or required by the revised
+configuration scope. A passing Linux end state is not a customer migration
+reproduction or a PAN-OS root-cause finding.
+
 Run each bounded scenario under the live-lab policy. Save the original
 configuration before mutation, verify the clean baseline, preserve decisive
 evidence before restore, and stop on a failed gate. Do not silently run this
@@ -112,8 +119,9 @@ and have not been independently inspected on this laptop.
 
 ## Deployment gate
 
-This contract guides subsequent tunnel configuration and validation. The
-current Terraform source creates foundations only; it does not yet implement
-the IPsec connections, FRR peers or the migration sequence above.
-Do not label the lab customer-matched or ready until these gates are executed
-and all remaining deviations are stated in the result.
+`deploy/overlay.tf` implements the two logical Azure IPsec connections, and
+`deploy/overlay_guest.py` implements the three CPE tunnels and FRR policies.
+The direct BGP end state is ready within its stated scope. Do not label it
+customer-matched or claim the historical migration/failover gates have passed:
+those remain unexecuted, and the known platform/device substitutions above
+still apply.

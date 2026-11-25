@@ -1,0 +1,32 @@
+{
+  "observedAtUtc": "2026-11-25T13:25:01Z",
+  "verdict": "PASS for temporary static Internet IPsec baseline",
+  "gateway": "vpngw-vnbgp-20261124",
+  "connection": "conn-internet-vnbgp-20261124",
+  "bgpEnabled": false,
+  "configuredInternetChildren": 1,
+  "ikeEstablished": true,
+  "ikeNegotiated": "AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024",
+  "espNegotiated": "AES_CBC-256/HMAC_SHA2_256_128",
+  "probe": {
+    "source": "10.246.1.1",
+    "destination": "10.244.1.4",
+    "sent": 5,
+    "received": 5,
+    "lossPercent": 0,
+    "egressInterface": "xfrm-internet"
+  },
+  "ipsecCounterDelta": {
+    "inPackets": 5,
+    "outPackets": 5,
+    "inBytes": 420,
+    "outBytes": 420
+  },
+  "recovery": "The original probe start exceeded the 300-second CLI bound; owned process tree was stopped. User approved read-only reconciliation. The same probe was running and answered payload probes; no second start was issued.",
+  "limitations": [
+    "Azure probe provisioning state still reported Updating, although power was Running and payload replied.",
+    "This is a temporary migration baseline, not the final routing design.",
+    "No private IPsec or APIPA coexistence result is implied.",
+    "Default Azure policy negotiated MODP_1024; no claim of production crypto suitability."
+  ]
+}

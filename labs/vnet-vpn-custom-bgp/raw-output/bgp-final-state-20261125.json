@@ -1,0 +1,71 @@
+{
+  "observedAtUtc": "2026-11-25T13:49:43Z",
+  "verdict": "PASS for direct BGP configuration and private encrypted payload",
+  "scope": "User explicitly requested the final BGP state directly, superseding the remaining historical static-to-BGP migration sequence.",
+  "azure": {
+    "gateway": "vpngw-vnbgp-20261124",
+    "connections": [
+      {"name": "conn-private-vnbgp-20261124", "provisioningState": "Succeeded", "bgpEnabled": true, "usePrivateOuter": true, "configuredCpeTunnels": 2},
+      {"name": "conn-internet-vnbgp-20261124", "provisioningState": "Succeeded", "bgpEnabled": true, "usePrivateOuter": false, "configuredCpeTunnels": 1}
+    ],
+    "privatePayloadAsPath": "64513",
+    "internetPayloadAsPath": "64513-64513-64513",
+    "payloadPrefix": "10.246.1.0/24",
+    "internetLocalNetworkGatewayStaticPayloadPrefixes": []
+  },
+  "cpe": {
+    "establishedChildren": ["private0", "private1", "internet"],
+    "bgpPeers": [
+      {"local": "10.245.254.6", "remote": "10.244.255.7", "state": "Established", "localPreference": 200},
+      {"local": "10.245.254.6", "remote": "10.244.255.6", "state": "Established", "localPreference": 200},
+      {"local": "169.254.21.1", "remote": "169.254.21.2", "state": "Established", "localPreference": 100}
+    ],
+    "bestAzurePrefix": "10.244.0.0/16",
+    "installedBestPaths": ["xfrm-private0", "xfrm-private1"],
+    "staticAzureWorkloadRoute": false,
+    "persistentServicesEnabled": ["vnbgp-network", "vnbgp-ipsec", "strongswan", "frr"]
+  },
+  "payload": {
+    "source": "10.246.1.1",
+    "destination": "10.244.1.4",
+    "normalPingSent": 5,
+    "normalPingReceived": 5,
+    "lossPercent": 0,
+    "capture": "Five forced private0 echo requests were observed leaving xfrm-private0, with all five replies entering xfrm-private1. Both paths carried encrypted workload traffic.",
+    "probeCaveat": "The interface-bound ping socket reported loss because replies arrived through the other ECMP tunnel; the packet capture and ordinary source-bound ping establish successful forwarding."
+  },
+  "apipaPacketProof": {
+    "timestampUtc": "2026-11-25T13:44:51Z",
+    "synSource": "169.254.21.1:35087",
+    "synDestination": "169.254.21.2:179",
+    "synAckSource": "169.254.21.2:179",
+    "synAckDestination": "169.254.21.1:35087",
+    "interface": "xfrm-internet"
+  },
+  "underlay": {
+    "googleAdvertiseMode": "CUSTOM",
+    "googleAdvertisedPrefixes": ["10.245.0.10/32"],
+    "megaportChanges": false,
+    "megaportContracts": "Existing PAYG / No Minimum Term, renewal disabled; no products changed"
+  },
+  "terraform": {
+    "managedResourceInstances": 36,
+    "finalOverlayPlanChanges": 0,
+    "finalApply": {"added": 2, "changed": 2, "destroyed": 0},
+    "existingInternetPskPreserved": true
+  },
+  "operationalNotes": [
+    "The Internet child required CPE initiation after the Azure connection update; private BGP sessions stayed up.",
+    "CPE APIPA source assignment was corrected to precede peer route installation.",
+    "Default Azure policy negotiated MODP_1024. This is a lab observation, not a production crypto recommendation.",
+    "The unconfigured second Internet instance remains an expected unused path, not a required fourth tunnel.",
+    "Resources remain running for the user's requested configured lab."
+  ],
+  "notClaimed": [
+    "Historical static-to-BGP customer migration reproduction",
+    "Customer or PAN-OS root cause",
+    "ER fault injection, backup takeover timing or failback timing",
+    "Reboot-tested persistence",
+    "Internet workload failover in the final nonpreferred BGP state"
+  ]
+}
