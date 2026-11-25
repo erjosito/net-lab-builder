@@ -7,10 +7,13 @@ using default Azure BGP addresses and Internet backup using custom APIPA peers.
 Use Linux StrongSwan/FRR to isolate Azure behavior. This is not a PAN-OS
 reproduction and cannot establish a Palo Alto-specific root cause.
 
-**Current state, 2026-11-25 14:27 UTC: configured and running.** Both Azure
-IPsec connections use BGP; the CPE has two private tunnels and two Internet
-APIPA backups. All four adjacencies are established and private encrypted
-payload passes. See the [current checkpoint](#current-checkpoint-and-cross-laptop-resume).
+**Current state, 2026-11-25 15:39 UTC: Google CPE intentionally stopped.**
+The user requested saving VM compute costs. Its boot disk and reserved public
+IP are preserved; the four-tunnel configuration remains on disk with boot
+services enabled, but reboot recovery has not been tested. VPN/BGP and payload
+are unavailable while the CPE is stopped. All four adjacencies and private
+encrypted payload last passed at 14:27 UTC.
+See the [current checkpoint](#current-checkpoint-and-cross-laptop-resume).
 The user explicitly requested the final state directly, rather than completing
 the historical migration sequence.
 
@@ -203,6 +206,38 @@ Existing demo resources, including MCRs deployed earlier that day, are unrelated
 and must not be changed, reused without review, or cleaned up.
 
 ## Current checkpoint and cross-laptop resume
+
+### CPE paused to save compute costs, 2026-11-25 15:39 UTC
+
+**Verdict: PASS for the requested shutdown.** Google instance
+`cpe-vnbgp-20261124` in `europe-north2-a` is `TERMINATED` (stopped, not deleted).
+Its original boot disk is present and `READY`; its private address and reserved
+public address remain preserved. No other Google, Azure or Megaport resource
+was stopped, deleted or reconfigured. Their recurring charges, plus retained
+disk and static-IP charges, continue.
+
+Before stopping, all seven persistent configuration files matched the
+verified four-tunnel renderer, including XFRM/endpoint-route setup, StrongSwan
+connections and FRR policies. The `vnbgp-network`, `vnbgp-ipsec`, `strongswan`
+and `frr` services were enabled. The two custom oneshot units were inactive
+on this boot because installation had run their commands directly; this is
+not a completed reboot test. The Google startup script matches source and does
+not overwrite the saved VPN/BGP configuration. No configuration change was
+needed for shutdown.
+
+The lab's VPN/BGP sessions and end-to-end traffic are intentionally unavailable
+until the CPE starts again. The next bounded action, **only when running costs
+are authorized again**, is:
+
+```powershell
+gcloud.cmd compute instances start cpe-vnbgp-20261124 --project=gcp-vnbgp-20261124 --zone=europe-north2-a
+```
+
+Then verify both custom boot units, four IPsec/BGP sessions, private preference
+and workload traffic; do not assume recovery has passed just because the VM
+is running. Use IAP for SSH (`--tunnel-through-iap`). Do not rerun the full guest
+installer or rotate keys as a routine start operation.
+See [shutdown evidence](raw-output/cpe-stopped-20261125.json).
 
 ### Both Internet instances completed, 2026-11-25 14:27 UTC
 

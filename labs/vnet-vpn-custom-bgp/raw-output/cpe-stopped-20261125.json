@@ -1,0 +1,38 @@
+{
+  "observedAtUtc": "2026-11-25T15:39:41Z",
+  "verdict": "PASS for user-requested CPE shutdown",
+  "instance": "cpe-vnbgp-20261124",
+  "zone": "europe-north2-a",
+  "state": "TERMINATED",
+  "meaning": "Stopped, not deleted; no restart performed",
+  "preserved": {
+    "originalBootDisk": true,
+    "bootDiskStatus": "READY",
+    "reservedPublicIp": true,
+    "internalIp": true,
+    "otherResourcesUnchanged": true
+  },
+  "persistencePreflight": {
+    "filesMatchingFourTunnelRenderer": 7,
+    "bootServicesEnabled": ["vnbgp-network", "vnbgp-ipsec", "strongswan", "frr"],
+    "daemonStatesBeforeStop": {"strongswan": "active", "frr": "active"},
+    "customOneshotStatesBeforeStop": {"vnbgp-network": "inactive", "vnbgp-ipsec": "inactive"},
+    "oneshotNote": "Both custom units are enabled for future boots; installation had previously run their commands directly.",
+    "swanctlIncludesPersistentConnections": true,
+    "bgpDaemonEnabled": true,
+    "startupScriptMatchesSource": true,
+    "configurationChangesRequired": false,
+    "rebootRecoveryTested": false
+  },
+  "operation": {
+    "command": "gcloud compute instances stop cpe-vnbgp-20261124 --project=gcp-vnbgp-20261124 --zone=europe-north2-a --async --quiet",
+    "stopRequests": 1,
+    "observedProgress": ["STOPPING", "STOPPING", "TERMINATED"],
+    "verification": "Authenticated instance, boot-disk and reserved-address reads after stop"
+  },
+  "currentLimitations": [
+    "VPN/BGP sessions and workload connectivity are unavailable while the CPE is stopped.",
+    "Configured boot persistence is verified on disk, not proven by a reboot.",
+    "Disk, reserved public IP, Azure, Megaport and Interconnect resources still incur applicable charges."
+  ]
+}
