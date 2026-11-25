@@ -1,0 +1,58 @@
+{
+  "observedAtUtc": "2026-11-25T11:55:08Z",
+  "task": "vnet-custom-bgp-underlay-reconcile-20261125",
+  "verdict": "PASS",
+  "scope": "ER connection identity/state reconciliation and bidirectional underlay control-plane routes, not payload or IPsec",
+  "connection": {
+    "name": "conn-er-vnbgp-20261124",
+    "type": "ExpressRoute",
+    "provisioningState": "Succeeded",
+    "gatewayAndCircuitOwnershipVerified": true,
+    "newCreateAttemptsDuringRecovery": 0,
+    "stateImports": 1
+  },
+  "terraform": {
+    "managedResourceInstances": 32,
+    "connectionTracked": true,
+    "remoteLockPresent": false
+  },
+  "megaport": {
+    "productCount": 4,
+    "allProvisioningStatus": "LIVE",
+    "allUp": true,
+    "allContractTermMonths": 1,
+    "termMeaning": "No Minimum Term",
+    "allAutoRenewTerm": false,
+    "configurationChangesDuringRecovery": 0,
+    "lookingGlassLimitation": "Earlier empty BGP diagnostic response cannot establish MCR RIB contents; Azure circuit/gateway and Google route evidence was used."
+  },
+  "azureGateway": {
+    "name": "ergw-vnbgp-20261124",
+    "cpeOuterPrefix": "10.245.0.10/32",
+    "asPath": [12076, 65060, 16550],
+    "sourcePeers": ["10.244.255.8", "10.244.255.9"],
+    "directOverlayWorkloadPrefixPresent": false
+  },
+  "azureCircuit": {
+    "primaryHasCpeOuterRoute": true,
+    "secondaryHasCpeOuterRoute": true,
+    "primaryHasAzureVnetRoute": true,
+    "secondaryHasAzureVnetRoute": true
+  },
+  "google": {
+    "attachmentState": "ACTIVE",
+    "bgpState": "Established",
+    "bgpStatus": "UP",
+    "advertisedPrefixes": ["10.245.0.10/32"],
+    "azureVnetPrefix": "10.244.0.0/16",
+    "azureVnetAsPath": [65060, 12076]
+  },
+  "assertions": {
+    "allContractsPaygWithoutRenewal": true,
+    "bothEndpointRouteDirectionsPresent": true,
+    "cpeOuterLearnedFromTwoAzurePeers": true,
+    "overlayWorkloadNotAdvertisedDirectlyOverEr": true
+  },
+  "resourceState": "Existing transport retained for overlay configuration. No STOP, no state lock, all owned commands idle.",
+  "notAssessed": ["Packet delivery", "IPsec SAs", "BGP overlay/APIPA behavior", "Failover and failback"]
+}

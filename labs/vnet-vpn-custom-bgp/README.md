@@ -99,7 +99,7 @@ addresses and a distinct ordinary CPE loopback.
 
 | Design | Status | Verdict | Evidence |
 |---|---|---|---|
-| Default private BGP plus Internet APIPA BGP | Foundations deployed; PAYG provider products ordered; tunnel configuration pending | NOT TESTED | [Assessment](assessment.md); no live reproduction yet |
+| Default private BGP plus Internet APIPA BGP | Foundations and PAYG transport connected; tunnel configuration pending | NOT TESTED | [Assessment](assessment.md); no live reproduction yet |
 | Three-overlay converged routing abstraction | Three simulator states evaluated | PASS within abstraction; customer issue INCONCLUSIVE | [Simulator evidence and limits](simulator.md) |
 
 ## Required scenarios
@@ -187,6 +187,32 @@ Existing demo resources, including MCRs deployed earlier that day, are unrelated
 and must not be changed, reused without review, or cleaned up.
 
 ## Current checkpoint and cross-laptop resume
+
+### ER underlay reconciled, 2026-11-25 11:55 UTC
+
+**Verdict: PASS for the underlay control plane; IPsec/payload NOT TESTED.**
+After explicit approval for a fresh wait-and-reconcile recovery, the existing
+`conn-er-vnbgp-20261124` reported `Succeeded`. Its exact gateway/circuit
+references were verified and it was imported once into GCS state. No second
+create or Megaport update was issued. State now contains **32 managed resource
+instances** and no retained lock.
+
+The ER gateway learns `10.245.0.10/32` via both Azure peers, with path
+`12076-65060-16550`; both circuit peerings also retain that host route.
+Google's established Cloud Router peer learns Azure `10.244.0.0/16` with path
+`65060 12076`, while advertising only the CPE outer `/32`. The overlay workload
+prefix is absent from direct ER advertisements. These are control-plane
+assertions, not proof of packets or encrypted transport.
+All four products were rechecked as `LIVE`, up, No Minimum Term, and
+`autoRenewTerm=false`. See
+[sanitized recovery evidence](raw-output/underlay-reconciled-20261125.json).
+
+The earlier connection timeout and provider-plan limitation remain recorded
+below; the connection gate itself is resolved. STOP is absent, the recovery
+lease is completed, and all owned commands are idle. Existing resources are
+retained for the next scoped action: establish the single static Internet VPN
+baseline before the private-BGP migration. The probe is still deallocated;
+no IPsec/FRR configuration, payload or failover test has run.
 
 ### Provider ready; ER connection pending, 2026-11-25
 
