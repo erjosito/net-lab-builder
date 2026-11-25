@@ -188,6 +188,46 @@ and must not be changed, reused without review, or cleaned up.
 
 ## Current checkpoint and cross-laptop resume
 
+### Provider ready; ER connection pending, 2026-11-25
+
+**Verdict: BLOCKED at the Azure gateway-connection gate.** All four purchased
+Megaport products are now `LIVE` and up; fresh reads still verify No Minimum
+Term and `autoRenewTerm=false`. Google's attachment is `ACTIVE`, with an
+automatically managed Cloud Router peer in `Established` / `UP` state.
+The router advertises only the CPE outer `10.245.0.10/32`. Both Azure circuit
+peerings learn that host route with AS path `65060 16550`.
+See [sanitized underlay checkpoint](raw-output/underlay-readiness-20261125.json).
+
+The connection-stage Terraform review exposed updates to imported Megaport
+endpoint/partner fields. None were applied. The runner now rejects Megaport
+updates as well as creates; use separately reviewed API operations for those
+products. An inventory-only `ignore_changes=all` experiment exposed a provider
+invalid-plan error on imported `a_end.requested_product_uid` and was removed.
+Do not run a full apply until its provider changes have been safely resolved.
+
+Exactly one Azure-only create was submitted for `conn-er-vnbgp-20261124`,
+linking the existing ER gateway and circuit. It exceeded its 600-second command
+bound; the owned process tree was stopped. A subsequent read still reports
+connection `Updating` and ER gateway `Succeeded`. The new connection has
+**not** been imported into Terraform state; its exact IDs and create intent
+are retained privately under the ignored runtime controls. No duplicate create
+was attempted. STOP is present and the live lease is blocked; all owned
+commands are idle.
+
+Next bounded recovery, requiring approval: wait for this existing connection
+without recreating it, verify its gateway/circuit identity, import it once into
+GCS state if successful, then verify the CPE host route at the ER gateway and
+Azure prefixes at Google. The last gateway route read contained only the local
+VNet prefix, so bidirectional underlay readiness is not proven. The MCR BGP
+diagnostic returned an empty array, which is an observability limitation, not
+proof of an empty RIB or a passing path.
+
+No IPsec, FRR, probe-start or failure scenario was run. Existing resources,
+including the pending connection, remain provisioned and potentially billable.
+The simulator model requirements are tracked in
+[erjosito/vwan-visual-topology#463](https://github.com/erjosito/vwan-visual-topology/issues/463);
+that issue is not live-lab evidence.
+
 ### Megaport PAYG provisioning, 2026-11-25 10:59 UTC
 
 **Verdict: PASS for PAYG / No Minimum Term selection on all four purchased

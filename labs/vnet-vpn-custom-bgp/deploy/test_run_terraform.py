@@ -72,6 +72,11 @@ class PlanGateTests(unittest.TestCase):
                 {"address": "azurerm_linux_virtual_machine.probe", "actions": ["delete", "create"]}
             ])
 
+    def test_imported_megaport_updates_cannot_rewrite_generated_peering(self):
+        for address in ['megaport_mcr.lab[0]', 'megaport_vxc.gcp[0]']:
+            with self.subTest(address=address), self.assertRaisesRegex(RuntimeError, "inventory-only"):
+                run_terraform.check_changes([{"address": address, "actions": ["update"]}])
+
     def test_foundation_creates_and_imported_product_noops_are_allowed(self):
         run_terraform.check_changes([
             {"address": "google_compute_instance.cpe", "actions": ["create"]},

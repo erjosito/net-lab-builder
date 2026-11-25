@@ -69,6 +69,14 @@ def check_changes(changes):
             "Megaport creates require an explicitly validated PAYG/no-renewal "
             "API order followed by import; this provider cannot set renewal."
         )
+    if any(
+        change["address"].startswith("megaport_") and "update" in change["actions"]
+        for change in changes
+    ):
+        raise RuntimeError(
+            "Megaport updates are blocked: API-ordered products are inventory-only "
+            "in Terraform; verify PAYG/no-renewal and generated peering separately."
+        )
 
 
 def main():

@@ -1,0 +1,64 @@
+{
+  "observedDateUtc": "2026-11-25",
+  "task": "vnet-custom-bgp-underlay-20261125",
+  "verdict": "BLOCKED",
+  "evidenceKind": "Allowlisted excerpts of authenticated provider and cloud CLI responses; not packet-delivery evidence",
+  "megaport": {
+    "products": [
+      "jomore-vnbgp-20261124-mcr",
+      "jomore-vnbgp-20261124-azure-primary",
+      "jomore-vnbgp-20261124-azure-secondary",
+      "jomore-vnbgp-20261124-gcp"
+    ],
+    "allProvisioningStatus": "LIVE",
+    "allUp": true,
+    "allContractTermMonths": 1,
+    "termMeaning": "No Minimum Term",
+    "allAutoRenewTerm": false,
+    "bgpDiagnosticResponse": [],
+    "bgpDiagnosticInterpretation": "Not assessed from this endpoint; empty response is not proof of no routes"
+  },
+  "google": {
+    "attachmentState": "ACTIVE",
+    "attachmentAdminEnabled": true,
+    "peerManagementType": "MANAGED_BY_ATTACHMENT",
+    "localAsn": 16550,
+    "peerAsn": 65060,
+    "localAddress": "169.254.149.233",
+    "peerAddress": "169.254.149.234",
+    "bgpState": "Established",
+    "bgpStatus": "UP",
+    "advertisedPrefixes": ["10.245.0.10/32"],
+    "learnedAzureVnetPrefixAtInitialCheck": false
+  },
+  "azure": {
+    "circuitProvisioningState": "Succeeded",
+    "circuitProviderState": "Provisioned",
+    "primaryCpeOuterRoute": {
+      "prefix": "10.245.0.10/32",
+      "nextHop": "169.254.51.73",
+      "asPath": [65060, 16550]
+    },
+    "secondaryCpeOuterRoute": {
+      "prefix": "10.245.0.10/32",
+      "nextHop": "169.254.51.77",
+      "asPath": [65060, 16550]
+    },
+    "gatewayProvisioningStateAfterTimeout": "Succeeded",
+    "connectionName": "conn-er-vnbgp-20261124",
+    "connectionCreateAttempts": 1,
+    "connectionCommandTimeoutSeconds": 600,
+    "ownedProcessTreeStopped": true,
+    "connectionProvisioningStateAfterTimeout": "Updating",
+    "connectionImportedIntoTerraform": false,
+    "gatewayPrefixesAtRouteCheck": ["10.244.0.0/16"]
+  },
+  "changesNotPerformed": [
+    "Megaport product updates or purchases",
+    "Google router or attachment changes",
+    "IPsec or FRR configuration",
+    "Probe start",
+    "Failure injection"
+  ],
+  "restoreState": "No established traffic baseline existed. Existing resources and pending connection retained; no further mutation. STOP present; owned commands idle."
+}
