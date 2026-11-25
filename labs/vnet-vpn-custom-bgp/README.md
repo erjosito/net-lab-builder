@@ -188,6 +188,32 @@ and must not be changed, reused without review, or cleaned up.
 
 ## Current checkpoint and cross-laptop resume
 
+### State reconciliation, 2026-11-25 10:50 UTC
+
+**Verdict: PASS for state reconciliation; the end-to-end lab is NOT TESTED.**
+The user explicitly approved a new 30-minute state-only recovery. The prior
+Terraform process was absent and the ER gateway had completed with `Succeeded`.
+The exact retained lock was verified against its creation time and content.
+An initial unlock using the embedded JSON UUID was rejected without mutation;
+the GCS backend requires the lock object's numeric generation. The unchanged
+generation was then verified and unlocked using Terraform's generation-match
+guard.
+
+The existing ER gateway, GCP CPE public IP and CPE VM were imported successfully,
+without recreating or changing cloud resources. Remote state now contains
+27 managed resource instances and no `.tflock` remains. A fresh foundation
+plan proposes no creates, deletes or replacements. Its only changes are GCP
+labels and the Terraform-side `allow_stopping_for_update` option; these were
+reviewed but **not applied** under the state-only authorization.
+
+The prior state-recovery blocker below is resolved. The ER gateway is ready at
+the resource API level; the CPE is running and its startup script succeeded.
+The probe remains deallocated. There are still no Megaport products, provider
+connectivity, IPsec connections, FRR peer configuration or validated traffic
+baseline. Existing foundations remain billable. Continue only after resolving
+the provider PAYG/no-renewal and effective-charge gates described below; do not
+replay imports or foundation creates. All owned commands are idle.
+
 ### Approved foundation recovery, 2026-11-25 09:33 UTC
 
 **Verdict: BLOCKED at the configured progress bound, not an Azure failure
