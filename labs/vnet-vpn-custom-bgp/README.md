@@ -7,18 +7,18 @@ using default Azure BGP addresses and Internet backup using custom APIPA peers.
 Use Linux StrongSwan/FRR to isolate Azure behavior. This is not a PAN-OS
 reproduction and cannot establish a Palo Alto-specific root cause.
 
-**Current state, 2026-11-25 13:50 UTC: configured and running.** Both Azure
-IPsec connections use BGP; the CPE has two private tunnels and one Internet
-APIPA backup. All three adjacencies are established and private encrypted
+**Current state, 2026-11-25 14:27 UTC: configured and running.** Both Azure
+IPsec connections use BGP; the CPE has two private tunnels and two Internet
+APIPA backups. All four adjacencies are established and private encrypted
 payload passes. See the [current checkpoint](#current-checkpoint-and-cross-laptop-resume).
 The user explicitly requested the final state directly, rather than completing
 the historical migration sequence.
 
 See [initial assessment](assessment.md) for the ranked hypotheses, evidence
 limitations and decisive tests. It is not a confirmed root cause.
-The [customer fidelity contract](customer-fidelity.md) records the required
-three-tunnel topology, migration sequence, known substitutions and acceptance
-gates, updated from the email thread retrieved through WorkIQ.
+The [customer fidelity contract](customer-fidelity.md) records the original
+three-tunnel topology, deferred migration sequence, known substitutions and
+user-directed fourth-tunnel extension.
 The [simulator assessment](simulator.md) and
 [importable topology](simulator-topology.json) cover converged routing only.
 They do not reproduce the suspected APIPA control-plane failure.
@@ -106,7 +106,7 @@ addresses and a distinct ordinary CPE loopback.
 
 | Design | Status | Verdict | Evidence |
 |---|---|---|---|
-| Default private BGP plus Internet APIPA BGP | Two private tunnels and one Internet backup configured; three adjacencies established | PASS for direct configuration and private encrypted payload; customer migration and failover NOT TESTED | [Final-state evidence](raw-output/bgp-final-state-20261125.json) |
+| Default private BGP plus Internet APIPA BGP | Two private and two Internet tunnels configured; all four adjacencies established | PASS for four-peer configuration and private encrypted payload; customer migration and failover NOT TESTED | [Four-tunnel evidence](raw-output/four-tunnel-bgp-20261125.json) |
 | Temporary static Internet baseline | One Internet tunnel verified before user requested the direct BGP end state | PASS within baseline scope; no longer the configured routing design | [Baseline evidence](raw-output/internet-baseline-20261125.json) |
 | Three-overlay converged routing abstraction | Three simulator states evaluated | PASS within abstraction; customer issue INCONCLUSIVE | [Simulator evidence and limits](simulator.md) |
 
@@ -204,7 +204,51 @@ and must not be changed, reused without review, or cleaned up.
 
 ## Current checkpoint and cross-laptop resume
 
-### BGP end state configured, 2026-11-25 13:50 UTC
+### Both Internet instances completed, 2026-11-25 14:27 UTC
+
+**Verdict: PASS.** After the user requested completing the second Internet
+instance, `169.254.22.2` is now established alongside `169.254.21.2`.
+Azure reports all four customer adjacencies `Connected`, with one received
+prefix each. There are still **two Azure connection objects**, now with
+**four configured CPE tunnels**:
+
+| Transport / child | Azure outer endpoint | Azure BGP peer | CPE BGP source | Preference |
+|---|---|---|---|---|
+| Private `private0` | `10.244.255.4` | `10.244.255.7` | `10.245.254.6` | 200 |
+| Private `private1` | `10.244.255.5` | `10.244.255.6` | `10.245.254.6` | 200 |
+| Internet `internet` | `4.165.162.61` | `169.254.21.2` | `169.254.21.1` | 100 |
+| Internet `internet1` | `4.165.90.255` | `169.254.22.2` | `169.254.21.1` | 100 |
+
+Both Internet sessions use the **same CPE APIPA**, as configured on their
+shared LNG; do not invent a second CPE source of `169.254.22.1`. The new
+capture proves a CPE-initiated handshake from `169.254.21.1:33649` to
+`169.254.22.2:179` on `xfrm-internet1`, XFRM ID 104. Its public outer `/32`
+is pinned to the physical underlay; its BGP peer `/32` is pinned to the new
+XFRM interface. The original interface IDs, IKE identities and PSKs remain.
+No Azure, Google or Megaport resource configuration was changed.
+
+The initial full guest update established all four peers but briefly
+reconnected private neighbor `10.244.255.6`; the strict continuity gate failed,
+so that update was rolled back. An independently reviewed add-only recovery
+then added only the new interface/routes and explicit new-neighbor FRR
+commands, without replaying old routes or reloading FRR. It caused **no further
+reconnects**, confirmed by unchanged counters and increasing uptimes over
+the stability observation. The private peer's historical drop counter stays
+at one. The earlier reconnection's cause is unresolved, not a demonstrated
+Azure or PAN-OS defect.
+
+All four peers exchange their expected prefixes. The two private paths remain
+the installed ECMP paths for Azure `10.244.0.0/16`; both Internet paths retain
+local preference 100 and two extra AS prepends on export. Ordinary workload
+ping passed **5/5**. Persistent file hashes match the four-tunnel renderer,
+the existing boot services remain enabled, and no capture remains active.
+Reboot persistence, Internet workload takeover and failover timing were not
+tested. Resources remain running and billable.
+
+See [sanitized four-tunnel evidence](raw-output/four-tunnel-bgp-20261125.json).
+The following older checkpoints describe historical states.
+
+### BGP end state configured, 2026-11-25 13:50 UTC (historical)
 
 **Verdict: PASS for the requested direct BGP configuration and private
 encrypted payload.** The user superseded the remaining static-to-BGP migration
@@ -521,7 +565,7 @@ Current official reference: [MCR pricing and contract terms](https://docs.megapo
 
 `deploy/` contains the prepared VNet gateway topology and reuses the existing
 StrongSwan/FRR package-install startup script. `overlay.tf` defines the two
-LNG/IPsec pairs; `overlay_guest.py` renders persistent CPE routes, three
+LNG/IPsec pairs; `overlay_guest.py` renders persistent CPE routes, four
 StrongSwan children and FRR policies. Terraform provider versions are locked.
 Gateways are created sequentially to avoid competing gateway-subnet operations.
 The source includes a distinct dedicated GCP project and never uses the CLI's
@@ -550,7 +594,14 @@ Do not run foundation/provider stages or use the historical `internet` stage
 as the final routing design.
 
 `guest --stage backup` installs the persistent CPE end state through pinned
-host-key IAP SSH; `inspect --stage backup` is read-only. This transport requires
+host-key IAP SSH; it is a full installation, not an add-only live update.
+For the specific healthy three-tunnel baseline,
+`complete-internet --stage backup` writes the persistent four-tunnel files but applies only the new
+Internet link/routes and BGP neighbor, without restarting sessions or reloading
+FRR. Verify the baseline, existing key/file identities and private backups
+before invoking it; retain an exact scoped rollback. The fourth tunnel is
+already installed now, so do not replay this completed operation.
+`inspect --stage backup` is read-only. This transport requires
 the native Windows Google SDK and its PuTTY client. Before guest access on a
 new laptop, reconstruct ignored `overlay-inventory.json` from authenticated
 gateway/CPE reads (`gateway` and `cpe` objects), and

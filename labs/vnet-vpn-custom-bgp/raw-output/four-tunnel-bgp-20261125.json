@@ -1,0 +1,87 @@
+{
+  "observedAtUtc": "2026-11-25T14:27:45Z",
+  "verdict": "PASS for completing the missing second Internet IPsec/BGP path",
+  "scope": "User requested completing missing StrongSwan configuration after the second Azure APIPA adjacency was found Connecting.",
+  "configurationChanges": {
+    "guestOnly": true,
+    "azureConfigurationChanged": false,
+    "googleConfigurationChanged": false,
+    "megaportChanged": false,
+    "newPaidResources": 0,
+    "existingPskAndIkeIdentitiesPreserved": true,
+    "persistentFilesVerified": true
+  },
+  "connections": [
+    {"name": "conn-private-vnbgp-20261124", "configuredCpeChildren": ["private0", "private1"]},
+    {"name": "conn-internet-vnbgp-20261124", "configuredCpeChildren": ["internet", "internet1"]}
+  ],
+  "peers": [
+    {"transport": "private0", "cpeSource": "10.245.254.6", "azurePeer": "10.244.255.7", "state": "Established", "localPreference": 200},
+    {"transport": "private1", "cpeSource": "10.245.254.6", "azurePeer": "10.244.255.6", "state": "Established", "localPreference": 200},
+    {"transport": "internet", "cpeSource": "169.254.21.1", "azurePeer": "169.254.21.2", "state": "Established", "localPreference": 100},
+    {"transport": "internet1", "cpeSource": "169.254.21.1", "azurePeer": "169.254.22.2", "state": "Established", "localPreference": 100}
+  ],
+  "azureVerification": {
+    "observedAtUtc": "2026-11-25T14:25:31Z",
+    "customerAdjacenciesConnected": 4,
+    "prefixesReceivedPerAdjacency": 1,
+    "workloadPrefix": "10.246.1.0/24",
+    "privateExternalRoutes": 2,
+    "privateAsPath": "64513",
+    "internetExternalRoutes": 2,
+    "internetAsPath": "64513-64513-64513",
+    "note": "The local-address metadata still uses default gateway BGP addresses; captures establish the actual APIPA tuples."
+  },
+  "newTunnel": {
+    "name": "internet1",
+    "azureOuter": "4.165.90.255",
+    "interface": "xfrm-internet1",
+    "xfrmId": 104,
+    "ikeEstablished": true,
+    "childInstalled": true,
+    "encryptedPacketsIn": 13,
+    "encryptedPacketsOut": 14,
+    "packetProof": {
+      "timestampUtc": "2026-11-25T14:24:37Z",
+      "synSource": "169.254.21.1:33649",
+      "synDestination": "169.254.22.2:179",
+      "synAckSource": "169.254.22.2:179",
+      "synAckDestination": "169.254.21.1:33649"
+    }
+  },
+  "routingAndPayload": {
+    "azurePrefix": "10.244.0.0/16",
+    "availableBgpPaths": 4,
+    "installedBestPaths": ["xfrm-private0", "xfrm-private1"],
+    "source": "10.246.1.1",
+    "destination": "10.244.1.4",
+    "pingSent": 5,
+    "pingReceived": 5,
+    "lossPercent": 0
+  },
+  "executionHistory": {
+    "firstFullUpdate": "Fourth tunnel established, but private BGP neighbor 10.244.255.6 reconnected once during the full network/FRR reload. The strict continuity gate failed and the new tunnel/configuration was rolled back. Existing IKE SAs were retained. No platform or customer root cause established.",
+    "recoveryApproval": "Independent read-only review approved one add-only recovery with verified file hashes/backups and bounded rollback.",
+    "successfulRecovery": "Only the new link, outer/peer routes and new FRR neighbor were applied. Existing network routes were not replayed; FRR was not reloaded or restarted.",
+    "continuity": {
+      "observationSeconds": 30,
+      "existingIkeIdentitiesRetained": true,
+      "additionalBgpReconnects": 0,
+      "existingPeerUptimesIncreased": true,
+      "private1HistoricalDropCounter": 1,
+      "note": "The historical counter remains one from the rolled-back update. Exact reconstructed-epoch comparison false-alarmed; unchanged reconnect/drop counters and increasing uptime confirmed continuity, with only one-second epoch rounding permitted."
+    }
+  },
+  "persistence": {
+    "enabledServices": ["vnbgp-network", "vnbgp-ipsec", "strongswan", "frr"],
+    "rebootTested": false,
+    "capturesActive": false,
+    "resourcesRetainedRunning": true
+  },
+  "notClaimed": [
+    "Internet workload failover or failback timing",
+    "Customer static-to-BGP migration reproduction",
+    "Azure or PAN-OS root cause",
+    "Reboot-tested persistence"
+  ]
+}

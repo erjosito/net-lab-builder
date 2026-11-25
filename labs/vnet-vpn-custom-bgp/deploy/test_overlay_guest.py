@@ -47,9 +47,13 @@ class GuestConfigurationTests(unittest.TestCase):
 
     def test_backup_enablement_changes_bgp_without_replacing_ipsec_or_psks(self):
         private, backup = self.render("private"), self.render("backup")
+        for name in ["internet", "private0", "private1"]:
+            previous = private["/etc/swanctl/conf.d/vnbgp.conf"].split(f"  {name} {{\n", 1)[1]
+            updated = backup["/etc/swanctl/conf.d/vnbgp.conf"].split(f"  {name} {{\n", 1)[1]
+            self.assertEqual(previous.split("\n  }\n", 1)[0], updated.split("\n  }\n", 1)[0])
         self.assertEqual(
-            private["/etc/swanctl/conf.d/vnbgp.conf"],
-            backup["/etc/swanctl/conf.d/vnbgp.conf"],
+            private["/etc/swanctl/conf.d/vnbgp.conf"].split("\nsecrets", 1)[1],
+            backup["/etc/swanctl/conf.d/vnbgp.conf"].split("\nsecrets", 1)[1],
         )
         self.assertIn("169.254.21.2/32 dev xfrm-internet src 169.254.21.1",
                       backup["/usr/local/sbin/vnbgp-network"])
@@ -63,10 +67,54 @@ class GuestConfigurationTests(unittest.TestCase):
         self.assertIn("ip route del 10.244.0.0/16",
                       backup["/usr/local/sbin/vnbgp-network"])
         frr = backup["/etc/frr/frr.conf"]
-        self.assertEqual(frr.count("remote-as 65515"), 3)
+        self.assertEqual(frr.count("remote-as 65515"), 4)
         self.assertIn("set as-path prepend 64513 64513\n", frr)
         self.assertIn("set local-preference 200", frr)
         self.assertIn("set local-preference 100", frr)
+
+    def test_second_internet_instance_uses_public_identity_and_shared_lng_source(self):
+        rendered = self.render("backup")
+        specs = overlay_guest.tunnel_specs(inventory())
+        self.assertEqual(len({s["id"] for s in specs}), 4)
+        second = next(s for s in specs if s["name"] == "internet1")
+        self.assertEqual(second["instance"], "vpn1")
+        self.assertEqual(second["outer"], "8.8.4.4")
+        self.assertEqual(second["bgp"], "169.254.22.2")
+        self.assertEqual(second["source"], "169.254.21.1")
+        connection = rendered["/etc/swanctl/conf.d/vnbgp.conf"].split("  internet1 {\n", 1)[1]
+        self.assertIn("id = 1.1.1.1\n", connection)
+        self.assertIn("remote_addrs = 8.8.4.4", connection)
+        network = rendered["/usr/local/sbin/vnbgp-network"]
+        self.assertIn("8.8.4.4/32 via \"$GW\" dev \"$NIC\" src 10.245.0.10", network)
+        self.assertIn("169.254.22.2/32 dev xfrm-internet1 src 169.254.21.1", network)
+        self.assertLess(
+            network.index("ip address replace 169.254.21.1/32"),
+            network.index("169.254.22.2/32 dev xfrm-internet1"),
+        )
+        frr = rendered["/etc/frr/frr.conf"]
+        self.assertIn("neighbor 169.254.22.2 update-source 169.254.21.1", frr)
+        self.assertIn("neighbor 169.254.22.2 route-map INTERNET-IN in", frr)
+        self.assertIn("neighbor 169.254.22.2 route-map INTERNET-OUT out", frr)
+        self.assertIn(
+            "for child in internet private0 private1 internet1;",
+            overlay_guest.install_script(inventory(), self.psks, "backup"),
+        )
+
+    def test_add_only_install_avoids_existing_peer_routes_and_global_frr_reload(self):
+        script = overlay_guest.install_script(inventory(), self.psks, "backup", add_only=True)
+        self.assertNotIn("systemctl reload frr", script)
+        self.assertNotIn("systemctl restart", script)
+        self.assertNotIn("/usr/local/sbin/vnbgp-network", script.splitlines())
+        self.assertNotIn("ip route replace 10.244.255.", script)
+        self.assertIn("169.254.22.2/32 dev xfrm-internet1 src 169.254.21.1", script)
+        self.assertIn("neighbor 169.254.22.2 remote-as 65515", script)
+        self.assertLess(
+            script.index("neighbor 169.254.22.2 route-map INTERNET-OUT out"),
+            script.index("neighbor 169.254.22.2 activate"),
+        )
+        self.assertIn("swanctl --load-conns", script)
+        self.assertNotIn("swanctl --load-all", script)
+        self.assertLess(script.index("ip -4 address show dev lo"), script.index("printf %s"))
 
 
 if __name__ == "__main__":

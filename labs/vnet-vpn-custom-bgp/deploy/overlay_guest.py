@@ -1,11 +1,11 @@
-"""Persistent, three-tunnel StrongSwan/FRR guest configuration."""
+"""Persistent, dual-instance private and Internet StrongSwan/FRR configuration."""
 import base64
 import ipaddress
 import re
 import shlex
 
 
-def tunnel_specs(inventory):
+def tunnel_specs(inventory, stage="backup"):
     rows = inventory["gateway"]["bgpSettings"]["bgpPeeringAddresses"]
     specs = []
     for row in rows:
@@ -24,13 +24,17 @@ def tunnel_specs(inventory):
     specs.sort(key=lambda item: ipaddress.ip_address(item["bgp"]), reverse=True)
     # Match the customer-like Internet endpoint to the higher default BGP address.
     selected = specs[0]
-    return [
+    tunnels = [
         {"name": "internet", "id": 101, "outer": selected["public"], "bgp": selected["apipa"],
-         "instance": selected["instance"], "source": "169.254.21.1"},
+         "instance": selected["instance"], "source": "169.254.21.1", "transport": "internet"},
         *[{"name": f"private{index}", "id": 102 + index, "outer": item["outer"],
-           "bgp": item["bgp"], "instance": item["instance"], "source": "10.245.254.6"}
+           "bgp": item["bgp"], "instance": item["instance"], "source": "10.245.254.6",
+           "transport": "private"}
           for index, item in enumerate(specs)],
+        {"name": "internet1", "id": 104, "outer": specs[1]["public"], "bgp": specs[1]["apipa"],
+         "instance": specs[1]["instance"], "source": "169.254.21.1", "transport": "internet"},
     ]
+    return tunnels[:{"internet": 1, "private-first": 2, "private": 3, "backup": 4}[stage]]
 
 
 def files(inventory, psks, stage):
@@ -38,8 +42,7 @@ def files(inventory, psks, stage):
         raise ValueError("Unknown guest stage.")
     if any(not re.fullmatch(r"[a-f0-9]{64}", psks[key]) for key in ["internet", "private"]):
         raise ValueError("Expected generated 256-bit hex PSKs.")
-    all_specs = tunnel_specs(inventory)
-    specs = all_specs[:1 if stage == "internet" else 2 if stage == "private-first" else 3]
+    specs = tunnel_specs(inventory, stage)
     public = inventory["cpe"]["networkInterfaces"][0]["accessConfigs"][0]["natIP"]
     ipaddress.ip_address(public)
     swan = "connections {\n"
@@ -57,7 +60,7 @@ ip address replace 10.246.1.1/32 dev lo
         network += "ip address replace 169.254.21.1/32 dev lo\n"
     for spec in specs:
         name, ident = spec["name"], spec["id"]
-        local_id = public if name == "internet" else "10.245.0.10"
+        local_id = public if spec["transport"] == "internet" else "10.245.0.10"
         swan += f"""  {name} {{
     version = 2
     local_addrs = 10.245.0.10
@@ -95,7 +98,7 @@ fi
 ip link set xfrm-{name} mtu 1400 up
 ip route replace {spec["outer"]}/32 via "$GW" dev "$NIC" src 10.245.0.10
 """
-        if name != "internet" or stage == "backup":
+        if spec["transport"] != "internet" or stage == "backup":
             network += f'ip route replace {spec["bgp"]}/32 dev xfrm-{name} src {spec["source"]}\n'
     if stage == "backup":
         network += """if ip -4 route show exact 10.244.0.0/16 | grep -q 'metric 250'; then
@@ -134,7 +137,7 @@ router bgp 64513
  bgp router-id 10.245.254.6
  no bgp default ipv4-unicast
 """
-    peers = [s for s in specs if s["name"] != "internet" or stage == "backup"]
+    peers = [s for s in specs if s["transport"] != "internet" or stage == "backup"]
     for spec in peers:
         frr += f""" neighbor {spec["bgp"]} remote-as 65515
  neighbor {spec["bgp"]} ebgp-multihop 5
@@ -142,7 +145,7 @@ router bgp 64513
 """
     frr += " address-family ipv4 unicast\n  network 10.246.1.0/24\n  maximum-paths 2\n"
     for spec in peers:
-        policy = "INTERNET" if spec["name"] == "internet" else "PRIVATE"
+        policy = "INTERNET" if spec["transport"] == "internet" else "PRIVATE"
         frr += f"""  neighbor {spec["bgp"]} activate
   neighbor {spec["bgp"]} route-map {policy}-IN in
   neighbor {spec["bgp"]} route-map {policy}-OUT out
@@ -184,17 +187,45 @@ WantedBy=multi-user.target
     }
 
 
-def install_script(inventory, psks, stage):
+def install_script(inventory, psks, stage, *, add_only=False):
+    if add_only and stage != "backup":
+        raise ValueError("Adding the second Internet instance requires the backup stage.")
+    rendered = files(inventory, psks, stage)
+    if add_only:
+        rendered = {path: rendered[path] for path in [
+            "/etc/swanctl/conf.d/vnbgp.conf", "/usr/local/sbin/vnbgp-network", "/etc/frr/frr.conf",
+        ]}
     script = """set -euo pipefail
 umask 077
 install -d -m 0700 /etc/swanctl/conf.d
 """
-    for path, content in files(inventory, psks, stage).items():
+    if add_only:
+        script += """systemctl is-active strongswan frr
+NIC=$(ip -4 route show default | awk 'NR==1 {print $5}')
+GW=$(ip -4 route show default | awk 'NR==1 {print $3}')
+test -n "$NIC" && test -n "$GW"
+ip -4 address show dev lo | grep -q '169\\.254\\.21\\.1/32'
+"""
+    for path, content in rendered.items():
         encoded = base64.b64encode(content.encode()).decode()
         script += f"printf %s {shlex.quote(encoded)} | base64 -d >{shlex.quote(path)}\n"
     script += """chmod 0700 /usr/local/sbin/vnbgp-network
 chown frr:frr /etc/frr/frr.conf
 chmod 0640 /etc/frr/frr.conf
+"""
+    if add_only:
+        spec = next(s for s in tunnel_specs(inventory, stage) if s["name"] == "internet1")
+        script += f"""if ! ip link show xfrm-internet1 >/dev/null 2>&1; then
+  ip link add xfrm-internet1 type xfrm dev "$NIC" if_id {spec["id"]}
+fi
+ip link set xfrm-internet1 mtu 1400 up
+ip route replace {spec["outer"]}/32 via "$GW" dev "$NIC" src 10.245.0.10
+ip route replace {spec["bgp"]}/32 dev xfrm-internet1 src {spec["source"]}
+swanctl --load-conns
+"""
+        names = "internet1"
+    else:
+        script += """\
 sed -i 's/^bgpd=no$/bgpd=yes/;s/^staticd=no$/staticd=yes/' /etc/frr/daemons
 systemctl daemon-reload
 systemctl enable vnbgp-network.service vnbgp-ipsec.service
@@ -202,13 +233,25 @@ systemctl enable vnbgp-network.service vnbgp-ipsec.service
 swanctl --reload-settings
 swanctl --load-all
 """
-    count = 1 if stage == "internet" else 2 if stage == "private-first" else 3
-    names = " ".join(spec["name"] for spec in tunnel_specs(inventory)[:count])
+        names = " ".join(spec["name"] for spec in tunnel_specs(inventory, stage))
     script += f"""for child in {names}; do
   current=$(swanctl --list-sas --ike "$child")
   if [ -z "$current" ]; then swanctl --initiate --child "$child" --timeout 30; fi
 done
 """
-    script += "systemctl restart frr\n" if stage == "internet" else "systemctl reload frr\n"
+    if add_only:
+        commands = [
+            "configure terminal", "router bgp 64513",
+            f'neighbor {spec["bgp"]} remote-as 65515',
+            f'neighbor {spec["bgp"]} ebgp-multihop 5',
+            f'neighbor {spec["bgp"]} update-source {spec["source"]}',
+            "address-family ipv4 unicast",
+            f'neighbor {spec["bgp"]} route-map INTERNET-IN in',
+            f'neighbor {spec["bgp"]} route-map INTERNET-OUT out',
+            f'neighbor {spec["bgp"]} activate', "end",
+        ]
+        script += "vtysh " + shlex.join([arg for command in commands for arg in ["-c", command]]) + "\n"
+    else:
+        script += "systemctl restart frr\n" if stage == "internet" else "systemctl reload frr\n"
     script += "systemctl is-active strongswan frr\nswanctl --list-sas\nip -4 route show\n"
     return script

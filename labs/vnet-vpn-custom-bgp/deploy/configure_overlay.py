@@ -177,12 +177,14 @@ def apply(stage):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("action", choices=["plan", "apply", "inspect", "guest"])
+    parser.add_argument("action", choices=["plan", "apply", "inspect", "guest", "complete-internet"])
     parser.add_argument("--stage", choices=["internet", "private-first", "private", "backup"], default="backup")
     parser.add_argument("--retain-static", action="store_true")
     args = parser.parse_args()
     if args.stage == "private-first" and args.action in ["plan", "apply"]:
         parser.error("private-first is CPE-only; use private --retain-static for its Azure plan.")
+    if args.action == "complete-internet" and args.stage != "backup":
+        parser.error("complete-internet requires the backup stage.")
     if args.action == "plan":
         plan(args.stage, args.retain_static)
     elif args.action == "apply":
@@ -200,7 +202,7 @@ def main():
         record_mutations(1, f"Install persistent {args.stage} CPE configuration")
         output = ssh(install_script(inventory(), json.loads(
             (CONTROL / "overlay-secrets.json").read_text(),
-        ), args.stage), timeout=180)
+        ), args.stage, add_only=args.action == "complete-internet"), timeout=180)
         (CONTROL / f"guest-{args.stage}-install.txt").write_text(output, encoding="utf-8")
         print(output)
 

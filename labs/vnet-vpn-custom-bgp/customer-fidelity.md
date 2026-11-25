@@ -45,6 +45,14 @@ historical sequence below is deferred, not executed or required by the revised
 configuration scope. A passing Linux end state is not a customer migration
 reproduction or a PAN-OS root-cause finding.
 
+**Subsequent user-directed extension, 2026-11-25:** complete the missing second
+Internet gateway instance on StrongSwan. The live lab now has two private and
+two Internet tunnels, with all four BGP peers established. Both Internet peers
+use CPE source `169.254.21.1`, matching their shared LNG. This adds gateway-instance
+coverage beyond the original single-Internet-tunnel reproduction plan below;
+it does not establish failover performance or a customer root cause.
+See [four-tunnel evidence](raw-output/four-tunnel-bgp-20261125.json).
+
 Run each bounded scenario under the live-lab policy. Save the original
 configuration before mutation, verify the clean baseline, preserve decisive
 evidence before restore, and stop on a failed gate. Do not silently run this
