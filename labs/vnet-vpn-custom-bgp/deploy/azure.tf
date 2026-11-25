@@ -35,6 +35,7 @@ resource "azurerm_public_ip" "gateway" {
   allocation_method   = "Static"
   sku                 = "Standard"
   zones               = ["1", "2", "3"]
+  ip_tags             = { FirstPartyUsage = "/Unprivileged" }
   tags                = local.tags
 }
 
@@ -151,20 +152,23 @@ resource "azurerm_network_interface" "probe" {
 }
 
 resource "azurerm_linux_virtual_machine" "probe" {
-  name                  = "probe-${local.prefix}"
-  resource_group_name   = azurerm_resource_group.lab.name
-  location              = local.location
-  size                  = "Standard_B2ts_v2"
-  admin_username        = "azurelabuser"
-  network_interface_ids = [azurerm_network_interface.probe.id]
-  tags                  = local.tags
+  name                                                   = "probe-${local.prefix}"
+  resource_group_name                                    = azurerm_resource_group.lab.name
+  location                                               = local.location
+  size                                                   = "Standard_B2ts_v2"
+  patch_mode                                             = "AutomaticByPlatform"
+  patch_assessment_mode                                  = "AutomaticByPlatform"
+  bypass_platform_safety_checks_on_user_schedule_enabled = true
+  admin_username                                         = "azurelabuser"
+  network_interface_ids                                  = [azurerm_network_interface.probe.id]
+  tags                                                   = local.tags
   admin_ssh_key {
     username   = "azurelabuser"
     public_key = var.ssh_public_key
   }
   os_disk {
     caching              = "ReadWrite"
-    storage_account_type = "StandardSSD_LRS"
+    storage_account_type = "Standard_LRS"
     disk_size_gb         = 30
   }
   source_image_reference {

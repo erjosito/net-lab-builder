@@ -188,6 +188,47 @@ and must not be changed, reused without review, or cleaned up.
 
 ## Current checkpoint and cross-laptop resume
 
+### Approved foundation recovery, 2026-11-25 09:33 UTC
+
+**Verdict: BLOCKED at the configured progress bound, not an Azure failure
+verdict.** User approval was received for fresh bounded recovery. The stopped
+apply is idle; its STOP sentinel and remote Terraform lock remain preserved.
+No Megaport products were purchased and no existing resources were replaced.
+
+The new plan initially proposed replacements due to live drift: the probe disk
+is `Standard_LRS`, and all three public IPs carry
+`FirstPartyUsage=/Unprivileged`. The probe also has platform-managed patch
+settings. The source now explicitly preserves these deployed values rather
+than replacing resources or reverting patch settings. Native Google CLI billing
+discovery now uses the installed stable command, without requiring the beta
+component. The final reviewed plan contained only three creates.
+
+The apply created the GCP CPE public IP and VM. The CPE is `RUNNING`, its public
+IP is `IN_USE`, and serial output records `startup-script exit status 0`.
+Azure accepted ER gateway creation at 09:13 UTC, but it remained `Updating`
+without an observed provisioning advancement past the conservative no-progress
+limit. The owned Terraform process was stopped at 09:32 UTC; this does not
+cancel the Azure-managed operation, which may still complete.
+
+**Remote-state reconciliation is required before any further apply.** A closure
+read found the retained `.tflock`, and the state snapshot did not contain the
+new ER gateway or GCP CPE/IP entries. Do not replay their creates. The exact
+retained resource IDs and creation evidence are in an ignored private inventory.
+Recovery must verify the old operation/owner is idle, inspect the task lock,
+reconcile/import these existing resources under a new approved lease, and review
+a fresh non-destructive plan. No force-unlock or import was attempted in this
+stopped run. The previously deployed probe remains deallocated.
+
+Megaport validation accepted a complete four-product design using the real
+task service keys, explicit `term=1` and `autoRenewTerm=false`, with a Google
+partner port matching the attachment's region and availability domain.
+Account-specific quotes are retained privately. The response omitted contract/
+renewal echoes and included promotional and fixed-charge fields whose net-charge
+semantics remain unresolved. The locked Terraform provider does not expose
+explicit renewal control, and its Google VXC source lacks an explicit partner
+port selection. These purchasing gates remain open; do not infer either free
+service or safe renewal/port defaults from validation success.
+
 ### Recovery discovery, 2026-11-25
 
 Recovered from `erjosito-custom-bgp-failover` at commit `b18425cf` into

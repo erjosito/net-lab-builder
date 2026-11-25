@@ -90,7 +90,7 @@ def main():
         command = ["terraform", "show", "-json"]
     else:
         billing = json.loads(run(gcloud_command(
-            "beta", "billing", "accounts", "list",
+            "billing", "accounts", "list",
             "--filter=open=true", "--format=json",
         )))
         if len(billing) != 1:
