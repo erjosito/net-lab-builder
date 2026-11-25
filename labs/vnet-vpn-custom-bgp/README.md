@@ -188,6 +188,54 @@ and must not be changed, reused without review, or cleaned up.
 
 ## Current checkpoint and cross-laptop resume
 
+### Recovery discovery, 2026-11-25
+
+Recovered from `erjosito-custom-bgp-failover` at commit `b18425cf` into
+`erjosito-multicloud-lab-recovery`. This recovery performed no cloud mutations,
+purchases, fault injection or cleanup. Yesterday's dedicated-cloud cost approval
+was recovered from session history; the failed foundation lease is not renewed.
+
+Read-only live checks on this laptop verified:
+
+- The authorized Azure subscription is enabled. The task VPN gateway is
+  `Succeeded` with `VpnGw1AZ`; the ER gateway does not exist. The probe is
+  provisioned but **deallocated**, not a ready traffic baseline. The task VNet,
+  circuit, NIC, NSG and three PIPs exist. A disk and `MDE.Linux` extension are
+  also present; ownership and policy management must be reviewed before cleanup.
+- Both dedicated GCP projects are active. The state bucket enforces public-access
+  prevention and uniform access; the state object is accessible at the recorded
+  prefix. No CPE VM exists. The Partner attachment remains `PENDING_PARTNER`.
+- Megaport OAuth and product inventory access succeed using the environment's
+  `MEGAPORT_ACCESS_KEY` / `MEGAPORT_SECRET_KEY`. No matching task products were
+  found. Secrets were not printed or copied.
+- Native Windows `gcloud` works. The WSL probe timed out; its owned process is
+  no longer active. The runner now prefers native `gcloud.cmd`, retaining WSL
+  only as a fallback for laptops without the native SDK. Backend initialization
+  succeeded on this laptop and the recovered state contains 24 managed resource
+  entries, including the existing Azure/GCP foundations. No apply was run.
+- WorkIQ recovered the source thread and found no newer requirements through
+  2026-11-25. The substantive report is dated 2026-11-20, with a follow-up on
+  2026-11-24. Git holds sanitized synthesis, not raw email or screenshots.
+  Shared-device identity remains a question in the latest reply; see the
+  corrected [fidelity contract](customer-fidelity.md).
+
+**Provisioning remains BLOCKED pending a fresh bounded recovery approval and
+reviewed plan.** Finish only the missing foundation resources using the saved
+source fixes, preserving existing resources and remote state. Investigate the
+probe's deallocation before starting payload tests. Do not create replacement
+GCP projects or redeploy the deleted Azure state bootstrap.
+
+The Megaport purchase gate is separate and still open: verify current endpoint/
+provider payloads select **PAYG / No Minimum Term**, with **auto-renewal disabled**,
+and obtain account-effective quotes for the MCR and all three VXCs. The prior
+"one-month term" wording is not evidence of a committed contract: documented API
+value `1` means No Minimum Term. The Terraform source does not explicitly show
+auto-renewal control, so provider defaults must not be assumed safe. No purchase
+is permitted until actual request semantics and effective charges are verified.
+Current official reference: [MCR pricing and contract terms](https://docs.megaport.com/finance/mcr-pricing/).
+
+### Previous laptop handoff (2026-11-24; historical)
+
 - Azure CLI authentication works. Readiness used the existing lab subscription
   named `Litware-MngEnvMCAP642473-jomore`, with explicit subscription arguments.
   No CLI default was changed. Verify this exact subscription on the next laptop;
@@ -259,7 +307,8 @@ are separate: **do not return to a lower stage after a higher stage is
 deployed**, because that would propose removing its resources. The runner
 refuses deletion/replacement plans.
 
-The current runner is Windows-specific and uses Azure CLI, WSL `gcloud` and
+The current runner is Windows-specific and uses Azure CLI, native Windows
+`gcloud.cmd` when available (otherwise WSL `gcloud`) and
 Megaport key environment variables. It requires exactly one open GCP billing
 account; ambiguity is an explicit error. On a new laptop it recovers the probe's
 existing public SSH key from Azure, rather than planning VM replacement.

@@ -7,10 +7,12 @@ root cause. The Linux lab is not a PAN-OS test.
 ## Thread findings that change the reproduction
 
 The latest message is a follow-up; the detailed failure report was sent four
-days earlier. Earlier quoted messages establish that private and public tunnels
+days earlier. Earlier quoted messages suggest that private and public tunnels
 terminate on the same on-premises device, and describe a prior asymmetric
 forwarding problem while legacy Internet static routes remained configured.
 That makes shared forwarding/peer reachability a stronger test priority.
+The 2026-11-25 WorkIQ recheck found that the latest reply still requests
+confirmation for all three tunnels; shared-device identity is not confirmed.
 
 However, the quoted July report also describes unexpected default-source BGP
 attempts when custom addresses were tried on the initial private VPN. The

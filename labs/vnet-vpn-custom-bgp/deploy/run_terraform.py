@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -13,6 +14,13 @@ CONTROL = ROOT / ".runtime-control"
 STATE_BUCKET = "gcp-vnbgp-state-20261124-tfstate"
 LAB_GROUP = "rg-vnbgp-20261124"
 SUBSCRIPTION_NAME = "Litware-MngEnvMCAP642473-jomore"
+
+
+def gcloud_command(*arguments):
+    native = shutil.which("gcloud.cmd")
+    if native:
+        return [native, *arguments]
+    return ["wsl.exe", "--", "gcloud", *arguments]
 
 
 def run(command, *, timeout=90, env=None):
@@ -69,7 +77,7 @@ def main():
     ]))
     env["ARM_SUBSCRIPTION_ID"] = account["id"]
     env["ARM_TENANT_ID"] = account["tenantId"]
-    token = run(["wsl.exe", "--", "gcloud", "auth", "print-access-token"]).strip()
+    token = run(gcloud_command("auth", "print-access-token")).strip()
     env["GOOGLE_OAUTH_ACCESS_TOKEN"] = token
     command = ["terraform", args.action, "-no-color"]
     if args.action == "init":
@@ -81,10 +89,10 @@ def main():
     elif args.action == "inventory":
         command = ["terraform", "show", "-json"]
     else:
-        billing = json.loads(run([
-            "wsl.exe", "--", "gcloud", "beta", "billing", "accounts", "list",
+        billing = json.loads(run(gcloud_command(
+            "beta", "billing", "accounts", "list",
             "--filter=open=true", "--format=json",
-        ]))
+        )))
         if len(billing) != 1:
             raise RuntimeError("Expected exactly one open billing account; select explicitly.")
         env["TF_VAR_billing_account"] = billing[0]["name"].removeprefix("billingAccounts/")

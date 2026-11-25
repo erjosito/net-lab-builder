@@ -8,6 +8,22 @@ from datetime import datetime, timedelta, timezone
 import run_terraform
 
 
+class GcloudCommandTests(unittest.TestCase):
+    def test_native_sdk_is_preferred_without_starting_wsl(self):
+        with patch.object(run_terraform.shutil, "which", return_value=r"C:\SDK\gcloud.cmd"):
+            self.assertEqual(
+                run_terraform.gcloud_command("auth", "print-access-token"),
+                [r"C:\SDK\gcloud.cmd", "auth", "print-access-token"],
+            )
+
+    def test_wsl_remains_the_fallback_for_existing_laptops(self):
+        with patch.object(run_terraform.shutil, "which", return_value=None):
+            self.assertEqual(
+                run_terraform.gcloud_command("beta", "billing", "accounts", "list"),
+                ["wsl.exe", "--", "gcloud", "beta", "billing", "accounts", "list"],
+            )
+
+
 class LeaseGateTests(unittest.TestCase):
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()

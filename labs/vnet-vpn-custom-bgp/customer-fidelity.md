@@ -14,7 +14,7 @@ diagrams were not inspected through WorkIQ. Unknown settings stay unknown.
 | Private underlay | Functioning real ExpressRoute private peering | Dedicated ER circuit through Megaport/GCP Partner Interconnect; peering or Internet-only emulation is insufficient |
 | Private IPsec | Two tunnels, one to each private Azure gateway instance endpoint | Both must carry encrypted payload with independent default-address BGP adjacencies |
 | Internet backup | A third tunnel on the same on-premises device | Configure exactly one Internet IPsec child/tunnel and one APIPA adjacency in the primary reproduction |
-| Device identity | Private and public VPNs terminate on the same device | One Linux CPE, one FRR routing instance and shared forwarding table; do not hide interaction behind separate VMs or VRFs |
+| Device identity | Earlier correspondence suggests a shared device; the latest reply requests confirmation for all three tunnels | Retain one Linux CPE, one FRR routing instance and shared forwarding table as the intended model; customer confirmation remains pending |
 | Device implementation | Palo Alto PA-5410; PAN-OS version unknown | Approved Linux StrongSwan/FRR substitution only; no claim to reproduce PAN-OS session handling |
 | Azure custom peers | Primary `169.254.21.2`, secondary `169.254.22.2` | Configure both on the gateway and map the Internet connection correctly; activate only the customer-like Internet endpoint on the CPE |
 | CPE custom peer | `169.254.21.1` | Use that Internet BGP source and initiate APIPA BGP from the CPE |
@@ -102,6 +102,13 @@ outage, the next fidelity decision is a supported Palo Alto VM-Series
 comparison or customer-assisted captures, not a conclusion that the customer's
 problem is resolved. A VM-Series test still would not match PA-5410 hardware
 or an unknown PAN-OS release exactly.
+
+WorkIQ recheck on 2026-11-25 found no newer requirement-changing message.
+The latest reply still asks whether all three tunnels share one device.
+Do not describe this as customer-confirmed. ASNs, the second custom address,
+hardware model and prepend count above come from yesterday's screenshot
+synthesis, not the retrieved email text; the raw screenshots are not in Git
+and have not been independently inspected on this laptop.
 
 ## Deployment gate
 
