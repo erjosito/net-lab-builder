@@ -1,0 +1,57 @@
+{
+  "observed_at_utc": "2026-11-25T10:59:50Z",
+  "task": "vnet-custom-bgp-provider-payg-20261125",
+  "verdict": "PASS for PAYG contract selection; end-to-end connectivity NOT TESTED",
+  "evidence_method": "Single validated POST /v3/networkdesign/buy, followed by authenticated GET /v2/product/{uid} for each purchased product",
+  "request_contract": {
+    "term": 1,
+    "autoRenewTerm": false,
+    "term_meaning": "PAYG / No Minimum Term; not a one-month commitment"
+  },
+  "products": [
+    {
+      "name": "jomore-vnbgp-20261124-mcr",
+      "type": "MCR2",
+      "contractTermMonths": 1,
+      "autoRenewTerm": false,
+      "provisioningStatus": "LIVE"
+    },
+    {
+      "name": "jomore-vnbgp-20261124-azure-primary",
+      "type": "VXC",
+      "contractTermMonths": 1,
+      "autoRenewTerm": false,
+      "provisioningStatus": "CONFIGURED"
+    },
+    {
+      "name": "jomore-vnbgp-20261124-azure-secondary",
+      "type": "VXC",
+      "contractTermMonths": 1,
+      "autoRenewTerm": false,
+      "provisioningStatus": "DEPLOYABLE"
+    },
+    {
+      "name": "jomore-vnbgp-20261124-gcp",
+      "type": "VXC",
+      "contractTermMonths": 1,
+      "autoRenewTerm": false,
+      "provisioningStatus": "DEPLOYABLE"
+    }
+  ],
+  "azure_expressroute": {
+    "provisioningState": "Succeeded",
+    "serviceProviderProvisioningState": "Provisioned"
+  },
+  "gcp_attachment_state": "PENDING_PARTNER",
+  "state_reconciliation": {
+    "all_four_products_imported": true,
+    "managed_resource_instances": 31,
+    "remote_lock_remaining": false,
+    "fresh_provider_plan": "In-place updates only; no creates, deletes or replacements. Not applied."
+  },
+  "limitations": [
+    "Contract selection and resource provisioning are not proof of BGP or encrypted payload connectivity.",
+    "Exact product IDs, service keys, account-specific quotes and full responses remain in ignored private runtime storage.",
+    "No free-service or final-invoice claim is made from promotional quote fields."
+  ]
+}

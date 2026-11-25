@@ -99,7 +99,7 @@ addresses and a distinct ordinary CPE loopback.
 
 | Design | Status | Verdict | Evidence |
 |---|---|---|---|
-| Default private BGP plus Internet APIPA BGP | Foundation partially deployed; recovery pending | NOT TESTED | [Assessment](assessment.md); no live reproduction yet |
+| Default private BGP plus Internet APIPA BGP | Foundations deployed; PAYG provider products ordered; tunnel configuration pending | NOT TESTED | [Assessment](assessment.md); no live reproduction yet |
 | Three-overlay converged routing abstraction | Three simulator states evaluated | PASS within abstraction; customer issue INCONCLUSIVE | [Simulator evidence and limits](simulator.md) |
 
 ## Required scenarios
@@ -187,6 +187,47 @@ Existing demo resources, including MCRs deployed earlier that day, are unrelated
 and must not be changed, reused without review, or cleaned up.
 
 ## Current checkpoint and cross-laptop resume
+
+### Megaport PAYG provisioning, 2026-11-25 10:59 UTC
+
+**Verdict: PASS for PAYG / No Minimum Term selection on all four purchased
+products; end-to-end connectivity remains NOT TESTED.** The user reaffirmed
+that Megaport products must have no minimum contract period.
+
+The exact four-product design was revalidated with real task service keys,
+explicit `term=1` and `autoRenewTerm=false` on every product, and fresh
+authenticated account-specific quotes. Detailed pricebook documentation
+distinguishes the monthly rate from its component fields; promotional metadata
+is retained privately and is not treated as a guaranteed free-service invoice.
+One API order was submitted, without retries.
+
+Subsequent generic product reads verified **`contractTermMonths=1` and
+`autoRenewTerm=false` on the actual MCR and each of the three VXCs**. In
+Megaport's API, `1` means No Minimum Term, not a one-month commitment. The
+contract/renewal verification gate from earlier checkpoints is resolved.
+See [sanitized contract and provisioning evidence](raw-output/provider-payg-verification-20261125.json).
+
+The MCR is live, the primary Azure VXC is configured, and the secondary Azure
+and Google VXCs were still `DEPLOYABLE` at the final check. Azure reports the
+circuit provider state `Provisioned`; the Google attachment is still
+`PENDING_PARTNER`. These states are not evidence of working BGP or payload.
+All four purchased products were imported into the existing GCS state, which
+now has 31 managed resource instances and no retained lock.
+
+The Google VXC source now explicitly selects the purchased Stockholm partner
+port and red availability domain. The runner refuses Terraform Megaport
+creates because the locked provider cannot explicitly set renewal: new products
+must use a validated explicit PAYG/no-renewal API order followed by import.
+Do not run the foundation stage now that provider products exist.
+
+The final **provider-stage** plan has no creates, deletes or replacements,
+but it includes unapplied import reconciliation for resource tags, provider
+partner/interface fields and previously noted GCP metadata. Review the exact
+fields before applying; do not casually rewrite auto-provisioned peering or
+interface configuration. No ER gateway connection, IPsec connections, FRR peers
+or fault scenarios were added in this provider-only run. The probe remains
+deallocated. All owned commands are idle and the provider lease is completed.
+Resources remain provisioned and potentially billable for subsequent validation.
 
 ### State reconciliation, 2026-11-25 10:50 UTC
 

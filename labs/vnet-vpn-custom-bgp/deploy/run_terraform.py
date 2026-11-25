@@ -58,6 +58,19 @@ def check_lease():
     return remaining
 
 
+def check_changes(changes):
+    if any("delete" in change["actions"] for change in changes):
+        raise RuntimeError("Plan includes destruction or replacement; do not apply.")
+    if any(
+        change["address"].startswith("megaport_") and "create" in change["actions"]
+        for change in changes
+    ):
+        raise RuntimeError(
+            "Megaport creates require an explicitly validated PAYG/no-renewal "
+            "API order followed by import; this provider cannot set renewal."
+        )
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("action", choices=["init", "plan", "apply", "inventory"])
@@ -129,8 +142,7 @@ def main():
             if not plan.exists():
                 raise RuntimeError("A reviewed saved plan for this stage is required.")
             changes = json.loads((CONTROL / f"{args.stage}-changes.json").read_text())
-            if any("delete" in change["actions"] for change in changes):
-                raise RuntimeError("This runner refuses destruction or replacement plans.")
+            check_changes(changes)
             command += ["-input=false", "-lock-timeout=30s", str(plan)]
     check_lease()
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
@@ -165,8 +177,7 @@ def main():
         ]
         (CONTROL / f"{args.stage}-changes.json").write_text(json.dumps(changes, indent=2))
         print(json.dumps(changes, indent=2))
-        if any("delete" in change["actions"] for change in changes):
-            raise RuntimeError("Plan includes destruction or replacement; do not apply.")
+        check_changes(changes)
     else:
         summaries = re.findall(r"(?m)^(?:Apply complete!|Terraform has been successfully).*$", output)
         print("\n".join(summaries) or f"{args.action}: completed; private log {log.name}")

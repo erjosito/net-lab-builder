@@ -60,5 +60,24 @@ class LeaseGateTests(unittest.TestCase):
             run_terraform.check_lease()
 
 
+class PlanGateTests(unittest.TestCase):
+    def test_megaport_creates_are_blocked_before_provider_defaults_can_order(self):
+        for address in ['megaport_mcr.lab[0]', 'megaport_vxc.azure["primary"]']:
+            with self.subTest(address=address), self.assertRaisesRegex(RuntimeError, "PAYG"):
+                run_terraform.check_changes([{"address": address, "actions": ["create"]}])
+
+    def test_replacements_remain_blocked(self):
+        with self.assertRaisesRegex(RuntimeError, "destruction"):
+            run_terraform.check_changes([
+                {"address": "azurerm_linux_virtual_machine.probe", "actions": ["delete", "create"]}
+            ])
+
+    def test_foundation_creates_and_imported_product_noops_are_allowed(self):
+        run_terraform.check_changes([
+            {"address": "google_compute_instance.cpe", "actions": ["create"]},
+            {"address": "megaport_mcr.lab[0]", "actions": ["no-op"]},
+        ])
+
+
 if __name__ == "__main__":
     unittest.main()

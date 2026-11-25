@@ -1,3 +1,11 @@
+data "megaport_partner" "gcp" {
+  count          = var.deploy_megaport ? 1 : 0
+  connect_type   = "GOOGLE"
+  location_id    = 98
+  product_name   = "Stockholm (arn-zone1-208)"
+  diversity_zone = "red"
+}
+
 resource "megaport_mcr" "lab" {
   count                = var.deploy_megaport ? 1 : 0
   product_name         = "jomore-${local.prefix}-mcr"
@@ -37,7 +45,9 @@ resource "megaport_vxc" "gcp" {
   a_end = {
     requested_product_uid = megaport_mcr.lab[0].product_uid
   }
-  b_end = {}
+  b_end = {
+    requested_product_uid = data.megaport_partner.gcp[0].product_uid
+  }
   b_end_partner_config = {
     partner = "google"
     google_config = {
