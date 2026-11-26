@@ -1,0 +1,75 @@
+{
+  "correlation": "vnbgp-restart-capture-20261126",
+  "verdict": "PASS",
+  "scope": "Restart retained endpoints; verify automatic four-tunnel/BGP recovery and bidirectional encrypted healthy-state reachability; capture requested control-plane state.",
+  "checks": [
+    {
+      "assertion": "Four VPN gateway external BGP sessions Connected, each receiving one prefix",
+      "verdict": "PASS"
+    },
+    {
+      "assertion": "conn-private-vnbgp-20261124: both instance tunnels Connected",
+      "verdict": "PASS"
+    },
+    {
+      "assertion": "conn-internet-vnbgp-20261124: both instance tunnels Connected",
+      "verdict": "PASS"
+    },
+    {
+      "assertion": "Four CPE CHILD_SAs installed before and after the traffic sample",
+      "verdict": "PASS"
+    },
+    {
+      "assertion": "CPE-to-Azure: source-bound ICMP 10/10 and TCP22 connected",
+      "verdict": "PASS"
+    },
+    {
+      "assertion": "Azure-to-CPE: source-bound ICMP 10/10 and TCP22 connected",
+      "verdict": "PASS"
+    },
+    {
+      "assertion": "Trace correlates workload ICMP with private UDP-encapsulated ESP",
+      "verdict": "PASS"
+    },
+    {
+      "assertion": "CPE has two private localpref 200 multipaths and two Internet localpref 100 paths",
+      "verdict": "PASS"
+    },
+    {
+      "assertion": "Full FRR neighbor detail reports four Established sessions without drops",
+      "verdict": "PASS"
+    },
+    {
+      "assertion": "ER primary carries outer /32 but no overlay workload prefix",
+      "verdict": "PASS"
+    },
+    {
+      "assertion": "ER secondary carries outer /32 but no overlay workload prefix",
+      "verdict": "PASS"
+    },
+    {
+      "assertion": "Google underlay BGP Established/UP, advertising only CPE outer /32",
+      "verdict": "PASS"
+    },
+    {
+      "assertion": "Both endpoints remain running",
+      "verdict": "PASS"
+    }
+  ],
+  "finalState": "Both VMs running. Gateways/provider products were already live and were not reset. No VPN/BGP/PSK/configuration changes.",
+  "changes": [
+    "Started existing terminated Google CPE.",
+    "Started existing deallocated Azure probe.",
+    "Added existing operator SSH public key with a two-hour expiry for IAP access; host key fingerprint pinned.",
+    "Invoked Azure Run Command twice; initial inline script returned no test output, corrected file-based script completed the reverse probes."
+  ],
+  "limits": [
+    "One observed boot recovered successfully, not a guarantee of future boot ordering: systemd logged an ordering cycle and dropped network-online.target start jobs.",
+    "MCR/VXCs are LIVE, but looking-glass routes are empty and VXC bgp_status is null. Do not equate these responses with established MCR BGP. Remote Azure/Google summaries and actual encrypted payload provide separate evidence.",
+    "FRR per-peer routes are accepted/post-policy learned routes, not unfiltered Adj-RIB-In. No soft-reconfiguration or route-refresh was enabled for collection.",
+    "ER gateway learned overlay prefix via VPN-gateway iBGP; the ER circuit and Google router do not carry that overlay workload prefix.",
+    "Failover/failback, customer migration and Palo Alto-specific behavior were not tested.",
+    "All four tunnels carried BGP; the workload packet sample used private1 and is not independent payload validation of every backup tunnel."
+  ],
+  "sanitization": "Explicit 30-record allowlist. Raw project SSH metadata, operator public keys, serial logs, VM metadata/certificates, account IDs and credentials are excluded. Subscription GUIDs are redacted; lab addresses retained."
+}

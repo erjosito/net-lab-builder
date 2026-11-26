@@ -1,0 +1,38 @@
+{
+  "atUtc": "2026-11-26T11:09:53.954424+00:00",
+  "completedAtUtc": "2026-11-26T11:09:58.101142+00:00",
+  "command": [
+    "az.cmd",
+    "vm",
+    "get-instance-view",
+    "-g",
+    "rg-vnbgp-20261124",
+    "-n",
+    "probe-vnbgp-20261124",
+    "--query",
+    "{name:name,statuses:instanceView.statuses}",
+    "--subscription",
+    "<LAB_SUBSCRIPTION>",
+    "-o",
+    "json",
+    "--only-show-errors"
+  ],
+  "output": {
+    "name": "probe-vnbgp-20261124",
+    "statuses": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "time": "2026-11-26T11:07:33.9724388+00:00"
+      },
+      {
+        "code": "PowerState/running",
+        "displayStatus": "VM running",
+        "level": "Info"
+      }
+    ]
+  },
+  "collectionStatus": "OK",
+  "processExitCode": 0
+}

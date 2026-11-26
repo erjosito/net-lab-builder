@@ -1,0 +1,67 @@
+{
+  "atUtc": "2026-11-26T11:00:29.099271+00:00",
+  "completedAtUtc": "2026-11-26T11:00:33.335766+00:00",
+  "command": [
+    "az.cmd",
+    "network",
+    "vnet-gateway",
+    "list",
+    "-g",
+    "rg-vnbgp-20261124",
+    "--query",
+    "[].{name:name,type:gatewayType,state:provisioningState,bgp:bgpSettings}",
+    "--subscription",
+    "<LAB_SUBSCRIPTION>",
+    "-o",
+    "json",
+    "--only-show-errors"
+  ],
+  "output": [
+    {
+      "bgp": null,
+      "name": "ergw-vnbgp-20261124",
+      "state": "Succeeded",
+      "type": "ExpressRoute"
+    },
+    {
+      "bgp": {
+        "asn": 65515,
+        "bgpPeeringAddress": "10.244.255.7,10.244.255.6",
+        "bgpPeeringAddresses": [
+          {
+            "customBgpIpAddresses": [
+              "169.254.21.2"
+            ],
+            "defaultBgpIpAddresses": [
+              "10.244.255.7"
+            ],
+            "ipconfigurationId": "/subscriptions/<REDACTED>/resourceGroups/rg-vnbgp-20261124/providers/Microsoft.Network/virtualNetworkGateways/vpngw-vnbgp-20261124/ipConfigurations/vpn0",
+            "tunnelIpAddresses": [
+              "4.165.162.61",
+              "10.244.255.4"
+            ]
+          },
+          {
+            "customBgpIpAddresses": [
+              "169.254.22.2"
+            ],
+            "defaultBgpIpAddresses": [
+              "10.244.255.6"
+            ],
+            "ipconfigurationId": "/subscriptions/<REDACTED>/resourceGroups/rg-vnbgp-20261124/providers/Microsoft.Network/virtualNetworkGateways/vpngw-vnbgp-20261124/ipConfigurations/vpn1",
+            "tunnelIpAddresses": [
+              "4.165.90.255",
+              "10.244.255.5"
+            ]
+          }
+        ],
+        "peerWeight": 0
+      },
+      "name": "vpngw-vnbgp-20261124",
+      "state": "Succeeded",
+      "type": "Vpn"
+    }
+  ],
+  "collectionStatus": "OK",
+  "processExitCode": 0
+}

@@ -1,0 +1,215 @@
+
+=== swanctl --list-sas ===
+2026-11-26T11:08:01+00:00
+internet1: #5, ESTABLISHED, IKEv2, b5b458aa272704dc_i* b0d0b28dab32c7ef_r
+  local  '34.51.172.149' @ 10.245.0.10[4500]
+  remote '4.165.90.255' @ 4.165.90.255[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 534s ago, rekeying in 12783s
+  internet1: #2, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 534s ago, rekeying in 1686s, expires in 3066s
+    in  c7c221ec (-|0x00000068),   1807 bytes,    26 packets,    29s ago
+    out c21a99ac (-|0x00000068),   1958 bytes,    29 packets,    29s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+private1: #4, ESTABLISHED, IKEv2, 1a45f7ccfff0f25c_i* 42506f3bb4093ebb_r
+  local  '10.245.0.10' @ 10.245.0.10[4500]
+  remote '10.244.255.5' @ 10.244.255.5[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 534s ago, rekeying in 13181s
+  private1: #3, reqid 3, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 534s ago, rekeying in 1701s, expires in 3066s
+    in  c996a8fc (-|0x00000067),   1776 bytes,    27 packets,    23s ago
+    out 9dde02f4 (-|0x00000067),   2050 bytes,    32 packets,    23s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+private0: #3, ESTABLISHED, IKEv2, 3d7f371d48035d78_i* 0bb71b69fb7d10bc_r
+  local  '10.245.0.10' @ 10.245.0.10[4500]
+  remote '10.244.255.4' @ 10.244.255.4[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 534s ago, rekeying in 12575s
+  private0: #4, reqid 4, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 534s ago, rekeying in 1574s, expires in 3066s
+    in  c0a6119c (-|0x00000066),   1357 bytes,    25 packets,    45s ago
+    out c4b90e74 (-|0x00000066),   1558 bytes,    28 packets,    45s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+internet: #2, ESTABLISHED, IKEv2, e18b845866337862_i* def85ebc4b662cdd_r
+  local  '34.51.172.149' @ 10.245.0.10[4500]
+  remote '4.165.162.61' @ 4.165.162.61[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 534s ago, rekeying in 13419s
+  internet: #1, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 534s ago, rekeying in 1852s, expires in 3066s
+    in  c185762a (-|0x00000065),   2034 bytes,    30 packets,     5s ago
+    out e9fbd048 (-|0x00000065),   2010 bytes,    30 packets,     5s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+exitCode=0
+
+=== ip route get 10.244.1.4 from 10.246.1.1 ===
+2026-11-26T11:08:01+00:00
+10.244.1.4 from 10.246.1.1 via 10.244.255.6 dev xfrm-private1 uid 0
+    cache
+exitCode=0
+
+=== ping -I 10.246.1.1 -c 10 -i 0.5 -W 2 10.244.1.4 ===
+2026-11-26T11:08:02+00:00
+PING 10.244.1.4 (10.244.1.4) from 10.246.1.1 : 56(84) bytes of data.
+64 bytes from 10.244.1.4: icmp_seq=1 ttl=64 time=54.5 ms
+64 bytes from 10.244.1.4: icmp_seq=2 ttl=64 time=53.8 ms
+64 bytes from 10.244.1.4: icmp_seq=3 ttl=64 time=54.9 ms
+64 bytes from 10.244.1.4: icmp_seq=4 ttl=64 time=53.6 ms
+64 bytes from 10.244.1.4: icmp_seq=5 ttl=64 time=53.7 ms
+64 bytes from 10.244.1.4: icmp_seq=6 ttl=64 time=53.9 ms
+64 bytes from 10.244.1.4: icmp_seq=7 ttl=64 time=53.7 ms
+64 bytes from 10.244.1.4: icmp_seq=8 ttl=64 time=59.5 ms
+64 bytes from 10.244.1.4: icmp_seq=9 ttl=64 time=53.8 ms
+64 bytes from 10.244.1.4: icmp_seq=10 ttl=64 time=53.9 ms
+
+--- 10.244.1.4 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 4511ms
+rtt min/avg/max/mdev = 53.595/54.523/59.516/1.710 ms
+exitCode=0
+
+=== python3 -c import\ socket\;\ s=socket.socket\(\)\;\ s.settimeout\(5\)\;\ s.bind\(\(\"10.246.1.1\"\,0\)\)\;\ s.connect\(\(\"10.244.1.4\"\,22\)\)\;\ print\(\"TCP22\ PASS\"\,s.getsockname\(\)\,s.getpeername\(\)\)\;\ s.close\(\) ===
+2026-11-26T11:08:07+00:00
+TCP22 PASS ('10.246.1.1', 35413) ('10.244.1.4', 22)
+exitCode=0
+boundedCaptureExitCode=124 (124 is the expected capture timer)
+=== Packet trace, cleartext workload on XFRM and UDP-encapsulated ESP on ens4 ===
+tcpdump: data link type LINUX_SLL2
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes
+11:08:02.995767 xfrm-private1 Out IP 10.246.1.1 > 10.244.1.4: ICMP echo request, id 1, seq 1, length 64
+11:08:02.995801 ens4  Out IP 10.245.0.10.4500 > 10.244.255.5.4500: UDP-encap: ESP(spi=0x9dde02f4,seq=0x21), length 136
+11:08:03.050192 ens4  In  IP 10.244.255.5.4500 > 10.245.0.10.4500: UDP-encap: ESP(spi=0xc996a8fc,seq=0x1c), length 136
+11:08:03.050232 xfrm-private1 In  IP 10.244.1.4 > 10.246.1.1: ICMP echo reply, id 1, seq 1, length 64
+11:08:03.496992 xfrm-private1 Out IP 10.246.1.1 > 10.244.1.4: ICMP echo request, id 1, seq 2, length 64
+11:08:03.497036 ens4  Out IP 10.245.0.10.4500 > 10.244.255.5.4500: UDP-encap: ESP(spi=0x9dde02f4,seq=0x22), length 136
+11:08:03.550666 ens4  In  IP 10.244.255.5.4500 > 10.245.0.10.4500: UDP-encap: ESP(spi=0xc996a8fc,seq=0x1d), length 136
+11:08:03.550711 xfrm-private1 In  IP 10.244.1.4 > 10.246.1.1: ICMP echo reply, id 1, seq 2, length 64
+11:08:03.998389 xfrm-private1 Out IP 10.246.1.1 > 10.244.1.4: ICMP echo request, id 1, seq 3, length 64
+11:08:03.998425 ens4  Out IP 10.245.0.10.4500 > 10.244.255.5.4500: UDP-encap: ESP(spi=0x9dde02f4,seq=0x23), length 136
+11:08:04.053239 ens4  In  IP 10.244.255.5.4500 > 10.245.0.10.4500: UDP-encap: ESP(spi=0xc996a8fc,seq=0x1e), length 136
+11:08:04.053278 xfrm-private1 In  IP 10.244.1.4 > 10.246.1.1: ICMP echo reply, id 1, seq 3, length 64
+11:08:04.498949 xfrm-private1 Out IP 10.246.1.1 > 10.244.1.4: ICMP echo request, id 1, seq 4, length 64
+11:08:04.499009 ens4  Out IP 10.245.0.10.4500 > 10.244.255.5.4500: UDP-encap: ESP(spi=0x9dde02f4,seq=0x24), length 136
+11:08:04.552476 ens4  In  IP 10.244.255.5.4500 > 10.245.0.10.4500: UDP-encap: ESP(spi=0xc996a8fc,seq=0x1f), length 136
+11:08:04.552518 xfrm-private1 In  IP 10.244.1.4 > 10.246.1.1: ICMP echo reply, id 1, seq 4, length 64
+11:08:05.000224 xfrm-private1 Out IP 10.246.1.1 > 10.244.1.4: ICMP echo request, id 1, seq 5, length 64
+11:08:05.000263 ens4  Out IP 10.245.0.10.4500 > 10.244.255.5.4500: UDP-encap: ESP(spi=0x9dde02f4,seq=0x25), length 136
+11:08:05.053843 ens4  In  IP 10.244.255.5.4500 > 10.245.0.10.4500: UDP-encap: ESP(spi=0xc996a8fc,seq=0x20), length 136
+11:08:05.053883 xfrm-private1 In  IP 10.244.1.4 > 10.246.1.1: ICMP echo reply, id 1, seq 5, length 64
+11:08:05.501566 xfrm-private1 Out IP 10.246.1.1 > 10.244.1.4: ICMP echo request, id 1, seq 6, length 64
+11:08:05.501600 ens4  Out IP 10.245.0.10.4500 > 10.244.255.5.4500: UDP-encap: ESP(spi=0x9dde02f4,seq=0x26), length 136
+11:08:05.555351 ens4  In  IP 10.244.255.5.4500 > 10.245.0.10.4500: UDP-encap: ESP(spi=0xc996a8fc,seq=0x21), length 136
+11:08:05.555392 xfrm-private1 In  IP 10.244.1.4 > 10.246.1.1: ICMP echo reply, id 1, seq 6, length 64
+11:08:06.003072 xfrm-private1 Out IP 10.246.1.1 > 10.244.1.4: ICMP echo request, id 1, seq 7, length 64
+11:08:06.003110 ens4  Out IP 10.245.0.10.4500 > 10.244.255.5.4500: UDP-encap: ESP(spi=0x9dde02f4,seq=0x27), length 136
+11:08:06.056695 ens4  In  IP 10.244.255.5.4500 > 10.245.0.10.4500: UDP-encap: ESP(spi=0xc996a8fc,seq=0x22), length 136
+11:08:06.056737 xfrm-private1 In  IP 10.244.1.4 > 10.246.1.1: ICMP echo reply, id 1, seq 7, length 64
+11:08:06.504422 xfrm-private1 Out IP 10.246.1.1 > 10.244.1.4: ICMP echo request, id 1, seq 8, length 64
+11:08:06.504456 ens4  Out IP 10.245.0.10.4500 > 10.244.255.5.4500: UDP-encap: ESP(spi=0x9dde02f4,seq=0x28), length 136
+11:08:06.563872 ens4  In  IP 10.244.255.5.4500 > 10.245.0.10.4500: UDP-encap: ESP(spi=0xc996a8fc,seq=0x23), length 136
+11:08:06.563913 xfrm-private1 In  IP 10.244.1.4 > 10.246.1.1: ICMP echo reply, id 1, seq 8, length 64
+11:08:07.005614 xfrm-private1 Out IP 10.246.1.1 > 10.244.1.4: ICMP echo request, id 1, seq 9, length 64
+11:08:07.005650 ens4  Out IP 10.245.0.10.4500 > 10.244.255.5.4500: UDP-encap: ESP(spi=0x9dde02f4,seq=0x29), length 136
+11:08:07.059335 ens4  In  IP 10.244.255.5.4500 > 10.245.0.10.4500: UDP-encap: ESP(spi=0xc996a8fc,seq=0x24), length 136
+11:08:07.059374 xfrm-private1 In  IP 10.244.1.4 > 10.246.1.1: ICMP echo reply, id 1, seq 9, length 64
+11:08:07.507059 xfrm-private1 Out IP 10.246.1.1 > 10.244.1.4: ICMP echo request, id 1, seq 10, length 64
+11:08:07.507096 ens4  Out IP 10.245.0.10.4500 > 10.244.255.5.4500: UDP-encap: ESP(spi=0x9dde02f4,seq=0x2a), length 136
+11:08:07.560916 ens4  In  IP 10.244.255.5.4500 > 10.245.0.10.4500: UDP-encap: ESP(spi=0xc996a8fc,seq=0x25), length 136
+11:08:07.560953 xfrm-private1 In  IP 10.244.1.4 > 10.246.1.1: ICMP echo reply, id 1, seq 10, length 64
+11:08:07.579930 xfrm-private1 Out IP 10.246.1.1.35413 > 10.244.1.4.22: Flags [S], seq 2987678290, win 65280, options [mss 1360,sackOK,TS val 4270818731 ecr 0,nop,wscale 7], length 0
+11:08:07.579975 ens4  Out IP 10.245.0.10.4500 > 10.244.255.5.4500: UDP-encap: ESP(spi=0x9dde02f4,seq=0x2b), length 104
+11:08:07.633640 ens4  In  IP 10.244.255.5.4500 > 10.245.0.10.4500: UDP-encap: ESP(spi=0xc996a8fc,seq=0x26), length 104
+11:08:07.633680 xfrm-private1 In  IP 10.244.1.4.22 > 10.246.1.1.35413: Flags [S.], seq 1101780469, ack 2987678291, win 65160, options [mss 1250,sackOK,TS val 3028126358 ecr 4270818731,nop,wscale 7], length 0
+11:08:07.633722 xfrm-private1 Out IP 10.246.1.1.35413 > 10.244.1.4.22: Flags [.], ack 1, win 510, options [nop,nop,TS val 4270818785 ecr 3028126358], length 0
+11:08:07.633747 ens4  Out IP 10.245.0.10.4500 > 10.244.255.5.4500: UDP-encap: ESP(spi=0x9dde02f4,seq=0x2c), length 104
+11:08:07.633885 xfrm-private1 Out IP 10.246.1.1.35413 > 10.244.1.4.22: Flags [F.], seq 1, ack 1, win 510, options [nop,nop,TS val 4270818785 ecr 3028126358], length 0
+11:08:07.633900 ens4  Out IP 10.245.0.10.4500 > 10.244.255.5.4500: UDP-encap: ESP(spi=0x9dde02f4,seq=0x2d), length 104
+11:08:07.687713 ens4  In  IP 10.244.255.5.4500 > 10.245.0.10.4500: UDP-encap: ESP(spi=0xc996a8fc,seq=0x27), length 104
+11:08:07.687802 xfrm-private1 In  IP 10.244.1.4.22 > 10.246.1.1.35413: Flags [.], ack 2, win 510, options [nop,nop,TS val 3028126413 ecr 4270818785], length 0
+11:08:07.696447 ens4  In  IP 10.244.255.5.4500 > 10.245.0.10.4500: UDP-encap: ESP(spi=0xc996a8fc,seq=0x28), length 136
+11:08:07.696486 xfrm-private1 In  IP 10.244.1.4.22 > 10.246.1.1.35413: Flags [P.], seq 1:43, ack 2, win 510, options [nop,nop,TS val 3028126421 ecr 4270818785], length 42: SSH: SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.18
+11:08:07.696508 xfrm-private1 Out IP 10.246.1.1.35413 > 10.244.1.4.22: Flags [R], seq 2987678292, win 0, length 0
+11:08:07.696528 ens4  Out IP 10.245.0.10.4500 > 10.244.255.5.4500: UDP-encap: ESP(spi=0x9dde02f4,seq=0x2e), length 88
+11:08:07.696931 ens4  In  IP 10.244.255.5.4500 > 10.245.0.10.4500: UDP-encap: ESP(spi=0xc996a8fc,seq=0x29), length 104
+11:08:07.696944 xfrm-private1 In  IP 10.244.1.4.22 > 10.246.1.1.35413: Flags [F.], seq 43, ack 2, win 510, options [nop,nop,TS val 3028126422 ecr 4270818785], length 0
+11:08:07.696968 xfrm-private1 Out IP 10.246.1.1.35413 > 10.244.1.4.22: Flags [R], seq 2987678292, win 0, length 0
+11:08:07.696977 ens4  Out IP 10.245.0.10.4500 > 10.244.255.5.4500: UDP-encap: ESP(spi=0x9dde02f4,seq=0x2f), length 88
+11:08:11.119517 ens4  Out IP 10.245.0.10.4500 > 10.244.255.4.4500: UDP-encap: ESP(spi=0xc4b90e74,seq=0x1d), length 104
+11:08:11.229847 ens4  In  IP 10.244.255.4.4500 > 10.245.0.10.4500: UDP-encap: ESP(spi=0xc0a6119c,seq=0x1a), length 88
+11:08:11.813423 ens4  Out IP 10.245.0.10.4500 > 10.244.255.5.4500: UDP-encap: ESP(spi=0x9dde02f4,seq=0x30), length 120
+11:08:11.916856 ens4  In  IP 10.244.255.5.4500 > 10.245.0.10.4500: UDP-encap: ESP(spi=0xc996a8fc,seq=0x2a), length 104
+11:08:14.929596 ens4  In  IP 10.244.255.4.4500 > 10.245.0.10.4500: UDP-encap: ESP(spi=0xc0a6119c,seq=0x1b), length 104
+11:08:14.929702 ens4  Out IP 10.245.0.10.4500 > 10.244.255.4.4500: UDP-encap: ESP(spi=0xc4b90e74,seq=0x1e), length 88
+
+64 packets captured
+64 packets received by filter
+0 packets dropped by kernel
+
+=== swanctl --list-sas ===
+2026-11-26T11:08:16+00:00
+internet1: #5, ESTABLISHED, IKEv2, b5b458aa272704dc_i* b0d0b28dab32c7ef_r
+  local  '34.51.172.149' @ 10.245.0.10[4500]
+  remote '4.165.90.255' @ 4.165.90.255[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 548s ago, rekeying in 12769s
+  internet1: #2, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 548s ago, rekeying in 1672s, expires in 3052s
+    in  c7c221ec (-|0x00000068),   1859 bytes,    27 packets,     5s ago
+    out c21a99ac (-|0x00000068),   2029 bytes,    30 packets,     5s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+private1: #4, ESTABLISHED, IKEv2, 1a45f7ccfff0f25c_i* 42506f3bb4093ebb_r
+  local  '10.245.0.10' @ 10.245.0.10[4500]
+  remote '10.244.255.5' @ 10.244.255.5[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 548s ago, rekeying in 13167s
+  private1: #3, reqid 3, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 548s ago, rekeying in 1687s, expires in 3052s
+    in  c996a8fc (-|0x00000067),   2926 bytes,    42 packets,     5s ago
+    out 9dde02f4 (-|0x00000067),   3205 bytes,    48 packets,     5s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+private0: #3, ESTABLISHED, IKEv2, 3d7f371d48035d78_i* 0bb71b69fb7d10bc_r
+  local  '10.245.0.10' @ 10.245.0.10[4500]
+  remote '10.244.255.4' @ 10.244.255.4[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 548s ago, rekeying in 12561s
+  private0: #4, reqid 4, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 548s ago, rekeying in 1560s, expires in 3052s
+    in  c0a6119c (-|0x00000066),   1456 bytes,    27 packets,     2s ago
+    out c4b90e74 (-|0x00000066),   1657 bytes,    30 packets,     2s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+internet: #2, ESTABLISHED, IKEv2, e18b845866337862_i* def85ebc4b662cdd_r
+  local  '34.51.172.149' @ 10.245.0.10[4500]
+  remote '4.165.162.61' @ 4.165.162.61[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 548s ago, rekeying in 13405s
+  internet: #1, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 548s ago, rekeying in 1838s, expires in 3052s
+    in  c185762a (-|0x00000065),   2086 bytes,    31 packets,     5s ago
+    out e9fbd048 (-|0x00000065),   2081 bytes,    31 packets,     5s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+exitCode=0
+
+=== vtysh -c show\ bgp\ ipv4\ unicast\ summary ===
+2026-11-26T11:08:16+00:00
+BGP router identifier 10.245.254.6, local AS number 64513 vrf-id 0
+BGP table version 3
+RIB entries 3, using 552 bytes of memory
+Peers 4, using 2892 KiB of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+10.244.255.6    4      65515        14        15        0    0    0 00:09:04            1        1 N/A
+10.244.255.7    4      65515        14        15        0    0    0 00:09:05            1        1 N/A
+169.254.21.2    4      65515        16        15        0    0    0 00:09:04            1        1 N/A
+169.254.22.2    4      65515        15        15        0    0    0 00:09:04            1        1 N/A
+
+Total number of neighbors 4
+exitCode=0

@@ -1,0 +1,50 @@
+{
+  "atUtc": "2026-11-26T11:02:04.371946+00:00",
+  "completedAtUtc": "2026-11-26T11:02:31.136459+00:00",
+  "command": [
+    "az.cmd",
+    "network",
+    "express-route",
+    "list-route-tables-summary",
+    "-g",
+    "rg-vnbgp-20261124",
+    "-n",
+    "er-vnbgp-20261124",
+    "--path",
+    "primary",
+    "--peering-name",
+    "AzurePrivatePeering",
+    "--subscription",
+    "<LAB_SUBSCRIPTION>",
+    "-o",
+    "json",
+    "--only-show-errors"
+  ],
+  "output": {
+    "value": [
+      {
+        "as": 65515,
+        "neighbor": "10.244.255.12",
+        "statePfxRcd": "1",
+        "upDown": "9:19:51",
+        "v": 4
+      },
+      {
+        "as": 65515,
+        "neighbor": "10.244.255.13",
+        "statePfxRcd": "1",
+        "upDown": "9:20:47",
+        "v": 4
+      },
+      {
+        "as": 65060,
+        "neighbor": "169.254.51.73",
+        "statePfxRcd": "4",
+        "upDown": "1d",
+        "v": 4
+      }
+    ]
+  },
+  "collectionStatus": "OK",
+  "processExitCode": 0
+}

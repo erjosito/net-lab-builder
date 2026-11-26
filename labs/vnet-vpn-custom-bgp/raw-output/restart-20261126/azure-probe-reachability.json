@@ -1,0 +1,36 @@
+{
+  "atUtc": "2026-11-26T11:04:39.737296+00:00",
+  "completedAtUtc": "2026-11-26T11:07:48.820171+00:00",
+  "command": [
+    "az.cmd",
+    "vm",
+    "run-command",
+    "invoke",
+    "-g",
+    "rg-vnbgp-20261124",
+    "-n",
+    "probe-vnbgp-20261124",
+    "--command-id",
+    "RunShellScript",
+    "--scripts",
+    "set +e\ndate -u --iso-8601=seconds\necho '=== Probe addresses ==='; ip -br address\necho '=== Probe kernel routes ==='; ip route\nprintf '\\n=== Azure probe to CPE overlay, source-bound ping ===\\n'\nping -I 10.244.1.4 -c 10 -i 0.5 -W 2 10.246.1.1; echo \"pingExitCode=$?\"\nprintf '\\n=== Source-bound TCP22 to existing CPE SSH service ===\\n'\npython3 -c 'import socket; s=socket.socket(); s.settimeout(5); s.bind((\"10.244.1.4\",0)); s.connect((\"10.246.1.1\",22)); print(\"TCP22 PASS\",s.getsockname(),s.getpeername()); s.close()'; echo \"tcpExitCode=$?\"\n",
+    "--subscription",
+    "<LAB_SUBSCRIPTION>",
+    "-o",
+    "json",
+    "--only-show-errors"
+  ],
+  "output": {
+    "value": [
+      {
+        "code": "ProvisioningState/succeeded",
+        "displayStatus": "Provisioning succeeded",
+        "level": "Info",
+        "message": "Enable succeeded: \n[stdout]\n\n[stderr]\n"
+      }
+    ]
+  },
+  "collectionStatus": "OK",
+  "processExitCode": 0,
+  "assessment": "INCONCLUSIVE: process succeeded but stdout was empty. Not used for reachability PASS. Replaced with file-based invocation."
+}

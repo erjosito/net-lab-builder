@@ -1,0 +1,27 @@
+{
+  "atUtc": "2026-11-26T11:08:00.023440+00:00",
+  "completedAtUtc": "2026-11-26T11:08:16.392083+00:00",
+  "command": [
+    "wsl.exe",
+    "--exec",
+    "ssh",
+    "-T",
+    "-oBatchMode=yes",
+    "-oConnectTimeout=30",
+    "-oStrictHostKeyChecking=yes",
+    "-oHostKeyAlgorithms=ssh-ed25519",
+    "-oUserKnownHostsFile=/dev/null",
+    "-oGlobalKnownHostsFile=/dev/null",
+    "-oKnownHostsCommand=/usr/bin/python3 <PINNED_HOST_KEY_VERIFIER> %H %t %K",
+    "-i",
+    "<EXISTING_OPERATOR_KEY>",
+    "-oProxyCommand=gcloud compute start-iap-tunnel cpe-vnbgp-20261124 22 --listen-on-stdin --project=gcp-vnbgp-20261124 --zone=europe-north2-a --verbosity=error",
+    "azurelabuser@cpe-vnbgp-20261124",
+    "sudo bash -s"
+  ],
+  "stdinScript": "set +e\nrun() { printf '\\n=== '; printf '%q ' \"$@\"; echo '==='; date -u --iso-8601=seconds; \"$@\"; rc=$?; echo \"exitCode=$rc\"; }\nrun swanctl --list-sas\nrun ip route get 10.244.1.4 from 10.246.1.1\ntrace=$(mktemp /tmp/vnbgp-reach-XXXXXX)\ntimeout 14 tcpdump -n -l -i any '(host 10.246.1.1 and host 10.244.1.4) or (udp port 4500 and (host 10.244.255.4 or host 10.244.255.5))' >\"$trace\" 2>&1 & capture=$!\nsleep 1\nrun ping -I 10.246.1.1 -c 10 -i 0.5 -W 2 10.244.1.4\nrun python3 -c 'import socket; s=socket.socket(); s.settimeout(5); s.bind((\"10.246.1.1\",0)); s.connect((\"10.244.1.4\",22)); print(\"TCP22 PASS\",s.getsockname(),s.getpeername()); s.close()'\nwait \"$capture\"; echo \"boundedCaptureExitCode=$? (124 is the expected capture timer)\"\necho '=== Packet trace, cleartext workload on XFRM and UDP-encapsulated ESP on ens4 ==='\ncat \"$trace\"\nrm -f \"$trace\"\nrun swanctl --list-sas\nrun vtysh -c 'show bgp ipv4 unicast summary'\n",
+  "collectionStatus": "OK",
+  "processExitCode": 0,
+  "outputFile": "cpe-reachability-packet-path.txt",
+  "textNormalization": "LF line endings; trailing spaces removed."
+}

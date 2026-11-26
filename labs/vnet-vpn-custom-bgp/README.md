@@ -7,18 +7,20 @@ using default Azure BGP addresses and Internet backup using custom APIPA peers.
 Use Linux StrongSwan/FRR to isolate Azure behavior. This is not a PAN-OS
 reproduction and cannot establish a Palo Alto-specific root cause.
 
-**Current state, 2026-11-26 08:51 UTC: Google CPE stopped; Azure probe also
-deallocated.** Read-only inspection confirms the Azure four-tunnel configuration
-and established Google Interconnect underlay. Both VMs must run for workload
-tests; boot recovery remains unverified. See the
-[latest inspection](#configuration-inspection-2026-11-26).
+**Current state, 2026-11-26 11:10 UTC: PASS; Google CPE and Azure probe
+running.** All four IPsec tunnels and BGP adjacencies recovered automatically.
+Source-bound ICMP passed 10/10 in each direction, and TCP/22 connected both
+ways. Packet capture confirms private encrypted transport. No VPN/BGP
+configuration or PSKs were changed. See the
+[restart checkpoint](#restart-and-live-routing-capture-2026-11-26) and
+[fresh evidence](raw-output/restart-20261126/result.json).
 
 **Previous shutdown, 2026-11-25 15:39 UTC: Google CPE intentionally stopped.**
 The user requested saving VM compute costs. Its boot disk and reserved public
-IP are preserved; the four-tunnel configuration remains on disk with boot
-services enabled, but reboot recovery has not been tested. VPN/BGP and payload
-are unavailable while the CPE is stopped. All four adjacencies and private
-encrypted payload last passed at 14:27 UTC.
+IP were preserved with boot services enabled. Boot recovery was untested at
+shutdown and is now verified for the November 26 start. VPN/BGP and payload
+were unavailable while the CPE was stopped. The previous four-adjacency and
+private encrypted payload result was at 14:27 UTC.
 See the [current checkpoint](#current-checkpoint-and-cross-laptop-resume).
 The user explicitly requested the final state directly, rather than completing
 the historical migration sequence.
@@ -115,7 +117,7 @@ addresses and a distinct ordinary CPE loopback.
 
 | Design | Status | Verdict | Evidence |
 |---|---|---|---|
-| Default private BGP plus Internet APIPA BGP | Two private and two Internet tunnels configured; all four adjacencies established | PASS for four-peer configuration and private encrypted payload; customer migration and failover NOT TESTED | [Four-tunnel evidence](raw-output/four-tunnel-bgp-20261125.json) |
+| Default private BGP plus Internet APIPA BGP | Four tunnels/adjacencies recovered after CPE startup; bidirectional healthy-state workload verified | PASS for startup and private encrypted ICMP/TCP; customer migration and failover NOT TESTED | [Restart evidence](raw-output/restart-20261126/result.json), [original four-tunnel evidence](raw-output/four-tunnel-bgp-20261125.json) |
 | Temporary static Internet baseline | One Internet tunnel verified before user requested the direct BGP end state | PASS within baseline scope; no longer the configured routing design | [Baseline evidence](raw-output/internet-baseline-20261125.json) |
 | Three-overlay converged routing abstraction | Three simulator states evaluated | PASS within abstraction; customer issue INCONCLUSIVE | [Simulator evidence and limits](simulator.md) |
 
@@ -213,7 +215,116 @@ and must not be changed, reused without review, or cleaned up.
 
 ## Current checkpoint and cross-laptop resume
 
+### Restart and live routing capture, 2026-11-26
+
+**Verdict: PASS for the requested restart, healthy-state reachability and
+tunnel/BGP capture.** Started the existing Google CPE and deallocated Azure
+probe. Both remain running at the user's request; compute and existing
+gateway/circuit/provider charges continue. Managed gateways, Megaport products
+and Google Interconnect were already live and were not reset. No resources
+were created or deleted, and no routing, IPsec, PSK or service configuration
+was changed. The live window is closed and its commands have exited.
+
+The CPE booted at approximately 10:58:55 UTC. All four persistent services
+(`vnbgp-network`, `vnbgp-ipsec`, `strongswan`, `frr`) were enabled and active
+with successful results. Four CHILD_SAs installed and four FRR adjacencies
+established without a manual reload. The captured neighbor details show one
+connection established and zero dropped for each peer.
+
+| Transport / instance | Azure BGP peer | CPE update source | Received / advertised prefixes | CPE local preference |
+|---|---|---|---|---|
+| Private / vpn0 | `10.244.255.7` | `10.245.254.6` | 1 / 1 | 200 |
+| Private / vpn1 | `10.244.255.6` | `10.245.254.6` | 1 / 1 | 200 |
+| Internet / vpn0 | `169.254.21.2` | `169.254.21.1` | 1 / 1 | 100 |
+| Internet / vpn1 | `169.254.22.2` | `169.254.21.1` | 1 / 1 | 100 |
+
+FRR's full BGP table contains four paths to Azure `10.244.0.0/16`, with
+both private paths installed as kernel ECMP. Azure's VPN gateway learns
+`10.246.1.0/24` with AS path `64513` on private and
+`64513-64513-64513` on Internet. Its APIPA peer-status `localAddress` still
+shows the ordinary Azure address. Actual FRR TCP neighbor endpoints use
+the expected Azure APIPA addresses, so that API column is not packet-source
+evidence. The VPN gateway also advertises the CPE prefix back toward the
+Internet peers with AS path `65515-64513`; FRR retains only the accepted
+Azure prefix, not its own reflected prefix.
+
+| Reachability assertion | Observed result |
+|---|---|
+| CPE `10.246.1.1` to Azure `10.244.1.4`, source-bound ICMP | 10/10, 0% loss, 54.523 ms average |
+| Azure `10.244.1.4` to CPE `10.246.1.1`, source-bound ICMP | 10/10, 0% loss, 54.253 ms average |
+| Source-bound TCP/22 to each existing SSH service | Connected in both directions |
+| CPE packet path during forward probes | Workload packets on `xfrm-private1`, correlated UDP-encapsulated ESP to/from `10.244.255.5` on `ens4` |
+| Private1 CHILD_SA counters across the packet sample | Ingress 1,776 to 2,926 bytes; egress 2,050 to 3,205 bytes |
+
+The ER gateway learns outer `10.245.0.10/32` via both MSEE next hops,
+AS path `12076-65060-16550`. It also learns overlay `10.246.1.0/24`
+internally from the VPN gateway over iBGP. This is not an overlay
+advertisement across ExpressRoute: the captured ER gateway advertisements
+toward MSEE contain only Azure `10.244.0.0/16`, and neither circuit route
+table contains the overlay workload prefix. Both circuit paths contain the
+CPE outer `/32`. Google BGP is `Established` / `UP` and advertises only that
+outer `/32`. The probe NIC has active overlay next hops
+`10.244.255.6` and `10.244.255.7`.
+
+#### Captured output
+
+The [capture directory](raw-output/restart-20261126/) contains timestamped
+commands and sanitized output. CPE text transcripts have matching JSON
+metadata, including the diagnostic script where available.
+
+| Point | Evidence |
+|---|---|
+| StrongSwan, XFRM/kernel FIB, full FRR BGP table, route-maps and per-peer learned/advertised routes | [CPE diagnostic transcript](raw-output/restart-20261126/cpe-tunnels-bgp-routes.txt) |
+| FRR full neighbor state, TCP endpoints and source identities | [Neighbor transcript](raw-output/restart-20261126/cpe-neighbors-all.txt) |
+| Boot services and ordering warnings | [Boot transcript](raw-output/restart-20261126/cpe-boot-recovery.txt) |
+| Source-bound forward probes, packet trace and before/after IPsec counters | [Encrypted path transcript](raw-output/restart-20261126/cpe-reachability-packet-path.txt) |
+| Reverse ICMP/TCP from Azure | [Probe transcript](raw-output/restart-20261126/azure-probe-reachability.txt) |
+| VPN VNG neighbors and learned BGP table | [Peers](raw-output/restart-20261126/vpngw-list-bgp-peer-status.json), [learned routes](raw-output/restart-20261126/vpngw-list-learned-routes.json) |
+| VPN VNG advertised routes | [Private peer](raw-output/restart-20261126/vpngw-advertised-10.245.254.6.json), [APIPA peer](raw-output/restart-20261126/vpngw-advertised-169.254.21.1.json) |
+| VPN connection / instance tunnel status and counters | [Private](raw-output/restart-20261126/conn-private-vnbgp-20261124.json), [Internet](raw-output/restart-20261126/conn-internet-vnbgp-20261124.json) |
+| ER VNG neighbors and learned BGP table | [Peers](raw-output/restart-20261126/ergw-list-bgp-peer-status.json), [learned routes](raw-output/restart-20261126/ergw-list-learned-routes.json) |
+| ER VNG advertised routes toward MSEE | [Primary next hop](raw-output/restart-20261126/ergw-advertised-10.244.255.8.json), [secondary next hop](raw-output/restart-20261126/ergw-advertised-10.244.255.9.json) |
+| ER circuit primary BGP summary and table | [Summary](raw-output/restart-20261126/er-circuit-primary-list-route-tables-summary.json), [table](raw-output/restart-20261126/er-circuit-primary-list-route-tables.json) |
+| ER circuit secondary BGP summary and table | [Summary](raw-output/restart-20261126/er-circuit-secondary-list-route-tables-summary.json), [table](raw-output/restart-20261126/er-circuit-secondary-list-route-tables.json) |
+| Google Cloud Router / Megaport / Azure probe effective routes | [Google](raw-output/restart-20261126/gcp-cloud-router-status.json), [Megaport](raw-output/restart-20261126/megaport-mcr-vxc-bgp.json), [effective routes](raw-output/restart-20261126/probe-effective-routes.json) |
+
+#### Warnings, limitations and resume state
+
+Boot recovery passed once, but systemd reported an ordering cycle:
+FRR is `Before=network.target`, while the custom IPsec unit is before FRR
+and after StrongSwan, which waits for `network-online.target`. Systemd
+dropped network-online start jobs to break the cycle. All required services
+nevertheless started successfully. No unit was edited; this remains a
+startup-hardening item, not a proven repeatable ordering guarantee.
+
+Megaport reports the dedicated MCR and all three VXCs `LIVE`; its route
+looking glass returned `[]` and VXC `bgp_status` was null. These are missing
+MCR telemetry, not established-session proof. Azure circuit summaries,
+Google peer status and the encrypted workload capture provide separate
+underlay evidence. FRR `neighbors ... routes` output is accepted/post-policy
+learned routes, not unfiltered Adj-RIB-In; no soft-reconfiguration was enabled.
+
+The initial inline Azure Run Command returned empty stdout despite success.
+It is preserved as inconclusive and was not counted as a passing probe.
+Passing reverse output came from the file-based invocation. An unsupported
+AF-specific FRR neighbor-detail command is likewise preserved; the supported
+`show bgp neighbors` transcript supplies all four complete neighbor records.
+An existing operator public SSH key was authorized with a two-hour expiry
+for IAP access, with the CPE host fingerprint pinned. No private key or PSK
+was read into the evidence.
+
+The packet sample used private1; it does not independently exercise payload
+through each private/Internet tunnel. Internet failover/failback, customer
+migration and PAN-OS behavior remain **NOT TESTED**. Resume from this running
+baseline without Terraform apply, reinstalling StrongSwan or changing PSKs.
+A separate authorized scenario is required for fault injection or configuration
+changes. Raw account/control metadata remains ignored and is not required
+to read these portable captures.
+
 ### Configuration inspection, 2026-11-26
+
+Historical snapshot at 08:51 UTC, superseded by the successful restart above.
+References to stopped VMs and unverified boot below describe that earlier state.
 
 **Verdict: configuration consistent with the completed four-tunnel handoff;
 live readiness INCONCLUSIVE.** The current API reads show the Google CPE

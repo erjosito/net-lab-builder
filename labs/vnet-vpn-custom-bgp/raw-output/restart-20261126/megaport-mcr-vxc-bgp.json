@@ -1,0 +1,65 @@
+{
+  "atUtc": "2026-11-26T11:09:52.630055+00:00",
+  "completedAtUtc": "2026-11-26T11:09:59.172544+00:00",
+  "command": [
+    "python",
+    "<LAB_RUNTIME>\\capture_megaport.py"
+  ],
+  "output": {
+    "mcr": {
+      "name": "jomore-vnbgp-20261124-mcr",
+      "state": "LIVE"
+    },
+    "vxcs": [
+      {
+        "name": "jomore-vnbgp-20261124-azure-primary",
+        "state": "LIVE",
+        "rateLimitMbps": 50,
+        "bgp": [
+          {
+            "localAsn": 65060,
+            "localIpAddress": "169.254.51.73",
+            "peerAsn": 12076,
+            "peerIpAddress": "169.254.51.74",
+            "peerType": "PRIV_CLOUD"
+          }
+        ],
+        "bgpStatus": null
+      },
+      {
+        "name": "jomore-vnbgp-20261124-azure-secondary",
+        "state": "LIVE",
+        "rateLimitMbps": 50,
+        "bgp": [
+          {
+            "localAsn": 65060,
+            "localIpAddress": "169.254.51.77",
+            "peerAsn": 12076,
+            "peerIpAddress": "169.254.51.78",
+            "peerType": "PRIV_CLOUD"
+          }
+        ],
+        "bgpStatus": null
+      },
+      {
+        "name": "jomore-vnbgp-20261124-gcp",
+        "state": "LIVE",
+        "rateLimitMbps": 50,
+        "bgp": [
+          {
+            "localAsn": 65060,
+            "localIpAddress": "169.254.149.234",
+            "peerAsn": 16550,
+            "peerIpAddress": "169.254.149.233",
+            "peerType": "PRIV_CLOUD"
+          }
+        ],
+        "bgpStatus": null
+      }
+    ],
+    "routeTable": [],
+    "routeTableVerdict": "UNAVAILABLE: empty looking-glass response, not route-health proof"
+  },
+  "collectionStatus": "OK",
+  "processExitCode": 0
+}

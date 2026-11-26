@@ -1,0 +1,33 @@
+{
+  "atUtc": "2026-11-26T11:06:23.907807+00:00",
+  "completedAtUtc": "2026-11-26T11:06:28.538512+00:00",
+  "command": [
+    "az.cmd",
+    "network",
+    "vpn-connection",
+    "show",
+    "-g",
+    "rg-vnbgp-20261124",
+    "-n",
+    "conn-er-vnbgp-20261124",
+    "--query",
+    "{name:name,state:provisioningState,status:connectionStatus,type:connectionType,bgp:enableBgp,ingress:ingressBytesTransferred,egress:egressBytesTransferred,tunnels:tunnelConnectionStatus}",
+    "--subscription",
+    "<LAB_SUBSCRIPTION>",
+    "-o",
+    "json",
+    "--only-show-errors"
+  ],
+  "output": {
+    "bgp": false,
+    "egress": 0,
+    "ingress": 0,
+    "name": "conn-er-vnbgp-20261124",
+    "state": "Succeeded",
+    "status": null,
+    "tunnels": null,
+    "type": "ExpressRoute"
+  },
+  "collectionStatus": "OK",
+  "processExitCode": 0
+}

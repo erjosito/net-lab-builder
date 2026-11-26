@@ -1,0 +1,48 @@
+{
+  "atUtc": "2026-11-26T11:06:19.409099+00:00",
+  "completedAtUtc": "2026-11-26T11:06:23.905304+00:00",
+  "command": [
+    "az.cmd",
+    "network",
+    "vpn-connection",
+    "show",
+    "-g",
+    "rg-vnbgp-20261124",
+    "-n",
+    "conn-internet-vnbgp-20261124",
+    "--query",
+    "{name:name,state:provisioningState,status:connectionStatus,type:connectionType,bgp:enableBgp,ingress:ingressBytesTransferred,egress:egressBytesTransferred,tunnels:tunnelConnectionStatus}",
+    "--subscription",
+    "<LAB_SUBSCRIPTION>",
+    "-o",
+    "json",
+    "--only-show-errors"
+  ],
+  "output": {
+    "bgp": true,
+    "egress": 28028,
+    "ingress": 27924,
+    "name": "conn-internet-vnbgp-20261124",
+    "state": "Succeeded",
+    "status": "Connected",
+    "tunnels": [
+      {
+        "connectionStatus": "Connected",
+        "egressBytesTransferred": 16862,
+        "ingressBytesTransferred": 16701,
+        "lastConnectionEstablishedUtcTime": "2026-11-26T10:59:38.3951845Z",
+        "tunnel": "conn-internet-vnbgp-20261124_4.165.162.61"
+      },
+      {
+        "connectionStatus": "Connected",
+        "egressBytesTransferred": 10746,
+        "ingressBytesTransferred": 10803,
+        "lastConnectionEstablishedUtcTime": "2026-11-26T11:00:23.885792Z",
+        "tunnel": "conn-internet-vnbgp-20261124_4.165.90.255"
+      }
+    ],
+    "type": "IPsec"
+  },
+  "collectionStatus": "OK",
+  "processExitCode": 0
+}

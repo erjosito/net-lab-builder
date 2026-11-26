@@ -1,0 +1,595 @@
+
+=== swanctl --list-conns ===
+2026-11-26T11:04:42+00:00
+internet: IKEv2, no reauthentication, rekeying every 14400s, dpd delay 15s
+  local:  10.245.0.10
+  remote: 4.165.162.61
+  local pre-shared key authentication:
+    id: 34.51.172.149
+  remote pre-shared key authentication:
+    id: 4.165.162.61
+  internet: TUNNEL, rekeying every 2700s, dpd action is restart
+    local:  0.0.0.0/0
+    remote: 0.0.0.0/0
+private0: IKEv2, no reauthentication, rekeying every 14400s, dpd delay 15s
+  local:  10.245.0.10
+  remote: 10.244.255.4
+  local pre-shared key authentication:
+    id: 10.245.0.10
+  remote pre-shared key authentication:
+    id: 10.244.255.4
+  private0: TUNNEL, rekeying every 2700s, dpd action is restart
+    local:  0.0.0.0/0
+    remote: 0.0.0.0/0
+private1: IKEv2, no reauthentication, rekeying every 14400s, dpd delay 15s
+  local:  10.245.0.10
+  remote: 10.244.255.5
+  local pre-shared key authentication:
+    id: 10.245.0.10
+  remote pre-shared key authentication:
+    id: 10.244.255.5
+  private1: TUNNEL, rekeying every 2700s, dpd action is restart
+    local:  0.0.0.0/0
+    remote: 0.0.0.0/0
+internet1: IKEv2, no reauthentication, rekeying every 14400s, dpd delay 15s
+  local:  10.245.0.10
+  remote: 4.165.90.255
+  local pre-shared key authentication:
+    id: 34.51.172.149
+  remote pre-shared key authentication:
+    id: 4.165.90.255
+  internet1: TUNNEL, rekeying every 2700s, dpd action is restart
+    local:  0.0.0.0/0
+    remote: 0.0.0.0/0
+exitCode=0
+
+=== swanctl --list-sas ===
+2026-11-26T11:04:42+00:00
+internet1: #5, ESTABLISHED, IKEv2, b5b458aa272704dc_i* b0d0b28dab32c7ef_r
+  local  '34.51.172.149' @ 10.245.0.10[4500]
+  remote '4.165.90.255' @ 4.165.90.255[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 335s ago, rekeying in 12982s
+  internet1: #2, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 335s ago, rekeying in 1885s, expires in 3265s
+    in  c7c221ec (-|0x00000068),   1438 bytes,    20 packets,     1s ago
+    out c21a99ac (-|0x00000068),   1589 bytes,    23 packets,     1s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+private1: #4, ESTABLISHED, IKEv2, 1a45f7ccfff0f25c_i* 42506f3bb4093ebb_r
+  local  '10.245.0.10' @ 10.245.0.10[4500]
+  remote '10.244.255.5' @ 10.244.255.5[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 335s ago, rekeying in 13380s
+  private1: #3, reqid 3, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 335s ago, rekeying in 1900s, expires in 3265s
+    in  c996a8fc (-|0x00000067),   1336 bytes,    20 packets,    23s ago
+    out 9dde02f4 (-|0x00000067),   1629 bytes,    25 packets,    23s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+private0: #3, ESTABLISHED, IKEv2, 3d7f371d48035d78_i* 0bb71b69fb7d10bc_r
+  local  '10.245.0.10' @ 10.245.0.10[4500]
+  remote '10.244.255.4' @ 10.244.255.4[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 335s ago, rekeying in 12774s
+  private0: #4, reqid 4, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 335s ago, rekeying in 1773s, expires in 3265s
+    in  c0a6119c (-|0x00000066),   1060 bytes,    19 packets,     3s ago
+    out c4b90e74 (-|0x00000066),   1261 bytes,    22 packets,     3s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+internet: #2, ESTABLISHED, IKEv2, e18b845866337862_i* def85ebc4b662cdd_r
+  local  '34.51.172.149' @ 10.245.0.10[4500]
+  remote '4.165.162.61' @ 4.165.162.61[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 335s ago, rekeying in 13618s
+  internet: #1, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 335s ago, rekeying in 2051s, expires in 3265s
+    in  c185762a (-|0x00000065),   1594 bytes,    23 packets,    11s ago
+    out e9fbd048 (-|0x00000065),   1589 bytes,    23 packets,    11s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+exitCode=0
+
+=== ip -d link show type xfrm ===
+2026-11-26T11:04:42+00:00
+3: xfrm-internet@ens4: <NOARP,UP,LOWER_UP> mtu 1400 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/none  promiscuity 0 minmtu 68 maxmtu 65535
+    xfrm if_id 0x65 addrgenmode random numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+4: xfrm-private0@ens4: <NOARP,UP,LOWER_UP> mtu 1400 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/none  promiscuity 0 minmtu 68 maxmtu 65535
+    xfrm if_id 0x66 addrgenmode random numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+5: xfrm-private1@ens4: <NOARP,UP,LOWER_UP> mtu 1400 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/none  promiscuity 0 minmtu 68 maxmtu 65535
+    xfrm if_id 0x67 addrgenmode random numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+6: xfrm-internet1@ens4: <NOARP,UP,LOWER_UP> mtu 1400 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/none  promiscuity 0 minmtu 68 maxmtu 65535
+    xfrm if_id 0x68 addrgenmode random numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+exitCode=0
+
+=== ip route show table all ===
+2026-11-26T11:04:42+00:00
+default via 10.245.0.1 dev ens4 proto dhcp src 10.245.0.10 metric 100
+4.165.90.255 via 10.245.0.1 dev ens4 src 10.245.0.10
+4.165.162.61 via 10.245.0.1 dev ens4 src 10.245.0.10
+10.244.0.0/16 nhid 35 proto bgp metric 20
+	nexthop via 10.244.255.7 dev xfrm-private0 weight 1 onlink
+	nexthop via 10.244.255.6 dev xfrm-private1 weight 1 onlink
+10.244.255.4 via 10.245.0.1 dev ens4 src 10.245.0.10
+10.244.255.5 via 10.245.0.1 dev ens4 src 10.245.0.10
+10.244.255.6 dev xfrm-private1 scope link src 10.245.254.6
+10.244.255.7 dev xfrm-private0 scope link src 10.245.254.6
+10.245.0.1 dev ens4 proto dhcp scope link src 10.245.0.10 metric 100
+blackhole 10.246.1.0/24 proto static metric 20
+169.254.21.2 dev xfrm-internet scope link src 169.254.21.1
+169.254.22.2 dev xfrm-internet1 scope link src 169.254.21.1
+169.254.169.254 via 10.245.0.1 dev ens4 proto dhcp src 10.245.0.10 metric 100
+local 10.245.0.10 dev ens4 table local proto kernel scope host src 10.245.0.10
+local 10.245.254.6 dev lo table local proto kernel scope host src 10.245.254.6
+local 10.246.1.1 dev lo table local proto kernel scope host src 10.246.1.1
+local 127.0.0.0/8 dev lo table local proto kernel scope host src 127.0.0.1
+local 127.0.0.1 dev lo table local proto kernel scope host src 127.0.0.1
+broadcast 127.255.255.255 dev lo table local proto kernel scope link src 127.0.0.1
+local 169.254.21.1 dev lo table local proto kernel scope host src 169.254.21.1
+::1 dev lo proto kernel metric 256 pref medium
+fe80::/64 dev ens4 proto kernel metric 256 pref medium
+fe80::/64 dev xfrm-internet proto kernel metric 256 pref medium
+fe80::/64 dev xfrm-private0 proto kernel metric 256 pref medium
+fe80::/64 dev xfrm-private1 proto kernel metric 256 pref medium
+fe80::/64 dev xfrm-internet1 proto kernel metric 256 pref medium
+local ::1 dev lo table local proto kernel metric 0 pref medium
+local fe80::bfd:182:121b:d068 dev xfrm-internet1 table local proto kernel metric 0 pref medium
+local fe80::29ea:c745:67dd:d022 dev xfrm-private1 table local proto kernel metric 0 pref medium
+local fe80::4001:aff:fef5:a dev ens4 table local proto kernel metric 0 pref medium
+local fe80::5855:7ece:3e32:4de6 dev xfrm-private0 table local proto kernel metric 0 pref medium
+local fe80::cc80:73f6:a16:2421 dev xfrm-internet table local proto kernel metric 0 pref medium
+multicast ff00::/8 dev ens4 table local proto kernel metric 256 pref medium
+multicast ff00::/8 dev xfrm-internet table local proto kernel metric 256 pref medium
+multicast ff00::/8 dev xfrm-private0 table local proto kernel metric 256 pref medium
+multicast ff00::/8 dev xfrm-private1 table local proto kernel metric 256 pref medium
+multicast ff00::/8 dev xfrm-internet1 table local proto kernel metric 256 pref medium
+exitCode=0
+
+=== ip rule show ===
+2026-11-26T11:04:42+00:00
+0:	from all lookup local
+220:	from all lookup 220
+32766:	from all lookup main
+32767:	from all lookup default
+exitCode=0
+
+=== ip route get 10.244.1.4 from 10.246.1.1 ===
+2026-11-26T11:04:42+00:00
+10.244.1.4 from 10.246.1.1 via 10.244.255.6 dev xfrm-private1 uid 0
+    cache
+exitCode=0
+
+=== vtysh -c show\ bgp\ ipv4\ unicast\ summary ===
+2026-11-26T11:04:42+00:00
+BGP router identifier 10.245.254.6, local AS number 64513 vrf-id 0
+BGP table version 3
+RIB entries 3, using 552 bytes of memory
+Peers 4, using 2892 KiB of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+10.244.255.6    4      65515        10        11        0    0    0 00:05:31            1        1 N/A
+10.244.255.7    4      65515        10        11        0    0    0 00:05:32            1        1 N/A
+169.254.21.2    4      65515        12        11        0    0    0 00:05:31            1        1 N/A
+169.254.22.2    4      65515        12        11        0    0    0 00:05:31            1        1 N/A
+
+Total number of neighbors 4
+exitCode=0
+
+=== vtysh -c show\ bgp\ ipv4\ unicast ===
+2026-11-26T11:04:42+00:00
+BGP table version is 3, local router ID is 10.245.254.6, vrf id 0
+Default local pref 100, local AS 64513
+Status codes:  s suppressed, d damped, h history, * valid, > best, = multipath,
+               i internal, r RIB-failure, S Stale, R Removed
+Nexthop codes: @NNN nexthop's vrf id, < announce-nh-self
+Origin codes:  i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+   Network          Next Hop            Metric LocPrf Weight Path
+*= 10.244.0.0/16    10.244.255.6                  200      0 65515 i
+*                   169.254.22.2                  100      0 65515 i
+*                   169.254.21.2                  100      0 65515 i
+*>                  10.244.255.7                  200      0 65515 i
+*> 10.246.1.0/24    0.0.0.0                  0         32768 i
+
+Displayed  2 routes and 5 total paths
+exitCode=0
+
+=== vtysh -c show\ bgp\ ipv4\ unicast\ 10.244.0.0/16 ===
+2026-11-26T11:04:43+00:00
+BGP routing table entry for 10.244.0.0/16, version 3
+Paths: (4 available, best #4, table default)
+  Not advertised to any peer
+  65515
+    10.244.255.6 from 10.244.255.6 (10.244.255.6)
+      Origin IGP, localpref 200, valid, external, multipath
+      Last update: Thu Nov 26 10:59:16 2026
+  65515
+    169.254.22.2 from 169.254.22.2 (10.244.255.6)
+      Origin IGP, localpref 100, valid, external
+      Last update: Thu Nov 26 10:59:16 2026
+  65515
+    169.254.21.2 from 169.254.21.2 (10.244.255.7)
+      Origin IGP, localpref 100, valid, external
+      Last update: Thu Nov 26 10:59:16 2026
+  65515
+    10.244.255.7 from 10.244.255.7 (10.244.255.7)
+      Origin IGP, localpref 200, valid, external, multipath, best (Local Pref)
+      Last update: Thu Nov 26 10:59:16 2026
+exitCode=0
+
+=== vtysh -c show\ bgp\ ipv4\ unicast\ neighbors ===
+2026-11-26T11:04:43+00:00
+% Command incomplete: show bgp ipv4 unicast neighbors
+exitCode=1
+
+=== vtysh -c show\ route-map ===
+2026-11-26T11:04:43+00:00
+ZEBRA:
+route-map: INTERNET-IN Invoked: 0 Optimization: enabled Processed Change: false
+ permit, sequence 10 Invoked 0
+  Match clauses:
+    ip address prefix-list AZURE-IMPORT
+  Set clauses:
+  Call clause:
+  Action:
+    Exit routemap
+route-map: INTERNET-OUT Invoked: 0 Optimization: enabled Processed Change: false
+ permit, sequence 10 Invoked 0
+  Match clauses:
+    ip address prefix-list LAB-EXPORT
+  Set clauses:
+  Call clause:
+  Action:
+    Exit routemap
+route-map: PRIVATE-IN Invoked: 0 Optimization: enabled Processed Change: false
+ permit, sequence 10 Invoked 0
+  Match clauses:
+    ip address prefix-list AZURE-IMPORT
+  Set clauses:
+  Call clause:
+  Action:
+    Exit routemap
+route-map: PRIVATE-OUT Invoked: 0 Optimization: enabled Processed Change: false
+ permit, sequence 10 Invoked 0
+  Match clauses:
+    ip address prefix-list LAB-EXPORT
+  Set clauses:
+  Call clause:
+  Action:
+    Exit routemap
+BGP:
+route-map: INTERNET-IN Invoked: 4 Optimization: enabled Processed Change: false
+ permit, sequence 10 Invoked 4
+  Match clauses:
+    ip address prefix-list AZURE-IMPORT
+  Set clauses:
+    local-preference 100
+  Call clause:
+  Action:
+    Exit routemap
+route-map: INTERNET-OUT Invoked: 4 Optimization: enabled Processed Change: false
+ permit, sequence 10 Invoked 2
+  Match clauses:
+    ip address prefix-list LAB-EXPORT
+  Set clauses:
+    as-path prepend 64513 64513
+  Call clause:
+  Action:
+    Exit routemap
+route-map: PRIVATE-IN Invoked: 4 Optimization: enabled Processed Change: false
+ permit, sequence 10 Invoked 4
+  Match clauses:
+    ip address prefix-list AZURE-IMPORT
+  Set clauses:
+    local-preference 200
+  Call clause:
+  Action:
+    Exit routemap
+route-map: PRIVATE-OUT Invoked: 4 Optimization: enabled Processed Change: false
+ permit, sequence 10 Invoked 2
+  Match clauses:
+    ip address prefix-list LAB-EXPORT
+  Set clauses:
+  Call clause:
+  Action:
+    Exit routemap
+exitCode=0
+
+=== vtysh -c show\ ip\ prefix-list ===
+2026-11-26T11:04:43+00:00
+ZEBRA: ip prefix-list AZURE-IMPORT: 1 entries
+   seq 10 permit 10.244.0.0/16
+ZEBRA: ip prefix-list LAB-EXPORT: 1 entries
+   seq 10 permit 10.246.1.0/24
+BGP: ip prefix-list AZURE-IMPORT: 1 entries
+   seq 10 permit 10.244.0.0/16
+BGP: ip prefix-list LAB-EXPORT: 1 entries
+   seq 10 permit 10.246.1.0/24
+exitCode=0
+
+=== vtysh -c show\ ip\ route ===
+2026-11-26T11:04:43+00:00
+Codes: K - kernel route, C - connected, S - static, R - RIP,
+       O - OSPF, I - IS-IS, B - BGP, E - EIGRP, N - NHRP,
+       T - Table, v - VNC, V - VNC-Direct, A - Babel, F - PBR,
+       f - OpenFabric,
+       > - selected route, * - FIB route, q - queued, r - rejected, b - backup
+       t - trapped, o - offload failure
+
+K>* 0.0.0.0/0 [0/100] via 10.245.0.1, ens4, src 10.245.0.10, 00:05:34
+K>* 4.165.90.255/32 [0/0] via 10.245.0.1, ens4, src 10.245.0.10, 00:05:34
+K>* 4.165.162.61/32 [0/0] via 10.245.0.1, ens4, src 10.245.0.10, 00:05:34
+B>  10.244.0.0/16 [20/0] via 10.244.255.6 (recursive), weight 1, 00:05:32
+  *                        via 10.244.255.6, xfrm-private1 onlink, weight 1, 00:05:32
+                         via 10.244.255.7 (recursive), weight 1, 00:05:32
+  *                        via 10.244.255.7, xfrm-private0 onlink, weight 1, 00:05:32
+K>* 10.244.255.4/32 [0/0] via 10.245.0.1, ens4, src 10.245.0.10, 00:05:34
+K>* 10.244.255.5/32 [0/0] via 10.245.0.1, ens4, src 10.245.0.10, 00:05:34
+K>* 10.244.255.6/32 [0/0] is directly connected, xfrm-private1, 00:05:34
+K>* 10.244.255.7/32 [0/0] is directly connected, xfrm-private0, 00:05:34
+K>* 10.245.0.1/32 [0/100] is directly connected, ens4, 00:05:34
+C>* 10.245.0.10/32 [0/100] is directly connected, ens4, 00:05:34
+C>* 10.245.254.6/32 is directly connected, lo, 00:05:34
+S>* 10.246.1.0/24 [1/0] unreachable (blackhole), weight 1, 00:05:33
+C>* 10.246.1.1/32 is directly connected, lo, 00:05:34
+C>* 169.254.21.1/32 is directly connected, lo, 00:05:34
+K>* 169.254.21.2/32 [0/0] is directly connected, xfrm-internet, 00:05:34
+K>* 169.254.22.2/32 [0/0] is directly connected, xfrm-internet1, 00:05:34
+K>* 169.254.169.254/32 [0/100] via 10.245.0.1, ens4, src 10.245.0.10, 00:05:34
+exitCode=0
+
+=== vtysh -c show\ bgp\ ipv4\ unicast\ neighbors\ 10.244.255.7\ routes ===
+2026-11-26T11:04:43+00:00
+BGP table version is 3, local router ID is 10.245.254.6, vrf id 0
+Default local pref 100, local AS 64513
+Status codes:  s suppressed, d damped, h history, * valid, > best, = multipath,
+               i internal, r RIB-failure, S Stale, R Removed
+Nexthop codes: @NNN nexthop's vrf id, < announce-nh-self
+Origin codes:  i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+   Network          Next Hop            Metric LocPrf Weight Path
+*> 10.244.0.0/16    10.244.255.7                  200      0 65515 i
+
+Displayed  1 routes and 5 total paths
+exitCode=0
+
+=== vtysh -c show\ bgp\ ipv4\ unicast\ neighbors\ 10.244.255.7\ advertised-routes ===
+2026-11-26T11:04:43+00:00
+BGP table version is 3, local router ID is 10.245.254.6, vrf id 0
+Default local pref 100, local AS 64513
+Status codes:  s suppressed, d damped, h history, * valid, > best, = multipath,
+               i internal, r RIB-failure, S Stale, R Removed
+Nexthop codes: @NNN nexthop's vrf id, < announce-nh-self
+Origin codes:  i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+   Network          Next Hop            Metric LocPrf Weight Path
+*> 10.246.1.0/24    0.0.0.0                  0         32768 i
+
+Total number of prefixes 1
+exitCode=0
+
+=== ip route get 10.244.255.7 ===
+2026-11-26T11:04:44+00:00
+10.244.255.7 dev xfrm-private0 src 10.245.254.6 uid 0
+    cache
+exitCode=0
+
+=== vtysh -c show\ bgp\ ipv4\ unicast\ neighbors\ 10.244.255.6\ routes ===
+2026-11-26T11:04:44+00:00
+BGP table version is 3, local router ID is 10.245.254.6, vrf id 0
+Default local pref 100, local AS 64513
+Status codes:  s suppressed, d damped, h history, * valid, > best, = multipath,
+               i internal, r RIB-failure, S Stale, R Removed
+Nexthop codes: @NNN nexthop's vrf id, < announce-nh-self
+Origin codes:  i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+   Network          Next Hop            Metric LocPrf Weight Path
+*= 10.244.0.0/16    10.244.255.6                  200      0 65515 i
+
+Displayed  1 routes and 5 total paths
+exitCode=0
+
+=== vtysh -c show\ bgp\ ipv4\ unicast\ neighbors\ 10.244.255.6\ advertised-routes ===
+2026-11-26T11:04:44+00:00
+BGP table version is 3, local router ID is 10.245.254.6, vrf id 0
+Default local pref 100, local AS 64513
+Status codes:  s suppressed, d damped, h history, * valid, > best, = multipath,
+               i internal, r RIB-failure, S Stale, R Removed
+Nexthop codes: @NNN nexthop's vrf id, < announce-nh-self
+Origin codes:  i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+   Network          Next Hop            Metric LocPrf Weight Path
+*> 10.246.1.0/24    0.0.0.0                  0         32768 i
+
+Total number of prefixes 1
+exitCode=0
+
+=== ip route get 10.244.255.6 ===
+2026-11-26T11:04:44+00:00
+10.244.255.6 dev xfrm-private1 src 10.245.254.6 uid 0
+    cache
+exitCode=0
+
+=== vtysh -c show\ bgp\ ipv4\ unicast\ neighbors\ 169.254.21.2\ routes ===
+2026-11-26T11:04:44+00:00
+BGP table version is 3, local router ID is 10.245.254.6, vrf id 0
+Default local pref 100, local AS 64513
+Status codes:  s suppressed, d damped, h history, * valid, > best, = multipath,
+               i internal, r RIB-failure, S Stale, R Removed
+Nexthop codes: @NNN nexthop's vrf id, < announce-nh-self
+Origin codes:  i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+   Network          Next Hop            Metric LocPrf Weight Path
+*  10.244.0.0/16    169.254.21.2                  100      0 65515 i
+
+Displayed  1 routes and 5 total paths
+exitCode=0
+
+=== vtysh -c show\ bgp\ ipv4\ unicast\ neighbors\ 169.254.21.2\ advertised-routes ===
+2026-11-26T11:04:44+00:00
+BGP table version is 3, local router ID is 10.245.254.6, vrf id 0
+Default local pref 100, local AS 64513
+Status codes:  s suppressed, d damped, h history, * valid, > best, = multipath,
+               i internal, r RIB-failure, S Stale, R Removed
+Nexthop codes: @NNN nexthop's vrf id, < announce-nh-self
+Origin codes:  i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+   Network          Next Hop            Metric LocPrf Weight Path
+*> 10.246.1.0/24    0.0.0.0                  0         32768 64513 64513 i
+
+Total number of prefixes 1
+exitCode=0
+
+=== ip route get 169.254.21.2 ===
+2026-11-26T11:04:44+00:00
+169.254.21.2 dev xfrm-internet src 169.254.21.1 uid 0
+    cache
+exitCode=0
+
+=== vtysh -c show\ bgp\ ipv4\ unicast\ neighbors\ 169.254.22.2\ routes ===
+2026-11-26T11:04:44+00:00
+BGP table version is 3, local router ID is 10.245.254.6, vrf id 0
+Default local pref 100, local AS 64513
+Status codes:  s suppressed, d damped, h history, * valid, > best, = multipath,
+               i internal, r RIB-failure, S Stale, R Removed
+Nexthop codes: @NNN nexthop's vrf id, < announce-nh-self
+Origin codes:  i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+   Network          Next Hop            Metric LocPrf Weight Path
+*  10.244.0.0/16    169.254.22.2                  100      0 65515 i
+
+Displayed  1 routes and 5 total paths
+exitCode=0
+
+=== vtysh -c show\ bgp\ ipv4\ unicast\ neighbors\ 169.254.22.2\ advertised-routes ===
+2026-11-26T11:04:44+00:00
+BGP table version is 3, local router ID is 10.245.254.6, vrf id 0
+Default local pref 100, local AS 64513
+Status codes:  s suppressed, d damped, h history, * valid, > best, = multipath,
+               i internal, r RIB-failure, S Stale, R Removed
+Nexthop codes: @NNN nexthop's vrf id, < announce-nh-self
+Origin codes:  i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+   Network          Next Hop            Metric LocPrf Weight Path
+*> 10.246.1.0/24    0.0.0.0                  0         32768 64513 64513 i
+
+Total number of prefixes 1
+exitCode=0
+
+=== ip route get 169.254.22.2 ===
+2026-11-26T11:04:44+00:00
+169.254.22.2 dev xfrm-internet1 src 169.254.21.1 uid 0
+    cache
+exitCode=0
+
+=== ip route get 10.244.255.4 ===
+2026-11-26T11:04:44+00:00
+10.244.255.4 via 10.245.0.1 dev ens4 src 10.245.0.10 uid 0
+    cache
+exitCode=0
+
+=== ip route get 10.244.255.5 ===
+2026-11-26T11:04:44+00:00
+10.244.255.5 via 10.245.0.1 dev ens4 src 10.245.0.10 uid 0
+    cache
+exitCode=0
+
+=== ip route get 4.165.162.61 ===
+2026-11-26T11:04:44+00:00
+4.165.162.61 via 10.245.0.1 dev ens4 src 10.245.0.10 uid 0
+    cache
+exitCode=0
+
+=== ip route get 4.165.90.255 ===
+2026-11-26T11:04:44+00:00
+4.165.90.255 via 10.245.0.1 dev ens4 src 10.245.0.10 uid 0
+    cache
+exitCode=0
+
+=== systemctl cat vnbgp-network vnbgp-ipsec strongswan frr ===
+2026-11-26T11:04:44+00:00
+# /etc/systemd/system/vnbgp-network.service
+[Unit]
+Description=VNet VPN lab persistent interfaces and endpoint routes
+Wants=network-online.target
+After=network-online.target
+Before=strongswan.service frr.service
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/vnbgp-network
+RemainAfterExit=yes
+[Install]
+WantedBy=multi-user.target
+
+# /etc/systemd/system/vnbgp-ipsec.service
+[Unit]
+Description=Load persistent VNet VPN lab configuration
+Requires=vnbgp-network.service strongswan.service
+After=vnbgp-network.service strongswan.service
+Before=frr.service
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/swanctl --load-all
+RemainAfterExit=yes
+[Install]
+WantedBy=multi-user.target
+
+# /lib/systemd/system/strongswan.service
+[Unit]
+Description=strongSwan IPsec IKEv1/IKEv2 daemon using swanctl
+After=network-online.target
+
+[Service]
+Type=notify
+ExecStart=/usr/sbin/charon-systemd
+ExecStartPost=/usr/sbin/swanctl --load-all --noprompt
+ExecReload=/usr/sbin/swanctl --reload
+ExecReload=/usr/sbin/swanctl --load-all --noprompt
+Restart=on-abnormal
+
+[Install]
+WantedBy=multi-user.target
+Alias=strongswan-swanctl.service
+
+# /lib/systemd/system/frr.service
+[Unit]
+Description=FRRouting
+Documentation=https://frrouting.readthedocs.io/en/latest/setup.html
+Wants=network.target
+After=network-pre.target systemd-sysctl.service
+Before=network.target
+OnFailure=heartbeat-failed@%n
+
+[Service]
+Nice=-5
+Type=forking
+NotifyAccess=all
+StartLimitInterval=3m
+StartLimitBurst=3
+TimeoutSec=2m
+WatchdogSec=60s
+RestartSec=5
+Restart=on-abnormal
+LimitNOFILE=1024
+PIDFile=/var/run/frr/watchfrr.pid
+ExecStart=/usr/lib/frr/frrinit.sh start
+ExecStop=/usr/lib/frr/frrinit.sh stop
+ExecReload=/usr/lib/frr/frrinit.sh reload
+
+[Install]
+WantedBy=multi-user.target
+exitCode=0

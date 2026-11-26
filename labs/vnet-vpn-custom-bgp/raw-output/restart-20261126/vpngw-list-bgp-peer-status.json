@@ -1,0 +1,143 @@
+{
+  "atUtc": "2026-11-26T11:02:04.354151+00:00",
+  "completedAtUtc": "2026-11-26T11:02:20.602350+00:00",
+  "command": [
+    "az.cmd",
+    "network",
+    "vnet-gateway",
+    "list-bgp-peer-status",
+    "-g",
+    "rg-vnbgp-20261124",
+    "-n",
+    "vpngw-vnbgp-20261124",
+    "--subscription",
+    "<LAB_SUBSCRIPTION>",
+    "-o",
+    "json",
+    "--only-show-errors"
+  ],
+  "output": {
+    "value": [
+      {
+        "asn": 64513,
+        "connectedDuration": "00:02:58.4790021",
+        "localAddress": "10.244.255.7",
+        "messagesReceived": 9,
+        "messagesSent": 8,
+        "neighbor": "10.245.254.6",
+        "routesReceived": 1,
+        "state": "Connected"
+      },
+      {
+        "asn": 64513,
+        "connectedDuration": "00:02:57.7021126",
+        "localAddress": "10.244.255.7",
+        "messagesReceived": 9,
+        "messagesSent": 10,
+        "neighbor": "169.254.21.1",
+        "routesReceived": 1,
+        "state": "Connected"
+      },
+      {
+        "asn": 65515,
+        "connectedDuration": "1.01:26:07.4689866",
+        "localAddress": "10.244.255.7",
+        "messagesReceived": 1778,
+        "messagesSent": 1775,
+        "neighbor": "10.244.255.13",
+        "routesReceived": 1,
+        "state": "Connected"
+      },
+      {
+        "asn": 65515,
+        "connectedDuration": "1.01:25:49.1023196",
+        "localAddress": "10.244.255.7",
+        "messagesReceived": 1779,
+        "messagesSent": 1773,
+        "neighbor": "10.244.255.12",
+        "routesReceived": 1,
+        "state": "Connected"
+      },
+      {
+        "asn": 65515,
+        "localAddress": "10.244.255.7",
+        "messagesReceived": 0,
+        "messagesSent": 0,
+        "neighbor": "10.244.255.7",
+        "routesReceived": 0,
+        "state": "Unknown"
+      },
+      {
+        "asn": 65515,
+        "connectedDuration": "1.15:30:58.4371071",
+        "localAddress": "10.244.255.7",
+        "messagesReceived": 2747,
+        "messagesSent": 2753,
+        "neighbor": "10.244.255.6",
+        "routesReceived": 3,
+        "state": "Connected"
+      },
+      {
+        "asn": 64513,
+        "connectedDuration": "00:02:57.6443116",
+        "localAddress": "10.244.255.6",
+        "messagesReceived": 10,
+        "messagesSent": 10,
+        "neighbor": "10.245.254.6",
+        "routesReceived": 1,
+        "state": "Connected"
+      },
+      {
+        "asn": 64513,
+        "connectedDuration": "00:02:57.7231140",
+        "localAddress": "10.244.255.6",
+        "messagesReceived": 12,
+        "messagesSent": 13,
+        "neighbor": "169.254.21.1",
+        "routesReceived": 1,
+        "state": "Connected"
+      },
+      {
+        "asn": 65515,
+        "connectedDuration": "1.01:26:07.4791114",
+        "localAddress": "10.244.255.6",
+        "messagesReceived": 1768,
+        "messagesSent": 1764,
+        "neighbor": "10.244.255.13",
+        "routesReceived": 1,
+        "state": "Connected"
+      },
+      {
+        "asn": 65515,
+        "connectedDuration": "1.01:25:49.0998386",
+        "localAddress": "10.244.255.6",
+        "messagesReceived": 1778,
+        "messagesSent": 1773,
+        "neighbor": "10.244.255.12",
+        "routesReceived": 1,
+        "state": "Connected"
+      },
+      {
+        "asn": 65515,
+        "connectedDuration": "1.15:30:58.4516197",
+        "localAddress": "10.244.255.6",
+        "messagesReceived": 2755,
+        "messagesSent": 2745,
+        "neighbor": "10.244.255.7",
+        "routesReceived": 3,
+        "state": "Connected"
+      },
+      {
+        "asn": 65515,
+        "localAddress": "10.244.255.6",
+        "messagesReceived": 0,
+        "messagesSent": 0,
+        "neighbor": "10.244.255.6",
+        "routesReceived": 0,
+        "state": "Unknown"
+      }
+    ]
+  },
+  "collectionStatus": "OK",
+  "processExitCode": 0
+}

@@ -1,0 +1,148 @@
+2026-11-26T11:02:06+00:00
+ 11:02:06 up 3 min,  0 users,  load average: 0.05, 0.11, 0.05
+=== vnbgp-network ===
+enabled
+active
+Result=success
+ExecMainStatus=0
+ActiveState=active
+SubState=exited
+=== vnbgp-ipsec ===
+enabled
+active
+Result=success
+ExecMainStatus=0
+ActiveState=active
+SubState=exited
+=== strongswan ===
+enabled
+active
+Result=success
+ExecMainStatus=0
+ActiveState=active
+SubState=running
+=== frr ===
+enabled
+active
+Result=success
+ExecMainStatus=0
+ActiveState=active
+SubState=running
+=== Boot dependency errors ===
+Nov 26 10:58:55 cpe-vnbgp-20261124 kernel: [Firmware Bug]: TSC doesn't count with P0 frequency!
+Nov 26 10:58:55 cpe-vnbgp-20261124 kernel: i8042: Warning: Keylock active
+Nov 26 10:58:55 cpe-vnbgp-20261124 kernel: device-mapper: core: CONFIG_IMA_DISABLE_HTABLE is disabled. Duplicate IMA measurements will not be recorded in the IMA log.
+Nov 26 10:58:55 cpe-vnbgp-20261124 kernel: amd_pstate: the _CPC object is not present in SBIOS or ACPI disabled
+Nov 26 10:58:55 cpe-vnbgp-20261124 kernel: block sda: the capability attribute has been deprecated.
+Nov 26 10:58:55 cpe-vnbgp-20261124 systemd[1]: Configuration file /run/systemd/system/netplan-ovs-cleanup.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+Nov 26 10:58:55 cpe-vnbgp-20261124 systemd[1]: Configuration file /etc/systemd/system/vnbgp-network.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+Nov 26 10:58:55 cpe-vnbgp-20261124 systemd[1]: Configuration file /etc/systemd/system/vnbgp-ipsec.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+Nov 26 10:58:55 cpe-vnbgp-20261124 systemd[1]: /lib/systemd/system/snapd.service:23: Unknown key name 'RestartMode' in section 'Service', ignoring.
+Nov 26 10:58:55 cpe-vnbgp-20261124 systemd[1]: strongswan.service: Found ordering cycle on network-online.target/start
+Nov 26 10:58:55 cpe-vnbgp-20261124 systemd[1]: strongswan.service: Found dependency on network.target/start
+Nov 26 10:58:55 cpe-vnbgp-20261124 systemd[1]: strongswan.service: Found dependency on frr.service/start
+Nov 26 10:58:55 cpe-vnbgp-20261124 systemd[1]: strongswan.service: Found dependency on vnbgp-ipsec.service/start
+Nov 26 10:58:55 cpe-vnbgp-20261124 systemd[1]: strongswan.service: Found dependency on strongswan.service/start
+Nov 26 10:58:55 cpe-vnbgp-20261124 systemd[1]: strongswan.service: Job network-online.target/start deleted to break ordering cycle starting with strongswan.service/start
+Nov 26 10:58:56 cpe-vnbgp-20261124 systemd-udevd[186]: eth0: Could not set WakeOnLan to off, ignoring: Operation not supported
+Nov 26 10:58:56 cpe-vnbgp-20261124 systemd-udevd[190]: ens4: Could not set WakeOnLan to off, ignoring: Operation not supported
+Nov 26 10:58:59 cpe-vnbgp-20261124 kernel: kauditd_printk_skb: 16 callbacks suppressed
+Nov 26 10:59:00 cpe-vnbgp-20261124 dhclient[341]: execve (/bin/true, ...): Permission denied
+Nov 26 10:59:00 cpe-vnbgp-20261124 dhclient[342]: execve (/bin/true, ...): Permission denied
+Nov 26 10:59:00 cpe-vnbgp-20261124 dhclient[358]: execve (/bin/true, ...): Permission denied
+Nov 26 10:59:00 cpe-vnbgp-20261124 dhclient[359]: execve (/bin/true, ...): Permission denied
+Nov 26 10:59:02 cpe-vnbgp-20261124 systemd[1]: network-online.target: Found ordering cycle on network.target/start
+Nov 26 10:59:02 cpe-vnbgp-20261124 systemd[1]: network-online.target: Found dependency on frr.service/start
+Nov 26 10:59:02 cpe-vnbgp-20261124 systemd[1]: network-online.target: Found dependency on vnbgp-ipsec.service/start
+Nov 26 10:59:02 cpe-vnbgp-20261124 systemd[1]: network-online.target: Found dependency on strongswan.service/start
+Nov 26 10:59:02 cpe-vnbgp-20261124 systemd[1]: network-online.target: Found dependency on network-online.target/start
+Nov 26 10:59:02 cpe-vnbgp-20261124 systemd[1]: network-online.target: Job network-online.target/start deleted to break ordering cycle starting with network-online.target/start
+Nov 26 10:59:06 cpe-vnbgp-20261124 kernel: kauditd_printk_skb: 15 callbacks suppressed
+Nov 26 10:59:10 cpe-vnbgp-20261124 watchfrr.sh[783]: Cannot stop zebra: pid file not found
+Nov 26 10:59:10 cpe-vnbgp-20261124 watchfrr.sh[781]: Cannot stop staticd: pid file not found
+Nov 26 10:59:10 cpe-vnbgp-20261124 watchfrr.sh[785]: Cannot stop bgpd: pid file not found
+Nov 26 10:59:24 cpe-vnbgp-20261124 systemd[1]: Configuration file /run/systemd/system/netplan-ovs-cleanup.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+Nov 26 10:59:24 cpe-vnbgp-20261124 systemd[1]: Configuration file /etc/systemd/system/vnbgp-network.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+Nov 26 10:59:24 cpe-vnbgp-20261124 systemd[1]: Configuration file /etc/systemd/system/vnbgp-ipsec.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+Nov 26 10:59:24 cpe-vnbgp-20261124 systemd[1]: /lib/systemd/system/snapd.service:23: Unknown key name 'RestartMode' in section 'Service', ignoring.
+Nov 26 10:59:24 cpe-vnbgp-20261124 systemd[1]: Configuration file /run/systemd/system/netplan-ovs-cleanup.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+Nov 26 10:59:24 cpe-vnbgp-20261124 systemd[1]: Configuration file /etc/systemd/system/vnbgp-network.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+Nov 26 10:59:24 cpe-vnbgp-20261124 systemd[1]: Configuration file /etc/systemd/system/vnbgp-ipsec.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+Nov 26 10:59:25 cpe-vnbgp-20261124 systemd[1]: /lib/systemd/system/snapd.service:23: Unknown key name 'RestartMode' in section 'Service', ignoring.
+Nov 26 10:59:25 cpe-vnbgp-20261124 systemd[1]: Configuration file /run/systemd/system/netplan-ovs-cleanup.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+Nov 26 10:59:25 cpe-vnbgp-20261124 systemd[1]: Configuration file /etc/systemd/system/vnbgp-network.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+Nov 26 10:59:25 cpe-vnbgp-20261124 systemd[1]: Configuration file /etc/systemd/system/vnbgp-ipsec.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+Nov 26 10:59:25 cpe-vnbgp-20261124 systemd[1]: /lib/systemd/system/snapd.service:23: Unknown key name 'RestartMode' in section 'Service', ignoring.
+Nov 26 10:59:25 cpe-vnbgp-20261124 systemd[1]: Configuration file /run/systemd/system/netplan-ovs-cleanup.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+Nov 26 10:59:25 cpe-vnbgp-20261124 systemd[1]: Configuration file /etc/systemd/system/vnbgp-network.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+Nov 26 10:59:25 cpe-vnbgp-20261124 systemd[1]: Configuration file /etc/systemd/system/vnbgp-ipsec.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+Nov 26 10:59:25 cpe-vnbgp-20261124 systemd[1]: /lib/systemd/system/snapd.service:23: Unknown key name 'RestartMode' in section 'Service', ignoring.
+Nov 26 11:02:06 cpe-vnbgp-20261124 systemd[1]: Configuration file /etc/systemd/system/vnbgp-network.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+Nov 26 11:02:06 cpe-vnbgp-20261124 systemd[1]: Configuration file /etc/systemd/system/vnbgp-network.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+Nov 26 11:02:06 cpe-vnbgp-20261124 systemd[1]: Configuration file /etc/systemd/system/vnbgp-ipsec.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+Nov 26 11:02:06 cpe-vnbgp-20261124 systemd[1]: Configuration file /etc/systemd/system/vnbgp-ipsec.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+=== IPsec SAs ===
+internet1: #5, ESTABLISHED, IKEv2, b5b458aa272704dc_i* b0d0b28dab32c7ef_r
+  local  '34.51.172.149' @ 10.245.0.10[4500]
+  remote '4.165.90.255' @ 4.165.90.255[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 179s ago, rekeying in 13138s
+  internet1: #2, reqid 2, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 179s ago, rekeying in 2041s, expires in 3421s
+    in  c7c221ec (-|0x00000068),   1069 bytes,    14 packets,    14s ago
+    out c21a99ac (-|0x00000068),   1220 bytes,    17 packets,    14s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+private1: #4, ESTABLISHED, IKEv2, 1a45f7ccfff0f25c_i* 42506f3bb4093ebb_r
+  local  '10.245.0.10' @ 10.245.0.10[4500]
+  remote '10.244.255.5' @ 10.244.255.5[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 179s ago, rekeying in 13536s
+  private1: #3, reqid 3, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 179s ago, rekeying in 2056s, expires in 3421s
+    in  c996a8fc (-|0x00000067),    967 bytes,    14 packets,    29s ago
+    out 9dde02f4 (-|0x00000067),   1260 bytes,    19 packets,    29s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+private0: #3, ESTABLISHED, IKEv2, 3d7f371d48035d78_i* 0bb71b69fb7d10bc_r
+  local  '10.245.0.10' @ 10.245.0.10[4500]
+  remote '10.244.255.4' @ 10.244.255.4[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 179s ago, rekeying in 12930s
+  private0: #4, reqid 4, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 179s ago, rekeying in 1929s, expires in 3421s
+    in  c0a6119c (-|0x00000066),    763 bytes,    13 packets,    11s ago
+    out c4b90e74 (-|0x00000066),    964 bytes,    16 packets,    11s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+internet: #2, ESTABLISHED, IKEv2, e18b845866337862_i* def85ebc4b662cdd_r
+  local  '34.51.172.149' @ 10.245.0.10[4500]
+  remote '4.165.162.61' @ 4.165.162.61[4500]
+  AES_CBC-256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/MODP_1024
+  established 179s ago, rekeying in 13774s
+  internet: #1, reqid 1, INSTALLED, TUNNEL-in-UDP, ESP:AES_CBC-256/HMAC_SHA2_256_128
+    installed 179s ago, rekeying in 2207s, expires in 3421s
+    in  c185762a (-|0x00000065),   1225 bytes,    17 packets,    16s ago
+    out e9fbd048 (-|0x00000065),   1220 bytes,    17 packets,    16s ago
+    local  0.0.0.0/0
+    remote 0.0.0.0/0
+=== BGP summary ===
+BGP router identifier 10.245.254.6, local AS number 64513 vrf-id 0
+BGP table version 3
+RIB entries 3, using 552 bytes of memory
+Peers 4, using 2892 KiB of memory
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+10.244.255.6    4      65515         7         8        0    0    0 00:02:55            1        1 N/A
+10.244.255.7    4      65515         7         8        0    0    0 00:02:56            1        1 N/A
+169.254.21.2    4      65515         9         8        0    0    0 00:02:55            1        1 N/A
+169.254.22.2    4      65515         9         8        0    0    0 00:02:55            1        1 N/A
+
+Total number of neighbors 4
+=== Addresses ===
+lo               UNKNOWN        127.0.0.1/8 10.245.254.6/32 10.246.1.1/32 169.254.21.1/32 ::1/128
+ens4             UP             10.245.0.10/32 metric 100 fe80::4001:aff:fef5:a/64
+xfrm-internet@ens4 UNKNOWN        fe80::cc80:73f6:a16:2421/64
+xfrm-private0@ens4 UNKNOWN        fe80::5855:7ece:3e32:4de6/64
+xfrm-private1@ens4 UNKNOWN        fe80::29ea:c745:67dd:d022/64
+xfrm-internet1@ens4 UNKNOWN        fe80::bfd:182:121b:d068/64

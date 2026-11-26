@@ -1,0 +1,65 @@
+{
+  "atUtc": "2026-11-26T11:02:36.833321+00:00",
+  "completedAtUtc": "2026-11-26T11:02:53.032529+00:00",
+  "command": [
+    "az.cmd",
+    "network",
+    "vnet-gateway",
+    "list-bgp-peer-status",
+    "-g",
+    "rg-vnbgp-20261124",
+    "-n",
+    "ergw-vnbgp-20261124",
+    "--subscription",
+    "<LAB_SUBSCRIPTION>",
+    "-o",
+    "json",
+    "--only-show-errors"
+  ],
+  "output": {
+    "value": [
+      {
+        "asn": 12076,
+        "connectedDuration": "09:21:10.8330917",
+        "localAddress": "10.244.255.13",
+        "messagesReceived": 3423,
+        "messagesSent": 3841,
+        "neighbor": "10.244.255.8",
+        "routesReceived": 4,
+        "state": "Connected"
+      },
+      {
+        "asn": 12076,
+        "connectedDuration": "09:21:05.8996648",
+        "localAddress": "10.244.255.13",
+        "messagesReceived": 3421,
+        "messagesSent": 3840,
+        "neighbor": "10.244.255.9",
+        "routesReceived": 4,
+        "state": "Connected"
+      },
+      {
+        "asn": 65515,
+        "connectedDuration": "1.01:26:40.4407458",
+        "localAddress": "10.244.255.13",
+        "messagesReceived": 1777,
+        "messagesSent": 1776,
+        "neighbor": "10.244.255.7",
+        "routesReceived": 1,
+        "state": "Connected"
+      },
+      {
+        "asn": 65515,
+        "connectedDuration": "1.01:26:40.4251209",
+        "localAddress": "10.244.255.13",
+        "messagesReceived": 1767,
+        "messagesSent": 1767,
+        "neighbor": "10.244.255.6",
+        "routesReceived": 1,
+        "state": "Connected"
+      }
+    ]
+  },
+  "collectionStatus": "OK",
+  "processExitCode": 0
+}

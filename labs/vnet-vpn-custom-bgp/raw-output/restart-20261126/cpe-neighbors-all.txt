@@ -1,0 +1,292 @@
+=== vtysh -c show bgp neighbors ===
+2026-11-26T11:08:59+00:00
+BGP neighbor is 10.244.255.6, remote AS 65515, local AS 64513, external link
+  BGP version 4, remote router ID 10.244.255.6, local router ID 10.245.254.6
+  BGP state = Established, up for 00:09:47
+  Last read 00:00:24, Last write 00:00:47
+  Hold time is 180, keepalive interval is 60 seconds
+  Neighbor capabilities:
+    4 Byte AS: advertised and received
+    Extended Message: advertised
+    AddPath:
+      IPv4 Unicast: RX advertised
+    Route refresh: advertised and received(new)
+    Enhanced Route Refresh: advertised
+    Address Family IPv4 Unicast: advertised and received
+    Address Family IPv6 Unicast: received
+    Hostname Capability: advertised (name: cpe-vnbgp-20261124,domain name: n/a) not received
+    Graceful Restart Capability: advertised and received
+      Remote Restart timer is 120 seconds
+      Address families by peer:
+        IPv4 Unicast(not preserved)
+  Graceful restart information:
+    End-of-RIB send: IPv4 Unicast
+    End-of-RIB received:
+    Local GR Mode: Helper*
+    Remote GR Mode: Restart
+    R bit: False
+    Timers:
+      Configured Restart Time(sec): 120
+      Received Restart Time(sec): 120
+    IPv4 Unicast:
+      F bit: False
+      End-of-RIB sent: Yes
+      End-of-RIB sent after update: No
+      End-of-RIB received: No
+      Timers:
+        Configured Stale Path Time(sec): 360
+  Message statistics:
+    Inq depth is 0
+    Outq depth is 0
+                         Sent       Rcvd
+    Opens:                  1          1
+    Notifications:          0          0
+    Updates:                3          2
+    Keepalives:            10         12
+    Route Refresh:          1          0
+    Capability:             0          0
+    Total:                 15         15
+  Minimum time between advertisement runs is 0 seconds
+  Update source is 10.245.254.6
+
+ For address family: IPv4 Unicast
+  Update group 1, subgroup 1
+  Packet Queue length 0
+  Community attribute sent to this neighbor(all)
+  Inbound path policy configured
+  Outbound path policy configured
+  Route map for incoming advertisements is *PRIVATE-IN
+  Route map for outgoing advertisements is *PRIVATE-OUT
+  1 accepted prefixes
+
+  Connections established 1; dropped 0
+  Last reset 00:09:48,  Waiting for peer OPEN
+  External BGP neighbor may be up to 5 hops away.
+Local host: 10.245.254.6, Local port: 34963
+Foreign host: 10.244.255.6, Foreign port: 179
+Nexthop: 10.245.254.6
+Nexthop global: ::
+Nexthop local: ::
+BGP connection: non shared network
+BGP Connect Retry Timer in Seconds: 120
+Estimated round trip time: 90 ms
+Read thread: on  Write thread: on  FD used: 26
+
+BGP neighbor is 10.244.255.7, remote AS 65515, local AS 64513, external link
+  BGP version 4, remote router ID 10.244.255.7, local router ID 10.245.254.6
+  BGP state = Established, up for 00:09:48
+  Last read 00:00:44, Last write 00:00:48
+  Hold time is 180, keepalive interval is 60 seconds
+  Neighbor capabilities:
+    4 Byte AS: advertised and received
+    Extended Message: advertised
+    AddPath:
+      IPv4 Unicast: RX advertised
+    Route refresh: advertised and received(new)
+    Enhanced Route Refresh: advertised
+    Address Family IPv4 Unicast: advertised and received
+    Address Family IPv6 Unicast: received
+    Hostname Capability: advertised (name: cpe-vnbgp-20261124,domain name: n/a) not received
+    Graceful Restart Capability: advertised and received
+      Remote Restart timer is 120 seconds
+      Address families by peer:
+        IPv4 Unicast(not preserved)
+  Graceful restart information:
+    End-of-RIB send: IPv4 Unicast
+    End-of-RIB received:
+    Local GR Mode: Helper*
+    Remote GR Mode: Restart
+    R bit: False
+    Timers:
+      Configured Restart Time(sec): 120
+      Received Restart Time(sec): 120
+    IPv4 Unicast:
+      F bit: False
+      End-of-RIB sent: Yes
+      End-of-RIB sent after update: No
+      End-of-RIB received: No
+      Timers:
+        Configured Stale Path Time(sec): 360
+  Message statistics:
+    Inq depth is 0
+    Outq depth is 0
+                         Sent       Rcvd
+    Opens:                  1          1
+    Notifications:          0          0
+    Updates:                3          2
+    Keepalives:            10         11
+    Route Refresh:          1          0
+    Capability:             0          0
+    Total:                 15         14
+  Minimum time between advertisement runs is 0 seconds
+  Update source is 10.245.254.6
+
+ For address family: IPv4 Unicast
+  Update group 1, subgroup 1
+  Packet Queue length 0
+  Community attribute sent to this neighbor(all)
+  Inbound path policy configured
+  Outbound path policy configured
+  Route map for incoming advertisements is *PRIVATE-IN
+  Route map for outgoing advertisements is *PRIVATE-OUT
+  1 accepted prefixes
+
+  Connections established 1; dropped 0
+  Last reset 00:09:48,  Waiting for peer OPEN
+  External BGP neighbor may be up to 5 hops away.
+Local host: 10.245.254.6, Local port: 179
+Foreign host: 10.244.255.7, Foreign port: 62206
+Nexthop: 10.245.254.6
+Nexthop global: ::
+Nexthop local: ::
+BGP connection: non shared network
+BGP Connect Retry Timer in Seconds: 120
+Estimated round trip time: 92 ms
+Read thread: on  Write thread: on  FD used: 24
+
+BGP neighbor is 169.254.21.2, remote AS 65515, local AS 64513, external link
+  BGP version 4, remote router ID 10.244.255.7, local router ID 10.245.254.6
+  BGP state = Established, up for 00:09:47
+  Last read 00:00:17, Last write 00:00:47
+  Hold time is 180, keepalive interval is 60 seconds
+  Neighbor capabilities:
+    4 Byte AS: advertised and received
+    Extended Message: advertised
+    AddPath:
+      IPv4 Unicast: RX advertised
+    Route refresh: advertised and received(new)
+    Enhanced Route Refresh: advertised
+    Address Family IPv4 Unicast: advertised and received
+    Address Family IPv6 Unicast: received
+    Hostname Capability: advertised (name: cpe-vnbgp-20261124,domain name: n/a) not received
+    Graceful Restart Capability: advertised and received
+      Remote Restart timer is 120 seconds
+      Address families by peer:
+        IPv4 Unicast(not preserved)
+  Graceful restart information:
+    End-of-RIB send: IPv4 Unicast
+    End-of-RIB received:
+    Local GR Mode: Helper*
+    Remote GR Mode: Restart
+    R bit: False
+    Timers:
+      Configured Restart Time(sec): 120
+      Received Restart Time(sec): 120
+    IPv4 Unicast:
+      F bit: False
+      End-of-RIB sent: Yes
+      End-of-RIB sent after update: No
+      End-of-RIB received: No
+      Timers:
+        Configured Stale Path Time(sec): 360
+  Message statistics:
+    Inq depth is 0
+    Outq depth is 0
+                         Sent       Rcvd
+    Opens:                  1          1
+    Notifications:          0          0
+    Updates:                3          4
+    Keepalives:            10         12
+    Route Refresh:          1          0
+    Capability:             0          0
+    Total:                 15         17
+  Minimum time between advertisement runs is 0 seconds
+  Update source is 169.254.21.1
+
+ For address family: IPv4 Unicast
+  Update group 2, subgroup 2
+  Packet Queue length 0
+  Community attribute sent to this neighbor(all)
+  Inbound path policy configured
+  Outbound path policy configured
+  Route map for incoming advertisements is *INTERNET-IN
+  Route map for outgoing advertisements is *INTERNET-OUT
+  1 accepted prefixes
+
+  Connections established 1; dropped 0
+  Last reset 00:09:48,  Waiting for peer OPEN
+  External BGP neighbor may be up to 5 hops away.
+Local host: 169.254.21.1, Local port: 41571
+Foreign host: 169.254.21.2, Foreign port: 179
+Nexthop: 169.254.21.1
+Nexthop global: ::
+Nexthop local: ::
+BGP connection: non shared network
+BGP Connect Retry Timer in Seconds: 120
+Estimated round trip time: 24 ms
+Read thread: on  Write thread: on  FD used: 25
+
+BGP neighbor is 169.254.22.2, remote AS 65515, local AS 64513, external link
+  BGP version 4, remote router ID 10.244.255.6, local router ID 10.245.254.6
+  BGP state = Established, up for 00:09:47
+  Last read 00:00:27, Last write 00:00:47
+  Hold time is 180, keepalive interval is 60 seconds
+  Neighbor capabilities:
+    4 Byte AS: advertised and received
+    Extended Message: advertised
+    AddPath:
+      IPv4 Unicast: RX advertised
+    Route refresh: advertised and received(new)
+    Enhanced Route Refresh: advertised
+    Address Family IPv4 Unicast: advertised and received
+    Address Family IPv6 Unicast: received
+    Hostname Capability: advertised (name: cpe-vnbgp-20261124,domain name: n/a) not received
+    Graceful Restart Capability: advertised and received
+      Remote Restart timer is 120 seconds
+      Address families by peer:
+        IPv4 Unicast(not preserved)
+  Graceful restart information:
+    End-of-RIB send: IPv4 Unicast
+    End-of-RIB received:
+    Local GR Mode: Helper*
+    Remote GR Mode: Restart
+    R bit: False
+    Timers:
+      Configured Restart Time(sec): 120
+      Received Restart Time(sec): 120
+    IPv4 Unicast:
+      F bit: False
+      End-of-RIB sent: Yes
+      End-of-RIB sent after update: No
+      End-of-RIB received: No
+      Timers:
+        Configured Stale Path Time(sec): 360
+  Message statistics:
+    Inq depth is 0
+    Outq depth is 0
+                         Sent       Rcvd
+    Opens:                  1          1
+    Notifications:          0          0
+    Updates:                3          4
+    Keepalives:            10         11
+    Route Refresh:          1          0
+    Capability:             0          0
+    Total:                 15         16
+  Minimum time between advertisement runs is 0 seconds
+  Update source is 169.254.21.1
+
+ For address family: IPv4 Unicast
+  Update group 2, subgroup 2
+  Packet Queue length 0
+  Community attribute sent to this neighbor(all)
+  Inbound path policy configured
+  Outbound path policy configured
+  Route map for incoming advertisements is *INTERNET-IN
+  Route map for outgoing advertisements is *INTERNET-OUT
+  1 accepted prefixes
+
+  Connections established 1; dropped 0
+  Last reset 00:09:48,  Waiting for peer OPEN
+  External BGP neighbor may be up to 5 hops away.
+Local host: 169.254.21.1, Local port: 36851
+Foreign host: 169.254.22.2, Foreign port: 179
+Nexthop: 169.254.21.1
+Nexthop global: ::
+Nexthop local: ::
+BGP connection: non shared network
+BGP Connect Retry Timer in Seconds: 120
+Estimated round trip time: 44 ms
+Read thread: on  Write thread: on  FD used: 27
+
+
+exitCode=0

@@ -1,0 +1,28 @@
+{
+  "atUtc": "2026-11-26T11:04:39.719762+00:00",
+  "completedAtUtc": "2026-11-26T11:04:45.115921+00:00",
+  "command": [
+    "wsl.exe",
+    "--exec",
+    "ssh",
+    "-T",
+    "-oBatchMode=yes",
+    "-oConnectTimeout=30",
+    "-oStrictHostKeyChecking=yes",
+    "-oHostKeyAlgorithms=ssh-ed25519",
+    "-oUserKnownHostsFile=/dev/null",
+    "-oGlobalKnownHostsFile=/dev/null",
+    "-oKnownHostsCommand=/usr/bin/python3 <PINNED_HOST_KEY_VERIFIER> %H %t %K",
+    "-i",
+    "<EXISTING_OPERATOR_KEY>",
+    "-oProxyCommand=gcloud compute start-iap-tunnel cpe-vnbgp-20261124 22 --listen-on-stdin --project=gcp-vnbgp-20261124 --zone=europe-north2-a --verbosity=error",
+    "azurelabuser@cpe-vnbgp-20261124",
+    "sudo bash -s"
+  ],
+  "stdinScript": "set +e\nrun() { printf '\\n=== '; printf '%q ' \"$@\"; echo '==='; date -u --iso-8601=seconds; \"$@\"; rc=$?; echo \"exitCode=$rc\"; }\nrun swanctl --list-conns\nrun swanctl --list-sas\nrun ip -d link show type xfrm\nrun ip route show table all\nrun ip rule show\nrun ip route get 10.244.1.4 from 10.246.1.1\nrun vtysh -c 'show bgp ipv4 unicast summary'\nrun vtysh -c 'show bgp ipv4 unicast'\nrun vtysh -c 'show bgp ipv4 unicast 10.244.0.0/16'\nrun vtysh -c 'show bgp ipv4 unicast neighbors'\nrun vtysh -c 'show route-map'\nrun vtysh -c 'show ip prefix-list'\nrun vtysh -c 'show ip route'\nfor peer in 10.244.255.7 10.244.255.6 169.254.21.2 169.254.22.2; do\n run vtysh -c \"show bgp ipv4 unicast neighbors $peer routes\"\n run vtysh -c \"show bgp ipv4 unicast neighbors $peer advertised-routes\"\n run ip route get \"$peer\"\ndone\nfor outer in 10.244.255.4 10.244.255.5 4.165.162.61 4.165.90.255; do run ip route get \"$outer\"; done\nrun systemctl cat vnbgp-network vnbgp-ipsec strongswan frr\n",
+  "collectionStatus": "OK",
+  "processExitCode": 0,
+  "outputFile": "cpe-tunnels-bgp-routes.txt",
+  "textNormalization": "LF line endings; trailing spaces removed.",
+  "assessment": "One unsupported 'show bgp ipv4 unicast neighbors' command is preserved with exitCode=1; full details captured successfully with 'show bgp neighbors' in cpe-neighbors-all.txt."
+}

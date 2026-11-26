@@ -1,0 +1,78 @@
+{
+  "atUtc": "2026-11-26T11:03:23.730664+00:00",
+  "completedAtUtc": "2026-11-26T11:03:50.636914+00:00",
+  "command": [
+    "az.cmd",
+    "network",
+    "express-route",
+    "list-route-tables",
+    "-g",
+    "rg-vnbgp-20261124",
+    "-n",
+    "er-vnbgp-20261124",
+    "--path",
+    "secondary",
+    "--peering-name",
+    "AzurePrivatePeering",
+    "--subscription",
+    "<LAB_SUBSCRIPTION>",
+    "-o",
+    "json",
+    "--only-show-errors"
+  ],
+  "output": {
+    "value": [
+      {
+        "locPrf": "100",
+        "network": "10.244.0.0/16",
+        "nextHop": "10.244.255.13*",
+        "path": "65515 I\n                    ",
+        "weight": 0
+      },
+      {
+        "locPrf": "100",
+        "network": "10.244.0.0/16",
+        "nextHop": "10.244.255.12",
+        "path": "65515 I\n                    ",
+        "weight": 0
+      },
+      {
+        "locPrf": "100",
+        "network": "10.244.0.0/16",
+        "nextHop": "169.254.51.77",
+        "path": "65060 12076 I\n                    ",
+        "weight": 0
+      },
+      {
+        "locPrf": "100",
+        "network": "10.245.0.10/32",
+        "nextHop": "169.254.51.77",
+        "path": "65060 16550 ?\n                    ",
+        "weight": 0
+      },
+      {
+        "locPrf": "100",
+        "network": "169.254.51.72/30",
+        "nextHop": "169.254.51.77",
+        "path": "65060 I\n                    ",
+        "weight": 0
+      },
+      {
+        "locPrf": "100",
+        "network": "169.254.51.76/30",
+        "nextHop": "169.254.51.77",
+        "path": "65060 I\n                    ",
+        "weight": 0
+      },
+      {
+        "locPrf": "100",
+        "network": "169.254.149.232/29",
+        "nextHop": "169.254.51.77",
+        "path": "65060 I\n                    ",
+        "weight": 0
+      }
+    ]
+  },
+  "collectionStatus": "OK",
+  "processExitCode": 0
+}

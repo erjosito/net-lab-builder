@@ -1,0 +1,26 @@
+{
+  "atUtc": "2026-11-26T11:09:52.629932+00:00",
+  "completedAtUtc": "2026-11-26T11:09:53.952068+00:00",
+  "command": [
+    "wsl.exe",
+    "--exec",
+    "gcloud",
+    "compute",
+    "instances",
+    "describe",
+    "cpe-vnbgp-20261124",
+    "--zone=europe-north2-a",
+    "--format=json(name,status,lastStartTimestamp)",
+    "--project=gcp-vnbgp-20261124",
+    "--format=json",
+    "--quiet"
+  ],
+  "output": {
+    "name": "cpe-vnbgp-20261124",
+    "status": "RUNNING",
+    "lastStartTimestamp": "2026-11-26T02:58:45.173-08:00"
+  },
+  "collectionStatus": "OK",
+  "processExitCode": 0,
+  "outputSelection": "Only name/status/lastStartTimestamp retained from instance describe; metadata, certificates and account IDs omitted."
+}

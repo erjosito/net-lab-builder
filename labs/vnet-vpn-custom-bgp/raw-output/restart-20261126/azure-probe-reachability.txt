@@ -1,0 +1,35 @@
+Enable succeeded:
+[stdout]
+2026-11-26T11:10:17+00:00
+=== Probe addresses ===
+lo               UNKNOWN        127.0.0.1/8 ::1/128
+eth0             UP             10.244.1.4/24 metric 100 fe80::e6fa:deff:fe1b:e2c8/64
+enP47253s1       UP
+=== Probe kernel routes ===
+default via 10.244.1.1 dev eth0 proto dhcp src 10.244.1.4 metric 100
+10.244.1.0/24 dev eth0 proto kernel scope link src 10.244.1.4 metric 100
+10.244.1.1 dev eth0 proto dhcp scope link src 10.244.1.4 metric 100
+168.63.129.16 via 10.244.1.1 dev eth0 proto dhcp src 10.244.1.4 metric 100
+169.254.169.254 via 10.244.1.1 dev eth0 proto dhcp src 10.244.1.4 metric 100
+=== Source-bound Azure-to-CPE overlay ICMP ===
+PING 10.246.1.1 (10.246.1.1) from 10.244.1.4 : 56(84) bytes of data.
+64 bytes from 10.246.1.1: icmp_seq=1 ttl=64 time=56.7 ms
+64 bytes from 10.246.1.1: icmp_seq=2 ttl=64 time=53.8 ms
+64 bytes from 10.246.1.1: icmp_seq=3 ttl=64 time=53.8 ms
+64 bytes from 10.246.1.1: icmp_seq=4 ttl=64 time=53.8 ms
+64 bytes from 10.246.1.1: icmp_seq=5 ttl=64 time=54.5 ms
+64 bytes from 10.246.1.1: icmp_seq=6 ttl=64 time=53.8 ms
+64 bytes from 10.246.1.1: icmp_seq=7 ttl=64 time=54.0 ms
+64 bytes from 10.246.1.1: icmp_seq=8 ttl=64 time=54.0 ms
+64 bytes from 10.246.1.1: icmp_seq=9 ttl=64 time=53.9 ms
+64 bytes from 10.246.1.1: icmp_seq=10 ttl=64 time=54.2 ms
+
+--- 10.246.1.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 4510ms
+rtt min/avg/max/mdev = 53.764/54.253/56.708/0.848 ms
+pingExitCode=0
+=== Source-bound TCP22 to existing CPE SSH service ===
+TCP22 PASS ('10.244.1.4', 56711) ('10.246.1.1', 22)
+tcpExitCode=0
+
+[stderr]

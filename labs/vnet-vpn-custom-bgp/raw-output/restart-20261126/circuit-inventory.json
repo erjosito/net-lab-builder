@@ -1,0 +1,34 @@
+{
+  "atUtc": "2026-11-26T11:00:33.338574+00:00",
+  "completedAtUtc": "2026-11-26T11:00:37.587762+00:00",
+  "command": [
+    "az.cmd",
+    "network",
+    "express-route",
+    "list",
+    "-g",
+    "rg-vnbgp-20261124",
+    "--query",
+    "[].{name:name,state:provisioningState,provider:serviceProviderProvisioningState,peerings:peerings[].{name:name,state:state}}",
+    "--subscription",
+    "<LAB_SUBSCRIPTION>",
+    "-o",
+    "json",
+    "--only-show-errors"
+  ],
+  "output": [
+    {
+      "name": "er-vnbgp-20261124",
+      "peerings": [
+        {
+          "name": "AzurePrivatePeering",
+          "state": "Enabled"
+        }
+      ],
+      "provider": "Provisioned",
+      "state": "Succeeded"
+    }
+  ],
+  "collectionStatus": "OK",
+  "processExitCode": 0
+}

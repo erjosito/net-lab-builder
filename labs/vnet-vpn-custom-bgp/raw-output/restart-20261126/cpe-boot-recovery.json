@@ -1,0 +1,26 @@
+{
+  "atUtc": "2026-11-26T11:02:04.371798+00:00",
+  "completedAtUtc": "2026-11-26T11:02:07.443222+00:00",
+  "command": [
+    "wsl.exe",
+    "--exec",
+    "ssh",
+    "-T",
+    "-oBatchMode=yes",
+    "-oConnectTimeout=30",
+    "-oStrictHostKeyChecking=yes",
+    "-oHostKeyAlgorithms=ssh-ed25519",
+    "-oUserKnownHostsFile=/dev/null",
+    "-oGlobalKnownHostsFile=/dev/null",
+    "-oKnownHostsCommand=/usr/bin/python3 <PINNED_HOST_KEY_VERIFIER> %H %t %K",
+    "-i",
+    "<EXISTING_OPERATOR_KEY>",
+    "-oProxyCommand=gcloud compute start-iap-tunnel cpe-vnbgp-20261124 22 --listen-on-stdin --project=gcp-vnbgp-20261124 --zone=europe-north2-a --verbosity=error",
+    "azurelabuser@cpe-vnbgp-20261124",
+    "sudo bash -s"
+  ],
+  "collectionStatus": "OK",
+  "processExitCode": 0,
+  "outputFile": "cpe-boot-recovery.txt",
+  "textNormalization": "LF line endings; trailing spaces removed."
+}

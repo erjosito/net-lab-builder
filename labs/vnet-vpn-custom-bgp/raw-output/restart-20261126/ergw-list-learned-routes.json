@@ -1,0 +1,123 @@
+{
+  "atUtc": "2026-11-26T11:02:53.035095+00:00",
+  "completedAtUtc": "2026-11-26T11:03:08.349783+00:00",
+  "command": [
+    "az.cmd",
+    "network",
+    "vnet-gateway",
+    "list-learned-routes",
+    "-g",
+    "rg-vnbgp-20261124",
+    "-n",
+    "ergw-vnbgp-20261124",
+    "--subscription",
+    "<LAB_SUBSCRIPTION>",
+    "-o",
+    "json",
+    "--only-show-errors"
+  ],
+  "output": {
+    "value": [
+      {
+        "asPath": "",
+        "localAddress": "10.244.255.13",
+        "network": "10.244.0.0/16",
+        "origin": "Network",
+        "sourcePeer": "10.244.255.13",
+        "weight": 32768
+      },
+      {
+        "asPath": "12076-65060",
+        "localAddress": "10.244.255.13",
+        "network": "169.254.149.232/29",
+        "nextHop": "10.244.255.8",
+        "origin": "EBgp",
+        "sourcePeer": "10.244.255.8",
+        "weight": 32779
+      },
+      {
+        "asPath": "12076-65060",
+        "localAddress": "10.244.255.13",
+        "network": "169.254.149.232/29",
+        "nextHop": "10.244.255.9",
+        "origin": "EBgp",
+        "sourcePeer": "10.244.255.9",
+        "weight": 32779
+      },
+      {
+        "asPath": "12076-65060",
+        "localAddress": "10.244.255.13",
+        "network": "169.254.51.76/30",
+        "nextHop": "10.244.255.8",
+        "origin": "EBgp",
+        "sourcePeer": "10.244.255.8",
+        "weight": 32779
+      },
+      {
+        "asPath": "12076-65060",
+        "localAddress": "10.244.255.13",
+        "network": "169.254.51.76/30",
+        "nextHop": "10.244.255.9",
+        "origin": "EBgp",
+        "sourcePeer": "10.244.255.9",
+        "weight": 32779
+      },
+      {
+        "asPath": "12076-65060",
+        "localAddress": "10.244.255.13",
+        "network": "169.254.51.72/30",
+        "nextHop": "10.244.255.8",
+        "origin": "EBgp",
+        "sourcePeer": "10.244.255.8",
+        "weight": 32779
+      },
+      {
+        "asPath": "12076-65060",
+        "localAddress": "10.244.255.13",
+        "network": "169.254.51.72/30",
+        "nextHop": "10.244.255.9",
+        "origin": "EBgp",
+        "sourcePeer": "10.244.255.9",
+        "weight": 32779
+      },
+      {
+        "asPath": "12076-65060-16550",
+        "localAddress": "10.244.255.13",
+        "network": "10.245.0.10/32",
+        "nextHop": "10.244.255.8",
+        "origin": "EBgp",
+        "sourcePeer": "10.244.255.8",
+        "weight": 32779
+      },
+      {
+        "asPath": "12076-65060-16550",
+        "localAddress": "10.244.255.13",
+        "network": "10.245.0.10/32",
+        "nextHop": "10.244.255.9",
+        "origin": "EBgp",
+        "sourcePeer": "10.244.255.9",
+        "weight": 32779
+      },
+      {
+        "asPath": "64513",
+        "localAddress": "10.244.255.13",
+        "network": "10.246.1.0/24",
+        "nextHop": "10.244.255.6",
+        "origin": "IBgp",
+        "sourcePeer": "10.244.255.6",
+        "weight": 32768
+      },
+      {
+        "asPath": "64513",
+        "localAddress": "10.244.255.13",
+        "network": "10.246.1.0/24",
+        "nextHop": "10.244.255.7",
+        "origin": "IBgp",
+        "sourcePeer": "10.244.255.7",
+        "weight": 32768
+      }
+    ]
+  },
+  "collectionStatus": "OK",
+  "processExitCode": 0
+}

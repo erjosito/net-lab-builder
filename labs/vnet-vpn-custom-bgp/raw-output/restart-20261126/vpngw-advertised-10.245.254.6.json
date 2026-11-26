@@ -1,0 +1,43 @@
+{
+  "atUtc": "2026-11-26T11:04:39.702009+00:00",
+  "completedAtUtc": "2026-11-26T11:04:55.721559+00:00",
+  "command": [
+    "az.cmd",
+    "network",
+    "vnet-gateway",
+    "list-advertised-routes",
+    "-g",
+    "rg-vnbgp-20261124",
+    "-n",
+    "vpngw-vnbgp-20261124",
+    "--peer",
+    "10.245.254.6",
+    "--subscription",
+    "<LAB_SUBSCRIPTION>",
+    "-o",
+    "json",
+    "--only-show-errors"
+  ],
+  "output": {
+    "value": [
+      {
+        "asPath": "65515",
+        "localAddress": "10.244.255.6",
+        "network": "10.244.0.0/16",
+        "nextHop": "10.244.255.6",
+        "origin": "Igp",
+        "weight": 0
+      },
+      {
+        "asPath": "65515",
+        "localAddress": "10.244.255.7",
+        "network": "10.244.0.0/16",
+        "nextHop": "10.244.255.7",
+        "origin": "Igp",
+        "weight": 0
+      }
+    ]
+  },
+  "collectionStatus": "OK",
+  "processExitCode": 0
+}

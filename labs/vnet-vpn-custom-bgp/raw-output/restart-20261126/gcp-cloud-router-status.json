@@ -1,0 +1,187 @@
+{
+  "atUtc": "2026-11-26T11:08:59.709104+00:00",
+  "completedAtUtc": "2026-11-26T11:09:01.120884+00:00",
+  "command": [
+    "wsl.exe",
+    "--exec",
+    "gcloud",
+    "compute",
+    "routers",
+    "get-status",
+    "cr-vnbgp-20261124",
+    "--region=europe-north2",
+    "--project=gcp-vnbgp-20261124",
+    "--format=json",
+    "--quiet"
+  ],
+  "output": {
+    "kind": "compute#routerStatusResponse",
+    "result": {
+      "bestRoutes": [
+        {
+          "asPaths": [
+            {
+              "asLists": [
+                65060,
+                12076
+              ],
+              "pathSegmentType": "AS_SEQUENCE"
+            }
+          ],
+          "creationTimestamp": "2026-11-26T00:43:37.053-08:00",
+          "destRange": "10.244.0.0/16",
+          "kind": "compute#route",
+          "network": "https://www.googleapis.com/compute/v1/projects/gcp-vnbgp-20261124/global/networks/vpc-vnbgp-20261124",
+          "nextHopIp": "169.254.149.234",
+          "nextHopOrigin": "INCOMPLETE",
+          "priority": 0,
+          "routeType": "BGP"
+        },
+        {
+          "asPaths": [
+            {
+              "asLists": [
+                65060
+              ],
+              "pathSegmentType": "AS_SEQUENCE"
+            }
+          ],
+          "creationTimestamp": "2026-11-26T00:43:37.053-08:00",
+          "destRange": "169.254.51.72/30",
+          "kind": "compute#route",
+          "network": "https://www.googleapis.com/compute/v1/projects/gcp-vnbgp-20261124/global/networks/vpc-vnbgp-20261124",
+          "nextHopIp": "169.254.149.234",
+          "nextHopOrigin": "INCOMPLETE",
+          "priority": 0,
+          "routeType": "BGP"
+        },
+        {
+          "asPaths": [
+            {
+              "asLists": [
+                65060
+              ],
+              "pathSegmentType": "AS_SEQUENCE"
+            }
+          ],
+          "creationTimestamp": "2026-11-26T00:43:37.053-08:00",
+          "destRange": "169.254.51.76/30",
+          "kind": "compute#route",
+          "network": "https://www.googleapis.com/compute/v1/projects/gcp-vnbgp-20261124/global/networks/vpc-vnbgp-20261124",
+          "nextHopIp": "169.254.149.234",
+          "nextHopOrigin": "INCOMPLETE",
+          "priority": 0,
+          "routeType": "BGP"
+        }
+      ],
+      "bestRoutesForRouter": [
+        {
+          "asPaths": [
+            {
+              "asLists": [
+                65060,
+                12076
+              ],
+              "pathSegmentType": "AS_SEQUENCE"
+            }
+          ],
+          "creationTimestamp": "2026-11-25T03:39:08.903-08:00",
+          "destRange": "10.244.0.0/16",
+          "kind": "compute#route",
+          "network": "https://www.googleapis.com/compute/v1/projects/gcp-vnbgp-20261124/global/networks/vpc-vnbgp-20261124",
+          "nextHopIp": "169.254.149.234",
+          "nextHopOrigin": "INCOMPLETE",
+          "priority": 0,
+          "routeStatus": "ACTIVE",
+          "routeType": "BGP"
+        },
+        {
+          "asPaths": [
+            {
+              "asLists": [
+                65060
+              ],
+              "pathSegmentType": "AS_SEQUENCE"
+            }
+          ],
+          "creationTimestamp": "2026-11-25T03:02:07.237-08:00",
+          "destRange": "169.254.51.72/30",
+          "kind": "compute#route",
+          "network": "https://www.googleapis.com/compute/v1/projects/gcp-vnbgp-20261124/global/networks/vpc-vnbgp-20261124",
+          "nextHopIp": "169.254.149.234",
+          "nextHopOrigin": "INCOMPLETE",
+          "priority": 0,
+          "routeStatus": "ACTIVE",
+          "routeType": "BGP"
+        },
+        {
+          "asPaths": [
+            {
+              "asLists": [
+                65060
+              ],
+              "pathSegmentType": "AS_SEQUENCE"
+            }
+          ],
+          "creationTimestamp": "2026-11-25T03:02:07.238-08:00",
+          "destRange": "169.254.51.76/30",
+          "kind": "compute#route",
+          "network": "https://www.googleapis.com/compute/v1/projects/gcp-vnbgp-20261124/global/networks/vpc-vnbgp-20261124",
+          "nextHopIp": "169.254.149.234",
+          "nextHopOrigin": "INCOMPLETE",
+          "priority": 0,
+          "routeStatus": "ACTIVE",
+          "routeType": "BGP"
+        },
+        {
+          "asPaths": [
+            {
+              "asLists": [
+                65060
+              ],
+              "pathSegmentType": "AS_SEQUENCE"
+            }
+          ],
+          "creationTimestamp": "2026-11-25T03:02:07.237-08:00",
+          "destRange": "169.254.149.232/29",
+          "kind": "compute#route",
+          "network": "https://www.googleapis.com/compute/v1/projects/gcp-vnbgp-20261124/global/networks/vpc-vnbgp-20261124",
+          "nextHopIp": "169.254.149.234",
+          "nextHopOrigin": "INCOMPLETE",
+          "priority": 0,
+          "routeStatus": "ACTIVE",
+          "routeType": "BGP"
+        }
+      ],
+      "bgpPeerStatus": [
+        {
+          "advertisedRoutes": [
+            {
+              "destRange": "10.245.0.10/32",
+              "kind": "compute#route",
+              "network": "https://www.googleapis.com/compute/v1/projects/gcp-vnbgp-20261124/global/networks/vpc-vnbgp-20261124",
+              "nextHopIp": "169.254.149.233",
+              "nextHopOrigin": "INCOMPLETE",
+              "priority": 100,
+              "routeType": "BGP"
+            }
+          ],
+          "enableIpv4": true,
+          "enableIpv6": false,
+          "ipAddress": "169.254.149.233",
+          "md5AuthEnabled": false,
+          "name": "auto-ia-bgp-att-vnbgp-20261-77ab80d27497b44",
+          "numLearnedRoutes": 4,
+          "peerIpAddress": "169.254.149.234",
+          "state": "Established",
+          "status": "UP",
+          "uptime": "1 days, 0 hours, 6 minutes, 54 seconds",
+          "uptimeSeconds": "86814"
+        }
+      ],
+      "network": "https://www.googleapis.com/compute/v1/projects/gcp-vnbgp-20261124/global/networks/vpc-vnbgp-20261124"
+    }
+  },
+  "collectionStatus": "OK",
+  "processExitCode": 0
+}
