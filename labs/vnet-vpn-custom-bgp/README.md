@@ -7,7 +7,13 @@ using default Azure BGP addresses and Internet backup using custom APIPA peers.
 Use Linux StrongSwan/FRR to isolate Azure behavior. This is not a PAN-OS
 reproduction and cannot establish a Palo Alto-specific root cause.
 
-**Current state, 2026-11-25 15:39 UTC: Google CPE intentionally stopped.**
+**Current state, 2026-11-26 08:51 UTC: Google CPE stopped; Azure probe also
+deallocated.** Read-only inspection confirms the Azure four-tunnel configuration
+and established Google Interconnect underlay. Both VMs must run for workload
+tests; boot recovery remains unverified. See the
+[latest inspection](#configuration-inspection-2026-11-26).
+
+**Previous shutdown, 2026-11-25 15:39 UTC: Google CPE intentionally stopped.**
 The user requested saving VM compute costs. Its boot disk and reserved public
 IP are preserved; the four-tunnel configuration remains on disk with boot
 services enabled, but reboot recovery has not been tested. VPN/BGP and payload
@@ -206,6 +212,111 @@ Existing demo resources, including MCRs deployed earlier that day, are unrelated
 and must not be changed, reused without review, or cleaned up.
 
 ## Current checkpoint and cross-laptop resume
+
+### Configuration inspection, 2026-11-26
+
+**Verdict: configuration consistent with the completed four-tunnel handoff;
+live readiness INCONCLUSIVE.** The current API reads show the Google CPE
+`TERMINATED` and Azure probe `PowerState/deallocated`. Starting only the CPE
+is therefore insufficient for end-to-end workload testing. No resources were
+started, stopped, deleted or reconfigured during this inspection.
+See [sanitized inspection evidence](raw-output/configuration-inspection-20261126.json).
+
+The completed source through commit `6173de77` was brought into this worktree.
+The other session completed foundation/state reconciliation, purchased and
+connected the dedicated Megaport underlay, configured the private and Internet
+VPN/BGP connections, added the fourth instance tunnel, and verified private
+encrypted payload. It then stopped the Google CPE at the user's request.
+The historical customer migration and ER failover/failback were not executed.
+
+#### Live Azure and underlay inspection
+
+Both gateways and all three Azure connections report provisioning
+`Succeeded`. The classic `VpnGw1AZ` is active-active, ASN `65515`,
+BGP-enabled, with private outer endpoints enabled. The effective instance
+mapping is:
+
+| Instance | Private IKE endpoint | Public IKE endpoint | Default BGP | Custom BGP |
+|---|---|---|---|---|
+| vpn0 | `10.244.255.4` | `4.165.162.61` | `10.244.255.7` | `169.254.21.2` |
+| vpn1 | `10.244.255.5` | `4.165.90.255` | `10.244.255.6` | `169.254.22.2` |
+
+`conn-private-vnbgp-20261124` uses the private Azure outer addresses and LNG
+outer `10.245.0.10`, CPE BGP `10.245.254.6`, ASN `64513`.
+`conn-internet-vnbgp-20261124` uses public Azure outer addresses and LNG
+outer `34.51.172.149`, CPE BGP `169.254.21.1`, ASN `64513`. Its custom BGP
+selection explicitly maps each APIPA address to the correct gateway IP
+configuration. Both connections enable BGP, IKEv2, Default mode and DPD 45;
+both LNG static address-prefix lists are empty.
+
+The four external customer adjacencies currently report `Connecting`, with
+zero routes received. This is expected with the CPE stopped, not evidence that
+the previously working configuration has failed. No payload route
+`10.246.1.0/24` is currently learned by the VPN gateway. Default local-address
+metadata remains visible for APIPA peers; the earlier packet captures, not
+that column, prove the actual APIPA TCP endpoints.
+
+The circuit remains provider-`Provisioned`, private peering `Enabled`.
+The ER gateway still learns `10.245.0.10/32` over two paths with AS path
+`12076-65060-16550`; it does not learn the overlay workload prefix.
+Google's attachment is `ACTIVE`, its managed peer `Established` / `UP`,
+and its custom advertisement remains only `10.245.0.10/32`. This underlay
+control plane persists while the CPE VM is off; it does not prove a responding
+private IKE endpoint. No new Megaport product/contract inspection was performed.
+
+Neither Azure subnet has a UDR table. The workload subnet retains its NSG
+allowing `10.246.1.0/24` to probe `10.244.1.4`. The Google VM retains forwarding,
+private/public addresses and both alias `/32`s. Google firewall rules permit
+the expected public IKE endpoints, private transport and IAP SSH.
+
+#### StrongSwan/FRR assessment and evidence boundary
+
+The stopped CPE cannot provide a fresh SSH/file/runtime inspection. This review
+examined `deploy/overlay_guest.py`, the completed packet/BGP evidence and the
+shutdown checkpoint, which recorded seven persistent files matching the
+renderer immediately before shutdown. Current startup-script metadata still
+matches the shared source and does not overwrite that saved configuration.
+This is not a new disk-content verification or reboot test.
+
+The saved design is internally consistent:
+
+- Four route-based IKEv2 children use XFRM IDs 101-104, MTU 1400,
+  wildcard traffic selectors and forced UDP encapsulation. Internet IKE uses
+  the reserved public identity, private IKE the `10.245.0.10` identity.
+  Outer endpoint `/32`s are pinned to the physical NIC; each BGP peer `/32`
+  is pinned to its own XFRM interface. StrongSwan automatic route installation
+  is disabled.
+- FRR ASN `64513` peers with Azure ASN `65515`, with explicit source addresses
+  and eBGP multihop 5. Private peers use `10.245.254.6`; both Internet peers
+  use the shared LNG identity `169.254.21.1`.
+- `PRIVATE-IN` local preference 200 beats `INTERNET-IN` 100.
+  `maximum-paths 2` permits both private paths. `INTERNET-OUT` adds two
+  `64513` prepends, so Azure sees three occurrences including ordinary eBGP
+  export. This separately controls the opposite traffic direction.
+- Exact prefix filters import only `10.244.0.0/16` and export only
+  `10.246.1.0/24`. The local Null0 route originates that export; it is not an
+  Internet fallback. The obsolete static Azure payload route is removed in
+  the final stage.
+
+Persistence is configured with `vnbgp-network`, `vnbgp-ipsec`, StrongSwan and
+FRR enabled. The network unit creates interfaces/routes before the daemons;
+the IPsec unit loads configuration after the network/StrongSwan units and
+before FRR. Their actual boot execution still needs verification. Do not
+rerun the full installer as a routine start: the earlier full reload briefly
+reconnected a private peer; the successful fourth-tunnel update was add-only.
+The previously negotiated MODP_1024 is a lab observation, not a production
+crypto recommendation.
+
+#### Next bounded action
+
+With running costs authorized again, start the existing CPE and Azure probe,
+without reapplying Terraform, replacing tunnels or changing PSKs. Verify
+`vnbgp-network` and `vnbgp-ipsec` completed, four installed IPsec children,
+four established FRR peers, private ECMP/preference and source-bound workload
+traffic with IPsec counters. Use `swanctl --list-sas`, not the legacy `ipsec`
+command, and IAP for SSH. Record the desired final VM power state before
+starting. Internet takeover/failback and the historical customer reproduction
+remain separate experiments.
 
 ### CPE paused to save compute costs, 2026-11-25 15:39 UTC
 

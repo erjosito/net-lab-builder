@@ -1,0 +1,80 @@
+{
+  "observedAtUtc": "2026-11-26T08:51:08Z",
+  "scope": "Read-only Azure/Google API inspection, completed-session source review and historical guest evidence review. No VM started, no cloud or guest configuration changed, no shared keys retrieved.",
+  "verdict": "Configuration consistent with completed four-tunnel handoff; live end-to-end readiness INCONCLUSIVE while both workload endpoints are stopped.",
+  "sourceCheckpoint": "6173de77",
+  "azure": {
+    "vpnGateway": {
+      "name": "vpngw-vnbgp-20261124",
+      "provisioningState": "Succeeded",
+      "sku": "VpnGw1AZ",
+      "activeActive": true,
+      "enableBgp": true,
+      "enablePrivateIpAddress": true,
+      "asn": 65515,
+      "instances": [
+        {"name": "vpn0", "privateOuter": "10.244.255.4", "publicOuter": "4.165.162.61", "defaultBgp": "10.244.255.7", "customBgp": "169.254.21.2"},
+        {"name": "vpn1", "privateOuter": "10.244.255.5", "publicOuter": "4.165.90.255", "defaultBgp": "10.244.255.6", "customBgp": "169.254.22.2"}
+      ]
+    },
+    "overlayConnections": [
+      {"name": "conn-private-vnbgp-20261124", "provisioningState": "Succeeded", "enableBgp": true, "usePrivateOuter": true, "cpeOuter": "10.245.0.10", "cpeBgp": "10.245.254.6", "cpeAsn": 64513, "staticPrefixes": [], "customAzureBgp": [], "ike": "IKEv2", "mode": "Default", "dpdSeconds": 45},
+      {"name": "conn-internet-vnbgp-20261124", "provisioningState": "Succeeded", "enableBgp": true, "usePrivateOuter": false, "cpeOuter": "34.51.172.149", "cpeBgp": "169.254.21.1", "cpeAsn": 64513, "staticPrefixes": [], "customAzureBgp": [{"instance": "vpn0", "address": "169.254.21.2"}, {"instance": "vpn1", "address": "169.254.22.2"}], "ike": "IKEv2", "mode": "Default", "dpdSeconds": 45}
+    ],
+    "cpeBgpPeerStates": [
+      {"localAddressMetadata": "10.244.255.6", "neighbor": "10.245.254.6", "state": "Connecting", "routesReceived": 0},
+      {"localAddressMetadata": "10.244.255.6", "neighbor": "169.254.21.1", "state": "Connecting", "routesReceived": 0},
+      {"localAddressMetadata": "10.244.255.7", "neighbor": "10.245.254.6", "state": "Connecting", "routesReceived": 0},
+      {"localAddressMetadata": "10.244.255.7", "neighbor": "169.254.21.1", "state": "Connecting", "routesReceived": 0}
+    ],
+    "underlay": {
+      "erGatewayState": "Succeeded",
+      "erConnectionState": "Succeeded",
+      "circuitProviderState": "Provisioned",
+      "privatePeeringState": "Enabled",
+      "cpeOuterRoute": "10.245.0.10/32",
+      "cpeOuterAsPath": "12076-65060-16550",
+      "cpeOuterRoutesObserved": 2,
+      "overlayPayloadPresentInErGatewayRoutes": false
+    },
+    "probe": {"name": "probe-vnbgp-20261124", "privateAddress": "10.244.1.4", "provisioningState": "Succeeded", "powerState": "deallocated"},
+    "subnets": [
+      {"name": "GatewaySubnet", "prefix": "10.244.255.0/26", "routeTable": null, "nsg": null},
+      {"name": "workload", "prefix": "10.244.1.0/24", "routeTable": null, "nsg": "nsg-vnbgp-20261124"}
+    ],
+    "payloadNsgRule": {"source": "10.246.1.0/24", "destination": "10.244.1.4", "protocol": "*", "action": "Allow"},
+    "vpnPayloadPrefixPresent": false
+  },
+  "google": {
+    "cpe": {"name": "cpe-vnbgp-20261124", "status": "TERMINATED", "machineType": "e2-small", "canIpForward": true, "privateAddress": "10.245.0.10", "publicAddress": "34.51.172.149", "aliasAddresses": ["10.245.254.6/32", "10.246.1.1/32"]},
+    "routerAsn": 16550,
+    "advertiseMode": "CUSTOM",
+    "advertisedPrefixes": ["10.245.0.10/32"],
+    "interconnectAttachmentState": "ACTIVE",
+    "interconnectBgpState": "Established",
+    "interconnectBgpStatus": "UP",
+    "startupMetadataMatchesSharedSource": true
+  },
+  "guestEvidence": {
+    "currentGuestRead": false,
+    "reason": "CPE remains stopped under the previous explicit cost-saving instruction; restart permission was not available.",
+    "reviewedRenderer": "deploy/overlay_guest.py",
+    "lastVerifiedDiskConfiguration": "raw-output/cpe-stopped-20261125.json",
+    "lastVerifiedRuntime": "raw-output/four-tunnel-bgp-20261125.json",
+    "privateImportLocalPreference": 200,
+    "internetImportLocalPreference": 100,
+    "internetExportExtraPrepends": [64513, 64513],
+    "maximumPaths": 2,
+    "exportPrefix": "10.246.1.0/24",
+    "importPrefix": "10.244.0.0/16",
+    "rebootRecoveryTested": false
+  },
+  "notAssessed": [
+    "Current guest file contents or runtime StrongSwan/FRR state",
+    "Recovery of all four tunnels after boot",
+    "Current end-to-end payload",
+    "Internet workload takeover and failback",
+    "Customer static-to-BGP outage reproduction",
+    "Current Megaport inventory or contract settings"
+  ]
+}
