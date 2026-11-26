@@ -1,0 +1,320 @@
+{
+  "googleWorkload": {
+    "instances": {
+      "atUtc": "2026-11-26T13:07:01.157933+00:00",
+      "completedAtUtc": "2026-11-26T13:07:02.555816+00:00",
+      "command": [
+        "wsl.exe",
+        "--exec",
+        "gcloud",
+        "compute",
+        "instances",
+        "list",
+        "--project=gcp-vnbgp-20261124",
+        "--format=json",
+        "--quiet"
+      ],
+      "status": "OK",
+      "output": []
+    },
+    "disks": {
+      "atUtc": "2026-11-26T13:07:02.567792+00:00",
+      "completedAtUtc": "2026-11-26T13:07:03.942934+00:00",
+      "command": [
+        "wsl.exe",
+        "--exec",
+        "gcloud",
+        "compute",
+        "disks",
+        "list",
+        "--project=gcp-vnbgp-20261124",
+        "--format=json",
+        "--quiet"
+      ],
+      "status": "OK",
+      "output": []
+    },
+    "reservedAddresses": {
+      "atUtc": "2026-11-26T13:07:03.955715+00:00",
+      "completedAtUtc": "2026-11-26T13:07:05.304552+00:00",
+      "command": [
+        "wsl.exe",
+        "--exec",
+        "gcloud",
+        "compute",
+        "addresses",
+        "list",
+        "--project=gcp-vnbgp-20261124",
+        "--format=json",
+        "--quiet"
+      ],
+      "status": "OK",
+      "output": []
+    },
+    "interconnectAttachments": {
+      "atUtc": "2026-11-26T13:07:05.321383+00:00",
+      "completedAtUtc": "2026-11-26T13:07:06.823524+00:00",
+      "command": [
+        "wsl.exe",
+        "--exec",
+        "gcloud",
+        "compute",
+        "interconnects",
+        "attachments",
+        "list",
+        "--project=gcp-vnbgp-20261124",
+        "--format=json",
+        "--quiet"
+      ],
+      "status": "OK",
+      "output": []
+    },
+    "project": {
+      "atUtc": "2026-11-26T13:35:09.064234+00:00",
+      "completedAtUtc": "2026-11-26T13:35:10.427789+00:00",
+      "command": [
+        "wsl.exe",
+        "--exec",
+        "gcloud",
+        "projects",
+        "describe",
+        "gcp-vnbgp-20261124",
+        "--project=gcp-vnbgp-20261124",
+        "--format=json",
+        "--quiet"
+      ],
+      "status": "OK",
+      "output": {
+        "projectId": "gcp-vnbgp-20261124",
+        "lifecycleState": "DELETE_REQUESTED"
+      }
+    },
+    "billing": {
+      "atUtc": "2026-11-26T13:35:10.441886+00:00",
+      "completedAtUtc": "2026-11-26T13:35:11.271361+00:00",
+      "command": [
+        "wsl.exe",
+        "--exec",
+        "gcloud",
+        "beta",
+        "billing",
+        "projects",
+        "describe",
+        "gcp-vnbgp-20261124",
+        "--project=gcp-vnbgp-20261124",
+        "--format=json",
+        "--quiet"
+      ],
+      "status": "OK",
+      "output": {
+        "billingEnabled": false
+      }
+    }
+  },
+  "azure": {
+    "connectionNamesAfterErConnectionDeletion": {
+      "atUtc": "2026-11-26T13:15:20.895189+00:00",
+      "completedAtUtc": "2026-11-26T13:15:25.667078+00:00",
+      "command": [
+        "az.cmd",
+        "network",
+        "vpn-connection",
+        "list",
+        "-g",
+        "rg-vnbgp-20261124",
+        "--query",
+        "[].name",
+        "--subscription",
+        "<LAB_SUBSCRIPTION>",
+        "-o",
+        "json",
+        "--only-show-errors"
+      ],
+      "status": "OK",
+      "output": [
+        "conn-internet-vnbgp-20261124",
+        "conn-private-vnbgp-20261124"
+      ]
+    },
+    "peeringsAfterDeletion": {
+      "atUtc": "2026-11-26T13:23:27.985392+00:00",
+      "completedAtUtc": "2026-11-26T13:23:32.213780+00:00",
+      "command": [
+        "az.cmd",
+        "network",
+        "express-route",
+        "peering",
+        "list",
+        "-g",
+        "rg-vnbgp-20261124",
+        "--circuit-name",
+        "er-vnbgp-20261124",
+        "--subscription",
+        "<LAB_SUBSCRIPTION>",
+        "-o",
+        "json",
+        "--only-show-errors"
+      ],
+      "status": "OK",
+      "output": []
+    },
+    "circuitProviderStateAfterCancellation": {
+      "atUtc": "2026-11-26T13:28:39.363622+00:00",
+      "completedAtUtc": "2026-11-26T13:28:44.903051+00:00",
+      "command": [
+        "az.cmd",
+        "network",
+        "express-route",
+        "show",
+        "-g",
+        "rg-vnbgp-20261124",
+        "-n",
+        "er-vnbgp-20261124",
+        "--query",
+        "{name:name,state:serviceProviderProvisioningState}",
+        "--subscription",
+        "<LAB_SUBSCRIPTION>",
+        "-o",
+        "json",
+        "--only-show-errors"
+      ],
+      "status": "OK",
+      "output": {
+        "name": "er-vnbgp-20261124",
+        "state": "NotProvisioned"
+      }
+    },
+    "groupExists": {
+      "atUtc": "2026-11-26T13:53:54.664260+00:00",
+      "completedAtUtc": "2026-11-26T13:53:58.466875+00:00",
+      "command": [
+        "az.cmd",
+        "group",
+        "exists",
+        "-n",
+        "rg-vnbgp-20261124",
+        "--subscription",
+        "<LAB_SUBSCRIPTION>",
+        "-o",
+        "json",
+        "--only-show-errors"
+      ],
+      "status": "OK",
+      "output": false
+    },
+    "failedBootstrapGroupExists": {
+      "atUtc": "2026-11-26T13:35:06.506499+00:00",
+      "completedAtUtc": "2026-11-26T13:35:09.052253+00:00",
+      "command": [
+        "az.cmd",
+        "group",
+        "exists",
+        "-n",
+        "rg-vnbgp-state-20261124",
+        "--subscription",
+        "<LAB_SUBSCRIPTION>",
+        "-o",
+        "json",
+        "--only-show-errors"
+      ],
+      "status": "OK",
+      "output": false
+    }
+  },
+  "megaport": {
+    "completedAtUtc": "2026-11-26T13:24:21.473909+00:00",
+    "command": [
+      "GET",
+      "/v2/products"
+    ],
+    "exactStateMatchedIdentities": true,
+    "exactMcrChildSetMatchedBeforeCancellation": true,
+    "products": [
+      {
+        "productName": "jomore-vnbgp-20261124-mcr",
+        "productType": "MCR2",
+        "provisioningStatus": "DECOMMISSIONED"
+      },
+      {
+        "productName": "jomore-vnbgp-20261124-azure-primary",
+        "productType": "VXC",
+        "provisioningStatus": "DECOMMISSIONED"
+      },
+      {
+        "productName": "jomore-vnbgp-20261124-azure-secondary",
+        "productType": "VXC",
+        "provisioningStatus": "DECOMMISSIONED"
+      },
+      {
+        "productName": "jomore-vnbgp-20261124-gcp",
+        "productType": "VXC",
+        "provisioningStatus": "DECOMMISSIONED"
+      }
+    ],
+    "unrelatedProductsBefore": 68,
+    "unrelatedProductsStillPresentWithSameIdsAndNames": 68,
+    "cancellationRequests": 4,
+    "identifierPolicy": "Product UIDs and all unrelated-product details omitted."
+  },
+  "googleState": {
+    "bucketInventoryAfterDeletion": {
+      "atUtc": "2026-11-26T13:54:04.059056+00:00",
+      "completedAtUtc": "2026-11-26T13:54:05.187854+00:00",
+      "command": [
+        "wsl.exe",
+        "--exec",
+        "gcloud",
+        "storage",
+        "buckets",
+        "list",
+        "--project=gcp-vnbgp-state-20261124",
+        "--format=json",
+        "--quiet"
+      ],
+      "status": "OK",
+      "output": []
+    },
+    "project": {
+      "atUtc": "2026-11-26T13:54:09.403603+00:00",
+      "completedAtUtc": "2026-11-26T13:54:10.708253+00:00",
+      "command": [
+        "wsl.exe",
+        "--exec",
+        "gcloud",
+        "projects",
+        "describe",
+        "gcp-vnbgp-state-20261124",
+        "--project=gcp-vnbgp-state-20261124",
+        "--format=json",
+        "--quiet"
+      ],
+      "status": "OK",
+      "output": {
+        "projectId": "gcp-vnbgp-state-20261124",
+        "lifecycleState": "DELETE_REQUESTED"
+      }
+    },
+    "billing": {
+      "atUtc": "2026-11-26T13:54:10.720858+00:00",
+      "completedAtUtc": "2026-11-26T13:54:12.012811+00:00",
+      "command": [
+        "wsl.exe",
+        "--exec",
+        "gcloud",
+        "beta",
+        "billing",
+        "projects",
+        "describe",
+        "gcp-vnbgp-state-20261124",
+        "--project=gcp-vnbgp-state-20261124",
+        "--format=json",
+        "--quiet"
+      ],
+      "status": "OK",
+      "output": {
+        "billingEnabled": false
+      }
+    },
+    "bucketSoftDeleteRetentionSecondsBeforeDeletion": 604800
+  }
+}

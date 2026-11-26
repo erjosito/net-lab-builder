@@ -7,8 +7,17 @@ using default Azure BGP addresses and Internet backup using custom APIPA peers.
 Use Linux StrongSwan/FRR to isolate Azure behavior. This is not a PAN-OS
 reproduction and cannot establish a Palo Alto-specific root cause.
 
-**Current state, 2026-11-26 11:10 UTC: PASS; Google CPE and Azure probe
-running.** All four IPsec tunnels and BGP adjacencies recovered automatically.
+**Current state, 2026-11-26 13:54 UTC: PASS; lab decommissioned.** The Azure
+lab group is absent, the three dedicated Megaport VXCs and their MCR are
+`DECOMMISSIONED`, and the Google state bucket is deleted. Both dedicated
+Google projects are `DELETE_REQUESTED` with billing disabled. All 68 unrelated
+Megaport product identities are preserved. Google recovery retention and final
+usage charges still apply; this is not an immediate permanent-purge claim.
+See the [cleanup checkpoint](#authorized-cleanup-2026-11-26) and
+[cleanup evidence](raw-output/cleanup-20261126/result.json).
+
+**Last live validation, 2026-11-26 11:10 UTC (historical): PASS.**
+All four IPsec tunnels and BGP adjacencies recovered automatically.
 Source-bound ICMP passed 10/10 in each direction, and TCP/22 connected both
 ways. Packet capture confirms private encrypted transport. No VPN/BGP
 configuration or PSKs were changed. See the
@@ -215,13 +224,62 @@ and must not be changed, reused without review, or cleaned up.
 
 ## Current checkpoint and cross-laptop resume
 
+### Authorized cleanup, 2026-11-26
+
+**Verdict: PASS at 13:54 UTC.** The user requested all lab resources be removed,
+starting with Google Cloud, and explicitly authorized deleting the separate
+Google state project. Existing tunnel/BGP and reachability captures were
+already committed and pushed before teardown. No additional routing scenario
+was run, and the historical test limitations are unchanged.
+
+| Scope | Last verified state | Evidence |
+|---|---|---|
+| Google workload project `gcp-vnbgp-20261124` | CPE VM/boot disk, reserved address and Partner Interconnect attachment explicitly deleted; corresponding inventories empty; project `DELETE_REQUESTED`, billing disabled | [Verification output](raw-output/cleanup-20261126/verification-output.json) |
+| Azure `rg-vnbgp-20261124` | ER connection and private peering removed first; circuit provider reached `NotProvisioned`; all remaining resources removed by group deletion; group existence query returns `false` | [Verification output](raw-output/cleanup-20261126/verification-output.json) |
+| Megaport | Exactly the three lab VXCs and their dedicated MCR `DECOMMISSIONED`; all 68 unrelated product IDs and names still present and unchanged | [Provider result](raw-output/cleanup-20261126/result.json) |
+| Google state project `gcp-vnbgp-state-20261124` | Dedicated `gcp-vnbgp-state-20261124-tfstate` bucket, active objects and object versions deleted after Azure removal; project `DELETE_REQUESTED`, billing disabled | [Verification output](raw-output/cleanup-20261126/verification-output.json) |
+| Failed Azure state bootstrap | `rg-vnbgp-state-20261124` confirmed absent | [Verification output](raw-output/cleanup-20261126/verification-output.json) |
+
+The [deletion journal](raw-output/cleanup-20261126/deletion-journal.json)
+records 13 successful resource-mutation requests in dependency order:
+Google workload first, Azure ER connection and peering, three Megaport VXCs,
+then their MCR, the remaining Azure group, and finally the Google state
+bucket/project. Requests and verified final states are recorded separately.
+
+Megaport deletion used exact IDs matched to the archived Terraform state,
+not a name-substring search. The live MCR child set matched exactly
+`jomore-vnbgp-20261124-azure-primary`,
+`jomore-vnbgp-20261124-azure-secondary` and
+`jomore-vnbgp-20261124-gcp`; each VXC's A-end matched
+`jomore-vnbgp-20261124-mcr`. Child decommissioning was verified before the
+MCR cancellation. Only those four products received cancellation requests.
+Raw IDs, credentials, full state and unrelated-product details are not
+published.
+
+Google project deletion is scheduled and recoverable, not immediate permanent
+purge. The state bucket had a seven-day soft-delete policy; deletion removed
+its active inventory and versions, but recovery retention may preserve
+soft-deleted data. Both projects report billing disabled. Final charges for
+usage incurred before teardown may appear later; empty resource inventories
+do not establish a zero-dollar final invoice.
+
+**Current resources/restore state:** no lab component remains running; no
+restore is requested. All teardown commands have exited and live leases are
+closed. **Open blockers/next live action:** none. The source, simulator JSON
+and earlier sanitized captures remain available in Git. The state backend no
+longer exists, so there is no running baseline to resume from another laptop.
+A new deployment or experiment requires new scope and a new resource/state
+plan; do not replay the historical resume commands below.
+
+All dated checkpoints below describe historical states superseded by cleanup.
+
 ### Restart and live routing capture, 2026-11-26
 
 **Verdict: PASS for the requested restart, healthy-state reachability and
 tunnel/BGP capture.** Started the existing Google CPE and deallocated Azure
-probe. Both remain running at the user's request; compute and existing
-gateway/circuit/provider charges continue. Managed gateways, Megaport products
-and Google Interconnect were already live and were not reset. No resources
+probe. At this checkpoint both remained running at the user's request, with
+compute and existing gateway/circuit/provider charges. Managed gateways,
+Megaport products and Google Interconnect were already live and were not reset. No resources
 were created or deleted, and no routing, IPsec, PSK or service configuration
 was changed. The live window is closed and its commands have exited.
 
@@ -315,10 +373,10 @@ was read into the evidence.
 
 The packet sample used private1; it does not independently exercise payload
 through each private/Internet tunnel. Internet failover/failback, customer
-migration and PAN-OS behavior remain **NOT TESTED**. Resume from this running
-baseline without Terraform apply, reinstalling StrongSwan or changing PSKs.
-A separate authorized scenario is required for fault injection or configuration
-changes. Raw account/control metadata remains ignored and is not required
+migration and PAN-OS behavior remain **NOT TESTED**. This was the running
+baseline before the authorized cleanup above; it is no longer resumable.
+A new authorized scenario is required for further live work.
+Raw account/control metadata remains ignored and is not required
 to read these portable captures.
 
 ### Configuration inspection, 2026-11-26
@@ -820,6 +878,11 @@ Current official reference: [MCR pricing and contract terms](https://docs.megapo
 
 ## Deployment source and resume commands
 
+**Historical commands only:** the lab and its GCS backend were deleted on
+2026-11-26. These instructions describe the former retained environment, not
+a current resume procedure. Do not initialize, apply or replay guest setup
+against the deleted deployment.
+
 `deploy/` contains the prepared VNet gateway topology and reuses the existing
 StrongSwan/FRR package-install startup script. `overlay.tf` defines the two
 LNG/IPsec pairs; `overlay_guest.py` renders persistent CPE routes, four
@@ -833,17 +896,17 @@ fresh ignored `deploy/.runtime-control/lease.json` with the approved scope,
 budgets, expiry and restore plan. The runner refuses expired/inactive leases,
 STOP, or a command timeout beyond the remaining lease reserve.
 
-After reauthentication and a scoped lease, the current overlay-only check
-from the repository root on Windows is:
+After reauthentication and a scoped lease, the former overlay-only check
+from the repository root on Windows was:
 
 ```powershell
-# Initialize the existing GCS backend only when needed on a new laptop.
+# Historical only: this GCS backend has been deleted.
 python labs\vnet-vpn-custom-bgp\deploy\run_terraform.py init
 python -X utf8 labs\vnet-vpn-custom-bgp\deploy\configure_overlay.py plan --stage backup
 ```
 
-The final plan should be `[]`. For an approved actual change, inspect its
-private saved plan before using `apply --stage backup`; the helper rechecks
+At that checkpoint the final plan should have been `[]`. For an approved actual
+change, inspect its private saved plan before using `apply --stage backup`; the helper rechecks
 the actual plan, rejects prerequisite writes, replacements and existing PSK
 rotation, and applies serially. It targets only the LNG/IPsec resources to
 avoid the known imported-Megaport provider drift. A full apply is still unsafe.
@@ -857,7 +920,7 @@ For the specific healthy three-tunnel baseline,
 Internet link/routes and BGP neighbor, without restarting sessions or reloading
 FRR. Verify the baseline, existing key/file identities and private backups
 before invoking it; retain an exact scoped rollback. The fourth tunnel is
-already installed now, so do not replay this completed operation.
+already installed at that checkpoint, so do not replay this completed operation.
 `inspect --stage backup` is read-only. This transport requires
 the native Windows Google SDK and its PuTTY client. Before guest access on a
 new laptop, reconstruct ignored `overlay-inventory.json` from authenticated

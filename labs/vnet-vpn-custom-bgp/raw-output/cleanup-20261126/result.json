@@ -1,0 +1,56 @@
+{
+  "atUtc": "2026-11-26T13:54:12.058515+00:00",
+  "verdict": "PASS",
+  "azure": {
+    "resourceGroup": "rg-vnbgp-20261124",
+    "exists": false,
+    "failedBootstrapGroupExists": false,
+    "expressRouteConnection": "ABSENT",
+    "expressRoutePrivatePeering": "ABSENT"
+  },
+  "megaport": {
+    "atUtc": "2026-11-26T13:24:21.490871+00:00",
+    "verdict": "PASS",
+    "targets": [
+      {
+        "name": "jomore-vnbgp-20261124-mcr",
+        "state": "DECOMMISSIONED"
+      },
+      {
+        "name": "jomore-vnbgp-20261124-azure-primary",
+        "state": "DECOMMISSIONED"
+      },
+      {
+        "name": "jomore-vnbgp-20261124-azure-secondary",
+        "state": "DECOMMISSIONED"
+      },
+      {
+        "name": "jomore-vnbgp-20261124-gcp",
+        "state": "DECOMMISSIONED"
+      }
+    ],
+    "unrelatedProductsPreserved": 68,
+    "unrelatedIdentitiesUnchanged": true,
+    "cancellationCalls": 4
+  },
+  "google": {
+    "workloadProject": "gcp-vnbgp-20261124",
+    "workloadProjectState": "DELETE_REQUESTED",
+    "workloadBillingEnabled": false,
+    "stateProject": "gcp-vnbgp-state-20261124",
+    "stateProjectState": "DELETE_REQUESTED",
+    "stateBillingEnabled": false,
+    "stateBucket": "gcp-vnbgp-state-20261124-tfstate",
+    "stateBucketPresentInActiveInventory": false,
+    "stateBucketSoftDeleteRetentionSecondsBeforeDeletion": 604800
+  },
+  "limits": [
+    "Google project deletion is scheduled and recoverable, not immediate permanent purge.",
+    "The state bucket had a seven-day soft-delete policy; active contents and versions were removed.",
+    "Final usage charges incurred before deletion can appear later; no zero-dollar billing assertion is made."
+  ],
+  "evidence": {
+    "deletionJournal": "deletion-journal.json",
+    "verificationOutput": "verification-output.json"
+  }
+}

@@ -1,0 +1,231 @@
+{
+  "description": "Successful resource-mutation requests in execution order; absence and terminal-state proof is separate.",
+  "mutationCount": 13,
+  "events": [
+    {
+      "atUtc": "2026-11-26T13:06:00.105274+00:00",
+      "completedAtUtc": "2026-11-26T13:06:21.149231+00:00",
+      "phase": "gcp",
+      "status": "OK",
+      "command": [
+        "wsl.exe",
+        "--exec",
+        "gcloud",
+        "compute",
+        "instances",
+        "delete",
+        "cpe-vnbgp-20261124",
+        "--zone=europe-north2-a",
+        "--delete-disks=all",
+        "--project=gcp-vnbgp-20261124",
+        "--format=json",
+        "--quiet"
+      ]
+    },
+    {
+      "atUtc": "2026-11-26T13:06:21.161403+00:00",
+      "completedAtUtc": "2026-11-26T13:06:22.659344+00:00",
+      "phase": "gcp",
+      "status": "OK",
+      "command": [
+        "wsl.exe",
+        "--exec",
+        "gcloud",
+        "compute",
+        "addresses",
+        "delete",
+        "pip-vnbgp-20261124",
+        "--region=europe-north2",
+        "--project=gcp-vnbgp-20261124",
+        "--format=json",
+        "--quiet"
+      ]
+    },
+    {
+      "atUtc": "2026-11-26T13:06:22.673118+00:00",
+      "completedAtUtc": "2026-11-26T13:07:01.135788+00:00",
+      "phase": "gcp",
+      "status": "OK",
+      "command": [
+        "wsl.exe",
+        "--exec",
+        "gcloud",
+        "compute",
+        "interconnects",
+        "attachments",
+        "delete",
+        "att-vnbgp-20261124",
+        "--region=europe-north2",
+        "--project=gcp-vnbgp-20261124",
+        "--format=json",
+        "--quiet"
+      ]
+    },
+    {
+      "atUtc": "2026-11-26T13:07:06.836938+00:00",
+      "completedAtUtc": "2026-11-26T13:07:11.169775+00:00",
+      "phase": "gcp",
+      "status": "OK",
+      "command": [
+        "wsl.exe",
+        "--exec",
+        "gcloud",
+        "projects",
+        "delete",
+        "gcp-vnbgp-20261124",
+        "--project=gcp-vnbgp-20261124",
+        "--format=json",
+        "--quiet"
+      ]
+    },
+    {
+      "atUtc": "2026-11-26T13:08:59.454032+00:00",
+      "completedAtUtc": "2026-11-26T13:15:20.881985+00:00",
+      "phase": "er",
+      "status": "OK",
+      "command": [
+        "az.cmd",
+        "network",
+        "vpn-connection",
+        "delete",
+        "-g",
+        "rg-vnbgp-20261124",
+        "-n",
+        "conn-er-vnbgp-20261124",
+        "--subscription",
+        "<LAB_SUBSCRIPTION>",
+        "-o",
+        "json",
+        "--only-show-errors"
+      ]
+    },
+    {
+      "atUtc": "2026-11-26T13:15:25.678570+00:00",
+      "completedAtUtc": "2026-11-26T13:23:27.972594+00:00",
+      "phase": "er",
+      "status": "OK",
+      "command": [
+        "az.cmd",
+        "network",
+        "express-route",
+        "peering",
+        "delete",
+        "-g",
+        "rg-vnbgp-20261124",
+        "--circuit-name",
+        "er-vnbgp-20261124",
+        "-n",
+        "AzurePrivatePeering",
+        "--subscription",
+        "<LAB_SUBSCRIPTION>",
+        "-o",
+        "json",
+        "--only-show-errors"
+      ]
+    },
+    {
+      "atUtc": "2026-11-26T13:24:02.561243+00:00",
+      "completedAtUtc": "2026-11-26T13:24:03.808021+00:00",
+      "phase": "megaport",
+      "status": "OK",
+      "command": [
+        "POST",
+        "/v2/product/<EXACT_STATE_MATCHED_UID>/action/CANCEL_NOW"
+      ],
+      "productName": "jomore-vnbgp-20261124-azure-primary",
+      "observedFinalState": "DECOMMISSIONED"
+    },
+    {
+      "atUtc": "2026-11-26T13:24:04.308751+00:00",
+      "completedAtUtc": "2026-11-26T13:24:14.778196+00:00",
+      "phase": "megaport",
+      "status": "OK",
+      "command": [
+        "POST",
+        "/v2/product/<EXACT_STATE_MATCHED_UID>/action/CANCEL_NOW"
+      ],
+      "productName": "jomore-vnbgp-20261124-azure-secondary",
+      "observedFinalState": "DECOMMISSIONED"
+    },
+    {
+      "atUtc": "2026-11-26T13:24:15.271730+00:00",
+      "completedAtUtc": "2026-11-26T13:24:16.391733+00:00",
+      "phase": "megaport",
+      "status": "OK",
+      "command": [
+        "POST",
+        "/v2/product/<EXACT_STATE_MATCHED_UID>/action/CANCEL_NOW"
+      ],
+      "productName": "jomore-vnbgp-20261124-gcp",
+      "observedFinalState": "DECOMMISSIONED"
+    },
+    {
+      "atUtc": "2026-11-26T13:24:18.599405+00:00",
+      "completedAtUtc": "2026-11-26T13:24:19.684703+00:00",
+      "phase": "megaport",
+      "status": "OK",
+      "command": [
+        "POST",
+        "/v2/product/<EXACT_STATE_MATCHED_UID>/action/CANCEL_NOW"
+      ],
+      "productName": "jomore-vnbgp-20261124-mcr",
+      "observedFinalState": "DECOMMISSIONED"
+    },
+    {
+      "atUtc": "2026-11-26T13:28:44.917353+00:00",
+      "completedAtUtc": "2026-11-26T13:28:49.413635+00:00",
+      "phase": "final",
+      "status": "OK",
+      "command": [
+        "az.cmd",
+        "group",
+        "delete",
+        "-n",
+        "rg-vnbgp-20261124",
+        "--yes",
+        "--no-wait",
+        "--subscription",
+        "<LAB_SUBSCRIPTION>",
+        "-o",
+        "json",
+        "--only-show-errors"
+      ]
+    },
+    {
+      "atUtc": "2026-11-26T13:54:01.847993+00:00",
+      "completedAtUtc": "2026-11-26T13:54:04.045838+00:00",
+      "phase": "final",
+      "status": "OK",
+      "command": [
+        "wsl.exe",
+        "--exec",
+        "gcloud",
+        "storage",
+        "rm",
+        "--recursive",
+        "gs://gcp-vnbgp-state-20261124-tfstate",
+        "--project=gcp-vnbgp-state-20261124",
+        "--format=json",
+        "--quiet"
+      ]
+    },
+    {
+      "atUtc": "2026-11-26T13:54:05.200771+00:00",
+      "completedAtUtc": "2026-11-26T13:54:09.389644+00:00",
+      "phase": "final",
+      "status": "OK",
+      "command": [
+        "wsl.exe",
+        "--exec",
+        "gcloud",
+        "projects",
+        "delete",
+        "gcp-vnbgp-state-20261124",
+        "--project=gcp-vnbgp-state-20261124",
+        "--format=json",
+        "--quiet"
+      ]
+    }
+  ],
+  "verification": "verification-output.json"
+}
